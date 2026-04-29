@@ -60,10 +60,15 @@ export default function DiscussionDetailPage() {
   }, [id]);
 
   useEffect(() => {
-    if (id) {
-      fetchTopic();
-      fetchComments();
-    }
+    let isMounted = true;
+    const init = async () => {
+      if (id && isMounted) {
+        await fetchTopic();
+        await fetchComments();
+      }
+    };
+    init();
+    return () => { isMounted = false; };
   }, [id, fetchTopic, fetchComments]);
 
   const handleSendMessage = async (e: React.FormEvent) => {

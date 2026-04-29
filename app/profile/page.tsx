@@ -37,9 +37,14 @@ export default function ProfilePage() {
   }, [user]);
 
   useEffect(() => {
-    if (user) {
-      fetchProfile();
-    }
+    let isMounted = true;
+    const init = async () => {
+      if (user && isMounted) {
+        await fetchProfile();
+      }
+    };
+    init();
+    return () => { isMounted = false; };
   }, [user, fetchProfile]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {

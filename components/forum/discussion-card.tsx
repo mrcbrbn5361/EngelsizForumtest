@@ -31,7 +31,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
               </span>
             )}
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              {topic.category_id}
+              {topic.category?.name || topic.category_id}
             </span>
           </div>
           <h2 className="text-xl font-bold leading-tight group-hover:text-primary transition-colors">

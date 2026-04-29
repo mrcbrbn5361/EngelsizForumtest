@@ -48,8 +48,15 @@ export default function DiscussionsPage() {
   }, []);
 
   useEffect(() => {
-    fetchTopics();
-    fetchCategories();
+    let isMounted = true;
+    const init = async () => {
+      if (isMounted) {
+        await fetchTopics();
+        await fetchCategories();
+      }
+    };
+    init();
+    return () => { isMounted = false; };
   }, [fetchTopics, fetchCategories]);
 
   const handleSummarize = async (id: string) => {

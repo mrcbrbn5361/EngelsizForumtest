@@ -39,7 +39,19 @@ export default function CommunitiesPage() {
   }, []);
 
   useEffect(() => {
-    fetchCommunities();
+    let isMounted = true;
+    
+    const init = async () => {
+      if (isMounted) {
+        await fetchCommunities();
+      }
+    };
+    
+    init();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [fetchCommunities]);
 
   const filteredCommunities = communities.filter(c => 

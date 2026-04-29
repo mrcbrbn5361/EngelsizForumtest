@@ -34,6 +34,16 @@ CREATE TABLE IF NOT EXISTS public.categories (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Seed Default Categories
+INSERT INTO public.categories (name, slug, description, icon)
+VALUES 
+  ('Genel', 'genel', 'Genel konular ve rastgele tartışmalar.', 'message'),
+  ('Teknoloji', 'teknoloji', 'Erişilebilir teknolojiler, cihazlar ve yazılımlar.', 'users'),
+  ('Yardım İstiyorum', 'yardim', 'Sorularınızı sorun ve topluluktan destek alın.', 'handshake'),
+  ('Görme Engelli', 'gorme-engelli', 'Görme engellilere özel teknolojiler ve yaşam tüyoları.', 'users'),
+  ('İşitme Engelli', 'isitme-engelli', 'İşitme engelliler için iletişim ve sosyal gruplar.', 'message')
+ON CONFLICT (slug) DO NOTHING;
+
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Anyone can view categories" ON public.categories FOR SELECT USING (true);
 

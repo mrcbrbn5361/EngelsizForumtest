@@ -39,9 +39,14 @@ export default function CommunityDetailPage() {
   }, [id]);
 
   useEffect(() => {
-    if (id) {
-      fetchCommunity();
-    }
+    let isMounted = true;
+    const init = async () => {
+      if (id && isMounted) {
+        await fetchCommunity();
+      }
+    };
+    init();
+    return () => { isMounted = false; };
   }, [id, fetchCommunity]);
 
   if (loading) {
