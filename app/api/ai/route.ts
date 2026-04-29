@@ -7,15 +7,23 @@ let openaiClient: OpenAI | null = null;
 function getOpenAI() {
   if (!openaiClient) {
     const apiKey = process.env.OPENAI_API_KEY;
-    const baseURL = process.env.OPENAI_BASE_URL || 'https://api.z.ai/api/paas/v4/';
+    // Remove trailing slash if present to avoid double slashes in SDK
+    const baseURL = (process.env.OPENAI_BASE_URL || 'https://api.z.ai/api/paas/v4').replace(/\/$/, '');
     
-    if (!apiKey) {
-      throw new Error('OPENAI_API_KEY environment variable is required');
+    if (!apiKey || apiKey === 'your-api-key') {
+      console.error('OPENAI_API_KEY is missing or using placeholder');
+      throw new Error('OPENAI_API_KEY environment variable is required and must be valid.');
     }
     
+    console.log(`Initializing OpenAI client with baseURL: ${baseURL}`);
+
     openaiClient = new OpenAI({
       apiKey,
       baseURL,
+      // Some proxies need the header explicitly if the SDK's automatic Bearer is not working
+      defaultHeaders: {
+        'Authorization': `Bearer ${apiKey}`
+      }
     });
   }
   return openaiClient;
@@ -32,7 +40,7 @@ export async function POST(req: NextRequest) {
     const openai = getOpenAI();
 
     const response = await openai.chat.completions.create({
-      model: 'glm-5.1', // Updated to the latest requested model
+      model: 'glm-4.5-air', // Updated to 4.5 Air as requested
       messages: [
         {
           role: 'system',

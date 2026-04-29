@@ -115,7 +115,7 @@ export default function DiscussionsPage() {
                     className="mt-2 p-6 bg-primary/5 border border-primary/10 rounded-[2rem]"
                   >
                     <div className="flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest mb-3">
-                      <Sparkles size={14} /> AI ÖZETİ (GLM-4.5)
+                      <Sparkles size={14} /> AI ÖZETİ (GLM-4.5 Air)
                     </div>
                     <div className="text-sm leading-relaxed prose prose-sm max-w-none">
                       {summaryResult.text.split('\n').map((line, i) => (
