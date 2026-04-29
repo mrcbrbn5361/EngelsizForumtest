@@ -34,7 +34,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
               {topic.category?.name || topic.category_id}
             </span>
           </div>
-          <h2 className="text-xl font-bold leading-tight group-hover:text-primary transition-colors">
+          <h2 className="text-xl font-bold leading-tight group-hover:text-primary transition-colors break-words">
             <Link href={`/discussions/${topic.id}`} className="hover:underline outline-none after:absolute after:inset-0 after:z-0">
               {topic.title}
             </Link>

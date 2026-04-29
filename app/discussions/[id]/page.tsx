@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { GoogleGenAI } from '@google/genai';
 import { supabase } from '@/lib/supabase';
+import ReactMarkdown from 'react-markdown';
+import Image from 'next/image';
 
 /**
  * Discussion Detail Page
@@ -156,13 +158,20 @@ export default function DiscussionDetailPage() {
         <button onClick={() => router.back()} className="mb-6 flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
           <ArrowLeft size={16} /> Geri Dön
         </button>
-        <article className="bg-card border border-border rounded-3xl p-8 shadow-sm mb-8">
-          <h1 className="text-3xl font-extrabold mb-4">{topic.title}</h1>
+        <article className="bg-card border border-border rounded-3xl p-8 shadow-sm mb-8 overflow-hidden">
+          <h1 className="text-3xl font-extrabold mb-4 break-words">{topic.title}</h1>
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3 text-muted-foreground text-sm">
               <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                 {topic.author?.avatar_url ? (
-                   <img src={topic.author.avatar_url} alt={topic.author.username || ''} className="h-full w-full object-cover" />
+                   <Image 
+                     src={topic.author.avatar_url} 
+                     alt={topic.author.username || ''} 
+                     width={32}
+                     height={32}
+                     className="h-full w-full object-cover" 
+                     referrerPolicy="no-referrer"
+                   />
                 ) : (
                   <User size={16} />
                 )}
@@ -187,8 +196,14 @@ export default function DiscussionDetailPage() {
               </motion.div>
             )}
           </AnimatePresence>
-          <div className="prose max-w-none mb-12">
-            {topic.content.split('\n').map((para, i) => <p key={i}>{para}</p>)}
+          <div className="prose prose-slate dark:prose-invert max-w-none mb-12 break-words overflow-hidden">
+            <div className="markdown-body prose max-w-none dark:prose-invert overflow-x-hidden">
+               {topic.content ? (
+                 <ReactMarkdown>{topic.content}</ReactMarkdown>
+               ) : (
+                 <p className="text-muted-foreground italic">İçerik yok.</p>
+               )}
+            </div>
           </div>
 
           <div className="border-t border-border pt-8 space-y-8">
@@ -206,9 +221,15 @@ export default function DiscussionDetailPage() {
                   animate={{ opacity: 1, x: 0 }}
                   className="flex gap-4"
                 >
-                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden relative">
                     {comment.author?.avatar_url ? (
-                      <img src={comment.author.avatar_url} alt={comment.author.username || ''} className="h-full w-full object-cover" />
+                      <Image 
+                        src={comment.author.avatar_url} 
+                        alt={comment.author.username || ''} 
+                        fill
+                        className="object-cover" 
+                        referrerPolicy="no-referrer"
+                      />
                     ) : (
                       <User size={20} />
                     )}

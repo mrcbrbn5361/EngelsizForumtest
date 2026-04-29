@@ -28,8 +28,8 @@ export default function Home() {
             <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase">
               Türkiye&apos;nin En Kapsayıcı Topluluğu
             </span>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1.1]">
-              Engelleri <br/> 
+            <h1 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1.1] break-words">
+              Engelleri <br className="hidden sm:block" /> 
               <span className="text-primary italic">Birlikte</span> Aşalım
             </h1>
             <p className="mx-auto max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">

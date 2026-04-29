@@ -88,8 +88,8 @@ export default function ProfilePage() {
             <div className="mx-auto h-24 w-24 rounded-full bg-white/20 flex items-center justify-center mb-4 border-4 border-white/30 backdrop-blur-sm relative z-10 transition-transform hover:scale-110">
               <User size={48} />
             </div>
-            <h1 className="text-3xl font-black relative z-10">{profile?.full_name || user.email?.split('@')[0]}</h1>
-            <p className="text-white/70 text-sm mb-6 relative z-10">@{profile?.username || user.email?.split('@')[0]}</p>
+            <h1 className="text-3xl font-black relative z-10 break-words line-clamp-2">{profile?.full_name || user.email?.split('@')[0]}</h1>
+            <p className="text-white/70 text-sm mb-6 relative z-10 break-all">{profile?.username || user.email?.split('@')[0] ? `@${profile?.username || user.email?.split('@')[0]}` : ''}</p>
             
             <div className="absolute -top-10 -right-10 size-48 bg-white/5 rounded-full blur-3xl"></div>
             <div className="absolute -bottom-10 -left-10 size-48 bg-black/10 rounded-full blur-2xl"></div>
@@ -187,9 +187,9 @@ function ProfileItem({ icon, label, value }: { icon: React.ReactNode, label: str
     <div className="flex items-center justify-between p-5 bg-muted/30 rounded-2xl border border-border/50 hover:border-primary/30 transition-colors">
       <div className="flex items-center gap-4">
         <div className="p-2.5 bg-white dark:bg-zinc-800 rounded-xl shadow-sm text-primary">{icon}</div>
-        <div>
+        <div className="min-w-0 flex-1">
           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{label}</p>
-          <p className="font-bold">{value}</p>
+          <p className="font-bold break-all sm:break-words">{value}</p>
         </div>
       </div>
       <ChevronRight size={18} className="text-muted-foreground/30" />

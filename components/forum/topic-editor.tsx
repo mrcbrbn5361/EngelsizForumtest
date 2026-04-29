@@ -67,7 +67,7 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
               exit={{ opacity: 0 }}
               className="w-full h-full p-6 bg-muted/5"
             >
-              <div className="markdown-body prose prose-slate max-w-none dark:prose-invert">
+              <div className="markdown-body prose prose-slate max-w-none dark:prose-invert break-words overflow-hidden">
                 {value ? (
                   <ReactMarkdown>{value}</ReactMarkdown>
                 ) : (
