@@ -52,6 +52,22 @@ export default function NewTopicPage() {
 
     setLoading(true);
     try {
+      // Ensure profile exists to avoid foreign key violation
+      const { data: profileCheck, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+      
+      if (profileError || !profileCheck) {
+        console.log('Profile missing, creating just-in-time...');
+        await supabase.from('profiles').insert({
+          id: user.id,
+          username: user.email?.split('@')[0],
+          avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`
+        });
+      }
+
       const { data, error } = await supabase
         .from('topics')
         .insert({
