@@ -5,6 +5,8 @@ import { motion } from 'motion/react';
 import { MessageSquare, User, Calendar, Pin, Sparkles } from 'lucide-react';
 import { Topic } from '@/types/database';
 
+import Link from 'next/link';
+
 interface DiscussionCardProps {
   topic: Topic;
   onSummarize: (id: string) => void;
@@ -32,18 +34,19 @@ export function DiscussionCard({ topic, onSummarize }: DiscussionCardProps) {
             </span>
           </div>
           <h2 className="text-xl font-bold leading-tight group-hover:text-primary transition-colors">
-            <a href={`/discussions/${topic.id}`} className="outline-none">
+            <Link href={`/discussions/${topic.id}`} className="hover:underline outline-none after:absolute after:inset-0 after:z-0">
               {topic.title}
-            </a>
+            </Link>
           </h2>
         </div>
         
         <button
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             onSummarize(topic.id);
           }}
-          className="flex h-10 items-center gap-2 rounded-full bg-primary/5 px-4 text-xs font-bold text-primary hover:bg-primary/10 transition-colors focus:ring-2 focus:ring-primary focus:outline-none"
+          className="relative z-10 flex h-10 items-center gap-2 rounded-full bg-primary/5 px-4 text-xs font-bold text-primary hover:bg-primary/10 transition-colors focus:ring-2 focus:ring-primary focus:outline-none"
           aria-label="Bu tartışmayı AI ile özetle"
         >
           <Sparkles size={14} />
@@ -51,11 +54,11 @@ export function DiscussionCard({ topic, onSummarize }: DiscussionCardProps) {
         </button>
       </div>
 
-      <p className="line-clamp-2 text-sm text-muted-foreground leading-relaxed">
+      <p className="line-clamp-2 text-sm text-muted-foreground leading-relaxed relative z-10 pointer-events-none">
         {topic.content}
       </p>
 
-      <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+      <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground relative z-10 pointer-events-none">
         <div className="flex items-center gap-1.5">
           <User size={14} />
           <span>{topic.author?.username || 'Anonim'}</span>

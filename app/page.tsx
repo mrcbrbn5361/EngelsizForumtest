@@ -6,9 +6,12 @@ import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { MessageCircle, ShieldCheck, Zap, HeartHandshake, ArrowRight, Search, Users, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
+import { useAuth } from '@/components/providers/auth-provider';
 import { MOCK_TOPICS } from '@/types/mock-data';
 
 export default function Home() {
+  const { user, loading } = useAuth();
+
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
       <Navbar />
@@ -35,12 +38,24 @@ export default function Home() {
               AI desteğiyle güçlendirilmiş en geniş topluluğa hoş geldiniz.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-              <Link
-                href="/auth"
-                className="rounded-full bg-primary px-10 py-4 text-lg font-bold text-primary-foreground shadow-2xl transition-all hover:scale-105 hover:bg-primary/90"
-              >
-                Hemen Üye Ol
-              </Link>
+              {!loading && (
+                user ? (
+                  <Link
+                    href="/discussions"
+                    className="rounded-full bg-primary px-10 py-4 text-lg font-bold text-primary-foreground shadow-2xl transition-all hover:scale-105 hover:bg-primary/90"
+                  >
+                    Tartışmalara Göz At
+                  </Link>
+                ) : (
+                  <Link
+                    href="/auth"
+                    className="rounded-full bg-primary px-10 py-4 text-lg font-bold text-primary-foreground shadow-2xl transition-all hover:scale-105 hover:bg-primary/90"
+                  >
+                    Hemen Üye Ol
+                  </Link>
+                )
+              )}
+              {loading && <div className="h-14 w-40 animate-pulse bg-muted rounded-full"></div>}
               <Link
                 href="/about"
                 className="rounded-full border border-border bg-card px-10 py-4 text-lg font-bold shadow-sm transition-all hover:bg-muted"

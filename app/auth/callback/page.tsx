@@ -8,8 +8,20 @@ export default function AuthCallbackPage() {
   const router = useRouter();
 
   useEffect(() => {
+    const handleAuth = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (data?.session) {
+        router.push('/');
+      } else if (error) {
+        console.error('Auth error:', error.message);
+        router.push('/auth');
+      }
+    };
+
+    handleAuth();
+
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
+      if (event === 'SIGNED_IN' && session) {
         router.push('/');
       }
     });

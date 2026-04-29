@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Navbar } from '@/components/layout/navbar';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
+import { useAuth } from '@/components/providers/auth-provider';
 import { LogIn, UserPlus, Mail, Lock, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -11,11 +12,18 @@ import { motion } from 'motion/react';
  * Accessible Auth Page for EngelsizForum with Google Login.
  */
 export default function AuthPage() {
+  const { user, loading: authLoading } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      window.location.href = '/';
+    }
+  }, [user, authLoading]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,10 +51,17 @@ export default function AuthPage() {
     setError(null);
     setLoading(true);
     try {
+      // Ensure https://engelsizforumtest.vercel.app/auth/callback is added to Supabase Redirect URLs
+      const origin = typeof window !== 'undefined' 
+        ? (window.location.hostname.includes('vercel.app') 
+            ? 'https://engelsizforumtest.vercel.app' 
+            : window.location.origin) 
+        : '';
+        
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${origin}/auth/callback`,
         }
       });
       if (error) throw error;

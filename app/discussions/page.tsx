@@ -97,12 +97,14 @@ export default function DiscussionsPage() {
 function CategoryLink({ label, active, count }: { label: string, active?: boolean, count: number }) {
   return (
     <button
-      className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-        active ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+      className={`flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-all ${
+        active 
+          ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-105' 
+          : 'text-muted-foreground hover:bg-muted hover:text-foreground hover:translate-x-1'
       }`}
     >
       <span>{label}</span>
-      <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${active ? 'bg-white/20' : 'bg-muted'}`}>
+      <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${active ? 'bg-white/20' : 'bg-muted'}`}>
         {count}
       </span>
     </button>

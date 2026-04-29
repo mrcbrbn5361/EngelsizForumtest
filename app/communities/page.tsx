@@ -49,26 +49,30 @@ export default function CommunitiesPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-card border border-border rounded-3xl p-6 shadow-sm hover:shadow-md transition-all group"
+              className="bg-card border border-border rounded-[2rem] p-8 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden"
             >
-              <div className="flex items-start gap-4 mb-4">
-                <div className="p-3 bg-muted rounded-2xl group-hover:bg-primary/10 transition-colors">
-                  {community.icon}
+              <div className="relative z-10">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="p-4 bg-muted rounded-2xl group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                    {community.icon}
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">
+                      <Link href={`/communities/${community.id}`} className="after:absolute after:inset-0 after:z-0 outline-none">
+                        {community.name}
+                      </Link>
+                    </h2>
+                    <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">{community.members} ÜYE</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-xl font-bold mb-1">{community.name}</h2>
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{community.members} ÜYE</p>
+                <p className="text-muted-foreground mb-8 leading-relaxed">
+                  {community.description}
+                </p>
+                <div className="flex items-center text-primary font-bold gap-2 group-hover:translate-x-2 transition-transform">
+                  Topluluğa Katıl <ChevronRight size={18} />
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                {community.description}
-              </p>
-              <Link 
-                href={`/communities/${community.id}`}
-                className="flex items-center justify-between w-full py-3 px-4 bg-muted hover:bg-primary hover:text-primary-foreground rounded-xl font-bold transition-all"
-              >
-                Grubu Görüntüle <ChevronRight size={18} />
-              </Link>
+              <div className="absolute top-0 right-0 size-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:bg-primary/10 transition-colors"></div>
             </motion.div>
           ))}
         </div>
