@@ -1,50 +1,91 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Navbar } from '@/components/layout/navbar';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { DiscussionCard } from '@/components/forum/discussion-card';
-import { MOCK_TOPICS } from '@/types/mock-data';
+import { Topic } from '@/types/database';
 import Link from 'next/link';
-import { Search, Plus, Filter, MessageSquareCode, Sparkles } from 'lucide-react';
+import { Search, Plus, Filter, MessageSquareCode, Sparkles, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { GoogleGenAI } from '@google/genai';
+import { supabase } from '@/lib/supabase';
 
 export default function DiscussionsPage() {
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaryResult, setSummaryResult] = useState<{ id: string, text: string } | null>(null);
+  const [categories, setCategories] = useState<any[]>([]);
+
+  const fetchTopics = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('topics')
+        .select('*, author:profiles(*), category:categories(*)')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      setTopics(data || []);
+    } catch (err) {
+      console.error('Error fetching topics:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name');
+      if (!error && data) setCategories(data);
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchTopics();
+    fetchCategories();
+  }, [fetchTopics, fetchCategories]);
 
   const handleSummarize = async (id: string) => {
-    const topic = MOCK_TOPICS.find(t => t.id === id);
+    const topic = topics.find(t => t.id === id);
     if (!topic) return;
 
     setSummarizingId(id);
     setSummaryResult(null);
 
     try {
-      const response = await fetch('/api/ai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: 'Aşağıdaki forum tartışmasını bir cümleyle özetle ve en önemli 3 noktayı madde imiyle belirt.',
-          content: `${topic.title}\n\n${topic.content}`,
-        }),
-      });
+      const genAI = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY! });
 
-      const data = await response.json();
+      const prompt = `Aşağıdaki forum tartışmasını bir cümleyle özetle ve en önemli 3 noktayı madde imiyle belirt. 
+      Tartışma: ${topic.title}
+      ${topic.content}`;
+
+      const response = await genAI.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: prompt
+      });
       
-      if (data.error) throw new Error(data.error);
-      
-      setSummaryResult({ id, text: data.result });
+      if (response.text) {
+        setSummaryResult({ id, text: response.text });
+      }
     } catch (error: any) {
       console.error('AI Error:', error);
-      alert('AI Özetlenirken bir hata oluştu: ' + error.message);
+      alert('AI Özetlenirken bir hata oluştu. Lütfen tekrar deneyiniz.');
     } finally {
       setSummarizingId(null);
     }
   };
+
+  const filteredTopics = topics.filter(t => 
+    t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    t.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-muted/30">
@@ -85,55 +126,66 @@ export default function DiscussionsPage() {
               <h2 className="px-3 text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-2">
                 <Filter size={14} /> Kategoriler
               </h2>
-              <CategoryLink label="Tüm Tartışmalar" active count={42} />
-              <CategoryLink label="Görme Engelli" count={12} />
-              <CategoryLink label="İşitme Engelli" count={8} />
-              <CategoryLink label="Motor Engelli" count={15} />
-              <CategoryLink label="Teknoloji" count={24} />
-              <CategoryLink label="Sosyal Haklar" count={10} />
+              <CategoryLink label="Tüm Tartışmalar" active count={topics.length} />
+              {categories.map(cat => (
+                <CategoryLink key={cat.id} label={cat.name} count={topics.filter(t => t.category_id === cat.id).length} />
+              ))}
             </nav>
           </aside>
 
           {/* Discussion List */}
           <section className="space-y-4">
-            {MOCK_TOPICS.map((topic, index) => (
-              <motion.div
-                key={topic.id}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <DiscussionCard 
-                  topic={topic} 
-                  onSummarize={handleSummarize}
-                  isLoading={summarizingId === topic.id}
-                />
-                {summaryResult && summaryResult.id === topic.id && (
-                  <motion.div 
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="mt-2 p-6 bg-primary/5 border border-primary/10 rounded-[2rem]"
-                  >
-                    <div className="flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest mb-3">
-                      <Sparkles size={14} /> AI ÖZETİ (GLM-4.5 Air)
-                    </div>
-                    <div className="text-sm leading-relaxed prose prose-sm max-w-none">
-                      {summaryResult.text.split('\n').map((line, i) => (
-                        <p key={i} className={line.startsWith('-') || line.startsWith('•') ? 'ml-4' : ''}>
-                          {line}
-                        </p>
-                      ))}
-                    </div>
-                    <button 
-                      onClick={() => setSummaryResult(null)}
-                      className="mt-4 text-xs font-bold text-muted-foreground hover:text-primary transition-colors"
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <Loader2 className="animate-spin text-primary" size={48} />
+                <p className="font-bold text-muted-foreground">Tartışmalar yükleniyor...</p>
+              </div>
+            ) : filteredTopics.length > 0 ? (
+              filteredTopics.map((topic, index) => (
+                <motion.div
+                  key={topic.id}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <DiscussionCard 
+                    topic={topic} 
+                    onSummarize={handleSummarize}
+                    isLoading={summarizingId === topic.id}
+                  />
+                  {summaryResult && summaryResult.id === topic.id && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      className="mt-2 p-6 bg-primary/5 border border-primary/10 rounded-[2rem]"
                     >
-                      Özeti Kapat
-                    </button>
-                  </motion.div>
-                )}
-              </motion.div>
-            ))}
+                      <div className="flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest mb-3">
+                        <Sparkles size={14} /> AI ÖZETİ (Gemini)
+                      </div>
+                      <div className="text-sm leading-relaxed prose prose-sm max-w-none">
+                        {summaryResult.text.split('\n').map((line, i) => (
+                          <p key={i} className={line.startsWith('-') || line.startsWith('•') ? 'ml-4' : ''}>
+                            {line}
+                          </p>
+                        ))}
+                      </div>
+                      <button 
+                        onClick={() => setSummaryResult(null)}
+                        className="mt-4 text-xs font-bold text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        Özeti Kapat
+                      </button>
+                    </motion.div>
+                  )}
+                </motion.div>
+              ))
+            ) : (
+              <div className="text-center py-20 bg-card rounded-[3rem] border border-dashed border-border">
+                <MessageSquareCode className="mx-auto text-muted-foreground mb-4 opacity-20" size={64} />
+                <h3 className="text-xl font-bold mb-2">Henüz tartışma bulunamadı</h3>
+                <p className="text-muted-foreground">Bir tartışma başlatmak için &quot;Yeni Başlık Aç&quot; butonunu kullanabilirsiniz.</p>
+              </div>
+            )}
           </section>
         </div>
       </main>

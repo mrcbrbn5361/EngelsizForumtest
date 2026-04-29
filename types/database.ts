@@ -29,6 +29,7 @@ export type Topic = {
   created_at: string;
   pinned: boolean;
   author?: Profile;
+  category?: Category;
 };
 
 export type Comment = {

@@ -1,26 +1,66 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Navbar } from '@/components/layout/navbar';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
-import { ArrowLeft, Users, MessageSquare, Shield, Globe } from 'lucide-react';
+import { ArrowLeft, Users, MessageSquare, Shield, Globe, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { supabase } from '@/lib/supabase';
 
-const COMMUNITIES = [
-  { id: '1', name: 'Görme Engelliler Teknoloji Grubu', members: 1250, description: 'Ekran okuyucular, Braille ekranlar ve yardımcı teknolojiler üzerine tartışmalar.' },
-  { id: '2', name: 'İşitme Engelli Sosyal Ağ', members: 840, description: 'İşaret dili, görsel iletişim ve erişilebilir içerik paylaşım alanı.' },
-  { id: '3', name: 'Motor Engelsiz Yaşam', members: 620, description: 'Fiziksel erişilebilirlik, akıllı ev sistemleri ve mobilite çözümleri.' },
-  { id: '4', name: 'Bilişsel Destek Topluluğu', members: 450, description: 'Basit arayüzler, odaklanma teknikleri ve bilişsel erişilebilirlik.' },
-];
+interface Community {
+  id: string;
+  name: string;
+  description: string;
+  slug: string;
+}
 
 export default function CommunityDetailPage() {
   const { id } = useParams();
   const router = useRouter();
+  const [community, setCommunity] = useState<Community | null>(null);
+  const [loading, setLoading] = useState(true);
   
-  const community = COMMUNITIES.find(c => c.id === id);
+  const fetchCommunity = React.useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error) throw error;
+      setCommunity(data);
+    } catch (err) {
+      console.error('Error fetching community:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
 
-  if (!community) return null;
+  useEffect(() => {
+    if (id) {
+      fetchCommunity();
+    }
+  }, [id, fetchCommunity]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30">
+        <Loader2 className="animate-spin text-primary" size={48} />
+      </div>
+    );
+  }
+
+  if (!community) {
+    return (
+      <div className="min-h-screen flex flex-col bg-muted/30 text-center py-20">
+        <Navbar />
+        <h1 className="text-2xl font-bold mt-10">Topluluk bulunamadı.</h1>
+        <button onClick={() => router.back()} className="mt-4 text-primary underline">Geri Git</button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-muted/30">
@@ -28,10 +68,10 @@ export default function CommunityDetailPage() {
 
       <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl">
         <button 
-          onClick={() => router.back()}
+          onClick={() => router.push('/communities')}
           className="mb-6 flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
         >
-          <ArrowLeft size={16} /> Geri Dön
+          <ArrowLeft size={16} /> Topluluklar
         </button>
 
         <div className="grid lg:grid-cols-[1fr_300px] gap-8">
@@ -77,7 +117,7 @@ export default function CommunityDetailPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground flex items-center gap-2"><Users size={14} /> Üyeler</span>
-                  <span className="text-sm font-bold">{community.members}</span>
+                  <span className="text-sm font-bold">Keşfediliyor...</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground flex items-center gap-2"><Globe size={14} /> Görünürlük</span>

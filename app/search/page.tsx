@@ -1,17 +1,42 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Navbar } from '@/components/layout/navbar';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
-import { Search, MessageSquare, Filter, ArrowRight } from 'lucide-react';
-import { MOCK_TOPICS } from '@/types/mock-data';
+import { Search, MessageSquare, Filter, ArrowRight, Loader2, Mic } from 'lucide-react';
+import { Topic } from '@/types/database';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState(MOCK_TOPICS);
+  const [results, setResults] = useState<Topic[]>([]);
+  const [loading, setLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
+
+  const performSearch = useCallback(async (searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setResults([]);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('topics')
+        .select('*, category:categories(*), author:profiles(*)')
+        .or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`)
+        .limit(20);
+      
+      if (error) throw error;
+      setResults(data || []);
+    } catch (err) {
+      console.error('Search error:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const startVoiceSearch = () => {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -29,12 +54,7 @@ export default function SearchPage() {
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       setQuery(transcript);
-      // Automatically trigger update
-      const filtered = MOCK_TOPICS.filter(topic => 
-        topic.title.toLowerCase().includes(transcript.toLowerCase()) || 
-        topic.content.toLowerCase().includes(transcript.toLowerCase())
-      );
-      setResults(filtered);
+      performSearch(transcript);
     };
 
     recognition.start();
@@ -42,11 +62,7 @@ export default function SearchPage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const filtered = MOCK_TOPICS.filter(topic => 
-      topic.title.toLowerCase().includes(query.toLowerCase()) || 
-      topic.content.toLowerCase().includes(query.toLowerCase())
-    );
-    setResults(filtered);
+    performSearch(query);
   };
 
   return (
@@ -73,16 +89,14 @@ export default function SearchPage() {
                 className={`p-3 rounded-xl transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-muted hover:bg-zinc-200'}`}
                 title="Sesli Ara"
               >
-                <div className="relative">
-                  <Search className={isListening ? 'opacity-0' : 'opacity-100'} size={20} />
-                  {isListening && <div className="absolute inset-0 flex items-center justify-center font-bold text-[10px]">...</div>}
-                </div>
+                <Mic size={20} />
               </button>
               <button 
                 type="submit"
-                className="bg-primary text-primary-foreground px-6 py-2.5 rounded-2xl font-bold shadow-md hover:bg-primary/90 transition-all"
+                disabled={loading}
+                className="bg-primary text-primary-foreground px-6 py-2.5 rounded-2xl font-bold shadow-md hover:bg-primary/90 transition-all disabled:opacity-50"
               >
-                Ara
+                {loading ? <Loader2 size={24} className="animate-spin" /> : 'Ara'}
               </button>
             </div>
           </form>
@@ -91,11 +105,8 @@ export default function SearchPage() {
         <section>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-widest">
-              {results.length} SONUÇ BULUNDU
+              {loading ? 'ARANIYOR...' : `${results.length} SONUÇ BULUNDU`}
             </h2>
-            <button className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-              <Filter size={16} /> Filtrele
-            </button>
           </div>
 
           <div className="space-y-4">
@@ -120,11 +131,11 @@ export default function SearchPage() {
                             {topic.content}
                           </p>
                           <div className="flex items-center gap-4 pt-2">
-                            <span className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                              <MessageSquare size={14} /> 12 Yanıt
-                            </span>
                             <span className="text-xs font-bold px-2 py-0.5 bg-muted rounded-md text-muted-foreground uppercase tracking-wider">
-                              {topic.category_id}
+                              {topic.category?.name || 'Genel'}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(topic.created_at).toLocaleDateString('tr-TR')}
                             </span>
                           </div>
                         </div>
@@ -135,7 +146,7 @@ export default function SearchPage() {
                     </Link>
                   </motion.div>
                 ))
-              ) : (
+              ) : !loading && query && (
                 <div className="text-center py-20 bg-muted/20 rounded-3xl border border-dashed border-border">
                   <p className="text-lg font-medium text-muted-foreground italic mb-2">Aramanızla eşleşen sonuç bulunamadı.</p>
                   <p className="text-sm text-muted-foreground">Farklı anahtar kelimeler denemeyi deneyin.</p>

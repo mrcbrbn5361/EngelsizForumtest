@@ -7,7 +7,6 @@ import { MessageCircle, ShieldCheck, Zap, HeartHandshake, ArrowRight, Search, Us
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
-import { MOCK_TOPICS } from '@/types/mock-data';
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -104,8 +103,8 @@ export default function Home() {
             <div className="grid gap-12 md:grid-cols-3">
               <FeatureCard 
                 icon={<Zap size={32} className="text-yellow-500" />}
-                title="GLM-4.5 Air AI Desteği"
-                description="Z.AI GLM-4.5 Air ile uzun tartışmaları saniyeler içinde anlayabileceğin şekilde özetliyoruz."
+                title="Gemini AI Desteği"
+                description="Gemini 2.0 Flash ile uzun tartışmaları saniyeler içinde anlayabileceğin şekilde özetliyoruz."
               />
               <FeatureCard 
                 icon={<ShieldCheck size={32} className="text-green-500" />}

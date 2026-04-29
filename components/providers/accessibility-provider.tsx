@@ -35,6 +35,8 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   const { user } = useAuth();
   const [settings, setSettings] = useState<AccessibilitySettings>(defaultSettings);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isSyncingFromCloud, setIsSyncingFromCloud] = useState(false);
+  const lastSyncedSettings = React.useRef<string>(JSON.stringify(defaultSettings));
 
   // Initial load from local storage
   useEffect(() => {
@@ -51,14 +53,25 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     if (user) {
       const fetchPrefs = async () => {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('accessibility_prefs')
-          .eq('id', user.id)
-          .single();
+        setIsSyncingFromCloud(true);
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('accessibility_prefs')
+            .eq('id', user.id)
+            .single();
 
-        if (data?.accessibility_prefs && !error) {
-          setSettings(data.accessibility_prefs as AccessibilitySettings);
+          if (error) {
+            console.warn('Could not fetch prefs from Supabase (maybe profile not created yet):', error.message);
+          } else if (data?.accessibility_prefs) {
+            const cloudSettings = data.accessibility_prefs as AccessibilitySettings;
+            setSettings(cloudSettings);
+            lastSyncedSettings.current = JSON.stringify(cloudSettings);
+          }
+        } catch (err) {
+          console.error('Exception while fetching prefs:', err);
+        } finally {
+          setIsSyncingFromCloud(false);
         }
       };
       fetchPrefs();
@@ -77,17 +90,30 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
 
     localStorage.setItem('accessibility_prefs', JSON.stringify(settings));
 
-    // Sync with Supabase if logged in
-    if (user) {
+    // Sync with Supabase if logged in and settings actually changed
+    const currentSettingsStr = JSON.stringify(settings);
+    if (user && !isSyncingFromCloud && currentSettingsStr !== lastSyncedSettings.current) {
        supabase
         .from('profiles')
-        .update({ accessibility_prefs: settings })
-        .eq('id', user.id)
+        .upsert({ 
+          id: user.id, 
+          accessibility_prefs: settings,
+          updated_at: new Date().toISOString()
+        })
         .then(({ error }) => {
-          if (error) console.error('Failed to sync prefs:', error);
+          if (error) {
+            console.error('Failed to sync prefs:', {
+              message: error.message,
+              details: error.details,
+              hint: error.hint,
+              code: error.code
+            });
+          } else {
+            lastSyncedSettings.current = currentSettingsStr;
+          }
         });
     }
-  }, [settings, user, isInitialLoad]);
+  }, [settings, user, isInitialLoad, isSyncingFromCloud]);
 
   const updateSettings = (newSettings: Partial<AccessibilitySettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));

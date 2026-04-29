@@ -1,24 +1,57 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/layout/navbar';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { TopicEditor } from '@/components/forum/topic-editor';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
+import { supabase } from '@/lib/supabase';
 
 export default function NewTopicPage() {
   const router = useRouter();
   const { user } = useAuth();
   
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('');
+  const [categoryId, setCategoryId] = useState('');
   const [content, setContent] = useState('');
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase.from('categories').select('*').order('name');
+      if (!error && data) setCategories(data);
+    };
+    fetchCategories();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/discussions');
+    if (!user || !title.trim() || !categoryId || !content.trim()) return;
+
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('topics')
+        .insert({
+          title,
+          category_id: categoryId,
+          content,
+          author_id: user.id
+        })
+        .select()
+        .single();
+      
+      if (error) throw error;
+      
+      router.push(`/discussions/${data.id}`);
+    } catch (err: any) {
+      alert('Tartışma yayınlanırken hata oluştu: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!user) {
@@ -55,10 +88,11 @@ export default function NewTopicPage() {
                 id="title"
                 type="text" 
                 required 
+                disabled={loading}
                 placeholder="Örn: Ekran okuyucu kullanırken karşılaşılan zorluklar..." 
                 value={title} 
                 onChange={e => setTitle(e.target.value)}
-                className="w-full p-5 rounded-2xl border border-border bg-muted/20 outline-none focus:ring-2 focus:ring-primary transition-all font-bold text-lg"
+                className="w-full p-5 rounded-2xl border border-border bg-muted/20 outline-none focus:ring-2 focus:ring-primary transition-all font-bold text-lg disabled:opacity-50"
               />
             </div>
 
@@ -67,16 +101,15 @@ export default function NewTopicPage() {
               <select 
                 id="category"
                 required 
-                value={category} 
-                onChange={e => setCategory(e.target.value)}
-                className="w-full p-5 rounded-2xl border border-border bg-muted/20 outline-none focus:ring-2 focus:ring-primary transition-all font-bold appearance-none cursor-pointer"
+                disabled={loading}
+                value={categoryId} 
+                onChange={e => setCategoryId(e.target.value)}
+                className="w-full p-5 rounded-2xl border border-border bg-muted/20 outline-none focus:ring-2 focus:ring-primary transition-all font-bold appearance-none cursor-pointer disabled:opacity-50"
               >
                 <option value="">Bir kategori seçin...</option>
-                <option value="GENEL">Genel</option>
-                <option value="TEKNOLOJI">Teknoloji</option>
-                <option value="YARDIM">Yardım İstiyorum</option>
-                <option value="GEME">Görme Engelli</option>
-                <option value="ISE">İşitme Engelli</option>
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
               </select>
             </div>
 
@@ -88,9 +121,11 @@ export default function NewTopicPage() {
             <div className="pt-4">
               <button 
                 type="submit" 
-                className="w-full bg-primary text-primary-foreground px-8 py-5 rounded-[2rem] font-black text-lg shadow-2xl hover:shadow-primary/20 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3"
+                disabled={loading}
+                className="w-full bg-primary text-primary-foreground px-8 py-5 rounded-[2rem] font-black text-lg shadow-2xl hover:shadow-primary/20 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
               >
-                <Save size={20} /> Tartışmayı Yayınla
+                {loading ? <Loader2 size={24} className="animate-spin" /> : <Save size={20} />}
+                {loading ? 'Yayınlanıyor...' : 'Tartışmayı Yayınla'}
               </button>
             </div>
           </form>
