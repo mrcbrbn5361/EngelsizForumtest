@@ -29,26 +29,48 @@ export default function NewTopicPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !title.trim() || !categoryId || !content.trim()) return;
+    
+    if (!user) {
+      alert('Lütfen önce giriş yapın.');
+      return;
+    }
+
+    if (!title.trim()) {
+      alert('Lütfen bir başlık girin.');
+      return;
+    }
+
+    if (!categoryId) {
+      alert('Lütfen bir kategori seçin.');
+      return;
+    }
+
+    if (!content.trim()) {
+      alert('Lütfen tartışma içeriğini yazın.');
+      return;
+    }
 
     setLoading(true);
     try {
       const { data, error } = await supabase
         .from('topics')
         .insert({
-          title,
+          title: title.trim(),
           category_id: categoryId,
-          content,
+          content: content.trim(),
           author_id: user.id
         })
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase Error:', error);
+        throw error;
+      }
       
       router.push(`/discussions/${data.id}`);
     } catch (err: any) {
-      alert('Tartışma yayınlanırken hata oluştu: ' + err.message);
+      alert('Tartışma yayınlanırken hata oluştu: ' + (err.message || 'Bilinmeyen hata'));
     } finally {
       setLoading(false);
     }
@@ -107,6 +129,7 @@ export default function NewTopicPage() {
                 className="w-full p-5 rounded-2xl border border-border bg-muted/20 outline-none focus:ring-2 focus:ring-primary transition-all font-bold appearance-none cursor-pointer disabled:opacity-50"
               >
                 <option value="">Bir kategori seçin...</option>
+                {categories.length === 0 && <option disabled>Kategoriler yüklenemedi...</option>}
                 {categories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
