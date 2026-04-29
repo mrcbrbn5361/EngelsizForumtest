@@ -6,20 +6,44 @@ import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { DiscussionCard } from '@/components/forum/discussion-card';
 import { MOCK_TOPICS } from '@/types/mock-data';
 import Link from 'next/link';
-import { Search, Plus, Filter, MessageSquareCode } from 'lucide-react';
+import { Search, Plus, Filter, MessageSquareCode, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function DiscussionsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
+  const [summaryResult, setSummaryResult] = useState<{ id: string, text: string } | null>(null);
 
   const handleSummarize = async (id: string) => {
+    const topic = MOCK_TOPICS.find(t => t.id === id);
+    if (!topic) return;
+
     setSummarizingId(id);
-    // TODO: Implement actual Gemini AI summarization here
-    setTimeout(() => {
-      alert('AI Özetleme özelliği yakında aktif olacak! (Gemini API Entegrasyonu)');
+    setSummaryResult(null);
+
+    try {
+      const response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: 'Aşağıdaki forum tartışmasını bir cümleyle özetle ve en önemli 3 noktayı madde imiyle belirt.',
+          content: `${topic.title}\n\n${topic.content}`,
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.error) throw new Error(data.error);
+      
+      setSummaryResult({ id, text: data.result });
+    } catch (error: any) {
+      console.error('AI Error:', error);
+      alert('AI Özetlenirken bir hata oluştu: ' + error.message);
+    } finally {
       setSummarizingId(null);
-    }, 1500);
+    }
   };
 
   return (
@@ -82,7 +106,32 @@ export default function DiscussionsPage() {
                 <DiscussionCard 
                   topic={topic} 
                   onSummarize={handleSummarize}
+                  isLoading={summarizingId === topic.id}
                 />
+                {summaryResult && summaryResult.id === topic.id && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="mt-2 p-6 bg-primary/5 border border-primary/10 rounded-[2rem]"
+                  >
+                    <div className="flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest mb-3">
+                      <Sparkles size={14} /> AI ÖZETİ (GLM-4.5)
+                    </div>
+                    <div className="text-sm leading-relaxed prose prose-sm max-w-none">
+                      {summaryResult.text.split('\n').map((line, i) => (
+                        <p key={i} className={line.startsWith('-') || line.startsWith('•') ? 'ml-4' : ''}>
+                          {line}
+                        </p>
+                      ))}
+                    </div>
+                    <button 
+                      onClick={() => setSummaryResult(null)}
+                      className="mt-4 text-xs font-bold text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      Özeti Kapat
+                    </button>
+                  </motion.div>
+                )}
               </motion.div>
             ))}
           </section>

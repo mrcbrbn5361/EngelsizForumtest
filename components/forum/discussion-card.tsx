@@ -10,12 +10,13 @@ import Link from 'next/link';
 interface DiscussionCardProps {
   topic: Topic;
   onSummarize: (id: string) => void;
+  isLoading?: boolean;
 }
 
 /**
  * Accessible Discussion Card with AI Summary feature.
  */
-export function DiscussionCard({ topic, onSummarize }: DiscussionCardProps) {
+export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCardProps) {
   return (
     <motion.article 
       whileHover={{ y: -4 }}
@@ -46,11 +47,16 @@ export function DiscussionCard({ topic, onSummarize }: DiscussionCardProps) {
             e.stopPropagation();
             onSummarize(topic.id);
           }}
-          className="relative z-10 flex h-10 items-center gap-2 rounded-full bg-primary/5 px-4 text-xs font-bold text-primary hover:bg-primary/10 transition-colors focus:ring-2 focus:ring-primary focus:outline-none"
+          disabled={isLoading}
+          className="relative z-10 flex h-10 items-center gap-2 rounded-full bg-primary/5 px-4 text-xs font-bold text-primary hover:bg-primary/10 transition-colors focus:ring-2 focus:ring-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Bu tartışmayı AI ile özetle"
         >
-          <Sparkles size={14} />
-          <span className="hidden sm:inline">AI Özetle</span>
+          {isLoading ? (
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          ) : (
+            <Sparkles size={14} />
+          )}
+          <span className="hidden sm:inline">{isLoading ? 'Özetleniyor...' : 'AI Özetle'}</span>
         </button>
       </div>
 
