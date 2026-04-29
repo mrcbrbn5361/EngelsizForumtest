@@ -53,19 +53,20 @@ export default function NewTopicPage() {
     setLoading(true);
     try {
       // Ensure profile exists to avoid foreign key violation
-      const { data: profileCheck, error: profileError } = await supabase
+      // Using upsert with ON CONFLICT (id) DO NOTHING behavior if possible, 
+      // but supabase upsert handles this well.
+      const baseUsername = user.email?.split('@')[0] || 'user';
+      const { error: profileError } = await supabase
         .from('profiles')
-        .select('id')
-        .eq('id', user.id)
-        .single();
-      
-      if (profileError || !profileCheck) {
-        console.log('Profile missing, creating just-in-time...');
-        await supabase.from('profiles').insert({
+        .upsert({
           id: user.id,
-          username: user.email?.split('@')[0],
+          username: `${baseUsername}_${user.id.slice(0, 4)}`, // More stable than random
           avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`
-        });
+        }, { onConflict: 'id', ignoreDuplicates: true });
+      
+      if (profileError) {
+        console.error('Profile Upsert Error:', profileError);
+        // We continue anyway, hoping the profile already exists if upsert failed
       }
 
       const { data, error } = await supabase
