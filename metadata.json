@@ -1,0 +1,6 @@
+{
+  "name": "EngelsizForum",
+  "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve forum platformu.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": []
+}
