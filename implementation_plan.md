@@ -26,7 +26,7 @@
 - [x] **Editor:** Simple, accessible markdown editor for new topics.
 
 ## 🤖 Phase 4: AI Enrichment (Felix & Bora Focus)
-- [x] **Summarizer:** Integrating Gemini to summarize long forum threads.
+- [x] **Summarizer:** Integrating GLM-4.5 to summarize long forum threads.
 - [ ] **Alt-Text Assistant:** Automatically suggesting alt-text for uploaded images.
 
 ## 🏁 Phase 5: Verification & Polish

@@ -7,7 +7,7 @@ let openaiClient: OpenAI | null = null;
 function getOpenAI() {
   if (!openaiClient) {
     const apiKey = process.env.OPENAI_API_KEY;
-    const baseURL = process.env.OPENAI_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4';
+    const baseURL = process.env.OPENAI_BASE_URL || 'https://api.z.ai/api/paas/v4/';
     
     if (!apiKey) {
       throw new Error('OPENAI_API_KEY environment variable is required');
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     const openai = getOpenAI();
 
     const response = await openai.chat.completions.create({
-      model: 'glm-4.5-air-x', // User specified model
+      model: 'glm-5.1', // Updated to the latest requested model
       messages: [
         {
           role: 'system',

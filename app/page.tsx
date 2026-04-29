@@ -104,8 +104,8 @@ export default function Home() {
             <div className="grid gap-12 md:grid-cols-3">
               <FeatureCard 
                 icon={<Zap size={32} className="text-yellow-500" />}
-                title="Gemini AI Desteği"
-                description="Gemini 2.0 Flash ile uzun tartışmaları saniyeler içinde anlayabileceğin şekilde özetliyoruz."
+                title="GLM-5.1 AI Desteği"
+                description="Z.AI GLM-5.1 ile uzun tartışmaları saniyeler içinde anlayabileceğin şekilde özetliyoruz."
               />
               <FeatureCard 
                 icon={<ShieldCheck size={32} className="text-green-500" />}

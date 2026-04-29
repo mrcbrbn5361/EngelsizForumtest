@@ -9,7 +9,6 @@ import { Topic, Comment } from '@/types/database';
 import { ArrowLeft, Send, User, Calendar, MessageSquare, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
-import { GoogleGenAI } from '@google/genai';
 
 /**
  * Discussion Detail Page
@@ -71,24 +70,30 @@ export default function DiscussionDetailPage() {
   const handleSummarize = async () => {
     if (!topic) return;
     setIsSummarizing(true);
+    setSummary(null);
     
     try {
-      const genAI = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY! });
-      const prompt = `Lütfen aşağıdaki forum tartışmasını engelli bireyler için çok kısa, net ve anlaşılır özetle. Yanıtın sadece Türkçe ve tek bir paragraf olsun. 
-      Başlık: ${topic.title}
-      İçerik: ${topic.content}`;
-
-      const response = await genAI.models.generateContent({
-        model: 'gemini-2.0-flash',
-        contents: [{ parts: [{ text: prompt }] }],
+      const response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: 'Lütfen aşağıdaki forum tartışmasını engelli bireyler için çok kısa, net ve anlaşılır özetle. Yanıtın sadece Türkçe ve tek bir paragraf olsun.',
+          content: `Başlık: ${topic.title}\n\nİçerik: ${topic.content}`,
+        }),
       });
+
+      const data = await response.json();
       
-      if (response.text) {
-        setSummary(response.text);
+      if (data.error) throw new Error(data.error);
+      
+      if (data.result) {
+        setSummary(data.result);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('AI Summary Error:', error);
-      setSummary("Üzgünüz, şu an özet oluşturulamıyor.");
+      setSummary("Üzgünüz, şu an özet oluşturulamıyor. " + (error.message || ""));
     } finally {
       setIsSummarizing(false);
     }

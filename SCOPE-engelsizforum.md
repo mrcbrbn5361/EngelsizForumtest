@@ -5,14 +5,14 @@ Engelli bireylerin hiçbir bariyerle karşılaşmadan bilgi paylaşabildiği, ta
 
 ## 👥 Hedef Kitle (Persona bazlı erişilebilirlik)
 - **Görme Engelli Kullanıcılar:** Ekran okuyucu uyumu, semantik HTML, sesli bildirimler.
-- **İşitme Engelli Kullanıcılar:** Video içeriklerinde otomatik altyazı (Gemini desteğiyle), görsel uyarılar.
+- **İşitme Engelli Kullanıcılar:** Video içeriklerinde otomatik altyazı (GLM AI desteğiyle), görsel uyarılar.
 - **Motor Engelli Kullanıcılar:** Sesli kontrol, geniş tıklama alanları, klavye navigasyonu.
 - **Nöro-Çeşitli Kullanıcılar:** Basitleştirilmiş arayüz, AI özetleme (TL;DR), dikkat dağıtmayan mod.
 
 ## 🛠️ Teknik Altyapı
 - **Frontend:** Next.js (App Router), Tailwind CSS, Framer Motion.
 - **Backend/Database:** Supabase (Auth, Realtime, Storage).
-- **AI Entegrasyonu:** Google Gemini API (Erişilebilirlik asistanı ve içerik özetleme için).
+- **AI Entegrasyonu:** ZhiPu AI GLM-4.5 API (Erişilebilirlik asistanı ve içerik özetleme için).
 
 ## 🚀 MVP (Aşama 1) Özellikleri
 1. **Erişilebilir Üyelik:** Supabase Auth ile kolay giriş.
