@@ -117,12 +117,18 @@ export default function DiscussionDetailPage() {
         contents: prompt
       });
       
-      if (response.text) {
-        setSummary(response.text);
+      const text = response.text;
+      
+      if (text) {
+        setSummary(text);
       }
     } catch (error: any) {
       console.error('AI Summary Error:', error);
-      setSummary("Üzgünüz, şu an özet oluşturulamıyor. Lütfen daha sonra tekrar deneyiniz.");
+      if (error.message?.includes('503') || error.message?.includes('high demand')) {
+        setSummary("Sistem şu an çok yoğun. Lütfen birkaç dakika sonra tekrar deneyin.");
+      } else {
+        setSummary("Üzgünüz, şu an özet oluşturulamıyor. Lütfen içeriği okumaya devam edin.");
+      }
     } finally {
       setIsSummarizing(false);
     }
@@ -158,46 +164,55 @@ export default function DiscussionDetailPage() {
         <button onClick={() => router.back()} className="mb-6 flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
           <ArrowLeft size={16} /> Geri Dön
         </button>
-        <article className="bg-card border border-border rounded-3xl p-8 shadow-sm mb-8 overflow-hidden">
-          <h1 className="text-3xl font-extrabold mb-4 break-words">{topic.title}</h1>
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center gap-3 text-muted-foreground text-sm">
-              <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+        <article className="bg-card border border-border rounded-3xl p-6 md:p-8 shadow-sm mb-8 overflow-hidden">
+          <h1 className="text-2xl md:text-4xl font-extrabold mb-6 break-words tracking-tight">{topic.title}</h1>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+            <div className="flex flex-wrap items-center gap-3 text-muted-foreground text-sm">
+              <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border">
                 {topic.author?.avatar_url ? (
                    <Image 
                      src={topic.author.avatar_url} 
                      alt={topic.author.username || ''} 
-                     width={32}
-                     height={32}
+                     width={40}
+                     height={40}
+                     unoptimized
                      className="h-full w-full object-cover" 
                      referrerPolicy="no-referrer"
                    />
                 ) : (
-                  <User size={16} />
+                  <User size={20} />
                 )}
               </div>
-              <span className="font-bold text-foreground">{topic.author?.username || 'Anonim'}</span>
-              <span>•</span>
-              <span className="flex items-center gap-1"><Calendar size={14} /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
+              <div className="flex flex-col">
+                <span className="font-bold text-foreground leading-none mb-1 text-base">{topic.author?.username || 'Anonim'}</span>
+                <span className="flex items-center gap-1 text-xs opacity-70"><Calendar size={12} /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
+              </div>
             </div>
             <button 
               onClick={handleSummarize}
               disabled={isSummarizing}
-              className="flex items-center gap-2 text-xs font-bold text-primary bg-primary/5 px-4 py-2 rounded-full hover:bg-primary/10 transition-colors"
+              className="flex items-center justify-center gap-2 text-sm font-bold text-primary bg-primary/10 px-6 py-2.5 rounded-full hover:bg-primary/20 transition-all border border-primary/10 shadow-sm active:scale-95"
             >
-              <Sparkles size={14} /> {isSummarizing ? 'Özetleniyor...' : 'AI Özetle'}
+              <Sparkles size={16} className={isSummarizing ? "animate-pulse" : ""} /> {isSummarizing ? 'Özetleniyor...' : 'AI Özetle'}
             </button>
           </div>
           <AnimatePresence>
             {summary && (
-              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 p-4 bg-primary/5 border border-primary/20 rounded-2xl">
-                <h3 className="text-xs font-bold text-primary uppercase mb-2">AI Özeti</h3>
-                <p className="text-sm italic">{summary}</p>
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }} 
+                animate={{ opacity: 1, height: 'auto' }} 
+                className="mb-8 p-5 bg-primary/5 border border-primary/10 rounded-2xl overflow-hidden shadow-inner"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></div>
+                  <h3 className="text-[10px] font-black text-primary uppercase tracking-widest">Yapay Zeka Özeti</h3>
+                </div>
+                <p className="text-sm md:text-base italic leading-relaxed text-foreground/80">{summary}</p>
               </motion.div>
             )}
           </AnimatePresence>
-          <div className="prose prose-slate dark:prose-invert max-w-none mb-12 break-words overflow-hidden">
-            <div className="markdown-body prose max-w-none dark:prose-invert overflow-x-hidden">
+          <div className="prose prose-slate dark:prose-invert max-w-none mb-12 break-words">
+            <div className="markdown-body prose max-w-none dark:prose-invert overflow-x-hidden min-h-[100px]">
                {topic.content ? (
                  <ReactMarkdown>{topic.content}</ReactMarkdown>
                ) : (

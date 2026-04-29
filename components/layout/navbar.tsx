@@ -52,6 +52,7 @@ export function Navbar() {
                       src={user.user_metadata.avatar_url} 
                       alt="" 
                       fill
+                      unoptimized
                       className="object-cover"
                       referrerPolicy="no-referrer"
                     />
