@@ -2,7 +2,7 @@
 
 Bu şablonları **Supabase Dashboard -> Authentication -> Email Templates** kısmından ilgili sekmelere kopyalayarak düzenleyebilirsiniz.
 
-> **ÖNEMLİ:** Aşağıdaki HTML kodlarında yer alan logo linklerini, Imgur'da resme sağ tıklayıp "Resim adresini kopyala" diyerek aldığınız **doğrudan link (Direct Link)** ile değiştirmeyi unutmayın. Linkin sonu mutlaka .png veya .jpg ile bitmelidir.
+> **ÖNEMLİ:** Aşağıdaki HTML kodlarında yer alan `https://i.imgur.com/GJBHign.png` kısmını, Imgur'da resme sağ tıklayıp "Resim adresini kopyala" diyerek aldığınız **doğrudan link (Direct Link)** ile değiştirmeyi unutmayın. Linkin sonu mutlaka .png veya .jpg ile bitmelidir.
 
 ## 1. E-posta Doğrulama (Confirm Email)
 
