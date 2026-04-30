@@ -23,7 +23,7 @@ export default function DiscussionsPage() {
     try {
       const { data, error } = await supabase
         .from('topics')
-        .select('*, author:profiles(*), category:categories(*)')
+        .select('*, author:profiles(*), category:categories(*), comments(id)')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -74,7 +74,7 @@ export default function DiscussionsPage() {
       ${topic.content}`;
 
       const response = await genAI.models.generateContent({
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-3.0-flash',
         contents: prompt
       });
       

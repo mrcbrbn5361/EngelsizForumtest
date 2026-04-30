@@ -113,7 +113,7 @@ export default function DiscussionDetailPage() {
       İçerik: ${topic.content}`;
 
       const response = await genAI.models.generateContent({
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-3.0-flash',
         contents: prompt
       });
       
@@ -256,7 +256,7 @@ export default function DiscussionDetailPage() {
                         {new Date(comment.created_at).toLocaleDateString('tr-TR')}
                       </span>
                     </div>
-                    <div className="bg-muted/50 p-4 rounded-2xl text-sm leading-relaxed">
+                    <div className="bg-muted/50 p-4 rounded-2xl text-sm leading-relaxed break-words overflow-hidden">
                       {comment.content}
                     </div>
                   </div>

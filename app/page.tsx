@@ -125,16 +125,16 @@ export default function Home() {
           <div className="bg-primary text-primary-foreground rounded-[3rem] p-12 lg:p-20 shadow-2xl relative overflow-hidden text-center">
             <div className="relative z-10 grid sm:grid-cols-3 gap-12">
               <div>
-                <p className="text-5xl font-black mb-2">12.5k+</p>
-                <p className="text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Aktif Üye</p>
+                <p className="text-5xl font-black mb-2">Engelsiz</p>
+                <p className="text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Topluluk</p>
               </div>
               <div>
-                <p className="text-5xl font-black mb-2">850+</p>
-                <p className="text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Günlük Yanıt</p>
+                <p className="text-5xl font-black mb-2">Her an</p>
+                <p className="text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Destek</p>
               </div>
               <div>
                 <p className="text-5xl font-black mb-2">%100</p>
-                <p className="text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Erişilebilirlik Ölçeği</p>
+                <p className="text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Erişilebilirlik</p>
               </div>
             </div>
             <div className="absolute top-0 right-0 size-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>

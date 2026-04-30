@@ -26,10 +26,11 @@ export type Topic = {
   author_id: string;
   title: string;
   content: string;
-  created_at: string;
   pinned: boolean;
+  created_at: string;
   author?: Profile;
   category?: Category;
+  comments?: { id: string }[];
 };
 
 export type Comment = {

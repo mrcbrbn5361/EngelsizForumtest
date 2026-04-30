@@ -66,7 +66,14 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
 
       <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-muted-foreground relative z-10 pointer-events-none">
         <div className="flex items-center gap-1.5">
-          <User size={14} />
+          {(() => {
+            console.log('DiscussionCard debug - topic author:', topic.author);
+            return topic.author?.avatar_url ? (
+              <img src={topic.author.avatar_url} alt={topic.author.username || 'User'} className="h-5 w-5 rounded-full object-cover" />
+            ) : (
+              <User size={14} />
+            );
+          })()}
           <span>{topic.author?.username || 'Anonim'}</span>
         </div>
         <div className="flex items-center gap-1.5">
@@ -75,7 +82,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
         </div>
         <div className="flex items-center gap-1.5">
           <MessageSquare size={14} />
-          <span>12 Yanıt</span>
+          <span>{topic.comments?.length || 0} Yanıt</span>
         </div>
       </div>
     </motion.article>

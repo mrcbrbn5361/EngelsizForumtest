@@ -14,7 +14,7 @@ export default function ProfilePage() {
   const { resetSettings } = useAccessibility();
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [profile, setProfile] = useState<{ username: string, full_name: string } | null>(null);
+  const [profile, setProfile] = useState<{ username: string, full_name: string, avatar_url: string | null } | null>(null);
   const [editMode, setEditMode] = useState(false);
 
   const fetchProfile = useCallback(async () => {
@@ -22,12 +22,16 @@ export default function ProfilePage() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, full_name')
+        .select('username, full_name, avatar_url')
         .eq('id', user.id)
         .single();
       
       if (data) {
-        setProfile(data);
+        setProfile({
+          username: data.username,
+          full_name: data.full_name,
+          avatar_url: data.avatar_url
+        });
       }
     } catch (err) {
       console.error('Error fetching profile:', err);
@@ -53,19 +57,30 @@ export default function ProfilePage() {
     
     setUpdating(true);
     try {
+      console.log('Updating profile with data:', {
+        id: user.id,
+        username: profile.username,
+        full_name: profile.full_name,
+        avatar_url: profile.avatar_url,
+      });
       const { error } = await supabase
         .from('profiles')
         .upsert({
           id: user.id,
           username: profile.username,
           full_name: profile.full_name,
+          avatar_url: profile.avatar_url,
           updated_at: new Date().toISOString()
         });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase update error:', error);
+        throw error;
+      }
       setEditMode(false);
       alert('Profil başarıyla güncellendi!');
     } catch (err: any) {
+      console.error('Update error:', err);
       alert('Hata: ' + err.message);
     } finally {
       setUpdating(false);
@@ -85,8 +100,12 @@ export default function ProfilePage() {
       <main className="flex-1 container mx-auto px-4 py-12 max-w-2xl">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card border border-border rounded-[2.5rem] shadow-xl overflow-hidden">
           <div className="bg-primary px-8 py-12 text-primary-foreground text-center relative overflow-hidden">
-            <div className="mx-auto h-24 w-24 rounded-full bg-white/20 flex items-center justify-center mb-4 border-4 border-white/30 backdrop-blur-sm relative z-10 transition-transform hover:scale-110">
-              <User size={48} />
+            <div className="mx-auto h-24 w-24 rounded-full bg-white/20 flex items-center justify-center mb-4 border-4 border-white/30 backdrop-blur-sm relative z-10 transition-transform hover:scale-110 overflow-hidden">
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt={profile.full_name || 'Profile'} className="h-full w-full object-cover" />
+              ) : (
+                <User size={48} />
+              )}
             </div>
             <h1 className="text-3xl font-black relative z-10 break-words line-clamp-2">{profile?.full_name || user.email?.split('@')[0]}</h1>
             <p className="text-white/70 text-sm mb-6 relative z-10 break-all">{profile?.username || user.email?.split('@')[0] ? `@${profile?.username || user.email?.split('@')[0]}` : ''}</p>
@@ -113,12 +132,23 @@ export default function ProfilePage() {
               {editMode ? (
                 <form onSubmit={handleUpdateProfile} className="space-y-4 bg-muted/20 p-6 rounded-3xl border border-border">
                   <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Profil Fotoğrafı URL</label>
+                    <input 
+                      type="url"
+                      className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:ring-2 focus:ring-primary outline-none"
+                      value={profile?.avatar_url || ''}
+                      onChange={(e) => { const v = e.target.value; setProfile(prev => prev ? {...prev, avatar_url: v} : null); }}
+                      placeholder="https://example.com/avatar.jpg"
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Kullanıcı Adı</label>
+
                     <input 
                       type="text"
                       className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:ring-2 focus:ring-primary outline-none"
                       value={profile?.username || ''}
-                      onChange={(e) => setProfile(prev => prev ? {...prev, username: e.target.value} : null)}
+                      onChange={(e) => { const v = e.target.value; setProfile(prev => prev ? {...prev, username: v} : null); }}
                       required
                     />
                   </div>
@@ -128,7 +158,7 @@ export default function ProfilePage() {
                       type="text"
                       className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:ring-2 focus:ring-primary outline-none"
                       value={profile?.full_name || ''}
-                      onChange={(e) => setProfile(prev => prev ? {...prev, full_name: e.target.value} : null)}
+                      onChange={(e) => { const v = e.target.value; setProfile(prev => prev ? {...prev, full_name: v} : null); }}
                       required
                     />
                   </div>

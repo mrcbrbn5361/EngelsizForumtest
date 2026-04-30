@@ -122,7 +122,7 @@ export default function AuthPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background outline-none focus:ring-2 focus:ring-primary transition-all"
-                placeholder="ornek@mail.com"
+                placeholder="e-posta@adresiniz.com"
               />
             </div>
 
@@ -137,7 +137,7 @@ export default function AuthPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background outline-none focus:ring-2 focus:ring-primary transition-all"
-                placeholder="••••••••"
+                placeholder="En az 8 karakterli şifre"
               />
             </div>
 
