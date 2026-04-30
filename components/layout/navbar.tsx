@@ -20,7 +20,14 @@ export function Navbar() {
           className="flex items-center gap-2 text-xl font-bold tracking-tight text-primary outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           aria-label="EngelsizForum Ana Sayfa"
         >
-          <span className="bg-primary px-2 py-1 text-primary-foreground rounded-md">EF</span>
+          <Image 
+            src="https://i.imgur.com/GJBHign.png" 
+            width={40} 
+            height={40} 
+            alt="EngelsizForum Logo" 
+            className="rounded-md"
+            referrerPolicy="no-referrer"
+          />
           <span className="hidden sm:inline">EngelsizForum</span>
         </Link>
 
