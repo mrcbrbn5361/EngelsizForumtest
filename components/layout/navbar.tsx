@@ -46,10 +46,10 @@ export function Navbar() {
                 className="ml-1 sm:ml-2 flex items-center gap-2 rounded-full border-2 border-primary/20 bg-primary/5 p-1 sm:px-4 sm:py-2 text-sm font-bold text-primary transition-all hover:bg-primary hover:text-white focus:ring-2 focus:ring-primary shadow-sm group shrink-0"
                 aria-label="Profil Ayarları"
               >
-                {user.user_metadata?.avatar_url ? (
+                {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
                   <div className="relative h-8 w-8 rounded-full overflow-hidden border border-primary/20 group-hover:border-white">
                     <Image 
-                      src={user.user_metadata.avatar_url} 
+                      src={user.user_metadata.avatar_url || user.user_metadata.picture} 
                       alt="" 
                       fill
                       unoptimized

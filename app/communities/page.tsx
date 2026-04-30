@@ -21,6 +21,9 @@ export default function CommunitiesPage() {
   const [communities, setCommunities] = useState<Community[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [newCommunity, setNewCommunity] = useState({ name: '', description: '', icon: 'users' });
+  const [creating, setCreating] = useState(false);
 
   const fetchCommunities = React.useCallback(async () => {
     try {
@@ -30,6 +33,7 @@ export default function CommunitiesPage() {
         .order('name');
       
       if (error) throw error;
+      console.log('Fetched communities:', data);
       setCommunities(data || []);
     } catch (err) {
       console.error('Error fetching communities:', err);
@@ -37,6 +41,27 @@ export default function CommunitiesPage() {
       setLoading(false);
     }
   }, []);
+
+  const createCommunity = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreating(true);
+    try {
+      const slug = newCommunity.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const { data, error } = await supabase
+        .from('categories')
+        .insert([{ ...newCommunity, slug }]);
+      
+      if (error) throw error;
+      setShowCreateForm(false);
+      setNewCommunity({ name: '', description: '', icon: 'users' });
+      await fetchCommunities();
+    } catch (err) {
+      console.error('Error creating community:', err);
+      alert('Topluluk oluşturulurken hata oluştu.');
+    } finally {
+      setCreating(false);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -81,10 +106,50 @@ export default function CommunitiesPage() {
           >
             Özel İlgi Grupları
           </motion.h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Deneyimlerinizi paylaşabileceğiniz ve benzer ilgi alanlarına sahip kişilerle tanışabileceğiniz topluluklara katılın.
-          </p>
+          <div className="flex justify-center gap-4">
+            <p className="text-muted-foreground text-lg max-w-2xl">
+              Deneyimlerinizi paylaşabileceğiniz ve benzer ilgi alanlarına sahip kişilerle tanışabileceğiniz topluluklara katılın.
+            </p>
+            <button 
+              onClick={() => setShowCreateForm(!showCreateForm)}
+              className="border-2 border-primary text-primary px-6 py-2 rounded-full font-bold hover:bg-primary/10 transition-colors"
+            >
+              {showCreateForm ? 'İptal' : 'Topluluk Oluştur'}
+            </button>
+          </div>
         </header>
+
+        {showCreateForm && (
+          <motion.form 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            onSubmit={createCommunity}
+            className="mb-12 bg-card p-8 rounded-3xl border border-border shadow-sm space-y-4"
+          >
+            <input 
+              type="text" 
+              placeholder="Topluluk Adı" 
+              value={newCommunity.name}
+              onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
+              required
+              className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary outline-none"
+            />
+            <textarea 
+              placeholder="Açıklama" 
+              value={newCommunity.description}
+              onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
+              required
+              className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary outline-none"
+            />
+            <button 
+              type="submit" 
+              disabled={creating}
+              className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+            >
+              {creating ? 'Oluşturuluyor...' : 'Oluştur'}
+            </button>
+          </motion.form>
+        )}
 
         <div className="relative mb-12">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
@@ -129,8 +194,10 @@ export default function CommunitiesPage() {
                   <p className="text-muted-foreground mb-8 leading-relaxed line-clamp-3">
                     {community.description}
                   </p>
-                  <div className="flex items-center text-primary font-bold gap-2 group-hover:translate-x-2 transition-transform">
-                    Topluluğa Katıl <ChevronRight size={18} />
+                  <div className="flex items-center">
+                    <div className="flex items-center text-primary font-bold gap-2 group-hover:translate-x-2 transition-transform">
+                      Topluluğa Katıl <ChevronRight size={18} />
+                    </div>
                   </div>
                 </div>
                 <div className="absolute top-0 right-0 size-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:bg-primary/10 transition-colors"></div>

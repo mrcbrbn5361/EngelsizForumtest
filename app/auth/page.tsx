@@ -158,6 +158,13 @@ export default function AuthPage() {
             >
               {loading ? 'İşleniyor...' : isLogin ? <><LogIn size={20} /> Giriş Yap</> : <><UserPlus size={20} /> Kayıt Ol</>}
             </button>
+            {isLogin && (
+              <div className="text-center mt-2">
+                <a href="/auth/forgot-password" className="text-xs text-muted-foreground hover:text-primary hover:underline">
+                  Şifremi unuttum?
+                </a>
+              </div>
+            )}
           </form>
 
           <div className="mt-6 text-center">
