@@ -26,7 +26,10 @@ export default function DiscussionsPage() {
         .select('*, author:profiles(*), category:categories(*), comments(id)')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching topics:', error);
+        return;
+      }
       setTopics(data || []);
     } catch (err) {
       console.error('Error fetching topics:', err);
@@ -41,7 +44,12 @@ export default function DiscussionsPage() {
         .from('categories')
         .select('*')
         .order('name');
-      if (!error && data) setCategories(data);
+      
+      if (error) {
+        console.error('Error fetching categories:', error);
+        return;
+      }
+      if (data) setCategories(data);
     } catch (err) {
       console.error('Error fetching categories:', err);
     }

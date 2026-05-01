@@ -21,8 +21,16 @@ export default function NewTopicPage() {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const { data, error } = await supabase.from('categories').select('*').order('name');
-      if (!error && data) setCategories(data);
+      try {
+        const { data, error } = await supabase.from('categories').select('*').order('name');
+        if (error) {
+          console.error('Error fetching categories:', error);
+          return;
+        }
+        if (data) setCategories(data);
+      } catch (err) {
+        console.error('Error in category fetch:', err);
+      }
     };
     fetchCategories();
   }, []);
