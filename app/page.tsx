@@ -17,102 +17,99 @@ export default function Home() {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="container mx-auto px-4 py-12 md:py-24 lg:py-32 text-center relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-primary/5 -skew-y-3 -z-10 origin-right"></div>
-          
+        <section className="container mx-auto px-4 py-16 md:py-28 lg:py-36 text-center relative">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-6 md:space-y-8 relative z-10"
+            className="space-y-8 relative z-10"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] sm:text-xs font-bold tracking-widest uppercase">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-bold tracking-widest uppercase">
               Türkiye&apos;nin En Kapsayıcı Topluluğu
             </span>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1.1] break-words">
-              Engelleri <br className="hidden sm:block" /> 
-              <span className="text-primary italic">Birlikte</span> Aşalım
+            <h1 className="text-4xl sm:text-6xl md:text-7xl vibe-heading">
+              Engelleri <span className="text-primary">Birlikte</span> Aşalım
             </h1>
-            <p className="mx-auto max-w-2xl text-base md:text-xl text-muted-foreground leading-relaxed px-2">
+            <p className="mx-auto max-w-2xl text-base md:text-xl text-muted-foreground leading-relaxed font-medium">
               Teknoloji, erişilebilirlik ve sosyal yaşam hakkında her şeyi paylaştığımız, 
               AI desteğiyle güçlendirilmiş en geniş topluluğa hoş geldiniz.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4 px-4 sm:px-0">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6 px-4 md:px-0 max-w-lg mx-auto">
               {!loading && (
                 user ? (
                   <Link
                     href="/discussions"
-                    className="rounded-full bg-primary px-10 py-4 text-lg font-bold text-primary-foreground shadow-2xl transition-all hover:scale-105 hover:bg-primary/90"
+                    className="vibe-button-primary flex-1"
                   >
-                    Tartışmalara Göz At
+                    Tartışmaları Keşfet
                   </Link>
                 ) : (
                   <Link
                     href="/auth"
-                    className="rounded-full bg-primary px-10 py-4 text-lg font-bold text-primary-foreground shadow-2xl transition-all hover:scale-105 hover:bg-primary/90"
+                    className="vibe-button-primary flex-1"
                   >
-                    Hemen Üye Ol
+                    Hemen Katıl
                   </Link>
                 )
               )}
-              {loading && <div className="h-14 w-40 animate-pulse bg-muted rounded-full"></div>}
+              {loading && <div className="h-14 flex-1 animate-pulse bg-muted rounded-full"></div>}
               <Link
                 href="/about"
-                className="rounded-full border border-border bg-card px-10 py-4 text-lg font-bold shadow-sm transition-all hover:bg-muted"
+                className="flex-1 rounded-full border border-border bg-card px-8 py-3 text-base font-bold transition-all hover:bg-muted active:scale-95 flex items-center justify-center"
               >
-                Keşfet
+                Hakkımızda
               </Link>
             </div>
           </motion.div>
         </section>
 
         {/* Quick Access Grid */}
-        <section className="container mx-auto px-4 pb-20">
-          <div className="grid gap-6 sm:grid-cols-3">
+        <section className="container mx-auto px-4 pb-24">
+          <div className="grid gap-8 md:grid-cols-3 -mt-8 md:-mt-16">
             <QuickActionLink 
-              href="/search" 
-              title="Hızlı Ara" 
-              desc="İstediğin konuyu sesli veya yazılı ara." 
-              icon={<Search size={24} />} 
+              href="/communities" 
+              title="Özel Gruplar" 
+              desc="İlgi alanına göre topluluklara katıl." 
+              icon={<Users size={32} />} 
               color="blue" 
             />
             <QuickActionLink 
               href="/discussions/new" 
               title="Yeni Konu" 
               desc="Topluluktan yardım al veya tecrübeni paylaş." 
-              icon={<MessageCircle size={24} />} 
+              icon={<MessageCircle size={32} />} 
               color="purple" 
             />
             <QuickActionLink 
-              href="/communities" 
-              title="Özel Gruplar" 
-              desc="İlgi alanına göre topluluklara katıl." 
-              icon={<Users size={24} />} 
+              href="/about" 
+              title="Misyonumuz" 
+              desc="Neden buradayız ve neyi hedefliyoruz?" 
+              icon={<Sparkles size={32} />} 
               color="orange" 
             />
           </div>
         </section>
 
         {/* Featured Content & Features */}
-        <section className="bg-muted/30 py-24">
-          <div className="container mx-auto px-4 lg:max-w-6xl">
+        <section className="bg-muted/30 py-24 border-y border-border">
+          <div className="container mx-auto px-4 lg:max-w-7xl">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-black mb-4">Neden EngelsizForum?</h2>
-              <p className="text-muted-foreground">Her detay, her birey için özenle tasarlandı.</p>
+              <h2 className="text-3xl md:text-5xl vibe-heading mb-4">Neden EngelsizForum?</h2>
+              <p className="text-lg md:text-xl text-muted-foreground font-medium">Her detay, her birey için özenle tasarlandı.</p>
             </div>
             
-            <div className="grid gap-12 md:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-3">
               <FeatureCard 
-                icon={<Zap size={32} className="text-yellow-500" />}
+                icon={<Zap size={32} className="text-blue-600" />}
                 title="AI Desteği"
                 description="Gemini 2.0 Flash teknolojisi ile uzun tartışmaları saniyeler içinde anlayabileceğin şekilde özetliyoruz."
               />
               <FeatureCard 
-                icon={<ShieldCheck size={32} className="text-green-500" />}
+                icon={<ShieldCheck size={32} className="text-blue-600" />}
                 title="Tam Erişilebilir"
                 description="WCAG 2.1 standartlarının ötesinde, her türlü yardımcı teknoloji ile kusursuz çalışır."
               />
               <FeatureCard 
-                icon={<Sparkles size={32} className="text-blue-500" />}
+                icon={<Sparkles size={32} className="text-blue-600" />}
                 title="Sesli Kütüphane"
                 description="İçerikleri dinleyebilir, sesli arama yaparak platformda özgürce gezinebilirsiniz."
               />
@@ -121,36 +118,35 @@ export default function Home() {
         </section>
 
         {/* Statistics Banner */}
-        <section className="container mx-auto px-4 py-16 md:py-24">
-          <div className="bg-primary text-primary-foreground rounded-[2rem] sm:rounded-[3rem] p-8 md:p-12 lg:p-20 shadow-2xl relative overflow-hidden text-center">
-            <div className="relative z-10 grid sm:grid-cols-3 gap-8 md:gap-12">
-              <div>
-                <p className="text-3xl md:text-5xl font-black mb-2">Engelsiz</p>
-                <p className="text-[10px] md:text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Topluluk</p>
+        <section className="container mx-auto px-4 py-20 md:py-28">
+          <div className="bg-primary text-primary-foreground rounded-3xl md:rounded-[3rem] p-12 md:p-20 shadow-xl relative overflow-hidden text-center">
+            <div className="relative z-10 grid md:grid-cols-3 gap-12 md:gap-16">
+              <div className="space-y-2">
+                <p className="text-4xl md:text-6xl font-bold tracking-tight">Birlikte</p>
+                <p className="text-xs md:text-sm font-medium opacity-70 uppercase tracking-widest">Güçlüyüz</p>
               </div>
-              <div>
-                <p className="text-3xl md:text-5xl font-black mb-2">Her an</p>
-                <p className="text-[10px] md:text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Destek</p>
+              <div className="space-y-2">
+                <p className="text-4xl md:text-6xl font-bold tracking-tight">Eşit</p>
+                <p className="text-xs md:text-sm font-medium opacity-70 uppercase tracking-widest">İletişim</p>
               </div>
-              <div>
-                <p className="text-3xl md:text-5xl font-black mb-2">%100</p>
-                <p className="text-[10px] md:text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Erişilebilirlik</p>
+              <div className="space-y-2">
+                <p className="text-4xl md:text-6xl font-bold tracking-tight">Özgür</p>
+                <p className="text-xs md:text-sm font-medium opacity-70 uppercase tracking-widest">Gelecek</p>
               </div>
             </div>
-            <div className="absolute top-0 right-0 size-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-border py-12 bg-white dark:bg-black">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-xl font-black tracking-tighter">
+      <footer className="border-t border-border py-16 bg-card">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="text-2xl font-bold tracking-tighter">
             ENGELSİZ<span className="text-primary">FORUM</span>
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-sm font-medium text-muted-foreground">
             © 2026 Herkes İçin Eşit İletişim.
           </div>
-          <div className="flex gap-6 text-sm font-bold text-muted-foreground">
+          <div className="flex gap-8 text-sm font-bold uppercase tracking-wider">
             <Link href="/about" className="hover:text-primary transition-colors">Hakkımızda</Link>
             <Link href="/discussions" className="hover:text-primary transition-colors">Tartışmalar</Link>
           </div>
@@ -166,31 +162,31 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode, titl
   return (
     <motion.div 
       whileHover={{ y: -5 }}
-      className="p-6 md:p-8 rounded-[2rem] bg-card border border-border shadow-sm transition-all"
+      className="vibe-card flex flex-col items-center text-center group"
     >
-      <div className="mb-6 p-4 bg-muted rounded-2xl w-fit">{icon}</div>
-      <h3 className="mb-3 text-lg md:text-xl font-bold">{title}</h3>
-      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">{description}</p>
+      <div className="mb-6 p-5 bg-primary/5 rounded-2xl text-primary group-hover:scale-110 transition-transform">{icon}</div>
+      <h3 className="mb-3 text-xl md:text-2xl font-bold tracking-tight">{title}</h3>
+      <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-medium">{description}</p>
     </motion.div>
   );
 }
 
 function QuickActionLink({ href, title, desc, icon, color }: { href: string, title: string, desc: string, icon: React.ReactNode, color: string }) {
   const colors: Record<string, string> = {
-    blue: 'bg-blue-50 text-blue-600',
-    purple: 'bg-purple-50 text-purple-600',
-    orange: 'bg-orange-50 text-orange-600'
+    blue: 'bg-blue-500/10 text-blue-500',
+    purple: 'bg-purple-500/10 text-purple-500',
+    orange: 'bg-orange-500/10 text-orange-500'
   };
   
   return (
-    <Link href={href} className="group bg-card border border-border rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 hover:shadow-xl transition-all hover:border-primary/50">
-      <div className={`size-12 md:size-14 rounded-2xl ${colors[color]} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+    <Link href={href} className="vibe-card group block">
+      <div className={`size-14 md:size-16 rounded-2xl ${colors[color]} flex items-center justify-center mb-6 group-hover:rotate-6 transition-all duration-300 border border-transparent group-hover:border-current/20`}>
         {icon}
       </div>
-      <h3 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-between">
-        {title} <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+      <h3 className="text-xl md:text-2xl font-bold mb-2 flex items-center justify-between tracking-tight">
+        {title} <ArrowRight size={20} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-primary" />
       </h3>
-      <p className="text-xs md:text-sm text-muted-foreground">{desc}</p>
+      <p className="text-sm md:text-base text-muted-foreground font-medium line-clamp-2">{desc}</p>
     </Link>
   );
 }

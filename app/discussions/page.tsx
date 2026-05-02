@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { DiscussionCard } from '@/components/forum/discussion-card';
 import { Topic } from '@/types/database';
@@ -106,48 +107,51 @@ export default function DiscussionsPage() {
     <div className="min-h-screen flex flex-col bg-muted/30">
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <main className="flex-1 container mx-auto px-4 py-6 md:py-8">
+        <header className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
           <div className="text-left w-full md:w-auto">
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
-              <MessageSquareCode className="text-primary" /> Tartışmalar
+            <h1 className="text-2xl md:text-4xl font-bold mb-2 flex items-center gap-3">
+              <MessageSquareCode className="text-primary h-6 w-6 md:h-10 md:w-10" /> Tartışmalar
             </h1>
-            <p className="text-sm sm:text-base text-muted-foreground">Topluluğumuzdaki güncel başlıkları ve yardım taleplerini inceleyin.</p>
+            <p className="text-sm md:text-lg text-muted-foreground font-medium">Topluluğumuzdaki güncel başlıkları ve yardım taleplerini inceleyin.</p>
           </div>
           
           <Link 
             href="/discussions/new"
-            className="flex w-full md:w-auto items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg hover:shadow-primary/20 transition-all hover:-translate-y-1 active:scale-95"
+            className="vibe-button-primary w-full md:w-auto py-3 md:py-4 flex items-center justify-center gap-2"
           >
-            <Plus size={18} /> Yeni Başlık Aç
+            <Plus size={20} /> Yeni Başlık Aç
           </Link>
         </header>
 
-        <div className="grid lg:grid-cols-[250px_1fr] gap-8">
+        <div className="grid lg:grid-cols-[260px_1fr] gap-8">
           {/* Sidebar / Filters */}
           <aside className="space-y-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={16} />
               <input 
                 type="text"
                 placeholder="Başlıklarda ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 md:py-2 rounded-xl border border-border bg-card outline-none focus:ring-2 focus:ring-primary text-sm"
+                className="w-full pl-11 pr-4 py-3 rounded-xl border border-border bg-card outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm font-medium"
               />
             </div>
 
-            <div className="lg:block">
-              <h2 className="px-1 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
-                <Filter size={12} /> Kategoriler
+            <div className="w-full">
+              <h2 className="px-1 text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
+                <Filter size={14} className="text-primary" /> Kategoriler
               </h2>
-              <nav className="flex lg:flex-col gap-2 overflow-x-auto pb-4 lg:pb-0 -mx-4 px-4 lg:mx-0 lg:px-0 scrollbar-hide touch-pan-x" aria-label="Kategoriler">
-                <div className="flex lg:flex-col gap-2 min-w-max lg:min-w-0 pr-8 lg:pr-0">
-                  <CategoryLink label="Hepsi" active count={topics.length} />
-                  {categories.map(cat => (
-                    <CategoryLink key={cat.id} label={cat.name} count={topics.filter(t => t.category_id === cat.id).length} />
-                  ))}
+              <nav className="relative -mx-4 px-4 md:mx-0 md:px-0">
+                <div className="flex lg:flex-col gap-2 overflow-x-auto pb-4 md:pb-6 lg:pb-0 scrollbar-hide snap-x touch-pan-x no-scrollbar">
+                  <div className="flex lg:flex-col gap-2 min-w-max lg:min-w-0 pr-8 lg:pr-0">
+                    <CategoryLink label="Hepsi" active count={topics.length} />
+                    {categories.map(cat => (
+                      <CategoryLink key={cat.id} label={cat.name} count={topics.filter(t => t.category_id === cat.id).length} />
+                    ))}
+                  </div>
                 </div>
+                <div className="absolute right-0 top-0 bottom-4 w-8 bg-gradient-to-l from-muted/30 to-transparent pointer-events-none lg:hidden" />
               </nav>
             </div>
           </aside>
@@ -176,10 +180,10 @@ export default function DiscussionsPage() {
                     <motion.div 
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
-                      className="mt-2 p-4 md:p-6 bg-primary/5 border border-primary/10 rounded-2xl md:rounded-[2rem]"
+                      className="mt-2 p-4 md:p-6 bg-primary/5 border border-primary/10 rounded-2xl"
                     >
-                      <div className="flex items-center gap-2 text-primary font-black text-[10px] md:text-xs uppercase tracking-widest mb-3">
-                        <Sparkles size={12} /> AI ÖZETİ
+                      <div className="flex items-center gap-2 text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest mb-3">
+                        <Sparkles size={14} /> AI ÖZETİ
                       </div>
                       <div className="text-xs md:text-sm leading-relaxed prose prose-sm max-w-none">
                         {summaryResult.text.split('\n').map((line, i) => (
@@ -210,6 +214,7 @@ export default function DiscussionsPage() {
       </main>
 
       <AccessibilityToolbar />
+      <Footer />
     </div>
   );
 }
@@ -217,14 +222,14 @@ export default function DiscussionsPage() {
 function CategoryLink({ label, active, count }: { label: string, active?: boolean, count: number }) {
   return (
     <button
-      className={`flex items-center justify-between rounded-full lg:rounded-xl px-4 py-2 md:px-5 md:py-2.5 lg:py-3 text-[11px] md:text-sm font-bold transition-all whitespace-nowrap shrink-0 lg:w-full min-w-fit ${
+      className={`flex items-center justify-between rounded-full lg:rounded-xl px-5 py-2.5 lg:py-3.5 text-[11px] md:text-sm font-bold transition-all whitespace-nowrap shrink-0 lg:w-full min-w-fit snap-start ${
         active 
-          ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/10 lg:scale-[1.02]' 
-          : 'bg-card lg:bg-transparent border border-border lg:border-none text-muted-foreground hover:bg-muted hover:text-foreground lg:hover:translate-x-1'
+          ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 lg:scale-[1.02]' 
+          : 'bg-card lg:bg-transparent border border-border lg:border-none text-muted-foreground hover:bg-muted hover:text-foreground lg:hover:translate-x-1 outline-none focus:ring-2 focus:ring-primary/20'
       }`}
     >
-      <span className="mr-3 md:mr-4 lg:mr-2">{label}</span>
-      <span className={`text-[9px] md:text-[10px] px-2 py-0.5 rounded-full font-black shrink-0 ${active ? 'bg-white/20' : 'bg-muted'}`}>
+      <span className="mr-4 lg:mr-2">{label}</span>
+      <span className={`text-[9px] md:text-[10px] px-2 py-0.5 rounded-full font-bold shrink-0 ${active ? 'bg-white/20' : 'bg-muted'}`}>
         {count}
       </span>
     </button>

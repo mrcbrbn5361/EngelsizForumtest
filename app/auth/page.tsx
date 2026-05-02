@@ -73,24 +73,24 @@ export default function AuthPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md bg-card border border-border rounded-3xl shadow-xl p-6 sm:p-8"
+          className="w-full max-w-md bg-card border-4 border-border rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] p-8 md:p-12"
         >
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl md:text-4xl font-black mb-3 tracking-tight">
               {isLogin ? 'Tekrar Hoş Geldiniz' : 'Aramıza Katılın'}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm md:text-base text-muted-foreground font-medium leading-relaxed">
               {isLogin ? 'EngelsizForum topluluğuna giriş yapın.' : 'Kapsayıcı bir topluluğun parçası olun.'}
             </p>
           </div>
 
-          <div className="space-y-4 mb-8">
+          <div className="space-y-6 mb-10">
             <button
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-card border border-border px-6 py-4 rounded-2xl font-bold hover:bg-muted transition-all shadow-sm outline-none focus:ring-2 focus:ring-primary"
+              className="w-full flex items-center justify-center gap-4 bg-card border-2 border-border px-8 py-5 rounded-2xl font-black text-base hover:bg-muted transition-all shadow-sm outline-none focus:ring-4 focus:ring-primary/20 active:scale-95 group"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 group-hover:rotate-12 transition-transform" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
@@ -100,48 +100,54 @@ export default function AuthPage() {
             </button>
 
             <div className="relative py-2">
-              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border"></div></div>
-              <div className="relative flex justify-center text-xs uppercase"><span className="bg-card px-2 text-muted-foreground uppercase tracking-widest font-bold">Veya</span></div>
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t-2 border-border"></div></div>
+              <div className="relative flex justify-center text-xs uppercase"><span className="bg-card px-4 text-muted-foreground uppercase tracking-[0.3em] font-black">Veya</span></div>
             </div>
           </div>
 
-          <form onSubmit={handleAuth} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium flex items-center gap-2">
-                <Mail size={16} /> E-posta
+          <form onSubmit={handleAuth} className="space-y-6">
+            <div className="space-y-3">
+              <label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">
+                E-posta Adresi
               </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-border bg-background outline-none focus:ring-2 focus:ring-primary transition-all"
-                placeholder="e-posta@adresiniz.com"
-              />
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={20} />
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-border bg-background outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-base"
+                  placeholder="e-posta@adresiniz.com"
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium flex items-center gap-2">
-                <Lock size={16} /> Şifre
+            <div className="space-y-3">
+              <label htmlFor="password" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">
+                Şifre
               </label>
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-border bg-background outline-none focus:ring-2 focus:ring-primary transition-all"
-                placeholder="En az 8 karakterli şifre"
-              />
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={20} />
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-border bg-background outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-base"
+                  placeholder="En az 8 karakter"
+                />
+              </div>
             </div>
 
             {error && (
               <div 
                 role="alert" 
-                className="flex items-center gap-2 text-sm p-3 rounded-lg bg-destructive/10 text-destructive border border-destructive/20"
+                className="flex items-center gap-3 p-4 rounded-2xl bg-destructive/10 text-destructive border-2 border-destructive/20 font-bold text-sm"
               >
-                <AlertCircle size={16} />
+                <AlertCircle size={20} />
                 {error}
               </div>
             )}
@@ -149,25 +155,25 @@ export default function AuthPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-bold shadow-lg hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full py-5 rounded-[2rem] bg-primary text-primary-foreground font-black text-lg shadow-2xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all disabled:opacity-50 active:scale-95 flex items-center justify-center gap-3 uppercase tracking-widest"
             >
-              {loading ? 'İşleniyor...' : isLogin ? <><LogIn size={20} /> Giriş Yap</> : <><UserPlus size={20} /> Kayıt Ol</>}
+              {loading ? 'İşleniyor...' : isLogin ? <><LogIn size={24} /> Giriş Yap</> : <><UserPlus size={24} /> Kayıt Ol</>}
             </button>
             {isLogin && (
-              <div className="text-center mt-2">
-                <a href="/auth/forgot-password" className="text-xs text-muted-foreground hover:text-primary hover:underline">
+              <div className="text-center mt-4">
+                <a href="/auth/forgot-password" className="text-xs font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
                   Şifremi unuttum?
                 </a>
               </div>
             )}
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-10 text-center border-t-2 border-border pt-8">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-primary font-medium hover:underline outline-none focus:ring-2 focus:ring-primary rounded px-2"
+              className="text-sm font-black uppercase tracking-widest text-primary hover:text-primary/80 transition-colors outline-none focus:ring-2 focus:ring-primary rounded-lg px-4 py-2"
             >
-              {isLogin ? 'Henüz hesabınız yok mu? Kayıt olun.' : 'Zaten hesabınız var mı? Giriş yapın.'}
+              {isLogin ? 'Yeni Hesap Oluştur' : 'Zaten Üyeyim, Giriş Yap'}
             </button>
           </div>
         </motion.div>

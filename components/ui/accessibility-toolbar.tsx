@@ -21,36 +21,36 @@ export function AccessibilityToolbar() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="mb-4 w-[calc(100vw-2rem)] sm:w-80 rounded-[2rem] border-2 border-border p-6 accessibility-panel-solid z-[60]"
+            className="mb-4 w-[calc(100vw-2rem)] sm:w-96 rounded-[2.5rem] border-4 border-border p-8 bg-card shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] z-[60]"
             role="dialog"
             aria-label="Erişilebilirlik Ayarları"
           >
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold">Erişilebilirlik</h2>
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-xl font-black uppercase tracking-tighter">Erişilebilirlik</h2>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="rounded-full p-1 hover:bg-muted"
+                className="rounded-full p-2 hover:bg-muted transition-colors"
                 aria-label="Kapat"
               >
-                <X size={20} />
+                <X size={24} />
               </button>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Text Size */}
               <section>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium">
-                  <Type size={16} /> Metin Boyutu
+                <label className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                  <Type size={14} className="text-primary" /> Metin Boyutu
                 </label>
                 <div className="flex gap-2">
                   {(['sm', 'md', 'lg', 'xl'] as const).map((size) => (
                     <button
                       key={size}
                       onClick={() => updateSettings({ fontSize: size })}
-                      className={`flex-1 rounded-md py-1 text-xs font-bold uppercase transition-all ${
+                      className={`flex-1 rounded-xl py-2.5 text-xs font-black uppercase transition-all ${
                         fontSize === size 
-                          ? 'bg-primary text-primary-foreground ring-2 ring-primary/20' 
-                          : 'bg-muted hover:bg-accent'
+                          ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[1.05]' 
+                          : 'bg-muted hover:bg-accent text-muted-foreground'
                       }`}
                       aria-pressed={fontSize === size}
                     >
@@ -61,55 +61,55 @@ export function AccessibilityToolbar() {
               </section>
 
               {/* High Contrast */}
-              <section className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-sm font-medium">
-                  <Contrast size={16} /> Yüksek Kontrast
+              <section className="flex items-center justify-between group">
+                <label className="flex items-center gap-2 text-sm font-bold group-hover:text-primary transition-colors">
+                  <Contrast size={18} className="text-primary" /> Yüksek Kontrast
                 </label>
                 <button
                   onClick={() => updateSettings({ highContrast: !highContrast })}
-                  className={`relative h-6 w-12 rounded-full border-2 border-border transition-colors ${highContrast ? 'bg-primary' : 'bg-muted'}`}
+                  className={`relative h-7 w-14 rounded-full border-2 border-border transition-all ${highContrast ? 'bg-primary ring-4 ring-primary/10' : 'bg-muted'}`}
                   role="switch"
                   aria-checked={highContrast}
                 >
-                  <span className={`absolute left-1 top-0.5 h-4 w-4 rounded-full transition-all ${highContrast ? 'translate-x-5 bg-primary-foreground' : 'bg-foreground'}`} />
+                  <span className={`absolute left-1 top-0.5 h-5 w-5 rounded-full transition-all shadow-sm ${highContrast ? 'translate-x-7 bg-white' : 'bg-foreground/50'}`} />
                 </button>
               </section>
 
               {/* Dyslexic Font */}
-              <section className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-sm font-medium">
-                  <Eye size={16} /> Disleksi Dostu Font
+              <section className="flex items-center justify-between group">
+                <label className="flex items-center gap-2 text-sm font-bold group-hover:text-primary transition-colors">
+                  <Eye size={18} className="text-primary" /> Disleksi Fontu
                 </label>
                 <button
                   onClick={() => updateSettings({ dyslexicFont: !dyslexicFont })}
-                  className={`relative h-6 w-12 rounded-full border-2 border-border transition-colors ${dyslexicFont ? 'bg-primary' : 'bg-muted'}`}
+                  className={`relative h-7 w-14 rounded-full border-2 border-border transition-all ${dyslexicFont ? 'bg-primary ring-4 ring-primary/10' : 'bg-muted'}`}
                   role="switch"
                   aria-checked={dyslexicFont}
                 >
-                  <span className={`absolute left-1 top-0.5 h-4 w-4 rounded-full transition-all ${dyslexicFont ? 'translate-x-5 bg-primary-foreground' : 'bg-foreground'}`} />
+                  <span className={`absolute left-1 top-0.5 h-5 w-5 rounded-full transition-all shadow-sm ${dyslexicFont ? 'translate-x-7 bg-white' : 'bg-foreground/50'}`} />
                 </button>
               </section>
 
               {/* Reduced Motion */}
-              <section className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-sm font-medium">
-                  <MoveHorizontal size={16} /> Hareketi Azalt
+              <section className="flex items-center justify-between group">
+                <label className="flex items-center gap-2 text-sm font-bold group-hover:text-primary transition-colors">
+                  <MoveHorizontal size={18} className="text-primary" /> Hareketi Azalt
                 </label>
                 <button
                   onClick={() => updateSettings({ reducedMotion: !reducedMotion })}
-                  className={`relative h-6 w-12 rounded-full border-2 border-border transition-colors ${reducedMotion ? 'bg-primary' : 'bg-muted'}`}
+                  className={`relative h-7 w-14 rounded-full border-2 border-border transition-all ${reducedMotion ? 'bg-primary ring-4 ring-primary/10' : 'bg-muted'}`}
                   role="switch"
                   aria-checked={reducedMotion}
                 >
-                  <span className={`absolute left-1 top-0.5 h-4 w-4 rounded-full transition-all ${reducedMotion ? 'translate-x-5 bg-primary-foreground' : 'bg-foreground'}`} />
+                  <span className={`absolute left-1 top-0.5 h-5 w-5 rounded-full transition-all shadow-sm ${reducedMotion ? 'translate-x-7 bg-white' : 'bg-foreground/50'}`} />
                 </button>
               </section>
 
               <button
                 onClick={resetSettings}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-border py-2 text-xs hover:bg-muted"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-border py-4 text-xs font-black uppercase tracking-widest hover:bg-muted transition-colors active:scale-95"
               >
-                <RotateCcw size={14} /> Ayarları Sıfırla
+                <RotateCcw size={16} /> Varsayılana Dön
               </button>
             </div>
           </motion.div>

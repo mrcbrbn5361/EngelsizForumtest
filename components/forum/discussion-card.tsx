@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { MessageSquare, User, Calendar, Pin, Sparkles } from 'lucide-react';
+import { MessageSquare, User, Calendar, Pin, Sparkles, Loader2 } from 'lucide-react';
 import { Topic } from '@/types/database';
 import Image from 'next/image';
 
@@ -21,22 +21,22 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
   return (
     <motion.article 
       whileHover={{ y: -4 }}
-      className="group relative flex flex-col gap-3 md:gap-4 rounded-xl md:rounded-2xl border border-border bg-card p-4 md:p-6 shadow-sm transition-all hover:shadow-md focus-within:ring-2 focus-within:ring-primary"
+      className="group relative flex flex-col gap-4 rounded-3xl border border-border bg-card p-6 md:p-8 shadow-sm transition-all hover:shadow-md hover:border-primary/20 focus-within:ring-2 focus-within:ring-primary/20"
     >
-      <div className="flex items-start justify-between gap-2 md:gap-4">
+      <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <div className="mb-1.5 md:mb-2 flex items-center gap-2">
+          <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
             {topic.pinned && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] md:text-xs font-bold text-primary shrink-0">
-                <Pin size={10} className="md:w-3 md:h-3" /> Sabit
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] md:text-xs font-bold text-primary shrink-0">
+                <Pin size={10} className="md:w-3 md:h-3" /> <span className="hidden sm:inline">SABİT</span>
               </span>
             )}
-            <span className="text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-wider truncate">
-              {topic.category?.name || topic.category_id}
+            <span className="truncate">
+              {topic.category?.name || 'GENEL'}
             </span>
           </div>
-          <h2 className="text-base md:text-xl font-bold leading-tight group-hover:text-primary transition-colors break-words line-clamp-2 md:line-clamp-none">
-            <Link href={`/discussions/${topic.id}`} className="hover:underline outline-none after:absolute after:inset-0 after:z-0">
+          <h2 className="text-lg md:text-2xl font-bold leading-tight group-hover:text-primary transition-colors tracking-tight">
+            <Link href={`/discussions/${topic.id}`} className="outline-none after:absolute after:inset-0 after:z-0">
               {topic.title}
             </Link>
           </h2>
@@ -49,49 +49,40 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
             onSummarize(topic.id);
           }}
           disabled={isLoading}
-          className="relative z-10 flex h-8 md:h-10 items-center justify-center gap-2 rounded-full bg-primary/5 px-3 md:px-4 text-[10px] md:text-xs font-bold text-primary hover:bg-primary/10 transition-colors focus:ring-2 focus:ring-primary focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
-          aria-label="Bu tartışmayı AI ile özetle"
+          className="relative z-10 flex h-9 md:h-11 items-center justify-center gap-2 rounded-xl bg-primary/5 px-3 md:px-5 text-[10px] md:text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all disabled:opacity-50 border border-primary/10 group/ai uppercase tracking-widest"
+          aria-label="AI ile özetle"
         >
           {isLoading ? (
-            <div className="h-3 w-3 md:h-4 md:w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <Loader2 className="animate-spin" size={14} />
           ) : (
-            <Sparkles size={12} className="md:w-3.5 md:h-3.5" />
+            <Sparkles size={14} className="group-hover/ai:rotate-12 transition-transform" />
           )}
-          <span className="hidden sm:inline">{isLoading ? 'Özetleniyor...' : 'AI Özetle'}</span>
+          <span className="hidden sm:inline">{isLoading ? 'ÖZETLENİYOR...' : 'AI ÖZETLE'}</span>
         </button>
       </div>
 
-      <p className="line-clamp-2 text-xs md:text-sm text-muted-foreground leading-relaxed relative z-10 pointer-events-none">
+      <p className="line-clamp-2 text-sm md:text-base text-muted-foreground leading-relaxed relative z-10 pointer-events-none font-medium">
         {topic.content}
       </p>
 
-      <div className="mt-1 md:mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] md:text-xs text-muted-foreground relative z-10 pointer-events-none">
-        <div className="flex items-center gap-1.5 min-w-0">
-          {(() => {
-            return topic.author?.avatar_url ? (
-              <div className="relative h-4 w-4 md:h-5 md:w-5 rounded-full overflow-hidden shrink-0">
-                <Image 
-                  src={topic.author.avatar_url} 
-                  alt={topic.author.username || 'User'} 
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  referrerPolicy="no-referrer"
-                />
-              </div>
+      <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3 text-[10px] md:text-xs text-muted-foreground relative z-10 pointer-events-none">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border shrink-0">
+            {topic.author?.avatar_url ? (
+              <Image src={topic.author.avatar_url} alt="" width={28} height={28} className="object-cover h-full w-full" unoptimized referrerPolicy="no-referrer" />
             ) : (
-              <User size={12} className="md:w-3.5 md:h-3.5" />
-            );
-          })()}
-          <span className="truncate">{topic.author?.username || 'Anonim'}</span>
+              <User size={14} />
+            )}
+          </div>
+          <span className="font-bold text-foreground truncate">{topic.author?.username || 'Anonim'}</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <Calendar size={12} className="md:w-3.5 md:h-3.5" />
-          <span>{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
+        <div className="flex items-center gap-1.5 opacity-70">
+          <Calendar size={14} />
+          <span className="font-bold tracking-wider uppercase">{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <MessageSquare size={12} className="md:w-3.5 md:h-3.5" />
-          <span>{topic.comments?.length || 0} Yanıt</span>
+        <div className="flex items-center gap-1.5 opacity-70">
+          <MessageSquare size={14} />
+          <span className="font-bold tracking-wider uppercase">{topic.comments?.length || 0} YANIT</span>
         </div>
       </div>
     </motion.article>

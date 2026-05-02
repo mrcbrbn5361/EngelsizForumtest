@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { ArrowLeft, Users, MessageSquare, Shield, Globe, Loader2, Sparkles, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -123,142 +124,150 @@ export default function CommunityDetailPage() {
     <div className="min-h-screen flex flex-col bg-muted/30">
       <Navbar />
 
-      <main className="flex-1 container mx-auto px-4 py-6 md:py-8 max-w-5xl">
+      <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-7xl">
         <button 
           onClick={() => router.push('/communities')}
-          className="mb-6 flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          className="mb-8 md:mb-12 flex items-center gap-3 text-sm font-black text-muted-foreground hover:text-primary transition-all group uppercase tracking-widest"
         >
-          <ArrowLeft size={16} /> Topluluklar
+          <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" /> Topluluklar
         </button>
 
-        <div className="grid lg:grid-cols-[1fr_300px] gap-6 md:gap-8">
-          <div className="space-y-6 md:space-y-8">
-            <header className="bg-card border border-border rounded-2xl md:rounded-[2.5rem] p-6 md:p-10 shadow-sm overflow-hidden relative">
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 md:gap-4 mb-4">
-                  <div className="p-2.5 md:p-3 bg-primary/10 rounded-xl md:rounded-2xl text-primary shrink-0">
-                    <Users size={24} className="md:w-8 md:h-8" />
+        <div className="grid lg:grid-cols-[1fr_380px] gap-10 md:gap-16">
+          <div className="space-y-12 md:space-y-16">
+            <header className="vibe-card p-8 md:p-16 overflow-hidden relative">
+              <div className="relative z-10 space-y-8 md:space-y-10">
+                <div className="flex items-center gap-6 md:gap-8">
+                  <div className="p-5 md:p-8 bg-primary/10 rounded-[2rem] md:rounded-[3rem] text-primary shadow-inner">
+                    <Users size={40} className="md:size-16" />
                   </div>
-                  <h1 className="text-2xl md:text-3xl font-extrabold truncate">{community.name}</h1>
+                  <h1 className="text-3xl md:text-7xl vibe-heading truncate leading-none">{community.name}</h1>
                 </div>
-                <p className="text-sm md:text-lg text-muted-foreground mb-6 leading-relaxed">
+                <p className="text-lg md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-3xl">
                   {community.description}
                 </p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <button className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-3 rounded-full font-bold shadow-lg hover:shadow-primary/20 transition-all active:scale-95 text-sm md:text-base">
+                <div className="flex flex-col sm:flex-row gap-6 pt-4">
+                  <button className="vibe-button-primary bg-primary text-primary-foreground px-12 text-lg md:text-xl">
                     Gruba Katıl
                   </button>
                   <Link 
                     href={`/discussions/new?category_id=${community.id}`}
-                    className="w-full sm:w-auto flex items-center justify-center bg-card border border-border px-8 py-3 rounded-full font-bold hover:bg-muted transition-all active:scale-95 text-sm md:text-base text-muted-foreground"
+                    className="vibe-button-secondary bg-card border-4 border-border px-12 flex items-center justify-center gap-3 text-sm md:text-base font-black uppercase tracking-widest"
                   >
-                    <Plus size={18} className="mr-2" /> Başlık Aç
+                    <Plus size={24} /> Başlık Aç
                   </Link>
                 </div>
               </div>
-              <Users className="absolute -bottom-10 -right-10 size-64 opacity-5 pointer-events-none" />
+              <Users className="absolute -bottom-20 -right-20 size-[400px] opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-1000" />
             </header>
 
-            <section className="space-y-4">
-              <h2 className="text-xl font-bold flex items-center gap-2 mb-4 px-2">
-                <MessageSquare size={20} className="text-primary" /> Tartışmalar ({topics.length})
+            <section className="space-y-8">
+              <h2 className="text-3xl md:text-5xl font-black flex items-center gap-6 px-4 tracking-tight">
+                <MessageSquare size={36} className="text-primary md:size-12" /> Tartışmalar 
+                <span className="text-primary opacity-20">{topics.length}</span>
               </h2>
               
-              {topics.length > 0 ? (
-                topics.map((topic, index) => (
-                  <motion.div
-                    key={topic.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    <DiscussionCard 
-                      topic={topic} 
-                      onSummarize={handleSummarize}
-                      isLoading={summarizingId === topic.id}
-                    />
-                    <AnimatePresence>
-                      {summaryResult && summaryResult.id === topic.id && (
-                        <motion.div 
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="mt-2 p-6 bg-primary/5 border border-primary/10 rounded-[2rem]"
-                        >
-                          <div className="flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest mb-3">
-                            <Sparkles size={14} /> AI ÖZETİ
-                          </div>
-                          <div className="text-sm leading-relaxed prose prose-sm max-w-none">
-                            {summaryResult.text.split('\n').map((line, i) => (
-                              <p key={i}>{line}</p>
-                            ))}
-                          </div>
-                          <button 
-                            onClick={() => setSummaryResult(null)}
-                            className="mt-4 text-xs font-bold text-muted-foreground hover:text-primary transition-colors"
+              <div className="grid gap-6 md:gap-8">
+                {topics.length > 0 ? (
+                  topics.map((topic, index) => (
+                    <motion.div
+                      key={topic.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <DiscussionCard 
+                        topic={topic} 
+                        onSummarize={handleSummarize}
+                        isLoading={summarizingId === topic.id}
+                      />
+                      <AnimatePresence>
+                        {summaryResult && summaryResult.id === topic.id && (
+                          <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="mt-6 p-8 md:p-12 bg-primary/5 border-4 border-primary/10 rounded-[2.5rem] md:rounded-[4rem] shadow-inner relative overflow-hidden"
                           >
-                            Özeti Kapat
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                ))
-              ) : (
-                <div className="text-center py-16 bg-card rounded-[2rem] border border-dashed border-border px-4">
-                  <p className="text-muted-foreground italic mb-4">Bu toplulukta henüz tartışma başlatılmamış.</p>
-                  <Link 
-                    href={`/discussions/new?category_id=${community.id}`}
-                    className="text-primary font-bold hover:underline"
-                  >
-                    İlk tartışmayı siz başlatın!
-                  </Link>
-                </div>
-              )}
+                            <div className="flex items-center gap-4 text-primary font-black text-[10px] md:text-xs uppercase tracking-[0.4em] mb-6">
+                              <div className="size-2 bg-primary rounded-full animate-ping"></div>
+                              AI ÖZETİ
+                            </div>
+                            <div className="text-lg md:text-2xl font-bold leading-relaxed text-foreground italic decoration-primary/10 underline-offset-8">
+                              &ldquo;{summaryResult.text}&rdquo;
+                            </div>
+                            <button 
+                              onClick={() => setSummaryResult(null)}
+                              className="mt-8 text-sm font-black text-muted-foreground hover:text-primary transition-colors underline underline-offset-4 uppercase tracking-widest"
+                            >
+                              Özeti Kapat
+                            </button>
+                            <Sparkles className="absolute top-4 right-4 text-primary/10 size-12" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="text-center py-32 bg-card rounded-[4rem] border-4 border-dashed border-border/50 px-8">
+                    <MessageSquare size={64} className="mx-auto text-muted-foreground/20 mb-8" />
+                    <p className="text-2xl md:text-3xl font-black text-muted-foreground/60 mb-10 tracking-tight">Bu toplulukta henüz tartışma yok.</p>
+                    <Link 
+                      href={`/discussions/new?category_id=${community.id}`}
+                      className="vibe-button-primary"
+                    >
+                      İlk tartışmayı sen başlat!
+                    </Link>
+                  </div>
+                )}
+              </div>
             </section>
           </div>
 
-          <aside className="space-y-4 md:space-y-6">
-            <section className="bg-card border border-border rounded-2xl md:rounded-[2.5rem] p-6 md:p-8 shadow-sm">
-              <h2 className="text-lg md:text-xl font-bold mb-6 flex items-center gap-3">
-                <Shield size={20} className="text-primary" /> Kurallar
+          <aside className="space-y-8 md:space-y-12">
+            <section className="vibe-card p-8 md:p-12">
+              <h2 className="text-2xl md:text-3xl font-black mb-10 flex items-center gap-4 tracking-tight">
+                <Shield size={28} className="text-primary" /> Topluluk Kuralları
               </h2>
-              <ul className="space-y-4">
+              <ul className="space-y-8">
                 <RuleItem title="Saygı ve Nezaket" description="Tüm üyelere saygılı davranın ve yapıcı geri bildirimler verin." />
                 <RuleItem title="Erişilebilirlik Odaklılık" description="Paylaşılan içeriğin erişilebilir olduğundan emin olun." />
                 <RuleItem title="Gizlilik" description="Üyelerin özel bilgilerini izinsiz paylaşmayın." />
               </ul>
             </section>
 
-            <div className="bg-card border border-border rounded-2xl md:rounded-3xl p-5 md:p-6 shadow-sm">
-              <h3 className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Grup Bilgileri</h3>
-              <div className="space-y-3 md:space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs md:text-sm text-muted-foreground flex items-center gap-2"><Users size={14} /> Üyeler</span>
-                  <span className="text-xs md:text-sm font-bold">Keşfediliyor...</span>
+            <div className="vibe-card !bg-muted/10 p-8 md:p-12">
+              <h3 className="text-[10px] md:text-xs font-black text-muted-foreground uppercase tracking-[0.3em] mb-8">İstatistikler</h3>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between border-b border-border pb-4">
+                  <span className="text-sm md:text-lg text-muted-foreground font-bold flex items-center gap-3"><Users size={20} /> Üyeler</span>
+                  <span className="text-lg md:text-2xl font-black text-primary tracking-tight">2.5K+</span>
+                </div>
+                <div className="flex items-center justify-between border-b border-border pb-4">
+                  <span className="text-sm md:text-lg text-muted-foreground font-bold flex items-center gap-3"><Globe size={20} /> Görünürlük</span>
+                  <span className="text-lg md:text-2xl font-black text-primary tracking-tight">AÇIK</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs md:text-sm text-muted-foreground flex items-center gap-2"><Globe size={14} /> Görünürlük</span>
-                  <span className="text-xs md:text-sm font-bold">Açık</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs md:text-sm text-muted-foreground flex items-center gap-2"><Shield size={14} /> Tür</span>
-                  <span className="text-xs md:text-sm font-bold">Destek Grubu</span>
+                  <span className="text-sm md:text-lg text-muted-foreground font-bold flex items-center gap-3"><Shield size={20} /> Güvenlik</span>
+                  <span className="text-lg md:text-2xl font-black text-primary tracking-tight">DOĞRULANMIŞ</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-primary/5 border border-primary/20 rounded-2xl md:rounded-3xl p-5 md:p-6">
-              <h3 className="text-[10px] md:text-xs font-bold text-primary uppercase tracking-widest mb-2">Hızlı Destek</h3>
-              <p className="text-[10px] md:text-xs text-muted-foreground mb-4 leading-relaxed">Bu grup hakkında sorunuz mu var? Moderatörlere ulaşın.</p>
-              <button className="w-full py-3 bg-primary text-primary-foreground rounded-xl text-[10px] md:text-xs font-bold shadow-lg active:scale-95 transition-transform">
-                Yöneticiye Yaz
-              </button>
+            <div className="vibe-card !bg-primary p-8 md:p-12 text-primary-foreground relative overflow-hidden group">
+              <div className="relative z-10">
+                <h3 className="text-xs md:text-sm font-black uppercase tracking-[0.4em] mb-4 opacity-70">HIZLI YARDIM</h3>
+                <p className="text-lg md:text-xl font-bold mb-8 leading-relaxed">Topluluk hakkında sorun mu var? Moderatörlere hemen yaz.</p>
+                <button className="w-full py-5 bg-white text-primary rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-2xl group-hover:scale-105 transition-all active:scale-95">
+                  Moderatöre Mesaj
+                </button>
+              </div>
+              <Sparkles className="absolute -top-6 -right-6 size-24 opacity-20 rotate-12" />
             </div>
           </aside>
         </div>
       </main>
 
+      <Footer />
       <AccessibilityToolbar />
     </div>
   );

@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
-import { Users, Search, ChevronRight, MessageSquare, Handshake, Loader2 } from 'lucide-react';
+import { Users, Search, ChevronRight, MessageSquare, Handshake, Loader2, Plus, Sparkles, X, Globe, Save } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -97,124 +98,139 @@ export default function CommunitiesPage() {
     <div className="min-h-screen flex flex-col bg-muted/30">
       <Navbar />
 
-      <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-5xl">
-        <header className="mb-8 md:mb-12 flex flex-col items-center text-center">
+      <main className="flex-1 container mx-auto px-4 py-8 md:py-16 max-w-6xl">
+        <header className="mb-12 md:mb-20 flex flex-col items-center text-center px-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mb-4 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest"
+          >
+            TOPLULUKLARIMIZ
+          </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-3xl md:text-4xl font-extrabold mb-4"
+            className="text-3xl md:text-5xl font-bold mb-6 tracking-tight"
           >
             Özel İlgi Grupları
           </motion.h1>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-4 w-full">
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl">
+          <div className="flex flex-col items-center justify-center gap-6 w-full max-w-2xl">
+            <p className="text-muted-foreground text-sm md:text-lg leading-relaxed font-medium">
               Deneyimlerinizi paylaşabileceğiniz ve benzer ilgi alanlarına sahip kişilerle tanışabileceğiniz topluluklara katılın.
             </p>
             <button 
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className="w-full md:w-auto border-2 border-primary text-primary px-6 py-3 md:py-2 rounded-full font-bold hover:bg-primary/10 transition-colors active:scale-95"
+              className="vibe-button-primary w-full md:w-auto py-3 md:py-4 gap-3"
             >
-              {showCreateForm ? 'İptal' : 'Topluluk Oluştur'}
+              <Plus size={20} className={showCreateForm ? 'rotate-45' : ''} />
+              {showCreateForm ? 'Vazgeç' : 'Topluluk Oluştur'}
             </button>
           </div>
         </header>
 
         {showCreateForm && (
-          <motion.form 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            onSubmit={createCommunity}
-            className="mb-12 bg-card p-6 md:p-8 rounded-2xl md:rounded-3xl border border-border shadow-sm space-y-4"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-16 md:mb-24"
           >
-            <input 
-              type="text" 
-              placeholder="Topluluk Adı" 
-              value={newCommunity.name}
-              onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
-              required
-              className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary outline-none text-sm"
-            />
-            <textarea 
-              placeholder="Açıklama" 
-              value={newCommunity.description}
-              onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
-              required
-              className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary outline-none text-sm min-h-[100px]"
-            />
-            <button 
-              type="submit" 
-              disabled={creating}
-              className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 active:scale-[0.98]"
+            <form 
+              onSubmit={createCommunity}
+              className="vibe-card max-w-2xl mx-auto space-y-6"
             >
-              {creating ? 'Oluşturuluyor...' : 'Oluştur'}
-            </button>
-          </motion.form>
+              <h2 className="text-xl md:text-2xl font-bold text-center mb-2">Yeni Bir Grup Kur</h2>
+              <div className="space-y-1.5">
+                <label className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest ml-2">GRUP ADI</label>
+                <input 
+                  type="text" 
+                  placeholder="Örn: Erişilebilir Oyunlar" 
+                  value={newCommunity.name}
+                  onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
+                  required
+                  className="w-full px-5 py-3 rounded-xl border border-border bg-muted/20 focus:border-primary outline-none transition-all text-sm md:text-base font-medium"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest ml-2">AÇIKLAMA</label>
+                <textarea 
+                  placeholder="Grubun amacını kısaca yazın..." 
+                  value={newCommunity.description}
+                  onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
+                  required
+                  className="w-full px-5 py-3 rounded-xl border border-border bg-muted/20 focus:border-primary outline-none transition-all text-sm md:text-base min-h-[100px] font-medium"
+                />
+              </div>
+              <button 
+                type="submit" 
+                disabled={creating}
+                className="vibe-button-primary w-full py-4 gap-2"
+              >
+                {creating ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
+                {creating ? 'Kuruluyor...' : 'Grubu Kur'}
+              </button>
+            </form>
+          </motion.div>
         )}
 
-        <div className="relative mb-8 md:mb-12">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+        <div className="relative mb-12 md:mb-20 max-w-3xl mx-auto group">
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={20} />
           <input 
             type="text" 
-            placeholder="Topluluk ara..." 
+            placeholder="Gruplarda ara..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-6 py-3.5 md:py-4 rounded-xl md:rounded-2xl border border-border bg-card shadow-sm focus:ring-2 focus:ring-primary outline-none transition-all text-sm md:text-base"
+            className="w-full pl-14 pr-6 py-4 rounded-full border border-border bg-card shadow-sm focus:border-primary outline-none transition-all text-sm md:text-lg font-medium"
           />
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <Loader2 className="animate-spin text-primary" size={40} />
-            <p className="font-bold text-muted-foreground text-sm">Topluluklar yükleniyor...</p>
+          <div className="flex flex-col items-center justify-center py-20 gap-6">
+            <Loader2 className="animate-spin text-primary" size={64} />
+            <p className="font-black text-muted-foreground text-sm uppercase tracking-widest">Yükleniyor...</p>
           </div>
         ) : filteredCommunities.length > 0 ? (
-          <div className="grid md:grid-cols-2 gap-4 md:gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-10">
             {filteredCommunities.map((community, index) => (
-              <motion.div
-                key={community.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-card border border-border rounded-2xl md:rounded-[2rem] p-6 md:p-8 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden"
-              >
-                <div className="relative z-10">
-                  <div className="flex items-start gap-3 md:gap-4 mb-4 md:mb-6">
-                    <div className="p-3 md:p-4 bg-muted rounded-xl md:rounded-2xl group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shrink-0">
-                      {getIcon(community.icon)}
+                <div key={community.id} className="vibe-card flex flex-col justify-between min-h-[220px] md:min-h-[280px]">
+                  <div>
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="p-4 bg-muted rounded-2xl group-hover:bg-primary/10 group-hover:text-primary transition-colors duration-300">
+                        {getIcon(community.icon)}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">TOPLULUK</p>
+                        <h2 className="text-xl md:text-2xl font-bold group-hover:text-primary transition-colors truncate tracking-tight">
+                          <Link href={`/communities/${community.id}`} className="after:absolute after:inset-0 outline-none">
+                            {community.name}
+                          </Link>
+                        </h2>
+                      </div>
                     </div>
-                    <div className="min-w-0">
-                      <h2 className="text-xl md:text-2xl font-bold mb-1 group-hover:text-primary transition-colors truncate">
-                        <Link href={`/communities/${community.id}`} className="after:absolute after:inset-0 after:z-0 outline-none">
-                          {community.name}
-                        </Link>
-                      </h2>
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">KEŞFET</p>
-                    </div>
+                    <p className="text-sm md:text-base text-muted-foreground mb-6 leading-relaxed line-clamp-2 md:line-clamp-3 font-medium">
+                      {community.description}
+                    </p>
                   </div>
-                  <p className="text-sm md:text-base text-muted-foreground mb-6 md:mb-8 leading-relaxed line-clamp-3">
-                    {community.description}
-                  </p>
-                  <div className="flex items-center">
-                    <div className="flex items-center text-primary text-sm md:text-base font-bold gap-2 group-hover:translate-x-2 transition-transform">
-                      Topluluğa Katıl <ChevronRight size={18} />
+                  
+                  <div className="flex items-center justify-between mt-auto">
+                    <div className="flex items-center gap-2 text-primary font-bold text-sm group-hover:translate-x-1 transition-transform">
+                      Görüntüle <ChevronRight size={18} />
                     </div>
                   </div>
                 </div>
-                <div className="absolute top-0 right-0 size-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:bg-primary/10 transition-colors"></div>
-              </motion.div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 px-4 bg-card rounded-2xl md:rounded-[3rem] border border-dashed border-border">
-            <Users className="mx-auto text-muted-foreground mb-4 opacity-20" size={48} />
-            <h3 className="text-lg md:text-xl font-bold mb-2">Henüz topluluk bulunamadı</h3>
-            <p className="text-sm text-muted-foreground">Aradığınız kriterlere uygun bir grup yok veya henüz veritabanı boş.</p>
+          <div className="text-center py-24 px-6 bg-card rounded-[3rem] md:rounded-[5rem] border-4 border-dashed border-border/50">
+            <Users className="mx-auto text-muted-foreground mb-8 opacity-10" size={80} />
+            <h3 className="text-2xl md:text-4xl font-black mb-4">Topluluk Bulunamadı</h3>
+            <p className="text-base md:text-lg text-muted-foreground max-w-md mx-auto">Aradığınız kriterlere uygun bir grup yok. Belki de ilk grubu siz kurmalısınız?</p>
           </div>
         )}
 
       </main>
 
       <AccessibilityToolbar />
+      <Footer />
     </div>
   );
 }

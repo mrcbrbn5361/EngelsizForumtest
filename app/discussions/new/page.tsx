@@ -3,9 +3,10 @@
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { TopicEditor } from '@/components/forum/topic-editor';
-import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Plus } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase } from '@/lib/supabase';
 
@@ -15,7 +16,7 @@ function NewTopicForm() {
   const { user } = useAuth();
   
   const [title, setTitle] = useState('');
-  const [categoryId, setCategoryId] = useState('');
+  const [categoryId, setCategoryId] = useState(searchParams?.get('category_id') || '');
   const [content, setContent] = useState('');
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -35,13 +36,6 @@ function NewTopicForm() {
     };
     fetchCategories();
   }, []);
-
-  useEffect(() => {
-    const preselected = searchParams?.get('category_id');
-    if (preselected) {
-      setCategoryId(preselected);
-    }
-  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,19 +62,6 @@ function NewTopicForm() {
 
     setLoading(true);
     try {
-      const baseUsername = user.email?.split('@')[0] || 'user';
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .upsert({
-          id: user.id,
-          username: `${baseUsername}_${user.id.slice(0, 4)}`,
-          avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`
-        }, { onConflict: 'id', ignoreDuplicates: true });
-      
-      if (profileError) {
-        console.error('Profile Upsert Error:', profileError);
-      }
-
       const { data, error } = await supabase
         .from('topics')
         .insert({
@@ -107,75 +88,83 @@ function NewTopicForm() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4">
-        <h1 className="text-2xl font-bold mb-4">Lütfen giriş yapın</h1>
-        <p className="text-muted-foreground mb-8 text-center max-w-md">Yeni bir tartışma başlatmak için önce üye girişi yapmanız gerekmektedir.</p>
-        <button onClick={() => router.push('/auth')} className="bg-primary text-primary-foreground px-10 py-4 rounded-full font-bold shadow-lg">Giriş Yap</button>
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
+        <h1 className="text-3xl md:text-5xl font-bold mb-4 vibe-heading">Lütfen giriş yapın</h1>
+        <p className="text-muted-foreground mb-8 max-w-sm text-base md:text-lg font-medium">Yeni bir tartışma başlatmak için önce üye girişi yapmanız gerekmektedir.</p>
+        <button onClick={() => router.push('/auth')} className="vibe-button-primary">Giriş Yap</button>
       </div>
     );
   }
 
   return (
-    <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-3xl">
+    <main className="flex-1 container mx-auto px-4 py-8 md:py-16 max-w-3xl">
       <button 
         onClick={() => router.back()} 
-        className="mb-6 md:mb-8 flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors group"
+        className="mb-8 flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-all group uppercase tracking-widest"
       >
         <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Geri Dön
       </button>
 
-      <div className="bg-card border border-border rounded-2xl md:rounded-[2.5rem] shadow-xl p-6 md:p-12">
-        <header className="mb-8 md:mb-10 text-center">
-          <h1 className="text-2xl md:text-4xl font-black mb-4">Yeni Tartışma</h1>
-          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">Toplulukla paylaşmak istediğiniz bir sorunuz veya tecrübeniz mi var? Detayları aşağıya yazın.</p>
+      <div className="vibe-card p-6 md:p-12 relative overflow-hidden">
+        <div className="absolute top-0 right-0 size-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+        
+        <header className="mb-10 text-center relative z-10">
+          <h1 className="text-3xl md:text-5xl vibe-heading mb-4">Yeni Tartışma</h1>
+          <p className="text-base md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto">
+            Toplulukla paylaşmak istediğiniz bir sorunuz veya tecrübeniz mi var? Detayları aşağıya yazın.
+          </p>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
           <div className="space-y-2">
-            <label htmlFor="title" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">BAŞLIK</label>
+            <label htmlFor="title" className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground ml-2">TARTIŞMA BAŞLIĞI</label>
             <input 
               id="title"
               type="text" 
               required 
               disabled={loading}
-              placeholder="Başlığı buraya yazın..." 
+              placeholder="Örn: Erişilebilir web tasarımı için ipuçları" 
               value={title} 
               onChange={e => setTitle(e.target.value)}
-              className="w-full p-4 md:p-5 rounded-xl md:rounded-2xl border border-border bg-muted/20 outline-none focus:ring-2 focus:ring-primary transition-all font-bold text-base md:text-lg disabled:opacity-50"
+              className="w-full p-4 md:p-5 rounded-xl border border-border bg-muted/20 outline-none focus:border-primary transition-all font-bold text-lg md:text-xl placeholder:text-muted-foreground/30 disabled:opacity-50"
             />
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="category" className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">KATEGORİ</label>
-            <select 
-              id="category"
-              required 
-              disabled={loading}
-              value={categoryId} 
-              onChange={e => setCategoryId(e.target.value)}
-              className="w-full p-4 md:p-5 rounded-xl md:rounded-2xl border border-border bg-muted/20 outline-none focus:ring-2 focus:ring-primary transition-all font-bold text-sm md:text-base appearance-none cursor-pointer disabled:opacity-50"
-            >
-              <option value="">Bir kategori seçin...</option>
-              {categories.length === 0 && <option disabled>Kategoriler yüklenemedi...</option>}
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
+            <label htmlFor="category" className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground ml-2">KATEGORİ SEÇİMİ</label>
+            <div className="relative">
+              <select 
+                id="category"
+                required 
+                disabled={loading}
+                value={categoryId} 
+                onChange={e => setCategoryId(e.target.value)}
+                className="w-full p-4 md:p-5 rounded-xl border border-border bg-muted/20 outline-none focus:border-primary transition-all font-bold text-base md:text-lg appearance-none cursor-pointer disabled:opacity-50"
+              >
+                <option value="">Bir kategori seçin...</option>
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+              <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                <Plus size={20} className="rotate-45" />
+              </div>
+            </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-2">İÇERİK</label>
+            <label className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground ml-2">DETAYLI İÇERİK (MARKDOWN)</label>
             <TopicEditor value={content} onChange={setContent} />
           </div>
 
-          <div className="pt-4">
+          <div className="pt-6">
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-primary text-primary-foreground px-6 md:px-8 py-4 md:py-5 rounded-xl md:rounded-[2rem] font-black text-base md:text-lg shadow-2xl hover:shadow-primary/20 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+              className="vibe-button-primary w-full py-4 md:py-5 text-base md:text-xl flex items-center justify-center gap-4"
             >
-              {loading ? <Loader2 size={24} className="animate-spin" /> : <Save size={20} />}
-              {loading ? 'Yayınlanıyor...' : 'Tartışmayı Yayınla'}
+              {loading ? <Loader2 size={24} className="animate-spin" /> : <Save size={24} />}
+              {loading ? 'Yayımlanıyor...' : 'TARTIŞMAYI BAŞLAT'}
             </button>
           </div>
         </form>
@@ -195,6 +184,7 @@ export default function NewTopicPage() {
       }>
         <NewTopicForm />
       </Suspense>
+      <Footer />
       <AccessibilityToolbar />
     </div>
   );

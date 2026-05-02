@@ -24,11 +24,11 @@ export function Navbar() {
           className="flex items-center gap-2 outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 group"
           aria-label="EngelsizForum Ana Sayfa"
         >
-          <div className="flex items-center justify-center h-8 w-8 md:h-9 md:w-9 bg-primary text-primary-foreground rounded-lg select-none shadow-md transition-all group-hover:rotate-6 group-hover:scale-110" aria-hidden="true">
-            <span className="text-lg md:text-xl font-black">e</span>
+          <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-primary text-primary-foreground rounded-2xl select-none shadow-[0_8px_16px_-4px_rgba(var(--primary-rgb),0.3)] transition-all group-hover:rotate-12 group-hover:scale-110" aria-hidden="true">
+            <span className="text-xl md:text-2xl font-black">e</span>
           </div>
-          <span className="select-none text-xl md:text-2xl font-black tracking-tighter lowercase leading-none">
-            engelsiz<span className="text-primary/40 group-hover:text-primary transition-colors">forum</span>
+          <span className="select-none text-2xl md:text-3xl font-black tracking-tighter lowercase leading-none">
+            engelsiz<span className="text-primary/30 group-hover:text-primary transition-colors">forum</span>
           </span>
         </Link>
 
@@ -128,7 +128,7 @@ function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; l
   return (
     <Link
       href={href}
-      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground outline-none focus:ring-2 focus:ring-primary"
+      className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black text-muted-foreground transition-all hover:bg-muted hover:text-primary outline-none focus:ring-2 focus:ring-primary uppercase tracking-widest"
     >
       {icon}
       <span className="hidden lg:inline">{label}</span>

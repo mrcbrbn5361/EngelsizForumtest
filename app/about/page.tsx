@@ -2,79 +2,86 @@
 
 import React from 'react';
 import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { Shield, Heart, Globe, Target } from 'lucide-react';
 import { motion } from 'motion/react';
+import Link from 'next/link';
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col bg-muted/30">
       <Navbar />
 
-      <main className="flex-1 container mx-auto px-4 py-12 max-w-4xl">
-        <section className="mb-12 md:mb-16 text-center">
+      <main className="flex-1 container mx-auto px-4 py-12 md:py-24 max-w-5xl">
+        <section className="mb-20 md:mb-32 text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-block p-3 md:p-4 bg-primary/10 rounded-2xl md:rounded-3xl mb-6"
+            className="inline-block p-6 bg-primary/10 rounded-3xl mb-8"
           >
-            <Shield size={40} className="text-primary" />
+            <Shield size={48} className="text-primary" />
           </motion.div>
-          <h1 className="text-3xl md:text-4xl font-extrabold mb-6">EngelsizForum Nedir?</h1>
-          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed px-2">
+          <h1 className="text-4xl md:text-6xl vibe-heading mb-6">EngelsizForum Nedir?</h1>
+          <p className="text-base md:text-xl text-muted-foreground leading-relaxed px-4 max-w-2xl mx-auto font-medium">
             EngelsizForum, her bireyin dijital dünyada eşit haklara ve erişebilirliğe sahip olması gerektiği inancıyla doğmuş, 
             Türkiye&apos;nin ilk tam erişilebilir topluluk platformudur.
           </p>
         </section>
 
-        <div className="grid md:grid-cols-2 gap-8 md:gap-12 mb-16 md:mb-20">
+        <div className="grid md:grid-cols-2 gap-10 md:gap-16 mb-24 md:mb-40">
           <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="space-y-4"
+            className="vibe-card group"
           >
-            <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3">
-              <Target size={24} className="text-primary" /> Misyonumuz
-            </h2>
-            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+            <div className="mb-5 inline-flex p-4 bg-primary/5 rounded-2xl group-hover:bg-primary/10 text-primary transition-all group-hover:rotate-6">
+              <Target size={28} />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 tracking-tight">Misyonumuz</h2>
+            <p className="text-sm md:text-lg text-muted-foreground leading-relaxed font-medium">
               Engelli bireylerin teknoloji, sosyal yaşam ve günlük zorluklar hakkında birbirleriyle yardımlaşabileceği, 
-              AI desteğiyle karmaşık içeriklerin basitleştirildiği ve WCAG 2.1 standartlarının ötesinde bir kullanıcı deneyimi sunmaktır.
+              AI desteğiyle karmaşık içeriklerin basitleştirildiği ve <span className="text-primary font-bold">WCAG 2.1</span> standartlarının ötesinde bir kullanıcı deneyimi sunmaktır.
             </p>
           </motion.div>
 
           <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="space-y-4"
+            transition={{ delay: 0.1 }}
+            className="vibe-card group"
           >
-            <h2 className="text-xl md:text-2xl font-bold flex items-center gap-3">
-              <Heart size={24} className="text-red-500" /> Değerlerimiz
-            </h2>
-            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-              Kapsayıcılık, Şeffaflık ve Yenilikçilik ana değerlerimizdir. Platformumuzdaki her bir özellik, engelli topluluğunun 
-              doğrudan geri bildirimleri ile şekillenmektedir.
+            <div className="mb-5 inline-flex p-4 bg-red-500/5 rounded-2xl group-hover:bg-red-500/10 text-red-500 transition-all group-hover:-rotate-6">
+              <Heart size={28} />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 tracking-tight">Değerlerimiz</h2>
+            <p className="text-sm md:text-lg text-muted-foreground leading-relaxed font-medium">
+              Kapsayıcılık, Şeffaflık ve Yenilikçilik ana değerlerimizdir. Platformumuzdaki her bir özellik, <span className="text-primary font-bold">engelli topluluğunun</span> doğrudan geri bildirimleri ile şekillenmektedir.
             </p>
           </motion.div>
         </div>
 
-        <section className="bg-primary text-primary-foreground rounded-2xl md:rounded-[3rem] p-8 md:p-12 text-center shadow-2xl relative overflow-hidden">
+        <section className="bg-primary text-primary-foreground rounded-3xl md:rounded-[3rem] p-12 md:p-24 text-center shadow-lg relative overflow-hidden group">
           <div className="relative z-10">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Bize Katılın</h2>
-            <p className="text-sm md:text-base text-primary-foreground/80 mb-8 max-w-xl mx-auto">
+            <h2 className="text-3xl md:text-5xl vibe-heading mb-6 text-white">Bize Katılın</h2>
+            <p className="text-base md:text-xl font-medium text-white/80 mb-10 max-w-xl mx-auto leading-relaxed">
               Daha erişilebilir bir gelecek için sesinizi duyurun, başkalarına yardım edin veya sadece topluluğumuzun bir parçası olun.
             </p>
-            <a 
+            <Link 
               href="/auth" 
-              className="inline-block px-8 md:px-10 py-3 md:py-4 bg-white text-primary font-bold rounded-full shadow-lg hover:bg-zinc-100 transition-all focus:ring-4 focus:ring-white/50 outline-none text-sm md:text-base"
+              className="vibe-button-primary bg-white text-primary hover:bg-white/90"
             >
               Hemen Üye Ol
-            </a>
+            </Link>
           </div>
-          <Globe className="absolute -bottom-10 -right-10 size-48 md:size-64 opacity-10" />
+          <Globe className="absolute -bottom-20 -right-20 size-64 md:size-[400px] opacity-10 group-hover:scale-110 group-hover:rotate-45 transition-all duration-1000" />
+          <div className="absolute top-0 left-0 size-[300px] bg-white/5 rounded-full -translate-y-1/2 -translate-x-1/2 blur-[80px]"></div>
         </section>
       </main>
+
+      <Footer />
 
       <AccessibilityToolbar />
     </div>
