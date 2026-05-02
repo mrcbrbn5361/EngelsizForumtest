@@ -52,6 +52,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const ensureProfile = async () => {
+      if (user) {
+        try {
+          const { data: existingProfile } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('id', user.id)
+            .single();
+          
+          if (!existingProfile) {
+            console.log('Ensuring profile for user:', user.id);
+            const baseUsername = user.email?.split('@')[0] || 'user';
+            const { error } = await supabase
+              .from('profiles')
+              .upsert({
+                id: user.id,
+                username: `${baseUsername}_${user.id.slice(0, 4)}`,
+                full_name: user.user_metadata?.full_name || user.user_metadata?.name || baseUsername,
+                avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`,
+                updated_at: new Date().toISOString()
+              }, { onConflict: 'id' });
+            
+            if (error) console.error('Error creating default profile:', error);
+          }
+        } catch (err) {
+          console.error('Error in profile assurance:', err);
+        }
+      }
+    };
+    ensureProfile();
+  }, [user]);
+
   return (
     <AuthContext.Provider value={{ user, loading }}>
       {children}

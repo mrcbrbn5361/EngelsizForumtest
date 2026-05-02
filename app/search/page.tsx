@@ -70,33 +70,33 @@ export default function SearchPage() {
       <Navbar />
 
       <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
-        <header className="mb-12">
-          <h1 className="text-3xl font-extrabold mb-6">Forumda Ara</h1>
+        <header className="mb-10 sm:mb-12">
+          <h1 className="text-2xl sm:text-3xl font-extrabold mb-6">Forumda Ara</h1>
           <form onSubmit={handleSearch} className="relative group">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={24} />
+            <Search className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={20} />
             <input 
               type="text" 
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Başlık veya içerik ara..." 
-              className="w-full pl-16 pr-24 py-5 rounded-[2rem] border border-border bg-card shadow-lg focus:ring-4 focus:ring-primary/20 outline-none transition-all text-lg"
+              placeholder="Ara..." 
+              className="w-full pl-12 sm:pl-16 pr-28 sm:pr-32 py-4 sm:py-5 rounded-2xl sm:rounded-[2rem] border border-border bg-card shadow-lg focus:ring-4 focus:ring-primary/20 outline-none transition-all text-base sm:text-lg"
               autoFocus
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            <div className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 sm:gap-2">
               <button 
                 type="button"
                 onClick={startVoiceSearch}
-                className={`p-3 rounded-xl transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-muted hover:bg-zinc-200'}`}
+                className={`p-2.5 sm:p-3 rounded-lg sm:rounded-xl transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-muted hover:bg-zinc-200 text-muted-foreground'}`}
                 title="Sesli Ara"
               >
-                <Mic size={20} />
+                <Mic size={18} />
               </button>
               <button 
                 type="submit"
                 disabled={loading}
-                className="bg-primary text-primary-foreground px-6 py-2.5 rounded-2xl font-bold shadow-md hover:bg-primary/90 transition-all disabled:opacity-50"
+                className="bg-primary text-primary-foreground px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg sm:rounded-2xl font-bold shadow-md hover:bg-primary/90 transition-all disabled:opacity-50 text-sm sm:text-base"
               >
-                {loading ? <Loader2 size={24} className="animate-spin" /> : 'Ara'}
+                {loading ? <Loader2 size={20} className="animate-spin" /> : 'Ara'}
               </button>
             </div>
           </form>

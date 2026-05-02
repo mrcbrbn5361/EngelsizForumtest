@@ -17,26 +17,26 @@ export default function Home() {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="container mx-auto px-4 py-20 lg:py-32 text-center relative overflow-hidden">
+        <section className="container mx-auto px-4 py-12 md:py-24 lg:py-32 text-center relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-primary/5 -skew-y-3 -z-10 origin-right"></div>
           
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-8 relative z-10"
+            className="space-y-6 md:space-y-8 relative z-10"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] sm:text-xs font-bold tracking-widest uppercase">
               Türkiye&apos;nin En Kapsayıcı Topluluğu
             </span>
-            <h1 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1.1] break-words">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1.1] break-words">
               Engelleri <br className="hidden sm:block" /> 
               <span className="text-primary italic">Birlikte</span> Aşalım
             </h1>
-            <p className="mx-auto max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
+            <p className="mx-auto max-w-2xl text-base md:text-xl text-muted-foreground leading-relaxed px-2">
               Teknoloji, erişilebilirlik ve sosyal yaşam hakkında her şeyi paylaştığımız, 
               AI desteğiyle güçlendirilmiş en geniş topluluğa hoş geldiniz.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4 px-4 sm:px-0">
               {!loading && (
                 user ? (
                   <Link
@@ -121,20 +121,20 @@ export default function Home() {
         </section>
 
         {/* Statistics Banner */}
-        <section className="container mx-auto px-4 py-24">
-          <div className="bg-primary text-primary-foreground rounded-[3rem] p-12 lg:p-20 shadow-2xl relative overflow-hidden text-center">
-            <div className="relative z-10 grid sm:grid-cols-3 gap-12">
+        <section className="container mx-auto px-4 py-16 md:py-24">
+          <div className="bg-primary text-primary-foreground rounded-[2rem] sm:rounded-[3rem] p-8 md:p-12 lg:p-20 shadow-2xl relative overflow-hidden text-center">
+            <div className="relative z-10 grid sm:grid-cols-3 gap-8 md:gap-12">
               <div>
-                <p className="text-5xl font-black mb-2">Engelsiz</p>
-                <p className="text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Topluluk</p>
+                <p className="text-3xl md:text-5xl font-black mb-2">Engelsiz</p>
+                <p className="text-[10px] md:text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Topluluk</p>
               </div>
               <div>
-                <p className="text-5xl font-black mb-2">Her an</p>
-                <p className="text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Destek</p>
+                <p className="text-3xl md:text-5xl font-black mb-2">Her an</p>
+                <p className="text-[10px] md:text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Destek</p>
               </div>
               <div>
-                <p className="text-5xl font-black mb-2">%100</p>
-                <p className="text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Erişilebilirlik</p>
+                <p className="text-3xl md:text-5xl font-black mb-2">%100</p>
+                <p className="text-[10px] md:text-sm font-bold opacity-70 uppercase tracking-[0.2em]">Erişilebilirlik</p>
               </div>
             </div>
             <div className="absolute top-0 right-0 size-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
@@ -166,11 +166,11 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode, titl
   return (
     <motion.div 
       whileHover={{ y: -5 }}
-      className="p-8 rounded-[2rem] bg-card border border-border shadow-sm transition-all"
+      className="p-6 md:p-8 rounded-[2rem] bg-card border border-border shadow-sm transition-all"
     >
       <div className="mb-6 p-4 bg-muted rounded-2xl w-fit">{icon}</div>
-      <h3 className="mb-3 text-xl font-bold">{title}</h3>
-      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+      <h3 className="mb-3 text-lg md:text-xl font-bold">{title}</h3>
+      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">{description}</p>
     </motion.div>
   );
 }
@@ -183,14 +183,14 @@ function QuickActionLink({ href, title, desc, icon, color }: { href: string, tit
   };
   
   return (
-    <Link href={href} className="group bg-card border border-border rounded-[2.5rem] p-8 hover:shadow-xl transition-all hover:border-primary/50">
-      <div className={`size-14 rounded-2xl ${colors[color]} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+    <Link href={href} className="group bg-card border border-border rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 hover:shadow-xl transition-all hover:border-primary/50">
+      <div className={`size-12 md:size-14 rounded-2xl ${colors[color]} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
         {icon}
       </div>
-      <h3 className="text-xl font-bold mb-2 flex items-center justify-between">
+      <h3 className="text-lg md:text-xl font-bold mb-2 flex items-center justify-between">
         {title} <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 transition-opacity" />
       </h3>
-      <p className="text-sm text-muted-foreground">{desc}</p>
+      <p className="text-xs md:text-sm text-muted-foreground">{desc}</p>
     </Link>
   );
 }

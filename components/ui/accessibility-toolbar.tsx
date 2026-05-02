@@ -14,14 +14,14 @@ export function AccessibilityToolbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
       <AnimatePresence>
         {isOpen && (
             <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="mb-4 w-80 rounded-[2rem] border-2 border-border p-6 accessibility-panel-solid z-[60]"
+            className="mb-4 w-[calc(100vw-2rem)] sm:w-80 rounded-[2rem] border-2 border-border p-6 accessibility-panel-solid z-[60]"
             role="dialog"
             aria-label="Erişilebilirlik Ayarları"
           >
@@ -118,11 +118,12 @@ export function AccessibilityToolbar() {
 
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-2xl transition-all hover:scale-110 active:scale-95 ring-4 ring-white dark:ring-zinc-900 border-2 border-primary"
+        className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-2xl transition-all hover:scale-110 active:scale-95 ring-4 ring-white dark:ring-zinc-900 border-2 border-primary"
         aria-label="Erişilebilirlik Menüsünü Aç"
         aria-expanded={isOpen}
       >
-        <Settings size={32} />
+        <Settings size={22} className="sm:hidden" />
+        <Settings size={32} className="hidden sm:block" />
       </button>
     </div>
   );

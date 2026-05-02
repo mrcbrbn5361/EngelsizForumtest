@@ -97,22 +97,22 @@ export default function CommunitiesPage() {
     <div className="min-h-screen flex flex-col bg-muted/30">
       <Navbar />
 
-      <main className="flex-1 container mx-auto px-4 py-12 max-w-5xl">
-        <header className="mb-12 text-center">
+      <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-5xl">
+        <header className="mb-8 md:mb-12 flex flex-col items-center text-center">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl font-extrabold mb-4"
+            className="text-3xl md:text-4xl font-extrabold mb-4"
           >
             Özel İlgi Grupları
           </motion.h1>
-          <div className="flex justify-center gap-4">
-            <p className="text-muted-foreground text-lg max-w-2xl">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-4 w-full">
+            <p className="text-muted-foreground text-base md:text-lg max-w-2xl">
               Deneyimlerinizi paylaşabileceğiniz ve benzer ilgi alanlarına sahip kişilerle tanışabileceğiniz topluluklara katılın.
             </p>
             <button 
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className="border-2 border-primary text-primary px-6 py-2 rounded-full font-bold hover:bg-primary/10 transition-colors"
+              className="w-full md:w-auto border-2 border-primary text-primary px-6 py-3 md:py-2 rounded-full font-bold hover:bg-primary/10 transition-colors active:scale-95"
             >
               {showCreateForm ? 'İptal' : 'Topluluk Oluştur'}
             </button>
@@ -124,7 +124,7 @@ export default function CommunitiesPage() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             onSubmit={createCommunity}
-            className="mb-12 bg-card p-8 rounded-3xl border border-border shadow-sm space-y-4"
+            className="mb-12 bg-card p-6 md:p-8 rounded-2xl md:rounded-3xl border border-border shadow-sm space-y-4"
           >
             <input 
               type="text" 
@@ -132,70 +132,70 @@ export default function CommunitiesPage() {
               value={newCommunity.name}
               onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
               required
-              className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary outline-none"
+              className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary outline-none text-sm"
             />
             <textarea 
               placeholder="Açıklama" 
               value={newCommunity.description}
               onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
               required
-              className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary outline-none"
+              className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary outline-none text-sm min-h-[100px]"
             />
             <button 
               type="submit" 
               disabled={creating}
-              className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+              className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-bold hover:bg-primary/90 transition-colors disabled:opacity-50 active:scale-[0.98]"
             >
               {creating ? 'Oluşturuluyor...' : 'Oluştur'}
             </button>
           </motion.form>
         )}
 
-        <div className="relative mb-12">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+        <div className="relative mb-8 md:mb-12">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
           <input 
             type="text" 
             placeholder="Topluluk ara..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-6 py-4 rounded-2xl border border-border bg-card shadow-sm focus:ring-2 focus:ring-primary outline-none transition-all"
+            className="w-full pl-11 pr-6 py-3.5 md:py-4 rounded-xl md:rounded-2xl border border-border bg-card shadow-sm focus:ring-2 focus:ring-primary outline-none transition-all text-sm md:text-base"
           />
         </div>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <Loader2 className="animate-spin text-primary" size={48} />
-            <p className="font-bold text-muted-foreground">Topluluklar yükleniyor...</p>
+            <Loader2 className="animate-spin text-primary" size={40} />
+            <p className="font-bold text-muted-foreground text-sm">Topluluklar yükleniyor...</p>
           </div>
         ) : filteredCommunities.length > 0 ? (
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-4 md:gap-6">
             {filteredCommunities.map((community, index) => (
               <motion.div
                 key={community.id}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-card border border-border rounded-[2rem] p-8 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden"
+                className="bg-card border border-border rounded-2xl md:rounded-[2rem] p-6 md:p-8 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden"
               >
                 <div className="relative z-10">
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className="p-4 bg-muted rounded-2xl group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                  <div className="flex items-start gap-3 md:gap-4 mb-4 md:mb-6">
+                    <div className="p-3 md:p-4 bg-muted rounded-xl md:rounded-2xl group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shrink-0">
                       {getIcon(community.icon)}
                     </div>
-                    <div>
-                      <h2 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">
+                    <div className="min-w-0">
+                      <h2 className="text-xl md:text-2xl font-bold mb-1 group-hover:text-primary transition-colors truncate">
                         <Link href={`/communities/${community.id}`} className="after:absolute after:inset-0 after:z-0 outline-none">
                           {community.name}
                         </Link>
                       </h2>
-                      <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">KEŞFET</p>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">KEŞFET</p>
                     </div>
                   </div>
-                  <p className="text-muted-foreground mb-8 leading-relaxed line-clamp-3">
+                  <p className="text-sm md:text-base text-muted-foreground mb-6 md:mb-8 leading-relaxed line-clamp-3">
                     {community.description}
                   </p>
                   <div className="flex items-center">
-                    <div className="flex items-center text-primary font-bold gap-2 group-hover:translate-x-2 transition-transform">
+                    <div className="flex items-center text-primary text-sm md:text-base font-bold gap-2 group-hover:translate-x-2 transition-transform">
                       Topluluğa Katıl <ChevronRight size={18} />
                     </div>
                   </div>
@@ -205,12 +205,13 @@ export default function CommunitiesPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-card rounded-[3rem] border border-dashed border-border">
-            <Users className="mx-auto text-muted-foreground mb-4 opacity-20" size={64} />
-            <h3 className="text-xl font-bold mb-2">Henüz topluluk bulunamadı</h3>
-            <p className="text-muted-foreground">Aradığınız kriterlere uygun bir grup yok veya henüz veritabanı boş.</p>
+          <div className="text-center py-16 px-4 bg-card rounded-2xl md:rounded-[3rem] border border-dashed border-border">
+            <Users className="mx-auto text-muted-foreground mb-4 opacity-20" size={48} />
+            <h3 className="text-lg md:text-xl font-bold mb-2">Henüz topluluk bulunamadı</h3>
+            <p className="text-sm text-muted-foreground">Aradığınız kriterlere uygun bir grup yok veya henüz veritabanı boş.</p>
           </div>
         )}
+
       </main>
 
       <AccessibilityToolbar />

@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase';
 import { User, Mail, Shield, Settings, ChevronRight, LogIn, Loader2, Save, X } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
+import Image from 'next/image';
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -97,24 +98,31 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen flex flex-col bg-muted/30">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-12 max-w-2xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card border border-border rounded-[2.5rem] shadow-xl overflow-hidden">
-          <div className="bg-primary px-8 py-12 text-primary-foreground text-center relative overflow-hidden">
-            <div className="mx-auto h-24 w-24 rounded-full bg-white/20 flex items-center justify-center mb-4 border-4 border-white/30 backdrop-blur-sm relative z-10 transition-transform hover:scale-110 overflow-hidden">
+      <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-2xl">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card border border-border rounded-2xl sm:rounded-[2.5rem] shadow-xl overflow-hidden">
+          <div className="bg-primary px-6 py-10 md:px-8 md:py-12 text-primary-foreground text-center relative overflow-hidden">
+            <div className="mx-auto h-20 w-20 md:h-24 md:w-24 rounded-full bg-white/20 flex items-center justify-center mb-4 border-4 border-white/30 backdrop-blur-sm relative z-10 transition-transform hover:scale-110 overflow-hidden relative">
               {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt={profile.full_name || 'Profile'} className="h-full w-full object-cover" />
+                <Image 
+                  src={profile.avatar_url} 
+                  alt={profile.full_name || 'Profile'} 
+                  fill 
+                  className="object-cover" 
+                  unoptimized
+                  referrerPolicy="no-referrer"
+                />
               ) : (
-                <User size={48} />
+                <User size={40} />
               )}
             </div>
-            <h1 className="text-3xl font-black relative z-10 break-words line-clamp-2">{profile?.full_name || user.email?.split('@')[0]}</h1>
-            <p className="text-white/70 text-sm mb-6 relative z-10 break-all">{profile?.username || user.email?.split('@')[0] ? `@${profile?.username || user.email?.split('@')[0]}` : ''}</p>
+            <h1 className="text-2xl md:text-3xl font-black relative z-10 break-words line-clamp-2 px-4">{profile?.full_name || user.email?.split('@')[0]}</h1>
+            <p className="text-white/70 text-xs md:text-sm mb-4 md:mb-6 relative z-10 break-all px-4">{profile?.username || user.email?.split('@')[0] ? `@${profile?.username || user.email?.split('@')[0]}` : ''}</p>
             
             <div className="absolute -top-10 -right-10 size-48 bg-white/5 rounded-full blur-3xl"></div>
             <div className="absolute -bottom-10 -left-10 size-48 bg-black/10 rounded-full blur-2xl"></div>
           </div>
           
-          <div className="p-8 space-y-10">
+          <div className="p-5 sm:p-8 space-y-8 sm:space-y-10">
             {/* Account Info */}
             <section>
               <div className="flex items-center justify-between mb-6">
@@ -214,15 +222,15 @@ export default function ProfilePage() {
 
 function ProfileItem({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
   return (
-    <div className="flex items-center justify-between p-5 bg-muted/30 rounded-2xl border border-border/50 hover:border-primary/30 transition-colors">
-      <div className="flex items-center gap-4">
-        <div className="p-2.5 bg-white dark:bg-zinc-800 rounded-xl shadow-sm text-primary">{icon}</div>
+    <div className="flex items-center justify-between p-4 sm:p-5 bg-muted/30 rounded-2xl border border-border/50 hover:border-primary/30 transition-colors">
+      <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+        <div className="p-2 sm:p-2.5 bg-white dark:bg-zinc-800 rounded-xl shadow-sm text-primary shrink-0">{icon}</div>
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{label}</p>
-          <p className="font-bold break-all sm:break-words">{value}</p>
+          <p className="text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-widest">{label}</p>
+          <p className="font-bold text-sm sm:text-base break-words line-clamp-1">{value}</p>
         </div>
       </div>
-      <ChevronRight size={18} className="text-muted-foreground/30" />
+      <ChevronRight size={16} className="text-muted-foreground/30 shrink-0 ml-2" />
     </div>
   );
 }

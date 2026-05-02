@@ -162,6 +162,15 @@ html {
   transition-duration: 0.001ms !important;
 }
 
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 /* Better focus visibility for keyboard users */
 :focus-visible {
   outline: 4px solid #3b82f6;

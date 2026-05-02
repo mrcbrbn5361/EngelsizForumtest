@@ -51,12 +51,7 @@ export default function AuthPage() {
     setError(null);
     setLoading(true);
     try {
-      // Ensure https://engelsizforumtest.vercel.app/auth/callback is added to Supabase Redirect URLs
-      const origin = typeof window !== 'undefined' 
-        ? (window.location.hostname.includes('vercel.app') 
-            ? 'https://engelsizforumtest.vercel.app' 
-            : window.location.origin) 
-        : '';
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
         
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -78,7 +73,7 @@ export default function AuthPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md bg-card border border-border rounded-3xl shadow-xl p-8"
+          className="w-full max-w-md bg-card border border-border rounded-3xl shadow-xl p-6 sm:p-8"
         >
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">
