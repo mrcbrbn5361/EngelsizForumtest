@@ -21,23 +21,23 @@ export function Navbar() {
       <div className="container mx-auto flex min-h-16 items-center justify-between px-4 py-2">
         <Link 
           href="/" 
-          className="flex items-center gap-2 outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 group"
+          className="flex items-center gap-2 outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 group shrink-0"
           aria-label="EngelsizForum Ana Sayfa"
         >
-          <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-primary text-primary-foreground rounded-2xl select-none shadow-[0_8px_16px_-4px_rgba(var(--primary-rgb),0.3)] transition-all group-hover:rotate-12 group-hover:scale-110" aria-hidden="true">
-            <span className="text-xl md:text-2xl font-black">e</span>
+          <div className="flex items-center justify-center h-9 w-9 md:h-11 md:w-11 bg-primary text-primary-foreground rounded-xl md:rounded-2xl select-none shadow-md transition-all group-hover:rotate-6 group-hover:scale-105" aria-hidden="true">
+            <span className="text-lg md:text-xl font-black">e</span>
           </div>
-          <span className="select-none text-2xl md:text-3xl font-black tracking-tighter lowercase leading-none">
+          <span className="select-none text-xl md:text-2xl font-black tracking-tighter lowercase leading-none">
             engelsiz<span className="text-primary/30 group-hover:text-primary transition-colors">forum</span>
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="flex items-center gap-1 sm:gap-4 lg:gap-6">
-          <div className="hidden md:flex items-center gap-1 lg:gap-4">
-            <NavLink href="/discussions" icon={<MessageSquare size={18} />} label="Tartışmalar" />
-            <NavLink href="/communities" icon={<Users size={18} />} label="Topluluklar" />
-            <NavLink href="/about" icon={<Info size={18} />} label="Hakkımızda" />
+        <div className="flex items-center gap-1 sm:gap-2">
+          <div className="hidden md:flex items-center gap-1">
+            <NavLink href="/discussions" icon={<MessageSquare size={16} />} label="Tartışmalar" />
+            <NavLink href="/communities" icon={<Users size={16} />} label="Topluluklar" />
+            <NavLink href="/about" icon={<Info size={16} />} label="Hakkımızda" />
           </div>
           
           <div className="flex items-center gap-1">
@@ -46,18 +46,18 @@ export function Navbar() {
               className="flex items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-2 focus:ring-primary"
               aria-label="Arama"
             >
-              <Search size={22} strokeWidth={2.5} />
+              <Search size={20} />
             </Link>
 
             {!loading && (
               user ? (
                 <Link
                   href="/profile"
-                  className="ml-1 sm:ml-2 flex items-center gap-2 rounded-full border-2 border-primary/20 bg-primary/5 p-1 sm:px-4 sm:py-2 text-sm font-bold text-primary transition-all hover:bg-primary hover:text-white focus:ring-2 focus:ring-primary shadow-sm group shrink-0"
+                  className="ml-1 flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 p-1 px-2 md:px-3 md:py-1.5 text-xs md:text-sm font-bold text-primary transition-all hover:bg-primary hover:text-white focus:ring-2 focus:ring-primary shadow-sm group shrink-0"
                   aria-label="Profil Ayarları"
                 >
                   {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
-                    <div className="relative h-8 w-8 rounded-full overflow-hidden border border-primary/20 group-hover:border-white">
+                    <div className="relative h-6 w-6 md:h-7 md:w-7 rounded-full overflow-hidden border border-primary/20 group-hover:border-white">
                       <Image 
                         src={user.user_metadata.avatar_url || user.user_metadata.picture} 
                         alt="" 
@@ -68,35 +68,35 @@ export function Navbar() {
                       />
                     </div>
                   ) : (
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 transition-transform group-hover:scale-110">
-                      <User size={18} />
+                    <div className="flex h-6 w-6 md:h-7 md:w-7 items-center justify-center rounded-full bg-primary/10">
+                      <User size={14} />
                     </div>
                   )}
-                  <span className="hidden lg:inline">Profil Ayarları</span>
+                  <span className="hidden sm:inline">Profil</span>
                 </Link>
               ) : (
                 <Link
                   href="/auth"
-                  className="ml-1 sm:ml-2 flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-lg"
+                  className="ml-1 flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs md:text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 focus:ring-2 focus:ring-primary shadow-md"
                 >
-                  <LogIn size={20} />
-                  <span className="hidden sm:inline">Giriş Yap</span>
+                  <LogIn size={18} />
+                  <span className="hidden sm:inline">Giriş</span>
                 </Link>
               )
             )}
             
             {loading && (
-              <div className="h-10 w-10 animate-pulse bg-muted rounded-full ml-2 border-2 border-muted"></div>
+              <div className="h-8 w-8 animate-pulse bg-muted rounded-full ml-1 md:ml-2"></div>
             )}
 
             {/* Mobile Menu Toggle */}
             <button
               onClick={toggleMenu}
-              className="ml-2 flex md:hidden items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-2 focus:ring-primary"
+              className="ml-1 flex md:hidden items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-2 focus:ring-primary"
               aria-expanded={isOpen}
               aria-label={isOpen ? "Menüyü Kapat" : "Menüyü Aç"}
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>

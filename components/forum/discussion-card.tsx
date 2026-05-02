@@ -65,23 +65,23 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
         {topic.content}
       </p>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3 text-[10px] md:text-xs text-muted-foreground relative z-10 pointer-events-none">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="h-6 w-6 md:h-7 md:w-7 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border shrink-0">
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] md:text-xs text-muted-foreground relative z-10 pointer-events-none">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="h-5 w-5 md:h-7 md:w-7 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border shrink-0">
             {topic.author?.avatar_url ? (
               <Image src={topic.author.avatar_url} alt="" width={28} height={28} className="object-cover h-full w-full" unoptimized referrerPolicy="no-referrer" />
             ) : (
-              <User size={14} />
+              <User size={12} />
             )}
           </div>
-          <span className="font-bold text-foreground truncate">{topic.author?.username || 'Anonim'}</span>
+          <span className="font-bold text-foreground truncate max-w-[100px] sm:max-w-none">{topic.author?.username || 'Anonim'}</span>
         </div>
-        <div className="flex items-center gap-1.5 opacity-70">
-          <Calendar size={14} />
+        <div className="flex items-center gap-1.5 opacity-70 whitespace-nowrap">
+          <Calendar size={12} className="md:w-3.5 md:h-3.5" />
           <span className="font-bold tracking-wider uppercase">{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
         </div>
-        <div className="flex items-center gap-1.5 opacity-70">
-          <MessageSquare size={14} />
+        <div className="flex items-center gap-1.5 opacity-70 whitespace-nowrap">
+          <MessageSquare size={12} className="md:w-3.5 md:h-3.5" />
           <span className="font-bold tracking-wider uppercase">{topic.comments?.length || 0} YANIT</span>
         </div>
       </div>

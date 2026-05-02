@@ -97,25 +97,25 @@ function NewTopicForm() {
   }
 
   return (
-    <main className="flex-1 container mx-auto px-4 py-8 md:py-16 max-w-3xl">
+    <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-3xl">
       <button 
         onClick={() => router.back()} 
-        className="mb-8 flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-all group uppercase tracking-widest"
+        className="mb-6 flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-all group uppercase tracking-widest"
       >
         <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Geri Dön
       </button>
 
-      <div className="vibe-card p-6 md:p-12 relative overflow-hidden">
+      <div className="vibe-card p-6 md:p-10 relative overflow-hidden">
         <div className="absolute top-0 right-0 size-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
         
-        <header className="mb-10 text-center relative z-10">
-          <h1 className="text-3xl md:text-5xl vibe-heading mb-4">Yeni Tartışma</h1>
-          <p className="text-base md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto">
+        <header className="mb-8 text-center relative z-10">
+          <h1 className="text-2xl md:text-5xl vibe-heading mb-3">Yeni Tartışma</h1>
+          <p className="text-sm md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto">
             Toplulukla paylaşmak istediğiniz bir sorunuz veya tecrübeniz mi var? Detayları aşağıya yazın.
           </p>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
+        <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 relative z-10">
           <div className="space-y-2">
             <label htmlFor="title" className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground ml-2">TARTIŞMA BAŞLIĞI</label>
             <input 
@@ -123,10 +123,10 @@ function NewTopicForm() {
               type="text" 
               required 
               disabled={loading}
-              placeholder="Örn: Erişilebilir web tasarımı için ipuçları" 
+              placeholder="Örn: Erişilebilir web tasarımı" 
               value={title} 
               onChange={e => setTitle(e.target.value)}
-              className="w-full p-4 md:p-5 rounded-xl border border-border bg-muted/20 outline-none focus:border-primary transition-all font-bold text-lg md:text-xl placeholder:text-muted-foreground/30 disabled:opacity-50"
+              className="w-full p-4 md:p-5 rounded-xl border border-border bg-muted/20 outline-none focus:border-primary transition-all font-bold text-base md:text-xl placeholder:text-muted-foreground/30 disabled:opacity-50"
             />
           </div>
 
@@ -139,16 +139,13 @@ function NewTopicForm() {
                 disabled={loading}
                 value={categoryId} 
                 onChange={e => setCategoryId(e.target.value)}
-                className="w-full p-4 md:p-5 rounded-xl border border-border bg-muted/20 outline-none focus:border-primary transition-all font-bold text-base md:text-lg appearance-none cursor-pointer disabled:opacity-50"
+                className="w-full p-4 md:p-5 rounded-xl border border-border bg-muted/20 outline-none focus:border-primary transition-all font-bold text-sm md:text-lg appearance-none cursor-pointer disabled:opacity-50"
               >
                 <option value="">Bir kategori seçin...</option>
                 {categories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
               </select>
-              <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
-                <Plus size={20} className="rotate-45" />
-              </div>
             </div>
           </div>
 
@@ -157,13 +154,13 @@ function NewTopicForm() {
             <TopicEditor value={content} onChange={setContent} />
           </div>
 
-          <div className="pt-6">
+          <div className="pt-4">
             <button 
               type="submit" 
               disabled={loading}
-              className="vibe-button-primary w-full py-4 md:py-5 text-base md:text-xl flex items-center justify-center gap-4"
+              className="vibe-button-primary w-full py-4 md:py-5 text-sm md:text-xl flex items-center justify-center gap-3"
             >
-              {loading ? <Loader2 size={24} className="animate-spin" /> : <Save size={24} />}
+              {loading ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
               {loading ? 'Yayımlanıyor...' : 'TARTIŞMAYI BAŞLAT'}
             </button>
           </div>

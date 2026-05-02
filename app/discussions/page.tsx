@@ -107,7 +107,7 @@ export default function DiscussionsPage() {
     <div className="min-h-screen flex flex-col bg-muted/30">
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-6 md:py-8">
+      <main className="flex-1 w-full container mx-auto px-4 py-6 md:py-8 overflow-hidden">
         <header className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
           <div className="text-left w-full md:w-auto">
             <h1 className="text-2xl md:text-4xl font-bold mb-2 flex items-center gap-3">
@@ -124,9 +124,9 @@ export default function DiscussionsPage() {
           </Link>
         </header>
 
-        <div className="grid lg:grid-cols-[260px_1fr] gap-8">
+        <div className="grid lg:grid-cols-[260px_1fr] gap-8 w-full">
           {/* Sidebar / Filters */}
-          <aside className="space-y-6">
+          <aside className="w-full space-y-6">
             <div className="relative group">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={16} />
               <input 
@@ -142,22 +142,22 @@ export default function DiscussionsPage() {
               <h2 className="px-1 text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
                 <Filter size={14} className="text-primary" /> Kategoriler
               </h2>
-              <nav className="relative -mx-4 px-4 md:mx-0 md:px-0">
-                <div className="flex lg:flex-col gap-2 overflow-x-auto pb-4 md:pb-6 lg:pb-0 scrollbar-hide snap-x touch-pan-x no-scrollbar">
-                  <div className="flex lg:flex-col gap-2 min-w-max lg:min-w-0 pr-8 lg:pr-0">
+              <nav className="relative w-full">
+                <div className="flex lg:flex-col gap-2 overflow-x-auto pb-4 scrollbar-hide snap-x touch-pan-x no-scrollbar lg:mx-0 lg:px-0">
+                  <div className="flex lg:flex-col gap-2 min-w-max lg:min-w-0">
                     <CategoryLink label="Hepsi" active count={topics.length} />
                     {categories.map(cat => (
                       <CategoryLink key={cat.id} label={cat.name} count={topics.filter(t => t.category_id === cat.id).length} />
                     ))}
                   </div>
                 </div>
-                <div className="absolute right-0 top-0 bottom-4 w-8 bg-gradient-to-l from-muted/30 to-transparent pointer-events-none lg:hidden" />
+                <div className="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-muted/30 to-transparent pointer-events-none lg:hidden" />
               </nav>
             </div>
           </aside>
 
           {/* Discussion List */}
-          <section className="space-y-4">
+          <section className="w-full space-y-4 min-w-0 overflow-hidden">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-16 md:py-20 gap-4">
                 <Loader2 className="animate-spin text-primary" size={40} />

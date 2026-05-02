@@ -17,23 +17,23 @@ export default function Home() {
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="container mx-auto px-4 py-16 md:py-28 lg:py-36 text-center relative">
+        <section className="container mx-auto px-4 py-12 md:py-24 lg:py-32 text-center relative">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-8 relative z-10"
+            className="space-y-6 md:space-y-8 relative z-10"
           >
-            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs md:text-sm font-bold tracking-widest uppercase">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] md:text-sm font-bold tracking-widest uppercase">
               Türkiye&apos;nin En Kapsayıcı Topluluğu
             </span>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl vibe-heading">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl vibe-heading px-2">
               Engelleri <span className="text-primary">Birlikte</span> Aşalım
             </h1>
-            <p className="mx-auto max-w-2xl text-base md:text-xl text-muted-foreground leading-relaxed font-medium">
+            <p className="mx-auto max-w-2xl text-sm md:text-xl text-muted-foreground leading-relaxed font-medium px-4">
               Teknoloji, erişilebilirlik ve sosyal yaşam hakkında her şeyi paylaştığımız, 
               AI desteğiyle güçlendirilmiş en geniş topluluğa hoş geldiniz.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6 px-4 md:px-0 max-w-lg mx-auto">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4 px-4 max-w-md mx-auto">
               {!loading && (
                 user ? (
                   <Link
@@ -63,8 +63,8 @@ export default function Home() {
         </section>
 
         {/* Quick Access Grid */}
-        <section className="container mx-auto px-4 pb-24">
-          <div className="grid gap-8 md:grid-cols-3 -mt-8 md:-mt-16">
+        <section className="container mx-auto px-4 pb-20 md:pb-24">
+          <div className="grid gap-4 sm:gap-6 md:grid-cols-3 -mt-6 md:-mt-16">
             <QuickActionLink 
               href="/communities" 
               title="Özel Gruplar" 
@@ -90,14 +90,14 @@ export default function Home() {
         </section>
 
         {/* Featured Content & Features */}
-        <section className="bg-muted/30 py-24 border-y border-border">
+        <section className="bg-muted/30 py-16 md:py-24 border-y border-border">
           <div className="container mx-auto px-4 lg:max-w-7xl">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl vibe-heading mb-4">Neden EngelsizForum?</h2>
-              <p className="text-lg md:text-xl text-muted-foreground font-medium">Her detay, her birey için özenle tasarlandı.</p>
+            <div className="text-center mb-10 md:mb-16">
+              <h2 className="text-2xl md:text-5xl vibe-heading mb-4">Neden EngelsizForum?</h2>
+              <p className="text-sm md:text-xl text-muted-foreground font-medium">Her detay, her birey için özenle tasarlandı.</p>
             </div>
             
-            <div className="grid gap-8 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-3">
               <FeatureCard 
                 icon={<Zap size={32} className="text-blue-600" />}
                 title="AI Desteği"
@@ -118,32 +118,32 @@ export default function Home() {
         </section>
 
         {/* Statistics Banner */}
-        <section className="container mx-auto px-4 py-20 md:py-28">
-          <div className="bg-primary text-primary-foreground rounded-3xl md:rounded-[3rem] p-12 md:p-20 shadow-xl relative overflow-hidden text-center">
-            <div className="relative z-10 grid md:grid-cols-3 gap-12 md:gap-16">
-              <div className="space-y-2">
-                <p className="text-4xl md:text-6xl font-bold tracking-tight">Birlikte</p>
-                <p className="text-xs md:text-sm font-medium opacity-70 uppercase tracking-widest">Güçlüyüz</p>
+        <section className="container mx-auto px-4 py-16 md:py-28">
+          <div className="bg-primary text-primary-foreground rounded-3xl md:rounded-[3rem] p-8 md:p-20 shadow-xl relative overflow-hidden text-center">
+            <div className="relative z-10 grid sm:grid-cols-3 gap-8 md:gap-16">
+              <div className="space-y-1">
+                <p className="text-3xl md:text-6xl font-bold tracking-tight">Birlikte</p>
+                <p className="text-[10px] md:text-sm font-medium opacity-70 uppercase tracking-widest">Güçlüyüz</p>
               </div>
-              <div className="space-y-2">
-                <p className="text-4xl md:text-6xl font-bold tracking-tight">Eşit</p>
-                <p className="text-xs md:text-sm font-medium opacity-70 uppercase tracking-widest">İletişim</p>
+              <div className="space-y-1">
+                <p className="text-3xl md:text-6xl font-bold tracking-tight">Eşit</p>
+                <p className="text-[10px] md:text-sm font-medium opacity-70 uppercase tracking-widest">İletişim</p>
               </div>
-              <div className="space-y-2">
-                <p className="text-4xl md:text-6xl font-bold tracking-tight">Özgür</p>
-                <p className="text-xs md:text-sm font-medium opacity-70 uppercase tracking-widest">Gelecek</p>
+              <div className="space-y-1">
+                <p className="text-3xl md:text-6xl font-bold tracking-tight">Özgür</p>
+                <p className="text-[10px] md:text-sm font-medium opacity-70 uppercase tracking-widest">Gelecek</p>
               </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-border py-16 bg-card">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8">
+      <footer className="w-full border-t border-border py-16 bg-card overflow-hidden">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8 max-w-full">
           <div className="text-2xl font-bold tracking-tighter">
             ENGELSİZ<span className="text-primary">FORUM</span>
           </div>
-          <div className="text-sm font-medium text-muted-foreground">
+          <div className="text-sm font-medium text-muted-foreground text-center">
             © 2026 Herkes İçin Eşit İletişim.
           </div>
           <div className="flex gap-8 text-sm font-bold uppercase tracking-wider">
