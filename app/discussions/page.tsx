@@ -124,9 +124,9 @@ export default function DiscussionsPage() {
           </Link>
         </header>
 
-        <div className="grid lg:grid-cols-[260px_1fr] gap-8 w-full">
+        <div className="grid lg:grid-cols-[260px_1fr] gap-8 w-full max-w-full overflow-hidden">
           {/* Sidebar / Filters */}
-          <aside className="w-full space-y-6">
+          <aside className="w-full space-y-6 min-w-0">
             <div className="relative group">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={16} />
               <input 
@@ -138,14 +138,14 @@ export default function DiscussionsPage() {
               />
             </div>
 
-            <div className="w-full">
+            <div className="w-full overflow-hidden min-w-0">
               <h2 className="px-1 text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
                 <Filter size={14} className="text-primary" /> Kategoriler
               </h2>
-              <nav className="relative w-full">
+              <nav className="relative w-full overflow-hidden">
                 <div className="flex lg:flex-col gap-2 overflow-x-auto pb-4 scrollbar-hide snap-x touch-pan-x no-scrollbar lg:mx-0 lg:px-0">
-                  <div className="flex lg:flex-col gap-2 min-w-max lg:min-w-0">
-                    <CategoryLink label="Hepsi" active count={topics.length} />
+                  <div className="flex lg:flex-col gap-2 min-w-max lg:w-full">
+                    <CategoryLink label="Hepsi" active={true} count={topics.length} />
                     {categories.map(cat => (
                       <CategoryLink key={cat.id} label={cat.name} count={topics.filter(t => t.category_id === cat.id).length} />
                     ))}

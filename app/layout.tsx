@@ -21,12 +21,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body suppressHydrationWarning className="bg-background text-foreground transition-colors duration-300 overflow-x-hidden">
+    <html lang="tr" className={`${inter.variable} ${jetbrainsMono.variable} h-full`}>
+      <body className="bg-background text-foreground transition-colors duration-300 overflow-x-hidden min-h-screen flex flex-col">
         <AuthProvider>
-          <AccessibilityProvider>
-            {children}
-          </AccessibilityProvider>
+            <AccessibilityProvider>
+              <div className="flex-1 w-full flex flex-col">
+                {children}
+              </div>
+            </AccessibilityProvider>
         </AuthProvider>
       </body>
     </html>

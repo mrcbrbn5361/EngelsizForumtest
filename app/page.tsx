@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { MessageCircle, ShieldCheck, Zap, HeartHandshake, ArrowRight, Search, Users, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -138,21 +139,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="w-full border-t border-border py-16 bg-card overflow-hidden">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8 max-w-full">
-          <div className="text-2xl font-bold tracking-tighter">
-            ENGELSİZ<span className="text-primary">FORUM</span>
-          </div>
-          <div className="text-sm font-medium text-muted-foreground text-center">
-            © 2026 Herkes İçin Eşit İletişim.
-          </div>
-          <div className="flex gap-8 text-sm font-bold uppercase tracking-wider">
-            <Link href="/about" className="hover:text-primary transition-colors">Hakkımızda</Link>
-            <Link href="/discussions" className="hover:text-primary transition-colors">Tartışmalar</Link>
-          </div>
-        </div>
-      </footer>
-
+      <Footer />
       <AccessibilityToolbar />
     </div>
   );
