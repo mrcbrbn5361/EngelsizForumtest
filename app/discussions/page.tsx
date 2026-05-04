@@ -19,13 +19,25 @@ export default function DiscussionsPage() {
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaryResult, setSummaryResult] = useState<{ id: string, text: string } | null>(null);
   const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
   const fetchTopics = useCallback(async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('topics')
         .select('*, author:profiles(*), category:categories(*), comments(id)')
         .order('created_at', { ascending: false });
+      
+      if (selectedCategoryId) {
+        // Fetch topics in this category OR its subcategories
+        const subCategoryIds = categories
+          .filter(c => c.parent_id === selectedCategoryId)
+          .map(c => c.id);
+        
+        query = query.in('category_id', [selectedCategoryId, ...subCategoryIds]);
+      }
+
+      const { data, error } = await query;
       
       if (error) {
         console.error('Error fetching topics:', error);
@@ -37,7 +49,7 @@ export default function DiscussionsPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedCategoryId, categories]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -57,16 +69,12 @@ export default function DiscussionsPage() {
   }, []);
 
   useEffect(() => {
-    let isMounted = true;
-    const init = async () => {
-      if (isMounted) {
-        await fetchTopics();
-        await fetchCategories();
-      }
-    };
-    init();
-    return () => { isMounted = false; };
-  }, [fetchTopics, fetchCategories]);
+    fetchTopics();
+  }, [fetchTopics]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const handleSummarize = async (id: string) => {
     const topic = topics.find(t => t.id === id);
@@ -145,9 +153,22 @@ export default function DiscussionsPage() {
               <nav className="relative w-full overflow-hidden">
                 <div className="flex lg:flex-col gap-2 overflow-x-auto pb-4 scrollbar-hide snap-x touch-pan-x no-scrollbar lg:mx-0 lg:px-0">
                   <div className="flex lg:flex-col gap-2 min-w-max lg:w-full">
-                    <CategoryLink label="Hepsi" active={true} count={topics.length} />
-                    {categories.map(cat => (
-                      <CategoryLink key={cat.id} label={cat.name} count={topics.filter(t => t.category_id === cat.id).length} />
+                    <CategoryLink 
+                      label="Hepsi" 
+                      active={selectedCategoryId === null} 
+                      count={topics.length} 
+                      onClick={() => setSelectedCategoryId(null)}
+                    />
+                    {categories.filter(c => !c.parent_id).map(cat => (
+                      <div key={cat.id} className="lg:contents">
+                        <CategoryLink 
+                          label={cat.name} 
+                          active={selectedCategoryId === cat.id} 
+                          count={topics.filter(t => t.category_id === cat.id || categories.find(sub => sub.id === t.category_id)?.parent_id === cat.id).length} 
+                          onClick={() => setSelectedCategoryId(cat.id)}
+                        />
+                        {/* Recursive subcategories could be added here for a tree view */}
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -219,9 +240,10 @@ export default function DiscussionsPage() {
   );
 }
 
-function CategoryLink({ label, active, count }: { label: string, active?: boolean, count: number }) {
+function CategoryLink({ label, active, count, onClick }: { label: string, active?: boolean, count: number, onClick: () => void }) {
   return (
     <button
+      onClick={onClick}
       className={`flex items-center justify-between rounded-full lg:rounded-xl px-5 py-2.5 lg:py-3.5 text-[11px] md:text-sm font-bold transition-all whitespace-nowrap shrink-0 lg:w-full min-w-fit snap-start ${
         active 
           ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 lg:scale-[1.02]' 

@@ -7,7 +7,9 @@ import Link from 'next/link';
 import { Footer } from '@/components/layout/footer';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { Topic, Comment } from '@/types/database';
-import { ArrowLeft, Send, User, Calendar, MessageSquare, Sparkles, Loader2 } from 'lucide-react';
+import { ArrowLeft, Send, User, Calendar, MessageSquare, Sparkles, Loader2, Flag, Heart, Lock, Pin, CheckCircle } from 'lucide-react';
+import { ReactionButton } from '@/components/forum/reaction-button';
+import { ReportButton } from '@/components/forum/report-button';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { GoogleGenAI } from '@google/genai';
@@ -29,6 +31,25 @@ export default function DiscussionDetailPage() {
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    if (user) {
+      supabase.from('profiles').select('*').eq('id', user.id).single().then(({ data }) => setProfile(data));
+    }
+  }, [user]);
+
+  const handleUpdateTopic = async (updates: Partial<Topic>) => {
+    if (!topic || !user) return;
+    try {
+      const { error } = await supabase.from('topics').update(updates).eq('id', topic.id);
+      if (error) throw error;
+      setTopic({ ...topic, ...updates } as Topic);
+    } catch (err: any) {
+      alert('Güncelleme hatası: ' + err.message);
+    }
+  };
+
   const [sending, setSending] = useState(false);
 
   const fetchTopic = useCallback(async () => {
@@ -198,15 +219,55 @@ export default function DiscussionDetailPage() {
                   </span>
                 </div>
               </div>
-              
-              <button 
-                onClick={handleSummarize}
-                disabled={isSummarizing}
-                className="vibe-button-primary py-2.5 md:py-3.5 px-6 md:px-8 text-xs md:text-base gap-2"
-              >
-                <Sparkles size={18} className={isSummarizing ? "animate-spin" : ""} /> 
-                {isSummarizing ? 'Özetleniyor...' : 'AI Özetle'}
-              </button>
+
+              <div className="flex flex-wrap items-center gap-3">
+                {topic.is_pinned && <span className="text-primary flex items-center gap-1 text-[10px] font-black uppercase tracking-widest bg-primary/5 px-2 py-1 rounded"><Pin size={12}/>Sabit</span>}
+                {topic.is_solved && <span className="text-green-600 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest bg-green-50 px-2 py-1 rounded"><CheckCircle size={12}/>Çözüldü</span>}
+                {topic.is_locked && <span className="text-red-600 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest bg-red-50 px-2 py-1 rounded"><Lock size={12}/>Kilitli</span>}
+                
+                <div className="flex items-center gap-4 ml-auto">
+                  <ReactionButton topicId={topic.id} initialCount={0} />
+                  <ReportButton topicId={topic.id} />
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-border/50">
+                {/* Moderation Controls */}
+                {user && (profile?.role === 'admin' || profile?.role === 'moderator' || topic.author_id === user.id) && !topic.is_solved && (
+                  <button 
+                    onClick={() => handleUpdateTopic({ is_solved: true })}
+                    className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-green-600 hover:bg-green-50 px-3 py-2 rounded-lg transition-colors border border-green-200"
+                  >
+                    <CheckCircle size={14} /> Çözüldü İşaretle
+                  </button>
+                )}
+
+                {user && (profile?.role === 'admin' || profile?.role === 'moderator') && (
+                  <>
+                    <button 
+                      onClick={() => handleUpdateTopic({ is_pinned: !topic.is_pinned })}
+                      className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest px-3 py-2 rounded-lg transition-colors border ${topic.is_pinned ? 'bg-primary text-primary-foreground border-primary' : 'text-primary border-primary/20 hover:bg-primary/5'}`}
+                    >
+                      <Pin size={14} /> {topic.is_pinned ? 'Sabitlenmiş' : 'Sabitle'}
+                    </button>
+                    <button 
+                      onClick={() => handleUpdateTopic({ is_locked: !topic.is_locked })}
+                      className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest px-3 py-2 rounded-lg transition-colors border ${topic.is_locked ? 'bg-red-600 text-white border-red-600' : 'text-red-600 border-red-200 hover:bg-red-50'}`}
+                    >
+                      <Lock size={14} /> {topic.is_locked ? 'Kilitli' : 'Kilitle'}
+                    </button>
+                  </>
+                )}
+
+                <button 
+                  onClick={handleSummarize}
+                  disabled={isSummarizing}
+                  className="vibe-button-primary py-2 px-4 text-xs gap-2 ml-auto"
+                >
+                  <Sparkles size={16} className={isSummarizing ? "animate-spin" : ""} /> 
+                  {isSummarizing ? 'Özetleniyor...' : 'AI Özetle'}
+                </button>
+              </div>
             </div>
           </header>
 
@@ -286,26 +347,33 @@ export default function DiscussionDetailPage() {
             </div>
 
             {user ? (
-              <form onSubmit={handleSendMessage} className="bg-card p-6 md:p-10 rounded-2xl md:rounded-3xl border border-primary/20 shadow-lg mt-12">
-                <h3 className="text-xs font-bold text-primary uppercase tracking-widest mb-4">Fikrini Paylaş</h3>
-                <textarea 
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Tartışmaya katıl..."
-                  disabled={sending}
-                  className="w-full py-3 text-base md:text-xl font-medium bg-transparent min-h-[120px] md:min-h-[180px] outline-none placeholder:text-muted-foreground/30 resize-none disabled:opacity-50"
-                />
-                <div className="flex justify-end mt-4">
-                  <button 
-                    type="submit"
-                    disabled={sending || !newComment.trim()}
-                    className="vibe-button-primary px-8 py-3 gap-2"
-                  >
-                    {sending ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-                    {sending ? 'Yollanıyor...' : 'Gönder'}
-                  </button>
+              topic.is_locked ? (
+                <div className="bg-muted/30 p-8 rounded-3xl border border-dashed border-border mt-12 text-center">
+                  <Lock size={32} className="mx-auto mb-4 text-muted-foreground opacity-50" />
+                  <p className="font-bold text-muted-foreground uppercase tracking-widest text-[10px] md:text-xs">Bu tartışma kilitlendi. Yeni yanıt gönderilemez.</p>
                 </div>
-              </form>
+              ) : (
+                <form onSubmit={handleSendMessage} className="bg-card p-6 md:p-10 rounded-2xl md:rounded-3xl border border-primary/20 shadow-lg mt-12">
+                  <h3 className="text-xs font-bold text-primary uppercase tracking-widest mb-4">Fikrini Paylaş</h3>
+                  <textarea 
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder="Tartışmaya katıl..."
+                    disabled={sending}
+                    className="w-full py-3 text-base md:text-xl font-medium bg-transparent min-h-[120px] md:min-h-[180px] outline-none placeholder:text-muted-foreground/30 resize-none disabled:opacity-50"
+                  />
+                  <div className="flex justify-end mt-4">
+                    <button 
+                      type="submit"
+                      disabled={sending || !newComment.trim()}
+                      className="vibe-button-primary px-8 py-3 gap-2"
+                    >
+                      {sending ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+                      {sending ? 'Yollanıyor...' : 'Gönder'}
+                    </button>
+                  </div>
+                </form>
+              )
             ) : (
               <div className="text-center py-12 bg-primary/5 rounded-3xl border border-dashed border-primary/20 mt-12">
                 <p className="text-muted-foreground font-bold mb-6">Topluluğa sesini duyurmak için giriş yapmalısın.</p>

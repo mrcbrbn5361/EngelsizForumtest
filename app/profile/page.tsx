@@ -16,7 +16,7 @@ export default function ProfilePage() {
   const { resetSettings } = useAccessibility();
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [profile, setProfile] = useState<{ username: string, full_name: string, avatar_url: string | null } | null>(null);
+  const [profile, setProfile] = useState<{ username: string, full_name: string | null, avatar_url: string | null, role: string, level: number, xp: number } | null>(null);
   const [editMode, setEditMode] = useState(false);
 
   const fetchProfile = useCallback(async () => {
@@ -24,7 +24,7 @@ export default function ProfilePage() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('username, full_name, avatar_url')
+        .select('username, full_name, avatar_url, role, level, xp')
         .eq('id', user.id)
         .single();
       
@@ -32,7 +32,10 @@ export default function ProfilePage() {
         setProfile({
           username: data.username,
           full_name: data.full_name,
-          avatar_url: data.avatar_url
+          avatar_url: data.avatar_url,
+          role: data.role,
+          level: data.level,
+          xp: data.xp
         });
       }
     } catch (err) {
@@ -188,6 +191,9 @@ export default function ProfilePage() {
                   <ProfileItem icon={<Mail size={18} />} label="E-posta" value={user.email || ''} />
                   <ProfileItem icon={<User size={18} />} label="Tam İsim" value={profile?.full_name || 'Tanımlanmamış'} />
                   <ProfileItem icon={<Settings size={18} />} label="Kullanıcı Kimliği" value={profile?.username || user.email?.split('@')[0] || ''} />
+                  <ProfileItem icon={<Shield size={18} />} label="Rol" value={profile?.role.toUpperCase() || 'USER'} />
+                  <ProfileItem icon={<Settings size={18} />} label="Seviye" value={profile?.level.toString() || '1'} />
+                  <ProfileItem icon={<Settings size={18} />} label="XP" value={profile?.xp.toString() || '0'} />
                 </div>
               )}
             </section>

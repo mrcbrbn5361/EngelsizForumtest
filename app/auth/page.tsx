@@ -15,6 +15,7 @@ export default function AuthPage() {
   const { user, loading: authLoading } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -36,7 +37,16 @@ export default function AuthPage() {
         if (error) throw error;
         window.location.href = '/';
       } else {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({ 
+          email, 
+          password,
+          options: {
+            data: {
+              username: username || email.split('@')[0],
+              full_name: username || email.split('@')[0],
+            }
+          }
+        });
         if (error) throw error;
         setError('Kayıt başarılı! Lütfen e-postanızı kontrol edin.');
       }
@@ -106,6 +116,26 @@ export default function AuthPage() {
           </div>
 
           <form onSubmit={handleAuth} className="space-y-6">
+            {!isLogin && (
+              <div className="space-y-3">
+                <label htmlFor="username" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">
+                  Kullanıcı Adı
+                </label>
+                <div className="relative group">
+                  <UserPlus className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={20} />
+                  <input
+                    id="username"
+                    type="text"
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-border bg-background outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-base"
+                    placeholder="kullanici_adiniz"
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="space-y-3">
               <label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">
                 E-posta Adresi

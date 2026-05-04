@@ -26,9 +26,19 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
-            {topic.pinned && (
+            {topic.is_pinned && (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] md:text-xs font-bold text-primary shrink-0">
                 <Pin size={10} className="md:w-3 md:h-3" /> <span className="hidden sm:inline">SABİT</span>
+              </span>
+            )}
+            {topic.is_solved && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-3 py-1 text-[10px] md:text-xs font-bold text-green-600 shrink-0">
+                ÇÖZÜLDÜ
+              </span>
+            )}
+            {topic.is_locked && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-[10px] md:text-xs font-bold text-red-600 shrink-0">
+                KİLİTLİ
               </span>
             )}
             <span className="truncate">

@@ -21,6 +21,11 @@ function NewTopicForm() {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const leafCategories = React.useMemo(() => {
+    const parentIds = new Set(categories.map(c => c.parent_id).filter(Boolean));
+    return categories.filter(c => !parentIds.has(c.id));
+  }, [categories]);
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -142,7 +147,7 @@ function NewTopicForm() {
                 className="w-full p-4 md:p-5 rounded-xl border border-border bg-muted/20 outline-none focus:border-primary transition-all font-bold text-sm md:text-lg appearance-none cursor-pointer disabled:opacity-50"
               >
                 <option value="">Bir kategori seçin...</option>
-                {categories.map(cat => (
+                {leafCategories.map(cat => (
                   <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
               </select>
