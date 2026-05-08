@@ -19,12 +19,13 @@ export default function DiscussionsPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
 
+  const [sortBy, setSortBy] = useState<'Latest' | 'Popular' | 'Categories'>('Latest');
+
   const fetchTopics = useCallback(async () => {
     try {
       let query = supabase
         .from('topics')
-        .select('*, author:profiles(*), category:categories(*), comments(id)')
-        .order('created_at', { ascending: false });
+        .select('*, author:profiles(*), category:categories(*), comments(id)');
       
       if (selectedCategoryId) {
         // Fetch topics in this category OR its subcategories
@@ -35,19 +36,34 @@ export default function DiscussionsPage() {
         query = query.in('category_id', [selectedCategoryId, ...subCategoryIds]);
       }
 
+      // Apply sorting via query or locally. Since comments are joined, we might need local sort for "Popular"
+      if (sortBy === 'Latest') {
+        query = query.order('created_at', { ascending: false });
+      }
+
       const { data, error } = await query;
       
       if (error) {
         console.error('Error fetching topics:', error);
         return;
       }
-      setTopics(data || []);
+      
+      let finalData = data || [];
+      
+      // Local sort for Popular (by comment count)
+      if (sortBy === 'Popular') {
+        finalData = [...finalData].sort((a, b) => 
+          (b.comments?.length || 0) - (a.comments?.length || 0)
+        );
+      }
+
+      setTopics(finalData);
     } catch (err) {
       console.error('Error fetching topics:', err);
     } finally {
       setLoading(false);
     }
-  }, [selectedCategoryId, categories]);
+  }, [selectedCategoryId, categories, sortBy]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -67,6 +83,7 @@ export default function DiscussionsPage() {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     fetchTopics();
   }, [fetchTopics]);
 
@@ -128,9 +145,17 @@ export default function DiscussionsPage() {
 
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 border-b border-border overflow-hidden">
             <div className="flex gap-4 overflow-x-auto pb-4 md:pb-0 scrollbar-hide flex-nowrap items-center">
-                {['Kategoriler', 'Etiketler', 'Tümü'].map(item => (
-                    <button key={item} className="px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground whitespace-nowrap shrink-0 transition-colors">
-                        {item}
+                {[
+                  { label: 'Kategoriler', action: () => setSortBy('Categories') },
+                  { label: 'Etiketler', action: () => {} },
+                  { label: 'Tümü', action: () => setSelectedCategoryId(null) }
+                ].map(item => (
+                    <button 
+                      key={item.label} 
+                      onClick={item.action}
+                      className="px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground whitespace-nowrap shrink-0 transition-colors"
+                    >
+                        {item.label}
                     </button>
                 ))}
             </div>
@@ -142,7 +167,8 @@ export default function DiscussionsPage() {
                 ].map(item => (
                     <button 
                       key={item.value} 
-                      className={`px-3 py-2 text-sm font-semibold whitespace-nowrap shrink-0 transition-colors ${item.value === 'Latest' ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                      onClick={() => setSortBy(item.value as any)}
+                      className={`px-3 py-2 text-sm font-semibold whitespace-nowrap shrink-0 transition-colors ${sortBy === item.value ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`}
                     >
                         {item.label}
                     </button>
@@ -161,6 +187,32 @@ export default function DiscussionsPage() {
             {loading ? (
               <div className="flex flex-col items-center justify-center py-16 gap-4">
                 <Loader2 className="animate-spin text-primary" size={40} />
+              </div>
+            ) : sortBy === 'Categories' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 px-2">
+                {categories.filter(c => !c.parent_id).map(category => (
+                  <button 
+                    key={category.id}
+                    onClick={() => {
+                      setSelectedCategoryId(category.id);
+                      setSortBy('Latest');
+                    }}
+                    className={`p-6 rounded-2xl border transition-all text-left flex flex-col gap-2 ${
+                      selectedCategoryId === category.id 
+                        ? 'border-primary bg-primary/5' 
+                        : 'border-border bg-card hover:border-primary/50'
+                    }`}
+                  >
+                    <div className="text-lg font-bold text-foreground">{category.name}</div>
+                    <div className="text-sm text-muted-foreground">{category.description || 'Bu kategori için açıklama bulunmamaktadır.'}</div>
+                  </button>
+                ))}
+                <button 
+                  onClick={() => setSelectedCategoryId(null)}
+                  className="p-6 rounded-2xl border border-dashed border-border flex items-center justify-center text-muted-foreground hover:bg-muted/50 transition-all font-bold"
+                >
+                  Tüm Kategorileri Göster
+                </button>
               </div>
             ) : filteredTopics.length > 0 ? (
               filteredTopics.map((topic) => (
