@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
-import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Users, Search, ChevronRight, MessageSquare, Handshake, Loader2, Plus, Sparkles, X, Globe, Save } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
@@ -95,7 +93,7 @@ export default function CommunitiesPage() {
   };
 
   return (
-          <DashboardLayout>
+    <DashboardLayout>
       <main className="container mx-auto px-4 py-8 md:py-16 max-w-6xl">
         <header className="mb-12 md:mb-20 flex flex-col items-center text-center px-4">
           <motion.div 
@@ -118,7 +116,7 @@ export default function CommunitiesPage() {
             </p>
             <button 
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90"
+              className="px-6 py-3 bg-primary text-primary-foreground rounded-lg font-bold flex items-center justify-center gap-2 hover:bg-primary/90"
             >
               <Plus size={20} className={showCreateForm ? 'rotate-45' : ''} />
               {showCreateForm ? 'Vazgeç' : 'Topluluk Oluştur'}
@@ -134,9 +132,9 @@ export default function CommunitiesPage() {
           >
             <form 
               onSubmit={createCommunity}
-              className="bg-card p-8 rounded-3xl border border-border shadow-soft max-w-2xl mx-auto space-y-6"
+              className="bg-card p-8 rounded-xl border border-border max-w-2xl mx-auto space-y-6"
             >
-              <h2 className="text-xl md:text-2xl font-bold text-center mb-2">Yeni Bir Grup Kur</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-center mb-2 text-foreground">Yeni Bir Grup Kur</h2>
               <div className="space-y-1.5">
                 <label className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest ml-2">GRUP ADI</label>
                 <input 
@@ -145,7 +143,7 @@ export default function CommunitiesPage() {
                   value={newCommunity.name}
                   onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
                   required
-                  className="w-full px-5 py-3 rounded-xl border border-border bg-muted/20 focus:border-primary outline-none transition-all text-sm md:text-base font-medium"
+                  className="w-full px-5 py-3 rounded-xl border border-border bg-muted focus:border-primary outline-none transition-all text-sm md:text-base font-medium"
                 />
               </div>
               <div className="space-y-1.5">
@@ -155,7 +153,7 @@ export default function CommunitiesPage() {
                   value={newCommunity.description}
                   onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
                   required
-                  className="w-full px-5 py-3 rounded-xl border border-border bg-muted/20 focus:border-primary outline-none transition-all text-sm md:text-base min-h-[100px] font-medium"
+                  className="w-full px-5 py-3 rounded-xl border border-border bg-muted focus:border-primary outline-none transition-all text-sm md:text-base min-h-[100px] font-medium"
                 />
               </div>
               <button 
@@ -177,7 +175,7 @@ export default function CommunitiesPage() {
             placeholder="Gruplarda ara..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 pr-6 py-4 rounded-full border border-border bg-card shadow-sm focus:border-primary outline-none transition-all text-sm md:text-lg font-medium"
+            className="w-full pl-14 pr-6 py-4 h-[48px] rounded-xl border border-border bg-muted focus:border-primary outline-none transition-all text-sm md:text-lg font-medium"
           />
         </div>
 
@@ -189,15 +187,15 @@ export default function CommunitiesPage() {
         ) : filteredCommunities.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-10">
             {filteredCommunities.map((community, index) => (
-                <div key={community.id} className="bg-card p-8 rounded-3xl border border-border shadow-soft flex flex-col justify-between min-h-[220px] md:min-h-[280px]">
+              <div key={community.id} className="bg-card p-8 rounded-xl border border-border flex flex-col justify-between min-h-[220px] md:min-h-[280px]">
                   <div>
                     <div className="flex items-start gap-4 mb-6">
-                      <div className="p-4 bg-muted rounded-2xl group-hover:bg-primary/10 group-hover:text-primary transition-colors duration-300">
+                      <div className="p-4 bg-muted rounded-xl transition-colors duration-300">
                         {getIcon(community.icon)}
                       </div>
                       <div className="min-w-0">
                         <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">TOPLULUK</p>
-                        <h2 className="text-xl md:text-2xl font-bold group-hover:text-primary transition-colors truncate tracking-tight">
+                        <h2 className="text-xl md:text-2xl font-bold transition-colors truncate tracking-tight text-foreground">
                           <Link href={`/communities/${community.id}`} className="after:absolute after:inset-0 outline-none">
                             {community.name}
                           </Link>
@@ -210,7 +208,7 @@ export default function CommunitiesPage() {
                   </div>
                   
                   <div className="flex items-center justify-between mt-auto">
-                    <div className="flex items-center gap-2 text-primary font-bold text-sm group-hover:translate-x-1 transition-transform">
+                    <div className="flex items-center gap-2 text-primary font-bold text-sm">
                       Görüntüle <ChevronRight size={18} />
                     </div>
                   </div>
@@ -218,9 +216,9 @@ export default function CommunitiesPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-24 px-6 bg-card rounded-[3rem] md:rounded-[5rem] border-4 border-dashed border-border/50">
-            <Users className="mx-auto text-muted-foreground mb-8 opacity-10" size={80} />
-            <h3 className="text-2xl md:text-4xl font-black mb-4">Topluluk Bulunamadı</h3>
+          <div className="text-center py-24 px-6 bg-card rounded-xl border-4 border-dashed border-border">
+            <Users className="mx-auto text-muted-foreground mb-8 opacity-20" size={80} />
+            <h3 className="text-2xl md:text-4xl font-black mb-4 text-foreground">Topluluk Bulunamadı</h3>
             <p className="text-base md:text-lg text-muted-foreground max-w-md mx-auto">Aradığınız kriterlere uygun bir grup yok. Belki de ilk grubu siz kurmalısınız?</p>
           </div>
         )}

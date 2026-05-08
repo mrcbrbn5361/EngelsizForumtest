@@ -111,120 +111,77 @@ export default function DiscussionsPage() {
 
   return (
     <DashboardLayout>
-        <header className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
-          <div className="text-left w-full md:w-auto">
-            <h1 className="text-2xl md:text-4xl font-black mb-2 flex items-center gap-3 tracking-tighter">
-              <MessageSquareCode className="text-primary h-8 w-8" /> Tartışmalar
-            </h1>
-            <p className="text-sm md:text-lg text-muted-foreground font-medium">Topluluğumuzdaki güncel başlıkları ve yardım taleplerini inceleyin.</p>
-          </div>
-          
-          <Link 
-            href="/discussions/new"
-            className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90"
-          >
-            <Plus size={20} /> Yeni Başlık Aç
-          </Link>
-        </header>
-
-        <div className="grid lg:grid-cols-[260px_1fr] gap-8 w-full max-w-full overflow-hidden">
-          {/* Sidebar / Filters */}
-          <aside className="w-full space-y-6 min-w-0">
+        <div className="bg-card p-8 rounded-2xl mb-8 border border-border">
+            <h1 className="text-3xl font-bold mb-2 text-foreground">Topluluğumuza Hoş Geldiniz</h1>
+            <p className="text-muted-foreground mb-6">Burada olduğunuz için mutluyuz. Yardıma ihtiyacınız olursa, lütfen paylaşım yapmadan önce arama yapın.</p>
             <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={16} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
               <input 
                 type="text"
-                placeholder="Başlıklarda ara..."
+                placeholder="Ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 rounded-xl border border-border bg-card outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm font-medium"
+                className="w-full pl-12 pr-4 py-3 h-12 rounded-xl border border-border bg-card outline-none focus:ring-1 focus:ring-primary transition-all font-medium"
               />
             </div>
+        </div>
 
-            <div className="w-full overflow-hidden min-w-0">
-              <h2 className="px-1 text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
-                <Filter size={14} className="text-primary" /> Kategoriler
-              </h2>
-              <nav className="relative w-full overflow-hidden">
-                <div className="flex lg:flex-col gap-2 overflow-x-auto pb-4 scrollbar-hide snap-x touch-pan-x no-scrollbar lg:mx-0 lg:px-0">
-                  <div className="flex lg:flex-col gap-2 min-w-max lg:w-full">
-                    <CategoryLink 
-                      label="Hepsi" 
-                      active={selectedCategoryId === null} 
-                      count={topics.length} 
-                      onClick={() => setSelectedCategoryId(null)}
-                    />
-                    {categories.filter(c => !c.parent_id).map(cat => (
-                      <div key={cat.id} className="lg:contents">
-                        <CategoryLink 
-                          label={cat.name} 
-                          active={selectedCategoryId === cat.id} 
-                          count={topics.filter(t => t.category_id === cat.id || categories.find(sub => sub.id === t.category_id)?.parent_id === cat.id).length} 
-                          onClick={() => setSelectedCategoryId(cat.id)}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none lg:hidden" />
-              </nav>
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 border-b border-border overflow-hidden">
+            <div className="flex gap-4 overflow-x-auto pb-4 md:pb-0 scrollbar-hide flex-nowrap items-center">
+                {['Kategoriler', 'Etiketler', 'Tümü'].map(item => (
+                    <button key={item} className="px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground whitespace-nowrap shrink-0 transition-colors">
+                        {item}
+                    </button>
+                ))}
             </div>
-          </aside>
+            <div className="flex gap-4 overflow-x-auto pb-4 md:pb-0 scrollbar-hide flex-nowrap items-center">
+                {[
+                  { label: 'En Yeni', value: 'Latest' },
+                  { label: 'Popüler', value: 'Popular' },
+                  { label: 'Kategoriler', value: 'Categories' }
+                ].map(item => (
+                    <button 
+                      key={item.value} 
+                      className={`px-3 py-2 text-sm font-semibold whitespace-nowrap shrink-0 transition-colors ${item.value === 'Latest' ? 'text-foreground border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground'}`}
+                    >
+                        {item.label}
+                    </button>
+                ))}
+            </div>
+        </div>
 
-          {/* Discussion List */}
-          <section className="w-full space-y-4 min-w-0 overflow-hidden">
+        <div className="w-full">
+            <div className="grid grid-cols-12 text-xs font-bold text-muted-foreground uppercase py-3 px-4">
+                <div className="col-span-12 md:col-span-6">Konu</div>
+                <div className="hidden md:block col-span-2 text-center tracking-wider">Cevaplar</div>
+                <div className="hidden md:block col-span-2 text-center tracking-wider">Görüntülenme</div>
+                <div className="hidden md:block col-span-2 text-center tracking-wider">Etkinlik</div>
+            </div>
+            
             {loading ? (
-              <div className="flex flex-col items-center justify-center py-16 md:py-20 gap-4">
+              <div className="flex flex-col items-center justify-center py-16 gap-4">
                 <Loader2 className="animate-spin text-primary" size={40} />
-                <p className="font-bold text-muted-foreground text-sm">Tartışmalar yükleniyor...</p>
               </div>
             ) : filteredTopics.length > 0 ? (
-              filteredTopics.map((topic, index) => (
-                <motion.div
-                  key={topic.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <DiscussionCard 
-                    topic={topic} 
-                    onSummarize={handleSummarize}
-                    isLoading={summarizingId === topic.id}
-                  />
-                  {summaryResult && summaryResult.id === topic.id && (
-                    <motion.div 
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="mt-2 p-4 md:p-6 bg-card border border-border rounded-2xl"
-                    >
-                      <div className="flex items-center gap-2 text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest mb-3">
-                        <Sparkles size={14} /> AI ÖZETİ
-                      </div>
-                      <div className="text-xs md:text-sm leading-relaxed prose prose-sm max-w-none text-muted-foreground">
-                        {summaryResult.text.split('\n').map((line, i) => (
-                          <p key={i} className={line.startsWith('-') || line.startsWith('•') ? 'ml-4' : ''}>
-                            {line}
-                          </p>
-                        ))}
-                      </div>
-                      <button 
-                        onClick={() => setSummaryResult(null)}
-                        className="mt-3 text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        Özeti Kapat
-                      </button>
-                    </motion.div>
-                  )}
-                </motion.div>
+              filteredTopics.map((topic) => (
+                <div key={topic.id} className="grid grid-cols-12 items-center py-4 px-4 border-b border-border hover:bg-muted/50 rounded-lg transition-colors group">
+                    <div className="col-span-12 md:col-span-6 flex items-center gap-3">
+                        <div className="bg-muted p-2 rounded-lg text-primary transition-colors group-hover:bg-primary/10"><MessageSquareCode size={20}/></div>
+                        <div className="min-w-0">
+                            <Link href={`/discussions/${topic.id}`} className="font-semibold text-sm text-foreground hover:text-primary transition-colors line-clamp-1 break-words">{topic.title}</Link>
+                            <div className="text-xs text-muted-foreground">{topic.category?.name || 'Genel'} kategorisinde</div>
+                        </div>
+                    </div>
+                    <div className="hidden md:block col-span-2 text-center text-sm text-muted-foreground font-medium">{Array.isArray(topic.comments) ? topic.comments.length : 0}</div>
+                    <div className="hidden md:block col-span-2 text-center text-sm text-muted-foreground font-medium">-</div>
+                    <div className="hidden md:block col-span-2 text-center text-muted-foreground text-xs">{new Date(topic.created_at).toLocaleDateString('tr-TR')}</div>
+                </div>
               ))
             ) : (
-              <div className="text-center py-16 md:py-20 bg-card rounded-2xl border border-dashed border-border px-4">
-                <MessageSquareCode className="mx-auto text-muted-foreground mb-4 opacity-20" size={48} />
-                <h3 className="text-lg md:text-xl font-bold mb-2">Henüz tartışma bulunamadı</h3>
-                <p className="text-sm text-muted-foreground">Bir tartışma başlatmak için &quot;Yeni Başlık Aç&quot; butonunu kullanabilirsiniz.</p>
+              <div className="text-center py-20 bg-muted/20 rounded-2xl border-2 border-dashed border-border mx-4">
+                <p className="text-muted-foreground font-medium">Tartışma bulunamadı.</p>
               </div>
             )}
-          </section>
         </div>
     </DashboardLayout>
   );
