@@ -84,7 +84,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
               <User size={12} />
             )}
           </div>
-          <span className="font-bold text-foreground truncate max-w-[100px] sm:max-w-none">{topic.author?.username || 'Kullanıcı'}</span>
+          <span className="font-bold text-foreground truncate max-w-[120px] sm:max-w-none">{topic.author?.full_name || topic.author?.username || 'Kullanıcı'}</span>
         </div>
         <div className="flex items-center gap-1.5 opacity-70 whitespace-nowrap">
           <Calendar size={12} className="md:w-3.5 md:h-3.5" />

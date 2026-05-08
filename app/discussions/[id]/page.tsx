@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Topic, Comment } from '@/types/database';
-import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, ChevronRight, Plus, Lock } from 'lucide-react';
+import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, User, ChevronRight, Plus, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { GoogleGenAI } from '@google/genai';
@@ -161,7 +161,7 @@ export default function DiscussionDetailPage() {
                     {topic.category?.name || 'Genel'}
                   </div>
                   <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                    <Users size={14} className="text-primary" /> {topic.author?.username || 'Kullanıcı'}
+                    <Users size={14} className="text-primary" /> {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
                   </div>
                   <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                     <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
@@ -230,12 +230,12 @@ export default function DiscussionDetailPage() {
                     >
                       <div className="flex-shrink-0">
                         <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-colors">
-                          <Users size={24} />
+                          <User size={24} />
                         </div>
                       </div>
                       <div className="flex-1 min-w-0 space-y-4">
                         <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                          <span className="text-primary">{comment.author?.username || 'Kullanıcı'}</span>
+                          <span className="text-primary">{comment.author?.full_name || comment.author?.username || 'Kullanıcı'}</span>
                           <span>•</span>
                           <span>{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
                         </div>

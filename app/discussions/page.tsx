@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, MessageSquareCode, Plus, Loader2, Sparkles, ChevronRight, MessageSquare } from 'lucide-react';
+import { Search, MessageSquareCode, Plus, Loader2, Sparkles, ChevronRight, MessageSquare, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -150,44 +150,46 @@ export default function DiscussionsPage() {
           </div>
         </header>
 
-        <nav className="flex flex-col sm:flex-row sm:items-center justify-between mb-12 gap-8 px-2">
-          <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide no-scrollbar">
-            {[
-              { label: 'Tümü', id: null },
-              ...categories.filter(c => !c.parent_id).map(c => ({ label: c.name, id: c.id }))
-            ].map(item => (
-              <button 
-                key={item.label} 
-                onClick={() => setSelectedCategoryId(item.id)}
-                className={`px-6 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 ${
-                  selectedCategoryId === item.id 
-                    ? 'border-primary bg-primary text-primary-foreground' 
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:bg-muted'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-          
-          <div className="flex bg-muted p-1.5 rounded-2xl shrink-0 self-start sm:self-auto">
+        <nav className="mb-12 px-2">
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8">
+            <div className="flex items-center gap-4 overflow-x-auto pb-6 -mb-6 scrollbar-hide no-scrollbar snap-x relative min-w-0 flex-1">
+              {[
+                { label: 'Tümü', id: null },
+                ...categories.filter(c => !c.parent_id).map(c => ({ label: c.name, id: c.id }))
+              ].map(item => (
+                <button 
+                  key={item.label || 'null'} 
+                  onClick={() => setSelectedCategoryId(item.id)}
+                  className={`px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 shrink-0 snap-start active:scale-95 ${
+                    selectedCategoryId === item.id 
+                      ? 'border-primary bg-primary text-primary-foreground shadow-xl shadow-primary/20 scale-[1.02]' 
+                      : 'border-transparent bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+            
+          <div className="flex bg-muted/50 p-1.5 rounded-2xl shrink-0 self-start xl:self-auto w-full xl:w-auto overflow-x-auto no-scrollbar border border-border/50">
             {[
               { label: 'En Yeni', value: 'Latest' },
               { label: 'Popüler', value: 'Popular' },
               { label: 'Gruplar', value: 'Categories' }
             ].map(item => (
               <button 
-                key={item.value} 
+                key={item.label} 
                 onClick={() => setSortBy(item.value as any)}
-                className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                className={`flex-1 xl:flex-none px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                   sortBy === item.value 
-                    ? 'bg-background text-foreground shadow-sm' 
+                    ? 'bg-background text-foreground shadow-lg' 
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {item.label}
               </button>
             ))}
+          </div>
           </div>
         </nav>
 
@@ -245,11 +247,14 @@ export default function DiscussionsPage() {
                         {topic.title}
                       </Link>
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase tracking-widest">
+                          <Plus size={14} /> {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
+                        </div>
                         <div className="px-3 py-1 rounded-full bg-muted text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                           {topic.category?.name || 'Genel'}
                         </div>
                         <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                          <Plus size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
+                          <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
                         </div>
                         <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                           <MessageSquare size={14} className="text-primary" /> {topic.comments?.[0]?.count || 0} CEVAP
