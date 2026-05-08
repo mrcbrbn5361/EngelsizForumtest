@@ -187,87 +187,23 @@ export default function DiscussionDetailPage() {
         <button onClick={() => router.back()} className="mb-4 flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
           <ArrowLeft size={16} /> Geri Dön
         </button>
-        <article className="vibe-card p-6 md:p-12 lg:p-16 shadow-xl mb-8 md:mb-12 relative">
+        <article className="bg-background rounded-none md:rounded-lg border border-border/50 shadow-sm mb-8 md:mb-12 relative p-6 md:p-12">
           <header className="mb-8 md:mb-12">
-            <div className="flex items-center gap-3 mb-4 md:mb-6">
-              <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] md:text-xs font-bold uppercase tracking-widest">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="px-2 py-0.5 rounded bg-muted text-muted-foreground text-[10px] font-bold uppercase tracking-wider">
                 {topic.category?.name || 'Genel'}
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-6 md:mb-10 tracking-tight leading-tight">{topic.title}</h1>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-8 border-y border-border py-6 md:py-8">
-              <div className="flex items-center gap-3 md:gap-4">
-                <div className="h-10 w-10 md:h-14 md:w-14 rounded-xl bg-muted flex items-center justify-center overflow-hidden border border-border shrink-0">
-                  {topic.author?.avatar_url ? (
-                    <Image 
-                      src={topic.author.avatar_url} 
-                      alt={topic.author.username || ''} 
-                      width={56}
-                      height={56}
-                      unoptimized
-                      className="h-full w-full object-cover" 
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <User size={20} className="text-muted-foreground" />
-                  )}
-                </div>
-                <div className="flex flex-col min-w-0">
-                  <span className="font-bold text-base md:text-lg lg:text-xl leading-none mb-1 truncate">{topic.author?.username || 'Anonim'}</span>
-                  <span className="flex items-center gap-1.5 text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-widest opacity-80">
-                    <Calendar size={12} /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3">
-                {topic.is_pinned && <span className="text-primary flex items-center gap-1 text-[10px] font-black uppercase tracking-widest bg-primary/5 px-2 py-1 rounded"><Pin size={12}/>Sabit</span>}
-                {topic.is_solved && <span className="text-green-600 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest bg-green-50 px-2 py-1 rounded"><CheckCircle size={12}/>Çözüldü</span>}
-                {topic.is_locked && <span className="text-red-600 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest bg-red-50 px-2 py-1 rounded"><Lock size={12}/>Kilitli</span>}
-                
-                <div className="flex items-center gap-4 ml-auto">
-                  <ReactionButton topicId={topic.id} initialCount={0} />
-                  <ReportButton topicId={topic.id} />
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-border/50">
-                {/* Moderation Controls */}
-                {user && (profile?.role === 'admin' || profile?.role === 'moderator' || topic.author_id === user.id) && !topic.is_solved && (
-                  <button 
-                    onClick={() => handleUpdateTopic({ is_solved: true })}
-                    className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-green-600 hover:bg-green-50 px-3 py-2 rounded-lg transition-colors border border-green-200"
-                  >
-                    <CheckCircle size={14} /> Çözüldü İşaretle
-                  </button>
-                )}
-
-                {user && (profile?.role === 'admin' || profile?.role === 'moderator') && (
-                  <>
-                    <button 
-                      onClick={() => handleUpdateTopic({ is_pinned: !topic.is_pinned })}
-                      className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest px-3 py-2 rounded-lg transition-colors border ${topic.is_pinned ? 'bg-primary text-primary-foreground border-primary' : 'text-primary border-primary/20 hover:bg-primary/5'}`}
-                    >
-                      <Pin size={14} /> {topic.is_pinned ? 'Sabitlenmiş' : 'Sabitle'}
-                    </button>
-                    <button 
-                      onClick={() => handleUpdateTopic({ is_locked: !topic.is_locked })}
-                      className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest px-3 py-2 rounded-lg transition-colors border ${topic.is_locked ? 'bg-red-600 text-white border-red-600' : 'text-red-600 border-red-200 hover:bg-red-50'}`}
-                    >
-                      <Lock size={14} /> {topic.is_locked ? 'Kilitli' : 'Kilitle'}
-                    </button>
-                  </>
-                )}
-
-                <button 
-                  onClick={handleSummarize}
-                  disabled={isSummarizing}
-                  className="vibe-button-primary py-2 px-4 text-xs gap-2 ml-auto"
-                >
-                  <Sparkles size={16} className={isSummarizing ? "animate-spin" : ""} /> 
-                  {isSummarizing ? 'Özetleniyor...' : 'AI Özetle'}
-                </button>
-              </div>
+            <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-foreground">{topic.title}</h1>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground border-y border-border/50 py-4">
+               <span>{topic.author?.username || 'Anonim'}</span>
+               <span>•</span>
+               <span>{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
+               <div className="flex items-center gap-2 ml-auto">
+                 {topic.is_pinned && <span className="text-primary text-xs">Sabit</span>}
+                 {topic.is_solved && <span className="text-green-600 text-xs">Çözüldü</span>}
+                 {topic.is_locked && <span className="text-red-500 text-xs">Kilitli</span>}
+               </div>
             </div>
           </header>
 
