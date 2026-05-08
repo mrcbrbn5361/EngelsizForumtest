@@ -67,10 +67,8 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-muted/30">
-      <Navbar />
-
-      <main className="flex-1 container mx-auto px-4 py-8 md:py-16 max-w-4xl">
+          <DashboardLayout>
+      <main className="max-w-4xl mx-auto py-8 md:py-16">
         <header className="mb-10 md:mb-16">
           <h1 className="text-3xl md:text-6xl font-bold mb-6 md:mb-10 tracking-tight leading-tight">Forumda Ara</h1>
           <form onSubmit={handleSearch} className="relative group">
@@ -158,10 +156,6 @@ export default function SearchPage() {
           </div>
         </section>
       </main>
-
-      <Footer />
-
-      <AccessibilityToolbar />
-    </div>
+      </DashboardLayout>
   );
 }

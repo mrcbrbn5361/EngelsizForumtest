@@ -1,29 +1,19 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
-import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { MessageCircle, ShieldCheck, Zap, ArrowRight, Users, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
 
 export default function Home() {
-  const { user, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && user) {
-      window.location.href = '/discussions';
-    }
-  }, [user, loading]);
+  const { loading } = useAuth();
 
   if (loading) return null;
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      <Navbar />
-      
+    <DashboardLayout>
       <main className="flex-1">
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-24 text-center">
@@ -35,15 +25,12 @@ export default function Home() {
           </p>
           <Link
             href="/auth"
-            className="vibe-button-primary px-12 py-4 text-lg"
+            className="px-12 py-4 bg-primary text-primary-foreground rounded-full font-bold text-lg hover:bg-primary/90 transition-all"
           >
             Hemen Başla
           </Link>
         </section>
       </main>
-
-      <Footer />
-      <AccessibilityToolbar />
-    </div>
+    </DashboardLayout>
   );
 }

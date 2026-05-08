@@ -95,10 +95,8 @@ export default function CommunitiesPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-muted/30">
-      <Navbar />
-
-      <main className="flex-1 container mx-auto px-4 py-8 md:py-16 max-w-6xl">
+          <DashboardLayout>
+      <main className="container mx-auto px-4 py-8 md:py-16 max-w-6xl">
         <header className="mb-12 md:mb-20 flex flex-col items-center text-center px-4">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -120,7 +118,7 @@ export default function CommunitiesPage() {
             </p>
             <button 
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className="vibe-button-primary w-full md:w-auto py-3 md:py-4 gap-3"
+              className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90"
             >
               <Plus size={20} className={showCreateForm ? 'rotate-45' : ''} />
               {showCreateForm ? 'Vazgeç' : 'Topluluk Oluştur'}
@@ -136,7 +134,7 @@ export default function CommunitiesPage() {
           >
             <form 
               onSubmit={createCommunity}
-              className="vibe-card max-w-2xl mx-auto space-y-6"
+              className="bg-card p-8 rounded-3xl border border-border shadow-soft max-w-2xl mx-auto space-y-6"
             >
               <h2 className="text-xl md:text-2xl font-bold text-center mb-2">Yeni Bir Grup Kur</h2>
               <div className="space-y-1.5">
@@ -163,7 +161,7 @@ export default function CommunitiesPage() {
               <button 
                 type="submit" 
                 disabled={creating}
-                className="vibe-button-primary w-full py-4 gap-2"
+                className="w-full py-4 px-6 bg-primary text-primary-foreground rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90"
               >
                 {creating ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
                 {creating ? 'Kuruluyor...' : 'Grubu Kur'}
@@ -191,7 +189,7 @@ export default function CommunitiesPage() {
         ) : filteredCommunities.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-10">
             {filteredCommunities.map((community, index) => (
-                <div key={community.id} className="vibe-card flex flex-col justify-between min-h-[220px] md:min-h-[280px]">
+                <div key={community.id} className="bg-card p-8 rounded-3xl border border-border shadow-soft flex flex-col justify-between min-h-[220px] md:min-h-[280px]">
                   <div>
                     <div className="flex items-start gap-4 mb-6">
                       <div className="p-4 bg-muted rounded-2xl group-hover:bg-primary/10 group-hover:text-primary transition-colors duration-300">
@@ -228,9 +226,6 @@ export default function CommunitiesPage() {
         )}
 
       </main>
-
-      <AccessibilityToolbar />
-      <Footer />
-    </div>
+      </DashboardLayout>
   );
 }
