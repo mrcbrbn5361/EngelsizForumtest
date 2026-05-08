@@ -45,7 +45,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
               {topic.category?.name || 'GENEL'}
             </span>
           </div>
-          <h2 className="text-lg md:text-2xl font-bold leading-tight group-hover:text-primary transition-colors tracking-tight">
+          <h2 className="text-lg md:text-2xl font-bold leading-tight group-hover:text-primary transition-colors tracking-tight break-words">
             <Link href={`/discussions/${topic.id}`} className="outline-none after:absolute after:inset-0 after:z-0">
               {topic.title}
             </Link>
@@ -84,7 +84,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
               <User size={12} />
             )}
           </div>
-          <span className="font-bold text-foreground truncate max-w-[100px] sm:max-w-none">{topic.author?.username || 'Anonim'}</span>
+          <span className="font-bold text-foreground truncate max-w-[100px] sm:max-w-none">{topic.author?.username || 'Kullanıcı'}</span>
         </div>
         <div className="flex items-center gap-1.5 opacity-70 whitespace-nowrap">
           <Calendar size={12} className="md:w-3.5 md:h-3.5" />
@@ -92,7 +92,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
         </div>
         <div className="flex items-center gap-1.5 opacity-70 whitespace-nowrap">
           <MessageSquare size={12} className="md:w-3.5 md:h-3.5" />
-          <span className="font-bold tracking-wider uppercase">{topic.comments?.length || 0} YANIT</span>
+          <span className="font-bold tracking-wider uppercase">{(topic.comments as any)?.[0]?.count || 0} YANIT</span>
         </div>
       </div>
     </motion.article>

@@ -36,7 +36,7 @@ export type Topic = {
   created_at: string;
   author?: Profile;
   category?: Category;
-  comments?: { id: string }[];
+  comments?: any[];
 };
 
 export type Comment = {

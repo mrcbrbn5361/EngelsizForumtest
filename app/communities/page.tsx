@@ -207,7 +207,7 @@ export default function CommunitiesPage() {
                       </div>
                       <div className="min-w-0">
                         <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1.5">TOPLULUK</p>
-                        <h2 className="text-xl md:text-2xl font-black transition-colors truncate tracking-tighter text-foreground group-hover:text-primary">
+                        <h2 className="text-xl md:text-2xl font-black transition-colors break-words whitespace-normal tracking-tighter text-foreground group-hover:text-primary">
                           <Link href={`/communities/${community.id}`} className="after:absolute after:inset-0 outline-none">
                             {community.name}
                           </Link>

@@ -161,7 +161,7 @@ export default function DiscussionDetailPage() {
                     {topic.category?.name || 'Genel'}
                   </div>
                   <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                    <Users size={14} className="text-primary" /> {topic.author?.username || 'Anonim'}
+                    <Users size={14} className="text-primary" /> {topic.author?.username || 'Kullanıcı'}
                   </div>
                   <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                     <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
@@ -235,7 +235,7 @@ export default function DiscussionDetailPage() {
                       </div>
                       <div className="flex-1 min-w-0 space-y-4">
                         <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                          <span className="text-primary">{comment.author?.username || 'Anonim'}</span>
+                          <span className="text-primary">{comment.author?.username || 'Kullanıcı'}</span>
                           <span>•</span>
                           <span>{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
                         </div>

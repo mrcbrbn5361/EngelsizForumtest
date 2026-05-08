@@ -43,7 +43,8 @@ export default function CommunityDetailPage() {
         .select(`
           *,
           author:profiles(username, avatar_url),
-          category:categories(name)
+          category:categories(name),
+          comments(count)
         `)
         .eq('category_id', id)
         .order('created_at', { ascending: false });
@@ -139,7 +140,7 @@ export default function CommunityDetailPage() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2">TOPLULUK</p>
-                    <h1 className="text-3xl md:text-5xl font-black truncate tracking-tighter text-foreground leading-tight">{community.name}</h1>
+                    <h1 className="text-3xl md:text-5xl font-black break-words whitespace-normal tracking-tighter text-foreground leading-tight">{community.name}</h1>
                   </div>
                 </div>
                 <p className="text-base md:text-xl text-muted-foreground font-medium leading-relaxed max-w-3xl">

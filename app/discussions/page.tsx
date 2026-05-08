@@ -28,7 +28,7 @@ export default function DiscussionsPage() {
           *,
           author:profiles(username, avatar_url),
           category:categories(name),
-          comments:commentsCount(count)
+          comments(count)
         `);
 
       if (selectedCategoryId) {
@@ -240,7 +240,7 @@ export default function DiscussionsPage() {
                     <div className="min-w-0 space-y-2">
                       <Link 
                         href={`/discussions/${topic.id}`} 
-                        className="text-xl md:text-2xl font-black text-foreground hover:text-primary transition-colors block truncate tracking-tight"
+                        className="text-xl md:text-2xl font-black text-foreground hover:text-primary transition-colors block break-words whitespace-normal tracking-tight"
                       >
                         {topic.title}
                       </Link>
@@ -252,7 +252,7 @@ export default function DiscussionsPage() {
                           <Plus size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
                         </div>
                         <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                          <MessageSquare size={14} className="text-primary" /> {Array.isArray(topic.comments) ? topic.comments.length : 0} CEVAP
+                          <MessageSquare size={14} className="text-primary" /> {topic.comments?.[0]?.count || 0} CEVAP
                         </div>
                       </div>
                     </div>
