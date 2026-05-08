@@ -14,8 +14,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
-      <div className="flex flex-1 container mx-auto">
-        <aside className="hidden md:flex w-[260px] p-6 flex-col gap-8 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto bg-muted/20 border-r border-border shrink-0">
+      <div className="flex flex-1 w-full max-w-7xl mx-auto">
+        <aside className="hidden lg:flex w-[280px] p-6 flex-col gap-8 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto bg-muted/5 border-r border-border shrink-0">
             <nav className="flex flex-col gap-1">
                 <Link href="/" className="flex items-center gap-3 px-4 py-2 rounded-xl font-medium text-foreground hover:bg-muted mb-2">
                     <Home size={18} /> Ana Sayfa
@@ -52,7 +52,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 </nav>
             )}
         </aside>
-        <main className="flex-1 p-4 md:p-8 bg-background min-w-0">
+        <main className="flex-1 p-4 md:p-6 lg:p-10 bg-background min-w-0 w-full overflow-x-hidden">
           {children}
         </main>
       </div>

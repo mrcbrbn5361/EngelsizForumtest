@@ -2,24 +2,16 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Navbar } from '@/components/layout/navbar';
 import Link from 'next/link';
-import { Footer } from '@/components/layout/footer';
-import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { Topic, Comment } from '@/types/database';
-import { ArrowLeft, Send, User, Calendar, MessageSquare, Sparkles, Loader2, Flag, Heart, Lock, Pin, CheckCircle } from 'lucide-react';
-import { ReactionButton } from '@/components/forum/reaction-button';
-import { ReportButton } from '@/components/forum/report-button';
+import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, ChevronRight, Plus, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { GoogleGenAI } from '@google/genai';
 import { supabase } from '@/lib/supabase';
 import ReactMarkdown from 'react-markdown';
-import Image from 'next/image';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
 
-/**
- * Discussion Detail Page
- */
 export default function DiscussionDetailPage() {
   const { id } = useParams();
   const router = useRouter();
@@ -31,25 +23,6 @@ export default function DiscussionDetailPage() {
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<any>(null);
-
-  useEffect(() => {
-    if (user) {
-      supabase.from('profiles').select('*').eq('id', user.id).single().then(({ data }) => setProfile(data));
-    }
-  }, [user]);
-
-  const handleUpdateTopic = async (updates: Partial<Topic>) => {
-    if (!topic || !user) return;
-    try {
-      const { error } = await supabase.from('topics').update(updates).eq('id', topic.id);
-      if (error) throw error;
-      setTopic({ ...topic, ...updates } as Topic);
-    } catch (err: any) {
-      alert('Güncelleme hatası: ' + err.message);
-    }
-  };
-
   const [sending, setSending] = useState(false);
 
   const fetchTopic = useCallback(async () => {
@@ -96,9 +69,9 @@ export default function DiscussionDetailPage() {
     return () => { isMounted = false; };
   }, [id, fetchTopic, fetchComments]);
 
-  const handleSendMessage = async (e: React.FormEvent) => {
+  const handlePostComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim() || !user || !id) return;
+    if (!user || !newComment.trim() || sending) return;
 
     setSending(true);
     try {
@@ -107,51 +80,40 @@ export default function DiscussionDetailPage() {
         .insert({
           topic_id: id,
           author_id: user.id,
-          content: newComment
+          content: newComment.trim()
         })
         .select('*, author:profiles(*)')
         .single();
-      
+
       if (error) throw error;
-      
       setComments([...comments, data]);
       setNewComment('');
     } catch (err: any) {
-      alert('Yorum gönderilirken hata oluştu: ' + err.message);
+      alert('Yorum gönderilemedi: ' + err.message);
     } finally {
       setSending(false);
     }
   };
 
   const handleSummarize = async () => {
-    if (!topic) return;
-    setIsSummarizing(true);
-    setSummary(null);
+    if (!topic || !process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
+      alert('AI Özeti için API anahtarı ayarlanmamış.');
+      return;
+    }
     
+    setIsSummarizing(true);
     try {
       const genAI = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY! });
       
-      const prompt = `Lütfen aşağıdaki forum tartışmasını engelli bireyler için çok kısa, net ve anlaşılır özetle. Yanıtın sadece Türkçe ve tek bir paragraf olsun. 
-      Başlık: ${topic.title}
-      İçerik: ${topic.content}`;
-
-      const response = await genAI.models.generateContent({
-        model: 'gemini-1.5-flash',
-        contents: prompt
+      const result = await genAI.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: `Lütfen aşağıdaki forum başlığını ve içeriğini kısa ve öz bir şekilde (maksimum 4 cümle) Türkçe özetle:\n\nBaşlık: ${topic.title}\nİçerik: ${topic.content}`
       });
       
-      const text = response.text;
-      
-      if (text) {
-        setSummary(text);
-      }
-    } catch (error: any) {
-      console.error('AI Summary Error:', error);
-      if (error.message?.includes('503') || error.message?.includes('high demand')) {
-        setSummary("Sistem şu an çok yoğun. Lütfen birkaç dakika sonra tekrar deneyin.");
-      } else {
-        setSummary("Üzgünüz, şu an özet oluşturulamıyor. Lütfen içeriği okumaya devam edin.");
-      }
+      setSummary(result.text || "Özet oluşturulamadı.");
+    } catch (err) {
+      console.error('Summarization failed:', err);
+      alert('Özet oluşturulurken bir hata oluştu.');
     } finally {
       setIsSummarizing(false);
     }
@@ -159,168 +121,235 @@ export default function DiscussionDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col bg-muted/30">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="animate-spin text-primary" size={48} />
+      <DashboardLayout>
+        <div className="flex-1 flex flex-col items-center justify-center py-32 gap-6">
+          <Loader2 className="animate-spin text-primary" size={64} />
+          <p className="font-black text-muted-foreground text-sm uppercase tracking-widest">Tartışma Yükleniyor...</p>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   if (!topic) {
     return (
-      <div className="min-h-screen flex flex-col bg-muted/30">
-        <Navbar />
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <h1 className="text-2xl font-bold mb-4">Tartışma bulunamadı.</h1>
-          <button onClick={() => router.push('/discussions')} className="text-primary underline">Tartışmalara Geri Dön</button>
+      <DashboardLayout>
+        <div className="flex-1 flex flex-col items-center justify-center py-32 text-center px-6">
+          <h1 className="text-3xl md:text-5xl font-black mb-6 tracking-tighter">Tartışma Bulunamadı</h1>
+          <button onClick={() => router.push('/discussions')} className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-black text-lg">Geri Dön</button>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-muted/30">
-      <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-6 md:py-8 max-w-4xl">
-        <button onClick={() => router.back()} className="mb-4 flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-colors">
-          <ArrowLeft size={16} /> Geri Dön
+    <DashboardLayout>
+      <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12">
+        <button 
+          onClick={() => router.back()}
+          className="mb-8 flex items-center gap-2 text-sm font-black text-muted-foreground hover:text-primary transition-colors group uppercase tracking-widest px-2"
+        >
+          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Geri Dön
         </button>
-        <article className="bg-background rounded-none md:rounded-lg border border-border/50 shadow-sm mb-8 md:mb-12 relative p-6 md:p-12">
-          <header className="mb-8 md:mb-12">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="px-2 py-0.5 rounded bg-muted text-muted-foreground text-[10px] font-bold uppercase tracking-wider">
-                {topic.category?.name || 'Genel'}
-              </span>
-            </div>
-            <h1 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight text-foreground">{topic.title}</h1>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground border-y border-border/50 py-4">
-               <span>{topic.author?.username || 'Anonim'}</span>
-               <span>•</span>
-               <span>{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
-               <div className="flex items-center gap-2 ml-auto">
-                 {topic.is_pinned && <span className="text-primary text-xs">Sabit</span>}
-                 {topic.is_solved && <span className="text-green-600 text-xs">Çözüldü</span>}
-                 {topic.is_locked && <span className="text-red-500 text-xs">Kilitli</span>}
-               </div>
-            </div>
-          </header>
 
-          <AnimatePresence>
-            {summary && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }} 
-                animate={{ opacity: 1, y: 0 }} 
-                className="mb-8 p-6 md:p-10 bg-primary/5 border border-primary/10 rounded-2xl md:rounded-3xl shadow-inner relative"
-              >
-                <div className="flex items-center gap-2 mb-4">
-                  <Sparkles size={16} className="text-primary" />
-                  <h3 className="text-[10px] md:text-xs font-bold text-primary uppercase tracking-widest">Yapay Zeka Erişilebilirlik Özeti</h3>
+        <div className="grid lg:grid-cols-[1fr_360px] gap-8 md:gap-12">
+          {/* Main Content */}
+          <div className="space-y-12 min-w-0">
+            <article className="bg-card p-6 md:p-12 rounded-[2.5rem] border border-border shadow-sm">
+              <header className="mb-10 space-y-6">
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
+                    {topic.category?.name || 'Genel'}
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                    <Users size={14} className="text-primary" /> {topic.author?.username || 'Anonim'}
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                    <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
+                  </div>
                 </div>
-                <p className="text-base md:text-xl font-medium leading-relaxed text-foreground italic">
-                  &ldquo;{summary}&rdquo;
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <h1 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-tight break-words">{topic.title}</h1>
+              </header>
 
-          <div className="prose prose-slate dark:prose-invert max-w-none mb-12 md:mb-20 leading-relaxed md:text-lg font-medium text-foreground/90">
-             {topic.content ? (
-               <ReactMarkdown>{topic.content}</ReactMarkdown>
-             ) : (
-               <p className="text-muted-foreground italic">İçerik yüklenemedi.</p>
-             )}
-          </div>
+              <div className="prose prose-lg dark:prose-invert max-w-none font-medium leading-relaxed text-muted-foreground">
+                <ReactMarkdown>{topic.content}</ReactMarkdown>
+              </div>
 
-          <div className="border-t border-border pt-10 md:pt-16 space-y-8 md:space-y-12">
-            <h2 className="text-xl md:text-3xl font-bold tracking-tight flex items-center gap-3">
-              <MessageSquare size={24} className="text-primary md:size-8" /> Yanıtlar 
-              <span className="text-primary opacity-40">{comments.length}</span>
-            </h2>
+              <div className="mt-12 pt-8 border-t border-border/50 flex flex-wrap items-center justify-between gap-6">
+                <div className="flex items-center gap-4">
+                  <button className="flex items-center gap-2 px-6 py-3 bg-muted rounded-xl hover:bg-primary/10 hover:text-primary transition-all font-black text-xs uppercase tracking-widest">
+                    <Heart size={18} /> Beğen
+                  </button>
+                  <button 
+                    onClick={handleSummarize}
+                    disabled={isSummarizing}
+                    className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all font-black text-xs uppercase tracking-widest disabled:opacity-50"
+                  >
+                    {isSummarizing ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />} AI Özetle
+                  </button>
+                </div>
+              </div>
 
-            <div className="space-y-6 md:space-y-10">
-              {comments.map((comment) => (
-                <motion.div 
-                  key={comment.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex gap-3 md:gap-6 group"
+              <AnimatePresence>
+                {summary && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="mt-8 p-8 md:p-10 bg-primary/5 border-2 border-primary/10 rounded-[2rem] relative overflow-hidden ring-4 ring-primary/5"
+                  >
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3 text-primary font-black text-sm uppercase tracking-widest">
+                        <Sparkles size={20} /> AI ÖZETİ
+                      </div>
+                      <button onClick={() => setSummary(null)} className="text-muted-foreground hover:text-primary transition-colors">
+                        <Plus size={24} className="rotate-45" />
+                      </button>
+                    </div>
+                    <p className="text-lg md:text-xl font-bold italic text-foreground leading-relaxed">&ldquo;{summary}&rdquo;</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </article>
+
+            {/* Comments Section */}
+            <section className="space-y-10">
+              <h2 className="text-2xl md:text-4xl font-black px-4 flex items-center gap-4 tracking-tighter text-foreground">
+                <MessageSquare size={32} className="text-primary" /> Yanıtlar 
+                <span className="text-primary/30">{comments.length}</span>
+              </h2>
+
+              <div className="space-y-6">
+                {comments.length > 0 ? (
+                  comments.map((comment, index) => (
+                    <motion.div
+                      key={comment.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="bg-card p-6 md:p-10 rounded-[2rem] border border-border flex gap-4 md:gap-8 hover:border-primary/30 transition-all group"
+                    >
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-colors">
+                          <Users size={24} />
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0 space-y-4">
+                        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                          <span className="text-primary">{comment.author?.username || 'Anonim'}</span>
+                          <span>•</span>
+                          <span>{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
+                        </div>
+                        <div className="text-base md:text-lg font-medium leading-relaxed break-words text-foreground/90">
+                          <ReactMarkdown>{comment.content}</ReactMarkdown>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="text-center py-20 bg-muted/20 rounded-[2rem] border-2 border-dashed border-border px-8">
+                    <MessageSquare size={64} className="mx-auto text-muted-foreground/10 mb-6" />
+                    <p className="text-xl font-black text-muted-foreground/30 uppercase tracking-widest">Henüz yanıt yok.</p>
+                  </div>
+                )}
+              </div>
+
+              {user ? (
+                <form 
+                  onSubmit={handlePostComment}
+                  className="bg-card p-6 md:p-10 rounded-[2.5rem] border border-border shadow-2xl relative overflow-hidden mt-12"
                 >
-                  <div className="h-9 w-9 md:h-12 md:w-12 rounded-lg bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden border border-border shadow-sm">
-                    {comment.author?.avatar_url ? (
-                      <Image 
-                        src={comment.author.avatar_url} 
-                        alt="" 
-                        width={48}
-                        height={48}
-                        className="object-cover" 
-                        referrerPolicy="no-referrer"
-                        unoptimized
-                      />
-                    ) : (
-                      <User size={18} className="md:size-6" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0 space-y-2">
-                    <div className="flex items-center gap-3">
-                      <span className="font-bold text-sm md:text-base lg:text-lg truncate">{comment.author?.username || 'Anonim'}</span>
-                      <span className="text-[9px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-60">
-                        {new Date(comment.created_at).toLocaleDateString('tr-TR')}
-                      </span>
-                    </div>
-                    <div className="bg-muted/30 p-4 md:p-6 rounded-xl md:rounded-2xl text-sm md:text-base leading-relaxed font-medium break-words">
-                      {comment.content}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-              {comments.length === 0 && (
-                <div className="text-center py-12 bg-muted/10 rounded-2xl border border-dashed border-border/50">
-                  <p className="text-muted-foreground font-bold uppercase tracking-widest text-[10px]">Henüz Yanıt Yok</p>
-                </div>
-              )}
-            </div>
-
-            {user ? (
-              topic.is_locked ? (
-                <div className="bg-muted/30 p-8 rounded-3xl border border-dashed border-border mt-12 text-center">
-                  <Lock size={32} className="mx-auto mb-4 text-muted-foreground opacity-50" />
-                  <p className="font-bold text-muted-foreground uppercase tracking-widest text-[10px] md:text-xs">Bu tartışma kilitlendi. Yeni yanıt gönderilemez.</p>
-                </div>
-              ) : (
-                <form onSubmit={handleSendMessage} className="bg-card p-6 md:p-10 rounded-2xl md:rounded-3xl border border-primary/20 shadow-lg mt-12">
-                  <h3 className="text-xs font-bold text-primary uppercase tracking-widest mb-4">Fikrini Paylaş</h3>
-                  <textarea 
+                  <div className="absolute top-0 left-0 w-full h-2 bg-primary/20" />
+                  <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-6">YENİ YANIT GÖNDER</p>
+                  <textarea
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Tartışmaya katıl..."
-                    disabled={sending}
-                    className="w-full py-3 text-base md:text-xl font-medium bg-transparent min-h-[120px] md:min-h-[180px] outline-none placeholder:text-muted-foreground/30 resize-none disabled:opacity-50"
+                    placeholder="Bir şeyler yazın..."
+                    className="w-full min-h-[180px] p-8 rounded-[1.5rem] bg-muted/30 border border-border focus:border-primary focus:bg-background outline-none transition-all text-lg font-medium resize-none mb-6"
+                    required
                   />
-                  <div className="flex justify-end mt-4">
-                    <button 
+                  <div className="flex justify-end">
+                    <button
                       type="submit"
-                      disabled={sending || !newComment.trim()}
-                      className="vibe-button-primary px-8 py-3 gap-2"
+                      disabled={sending}
+                      className="px-10 py-5 bg-primary text-primary-foreground rounded-2xl font-black text-xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3 disabled:opacity-50"
                     >
-                      {sending ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-                      {sending ? 'Yollanıyor...' : 'Gönder'}
+                      {sending ? <Loader2 size={24} className="animate-spin" /> : <Send size={24} />} {sending ? 'Gönderiliyor...' : 'Gönder'}
                     </button>
                   </div>
                 </form>
-              )
-            ) : (
-              <div className="text-center py-12 bg-primary/5 rounded-3xl border border-dashed border-primary/20 mt-12">
-                <p className="text-muted-foreground font-bold mb-6">Topluluğa sesini duyurmak için giriş yapmalısın.</p>
-                <Link href="/auth" className="vibe-button-primary">Giriş Yap</Link>
-              </div>
-            )}
+              ) : (
+                <div className="p-10 bg-muted/10 border-2 border-dashed border-border rounded-[2.5rem] text-center mt-12">
+                  <Lock size={48} className="mx-auto text-muted-foreground/20 mb-6" />
+                  <p className="text-xl font-black text-muted-foreground uppercase tracking-widest mb-8 px-4">Yorum yapmak için giriş yapmalısınız.</p>
+                  <Link 
+                    href="/auth"
+                    className="inline-block px-10 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-lg shadow-lg"
+                  >
+                    Giriş Yap
+                  </Link>
+                </div>
+              )}
+            </section>
           </div>
-        </article>
-      </main>
-      <AccessibilityToolbar />
-      <Footer />
-    </div>
+
+          {/* Sidebar */}
+          <aside className="space-y-8">
+            <section className="bg-card p-8 rounded-[2rem] border border-border shadow-sm">
+              <h3 className="text-[10px] font-black text-primary uppercase tracking-widest mb-8">Kategori Detayları</h3>
+              <div className="space-y-6">
+                <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-2xl border border-border/50">
+                  <div className="w-12 h-12 rounded-xl bg-background flex items-center justify-center text-primary shrink-0">
+                    <MessageSquare size={24} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Grup</p>
+                    <p className="text-lg font-black truncate text-foreground">{topic.category?.name || 'Genel'}</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between px-2 pt-2 border-t border-border/50">
+                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Durum</span>
+                  <span className="text-[10px] font-black text-green-500 uppercase tracking-widest flex items-center gap-1.5"><Shield size={14} /> AKTİF</span>
+                </div>
+                <div className="flex items-center justify-between px-2">
+                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Görünürlük</span>
+                  <span className="text-[10px] font-black text-primary uppercase tracking-widest flex items-center gap-1.5"><Globe size={14} /> HERKESE AÇIK</span>
+                </div>
+              </div>
+            </section>
+
+            <div className="bg-primary p-8 rounded-[2rem] text-primary-foreground shadow-2xl relative overflow-hidden group">
+              <div className="absolute -right-8 -bottom-8 opacity-10 group-hover:scale-110 transition-transform">
+                <Sparkles size={160} />
+              </div>
+              <div className="relative z-10">
+                <h3 className="text-[10px] font-black uppercase tracking-widest mb-4 opacity-70">AI ASİSTAN</h3>
+                <p className="text-lg font-bold mb-8 leading-tight tracking-tight">Kısa bir özet mi lazım? AI teknolojimiz emrinizde.</p>
+                <button 
+                   onClick={handleSummarize}
+                   disabled={isSummarizing}
+                   className="w-full py-4 bg-white text-primary rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white/90 active:scale-95 transition-all shadow-lg"
+                >
+                  {isSummarizing ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />} ŞİMDİ ÖZETLE
+                </button>
+              </div>
+            </div>
+
+            <section className="bg-card p-8 rounded-[2rem] border border-border">
+              <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-6 px-2">Benzer Başlıklar</h3>
+              <div className="space-y-4">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="group p-4 rounded-xl hover:bg-muted/50 transition-all">
+                    <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2 tracking-tight">Erişilebilirlik hakkında genel sorular ve cevaplar...</p>
+                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      KEŞFET <ChevronRight size={14} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </DashboardLayout>
   );
 }
