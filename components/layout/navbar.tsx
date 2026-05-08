@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X } from 'lucide-react';
+import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Database } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -109,13 +109,28 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-border bg-background overflow-hidden"
+            className="md:hidden border-t border-border bg-background overflow-hidden h-[calc(100vh-64px)] overflow-y-auto"
           >
             <div className="flex flex-col p-4 gap-2">
               <MobileNavLink href="/" icon={<Home size={20} />} label="Ana Sayfa" onClick={() => setIsOpen(false)} />
               <MobileNavLink href="/discussions" icon={<MessageSquare size={20} />} label="Tartışmalar" onClick={() => setIsOpen(false)} />
               <MobileNavLink href="/communities" icon={<Users size={20} />} label="Topluluklar" onClick={() => setIsOpen(false)} />
               <MobileNavLink href="/about" icon={<Info size={20} />} label="Hakkımızda" onClick={() => setIsOpen(false)} />
+              
+              <div className="my-4 border-t border-border"></div>
+              <h4 className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest ml-4 mb-2">Hızlı Erişim</h4>
+              <MobileNavLink href="/communities" icon={<AlertCircle size={20} />} label="Görme Engelliler" onClick={() => setIsOpen(false)} />
+              <MobileNavLink href="/communities" icon={<Database size={20} />} label="İşitme Engelliler" onClick={() => setIsOpen(false)} />
+              
+              {!user && (
+                <Link
+                  href="/auth"
+                  onClick={() => setIsOpen(false)}
+                  className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-4 text-base font-bold text-primary-foreground shadow-lg active:scale-95"
+                >
+                  <LogIn size={20} /> Hemen Başla
+                </Link>
+              )}
             </div>
           </motion.div>
         )}
