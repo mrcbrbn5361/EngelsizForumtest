@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
-import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { DiscussionCard } from '@/components/forum/discussion-card';
 import { Topic } from '@/types/database';
 import Link from 'next/link';
@@ -112,21 +110,18 @@ export default function DiscussionsPage() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-muted/30">
-      <Navbar />
-      
-      <main className="flex-1 w-full container mx-auto px-4 py-6 md:py-8 overflow-hidden">
+    <DashboardLayout>
         <header className="mb-8 md:mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
           <div className="text-left w-full md:w-auto">
-            <h1 className="text-2xl md:text-4xl font-bold mb-2 flex items-center gap-3">
-              <MessageSquareCode className="text-primary h-6 w-6 md:h-10 md:w-10" /> Tartışmalar
+            <h1 className="text-2xl md:text-4xl font-black mb-2 flex items-center gap-3 tracking-tighter">
+              <MessageSquareCode className="text-primary h-8 w-8" /> Tartışmalar
             </h1>
             <p className="text-sm md:text-lg text-muted-foreground font-medium">Topluluğumuzdaki güncel başlıkları ve yardım taleplerini inceleyin.</p>
           </div>
           
           <Link 
             href="/discussions/new"
-            className="vibe-button-primary w-full md:w-auto py-3 md:py-4 flex items-center justify-center gap-2"
+            className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90"
           >
             <Plus size={20} /> Yeni Başlık Aç
           </Link>
@@ -167,12 +162,11 @@ export default function DiscussionsPage() {
                           count={topics.filter(t => t.category_id === cat.id || categories.find(sub => sub.id === t.category_id)?.parent_id === cat.id).length} 
                           onClick={() => setSelectedCategoryId(cat.id)}
                         />
-                        {/* Recursive subcategories could be added here for a tree view */}
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-muted/30 to-transparent pointer-events-none lg:hidden" />
+                <div className="absolute right-0 top-0 bottom-4 w-12 bg-gradient-to-l from-background to-transparent pointer-events-none lg:hidden" />
               </nav>
             </div>
           </aside>
@@ -201,12 +195,12 @@ export default function DiscussionsPage() {
                     <motion.div 
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
-                      className="mt-2 p-4 md:p-6 bg-primary/5 border border-primary/10 rounded-2xl"
+                      className="mt-2 p-4 md:p-6 bg-card border border-border rounded-2xl"
                     >
                       <div className="flex items-center gap-2 text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest mb-3">
                         <Sparkles size={14} /> AI ÖZETİ
                       </div>
-                      <div className="text-xs md:text-sm leading-relaxed prose prose-sm max-w-none">
+                      <div className="text-xs md:text-sm leading-relaxed prose prose-sm max-w-none text-muted-foreground">
                         {summaryResult.text.split('\n').map((line, i) => (
                           <p key={i} className={line.startsWith('-') || line.startsWith('•') ? 'ml-4' : ''}>
                             {line}
@@ -224,7 +218,7 @@ export default function DiscussionsPage() {
                 </motion.div>
               ))
             ) : (
-              <div className="text-center py-16 md:py-20 bg-card rounded-2xl md:rounded-[3rem] border border-dashed border-border px-4">
+              <div className="text-center py-16 md:py-20 bg-card rounded-2xl border border-dashed border-border px-4">
                 <MessageSquareCode className="mx-auto text-muted-foreground mb-4 opacity-20" size={48} />
                 <h3 className="text-lg md:text-xl font-bold mb-2">Henüz tartışma bulunamadı</h3>
                 <p className="text-sm text-muted-foreground">Bir tartışma başlatmak için &quot;Yeni Başlık Aç&quot; butonunu kullanabilirsiniz.</p>
@@ -232,11 +226,7 @@ export default function DiscussionsPage() {
             )}
           </section>
         </div>
-      </main>
-
-      <AccessibilityToolbar />
-      <Footer />
-    </div>
+    </DashboardLayout>
   );
 }
 
@@ -244,14 +234,14 @@ function CategoryLink({ label, active, count, onClick }: { label: string, active
   return (
     <button
       onClick={onClick}
-      className={`flex items-center justify-between rounded-full lg:rounded-xl px-5 py-2.5 lg:py-3.5 text-[11px] md:text-sm font-bold transition-all whitespace-nowrap shrink-0 lg:w-full min-w-fit snap-start ${
+      className={`flex items-center justify-between rounded-xl px-5 py-3 text-sm font-bold transition-all whitespace-nowrap shrink-0 lg:w-full min-w-fit snap-start ${
         active 
-          ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 lg:scale-[1.02]' 
-          : 'bg-card lg:bg-transparent border border-border lg:border-none text-muted-foreground hover:bg-muted hover:text-foreground lg:hover:translate-x-1 outline-none focus:ring-2 focus:ring-primary/20'
+          ? 'bg-primary text-primary-foreground shadow-lg' 
+          : 'bg-card border border-border text-muted-foreground hover:bg-muted hover:text-foreground'
       }`}
     >
       <span className="mr-4 lg:mr-2">{label}</span>
-      <span className={`text-[9px] md:text-[10px] px-2 py-0.5 rounded-full font-bold shrink-0 ${active ? 'bg-white/20' : 'bg-muted'}`}>
+      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold shrink-0 ${active ? 'bg-white/20' : 'bg-muted'}`}>
         {count}
       </span>
     </button>
