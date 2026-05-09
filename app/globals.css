@@ -52,3 +52,67 @@ h1, h2, h3, h4, h5, h6 {
   @apply inline-flex items-center justify-center rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-95 shadow-sm;
 }
 
+/* Accessibility Overrides */
+
+/* 1. High Contrast Mode (WCAG AAA) */
+.high-contrast {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #000000;
+  --card-foreground: #ffffff;
+  --primary: #ffff00;
+  --primary-foreground: #000000;
+  --muted: #1a1a1a;
+  --muted-foreground: #ffffff;
+  --border: #ffffff;
+  --ring: #ffff00;
+}
+
+.high-contrast * {
+  text-shadow: none !important;
+  color: var(--foreground) !important;
+  background-color: var(--background) !important;
+  border-color: var(--border) !important;
+}
+
+.high-contrast .vibe-button-primary,
+.high-contrast button {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border: 4px solid var(--primary) !important;
+  font-weight: 900 !important;
+}
+
+/* 2. Dyslexic Font */
+.dyslexic-font {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+}
+
+/* 3. Bionic Reading (Simulation using bold first letters) */
+/* Note: For full effect, words should be wrapped in <span> elements in components */
+.bionic-reading p, .bionic-reading span {
+  letter-spacing: 0.05em;
+  word-spacing: 0.2em;
+}
+
+/* 4. Font Size Overrides */
+[data-font-size="sm"] { font-size: 0.875rem; }
+[data-font-size="md"] { font-size: 1rem; }
+[data-font-size="lg"] { font-size: 1.25rem; }
+[data-font-size="xl"] { font-size: 1.5rem; }
+
+/* 5. Reduced Motion */
+.reduced-motion * {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* 6. Focus Mode */
+.focus-mode .vibe-card:not(:focus-within):not(:hover) {
+  opacity: 0.3;
+  filter: grayscale(1);
+}
+
+

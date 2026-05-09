@@ -5,6 +5,7 @@ import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
+import { BionicText } from '@/components/ui/bionic-text';
 
 export default function Home() {
   const { user, loading } = useAuth();
@@ -38,7 +39,7 @@ export default function Home() {
               transition={{ delay: 0.2 }}
               className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-8 tracking-tighter text-foreground leading-[0.9] sm:leading-[0.85]"
             >
-              Herkes İçin <span className="text-primary">Erişilebilir</span> <br className="hidden sm:block" /> Bir Topluluk
+              <BionicText text="Herkes İçin Erişilebilir Bir Topluluk" />
             </motion.h1>
             <motion.p 
               initial={{ y: 20, opacity: 0 }}
@@ -46,7 +47,7 @@ export default function Home() {
               transition={{ delay: 0.3 }}
               className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-muted-foreground mb-12 font-medium leading-relaxed px-4"
             >
-              Engelleri birlikte aşmak için tasarlanan, yapay zeka destekli ve tam erişilebilir forum platformu.
+              <BionicText text="Engelleri birlikte aşmak için tasarlanan, yapay zeka destekli ve tam erişilebilir forum platformu." />
             </motion.p>
             <motion.div
               initial={{ y: 20, opacity: 0 }}

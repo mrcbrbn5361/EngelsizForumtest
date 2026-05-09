@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
-import { Settings, Type, Contrast, Eye, MoveHorizontal, X, RotateCcw } from 'lucide-react';
+import { Settings, Type, Contrast, Eye, MoveHorizontal, X, RotateCcw, Zap, Target, Mic } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 /**
@@ -10,7 +10,17 @@ import { motion, AnimatePresence } from 'motion/react';
  * Provides quick access to accessibility settings.
  */
 export function AccessibilityToolbar() {
-  const { fontSize, highContrast, dyslexicFont, reducedMotion, updateSettings, resetSettings } = useAccessibility();
+  const { 
+    fontSize, 
+    highContrast, 
+    dyslexicFont, 
+    reducedMotion, 
+    bionicReading,
+    focusMode,
+    voiceMode,
+    updateSettings, 
+    resetSettings 
+  } = useAccessibility();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -102,6 +112,51 @@ export function AccessibilityToolbar() {
                   aria-checked={reducedMotion}
                 >
                   <span className={`absolute left-1 top-0.5 h-5 w-5 rounded-full transition-all shadow-sm ${reducedMotion ? 'translate-x-7 bg-white' : 'bg-foreground/50'}`} />
+                </button>
+              </section>
+
+              {/* Bionic Reading */}
+              <section className="flex items-center justify-between group">
+                <label className="flex items-center gap-2 text-sm font-bold group-hover:text-primary transition-colors">
+                  <Zap size={18} className="text-primary" /> Biyonik Okuma
+                </label>
+                <button
+                  onClick={() => updateSettings({ bionicReading: !bionicReading })}
+                  className={`relative h-7 w-14 rounded-full border-2 border-border transition-all ${bionicReading ? 'bg-primary ring-4 ring-primary/10' : 'bg-muted'}`}
+                  role="switch"
+                  aria-checked={bionicReading}
+                >
+                  <span className={`absolute left-1 top-0.5 h-5 w-5 rounded-full transition-all shadow-sm ${bionicReading ? 'translate-x-7 bg-white' : 'bg-foreground/50'}`} />
+                </button>
+              </section>
+
+              {/* Focus Mode */}
+              <section className="flex items-center justify-between group">
+                <label className="flex items-center gap-2 text-sm font-bold group-hover:text-primary transition-colors">
+                  <Target size={18} className="text-primary" /> Odak Modu
+                </label>
+                <button
+                  onClick={() => updateSettings({ focusMode: !focusMode })}
+                  className={`relative h-7 w-14 rounded-full border-2 border-border transition-all ${focusMode ? 'bg-primary ring-4 ring-primary/10' : 'bg-muted'}`}
+                  role="switch"
+                  aria-checked={focusMode}
+                >
+                  <span className={`absolute left-1 top-0.5 h-5 w-5 rounded-full transition-all shadow-sm ${focusMode ? 'translate-x-7 bg-white' : 'bg-foreground/50'}`} />
+                </button>
+              </section>
+
+              {/* Voice Mode */}
+              <section className="flex items-center justify-between group">
+                <label className="flex items-center gap-2 text-sm font-bold group-hover:text-primary transition-colors">
+                  <Mic size={18} className="text-primary" /> Sesli Mod (STT)
+                </label>
+                <button
+                  onClick={() => updateSettings({ voiceMode: !voiceMode })}
+                  className={`relative h-7 w-14 rounded-full border-2 border-border transition-all ${voiceMode ? 'bg-primary ring-4 ring-primary/10' : 'bg-muted'}`}
+                  role="switch"
+                  aria-checked={voiceMode}
+                >
+                  <span className={`absolute left-1 top-0.5 h-5 w-5 rounded-full transition-all shadow-sm ${voiceMode ? 'translate-x-7 bg-white' : 'bg-foreground/50'}`} />
                 </button>
               </section>
 

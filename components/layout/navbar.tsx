@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Database, Shield } from 'lucide-react';
+import * as Dialog from '@radix-ui/react-dialog';
 import { useAuth } from '@/components/providers/auth-provider';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -15,8 +16,6 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
-
-  const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md high-contrast:bg-background high-contrast:opacity-100" role="navigation" aria-label="Ana Navigasyon">
@@ -98,64 +97,66 @@ export function Navbar() {
               <div className="h-8 w-8 animate-pulse bg-muted rounded-full ml-1 md:ml-2"></div>
             )}
 
-            {/* Mobile Menu Toggle */}
-            <button
-              onClick={toggleMenu}
-              className="ml-1 flex md:hidden items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-2 focus:ring-primary"
-              aria-expanded={isOpen}
-              aria-label={isOpen ? "Menüyü Kapat" : "Menüyü Aç"}
-            >
-              {isOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
+            {/* Mobile Menu Toggle with Radix Dialog */}
+            <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
+              <Dialog.Trigger asChild>
+                <button
+                  className="ml-1 flex md:hidden items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-2 focus:ring-primary"
+                  aria-label={isOpen ? "Menüyü Kapat" : "Menüyü Aç"}
+                >
+                  <Menu size={20} />
+                </button>
+              </Dialog.Trigger>
+              <Dialog.Portal>
+                <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
+                <Dialog.Content className="fixed inset-y-0 left-0 z-50 w-[80vw] max-w-sm bg-background p-6 shadow-2xl focus:outline-none focus:ring-0">
+                  <div className="flex items-center justify-between mb-8">
+                    <Link href="/" onClick={() => setIsOpen(false)} className="text-xl font-black tracking-tighter">
+                      engelsiz<span className="text-primary">forum</span>
+                    </Link>
+                    <Dialog.Close asChild>
+                      <button className="rounded-full p-2 hover:bg-muted transition-colors" aria-label="Kapat">
+                        <X size={20} />
+                      </button>
+                    </Dialog.Close>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <MobileNavLink href="/" icon={<Home size={20} />} label="Ana Sayfa" onClick={() => setIsOpen(false)} />
+                    <MobileNavLink href="/discussions" icon={<MessageSquare size={20} />} label="Tartışmalar" onClick={() => setIsOpen(false)} />
+                    <MobileNavLink href="/communities" icon={<Users size={20} />} label="Topluluklar" onClick={() => setIsOpen(false)} />
+                    <MobileNavLink href="/about" icon={<Info size={20} />} label="Hakkımızda" onClick={() => setIsOpen(false)} />
+                    
+                    <div className="my-4 border-t border-border"></div>
+                    <h4 className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest ml-4 mb-2">Hızlı Erişim</h4>
+                    {isStaff && (
+                      <div className="mx-4 mb-4 p-4 rounded-xl bg-primary text-primary-foreground flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Shield size={20} />
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Yetkili Paneli</p>
+                            <p className="text-xs font-bold opacity-80 uppercase tracking-tighter">{profile?.role}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <MobileNavLink href="/search" icon={<Search size={20} />} label="Arama Yap" onClick={() => setIsOpen(false)} />
+                    
+                    {!user && (
+                      <Link
+                        href="/auth"
+                        onClick={() => setIsOpen(false)}
+                        className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-4 text-base font-bold text-primary-foreground shadow-lg active:scale-95"
+                      >
+                        <LogIn size={20} /> Hemen Başla
+                      </Link>
+                    )}
+                  </div>
+                </Dialog.Content>
+              </Dialog.Portal>
+            </Dialog.Root>
           </div>
         </div>
       </div>
-
-      {/* Mobile Navigation Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-border bg-background overflow-hidden h-[calc(100vh-64px)] overflow-y-auto"
-          >
-            <div className="flex flex-col p-4 gap-2">
-              <MobileNavLink href="/" icon={<Home size={20} />} label="Ana Sayfa" onClick={() => setIsOpen(false)} />
-              <MobileNavLink href="/discussions" icon={<MessageSquare size={20} />} label="Tartışmalar" onClick={() => setIsOpen(false)} />
-              <MobileNavLink href="/communities" icon={<Users size={20} />} label="Topluluklar" onClick={() => setIsOpen(false)} />
-              <MobileNavLink href="/about" icon={<Info size={20} />} label="Hakkımızda" onClick={() => setIsOpen(false)} />
-              
-              <div className="my-4 border-t border-border"></div>
-              <h4 className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest ml-4 mb-2">Hızlı Erişim</h4>
-              {isStaff && (
-                <div className="mx-4 mb-4 p-4 rounded-xl bg-primary text-primary-foreground flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Shield size={20} />
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Yetkili Paneli</p>
-                      <p className="text-xs font-bold opacity-80 uppercase tracking-tighter">{profile?.role}</p>
-                    </div>
-                  </div>
-                  <div className="h-2 w-2 rounded-full bg-white animate-pulse"></div>
-                </div>
-              )}
-              <MobileNavLink href="/communities" icon={<AlertCircle size={20} />} label="Görme Engelliler" onClick={() => setIsOpen(false)} />
-              <MobileNavLink href="/communities" icon={<Database size={20} />} label="İşitme Engelliler" onClick={() => setIsOpen(false)} />
-              
-              {!user && (
-                <Link
-                  href="/auth"
-                  onClick={() => setIsOpen(false)}
-                  className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-4 text-base font-bold text-primary-foreground shadow-lg active:scale-95"
-                >
-                  <LogIn size={20} /> Hemen Başla
-                </Link>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </nav>
   );
 }

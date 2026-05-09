@@ -30,9 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-background text-foreground transition-colors duration-300 overflow-x-hidden min-h-screen flex flex-col font-sans">
         <AuthProvider>
             <AccessibilityProvider>
-              <div className="flex-1 w-full flex flex-col">
+              <main id="main-content" className="flex-1 w-full flex flex-col outline-none" tabIndex={-1}>
                 {children}
-              </div>
+              </main>
             </AccessibilityProvider>
         </AuthProvider>
       </body>

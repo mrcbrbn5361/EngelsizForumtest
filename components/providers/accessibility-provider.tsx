@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './auth-provider';
+import { RouteAnnouncer } from './route-announcer';
 
 type FontSize = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -11,6 +12,9 @@ interface AccessibilitySettings {
   highContrast: boolean;
   dyslexicFont: boolean;
   reducedMotion: boolean;
+  bionicReading: boolean;
+  focusMode: boolean;
+  voiceMode: boolean;
 }
 
 interface AccessibilityContextType extends AccessibilitySettings {
@@ -23,6 +27,9 @@ const defaultSettings: AccessibilitySettings = {
   highContrast: false,
   dyslexicFont: false,
   reducedMotion: false,
+  bionicReading: false,
+  focusMode: false,
+  voiceMode: false,
 };
 
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
@@ -87,6 +94,9 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     root.classList.toggle('high-contrast', settings.highContrast);
     root.classList.toggle('dyslexic-font', settings.dyslexicFont);
     root.classList.toggle('reduced-motion', settings.reducedMotion);
+    root.classList.toggle('bionic-reading', settings.bionicReading);
+    root.classList.toggle('focus-mode', settings.focusMode);
+    root.classList.toggle('voice-mode', settings.voiceMode);
 
     localStorage.setItem('accessibility_prefs', JSON.stringify(settings));
 
@@ -126,6 +136,13 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   return (
     <AccessibilityContext.Provider value={{ ...settings, updateSettings, resetSettings }}>
       <div className={`accessibility-wrapper min-h-screen ${settings.highContrast ? 'dark contrast-more' : ''}`}>
+        <a 
+          href="#main-content" 
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-primary focus:text-white focus:px-6 focus:py-3 focus:rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/50"
+        >
+          Ana İçeriğe Atla
+        </a>
+        <RouteAnnouncer />
         {children}
       </div>
     </AccessibilityContext.Provider>
