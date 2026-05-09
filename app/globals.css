@@ -88,8 +88,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
 }
 
-/* 3. Bionic Reading (Simulation using bold first letters) */
-/* Note: For full effect, words should be wrapped in <span> elements in components */
+/* 3. Bionic Reading (Basic spacing, full effect handled by BionicText component) */
 .bionic-reading p, .bionic-reading span {
   letter-spacing: 0.05em;
   word-spacing: 0.2em;
@@ -115,4 +114,11 @@ h1, h2, h3, h4, h5, h6 {
   filter: grayscale(1);
 }
 
+.focus-mode .vibe-card:focus-within,
+.focus-mode .vibe-card:hover {
+  opacity: 1;
+  filter: none;
+  transform: scale(1.02);
+  z-index: 10;
+}
 
