@@ -2,10 +2,11 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { MessageSquare, User, Calendar, Pin, Sparkles, Loader2 } from 'lucide-react';
+import { MessageSquare, User, Calendar, Pin, Sparkles, Loader2, Trash2 } from 'lucide-react';
 import { Topic } from '@/types/database';
 import Image from 'next/image';
-
+import { supabase } from '@/lib/supabase';
+import { useRole } from '@/hooks/use-role';
 import Link from 'next/link';
 
 interface DiscussionCardProps {
@@ -18,6 +19,15 @@ interface DiscussionCardProps {
  * Accessible Discussion Card with AI Summary feature.
  */
 export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCardProps) {
+  const { isStaff } = useRole();
+
+  const handleDelete = async () => {
+    if (!confirm('Bu tartışmayı silmek istediğinize emin misiniz?')) return;
+    const { error } = await supabase.from('topics').delete().eq('id', topic.id);
+    if (error) alert('Silme işlemi başarısız: ' + error.message);
+    else window.location.reload();
+  };
+
   return (
     <motion.article 
       whileHover={{ y: -4 }}
@@ -52,23 +62,35 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
           </h2>
         </div>
         
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onSummarize(topic.id);
-          }}
-          disabled={isLoading}
-          className="relative z-10 flex h-9 md:h-11 items-center justify-center gap-2 rounded-xl bg-primary/5 px-3 md:px-5 text-[10px] md:text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all disabled:opacity-50 border border-primary/10 group/ai uppercase tracking-widest"
-          aria-label="AI ile özetle"
-        >
-          {isLoading ? (
-            <Loader2 className="animate-spin" size={14} />
-          ) : (
-            <Sparkles size={14} className="group-hover/ai:rotate-12 transition-transform" />
+        <div className="flex gap-2 relative z-10">
+          {isStaff && (
+            <button
+              onClick={handleDelete}
+              className="flex h-9 md:h-11 items-center justify-center rounded-xl bg-red-500/10 px-3 text-red-600 hover:bg-red-500 hover:text-white transition-all border border-red-500/10"
+              aria-label="Tartışmayı sil"
+            >
+              <Trash2 size={16} />
+            </button>
           )}
-          <span className="hidden sm:inline">{isLoading ? 'ÖZETLENİYOR...' : 'AI ÖZETLE'}</span>
-        </button>
+
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onSummarize(topic.id);
+            }}
+            disabled={isLoading}
+            className="flex h-9 md:h-11 items-center justify-center gap-2 rounded-xl bg-primary/5 px-3 md:px-5 text-[10px] md:text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all disabled:opacity-50 border border-primary/10 group/ai uppercase tracking-widest"
+            aria-label="AI ile özetle"
+          >
+            {isLoading ? (
+              <Loader2 className="animate-spin" size={14} />
+            ) : (
+              <Sparkles size={14} className="group-hover/ai:rotate-12 transition-transform" />
+            )}
+            <span className="hidden sm:inline">{isLoading ? 'ÖZETLENİYOR...' : 'AI ÖZETLE'}</span>
+          </button>
+        </div>
       </div>
 
       <p className="line-clamp-2 text-sm md:text-base text-muted-foreground leading-relaxed relative z-10 pointer-events-none font-medium">

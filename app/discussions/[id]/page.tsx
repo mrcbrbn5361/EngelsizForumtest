@@ -4,9 +4,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Topic, Comment } from '@/types/database';
-import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, User, ChevronRight, Plus, Lock } from 'lucide-react';
+import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, User, ChevronRight, Plus, Lock, Trash2, Pin } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
+import { useRole } from '@/hooks/use-role';
 import { GoogleGenAI } from '@google/genai';
 import { supabase } from '@/lib/supabase';
 import ReactMarkdown from 'react-markdown';
@@ -16,6 +17,7 @@ export default function DiscussionDetailPage() {
   const { id } = useParams();
   const router = useRouter();
   const { user } = useAuth();
+  const { isStaff } = useRole();
   
   const [topic, setTopic] = useState<Topic | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -24,6 +26,40 @@ export default function DiscussionDetailPage() {
   const [summary, setSummary] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+
+  const deleteTopic = async () => {
+    if (!confirm('Bu tartışmayı silmek istediğinize emin misiniz?')) return;
+    const { error } = await supabase.from('topics').delete().eq('id', id);
+    if (error) alert('Silme işlemi başarısız: ' + error.message);
+    else router.push('/discussions');
+  };
+
+  const togglePin = async () => {
+    if (!topic) return;
+    const { error } = await supabase
+      .from('topics')
+      .update({ is_pinned: !topic.is_pinned })
+      .eq('id', id);
+    if (error) alert('Hata: ' + error.message);
+    else setTopic({ ...topic, is_pinned: !topic.is_pinned });
+  };
+
+  const toggleLock = async () => {
+    if (!topic) return;
+    const { error } = await supabase
+      .from('topics')
+      .update({ is_locked: !topic.is_locked })
+      .eq('id', id);
+    if (error) alert('Hata: ' + error.message);
+    else setTopic({ ...topic, is_locked: !topic.is_locked });
+  };
+
+  const deleteComment = async (commentId: string) => {
+    if (!confirm('Bu yorumu silmek istediğinize emin misiniz?')) return;
+    const { error } = await supabase.from('comments').delete().eq('id', commentId);
+    if (error) alert('Silme işlemi başarısız: ' + error.message);
+    else setComments(comments.filter(c => c.id !== commentId));
+  };
 
   const fetchTopic = useCallback(async () => {
     try {
@@ -156,16 +192,39 @@ export default function DiscussionDetailPage() {
           <div className="space-y-12 min-w-0">
             <article className="bg-card p-6 md:p-12 rounded-[2.5rem] border border-border shadow-sm">
               <header className="mb-10 space-y-6">
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
-                    {topic.category?.name || 'Genel'}
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <div className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
+                      {topic.category?.name || 'Genel'}
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      <Users size={14} className="text-primary" /> {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
+                    </div>
+                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                    <Users size={14} className="text-primary" /> {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
-                  </div>
-                  <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                    <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
-                  </div>
+                  {isStaff && (
+                    <div className="flex items-center gap-2">
+                       <button 
+                        onClick={togglePin} 
+                        className={`p-2 rounded-xl transition-all ${topic.is_pinned ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:bg-muted'}`}
+                        title={topic.is_pinned ? "İğnelemeyi Kaldır" : "İğnele"}
+                      >
+                        <Pin size={18} />
+                      </button>
+                      <button 
+                        onClick={toggleLock} 
+                        className={`p-2 rounded-xl transition-all ${topic.is_locked ? 'text-orange-500 bg-orange-500/10' : 'text-muted-foreground hover:bg-muted'}`}
+                        title={topic.is_locked ? "Kilidi Aç" : "Kilitle"}
+                      >
+                        <Lock size={18} />
+                      </button>
+                      <button onClick={deleteTopic} className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-xl transition-all" title="Sil">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-tight break-words">{topic.title}</h1>
               </header>
@@ -234,10 +293,15 @@ export default function DiscussionDetailPage() {
                         </div>
                       </div>
                       <div className="flex-1 min-w-0 space-y-4">
-                        <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                          <span className="text-primary">{comment.author?.full_name || comment.author?.username || 'Kullanıcı'}</span>
-                          <span>•</span>
-                          <span>{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                            <span className="text-primary">{comment.author?.full_name || comment.author?.username || 'Kullanıcı'}</span>
+                            <span>•</span>
+                            <span>{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
+                          </div>
+                          {isStaff && (
+                            <button onClick={() => deleteComment(comment.id)} className="text-red-500 hover:text-red-700 p-2"><Trash2 size={16} /></button>
+                          )}
                         </div>
                         <div className="text-base md:text-lg font-medium leading-relaxed break-words text-foreground/90">
                           <ReactMarkdown>{comment.content}</ReactMarkdown>
@@ -254,29 +318,37 @@ export default function DiscussionDetailPage() {
               </div>
 
               {user ? (
-                <form 
-                  onSubmit={handlePostComment}
-                  className="bg-card p-6 md:p-10 rounded-[2.5rem] border border-border shadow-2xl relative overflow-hidden mt-12"
-                >
-                  <div className="absolute top-0 left-0 w-full h-2 bg-primary/20" />
-                  <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-6">YENİ YANIT GÖNDER</p>
-                  <textarea
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Bir şeyler yazın..."
-                    className="w-full min-h-[180px] p-8 rounded-[1.5rem] bg-muted/30 border border-border focus:border-primary focus:bg-background outline-none transition-all text-lg font-medium resize-none mb-6"
-                    required
-                  />
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      disabled={sending}
-                      className="px-10 py-5 bg-primary text-primary-foreground rounded-2xl font-black text-xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3 disabled:opacity-50"
-                    >
-                      {sending ? <Loader2 size={24} className="animate-spin" /> : <Send size={24} />} {sending ? 'Gönderiliyor...' : 'Gönder'}
-                    </button>
+                topic.is_locked && !isStaff ? (
+                  <div className="p-10 bg-orange-500/5 border-2 border-dashed border-orange-500/30 rounded-[2.5rem] text-center mt-12">
+                    <Lock size={48} className="mx-auto text-orange-500/20 mb-6" />
+                    <p className="text-xl font-black text-orange-500 uppercase tracking-widest mb-2 px-4">Bu Tartışma Kilitlendi</p>
+                    <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest mb-8 px-4">Artık yeni yanıt kabul edilmemektedir.</p>
                   </div>
-                </form>
+                ) : (
+                  <form 
+                    onSubmit={handlePostComment}
+                    className="bg-card p-6 md:p-10 rounded-[2.5rem] border border-border shadow-2xl relative overflow-hidden mt-12"
+                  >
+                    <div className="absolute top-0 left-0 w-full h-2 bg-primary/20" />
+                    <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-6">{topic.is_locked ? 'ADMİN PANELİ: KİLİTLİ BAŞLIĞA YANIT YAZ' : 'YENİ YANIT GÖNDER'}</p>
+                    <textarea
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      placeholder="Bir şeyler yazın..."
+                      className="w-full min-h-[180px] p-8 rounded-[1.5rem] bg-muted/30 border border-border focus:border-primary focus:bg-background outline-none transition-all text-lg font-medium resize-none mb-6"
+                      required
+                    />
+                    <div className="flex justify-end">
+                      <button
+                        type="submit"
+                        disabled={sending}
+                        className="px-10 py-5 bg-primary text-primary-foreground rounded-2xl font-black text-xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3 disabled:opacity-50"
+                      >
+                        {sending ? <Loader2 size={24} className="animate-spin" /> : <Send size={24} />} {sending ? 'Gönderiliyor...' : 'Gönder'}
+                      </button>
+                    </div>
+                  </form>
+                )
               ) : (
                 <div className="p-10 bg-muted/10 border-2 border-dashed border-border rounded-[2.5rem] text-center mt-12">
                   <Lock size={48} className="mx-auto text-muted-foreground/20 mb-6" />

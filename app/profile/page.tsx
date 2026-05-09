@@ -10,49 +10,26 @@ import { useAccessibility } from '@/components/providers/accessibility-provider'
 import Image from 'next/image';
 
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, profile: globalProfile } = useAuth();
   const { resetSettings } = useAccessibility();
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [profile, setProfile] = useState<{ username: string, full_name: string | null, avatar_url: string | null, role: string, level: number, xp: number } | null>(null);
   const [editMode, setEditMode] = useState(false);
 
-  const fetchProfile = useCallback(async () => {
-    if (!user) return;
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('username, full_name, avatar_url, role, level, xp')
-        .eq('id', user.id)
-        .single();
-      
-      if (data) {
-        setProfile({
-          username: data.username,
-          full_name: data.full_name,
-          avatar_url: data.avatar_url,
-          role: data.role,
-          level: data.level,
-          xp: data.xp
-        });
-      }
-    } catch (err) {
-      console.error('Error fetching profile:', err);
-    } finally {
+  useEffect(() => {
+    if (globalProfile) {
+      setProfile({
+        username: globalProfile.username,
+        full_name: globalProfile.full_name,
+        avatar_url: globalProfile.avatar_url,
+        role: globalProfile.role,
+        level: globalProfile.level || 1,
+        xp: globalProfile.xp || 0
+      });
       setLoading(false);
     }
-  }, [user]);
-
-  useEffect(() => {
-    let isMounted = true;
-    const init = async () => {
-      if (user && isMounted) {
-        await fetchProfile();
-      }
-    };
-    init();
-    return () => { isMounted = false; };
-  }, [user, fetchProfile]);
+  }, [globalProfile]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();

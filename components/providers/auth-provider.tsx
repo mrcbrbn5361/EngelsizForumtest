@@ -1,35 +1,50 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { User } from '@supabase/supabase-js';
+import { Profile } from '@/types/database';
 
 interface AuthContextType {
   user: User | null;
+  profile: Profile | null;
   loading: boolean;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true });
+const AuthContext = createContext<AuthContextType>({ user: null, profile: null, loading: true });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const fetchProfile = useCallback(async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      
+      if (error) throw error;
+      setProfile(data);
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+    }
+  }, []);
 
   useEffect(() => {
     const checkSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error('Session check error:', error);
-          if (error.message.includes('Refresh Token Not Found')) {
-            await supabase.auth.signOut();
-            setUser(null);
-          }
-        } else {
-          setUser(session?.user ?? null);
+        if (error) throw error;
+        
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          await fetchProfile(session.user.id);
         }
       } catch (err) {
-        console.error('Unexpected auth error:', err);
+        console.error('Session check error:', err);
       } finally {
         setLoading(false);
       }
@@ -37,20 +52,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     checkSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state change event:', event);
-      if (event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
-        setUser(session?.user ?? null);
-      } else if (session) {
-        setUser(session.user);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        await fetchProfile(session.user.id);
       } else {
-        setUser(null);
+        setProfile(null);
       }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [fetchProfile]);
 
   useEffect(() => {
     const ensureProfile = async () => {
@@ -72,10 +85,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 username: `${baseUsername}_${user.id.slice(0, 4)}`,
                 full_name: user.user_metadata?.full_name || user.user_metadata?.name || baseUsername,
                 avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`,
+                role: 'user', // Default role
                 updated_at: new Date().toISOString()
               }, { onConflict: 'id' });
             
             if (error) console.error('Error creating default profile:', error);
+            else await fetchProfile(user.id);
           }
         } catch (err) {
           console.error('Error in profile assurance:', err);
@@ -83,10 +98,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
     ensureProfile();
-  }, [user]);
+  }, [user, fetchProfile]);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, profile, loading }}>
       {children}
     </AuthContext.Provider>
   );

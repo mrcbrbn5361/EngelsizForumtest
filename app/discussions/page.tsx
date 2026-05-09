@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, MessageSquareCode, Plus, Loader2, Sparkles, ChevronRight, MessageSquare, Globe } from 'lucide-react';
+import { Search, MessageSquareCode, Plus, Loader2, Sparkles, ChevronRight, MessageSquare, Globe, Pin, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -36,7 +36,9 @@ export default function DiscussionsPage() {
       }
 
       if (sortBy === 'Latest') {
-        query = query.order('created_at', { ascending: false });
+        query = query
+          .order('is_pinned', { ascending: false })
+          .order('created_at', { ascending: false });
       }
 
       const { data, error } = await query;
@@ -250,6 +252,16 @@ export default function DiscussionsPage() {
                         <div className="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase tracking-widest">
                           <Plus size={14} /> {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
                         </div>
+                        {topic.is_pinned && (
+                          <div className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
+                            <Pin size={12} /> SABİTLENDİ
+                          </div>
+                        )}
+                        {topic.is_locked && (
+                          <div className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-orange-500/10 text-orange-500 text-[10px] font-black uppercase tracking-widest">
+                            <Lock size={12} /> KİLİTLİ
+                          </div>
+                        )}
                         <div className="px-3 py-1 rounded-full bg-muted text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                           {topic.category?.name || 'Genel'}
                         </div>

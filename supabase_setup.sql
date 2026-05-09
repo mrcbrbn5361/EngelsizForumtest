@@ -61,6 +61,9 @@ CREATE POLICY "Authenticated users can create topics" ON public.topics FOR INSER
 DROP POLICY IF EXISTS "Authors can update own topics" ON public.topics;
 CREATE POLICY "Authors can update own topics" ON public.topics FOR UPDATE USING (auth.uid() = author_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'moderator')));
 
+DROP POLICY IF EXISTS "Admins/Moderators can delete topics" ON public.topics;
+CREATE POLICY "Admins/Moderators can delete topics" ON public.topics FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'moderator')));
+
 -- 4. Comments Table
 CREATE TABLE IF NOT EXISTS public.comments (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -77,6 +80,9 @@ DROP POLICY IF EXISTS "Authenticated users can create comments" ON public.commen
 CREATE POLICY "Authenticated users can create comments" ON public.comments FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 DROP POLICY IF EXISTS "Authors can update own comments" ON public.comments;
 CREATE POLICY "Authors can update own comments" ON public.comments FOR UPDATE USING (auth.uid() = author_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'moderator')));
+
+DROP POLICY IF EXISTS "Admins/Moderators can delete comments" ON public.comments;
+CREATE POLICY "Admins/Moderators can delete comments" ON public.comments FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'moderator')));
 
 -- 5. Badges Table
 CREATE TABLE IF NOT EXISTS public.badges (

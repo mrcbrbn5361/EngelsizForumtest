@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Database } from 'lucide-react';
+import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Database, Shield } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -11,8 +11,10 @@ import { motion, AnimatePresence } from 'motion/react';
  * Accessible Navbar for EngelsizForum.
  */
 export function Navbar() {
-  const { user, loading } = useAuth();
+  const { user, profile, loading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+
+  const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -51,11 +53,17 @@ export function Navbar() {
 
             {!loading && (
               user ? (
-                <Link
-                  href="/profile"
-                  className="ml-1 flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 p-1 px-2 md:px-3 md:py-1.5 text-xs md:text-sm font-bold text-primary transition-all hover:bg-primary hover:text-white focus:ring-2 focus:ring-primary shadow-sm group shrink-0"
-                  aria-label="Profil Ayarları"
-                >
+                <div className="flex items-center gap-2">
+                  {isStaff && (
+                    <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest animate-pulse border border-white/20">
+                      <Shield size={12} /> {profile?.role}
+                    </div>
+                  )}
+                  <Link
+                    href="/profile"
+                    className="ml-1 flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 p-1 px-2 md:px-3 md:py-1.5 text-xs md:text-sm font-bold text-primary transition-all hover:bg-primary hover:text-white focus:ring-2 focus:ring-primary shadow-sm group shrink-0"
+                    aria-label="Profil Ayarları"
+                  >
                   {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
                     <div className="relative h-6 w-6 md:h-7 md:w-7 rounded-full overflow-hidden border border-primary/20 group-hover:border-white">
                       <Image 
@@ -74,6 +82,7 @@ export function Navbar() {
                   )}
                   <span className="hidden sm:inline">Profil</span>
                 </Link>
+              </div>
               ) : (
                 <Link
                   href="/auth"
