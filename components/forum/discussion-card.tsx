@@ -31,7 +31,11 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
   return (
     <motion.article 
       whileHover={{ y: -4 }}
-      className="group relative flex flex-col gap-4 rounded-3xl border border-border bg-card p-6 md:p-8 shadow-sm transition-all hover:shadow-md hover:border-primary/20 focus-within:ring-2 focus-within:ring-primary/20"
+      className={`group relative flex flex-col gap-4 rounded-3xl border p-6 md:p-8 shadow-sm transition-all hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 ${
+        topic.is_pinned 
+          ? 'border-primary/30 bg-primary/[0.02] shadow-[0_0_20px_-12px_rgba(var(--primary),0.2)]' 
+          : 'border-border bg-card hover:border-primary/20'
+      }`}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">

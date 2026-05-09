@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Navbar } from '@/components/layout/navbar';
 import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
@@ -13,6 +14,7 @@ import { motion } from 'motion/react';
  */
 export default function AuthPage() {
   const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -22,9 +24,9 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (!authLoading && user) {
-      window.location.href = '/';
+      router.push('/discussions');
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, router]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +48,7 @@ export default function AuthPage() {
       if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        window.location.href = '/';
+        router.push('/discussions');
       } else {
         const { error } = await supabase.auth.signUp({ 
           email, 

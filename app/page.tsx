@@ -7,9 +7,11 @@ import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
 
 export default function Home() {
-  const { loading } = useAuth();
+  const { user, loading } = useAuth();
 
   if (loading) return null;
+
+  const startHref = user ? '/discussions' : '/auth';
 
   return (
     <DashboardLayout>
@@ -53,7 +55,7 @@ export default function Home() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
               <Link
-                href="/auth"
+                href={startHref}
                 className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-black text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
               >
                 Hemen Başla

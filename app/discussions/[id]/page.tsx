@@ -295,12 +295,19 @@ export default function DiscussionDetailPage() {
                       <div className="flex-1 min-w-0 space-y-4">
                         <div className="flex items-center justify-between gap-4">
                           <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                            <span className="text-primary">{comment.author?.full_name || comment.author?.username || 'Kullanıcı'}</span>
+                            <span className="text-primary flex items-center gap-1.5">
+                              {comment.author?.full_name || comment.author?.username || 'Kullanıcı'}
+                              {(comment.author?.role === 'admin' || comment.author?.role === 'moderator') && (
+                                <span className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[8px] flex items-center gap-1 leading-none">
+                                  <Shield size={8} /> {comment.author.role}
+                                </span>
+                              )}
+                            </span>
                             <span>•</span>
                             <span>{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
                           </div>
                           {isStaff && (
-                            <button onClick={() => deleteComment(comment.id)} className="text-red-500 hover:text-red-700 p-2"><Trash2 size={16} /></button>
+                            <button onClick={() => deleteComment(comment.id)} className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-all"><Trash2 size={16} /></button>
                           )}
                         </div>
                         <div className="text-base md:text-lg font-medium leading-relaxed break-words text-foreground/90">

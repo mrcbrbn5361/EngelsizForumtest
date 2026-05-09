@@ -128,6 +128,18 @@ export function Navbar() {
               
               <div className="my-4 border-t border-border"></div>
               <h4 className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest ml-4 mb-2">Hızlı Erişim</h4>
+              {isStaff && (
+                <div className="mx-4 mb-4 p-4 rounded-xl bg-primary text-primary-foreground flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Shield size={20} />
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Yetkili Paneli</p>
+                      <p className="text-xs font-bold opacity-80 uppercase tracking-tighter">{profile?.role}</p>
+                    </div>
+                  </div>
+                  <div className="h-2 w-2 rounded-full bg-white animate-pulse"></div>
+                </div>
+              )}
               <MobileNavLink href="/communities" icon={<AlertCircle size={20} />} label="Görme Engelliler" onClick={() => setIsOpen(false)} />
               <MobileNavLink href="/communities" icon={<Database size={20} />} label="İşitme Engelliler" onClick={() => setIsOpen(false)} />
               

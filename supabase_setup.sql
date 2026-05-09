@@ -14,16 +14,66 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Function to check if user is staff (admin or moderator) without recursion
+CREATE OR REPLACE FUNCTION public.check_is_staff()
+RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM public.profiles 
+    WHERE id = auth.uid() 
+    AND role IN ('admin', 'moderator')
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
 -- Enable RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
--- Policies
+-- Profiles Policies - Radical Reset to stop recursion
+DO $$ 
+DECLARE 
+    pol record;
+BEGIN 
+    FOR pol IN (SELECT policyname FROM pg_policies WHERE tablename = 'profiles' AND schemaname = 'public') 
+    LOOP
+        EXECUTE format('DROP POLICY IF EXISTS %I ON public.profiles', pol.policyname);
+    END LOOP;
+END $$;
+
+-- Explicitly drop known legacy names just in case
 DROP POLICY IF EXISTS "Users can view any profile" ON public.profiles;
-CREATE POLICY "Users can view any profile" ON public.profiles FOR SELECT USING (true);
 DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
-CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
-CREATE POLICY "Users can insert own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+DROP POLICY IF EXISTS "Admins can update any profile" ON public.profiles;
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
+DROP POLICY IF EXISTS "Staff can manage profiles" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_select_policy" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_update_policy" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_insert_policy" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_v1_select" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_v1_update" ON public.profiles;
+DROP POLICY IF EXISTS "profiles_v1_insert" ON public.profiles;
+
+-- Final, ultra-simple policies for profiles
+-- FOR SELECT: Anyone can see any profile (standard for forums)
+CREATE POLICY "profiles_v2_select" 
+ON public.profiles FOR SELECT 
+USING (true);
+
+-- FOR UPDATE: Only user can update their own profile
+CREATE POLICY "profiles_v2_update" 
+ON public.profiles FOR UPDATE 
+USING (auth.uid() = id);
+
+-- FOR INSERT: Only user can insert their own profile
+CREATE POLICY "profiles_v2_insert" 
+ON public.profiles FOR INSERT 
+WITH CHECK (auth.uid() = id);
+
+-- FOR DELETE: Only the user themselves (or admins, but keeping it simple for now)
+CREATE POLICY "profiles_v2_delete"
+ON public.profiles FOR DELETE
+USING (auth.uid() = id);
 
 -- 2. Categories Table (with parent_id for hierarchy)
 CREATE TABLE IF NOT EXISTS public.categories (
@@ -37,8 +87,15 @@ CREATE TABLE IF NOT EXISTS public.categories (
 );
 
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Anyone can view categories" ON public.categories;
-CREATE POLICY "Anyone can view categories" ON public.categories FOR SELECT USING (true);
+
+-- Consolidate drops to prevent errors
+DO $$ 
+BEGIN 
+    DROP POLICY IF EXISTS "Anyone can view categories" ON public.categories;
+    DROP POLICY IF EXISTS "categories_v1_select" ON public.categories;
+END $$;
+
+CREATE POLICY "categories_v1_select" ON public.categories FOR SELECT USING (true);
 
 -- 3. Topics Table
 CREATE TABLE IF NOT EXISTS public.topics (
@@ -53,16 +110,10 @@ CREATE TABLE IF NOT EXISTS public.topics (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-ALTER TABLE public.topics ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Anyone can view topics" ON public.topics;
-CREATE POLICY "Anyone can view topics" ON public.topics FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Authenticated users can create topics" ON public.topics;
-CREATE POLICY "Authenticated users can create topics" ON public.topics FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-DROP POLICY IF EXISTS "Authors can update own topics" ON public.topics;
-CREATE POLICY "Authors can update own topics" ON public.topics FOR UPDATE USING (auth.uid() = author_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'moderator')));
-
-DROP POLICY IF EXISTS "Admins/Moderators can delete topics" ON public.topics;
-CREATE POLICY "Admins/Moderators can delete topics" ON public.topics FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'moderator')));
+-- Indexes for performance
+CREATE INDEX IF NOT EXISTS idx_topics_category_id ON public.topics(category_id);
+CREATE INDEX IF NOT EXISTS idx_topics_author_id ON public.topics(author_id);
+CREATE INDEX IF NOT EXISTS idx_topics_is_pinned ON public.topics(is_pinned) WHERE is_pinned = true;
 
 -- 4. Comments Table
 CREATE TABLE IF NOT EXISTS public.comments (
@@ -72,17 +123,44 @@ CREATE TABLE IF NOT EXISTS public.comments (
   content TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+CREATE INDEX IF NOT EXISTS idx_comments_topic_id ON public.comments(topic_id);
+CREATE INDEX IF NOT EXISTS idx_comments_author_id ON public.comments(author_id);
 
+-- 3. Topics Policies
+ALTER TABLE public.topics ENABLE ROW LEVEL SECURITY;
+
+DO $$ 
+BEGIN 
+    DROP POLICY IF EXISTS "Anyone can view topics" ON public.topics;
+    DROP POLICY IF EXISTS "topics_v1_select" ON public.topics;
+    DROP POLICY IF EXISTS "Authenticated users can create topics" ON public.topics;
+    DROP POLICY IF EXISTS "topics_v1_insert" ON public.topics;
+    DROP POLICY IF EXISTS "topics_v1_update" ON public.topics;
+    DROP POLICY IF EXISTS "topics_v1_delete" ON public.topics;
+END $$;
+
+CREATE POLICY "topics_v1_select" ON public.topics FOR SELECT USING (true);
+CREATE POLICY "topics_v1_insert" ON public.topics FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "topics_v1_update" ON public.topics FOR UPDATE USING (auth.uid() = author_id OR public.check_is_staff());
+CREATE POLICY "topics_v1_delete" ON public.topics FOR DELETE USING (public.check_is_staff());
+
+-- 4. Comments Policies
 ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "Anyone can view comments" ON public.comments;
-CREATE POLICY "Anyone can view comments" ON public.comments FOR SELECT USING (true);
-DROP POLICY IF EXISTS "Authenticated users can create comments" ON public.comments;
-CREATE POLICY "Authenticated users can create comments" ON public.comments FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-DROP POLICY IF EXISTS "Authors can update own comments" ON public.comments;
-CREATE POLICY "Authors can update own comments" ON public.comments FOR UPDATE USING (auth.uid() = author_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'moderator')));
 
-DROP POLICY IF EXISTS "Admins/Moderators can delete comments" ON public.comments;
-CREATE POLICY "Admins/Moderators can delete comments" ON public.comments FOR DELETE USING (EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'moderator')));
+DO $$ 
+BEGIN 
+    DROP POLICY IF EXISTS "Anyone can view comments" ON public.comments;
+    DROP POLICY IF EXISTS "comments_v1_select" ON public.comments;
+    DROP POLICY IF EXISTS "Authenticated users can create comments" ON public.comments;
+    DROP POLICY IF EXISTS "comments_v1_insert" ON public.comments;
+    DROP POLICY IF EXISTS "comments_v1_update" ON public.comments;
+    DROP POLICY IF EXISTS "comments_v1_delete" ON public.comments;
+END $$;
+
+CREATE POLICY "comments_v1_select" ON public.comments FOR SELECT USING (true);
+CREATE POLICY "comments_v1_insert" ON public.comments FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "comments_v1_update" ON public.comments FOR UPDATE USING (auth.uid() = author_id OR public.check_is_staff());
+CREATE POLICY "comments_v1_delete" ON public.comments FOR DELETE USING (public.check_is_staff());
 
 -- 5. Badges Table
 CREATE TABLE IF NOT EXISTS public.badges (

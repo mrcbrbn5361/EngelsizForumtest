@@ -19,17 +19,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = useCallback(async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-      
-      if (error) throw error;
-      setProfile(data);
-    } catch (err) {
-      console.error('Error fetching profile:', err);
+    let lastError = null;
+    for (let i = 0; i < 3; i++) {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single();
+        
+        if (error) {
+          lastError = error;
+          const isRecursionError = error.message?.toLowerCase().includes('recursion');
+          if (isRecursionError) break; // Don't retry if it's recursion
+
+          if (i < 2) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            continue;
+          }
+          break;
+        }
+        setProfile(data);
+        return; // Success
+      } catch (err: any) {
+        lastError = err;
+        if (err.message?.toLowerCase().includes('recursion')) break;
+        if (i < 2) await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+    
+    if (lastError) {
+      console.error('Error fetching profile from Supabase:', lastError);
+      setLoading(false);
     }
   }, []);
 

@@ -17,8 +17,10 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<{ username: string, full_name: string | null, avatar_url: string | null, role: string, level: number, xp: number } | null>(null);
   const [editMode, setEditMode] = useState(false);
 
+  const initialLoadDone = React.useRef(false);
+
   useEffect(() => {
-    if (globalProfile) {
+    if (globalProfile && !initialLoadDone.current) {
       setProfile({
         username: globalProfile.username,
         full_name: globalProfile.full_name,
@@ -28,6 +30,7 @@ export default function ProfilePage() {
         xp: globalProfile.xp || 0
       });
       setLoading(false);
+      initialLoadDone.current = true;
     }
   }, [globalProfile]);
 
@@ -164,7 +167,12 @@ export default function ProfilePage() {
                   <ProfileItem icon={<Mail size={18} />} label="E-posta" value={user.email || ''} />
                   <ProfileItem icon={<User size={18} />} label="Tam İsim" value={profile?.full_name || 'Tanımlanmamış'} />
                   <ProfileItem icon={<Settings size={18} />} label="Kullanıcı Kimliği" value={profile?.username || user.email?.split('@')[0] || ''} />
-                  <ProfileItem icon={<Shield size={18} />} label="Rol" value={profile?.role.toUpperCase() || 'USER'} />
+                  <ProfileItem 
+                    icon={<Shield size={18} />} 
+                    label="Rol" 
+                    value={profile?.role.toUpperCase() || 'USER'} 
+                    badge={profile?.role === 'admin' || profile?.role === 'moderator' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}
+                  />
                   <ProfileItem icon={<Settings size={18} />} label="Seviye" value={profile?.level.toString() || '1'} />
                   <ProfileItem icon={<Settings size={18} />} label="XP" value={profile?.xp.toString() || '0'} />
                 </div>
@@ -204,14 +212,21 @@ export default function ProfilePage() {
   );
 }
 
-function ProfileItem({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
+function ProfileItem({ icon, label, value, badge }: { icon: React.ReactNode, label: string, value: string, badge?: string }) {
   return (
-    <div className="flex items-center justify-between p-4 md:p-6 bg-[#F9F9FB] rounded-[8px] border border-[#E5E7EB] transition-all group/item">
+    <div className="flex items-center justify-between p-4 md:p-6 bg-[#F9F9FB] rounded-[1.2rem] border border-[#E5E7EB] transition-all group/item">
       <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
-        <div className="p-2 md:p-3 bg-[#FFFFFF] rounded-[8px] border border-[#E5E7EB] text-[#FF4D94] shrink-0 group-hover/item:scale-110 transition-transform">{icon}</div>
+        <div className="p-2 md:p-3 bg-[#FFFFFF] rounded-xl border border-[#E5E7EB] text-primary shrink-0 group-hover/item:scale-110 transition-transform">{icon}</div>
         <div className="min-w-0 flex-1">
           <p className="text-[9px] md:text-[10px] font-bold text-[#999999] uppercase tracking-widest mb-0.5">{label}</p>
-          <p className="font-bold text-sm md:text-lg tracking-tight break-words line-clamp-1 text-[#1A1A1A]">{value}</p>
+          <div className="flex items-center gap-2">
+            <p className="font-bold text-sm md:text-lg tracking-tight break-words line-clamp-1 text-[#1A1A1A]">{value}</p>
+            {badge && (
+              <span className={`px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest ${badge}`}>
+                 AKTİF
+              </span>
+            )}
+          </div>
         </div>
       </div>
       <ChevronRight size={18} className="text-[#999999]/50 group-hover/item:translate-x-1 transition-transform shrink-0 ml-2" />

@@ -102,12 +102,14 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
         })
         .then(({ error }) => {
           if (error) {
-            console.error('Failed to sync prefs:', {
-              message: error.message,
+            console.error('Failed to sync prefs to Supabase:', error.message || 'Unknown error', {
               details: error.details,
               hint: error.hint,
               code: error.code
             });
+            // Also update lastSyncedSettings on error to prevent infinite loop
+            // We'll try again next time they actually change something
+            lastSyncedSettings.current = currentSettingsStr;
           } else {
             lastSyncedSettings.current = currentSettingsStr;
           }
