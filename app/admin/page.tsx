@@ -74,17 +74,27 @@ export default function AdminDashboard() {
   }, []);
 
   const fetchUsers = useCallback(async () => {
-    const { data, error } = await supabase.from('profiles').select('*').order('created_at', { ascending: false }).limit(20);
+    // Önce created_at ile dene, hata alırsa id ile dene (created_at yeni eklendiği için)
+    const { data, error } = await supabase.from('profiles').select('*').order('username', { ascending: true }).limit(50);
+    
     if (data) setUsersList(data);
-    if (error) toast.error('Kullanıcılar yüklenemedi');
+    if (error) {
+      console.error('Users error:', error);
+      toast.error('Kullanıcılar yüklenemedi: ' + error.message);
+    }
   }, []);
+
+  const fetchAllData = useCallback(async () => {
+    setIsDataLoading(true);
+    await Promise.all([fetchStats(), fetchCategories(), fetchUsers()]);
+    setIsDataLoading(false);
+  }, [fetchStats, fetchCategories, fetchUsers]);
 
   useEffect(() => {
     if (isStaff) {
-      setIsDataLoading(true);
-      Promise.all([fetchStats(), fetchCategories(), fetchUsers()]).finally(() => setIsDataLoading(false));
+      fetchAllData();
     }
-  }, [isStaff, fetchStats, fetchCategories, fetchUsers]);
+  }, [isStaff, fetchAllData]);
 
   if (loading || !isStaff) {
     return (
@@ -198,11 +208,11 @@ export default function AdminDashboard() {
           </Tabs.Content>
 
           <Tabs.Content value="categories" className="outline-none">
-            <CategoryManager categories={categories} onRefresh={fetchCategories} />
+            <CategoryManager categories={categories} onRefresh={fetchAllData} />
           </Tabs.Content>
 
           <Tabs.Content value="users" className="outline-none">
-             <UserManager users={usersList} onRefresh={fetchUsers} isAdmin={isAdmin} />
+             <UserManager users={usersList} onRefresh={fetchAllData} isAdmin={isAdmin} />
           </Tabs.Content>
 
           <Tabs.Content value="moderation" className="outline-none">
@@ -345,7 +355,7 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
       toast.success('Kategori eklendi');
       setIsAdding(false);
       setFormData({ name: '', description: '', icon: 'MessageSquare' });
-      onRefresh();
+      onRefresh(); // Bu artık fetchAllData'yı tetikleyecek
     }
   };
 
