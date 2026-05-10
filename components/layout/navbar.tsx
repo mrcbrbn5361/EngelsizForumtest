@@ -114,6 +114,7 @@ export function Navbar() {
                 <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
                 <Dialog.Content className="fixed inset-y-0 left-0 z-50 w-[80vw] max-w-sm bg-background p-6 shadow-2xl focus:outline-none focus:ring-0">
                   <Dialog.Title className="sr-only">Navigasyon Menüsü</Dialog.Title>
+                  <Dialog.Description className="sr-only">Forum sayfalarına hızlı erişim menüsü.</Dialog.Description>
                   <div className="flex items-center justify-between mb-8">
                     <Link href="/" onClick={() => setIsOpen(false)} className="text-xl font-black tracking-tighter">
                       engelsiz<span className="text-primary">forum</span>
