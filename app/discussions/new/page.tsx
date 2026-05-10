@@ -27,6 +27,12 @@ function NewTopicForm() {
   }, [categories]);
 
   useEffect(() => {
+    const isSupabaseConfigured = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
+
+    if (!isSupabaseConfigured) return;
+
     const fetchCategories = async () => {
       try {
         const { data, error } = await supabase.from('categories').select('*').order('name');

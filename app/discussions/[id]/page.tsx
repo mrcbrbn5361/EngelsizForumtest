@@ -62,6 +62,15 @@ export default function DiscussionDetailPage() {
   };
 
   const fetchTopic = useCallback(async () => {
+    const isSupabaseConfigured = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
+
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('topics')
@@ -77,6 +86,15 @@ export default function DiscussionDetailPage() {
   }, [id]);
 
   const fetchComments = useCallback(async () => {
+    const isSupabaseConfigured = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
+
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('comments')

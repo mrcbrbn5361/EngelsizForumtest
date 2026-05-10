@@ -8,8 +8,6 @@ const withPWA = withPWAInit({
 
 const nextConfig: NextConfig = {
   // PWA configuration is handled by withPWA
-  experimental: {
-  },
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,
@@ -17,7 +15,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  // Allow access to remote image placeholder.
   images: {
     remotePatterns: [
       {
@@ -46,7 +43,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  transpilePackages: ['motion'],
   webpack: (config, {dev}) => {
     // HMR is disabled in AI Studio via DISABLE_HMR env var.
     // Do not modifyâfile watching is disabled to prevent flickering during agent edits.

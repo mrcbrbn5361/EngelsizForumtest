@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Database, Shield } from 'lucide-react';
+import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Database, Shield, ChevronRight } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useAuth } from '@/components/providers/auth-provider';
 import { motion, AnimatePresence } from 'motion/react';
@@ -54,9 +54,12 @@ export function Navbar() {
               user ? (
                 <div className="flex items-center gap-2">
                   {isStaff && (
-                    <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest animate-pulse border border-white/20">
+                    <Link
+                      href="/admin"
+                      className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest animate-pulse border border-white/20 hover:scale-105 transition-transform"
+                    >
                       <Shield size={12} /> {profile?.role}
-                    </div>
+                    </Link>
                   )}
                   <Link
                     href="/profile"
@@ -110,6 +113,7 @@ export function Navbar() {
               <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
                 <Dialog.Content className="fixed inset-y-0 left-0 z-50 w-[80vw] max-w-sm bg-background p-6 shadow-2xl focus:outline-none focus:ring-0">
+                  <Dialog.Title className="sr-only">Navigasyon Menüsü</Dialog.Title>
                   <div className="flex items-center justify-between mb-8">
                     <Link href="/" onClick={() => setIsOpen(false)} className="text-xl font-black tracking-tighter">
                       engelsiz<span className="text-primary">forum</span>
@@ -129,7 +133,11 @@ export function Navbar() {
                     <div className="my-4 border-t border-border"></div>
                     <h4 className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest ml-4 mb-2">Hızlı Erişim</h4>
                     {isStaff && (
-                      <div className="mx-4 mb-4 p-4 rounded-xl bg-primary text-primary-foreground flex items-center justify-between">
+                      <Link
+                        href="/admin"
+                        onClick={() => setIsOpen(false)}
+                        className="mx-4 mb-4 p-4 rounded-xl bg-primary text-primary-foreground flex items-center justify-between hover:opacity-90 active:scale-[0.98] transition-all"
+                      >
                         <div className="flex items-center gap-2">
                           <Shield size={20} />
                           <div>
@@ -137,7 +145,8 @@ export function Navbar() {
                             <p className="text-xs font-bold opacity-80 uppercase tracking-tighter">{profile?.role}</p>
                           </div>
                         </div>
-                      </div>
+                        <ChevronRight size={16} />
+                      </Link>
                     )}
                     <MobileNavLink href="/search" icon={<Search size={20} />} label="Arama Yap" onClick={() => setIsOpen(false)} />
                     

@@ -10,6 +10,12 @@ export function ReactionButton({ topicId, initialCount }: { topicId: string, ini
   const [hasLiked, setHasLiked] = useState(false);
 
   useEffect(() => {
+    const isSupabaseConfigured = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
+
+    if (!isSupabaseConfigured) return;
+
     const fetchReactions = async () => {
       // Get count
       const { count: reactionCount } = await supabase

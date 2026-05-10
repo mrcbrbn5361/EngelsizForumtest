@@ -28,6 +28,15 @@ export default function CommunityDetailPage() {
   const [summaryResult, setSummaryResult] = useState<{ id: string, text: string } | null>(null);
   
   const fetchCommunityData = useCallback(async () => {
+    const isSupabaseConfigured = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
+
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('categories')

@@ -25,6 +25,15 @@ export default function CommunitiesPage() {
   const [creating, setCreating] = useState(false);
 
   const fetchCommunities = React.useCallback(async () => {
+    const isSupabaseConfigured = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
+
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('categories')

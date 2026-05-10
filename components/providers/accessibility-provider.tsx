@@ -48,17 +48,23 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   // Initial load from local storage
   useEffect(() => {
     const saved = localStorage.getItem('accessibility_prefs');
-    requestAnimationFrame(() => {
-      if (saved) {
+    if (saved) {
+      try {
         setSettings(JSON.parse(saved));
+      } catch (e) {
+        console.error('Failed to parse accessibility prefs', e);
       }
-      setIsInitialLoad(false);
-    });
+    }
+    setIsInitialLoad(false);
   }, []);
 
   // Fetch from Supabase when user logs in
   useEffect(() => {
-    if (user) {
+    const isSupabaseConfigured = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-project.supabase.co';
+
+    if (user && isSupabaseConfigured) {
       const fetchPrefs = async () => {
         setIsSyncingFromCloud(true);
         try {
@@ -69,7 +75,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
             .single();
 
           if (error) {
-            console.warn('Could not fetch prefs from Supabase (maybe profile not created yet):', error.message);
+            console.warn('Could not fetch prefs from Supabase:', error.message);
           } else if (data?.accessibility_prefs) {
             const cloudSettings = data.accessibility_prefs as AccessibilitySettings;
             setSettings(cloudSettings);
@@ -100,9 +106,13 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
 
     localStorage.setItem('accessibility_prefs', JSON.stringify(settings));
 
+    const isSupabaseConfigured = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-project.supabase.co';
+
     // Sync with Supabase if logged in and settings actually changed
     const currentSettingsStr = JSON.stringify(settings);
-    if (user && !isSyncingFromCloud && currentSettingsStr !== lastSyncedSettings.current) {
+    if (user && isSupabaseConfigured && !isSyncingFromCloud && currentSettingsStr !== lastSyncedSettings.current) {
        supabase
         .from('profiles')
         .upsert({ 
@@ -112,12 +122,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
         })
         .then(({ error }) => {
           if (error) {
-            console.error('Failed to sync prefs to Supabase:', error.message || 'Unknown error', {
-              details: error.details,
-              hint: error.hint,
-              code: error.code
-            });
-            // Also update lastSyncedSettings on error to prevent infinite loop
+            console.error('Failed to sync prefs to Supabase:', error.message || 'Unknown error');
             // We'll try again next time they actually change something
             lastSyncedSettings.current = currentSettingsStr;
           } else {

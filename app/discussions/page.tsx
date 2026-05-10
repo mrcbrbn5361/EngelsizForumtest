@@ -20,13 +20,22 @@ export default function DiscussionsPage() {
   const [summaryResult, setSummaryResult] = useState<{ id: string, text: string } | null>(null);
 
   const fetchTopics = useCallback(async () => {
+    const isSupabaseConfigured = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
+
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       let query = supabase
         .from('topics')
         .select(`
           *,
-          author:profiles(username, avatar_url),
+          author:profiles(username, avatar_url, full_name),
           category:categories(name),
           comments(count)
         `);
