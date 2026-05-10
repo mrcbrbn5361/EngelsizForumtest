@@ -128,3 +128,15 @@ SET role = 'moderator'
 WHERE id IN (
   SELECT id FROM auth.users WHERE email = 'brtapardi@gmail.com'
 );
+
+-- 11. MEVCUT KULLANICILAR İÇİN PROFİL OLUŞTURMA (Backfill)
+-- Eğer auth.users'da olup profiles'da olmayan varsa ekler.
+INSERT INTO public.profiles (id, username, full_name, avatar_url, role)
+SELECT 
+  id, 
+  COALESCE(raw_user_meta_data->>'username', SPLIT_PART(email, '@', 1)),
+  COALESCE(raw_user_meta_data->>'full_name', SPLIT_PART(email, '@', 1)),
+  raw_user_meta_data->>'avatar_url',
+  'user'
+FROM auth.users
+ON CONFLICT (id) DO NOTHING;

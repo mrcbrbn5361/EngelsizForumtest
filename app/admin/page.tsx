@@ -49,18 +49,18 @@ export default function AdminDashboard() {
 
   const fetchStats = useCallback(async () => {
     try {
-      const [{ count: usersCount }, { count: topicsCount }, { count: commentsCount }, { count: categoriesCount }] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('topics').select('*', { count: 'exact', head: true }),
-        supabase.from('comments').select('*', { count: 'exact', head: true }),
-        supabase.from('categories').select('*', { count: 'exact', head: true }),
+      const [u, t, c, cat] = await Promise.all([
+        supabase.from('profiles').select('id', { count: 'exact', head: true }),
+        supabase.from('topics').select('id', { count: 'exact', head: true }),
+        supabase.from('comments').select('id', { count: 'exact', head: true }),
+        supabase.from('categories').select('id', { count: 'exact', head: true }),
       ]);
 
       setStats({
-        users: usersCount || 0,
-        topics: topicsCount || 0,
-        comments: commentsCount || 0,
-        categories: categoriesCount || 0
+        users: u.count || 0,
+        topics: t.count || 0,
+        comments: c.count || 0,
+        categories: cat.count || 0
       });
     } catch (error) {
       console.error('Stats error:', error);
@@ -161,10 +161,10 @@ export default function AdminDashboard() {
                     <div key={u.id} className="flex items-center justify-between p-3 rounded-2xl hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs border border-primary/20">
-                          {u.username[0].toUpperCase()}
+                          {(u.username || '?')[0].toUpperCase()}
                         </div>
                         <div>
-                          <p className="text-sm font-bold">@{u.username}</p>
+                          <p className="text-sm font-bold">@{u.username || 'isimsiz'}</p>
                           <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{u.role}</p>
                         </div>
                       </div>
@@ -216,7 +216,7 @@ export default function AdminDashboard() {
           </Tabs.Content>
 
           <Tabs.Content value="moderation" className="outline-none">
-            <ModerationManager />
+            <ModerationManager onTopicChange={fetchAllData} />
           </Tabs.Content>
         </Tabs.Root>
       </main>
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
   );
 }
 
-function ModerationManager() {
+function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
   const [topics, setTopics] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -252,6 +252,7 @@ function ModerationManager() {
     else {
       toast.success('Konu silindi');
       fetchRecentTopics();
+      onTopicChange?.();
     }
   };
 
@@ -261,6 +262,7 @@ function ModerationManager() {
     else {
       toast.success(currentStatus ? 'Konu kilidi açıldı' : 'Konu kilitlendi');
       fetchRecentTopics();
+      onTopicChange?.();
     }
   };
 
@@ -465,7 +467,7 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
     }
   };
 
-  const filteredUsers = users.filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredUsers = users.filter(u => (u.username || '').toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className="space-y-6">
@@ -498,10 +500,10 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm border border-primary/20 shrink-0">
-                      {u.username[0].toUpperCase()}
+                      {(u.username || '?')[0].toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-bold">@{u.username}</p>
+                      <p className="font-bold">@{u.username || 'isimsiz'}</p>
                       <p className="text-xs text-muted-foreground">{u.full_name || 'İsimsiz Üye'}</p>
                     </div>
                   </div>
