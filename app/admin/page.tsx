@@ -96,16 +96,16 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md px-6 py-4">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md px-4 md:px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg shrink-0">
               <Shield size={24} />
             </div>
-            <div>
-              <h1 className="text-xl font-black tracking-tight leading-none uppercase">Yetkili Paneli</h1>
-              <p className="text-xs text-muted-foreground font-bold mt-1">
-                Hoş geldin, <span className="text-primary">{profile?.username}</span> • {profile?.role}
+            <div className="min-w-0">
+              <h1 className="text-lg md:text-xl font-black tracking-tight leading-none uppercase truncate">Yetkili Paneli</h1>
+              <p className="text-[10px] md:text-xs text-muted-foreground font-bold mt-1 truncate">
+                <span className="hidden sm:inline">Hoş geldin, </span><span className="text-primary">{profile?.username}</span> • {profile?.role}
               </p>
             </div>
           </div>
@@ -113,7 +113,7 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-2">
             <button 
               onClick={() => router.push('/')}
-              className="px-4 py-2 text-sm font-bold rounded-xl border border-border hover:bg-muted transition-colors"
+              className="px-3 md:px-4 py-2 text-xs md:text-sm font-bold rounded-xl border border-border hover:bg-muted transition-colors shrink-0"
             >
               Foruma Dön
             </button>
@@ -121,24 +121,26 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto p-6 md:p-8">
-        <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col gap-8">
-          <Tabs.List className="flex gap-2 p-1 bg-muted rounded-2xl w-fit overflow-x-auto no-scrollbar">
-            <TabButton value="overview" icon={<LayoutDashboard size={18} />} label="Genel Bakış" />
-            <TabButton value="categories" icon={<FolderTree size={18} />} label="Kategoriler" />
-            <TabButton value="users" icon={<Users size={18} />} label="Kullanıcılar" />
-            <TabButton value="moderation" icon={<MessageSquare size={18} />} label="Moderasyon" />
-          </Tabs.List>
+      <main className="max-w-7xl mx-auto p-4 md:p-8">
+        <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col gap-6 md:gap-8">
+          <div className="overflow-x-auto no-scrollbar pb-2 md:pb-0">
+            <Tabs.List className="flex gap-2 p-1 bg-muted rounded-2xl w-fit">
+              <TabButton value="overview" icon={<LayoutDashboard size={18} />} label="Genel" />
+              <TabButton value="categories" icon={<FolderTree size={18} />} label="Kategori" />
+              <TabButton value="users" icon={<Users size={18} />} label="Üyeler" />
+              <TabButton value="moderation" icon={<MessageSquare size={18} />} label="Mod" />
+            </Tabs.List>
+          </div>
 
-          <Tabs.Content value="overview" className="outline-none">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              <StatCard label="Toplam Üye" value={stats.users} icon={<Users className="text-blue-500" />} />
-              <StatCard label="Konular" value={stats.topics} icon={<MessageSquare className="text-green-500" />} />
-              <StatCard label="Yorumlar" value={stats.comments} icon={<Edit className="text-amber-500" />} />
-              <StatCard label="Kategoriler" value={stats.categories} icon={<FolderTree className="text-purple-500" />} />
+          <Tabs.Content value="overview" className="outline-none space-y-6 md:space-y-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              <StatCard label="Üye" value={stats.users} icon={<Users className="text-blue-500" />} />
+              <StatCard label="Konu" value={stats.topics} icon={<MessageSquare className="text-green-500" />} />
+              <StatCard label="Yorum" value={stats.comments} icon={<Edit className="text-amber-500" />} />
+              <StatCard label="Kategori" value={stats.categories} icon={<FolderTree className="text-purple-500" />} />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 mt-8">
+            <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
               <div className="rounded-3xl border border-border p-6 bg-card shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-lg font-black tracking-tight">Son Kayıt Olun Üyeler</h3>
