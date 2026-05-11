@@ -12,6 +12,7 @@ import { GoogleGenAI } from '@google/genai';
 import { supabase } from '@/lib/supabase';
 import ReactMarkdown from 'react-markdown';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { cn } from '@/lib/utils';
 
 export default function DiscussionDetailPage() {
   const { id } = useParams();
