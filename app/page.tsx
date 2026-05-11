@@ -8,9 +8,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { BionicText } from '@/components/ui/bionic-text';
 
 export default function Home() {
-  const { user, loading } = useAuth();
-
-  if (loading) return null;
+  const { user } = useAuth();
 
   const startHref = user ? '/discussions' : '/auth';
 
@@ -18,9 +16,7 @@ export default function Home() {
     <DashboardLayout>
       <main className="flex-1 w-full overflow-x-hidden">
         {/* Hero Section */}
-        <motion.section 
-          initial={{ opacity: 0 }} 
-          animate={{ opacity: 1 }}
+        <section 
           className="w-full px-4 py-20 md:py-32 lg:py-40 text-center relative"
         >
           <div className="absolute inset-0 bg-primary/5 rounded-[3rem] -z-10 blur-3xl opacity-30" />
@@ -29,7 +25,7 @@ export default function Home() {
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="inline-block mb-6 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] md:text-xs font-bold uppercase tracking-widest"
+              className="inline-block mb-6 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-lg shadow-primary/10"
             >
               ENGELSİZ FORUM&apos;A HOŞ GELDİNİZ
             </motion.div>
@@ -71,7 +67,7 @@ export default function Home() {
               </Link>
             </motion.div>
           </div>
-        </motion.section>
+        </section>
 
         {/* Feature Grid */}
         <section className="max-w-7xl mx-auto px-4 py-20">
@@ -104,7 +100,7 @@ export default function Home() {
                 transition={{ delay: i * 0.1 }}
                 className="bg-card border border-border p-8 rounded-3xl hover:border-primary/50 transition-all group"
               >
-                <div className={`w-12 h-12 rounded-2xl ${feature.color} flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform`}>
+                <div className={`w-12 h-12 rounded-2xl ${feature.color} flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform`} aria-hidden="true">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl md:text-2xl font-black mb-4 tracking-tight">{feature.title}</h3>

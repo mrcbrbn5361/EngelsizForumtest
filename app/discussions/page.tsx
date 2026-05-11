@@ -8,6 +8,8 @@ import { supabase } from '@/lib/supabase';
 import { Topic, Category } from '@/types/database';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { GoogleGenAI } from '@google/genai';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 export default function DiscussionsPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -170,16 +172,17 @@ export default function DiscussionsPage() {
                 ...categories.filter(c => !c.parent_id).map(c => ({ label: c.name, id: c.id }))
               ].map(item => (
                 <button 
-                  key={item.label || 'null'} 
+                  key={item.id || 'all'} 
                   onClick={() => setSelectedCategoryId(item.id)}
                   role="listitem"
                   aria-label={`${item.label} kategorisini filtrele`}
                   aria-pressed={selectedCategoryId === item.id}
-                  className={`px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 shrink-0 snap-start active:scale-95 ${
+                  className={cn(
+                    "px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 shrink-0 snap-start active:scale-95 outline-none focus:ring-4 focus:ring-primary/20",
                     selectedCategoryId === item.id 
                       ? 'border-primary bg-primary text-primary-foreground shadow-xl shadow-primary/20 scale-[1.02]' 
                       : 'border-transparent bg-muted/30 text-muted-foreground hover:text-foreground hover:bg-muted'
-                  }`}
+                  )}
                 >
                   {item.label}
                 </button>
@@ -210,9 +213,26 @@ export default function DiscussionsPage() {
 
         <section className="space-y-6">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-32 gap-6">
-              <Loader2 className="animate-spin text-primary" size={64} />
-              <p className="font-black text-muted-foreground text-sm uppercase tracking-widest">Başlıklar Yükleniyor...</p>
+            <div className="grid gap-6">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="bg-card p-6 md:p-8 rounded-[2rem] border border-border flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="flex items-start gap-4 md:gap-6 min-w-0 flex-1">
+                    <Skeleton className="w-12 h-12 md:w-16 md:h-16 rounded-2xl shrink-0" />
+                    <div className="min-w-0 space-y-3 flex-1">
+                      <Skeleton className="h-8 w-3/4 rounded-lg" />
+                      <div className="flex flex-wrap gap-4">
+                        <Skeleton className="h-4 w-24 rounded-md" />
+                        <Skeleton className="h-4 w-20 rounded-md" />
+                        <Skeleton className="h-4 w-32 rounded-md" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-4 border-t md:border-t-0 pt-4 md:pt-0 border-border/50">
+                    <Skeleton className="h-10 w-10 rounded-xl" />
+                    <Skeleton className="h-10 w-28 rounded-xl" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : sortBy === 'Categories' ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">

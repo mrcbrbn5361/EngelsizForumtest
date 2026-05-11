@@ -7,16 +7,19 @@ import { AuthProvider } from '@/components/providers/auth-provider';
 const headingFont = Outfit({
   subsets: ['latin'],
   variable: '--font-heading',
+  display: 'swap',
 });
 
 const bodyFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-body',
+  display: 'swap',
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
+  display: 'swap',
 });
 
 export const viewport: Viewport = {
@@ -66,6 +69,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr" className={`${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} h-full`}>
       <body className="bg-background text-foreground transition-colors duration-300 overflow-x-hidden min-h-screen flex flex-col font-sans">
+        <a href="#main-content" className="skip-link">
+          Ana içeriğe atla
+        </a>
         <AuthProvider>
             <AccessibilityProvider>
               <main id="main-content" className="flex-1 w-full flex flex-col outline-none" tabIndex={-1}>

@@ -30,7 +30,7 @@
   --primary: #0f766e;
   --primary-foreground: #ffffff;
   --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  --muted-foreground: #475569;
   --border: #e2e8f0;
   --ring: #0f766e;
   --radius: 0.75rem;
@@ -108,7 +108,7 @@ h1, h2, h3, h4, h5, h6 {
   scroll-behavior: auto !important;
 }
 
-/* 6. Focus Mode */
+/* focus-mode utility */
 .focus-mode .vibe-card:not(:focus-within):not(:hover) {
   opacity: 0.3;
   filter: grayscale(1);
@@ -120,5 +120,15 @@ h1, h2, h3, h4, h5, h6 {
   filter: none;
   transform: scale(1.02);
   z-index: 10;
+}
+
+/* Skip to content link styling */
+.skip-link {
+  @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-primary focus:text-primary-foreground focus:rounded-xl focus:font-bold focus:shadow-2xl focus:outline-none focus:ring-4 focus:ring-primary/20;
+}
+
+/* Better focus states across the site */
+*:focus-visible {
+  @apply outline-none ring-4 ring-primary/20 border-primary transition-all;
 }
 

@@ -3,9 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Users, Search, ChevronRight, MessageSquare, Handshake, Loader2, Plus, Sparkles, X, Globe, Save } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 interface Community {
   id: string;
@@ -148,8 +150,9 @@ export default function CommunitiesPage() {
                 <p className="text-muted-foreground font-medium">Topluluğunuzu başlatın ve insanları bir araya getirin.</p>
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-4">GRUP ADI</label>
+                <label htmlFor="community-name" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-4">GRUP ADI</label>
                 <input 
+                  id="community-name"
                   type="text" 
                   placeholder="Örn: Erişilebilir Oyunlar" 
                   value={newCommunity.name}
@@ -159,8 +162,9 @@ export default function CommunitiesPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-4">AÇIKLAMA</label>
+                <label htmlFor="community-desc" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-4">AÇIKLAMA</label>
                 <textarea 
+                  id="community-desc"
                   placeholder="Grubun amacını kısaca yazın..." 
                   value={newCommunity.description}
                   onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
@@ -192,9 +196,25 @@ export default function CommunitiesPage() {
         </div>
 
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-6">
-            <Loader2 className="animate-spin text-primary" size={64} />
-            <p className="font-black text-muted-foreground text-sm uppercase tracking-widest">Veriler çekiliyor...</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-card p-6 md:p-10 rounded-3xl border border-border h-[280px] flex flex-col gap-6">
+                <div className="flex items-start gap-4">
+                  <Skeleton className="w-14 h-14 rounded-2xl shrink-0" />
+                  <div className="space-y-3 flex-1">
+                    <Skeleton className="h-3 w-16" />
+                    <Skeleton className="h-8 w-full" />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                </div>
+                <div className="mt-auto pt-4 border-t border-border/50">
+                  <Skeleton className="h-6 w-24" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : filteredCommunities.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">

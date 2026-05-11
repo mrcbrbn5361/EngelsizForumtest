@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Database, Shield, ChevronRight } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useAuth } from '@/components/providers/auth-provider';
 import { motion, AnimatePresence } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 /**
  * Accessible Navbar for EngelsizForum.
@@ -41,13 +43,13 @@ export function Navbar() {
             <NavLink href="/about" icon={<Info size={16} />} label="Hakkımızda" />
           </div>
           
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 min-w-[32px] sm:min-w-[48px]">
             <Link
               href="/search"
-              className="flex items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-2 focus:ring-primary"
-              aria-label="Arama"
+              className="flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
+              aria-label="Arama sayfasına git"
             >
-              <Search size={20} />
+              <Search size={22} aria-hidden="true" />
             </Link>
 
             {!loading && (
@@ -57,20 +59,21 @@ export function Navbar() {
                     <Link
                       href="/admin"
                       className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest animate-pulse border border-white/20 hover:scale-105 transition-transform"
+                      aria-label={`${profile?.role} Paneline Git`}
                     >
-                      <Shield size={12} /> {profile?.role}
+                      <Shield size={12} aria-hidden="true" /> {profile?.role}
                     </Link>
                   )}
                   <Link
                     href="/profile"
-                    className="ml-1 flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 p-1 px-2 md:px-3 md:py-1.5 text-xs md:text-sm font-bold text-primary transition-all hover:bg-primary hover:text-white focus:ring-2 focus:ring-primary shadow-sm group shrink-0"
-                    aria-label="Profil Ayarları"
+                    className="ml-1 flex items-center gap-3 rounded-xl border border-border bg-card p-1 pr-3 md:pr-4 text-xs md:text-sm font-bold text-foreground transition-all hover:border-primary focus:ring-4 focus:ring-primary/20 shadow-sm group shrink-0"
+                    aria-label="Profilim ve Ayarlar"
                   >
                   {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
-                    <div className="relative h-6 w-6 md:h-7 md:w-7 rounded-full overflow-hidden border border-primary/20 group-hover:border-white">
+                    <div className="relative h-7 w-7 md:h-8 md:w-8 rounded-lg overflow-hidden border border-border group-hover:border-primary/30">
                       <Image 
                         src={user.user_metadata.avatar_url || user.user_metadata.picture} 
-                        alt="" 
+                        alt="Profil resmim" 
                         fill
                         unoptimized
                         className="object-cover"
@@ -78,8 +81,8 @@ export function Navbar() {
                       />
                     </div>
                   ) : (
-                    <div className="flex h-6 w-6 md:h-7 md:w-7 items-center justify-center rounded-full bg-primary/10">
-                      <User size={14} />
+                    <div className="flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <User size={16} aria-hidden="true" />
                     </div>
                   )}
                   <span className="hidden sm:inline">Profil</span>
@@ -88,16 +91,17 @@ export function Navbar() {
               ) : (
                 <Link
                   href="/auth"
-                  className="ml-1 flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs md:text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 focus:ring-2 focus:ring-primary shadow-md"
+                  className="ml-1 flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs md:text-sm font-black text-primary-foreground transition-all hover:shadow-lg hover:shadow-primary/20 focus:ring-4 focus:ring-primary/20 shadow-md uppercase tracking-wider"
+                  aria-label="Giriş yap veya Kayıt ol"
                 >
-                  <LogIn size={18} />
-                  <span className="hidden sm:inline">Giriş</span>
+                  <LogIn size={18} aria-hidden="true" />
+                  <span>Giriş</span>
                 </Link>
               )
             )}
             
             {loading && (
-              <div className="h-8 w-8 animate-pulse bg-muted rounded-full ml-1 md:ml-2"></div>
+              <div className="h-8 w-8 animate-pulse bg-muted rounded-full ml-1 md:ml-2" aria-hidden="true"></div>
             )}
 
             {/* Mobile Menu Toggle with Radix Dialog */}
@@ -172,10 +176,19 @@ export function Navbar() {
 }
 
 function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
+  const pathname = usePathname();
+  const isActive = pathname === href;
+  
   return (
     <Link
       href={href}
-      className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black text-muted-foreground transition-all hover:bg-muted hover:text-primary outline-none focus:ring-2 focus:ring-primary uppercase tracking-widest"
+      aria-current={isActive ? 'page' : undefined}
+      className={cn(
+        "flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black transition-all outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary uppercase tracking-widest min-h-[44px]",
+        isActive 
+          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/10" 
+          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+      )}
     >
       {icon}
       <span className="hidden lg:inline">{label}</span>

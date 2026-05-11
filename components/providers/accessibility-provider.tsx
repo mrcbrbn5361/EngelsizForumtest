@@ -141,12 +141,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   return (
     <AccessibilityContext.Provider value={{ ...settings, updateSettings, resetSettings }}>
       <div className={`accessibility-wrapper min-h-screen ${settings.highContrast ? 'dark contrast-more' : ''}`}>
-        <a 
-          href="#main-content" 
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-primary focus:text-white focus:px-6 focus:py-3 focus:rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/50"
-        >
-          Ana İçeriğe Atla
-        </a>
         <RouteAnnouncer />
         {children}
       </div>
