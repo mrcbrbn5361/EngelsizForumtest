@@ -478,6 +478,7 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
           <input 
             type="text" 
             placeholder="Kullanıcı ara..."
+            aria-label="Kullanıcı listesinde ara"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-sm"

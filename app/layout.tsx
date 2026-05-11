@@ -20,8 +20,25 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'EngelsizForum | Erişilebilir Topluluk',
-  description: 'Herkes için bariyersiz, tam erişilebilir forum ve bilgi paylaşım platformu.',
+  title: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
+  description: 'Herkes için bariyersiz, tam erişilebilir ve yapay zeka destekli forum ve bilgi paylaşım platformu. Görme, işitme ve fiziksel kısıtlılığı olan kullanıcılar için optimize edilmiştir.',
+  keywords: ['engelsiz forum', 'erişilebilirlik', 'accessibility', 'topluluk', 'yardımlaşma', 'bariyersiz iletişim'],
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=5',
+  robots: 'index, follow',
+  openGraph: {
+    title: 'EngelsizForum | Erişilebilir Topluluk',
+    description: 'Herkes için bariyersiz forum deneyimi.',
+    type: 'website',
+    locale: 'tr_TR',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'EngelsizForum',
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

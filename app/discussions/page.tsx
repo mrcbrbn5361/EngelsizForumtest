@@ -153,6 +153,7 @@ export default function DiscussionsPage() {
               <input 
                 type="text"
                 placeholder="Tartışmalarda ara..."
+                aria-label="Tartışma başlıklarında ara"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-16 pr-8 py-5 h-[68px] rounded-2xl border border-border bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-lg"
@@ -161,9 +162,9 @@ export default function DiscussionsPage() {
           </div>
         </header>
 
-        <nav className="mb-12 px-2">
+        <nav className="mb-12 px-2" aria-label="Kategori filtreleri">
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8">
-            <div className="flex items-center gap-4 overflow-x-auto pb-6 -mb-6 scrollbar-hide no-scrollbar snap-x relative min-w-0 flex-1">
+            <div className="flex items-center gap-4 overflow-x-auto pb-6 -mb-6 scrollbar-hide no-scrollbar snap-x relative min-w-0 flex-1" role="list">
               {[
                 { label: 'Tümü', id: null },
                 ...categories.filter(c => !c.parent_id).map(c => ({ label: c.name, id: c.id }))
@@ -171,6 +172,9 @@ export default function DiscussionsPage() {
                 <button 
                   key={item.label || 'null'} 
                   onClick={() => setSelectedCategoryId(item.id)}
+                  role="listitem"
+                  aria-label={`${item.label} kategorisini filtrele`}
+                  aria-pressed={selectedCategoryId === item.id}
                   className={`px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap border-2 shrink-0 snap-start active:scale-95 ${
                     selectedCategoryId === item.id 
                       ? 'border-primary bg-primary text-primary-foreground shadow-xl shadow-primary/20 scale-[1.02]' 

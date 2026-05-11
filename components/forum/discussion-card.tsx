@@ -105,12 +105,22 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
         <div className="flex items-center gap-2 min-w-0">
           <div className="h-5 w-5 md:h-7 md:w-7 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border shrink-0">
             {topic.author?.avatar_url ? (
-              <Image src={topic.author.avatar_url} alt="" width={28} height={28} className="object-cover h-full w-full" unoptimized referrerPolicy="no-referrer" />
+              <Image 
+                src={topic.author.avatar_url} 
+                alt={`${topic.author?.username || 'Kullanıcı'} profil resmi`} 
+                width={28} 
+                height={28} 
+                className="object-cover h-full w-full" 
+                unoptimized 
+                referrerPolicy="no-referrer" 
+              />
             ) : (
-              <User size={12} />
+              <User size={12} aria-hidden="true" />
             )}
           </div>
-          <span className="font-bold text-foreground truncate max-w-[120px] sm:max-w-none">{topic.author?.full_name || topic.author?.username || 'Kullanıcı'}</span>
+          <span className="font-bold text-foreground truncate max-w-[120px] sm:max-w-none">
+            {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
+          </span>
         </div>
         <div className="flex items-center gap-1.5 opacity-70 whitespace-nowrap">
           <Calendar size={12} className="md:w-3.5 md:h-3.5" />

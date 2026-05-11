@@ -57,13 +57,15 @@ export default function Home() {
             >
               <Link
                 href={startHref}
-                className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-black text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+                className="w-full sm:w-auto bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-black text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all text-center"
+                aria-label="Platformu kullanmaya başla"
               >
                 Hemen Başla
               </Link>
               <Link
                 href="/discussions"
-                className="w-full sm:w-auto bg-muted text-foreground px-8 py-4 rounded-2xl font-black text-lg hover:bg-muted/80 hover:scale-[1.02] active:scale-95 transition-all"
+                className="w-full sm:w-auto bg-muted text-foreground px-8 py-4 rounded-2xl font-black text-lg hover:bg-muted/80 hover:scale-[1.02] active:scale-95 transition-all text-center"
+                aria-label="Tüm tartışmaları görüntüle"
               >
                 Tartışmaları Gör
               </Link>
