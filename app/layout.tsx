@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { AccessibilityProvider } from '@/components/providers/accessibility-provider';
@@ -19,17 +19,38 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
-  title: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
+  title: {
+    default: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
+    template: '%s | EngelsizForum'
+  },
   description: 'Herkes için bariyersiz, tam erişilebilir ve yapay zeka destekli forum ve bilgi paylaşım platformu. Görme, işitme ve fiziksel kısıtlılığı olan kullanıcılar için optimize edilmiştir.',
-  keywords: ['engelsiz forum', 'erişilebilirlik', 'accessibility', 'topluluk', 'yardımlaşma', 'bariyersiz iletişim'],
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=5',
+  keywords: ['engelsiz forum', 'erişilebilirlik', 'accessibility', 'topluluk', 'yardımlaşma', 'bariyersiz iletişim', 'engelli hakları', 'erişilebilir web'],
+  authors: [{ name: 'EngelsizForum Ekibi' }],
+  creator: 'EngelsizForum',
+  publisher: 'EngelsizForum',
   robots: 'index, follow',
+  alternates: {
+    canonical: 'https://engelsizforum.miracdeveloper.com.tr',
+  },
   openGraph: {
     title: 'EngelsizForum | Erişilebilir Topluluk',
     description: 'Herkes için bariyersiz forum deneyimi.',
+    url: 'https://engelsizforum.miracdeveloper.com.tr',
+    siteName: 'EngelsizForum',
     type: 'website',
     locale: 'tr_TR',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'EngelsizForum | Erişilebilir Topluluk',
+    description: 'Herkes için bariyersiz forum deneyimi.',
   },
   appleWebApp: {
     capable: true,

@@ -411,7 +411,7 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
           <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" />
           <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md bg-background p-8 rounded-3xl shadow-2xl focus:outline-none">
             <Dialog.Title className="text-2xl font-black tracking-tight mb-2">Yeni Kategori Ekle</Dialog.Title>
-            <Dialog.Description className="text-sm text-muted-foreground mb-6 font-medium">Bu kategori tüm üyeler tarafından görülecektir.</Dialog.Description>
+            <Dialog.Description className="text-sm text-muted-foreground mb-6 font-medium">Bu kategori tüm üyeler tarafından forum ana sayfasında ve tartışma bölümlerinde görülecektir.</Dialog.Description>
             
             <form onSubmit={handleAdd} className="space-y-4">
               <div>
