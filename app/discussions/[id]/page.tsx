@@ -26,6 +26,67 @@ export default function DiscussionDetailPage() {
   const [summary, setSummary] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
+
+  const fetchLikeStatus = useCallback(async () => {
+    if (!user || !id) return;
+    try {
+      const { data, error } = await supabase
+        .from('reactions')
+        .select('id')
+        .eq('topic_id', id)
+        .eq('user_id', user.id)
+        .maybeSingle(); // maybeSingle results in null if not found, instead of error
+      
+      if (data) setIsLiked(true);
+      else setIsLiked(false);
+    } catch (err) {
+      console.error('Error fetching like status:', err);
+    }
+  }, [id, user]);
+
+  useEffect(() => {
+    if (topic) {
+      setLikesCount(topic.likes_count || 0);
+      fetchLikeStatus();
+    }
+  }, [topic, fetchLikeStatus]);
+
+  const handleToggleLike = async () => {
+    if (!user) {
+      alert('Beğenmek için giriş yapmalısınız.');
+      return;
+    }
+
+    try {
+      if (isLiked) {
+        const { error } = await supabase
+          .from('reactions')
+          .delete()
+          .eq('topic_id', id)
+          .eq('user_id', user.id);
+        
+        if (error) throw error;
+        setIsLiked(false);
+        setLikesCount(prev => Math.max(0, prev - 1));
+      } else {
+        const { error } = await supabase
+          .from('reactions')
+          .insert({
+            topic_id: id,
+            user_id: user.id,
+            reaction_type: 'like'
+          });
+        
+        if (error) throw error;
+        setIsLiked(true);
+        setLikesCount(prev => prev + 1);
+      }
+    } catch (err: any) {
+      alert('İşlem başarısız: ' + err.message);
+    }
+  };
 
   const deleteTopic = async () => {
     if (!confirm('Bu tartışmayı silmek istediğinize emin misiniz?')) return;
@@ -253,8 +314,18 @@ export default function DiscussionDetailPage() {
 
               <div className="mt-12 pt-8 border-t border-border/50 flex flex-wrap items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
-                  <button className="flex items-center gap-2 px-6 py-3 bg-muted rounded-xl hover:bg-primary/10 hover:text-primary transition-all font-black text-xs uppercase tracking-widest">
-                    <Heart size={18} /> Beğen
+                  <button 
+                    onClick={handleToggleLike}
+                    className={cn(
+                      "flex items-center gap-2 px-6 py-3 rounded-xl transition-all font-black text-xs uppercase tracking-widest outline-none focus:ring-4 focus:ring-primary/20",
+                      isLiked 
+                        ? "bg-red-500 text-white shadow-lg shadow-red-500/20" 
+                        : "bg-muted text-muted-foreground hover:bg-red-500/10 hover:text-red-500"
+                    )}
+                  >
+                    <Heart size={18} fill={isLiked ? "currentColor" : "none"} /> 
+                    {likesCount > 0 && <span className="mr-1">{likesCount}</span>}
+                    {isLiked ? 'BEĞENDİN' : 'BEĞEN'}
                   </button>
                   <button 
                     onClick={handleSummarize}

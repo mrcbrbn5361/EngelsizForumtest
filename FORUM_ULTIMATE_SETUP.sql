@@ -122,11 +122,11 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- 10. ÖZEL YETKİ ATAMASI (Moderator Atama)
--- brtapardi@gmail.com kullanıcısını bulup moderatör yapma
+-- Belirtilen kullanıcıları bulup moderatör yapma
 UPDATE public.profiles 
 SET role = 'moderator' 
 WHERE id IN (
-  SELECT id FROM auth.users WHERE email = 'brtapardi@gmail.com'
+  SELECT id FROM auth.users WHERE email IN ('brtapardi@gmail.com', 'yigitfirat3405@gmail.com')
 );
 
 -- 11. MEVCUT KULLANICILAR İÇİN PROFİL OLUŞTURMA (Backfill)

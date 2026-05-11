@@ -33,6 +33,7 @@ export type Topic = {
   is_solved: boolean;
   is_pinned: boolean;
   is_locked: boolean;
+  likes_count?: number;
   created_at: string;
   author?: Profile;
   category?: Category;
