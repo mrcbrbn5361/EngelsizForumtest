@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Database, Shield, ChevronRight } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useAuth } from '@/components/providers/auth-provider';
-import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
 
 /**
