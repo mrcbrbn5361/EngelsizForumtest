@@ -31,7 +31,7 @@ export function Navbar() {
             <span className="text-lg md:text-xl font-black">e</span>
           </div>
           <span className="select-none text-xl md:text-2xl font-black tracking-tighter lowercase leading-none">
-            engelsiz<span className="text-primary/30 group-hover:text-primary transition-colors">forum</span>
+            engelsiz<span className="text-primary/80 group-hover:text-primary transition-colors">forum</span>
           </span>
         </Link>
 

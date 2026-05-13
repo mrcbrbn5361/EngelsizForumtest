@@ -103,7 +103,7 @@ export default function Home() {
                 <div className={`w-12 h-12 rounded-2xl ${feature.color} flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform`} aria-hidden="true">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl md:text-2xl font-black mb-4 tracking-tight">{feature.title}</h3>
+                <h2 className="text-xl md:text-2xl font-black mb-4 tracking-tight">{feature.title}</h2>
                 <p className="text-muted-foreground font-medium leading-relaxed">{feature.desc}</p>
               </motion.div>
             ))}
