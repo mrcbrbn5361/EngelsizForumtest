@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
 import { Settings, Type, Contrast, Eye, MoveHorizontal, X, RotateCcw, Zap, Target, Mic } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 /**
  * Smart Accessibility Toolbar
@@ -25,13 +25,9 @@ export function AccessibilityToolbar() {
 
   return (
     <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
-      <AnimatePresence>
         {isOpen && (
-            <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="mb-4 w-[calc(100vw-2rem)] sm:w-96 rounded-[2.5rem] border-4 border-border p-8 bg-card shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] z-[60]"
+            <div
+            className="mb-4 w-[calc(100vw-2rem)] sm:w-96 rounded-[2.5rem] border-4 border-border p-8 bg-card shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] z-[60] animate-in slide-in-from-bottom-4 fade-in duration-300"
             role="dialog"
             aria-label="Erişilebilirlik Ayarları"
           >
@@ -167,9 +163,8 @@ export function AccessibilityToolbar() {
                 <RotateCcw size={16} /> Varsayılana Dön
               </button>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
 
       <button
         onClick={() => setIsOpen(!isOpen)}

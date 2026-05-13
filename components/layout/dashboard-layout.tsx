@@ -6,10 +6,11 @@ import { usePathname } from 'next/navigation';
 import { Navbar } from './navbar';
 import { Footer } from './footer';
 import dynamic from 'next/dynamic';
-const AccessibilityToolbar = dynamic(() => import('@/components/ui/accessibility-toolbar').then(mod => mod.AccessibilityToolbar), { ssr: false });
 import { Home, MessageSquare, Users, Info, Settings, User, AlertCircle, Database } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { cn } from '@/lib/utils';
+
+const AccessibilityToolbar = dynamic(() => import('@/components/ui/accessibility-toolbar').then((mod) => mod.AccessibilityToolbar), { ssr: false });
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();

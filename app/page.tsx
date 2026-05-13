@@ -1,42 +1,37 @@
-'use client';
-
 import React from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import Link from 'next/link';
-import { useAuth } from '@/components/providers/auth-provider';
 import { BionicText } from '@/components/ui/bionic-text';
 
 export default function Home() {
-  const { user } = useAuth();
-
-  const startHref = user ? '/discussions' : '/auth';
+  const startHref = '/discussions';
 
   return (
     <DashboardLayout>
       <main className="flex-1 w-full overflow-x-hidden">
         {/* Hero Section */}
         <section 
-          className="w-full px-4 py-20 md:py-32 lg:py-40 text-center relative animate-in fade-in slide-in-from-bottom-4 duration-1000"
+          className="w-full px-4 py-20 md:py-32 lg:py-40 text-center relative"
         >
-          <div className="absolute inset-0 bg-primary/5 rounded-[3rem] -z-10 blur-3xl opacity-30" />
+          <div className="absolute inset-0 bg-primary/5 rounded-[3rem] -z-10 opacity-30" />
           <div className="max-w-4xl mx-auto px-4">
             <div
-              className="inline-block mb-6 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-lg shadow-primary/10 animate-in fade-in slide-in-from-bottom-4 duration-700"
+              className="inline-block mb-6 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-lg shadow-primary/10"
             >
               ENGELSİZ FORUM&apos;A HOŞ GELDİNİZ
             </div>
             <h1 
-              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-8 tracking-tighter text-foreground leading-[0.9] sm:leading-[0.85] animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 fill-mode-both"
+              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-8 tracking-tighter text-foreground leading-[0.9] sm:leading-[0.85]"
             >
               <BionicText text="Herkes İçin Erişilebilir Bir Topluluk" />
             </h1>
             <p 
-              className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-muted-foreground mb-12 font-medium leading-relaxed px-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-300 fill-mode-both"
+              className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-muted-foreground mb-12 font-medium leading-relaxed px-4"
             >
               <BionicText text="Engelleri birlikte aşmak için tasarlanan, yapay zeka destekli ve tam erişilebilir forum platformu." />
             </p>
             <div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-500 fill-mode-both"
+              className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
               <Link
                 href={startHref}
@@ -81,8 +76,7 @@ export default function Home() {
             ].map((feature, i) => (
               <div
                 key={i}
-                className="bg-card border border-border p-8 rounded-3xl hover:border-primary/50 transition-all group animate-in fade-in slide-in-from-bottom-8 duration-1000"
-                style={{ animationDelay: `${i * 150 + 500}ms`, animationFillMode: 'both' }}
+                className="bg-card border border-border p-8 rounded-3xl hover:border-primary/50 transition-all group"
               >
                 <div className={`w-12 h-12 rounded-2xl ${feature.color} flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform`} aria-hidden="true">
                   {feature.icon}
