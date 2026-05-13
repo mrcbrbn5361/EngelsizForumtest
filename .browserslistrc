@@ -1,8 +1,2 @@
-last 2 versions
-> 0.5%
-not dead
-not op_mini all
-chrome >= 80
-safari >= 14
-firefox >= 80
-edge >= 80
+> 0.5%, last 2 versions, not dead, defaults
+
