@@ -1,4 +1,4 @@
--- Engelsiz Forum - Tüm Hatalardan Arındırılmış Veritabanı Kurulumu (v4.0)
+-- Engelsiz Forum - Tüm Hatalardan Arındırılmış Veritabanı Kurulumu (v5.0)
 -- "Infinite Recursion" (Sonsuz Döngü) ve RLS erişim hatalarını kesin olarak çözer.
 
 -- 1. GEREKLİLİKLER
@@ -118,6 +118,7 @@ END $$;
 CREATE POLICY "profiles_select" ON public.profiles FOR SELECT USING (true);
 CREATE POLICY "profiles_update" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 CREATE POLICY "profiles_insert" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "profiles_delete" ON public.profiles FOR DELETE USING (auth.uid() = id);
 
 -- 3.2 Categories RLS
 CREATE POLICY "categories_select" ON public.categories FOR SELECT USING (true);
@@ -172,7 +173,7 @@ CREATE POLICY "reports_update" ON public.reports FOR UPDATE USING (
 
 -- 4. TETİKLEYİCİLER (TRIGGERS)
 
--- 4.1 'updated_at' tetikleyicisi
+-- 4.1 'updated_at' tetikleyicisi (tamamlandı)
 CREATE OR REPLACE FUNCTION public.handle_updated_at() RETURNS TRIGGER AS $$
 BEGIN
   NEW.updated_at = NOW();
@@ -189,14 +190,23 @@ CREATE TRIGGER tr_topics_updated_at BEFORE UPDATE ON public.topics FOR EACH ROW 
 DROP TRIGGER IF EXISTS tr_comments_updated_at ON public.comments;
 CREATE TRIGGER tr_comments_updated_at BEFORE UPDATE ON public.comments FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
+DROP TRIGGER IF EXISTS tr_categories_updated_at ON public.categories;
+CREATE TRIGGER tr_categories_updated_at BEFORE UPDATE ON public.categories FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS tr_reactions_updated_at ON public.reactions;
+CREATE TRIGGER tr_reactions_updated_at BEFORE UPDATE ON public.reactions FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS tr_reports_updated_at ON public.reports;
+CREATE TRIGGER tr_reports_updated_at BEFORE UPDATE ON public.reports FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
 -- 4.2 Auto Profile Creation (Sign Up sürecinde)
 CREATE OR REPLACE FUNCTION public.handle_new_user() RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO public.profiles (id, username, full_name, avatar_url, role)
   VALUES (
     NEW.id,
-    COALESCE(NEW.raw_user_meta_data->>'username', SPLIT_PART(NEW.email, '@', 1)),
-    NEW.raw_user_meta_data->>'full_name',
+    COALESCE(NEW.raw_user_meta_data->>'username', SPLIT_PART(NEW.email, '@', 1) || '_' || substr(md5(random()::text), 1, 4)),
+    COALESCE(NEW.raw_user_meta_data->>'full_name', SPLIT_PART(NEW.email, '@', 1)),
     NEW.raw_user_meta_data->>'avatar_url',
     'user'
   );
@@ -207,12 +217,22 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
--- 4.3 XP & Level Up (Yorum yazınca 10 XP)
+-- 4.3 XP & Level Up (Yorum yazınca 10 XP, Konu açınca 20 XP)
 CREATE OR REPLACE FUNCTION public.update_user_xp() RETURNS TRIGGER AS $$
+DECLARE
+  xp_gain INTEGER;
 BEGIN
+  IF TG_TABLE_NAME = 'comments' THEN
+    xp_gain := 10;
+  ELSIF TG_TABLE_NAME = 'topics' THEN
+    xp_gain := 20;
+  ELSE
+    xp_gain := 0;
+  END IF;
+
   UPDATE public.profiles
-  SET xp = xp + 10,
-      level = FLOOR((xp + 10) / 100) + 1
+  SET xp = xp + xp_gain,
+      level = FLOOR((xp + xp_gain) / 100) + 1
   WHERE id = NEW.author_id;
   RETURN NEW;
 END;
@@ -220,6 +240,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 DROP TRIGGER IF EXISTS on_comment_created_xp ON public.comments;
 CREATE TRIGGER on_comment_created_xp AFTER INSERT ON public.comments FOR EACH ROW EXECUTE FUNCTION public.update_user_xp();
+
+DROP TRIGGER IF EXISTS on_topic_created_xp ON public.topics;
+CREATE TRIGGER on_topic_created_xp AFTER INSERT ON public.topics FOR EACH ROW EXECUTE FUNCTION public.update_user_xp();
 
 -- 4.4 Topic Beğeni (Likes) Sayısını Güncelleme
 CREATE OR REPLACE FUNCTION public.sync_topic_likes() RETURNS TRIGGER AS $$
@@ -237,12 +260,13 @@ DROP TRIGGER IF EXISTS on_reaction_change ON public.reactions;
 CREATE TRIGGER on_reaction_change AFTER INSERT OR DELETE ON public.reactions FOR EACH ROW EXECUTE FUNCTION public.sync_topic_likes();
 
 -- 5. MEVCUT KULLANICILAR İÇİN BACKFILL VE MODERATÖR ATAMASI
+-- Bu bölüm geriye dönük güvenlik ve eşitleme sağlar.
 
 -- Eksik profilleri tamamla
 INSERT INTO public.profiles (id, username, full_name, avatar_url, role)
 SELECT 
   id, 
-  COALESCE(raw_user_meta_data->>'username', SPLIT_PART(email, '@', 1)),
+  COALESCE(raw_user_meta_data->>'username', SPLIT_PART(email, '@', 1) || '_' || substr(md5(random()::text), 1, 4)),
   COALESCE(raw_user_meta_data->>'full_name', SPLIT_PART(email, '@', 1)),
   raw_user_meta_data->>'avatar_url',
   'user'
@@ -253,7 +277,7 @@ ON CONFLICT (id) DO NOTHING;
 UPDATE public.topics t
 SET likes_count = (SELECT count(*) FROM public.reactions r WHERE r.topic_id = t.id);
 
--- Geliştirici hesaplarını moderatör/admin yap
+-- Geliştirici hesaplarını yöneticiliğe yükselt
 UPDATE public.profiles 
 SET role = 'admin' 
 WHERE id IN (
