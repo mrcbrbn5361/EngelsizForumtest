@@ -90,6 +90,59 @@ export default function AboutPage() {
             </p>
           </section>
 
+          <section className="mb-24 prose prose-lg dark:prose-invert max-w-none">
+            <h2 className="text-3xl font-black mb-8 tracking-tight">Teknik Temeller ve Erişilebilirlik Standartlarımız</h2>
+            <p className="text-[#666666] leading-relaxed">
+              EngelsizForum sadece görsel bir tasarım değil, aynı zamanda derinlemesine teknik bir mühendislik çalışmasıdır. Geliştirme sürecimizde, engelli bireylerin dijital bariyerlerini aşmalarını sağlayan modern web teknolojilerini ve semantik standartları en uç noktada kullanıyoruz.
+            </p>
+            
+            <div className="bg-muted p-8 rounded-2xl border border-border my-12">
+              <h3 className="text-2xl font-black mb-4">Erişilebilirlik Katmanlarımız</h3>
+              <ul className="space-y-4 list-none p-0">
+                <li className="flex gap-4">
+                  <span className="text-primary font-bold">1. Semantik Mimari:</span> 
+                  <span>HTML5 öğelerini (main, nav, article, section) hiyerarşik olarak kullanarak ekran okuyucular için doğal bir harita sunuyoruz.</span>
+                </li>
+                <li className="flex gap-4">
+                  <span className="text-primary font-bold">2. ARIA Entegrasyonu:</span> 
+                  <span>WAI-ARIA 1.2 standartları ile dinamik içerikleri (bildirimler, dropdownlar) ekran okuyuculara anında bildiriyoruz.</span>
+                </li>
+                <li className="flex gap-4">
+                  <span className="text-primary font-bold">3. Bilişsel AI:</span> 
+                  <span>Gemini 1.5 Pro tabanlı AI modelimiz, karmaşık tıbbi veya hukuki terimleri topluluk üyelerimizin kavrayabileceği basitlikte açıklar.</span>
+                </li>
+              </ul>
+            </div>
+
+            <h2 className="text-3xl font-black mb-8 tracking-tight">Kuruluş Hikayemiz ve Ekibimiz</h2>
+            <p className="text-[#666666] leading-relaxed">
+              2024 yılında bir grup erişilebilirlik meraklısı ve yazılım geliştirici tarafından kurulan EngelsizForum, "İnternette bariyer olmamalı" mottosuyla yola çıktı. Ekibimiz, kendi hayatlarında da çeşitli erişilebilirlik sorunlarıyla karşılaşan veya bu alanda yıllarca akademik çalışmalar yapmış isimlerden oluşmaktadır. 
+            </p>
+            <p className="text-[#666666] leading-relaxed mt-4">
+              Bu <strong>deneyimsel uzmanlık (Experience)</strong>, platformumuzun her bir pikseline yansımaktadır. Kullanıcılarımızın ihtiyaçlarını tahmin etmek yerine, doğrudan onlarla birlikte tasarlıyoruz. Bu da bizi sadece bir platform değil, bir dayanışma hareketi kılıyor.
+            </p>
+
+            <div className="mt-16 pt-10 border-t border-border">
+              <h3 className="text-2xl font-black mb-8">Sıkça Sorulan Teknik Sorular</h3>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="font-black text-[#1A1A1A] mb-2 text-xl">EngelsizForum hangi standartları destekliyor?</h4>
+                  <p className="text-[#666666]">Platformumuz WCAG 2.1 AA seviyesini temel alır, ancak birçok noktada AAA standartlarını (örneğin renk kontrast oranları) hedefleyen geliştirmeler içerir.</p>
+                </div>
+                <div>
+                  <h4 className="font-black text-[#1A1A1A] mb-2 text-xl">AI özellikleri verilerimi nasıl etkiliyor?</h4>
+                  <p className="text-[#666666]">Yapay zeka sadece içerik analizi ve özetleme için kullanılır. Kişisel verileriniz asla AI modellerini eğitmek amacıyla kullanılmaz veya üçüncü taraflarla paylaşılmaz.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-12 text-xs text-muted-foreground">
+              <span>Yayınlanma: <time dateTime="2024-05-18">18 Mayıs 2024</time></span>
+              <span className="mx-2">|</span>
+              <span>Son Güncelleme: <time dateTime="2026-05-18">18 Mayıs 2026</time></span>
+            </div>
+          </section>
+
           <section className="bg-[#FF4D94] text-[#FFFFFF] rounded-[8px] p-12 md:p-24 text-center shadow-lg relative overflow-hidden group">
             <div className="relative z-10">
               <h2 className="text-3xl md:text-5xl font-black mb-6 text-[#FFFFFF] tracking-tighter">Bize Katılın</h2>
