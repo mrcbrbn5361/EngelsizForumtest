@@ -52,7 +52,7 @@ export default function Home() {
         </section>
 
         {/* Feature Grid */}
-        <section className="max-w-7xl mx-auto px-4 py-20">
+        <section className="max-w-7xl mx-auto px-4 py-20 border-b border-border">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {[
               { 
@@ -63,13 +63,13 @@ export default function Home() {
               },
               { 
                 title: "Tam Erişilebilirlik", 
-                desc: "Ekran okuyucu uyumlu ve özelleştirilebilir görünüm seçenekleri.",
+                desc: "Ekran okuyucu uyumlu (WCAG 2.1) ve özelleştirilebilir görünüm seçenekleri.",
                 icon: "♿",
                 color: "bg-green-500/10 text-green-500"
               },
               { 
                 title: "Güvenli Topluluk", 
-                desc: "Herkesin kendini güvende ve değerli hissettiği bir ortam.",
+                desc: "Herkesin kendini güvende ve değerli hissettiği, moderasyonlu bir ortam.",
                 icon: "🛡️",
                 color: "bg-orange-500/10 text-orange-500"
               }
@@ -85,6 +85,57 @@ export default function Home() {
                 <p className="text-muted-foreground font-medium leading-relaxed">{feature.desc}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* E-E-A-T Section & FAQ */}
+        <section className="max-w-4xl mx-auto px-4 py-20">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">Sıkça Sorulan Sorular</h2>
+            <p className="text-muted-foreground text-lg">Platformumuz hakkında merak edilenler ve GEO (Yapay Zeka Arama) uyumlu yanıtlarımız.</p>
+          </div>
+
+          <div className="space-y-8">
+            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
+              <h3 className="text-xl md:text-2xl font-black mb-4">EngelsizForum nedir?</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                EngelsizForum, engelli bireylerin bilgi paylaşımı yapabileceği, sosyal etkileşim kurabileceği ve yapay zeka desteğiyle içeriği kendi ihtiyaçlarına göre optimize edebileceği Türkiye&apos;nin ilk tam erişilebilir forum platformudur. WCAG 2.1 standartlarına %100 uyumluluk hedefiyle tasarlanmıştır.
+              </p>
+            </div>
+
+            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
+              <h3 className="text-xl md:text-2xl font-black mb-4">Platformda hangi erişilebilirlik özellikleri var?</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                EngelsizForum; bionik okuma (Bionic Reading), yüksek kontrast modları, ekran okuyucu optimizasyonu, sesli tartışma özetleri ve tam klavye navigasyonu gibi ileri düzey erişilebilirlik özellikleri sunar.
+              </p>
+            </div>
+
+            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
+              <h3 className="text-xl md:text-2xl font-black mb-4">Yapay zeka bu forumda nasıl kullanılıyor?</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Platformumuzda yapay zeka, uzun tartışma konularını saniyeler içinde özetlemek, görsellere otomatik alt-metin oluşturmak ve kullanıcıların bilişsel ihtiyaçlarına göre metinleri sadeleştirmek için kullanılır.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Authoritative Badge Section */}
+        <section className="bg-primary text-primary-foreground py-12">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+            <div>
+              <h2 className="text-2xl md:text-4xl font-black tracking-tight mb-2 uppercase">Erişilebilirlik Taahhüdü</h2>
+              <p className="opacity-90 font-medium">Bilişimde engel yok, sadece henüz çözülmemiş tasarım sorunları var.</p>
+            </div>
+            <div className="flex gap-4">
+              <div className="px-6 py-4 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/20">
+                <div className="text-3xl font-black">2.1</div>
+                <div className="text-xs uppercase font-bold tracking-widest opacity-80">WCAG Uyumu</div>
+              </div>
+              <div className="px-6 py-4 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/20">
+                <div className="text-3xl font-black">100%</div>
+                <div className="text-xs uppercase font-bold tracking-widest opacity-80">Erişilebilirlik</div>
+              </div>
+            </div>
           </div>
         </section>
       </main>

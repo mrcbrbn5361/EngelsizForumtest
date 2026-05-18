@@ -130,6 +130,27 @@ export default function DiscussionsPage() {
 
   return (
     <DashboardLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "EngelsizForum Tartışmaları",
+            "description": "Erişilebilirlik ve topluluk yardımlaşma konularında en güncel tartışmalar.",
+            "url": "https://engelsizforum.miracdeveloper.com.tr/discussions",
+            "mainEntity": {
+              "@type": "ItemList",
+              "itemListElement": filteredTopics.map((t, i) => ({
+                "@type": "ListItem",
+                "position": i + 1,
+                "url": `https://engelsizforum.miracdeveloper.com.tr/discussions/${t.id}`,
+                "name": t.title
+              }))
+            }
+          })
+        }}
+      />
       <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12">
         <header className="mb-12">
           <div className="bg-card p-8 md:p-12 rounded-[2rem] border border-border relative overflow-hidden shadow-sm group">

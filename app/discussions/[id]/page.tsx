@@ -260,6 +260,34 @@ export default function DiscussionDetailPage() {
 
   return (
     <DashboardLayout>
+      {topic && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "DiscussionForumPosting",
+              "headline": topic.title,
+              "articleBody": topic.content,
+              "author": {
+                "@type": "Person",
+                "name": topic.author?.full_name || topic.author?.username || 'Kullanıcı'
+              },
+              "datePublished": topic.created_at,
+              "commentCount": comments.length,
+              "comment": comments.map(c => ({
+                "@type": "Comment",
+                "text": c.content,
+                "author": {
+                  "@type": "Person",
+                  "name": c.author?.full_name || c.author?.username || 'Kullanıcı'
+                },
+                "dateCreated": c.created_at
+              }))
+            })
+          }}
+        />
+      )}
       <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12">
         <button 
           onClick={() => router.back()}
