@@ -86,6 +86,18 @@ export function Navbar() {
                   )}
                   <span className="hidden sm:inline">Profil</span>
                 </Link>
+                <button
+                  onClick={async () => {
+                    const { supabase } = await import('@/lib/supabase');
+                    await supabase.auth.signOut();
+                    window.location.href = '/';
+                  }}
+                  className="hidden sm:flex ml-1 items-center justify-center p-2 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all"
+                  aria-label="Çıkış Yap"
+                  title="Çıkış Yap"
+                >
+                  <LogIn className="rotate-180" size={18} />
+                </button>
               </div>
               ) : (
                 <Link
@@ -162,6 +174,18 @@ export function Navbar() {
                       >
                         <LogIn size={20} /> Hemen Başla
                       </Link>
+                    )}
+                    {user && (
+                      <button
+                        onClick={async () => {
+                          const { supabase } = await import('@/lib/supabase');
+                          await supabase.auth.signOut();
+                          window.location.href = '/';
+                        }}
+                        className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-destructive/10 px-4 py-4 text-base font-bold text-destructive hover:bg-destructive/20 transition-all active:scale-95"
+                      >
+                        <LogIn className="rotate-180" size={20} /> Çıkış Yap
+                      </button>
                     )}
                   </div>
                 </Dialog.Content>
