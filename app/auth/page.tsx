@@ -46,11 +46,18 @@ export default function AuthPage() {
     setLoading(true);
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+           console.error("Supabase Login Error:", error);
+           if (error.message?.includes('Invalid login credentials')) throw new Error('E-posta veya şifre hatalı.');
+           if (error.message?.includes('Email not confirmed')) throw new Error('Lütfen e-posta adresinizi doğrulayın.');
+           throw error;
+        }
+        
+        // Let AuthListener handle the redirect, or manually force it:
         router.push('/discussions');
       } else {
-        const { error } = await supabase.auth.signUp({ 
+        const { data, error } = await supabase.auth.signUp({ 
           email, 
           password,
           options: {
@@ -60,11 +67,15 @@ export default function AuthPage() {
             }
           }
         });
-        if (error) throw error;
+        if (error) {
+          console.error("Supabase SignUp Error:", error);
+          throw error;
+        }
         setError('Kayıt başarılı! Lütfen e-postanızı kontrol edin.');
       }
     } catch (err: any) {
-      setError(err.message || 'Bir hata oluştu.');
+      console.error("Auth Catch Error:", err);
+      setError(err.message || 'Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }

@@ -115,11 +115,11 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     if (user && isSupabaseConfigured && !isSyncingFromCloud && currentSettingsStr !== lastSyncedSettings.current) {
        supabase
         .from('profiles')
-        .upsert({ 
-          id: user.id, 
+        .update({ 
           accessibility_prefs: settings,
           updated_at: new Date().toISOString()
         })
+        .eq('id', user.id)
         .then(({ error }) => {
           if (error) {
             console.error('Failed to sync prefs to Supabase:', error.message || 'Unknown error');

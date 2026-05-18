@@ -1,11 +1,10 @@
--- Engelsiz Forum - Tüm Hatalardan Arındırılmış Veritabanı Kurulumu (v6.0 - KRİTİK GÜNCELLEME)
+-- Engelsiz Forum - Tüm Hatalardan Arındırılmış Veritabanı Kurulumu (v7.0 - GÜVENLİ VE TAM)
 -- Bu script hem yeni kurulumlar hem de mevcut tabloları güncellemek için %100 güvenlidir.
 
 -- 1. GEREKLİLİKLER
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- 2. TABLO YAPILARI (Hata Payı Bırakmadan)
-
 -- 2.1 Profiles (Profil tablosu ve sütun garantisi)
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
@@ -24,7 +23,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 DO $$ 
 BEGIN 
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='role') THEN
-    ALTER TABLE public.profiles ADD COLUMN role TEXT DEFAULT 'user' CHECK (role IN ('admin', 'moderator', 'user'));
+    ALTER TABLE public.profiles ADD COLUMN role TEXT DEFAULT 'user';
   END IF;
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='profiles' AND column_name='level') THEN
     ALTER TABLE public.profiles ADD COLUMN level INTEGER DEFAULT 1;
@@ -68,6 +67,12 @@ CREATE TABLE IF NOT EXISTS public.topics (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+DO $$ 
+BEGIN 
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='topics' AND column_name='likes_count') THEN
+    ALTER TABLE public.topics ADD COLUMN likes_count INTEGER DEFAULT 0;
+  END IF;
+END $$;
 
 CREATE TABLE IF NOT EXISTS public.comments (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -139,7 +144,27 @@ CREATE POLICY "reactions_select" ON public.reactions FOR SELECT USING (true);
 
 -- 4. FONKSİYONLAR VE TETİKLEYİCİLER (TRIGGERS)
 
--- 4.1 Otomatik Profil Oluşturma (Sign Up sonrası)
+-- 4.1 updated_at sync
+CREATE OR REPLACE FUNCTION public.handle_updated_at() RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS tr_profiles_updated_at ON public.profiles;
+CREATE TRIGGER tr_profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS tr_topics_updated_at ON public.topics;
+CREATE TRIGGER tr_topics_updated_at BEFORE UPDATE ON public.topics FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS tr_comments_updated_at ON public.comments;
+CREATE TRIGGER tr_comments_updated_at BEFORE UPDATE ON public.comments FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS tr_categories_updated_at ON public.categories;
+CREATE TRIGGER tr_categories_updated_at BEFORE UPDATE ON public.categories FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+-- 4.2 Otomatik Profil Oluşturma (Sign Up sonrası)
 CREATE OR REPLACE FUNCTION public.handle_new_user() RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO public.profiles (id, username, full_name, avatar_url, role)
@@ -157,7 +182,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
--- 4.2 XP Sistemi (Konu açınca 20 XP, Yorum yazınca 10 XP)
+-- 4.3 XP Sistemi (Konu açınca 20 XP, Yorum yazınca 10 XP)
 CREATE OR REPLACE FUNCTION public.update_user_xp() RETURNS TRIGGER AS $$
 DECLARE
   xp_gain INTEGER;
@@ -176,6 +201,21 @@ CREATE TRIGGER on_comment_xp AFTER INSERT ON public.comments FOR EACH ROW EXECUT
 DROP TRIGGER IF EXISTS on_topic_xp ON public.topics;
 CREATE TRIGGER on_topic_xp AFTER INSERT ON public.topics FOR EACH ROW EXECUTE FUNCTION public.update_user_xp();
 
+-- 4.4 Beğeni (Likes) Sayısını Güncelleme
+CREATE OR REPLACE FUNCTION public.sync_topic_likes() RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+    UPDATE public.topics SET likes_count = likes_count + 1 WHERE id = NEW.topic_id;
+  ELSIF (TG_OP = 'DELETE') THEN
+    UPDATE public.topics SET likes_count = likes_count - 1 WHERE id = OLD.topic_id;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_reaction_change ON public.reactions;
+CREATE TRIGGER on_reaction_change AFTER INSERT OR DELETE ON public.reactions FOR EACH ROW EXECUTE FUNCTION public.sync_topic_likes();
+
 -- 5. MEVCUT KULLANICILARI EŞİTLE VE ADMİN YAP
 INSERT INTO public.profiles (id, username, full_name, avatar_url, role)
 SELECT 
@@ -191,3 +231,7 @@ ON CONFLICT (id) DO NOTHING;
 UPDATE public.profiles SET role = 'admin' WHERE id IN (
   SELECT id FROM auth.users WHERE email IN ('miracbirben@gmail.com', 'brtapardi@gmail.com', 'yigitfirat3405@gmail.com')
 );
+
+-- Likes Count Eşitle
+UPDATE public.topics t
+SET likes_count = (SELECT count(*) FROM public.reactions r WHERE r.topic_id = t.id);
