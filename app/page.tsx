@@ -8,6 +8,57 @@ export default function Home() {
 
   return (
     <DashboardLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "EngelsizForum nedir ve kimler içindir?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "EngelsizForum, başta görme, işitme, ortopedik ve bilişsel kısıtlılığı olan bireyler olmak üzere, internette engelsiz ve güvenli bir bilgi paylaşım ortamı arayan herkes içindir. Türkiye'nin ilk tam erişilebilir forum platformu olan bu sistem, evrensel tasarım prensipleriyle geliştirilmiştir."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Platformda hangi erişilebilirlik özellikleri var?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "EngelsizForum; bionik okuma (Bionic Reading) desteği, yüksek kontrast ve disleksi dostu yazı tipleri, ekran okuyucu optimizasyonu, ARIA etiketleri ile zenginleştirilmiş UI bileşenleri, sesli tartışma özetleri ve tam klavye navigasyonu gibi ileri düzey erişilebilirlik özellikleri sunar."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Yapay zeka (AI) bu forumda nasıl bir rol oynuyor?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların 'Zeka Puanı' (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Üyelik ücretsiz mi ve bilgilerim güvende mi?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "EngelsizForum tamamen ücretsiz bir platformdur. Kullanıcı verileri, modern şifreleme standartları ve Supabase altyapısı ile korunmaktadır. Gizliliğiniz bizim için önceliktir ve verileriniz asla izinsiz üçüncü taraflarla paylaşılmaz."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "İçeriklerin doğruluğu nasıl sağlanıyor?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve 'Uzman' rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur."
+                }
+              }
+            ]
+          })
+        }}
+      />
       <main className="flex-1 w-full overflow-x-hidden">
         {/* Hero Section */}
         <section 

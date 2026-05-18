@@ -47,6 +47,14 @@ export const metadata: Metadata = {
     description: 'Herkes için bariyersiz forum deneyimi. Yapay zeka ile güçlendirilmiş erişilebilirlik özellikleri.',
     url: 'https://engelsizforum.miracdeveloper.com.tr',
     siteName: 'EngelsizForum',
+    images: [
+      {
+        url: 'https://engelsizforum.miracdeveloper.com.tr/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'EngelsizForum - Erişilebilir Topluluk Platformu',
+      },
+    ],
     type: 'website',
     locale: 'tr_TR',
   },

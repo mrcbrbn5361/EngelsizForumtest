@@ -25,6 +25,33 @@ export default function AboutPage() {
             </p>
           </section>
 
+          {/* Key Takeaways Section */}
+          <section className="mb-24">
+            <div className="bg-primary/5 border border-primary/20 rounded-[2rem] p-8 md:p-12">
+              <h2 className="text-2xl font-black mb-6 flex items-center gap-3">
+                <span className="text-primary">💡</span> Vizyon Özeti
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="space-y-1">
+                  <div className="font-bold text-primary text-xs uppercase tracking-widest">AMACIMIZ</div>
+                  <p className="text-sm text-muted-foreground">Dijital dünyadaki erişilebilirlik bariyerlerini tamamen ortadan kaldırmak.</p>
+                </div>
+                <div className="space-y-1">
+                  <div className="font-bold text-primary text-xs uppercase tracking-widest">YÖNTEMİMİZ</div>
+                  <p className="text-sm text-muted-foreground">Yapay zeka ve WCAG 2.1 standartlarını harmanlayan yenilikçi çözümler.</p>
+                </div>
+                <div className="space-y-1">
+                  <div className="font-bold text-primary text-xs uppercase tracking-widest">GÜCÜMÜZ</div>
+                  <p className="text-sm text-muted-foreground">Kendi deneyimlerini paylaşan büyük ve uzman bir topluluk desteği.</p>
+                </div>
+                <div className="space-y-1">
+                  <div className="font-bold text-primary text-xs uppercase tracking-widest">HEDEFİMİZ</div>
+                  <p className="text-sm text-muted-foreground">Herkesin bilgiye ve sosyal etkileşime saniyeler içinde ulaşması.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 mb-24 md:mb-40">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -149,12 +176,20 @@ export default function AboutPage() {
               <p className="text-base md:text-xl font-medium text-[#FFFFFF]/80 mb-10 max-w-xl mx-auto leading-relaxed">
                 Daha erişilebilir bir gelecek için sesinizi duyurun, başkalarına yardım edin veya sadece topluluğumuzun bir parçası olun.
               </p>
-              <Link 
-                href="/auth" 
-                className="px-12 py-4 bg-[#FFFFFF] text-[#FF4D94] rounded-[8px] font-bold text-lg hover:bg-white/90 transition-all"
-              >
-                Hemen Üye Ol
-              </Link>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link 
+                  href="/auth" 
+                  className="w-full sm:w-auto px-12 py-4 bg-[#FFFFFF] text-[#FF4D94] rounded-[8px] font-bold text-lg hover:bg-white/90 transition-all text-center"
+                >
+                  Hemen Üye Ol
+                </Link>
+                <Link 
+                  href="/discussions" 
+                  className="w-full sm:w-auto px-12 py-4 bg-primary text-primary-foreground rounded-[8px] font-bold text-lg hover:opacity-90 transition-all text-center border border-white/20"
+                >
+                  Tartışmaları Keşfet
+                </Link>
+              </div>
             </div>
             <Globe className="absolute -bottom-20 -right-20 size-64 md:size-[400px] opacity-10 transition-all duration-1000" />
             <div className="absolute top-0 left-0 size-[300px] bg-white/5 rounded-full -translate-y-1/2 -translate-x-1/2 blur-[80px]"></div>

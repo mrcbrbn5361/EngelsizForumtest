@@ -184,6 +184,33 @@ export default function CommunitiesPage() {
           </motion.div>
         )}
 
+        {/* Key Takeaways Section */}
+        <section className="mb-16">
+          <div className="bg-primary/5 border border-primary/20 rounded-[2.5rem] p-8 md:p-12">
+            <h2 className="text-2xl font-black mb-6 flex items-center gap-3 text-foreground">
+              <span className="text-primary">💡</span> Grup Özeti
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="space-y-1">
+                <div className="font-bold text-primary text-xs uppercase tracking-widest">ÇEŞİTLİLİK</div>
+                <p className="text-sm text-muted-foreground">Erişilebilirlik, teknoloji, hukuk ve sosyal yaşam gibi birçok farklı alanda özelleşmiş gruplar.</p>
+              </div>
+              <div className="space-y-1">
+                <div className="font-bold text-primary text-xs uppercase tracking-widest">YÖNETİM</div>
+                <p className="text-sm text-muted-foreground">Her konu, alanında deneyimli olan "Deneyimsel Uzmanlar" tarafından denetlenir.</p>
+              </div>
+              <div className="space-y-1">
+                <div className="font-bold text-primary text-xs uppercase tracking-widest">YAPAY ZEKA</div>
+                <p className="text-sm text-muted-foreground">Gruplardaki uzun tartışmalar AI ile özetlenerek bilgiye ulaşım hızlandırılır.</p>
+              </div>
+              <div className="space-y-1">
+                <div className="font-bold text-primary text-xs uppercase tracking-widest">DEMOKRASİ</div>
+                <p className="text-sm text-muted-foreground">İhtiyaç duyulan her konuda yeni bir topluluk başlatma özgürlüğü.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <div className="relative mb-12 max-w-3xl mx-auto group">
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={24} />
           <input 
@@ -300,6 +327,15 @@ export default function CommunitiesPage() {
                   <li className="flex gap-2"><span>📌</span> <strong>Düzenli Etkileşim:</strong> Üyelerle düzenli olarak sorular ve tartışmalar paylaşın.</li>
                   <li className="flex gap-2"><span>📌</span> <strong>AI Özetleri:</strong> Uzun tartışmaların AI tarafından özetlenmesini takip ederek üyelerinize zaman kazandırın.</li>
                 </ul>
+              </div>
+
+              <div className="text-center pt-12">
+                <Link 
+                  href="/discussions" 
+                  className="inline-flex px-12 py-5 bg-primary text-primary-foreground rounded-2xl font-black text-xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20"
+                >
+                  Tüm Tartışmalara Göz At
+                </Link>
               </div>
             </div>
           </div>
