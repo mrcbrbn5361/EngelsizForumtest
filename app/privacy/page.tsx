@@ -29,6 +29,21 @@ export default function PrivacyPage() {
           <p>
             Gizlilikle ilgili sorularınız için bizimle iletişime geçebilirsiniz.
           </p>
+
+          <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row gap-4">
+            <a 
+              href="/" 
+              className="px-8 py-3 bg-primary text-primary-foreground rounded-xl font-bold text-center hover:opacity-90 transition-all"
+            >
+              Ana Sayfaya Dön
+            </a>
+            <a 
+              href="/discussions" 
+              className="px-8 py-3 bg-muted text-foreground rounded-xl font-bold text-center hover:bg-muted/80 transition-all"
+            >
+              Tartışmalara Göz At
+            </a>
+          </div>
         </div>
       </div>
     </DashboardLayout>

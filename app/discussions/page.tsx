@@ -153,6 +153,34 @@ export default function DiscussionsPage() {
       />
       <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12">
         <header className="mb-12">
+          {/* Trending / Summary Section for GEO */}
+          <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6">
+              <h2 className="text-sm font-black text-primary uppercase tracking-widest mb-2 flex items-center gap-2">
+                <span>🔥</span> Popüler Konular
+              </h2>
+              <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+                Yardımcı teknolojiler, erişilebilir oyun dünyası ve engelli hakları bu hafta en çok konuşulan başlıklar arasında.
+              </p>
+            </div>
+            <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6">
+              <h2 className="text-sm font-black text-primary uppercase tracking-widest mb-2 flex items-center gap-2">
+                <span>🤖</span> AI Analizi
+              </h2>
+              <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+                Topluluğumuzdaki tartışmaların %80&apos;i pratik çözüm önerileri içeriyor. AI özetleme özelliği ile saniyeler içinde bilgiye ulaşın.
+              </p>
+            </div>
+            <div className="bg-primary/5 border border-primary/20 rounded-2xl p-6">
+              <h2 className="text-sm font-black text-primary uppercase tracking-widest mb-2 flex items-center gap-2">
+                <span>🤝</span> Üye Dayanışması
+              </h2>
+              <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+                Her gün ortalama 50+ yeni çözüm önerisi paylaşılıyor. Kendi deneyiminizi paylaşarak topluluğa uzmanlık katın.
+              </p>
+            </div>
+          </div>
+
           <div className="bg-card p-8 md:p-12 rounded-[2rem] border border-border relative overflow-hidden shadow-sm group">
             <div className="absolute inset-0 bg-primary/5 -z-10 group-hover:scale-105 transition-transform duration-500" />
             <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">

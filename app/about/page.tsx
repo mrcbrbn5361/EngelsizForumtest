@@ -9,6 +9,33 @@ import Link from 'next/link';
 export default function AboutPage() {
   return (
     <DashboardLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "EngelsizForum hangi standartları destekliyor?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Platformumuz WCAG 2.1 AA seviyesini temel alır, ancak birçok noktada AAA standartlarını (örneğin renk kontrast oranları) hedefleyen geliştirmeler içerir."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "AI özellikleri verilerimi nasıl etkiliyor?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yapay zeka sadece içerik analizi ve özetleme için kullanılır. Kişisel verileriniz asla AI modellerini eğitmek amacıyla kullanılmaz veya üçüncü taraflarla paylaşılmaz."
+                }
+              }
+            ]
+          })
+        }}
+      />
         <div className="max-w-5xl mx-auto p-4">
           <section className="mb-20 md:mb-32 text-center">
             <motion.div

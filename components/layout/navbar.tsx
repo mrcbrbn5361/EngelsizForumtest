@@ -126,67 +126,108 @@ export function Navbar() {
                 </button>
               </Dialog.Trigger>
               <Dialog.Portal>
-                <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
-                <Dialog.Content className="fixed inset-y-0 left-0 z-50 w-[80vw] max-w-sm bg-background p-6 shadow-2xl focus:outline-none focus:ring-0">
+                <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm DialogOverlay" />
+                <Dialog.Content className="fixed inset-y-0 left-0 z-50 w-[85vw] max-w-sm bg-background p-0 shadow-2xl focus:outline-none focus:ring-0 DialogContent border-r border-border flex flex-col">
                   <Dialog.Title className="sr-only">Navigasyon Menüsü</Dialog.Title>
                   <Dialog.Description className="sr-only">Forum sayfalarına hızlı erişim menüsü.</Dialog.Description>
-                  <div className="flex items-center justify-between mb-8">
-                    <Link href="/" onClick={() => setIsOpen(false)} className="text-xl font-black tracking-tighter">
-                      engelsiz<span className="text-primary">forum</span>
+                  
+                  <div className="flex items-center justify-between p-6 border-b border-border">
+                    <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2 outline-none focus:ring-2 focus:ring-primary rounded-lg px-1">
+                      <div className="flex items-center justify-center h-8 w-8 bg-primary text-primary-foreground rounded-lg font-black text-sm">e</div>
+                      <span className="text-xl font-black tracking-tighter">engelsiz<span className="text-primary">forum</span></span>
                     </Link>
                     <Dialog.Close asChild>
-                      <button className="rounded-full p-2 hover:bg-muted transition-colors" aria-label="Kapat">
-                        <X size={20} />
+                      <button className="rounded-xl p-2.5 hover:bg-muted text-muted-foreground transition-all active:scale-90" aria-label="Menüyü Kapat">
+                        <X size={22} />
                       </button>
                     </Dialog.Close>
                   </div>
-                  <div className="flex flex-col gap-2">
+
+                  <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
+                    <h4 className="text-[10px] uppercase font-black text-muted-foreground tracking-[0.2em] ml-4 mb-3">Navigasyon</h4>
                     <MobileNavLink href="/" icon={<Home size={20} />} label="Ana Sayfa" onClick={() => setIsOpen(false)} />
                     <MobileNavLink href="/discussions" icon={<MessageSquare size={20} />} label="Tartışmalar" onClick={() => setIsOpen(false)} />
                     <MobileNavLink href="/communities" icon={<Users size={20} />} label="Topluluklar" onClick={() => setIsOpen(false)} />
                     <MobileNavLink href="/about" icon={<Info size={20} />} label="Hakkımızda" onClick={() => setIsOpen(false)} />
-                    
-                    <div className="my-4 border-t border-border"></div>
-                    <h4 className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest ml-4 mb-2">Hızlı Erişim</h4>
-                    {isStaff && (
-                      <Link
-                        href="/admin"
-                        onClick={() => setIsOpen(false)}
-                        className="mx-4 mb-4 p-4 rounded-xl bg-primary text-primary-foreground flex items-center justify-between hover:opacity-90 active:scale-[0.98] transition-all"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Shield size={20} />
-                          <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Yetkili Paneli</p>
-                            <p className="text-xs font-bold opacity-80 uppercase tracking-tighter">{profile?.role}</p>
-                          </div>
-                        </div>
-                        <ChevronRight size={16} />
-                      </Link>
-                    )}
                     <MobileNavLink href="/search" icon={<Search size={20} />} label="Arama Yap" onClick={() => setIsOpen(false)} />
                     
-                    {!user && (
-                      <Link
-                        href="/auth"
-                        onClick={() => setIsOpen(false)}
-                        className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-4 text-base font-bold text-primary-foreground shadow-lg active:scale-95"
-                      >
-                        <LogIn size={20} /> Hemen Başla
-                      </Link>
-                    )}
-                    {user && (
-                      <button
-                        onClick={async () => {
-                          const { supabase } = await import('@/lib/supabase');
-                          await supabase.auth.signOut();
-                          window.location.href = '/';
-                        }}
-                        className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-destructive/10 px-4 py-4 text-base font-bold text-destructive hover:bg-destructive/20 transition-all active:scale-95"
-                      >
-                        <LogIn className="rotate-180" size={20} /> Çıkış Yap
-                      </button>
-                    )}
+                    <div className="pt-6 mt-6 border-t border-border">
+                      <h4 className="text-[10px] uppercase font-black text-muted-foreground tracking-[0.2em] ml-4 mb-3">Hesap</h4>
+                      {isStaff && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsOpen(false)}
+                          className="mx-2 mb-2 p-4 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-between hover:bg-primary/20 active:scale-[0.98] transition-all"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-primary text-primary-foreground rounded-lg shadow-sm">
+                              <Shield size={18} />
+                            </div>
+                            <div>
+                              <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1 text-primary/70">Admin Paneli</p>
+                              <p className="text-xs font-bold uppercase tracking-tighter">{profile?.role}</p>
+                            </div>
+                          </div>
+                          <ChevronRight size={16} />
+                        </Link>
+                      )}
+                      
+                      {user ? (
+                        <div className="px-2 pt-2">
+                          <Link 
+                            href="/profile" 
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted transition-colors mb-2"
+                          >
+                            <div className="h-10 w-10 rounded-full border border-border overflow-hidden">
+                              {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
+                                <Image 
+                                  src={user.user_metadata.avatar_url || user.user_metadata.picture} 
+                                  alt="" 
+                                  width={40} 
+                                  height={40} 
+                                  className="object-cover"
+                                />
+                              ) : (
+                                <div className="h-full w-full bg-primary/10 flex items-center justify-center text-primary">
+                                  <User size={20} />
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-sm font-bold truncate">{profile?.full_name || user.email}</p>
+                              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">Profilim</p>
+                            </div>
+                          </Link>
+                          <button
+                            onClick={async () => {
+                              const { supabase } = await import('@/lib/supabase');
+                              await supabase.auth.signOut();
+                              window.location.href = '/';
+                            }}
+                            className="w-full flex items-center justify-center gap-2 rounded-xl bg-destructive/5 px-4 py-4 text-sm font-black text-destructive hover:bg-destructive/10 transition-all active:scale-95 border border-destructive/10"
+                          >
+                            <LogIn className="rotate-180" size={18} /> Çıkış Yap
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="px-2 pt-2">
+                          <Link
+                            href="/auth"
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-4 text-sm font-black text-primary-foreground shadow-lg shadow-primary/20 active:scale-95 transition-all"
+                          >
+                            <LogIn size={18} /> Hemen Başla
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="p-6 border-t border-border bg-muted/30">
+                    <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                      v1.4.0 • EngelsizForum
+                    </p>
                   </div>
                 </Dialog.Content>
               </Dialog.Portal>
@@ -220,14 +261,27 @@ function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; l
 }
 
 function MobileNavLink({ href, icon, label, onClick }: { href: string; icon: React.ReactNode; label: string; onClick: () => void }) {
+  const pathname = usePathname();
+  const isActive = pathname === href;
+
   return (
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center gap-4 rounded-xl px-4 py-4 text-base font-bold text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary focus:ring-2 focus:ring-primary active:scale-95"
+      className={cn(
+        "flex items-center gap-4 rounded-xl px-4 py-3.5 text-sm font-black transition-all active:scale-[0.98] outline-none min-h-[52px]",
+        isActive 
+          ? "bg-primary text-primary-foreground shadow-md shadow-primary/20" 
+          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+      )}
     >
-      <div className="p-2 bg-muted rounded-lg text-primary">{icon}</div>
-      {label}
+      <div className={cn(
+        "p-2 rounded-lg shrink-0",
+        isActive ? "bg-white/20 text-white" : "bg-muted text-primary"
+      )}>
+        {icon}
+      </div>
+      <span className="uppercase tracking-widest">{label}</span>
     </Link>
   );
 }
