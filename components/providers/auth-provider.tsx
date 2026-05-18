@@ -85,7 +85,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (isSupabaseConfigured) {
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
         if (event === 'PASSWORD_RECOVERY') {
-          window.location.href = '/auth/reset-password';
+          console.log('Password recovery mode active!');
+          // We wait a bit to ensure session is stored in localStorage by Supabase
+          setTimeout(() => {
+             window.location.href = '/auth/reset-password';
+          }, 100);
           return;
         }
         setUser(session?.user ?? null);

@@ -17,7 +17,14 @@ export default function ResetPasswordPage() {
     setMessage(null);
 
     try {
+      console.log('Update user starts...');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('Oturum bulunamadı. Lütfen şifre sıfırlama bağlantısına tekrar tıklayın.');
+      }
+      
       const { error } = await supabase.auth.updateUser({ password: password });
+      console.log('Update user finished:', error);
 
       if (error) throw error;
       setMessage({ type: 'success', text: 'Şifreniz başarıyla güncellendi!' });
@@ -27,6 +34,7 @@ export default function ResetPasswordPage() {
         window.location.href = '/';
       }, 2000);
     } catch (err: any) {
+      console.error('Update user error:', err);
       setMessage({ type: 'error', text: err.message || 'Bir hata oluştu.' });
     } finally {
       setLoading(false);
