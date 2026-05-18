@@ -152,10 +152,10 @@ function NewTopicForm() {
                 onChange={e => setCategoryId(e.target.value)}
                 className="w-full p-4 md:p-5 rounded-xl border border-border bg-muted/20 outline-none focus:border-primary transition-all font-bold text-sm md:text-lg appearance-none cursor-pointer disabled:opacity-50"
               >
-                <option value="">Bir kategori seçin...</option>
-                {leafCategories.map(cat => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
-                ))}
+                  <option value="">{categories.length === 0 ? "Kategoriler yükleniyor veya boş..." : "Bir kategori seçin..."}</option>
+                  {leafCategories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
               </select>
             </div>
           </div>
