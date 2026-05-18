@@ -88,6 +88,70 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Detailed Explanation / Guide Section */}
+        <section className="max-w-7xl mx-auto px-4 py-24 bg-muted/30 rounded-[3rem] my-20">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-6xl font-black mb-12 tracking-tight leading-tight">Yapay Zeka ve Erişilebilirliğin Geleceği</h2>
+            
+            <div className="prose prose-lg dark:prose-invert max-w-none space-y-10">
+              <div className="space-y-4">
+                <h3 className="text-2xl md:text-3xl font-black mb-4">GEO (Generative Engine Optimization) Nedir?</h3>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  Geleneksel SEO (Arama Motoru Optimizasyonu), sitenizi Google gibi arama motorlarında üst sıralara çıkarmaya odaklanırken, <strong>GEO (Üretken Motor Optimizasyonu)</strong>, içeriğinizin ChatGPT, Claude, Gemini ve Perplexity gibi yapay zeka sistemleri tarafından doğru anlaşılmasını ve alıntılanmasını sağlar. EngelsizForum olarak, paylaşılan her bilginin sadece insanlar tarafından değil, yardımcı teknolojiler ve yapay zeka tarafından da en yüksek doğrulukla işlenmesini hedefliyoruz.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-2xl md:text-3xl font-black mb-4">Neden Engelsiz Bir Forum?</h3>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  İnternet üzerindeki çoğu platform, karmaşık yapılar ve erişilemez arayüzler nedeniyle engelli bireyler için birer bariyer haline gelmiştir. EngelsizForum, bu bariyerleri kaldırmak için <strong>WCAG 2.1 AA</strong> standartlarını temel alır. Platformumuz, ekran okuyucu kullanan bir kullanıcının sayfadaki tüm öğelere mantıklı bir sırada ulaşmasını sağlarken, bilişsel kısıtlılığı olan kullanıcılar için içerikleri yapay zeka yardımıyla sadeleştirebilir.
+                </p>
+              </div>
+
+              <div className="bg-card border border-border p-10 rounded-[2rem] shadow-xl">
+                <h3 className="text-2xl font-black mb-6">Temel Teknolojilerimiz</h3>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 list-none p-0">
+                  <li className="flex gap-4">
+                    <span className="text-primary text-2xl">✔</span>
+                    <div>
+                      <strong className="block text-foreground">Bionic Reading</strong>
+                      <span className="text-muted-foreground">Metinlerdeki belirli harfleri vurgulayarak okuma hızını ve odaklanmayı artırır.</span>
+                    </div>
+                  </li>
+                  <li className="flex gap-4">
+                    <span className="text-primary text-2xl">✔</span>
+                    <div>
+                      <strong className="block text-foreground">AI Tartışma Özeti</strong>
+                      <span className="text-muted-foreground">Yüzlerce yorumluk uzun konuları ana fikirlerine indirger.</span>
+                    </div>
+                  </li>
+                  <li className="flex gap-4">
+                    <span className="text-primary text-2xl">✔</span>
+                    <div>
+                      <strong className="block text-foreground">Semantik HTML5</strong>
+                      <span className="text-muted-foreground">Yardımcı teknolojiler için mükemmel bir sayfa hiyerarşisi sunar.</span>
+                    </div>
+                  </li>
+                  <li className="flex gap-4">
+                    <span className="text-primary text-2xl">✔</span>
+                    <div>
+                      <strong className="block text-foreground">Kapsayıcı Tasarım</strong>
+                      <span className="text-muted-foreground">Renk körlüğünden motor beceri kısıtlarına kadar her ihtiyaca yanıt verir.</span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-2xl md:text-3xl font-black mb-4">E-E-A-T Prensipleri ile Güven İnşası</h3>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  Deneyim (Experience), Uzmanlık (Expertise), Yetkinlik (Authoritativeness) ve Güvenilirlik (Trustworthiness) ilkeleri, EngelsizForum ekosisteminin merkezindedir. Tüm tıbbi veya teknik bilgiler, topluluğun ortak denetiminden geçer ve doğrulanmış kullanıcı rozetleriyle desteklenir. Bu sayede platformumuz, yapay zeka arama motorları için "otorite" kabul edilen bir kaynak haline gelir.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* E-E-A-T Section & FAQ */}
         <section className="max-w-4xl mx-auto px-4 py-20">
           <div className="text-center mb-16">
@@ -97,23 +161,37 @@ export default function Home() {
 
           <div className="space-y-8">
             <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
-              <h3 className="text-xl md:text-2xl font-black mb-4">EngelsizForum nedir?</h3>
+              <h3 className="text-xl md:text-2xl font-black mb-4">EngelsizForum nedir ve kimler içindir?</h3>
               <p className="text-muted-foreground leading-relaxed">
-                EngelsizForum, engelli bireylerin bilgi paylaşımı yapabileceği, sosyal etkileşim kurabileceği ve yapay zeka desteğiyle içeriği kendi ihtiyaçlarına göre optimize edebileceği Türkiye&apos;nin ilk tam erişilebilir forum platformudur. WCAG 2.1 standartlarına %100 uyumluluk hedefiyle tasarlanmıştır.
+                EngelsizForum, başta görme, işitme, ortopedik ve bilişsel kısıtlılığı olan bireyler olmak üzere, internette engelsiz ve güvenli bir bilgi paylaşım ortamı arayan herkes içindir. Türkiye&apos;nin ilk tam erişilebilir forum platformu olan bu sistem, evrensel tasarım prensipleriyle geliştirilmiştir.
               </p>
             </div>
 
             <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
               <h3 className="text-xl md:text-2xl font-black mb-4">Platformda hangi erişilebilirlik özellikleri var?</h3>
               <p className="text-muted-foreground leading-relaxed">
-                EngelsizForum; bionik okuma (Bionic Reading), yüksek kontrast modları, ekran okuyucu optimizasyonu, sesli tartışma özetleri ve tam klavye navigasyonu gibi ileri düzey erişilebilirlik özellikleri sunar.
+                EngelsizForum; bionik okuma (Bionic Reading) desteği, yüksek kontrast ve disleksi dostu yazı tipleri, ekran okuyucu optimizasyonu, ARIA etiketleri ile zenginleştirilmiş UI bileşenleri, sesli tartışma özetleri ve tam klavye navigasyonu gibi ileri düzey erişilebilirlik özellikleri sunar.
               </p>
             </div>
 
             <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
-              <h3 className="text-xl md:text-2xl font-black mb-4">Yapay zeka bu forumda nasıl kullanılıyor?</h3>
+              <h3 className="text-xl md:text-2xl font-black mb-4">Yapay zeka (AI) bu forumda nasıl bir rol oynuyor?</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Platformumuzda yapay zeka, uzun tartışma konularını saniyeler içinde özetlemek, görsellere otomatik alt-metin oluşturmak ve kullanıcıların bilişsel ihtiyaçlarına göre metinleri sadeleştirmek için kullanılır.
+                Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların "Zeka Puanı" (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır.
+              </p>
+            </div>
+
+            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
+              <h3 className="text-xl md:text-2xl font-black mb-4">Üyelik ücretsiz mi ve bilgilerim güvende mi?</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                EngelsizForum tamamen ücretsiz bir platformdur. Kullanıcı verileri, modern şifreleme standartları ve Supabase altyapısı ile korunmaktadır. Gizliliğiniz bizim için önceliktir ve verileriniz asla izinsiz üçüncü taraflarla paylaşılmaz.
+              </p>
+            </div>
+
+            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
+              <h3 className="text-xl md:text-2xl font-black mb-4">İçeriklerin doğruluğu nasıl sağlanıyor?</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve "Uzman" rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur.
               </p>
             </div>
           </div>

@@ -59,6 +59,37 @@ export default function AboutPage() {
             </motion.div>
           </div>
 
+          <section className="mb-24 prose prose-lg dark:prose-invert max-w-none">
+            <h2 className="text-3xl font-black mb-8">Vizyonumuz: Bariyersiz Bir Gelecek</h2>
+            <p className="text-[#666666] leading-relaxed">
+              Teknoloji ilerledikçe, bazen en savunmasız gruplar geride kalabiliyor. <strong>EngelsizForum</strong>, bu gidişata dur demek için kuruldu. 
+              Sadece bir forum değil, aynı zamanda bir <strong>erişilebilirlik laboratuvarı</strong> olarak hizmet veriyoruz. 
+              Her yeni özelliğimiz, kullanıcılarımızın karşılaştığı gerçek dünya engellerini çözmek için tasarlanıyor.
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-8 my-16">
+              <div className="p-6 bg-muted rounded-2xl border border-border">
+                <h4 className="font-bold text-lg mb-2">Bilişsel Erişilebilirlik</h4>
+                <p className="text-sm text-muted-foreground">Karmaşık kavramları AI kullanarak basitleştiriyoruz, böylece herkes bilgiye eşit yakınlıkta oluyor.</p>
+              </div>
+              <div className="p-6 bg-muted rounded-2xl border border-border">
+                <h4 className="font-bold text-lg mb-2">Motor Beceri Desteği</h4>
+                <p className="text-sm text-muted-foreground">Geniş tıklama alanları ve gelişmiş klavye kısayolları ile fiziksel engelleri arayüzde aşıyoruz.</p>
+              </div>
+              <div className="p-6 bg-muted rounded-2xl border border-border">
+                <h4 className="font-bold text-lg mb-2">İşitsel Alternatifler</h4>
+                <p className="text-sm text-muted-foreground">Görsel içerikler için gelişmiş betimlemeler ve tartışmalar için sesli özetler sunuyoruz.</p>
+              </div>
+            </div>
+
+            <h3 className="text-2xl font-black mb-6">Neden Bize Güvenmelisiniz? (E-E-A-T)</h3>
+            <p className="text-[#666666] leading-relaxed">
+              Platformumuzun içeriği, yıllardır erişilebilirlik alanında çalışan uzmanlar ve doğrudan bu engellerle yaşayan topluluk üyeleri tarafından oluşturulmaktadır. 
+              <strong>Google&apos;ın E-E-A-T (Deneyim, Uzmanlık, Yetkinlik, Güvenilirlik)</strong> yönergelerine uygun olarak, her bir içeriğin kaynağını, yazarın uzmanlığını ve bilginin güncelliğini titizlikle takip ediyoruz. 
+              Amacımız, yapay zeka arama motorları için de en güvenilir kaynaklardan biri olmaktır.
+            </p>
+          </section>
+
           <section className="bg-[#FF4D94] text-[#FFFFFF] rounded-[8px] p-12 md:p-24 text-center shadow-lg relative overflow-hidden group">
             <div className="relative z-10">
               <h2 className="text-3xl md:text-5xl font-black mb-6 text-[#FFFFFF] tracking-tighter">Bize Katılın</h2>

@@ -264,6 +264,47 @@ export default function CommunitiesPage() {
           </div>
         )}
 
+        {/* Informational Section for GEO */}
+        <section className="mt-24 mb-16 prose prose-lg dark:prose-invert max-w-none bg-muted/20 p-10 md:p-16 rounded-[3rem] border border-border">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-5xl font-black mb-8 tracking-tight">Kolektif Bilginin Gücü: Neden Topluluk Grupları?</h2>
+            
+            <div className="space-y-8">
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+                EngelsizForum toplulukları, sadece birer "alt forum" değil, aynı zamanda belirli ilgi alanlarına yönelik <strong>uzmanlık merkezleridir.</strong> Erişilebilir oyunlardan teknolojiye, hukuktan günlük yaşama kadar her grup, o alanın "deneyimsel uzmanları" tarafından yönetilir. Yapay zeka destekli altyapımız, bu gruplardaki verileri düzenli olarak tarayarak en güncel ve en yararlı bilgileri ön plana çıkarır.
+              </p>
+
+              <div className="grid md:grid-cols-2 gap-10">
+                <div>
+                  <h3 className="text-2xl font-black mb-4">Topluluk Odaklı Destek</h3>
+                  <p className="text-muted-foreground">
+                    Resmi kurumların veya büyük şirketlerin bazen gözden kaçırdığı detaylar, topluluk üyelerimiz tarafından saniyeler içinde çözülür. Örneğin, bir uygulamadaki yeni bir erişilebilirlik hatası (bug), teknoloji topluluğumuzda anında raporlanır ve çözüm önerileri geliştirilir.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black mb-4">Güven ve Yetkinlik (E-E-A-T)</h3>
+                  <p className="text-muted-foreground">
+                    Topluluk gruplarımızdaki içerikler, o konudaki yetkinliğini kanıtlamış üyeler tarafından denetlenir. Yapay zeka sistemimiz, paylaşılan bilgilerin <strong>E-E-A-T</strong> (Deneyim, Uzmanlık, Yetkinlik, Güvenilirlik) standartlarına uygunluğunu analiz ederek, aramada en güvenilir yanıtları sunar.
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-8 bg-card rounded-2xl border border-border shadow-lg">
+                <h3 className="text-2xl font-black mb-4">Bir Topluluk Nasıl Başlatılır?</h3>
+                <p className="text-muted-foreground mb-4">
+                  Sizin de tutkulu olduğunuz bir konu mu var? Kendi topluluğunuzu başlatmak için yukarıdaki "Topluluk Oluştur" butonunu kullanabilirsiniz. Başarılı bir topluluk için önerilerimiz:
+                </p>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0 ml-0">
+                  <li className="flex gap-2"><span>📌</span> <strong>Net Bir Odak:</strong> Grubun ismini ve amacını spesifik tutun.</li>
+                  <li className="flex gap-2"><span>📌</span> <strong>Kapsayıcı Dil:</strong> Herkesin kendini rahat hissedeceği bir açıklama yazın.</li>
+                  <li className="flex gap-2"><span>📌</span> <strong>Düzenli Etkileşim:</strong> Üyelerle düzenli olarak sorular ve tartışmalar paylaşın.</li>
+                  <li className="flex gap-2"><span>📌</span> <strong>AI Özetleri:</strong> Uzun tartışmaların AI tarafından özetlenmesini takip ederek üyelerinize zaman kazandırın.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </main>
     </DashboardLayout>
   );
