@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Topic, Category } from '@/types/database';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
-import { GoogleGenAI } from '@google/genai';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
@@ -91,11 +90,6 @@ export default function DiscussionsPage() {
   }, [fetchTopics, fetchCategories]);
 
   const handleSummarize = async (id: string) => {
-    if (!process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
-      alert('AI Özeti için API anahtarı ayarlanmamış.');
-      return;
-    }
-
     const topic = topics.find(t => t.id === id);
     if (!topic) return;
 
@@ -103,21 +97,29 @@ export default function DiscussionsPage() {
     setSummaryResult(null);
 
     try {
-      const genAI = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY! });
-
-      const result = await genAI.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Lütfen aşağıdaki forum tartışmasını kısa ve öz bir şekilde (maksimum 3 cümle) Türkçe özetle. Önemli noktaları vurgula.\n\nKonu: ${topic.title}\nİçerik: ${topic.content}`
+      const response = await fetch('/api/ai/summarize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: topic.title,
+          content: topic.content,
+        }),
       });
 
-      const text = result.text;
+      const data = await response.json();
       
-      if (text) {
-        setSummaryResult({ id, text });
+      if (!response.ok) {
+        throw new Error(data.error || 'Özet oluşturulamadı.');
+      }
+
+      if (data.summary) {
+        setSummaryResult({ id, text: data.summary });
       }
     } catch (error: any) {
       console.error('AI Error:', error);
-      alert('Özet oluşturulurken bir hata oluştu.');
+      alert('Özet oluşturulurken bir hata oluştu: ' + error.message);
     } finally {
       setSummarizingId(null);
     }

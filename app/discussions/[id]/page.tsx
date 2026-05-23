@@ -8,7 +8,6 @@ import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
-import { GoogleGenAI } from '@google/genai';
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
 const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: true });
@@ -213,24 +212,31 @@ export default function DiscussionDetailPage() {
   };
 
   const handleSummarize = async () => {
-    if (!topic || !process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
-      alert('AI Özeti için API anahtarı ayarlanmamış.');
-      return;
-    }
+    if (!topic) return;
     
     setIsSummarizing(true);
     try {
-      const genAI = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY! });
-      
-      const result = await genAI.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Lütfen aşağıdaki forum başlığını ve içeriğini kısa ve öz bir şekilde (maksimum 4 cümle) Türkçe özetle:\n\nBaşlık: ${topic.title}\nİçerik: ${topic.content}`
+      const response = await fetch('/api/ai/summarize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: topic.title,
+          content: topic.content,
+        }),
       });
+
+      const data = await response.json();
       
-      setSummary(result.text || "Özet oluşturulamadı.");
-    } catch (err) {
+      if (!response.ok) {
+        throw new Error(data.error || 'Özet oluşturulamadı.');
+      }
+      
+      setSummary(data.summary || "Özet oluşturulamadı.");
+    } catch (err: any) {
       console.error('Summarization failed:', err);
-      alert('Özet oluşturulurken bir hata oluştu.');
+      alert('Özet oluşturulurken bir hata oluştu: ' + err.message);
     } finally {
       setIsSummarizing(false);
     }

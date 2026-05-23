@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '@/lib/supabase';
 import { Topic } from '@/types/database';
 import { DiscussionCard } from '@/components/forum/discussion-card';
-import { GoogleGenAI } from '@google/genai';
 import Link from 'next/link';
 
 interface Community {
@@ -76,27 +75,33 @@ export default function CommunityDetailPage() {
 
   const handleSummarize = async (id: string) => {
     const topic = topics.find(t => t.id === id);
-    if (!topic || !process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
-      alert('AI Özeti için gerekli veriler eksik.');
-      return;
-    }
+    if (!topic) return;
 
     setSummarizingId(id);
     try {
-      const genAI = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY! });
-      
-      const result = await genAI.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Lütfen aşağıdaki forum başlığı içeriğini kısa ve öz bir şekilde (maksimum 3 cümle) Türkçe özetle:\n\n${topic.content}`
+      const response = await fetch('/api/ai/summarize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: topic.title,
+          content: topic.content,
+        }),
       });
+
+      const data = await response.json();
       
-      const text = result.text;
-      if (text) {
-        setSummaryResult({ id, text });
+      if (!response.ok) {
+        throw new Error(data.error || 'Özet oluşturulamadı.');
       }
-    } catch (error) {
+      
+      if (data.summary) {
+        setSummaryResult({ id, text: data.summary });
+      }
+    } catch (error: any) {
       console.error('Summarization failed:', error);
-      alert('Özet oluşturulurken bir hata oluştu.');
+      alert('Özet oluşturulurken bir hata oluştu: ' + error.message);
     } finally {
       setSummarizingId(null);
     }
