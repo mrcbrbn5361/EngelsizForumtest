@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Topic, Category } from '@/types/database';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { GoogleGenAI } from '@google/genai';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
@@ -91,35 +92,28 @@ export default function DiscussionsPage() {
 
   const handleSummarize = async (id: string) => {
     const topic = topics.find(t => t.id === id);
-    if (!topic) return;
+    if (!topic || !process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
+      alert('AI Özeti için API anahtarı ayarlanmamış.');
+      return;
+    }
 
     setSummarizingId(id);
     setSummaryResult(null);
 
     try {
-      const response = await fetch('/api/ai/summarize', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: topic.title,
-          content: topic.content,
-        }),
-      });
-
-      const data = await response.json();
+      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
       
-      if (!response.ok) {
-        throw new Error(data.error || 'Özet oluşturulamadı.');
-      }
-
-      if (data.summary) {
-        setSummaryResult({ id, text: data.summary });
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: `Lütfen aşağıdaki forum tartışmasını kısa ve öz bir şekilde (maksimum 3 cümle) Türkçe özetle. Önemli noktaları vurgula.\n\nKonu: ${topic.title}\nİçerik: ${topic.content}`,
+      });
+      
+      if (response.text) {
+        setSummaryResult({ id, text: response.text });
       }
     } catch (error: any) {
       console.error('AI Error:', error);
-      alert('Özet oluşturulurken bir hata oluştu: ' + error.message);
+      alert('Özet oluşturulurken bir hata oluştu.');
     } finally {
       setSummarizingId(null);
     }
