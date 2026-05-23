@@ -78,6 +78,7 @@ export const metadata: Metadata = {
     address: false,
     email: false,
   },
+  manifest: '/manifest.json',
 };
 
 const jsonLd = {
