@@ -31,12 +31,25 @@ export default function AboutPage() {
                   "@type": "Answer",
                   "text": "Yapay zeka sadece içerik analizi ve özetleme için kullanılır. Kişisel verileriniz asla AI modellerini eğitmek amacıyla kullanılmaz veya üçüncü taraflarla paylaşılmaz."
                 }
+              },
+              {
+                "@type": "Question",
+                "name": "EngelsizForum'a nasıl katkıda bulunabilirim?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Topluluğumuza üye olarak, deneyimlerinizi paylaşarak veya yeni tartışmalar başlatarak katkıda bulunabilirsiniz. Ayrıca topluluk kurallarımızı takip ederek güvenli bir ortam oluşturmamıza yardımcı olabilirsiniz."
+                }
               }
             ]
           })
         }}
       />
         <div className="max-w-5xl mx-auto p-4">
+          <nav className="flex justify-center gap-6 mb-12 text-sm font-bold uppercase tracking-widest text-[#FF4D94]">
+            <Link href="/" className="hover:underline">Ana Sayfa</Link>
+            <Link href="/discussions" className="hover:underline">Tartışmalar</Link>
+            <Link href="/communities" className="hover:underline">Topluluklar</Link>
+          </nav>
           <section className="mb-20 md:mb-32 text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}

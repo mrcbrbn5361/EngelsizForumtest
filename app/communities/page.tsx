@@ -43,7 +43,6 @@ export default function CommunitiesPage() {
         .order('name');
       
       if (error) throw error;
-      console.log('Fetched communities:', data);
       setCommunities(data || []);
     } catch (err) {
       console.error('Error fetching communities:', err);
@@ -75,18 +74,11 @@ export default function CommunitiesPage() {
 
   useEffect(() => {
     let isMounted = true;
-    
     const init = async () => {
-      if (isMounted) {
-        await fetchCommunities();
-      }
+      if (isMounted) await fetchCommunities();
     };
-    
     init();
-    
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [fetchCommunities]);
 
   const filteredCommunities = communities.filter(c => 
@@ -105,6 +97,33 @@ export default function CommunitiesPage() {
 
   return (
     <DashboardLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "EngelsizForum toplulukları nedir?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Erişilebilirlik, teknoloji ve sosyal yaşam gibi konularda özelleşmiş, engelli bireylerin bir araya geldiği bilgi paylaşım gruplarıdır."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Yeni bir topluluk nasıl oluşturulur?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Sayfanın üst kısmındaki 'Topluluk Oluştur' butonunu kullanarak, belirlediğiniz bir konuda yeni bir ilgi grubu başlatabilirsiniz."
+                }
+              }
+            ]
+          })
+        }}
+      />
       <main className="w-full max-w-7xl mx-auto px-4 py-8 md:py-16">
         <header className="mb-12 md:mb-16 flex flex-col items-center text-center px-4">
           <motion.div 
