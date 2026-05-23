@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Lock, AlertCircle, CheckCircle, ArrowRight } from 'lucide-react';
+import { Lock, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Navbar } from '@/components/layout/navbar';
 
@@ -18,10 +18,6 @@ export default function ResetPasswordPage() {
 
     try {
       console.log('Update user starts...');
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        throw new Error('Oturum bulunamadı. Lütfen şifre sıfırlama bağlantısına tekrar tıklayın.');
-      }
       
       const { error } = await supabase.auth.updateUser({ password: password });
       console.log('Update user finished:', error);
@@ -29,10 +25,10 @@ export default function ResetPasswordPage() {
       if (error) throw error;
       setMessage({ type: 'success', text: 'Şifreniz başarıyla güncellendi!' });
       
-      // Redirect after a short delay
+      // Redirect after a short delay for cleaner experience
       setTimeout(() => {
-        window.location.href = '/';
-      }, 2000);
+        window.location.href = '/auth';
+      }, 1000);
     } catch (err: any) {
       console.error('Update user error:', err);
       setMessage({ type: 'error', text: err.message || 'Bir hata oluştu.' });
@@ -87,9 +83,16 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-bold shadow-lg hover:bg-primary/90 transition-all disabled:opacity-50"
+              className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-bold shadow-lg hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
             >
-              {loading ? 'Güncelleniyor...' : 'Şifreyi Güncelle'}
+              {loading ? (
+                <>
+                  <Loader2 className="animate-spin" size={20} />
+                  <span>Güncelleniyor...</span>
+                </>
+              ) : (
+                'Şifreyi Güncelle'
+              )}
             </button>
           </form>
         </motion.div>
