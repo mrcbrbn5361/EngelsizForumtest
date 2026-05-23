@@ -125,6 +125,12 @@ export default function CommunitiesPage() {
         }}
       />
       <main className="w-full max-w-7xl mx-auto px-4 py-8 md:py-16">
+        <nav className="flex justify-center gap-6 mb-12 text-sm font-bold uppercase tracking-widest text-primary">
+          <Link href="/" className="hover:underline">Ana Sayfa</Link>
+          <Link href="/discussions" className="hover:underline">Tartışmalar</Link>
+          <Link href="/about" className="hover:underline">Hakkımızda</Link>
+          <Link href="/privacy" className="hover:underline">Gizlilik</Link>
+        </nav>
         <header className="mb-12 md:mb-16 flex flex-col items-center text-center px-4">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
