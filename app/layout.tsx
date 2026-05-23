@@ -41,10 +41,13 @@ export const metadata: Metadata = {
   robots: 'index, follow',
   alternates: {
     canonical: 'https://engelsizforum.miracdeveloper.com.tr',
+    languages: {
+      'tr-TR': 'https://engelsizforum.miracdeveloper.com.tr',
+    },
   },
   openGraph: {
-    title: 'EngelsizForum | Erişilebilir Topluluk ve Bilgi Paylaşım Platformu',
-    description: 'Herkes için bariyersiz forum deneyimi. Yapay zeka ile güçlendirilmiş erişilebilirlik özellikleri.',
+    title: 'EngelsizForum: Erişilebilir Forum',
+    description: 'Engelli bireyler için tam erişilebilir forum platformu.',
     url: 'https://engelsizforum.miracdeveloper.com.tr',
     siteName: 'EngelsizForum',
     images: [
@@ -60,8 +63,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EngelsizForum | Erişilebilir Topluluk Platformu',
-    description: 'Herkes için bariyersiz forum deneyimi.',
+    title: 'EngelsizForum: Tam Erişilebilir Topluluk ve Bilgi Platformu',
+    description: 'Engelli bireyler için %100 erişilebilir, yapay zeka destekli ve kapsayıcı topluluk platformu. Bariyersiz iletişimin yeni adresi EngelsizForum\'a katılın.',
+    site: '@engelsizforum',
+    creator: '@engelsizforum',
   },
   appleWebApp: {
     capable: true,
@@ -70,23 +75,44 @@ export const metadata: Metadata = {
   },
   formatDetection: {
     telephone: false,
+    address: false,
+    email: false,
   },
 };
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "EngelsizForum",
-  "url": "https://engelsizforum.miracdeveloper.com.tr",
-  "logo": "https://engelsizforum.miracdeveloper.com.tr/logo.png",
-  "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve forum platformu.",
-  "sameAs": [
-    "https://twitter.com/engelsizforum",
-    "https://github.com/engelsizforum"
-  ],
-  "accessibilityControl": ["fullKeyboardControl", "fullMouseControl", "fullVoiceControl"],
-  "accessibilityFeature": ["alternativeText", "highContrastDisplay", "noFlashingHazard", "screenReaderFriendly"],
-  "accessibilityHazard": "noFlashingHazard"
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://engelsizforum.miracdeveloper.com.tr/#organization",
+      "name": "EngelsizForum",
+      "url": "https://engelsizforum.miracdeveloper.com.tr",
+      "logo": "https://engelsizforum.miracdeveloper.com.tr/logo.png",
+      "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve forum platformu.",
+      "sameAs": [
+        "https://twitter.com/engelsizforum",
+        "https://github.com/engelsizforum"
+      ],
+      "accessibilityControl": ["fullKeyboardControl", "fullMouseControl", "fullVoiceControl"],
+      "accessibilityFeature": ["alternativeText", "highContrastDisplay", "noFlashingHazard", "screenReaderFriendly"],
+      "accessibilityHazard": "noFlashingHazard"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://engelsizforum.miracdeveloper.com.tr/#website",
+      "url": "https://engelsizforum.miracdeveloper.com.tr",
+      "name": "EngelsizForum",
+      "description": "Tam Erişilebilir Topluluk ve Bilgi Paylaşım Platformu",
+      "publisher": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#organization" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://engelsizforum.miracdeveloper.com.tr/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "inLanguage": "tr-TR"
+    }
+  ]
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
