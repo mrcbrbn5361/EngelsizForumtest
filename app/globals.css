@@ -27,12 +27,12 @@
   --foreground: #0f172a;
   --card: #ffffff;
   --card-foreground: #0f172a;
-  --primary: #0f766e;
+  --primary: #D91B5C;
   --primary-foreground: #ffffff;
   --muted: #f1f5f9;
-  --muted-foreground: #475569;
+  --muted-foreground: #334155;
   --border: #e2e8f0;
-  --ring: #0f766e;
+  --ring: #D91B5C;
   --radius: 0.75rem;
 }
 
@@ -92,18 +92,6 @@ h1, h2, h3, h4, h5, h6 {
 .bionic-reading p, .bionic-reading span {
   letter-spacing: 0.05em;
   word-spacing: 0.2em;
-}
-
-.hidden-by-default-bionic {
-  display: none;
-}
-
-.bionic-reading .hidden-by-default-bionic {
-  display: inline;
-}
-
-.bionic-reading .bionic-reading-hidden {
-  display: none;
 }
 
 /* 4. Font Size Overrides */

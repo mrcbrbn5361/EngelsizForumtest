@@ -69,7 +69,6 @@ export default function CommunityDetailPage() {
 
   useEffect(() => {
     if (id) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchCommunityData();
     }
   }, [id, fetchCommunityData]);

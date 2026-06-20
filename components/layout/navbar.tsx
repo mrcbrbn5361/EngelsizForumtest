@@ -72,7 +72,7 @@ export function Navbar() {
                     <div className="relative h-7 w-7 md:h-8 md:w-8 rounded-lg overflow-hidden border border-border group-hover:border-primary/30">
                       <Image 
                         src={user.user_metadata.avatar_url || user.user_metadata.picture} 
-                        alt="Kullanıcı Profil Resmi" 
+                        alt="Profil resmim" 
                         fill
                         unoptimized
                         className="object-cover"
@@ -183,7 +183,7 @@ export function Navbar() {
                               {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
                                 <Image 
                                   src={user.user_metadata.avatar_url || user.user_metadata.picture} 
-                                  alt="Hesap Profil Resmi" 
+                                  alt="" 
                                   width={40} 
                                   height={40} 
                                   className="object-cover"

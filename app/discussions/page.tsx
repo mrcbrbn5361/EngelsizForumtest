@@ -81,9 +81,7 @@ export default function DiscussionsPage() {
     let isMounted = true;
     const loadData = async () => {
       if (!isMounted) return;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       await fetchCategories();
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       await fetchTopics();
     };
     loadData();
@@ -211,7 +209,7 @@ export default function DiscussionsPage() {
 
         <nav className="mb-12 px-2" aria-label="Kategori filtreleri">
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8">
-            <div className="flex items-center gap-4 overflow-x-auto pb-6 -mb-6 scrollbar-hide no-scrollbar snap-x relative min-w-0 flex-1" role="list">
+            <div className="flex items-center gap-4 overflow-x-auto pb-6 -mb-6 scrollbar-hide no-scrollbar snap-x relative min-w-0 flex-1">
               {[
                 { label: 'Tümü', id: null },
                 ...categories.filter(c => !c.parent_id).map(c => ({ label: c.name, id: c.id }))
@@ -219,7 +217,6 @@ export default function DiscussionsPage() {
                 <button 
                   key={item.id || 'all'} 
                   onClick={() => setSelectedCategoryId(item.id)}
-                  role="listitem"
                   aria-label={`${item.label} kategorisini filtrele`}
                   aria-pressed={selectedCategoryId === item.id}
                   className={cn(

@@ -67,21 +67,19 @@ export default function Home() {
           <div className="absolute inset-0 bg-primary/5 rounded-[3rem] -z-10 opacity-30" />
           <div className="max-w-4xl mx-auto px-4">
             <div
-              className="inline-block mb-6 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-xs md:text-sm font-bold uppercase tracking-widest shadow-lg shadow-primary/10"
+              className="inline-block mb-6 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-lg shadow-primary/10"
             >
               ENGELSİZ FORUM&apos;A HOŞ GELDİNİZ
             </div>
             <h1 
               className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-8 tracking-tighter text-foreground leading-[0.9] sm:leading-[0.85]"
             >
-              <span className="bionic-reading-hidden">Herkes İçin Erişilebilir Bir Topluluk</span>
-              <BionicText text="Herkes İçin Erişilebilir Bir Topluluk" className="hidden-by-default-bionic" />
+              <BionicText text="Herkes İçin Erişilebilir Bir Topluluk" />
             </h1>
             <p 
               className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-muted-foreground mb-12 font-medium leading-relaxed px-4"
             >
-              <span className="bionic-reading-hidden">Engelleri birlikte aşmak için tasarlanan, yapay zeka destekli ve tam erişilebilir forum platformu.</span>
-              <BionicText text="Engelleri birlikte aşmak için tasarlanan, yapay zeka destekli ve tam erişilebilir forum platformu." className="hidden-by-default-bionic" />
+              <BionicText text="Engelleri birlikte aşmak için tasarlanan, yapay zeka destekli ve tam erişilebilir forum platformu." />
             </p>
             <div
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
@@ -320,7 +318,7 @@ export default function Home() {
             <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
               <h3 className="text-xl md:text-2xl font-black mb-4">Yapay zeka (AI) bu forumda nasıl bir rol oynuyor?</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların "Zeka Puanı" (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır.
+                Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların &quot;Zeka Puanı&quot; (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır.
               </p>
             </div>
 
@@ -334,7 +332,7 @@ export default function Home() {
             <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
               <h3 className="text-xl md:text-2xl font-black mb-4">İçeriklerin doğruluğu nasıl sağlanıyor?</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve "Uzman" rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur.
+                Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve &quot;Uzman&quot; rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur.
               </p>
             </div>
           </div>

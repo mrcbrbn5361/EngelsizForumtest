@@ -180,28 +180,28 @@ export default function ProfilePage() {
             </section>
 
             <section>
-              <h2 className="text-xs font-bold text-[#999999] uppercase tracking-widest mb-6 flex items-center gap-2">
-                <Settings size={16} className="text-[#D91B5C]" /> ERİŞİLEBİLİRLİK SİSTEMİ
+              <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-6 flex items-center gap-2">
+                <Settings size={16} className="text-primary" /> ERİŞİLEBİLİRLİK SİSTEMİ
               </h2>
-              <div className="bg-[#FFF1F2] border border-[#D91B5C]/10 rounded-[8px] p-6 md:p-8 relative overflow-hidden group">
+              <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6 md:p-8 relative overflow-hidden group">
                 <div className="relative z-10">
-                  <p className="text-sm md:text-base font-bold text-[#1A1A1A] mb-4 leading-relaxed max-w-[80%]">
+                  <p className="text-sm md:text-base font-bold text-foreground mb-4 leading-relaxed max-w-[80%]">
                     Kişiselleştirilmiş erişilebilirlik ayarlarınız tüm cihazlarınızda güvenle saklanır.
                   </p>
                   <button 
                     onClick={() => resetSettings()}
-                    className="text-xs font-bold uppercase tracking-widest text-[#D91B5C] border-b border-[#D91B5C]/20 hover:border-[#D91B5C] transition-all py-0.5"
+                    className="text-xs font-bold uppercase tracking-widest text-primary border-b border-primary/20 hover:border-primary transition-all py-0.5"
                   >
                     Sıfırla
                   </button>
                 </div>
-                <Settings size={64} className="absolute -right-4 -bottom-4 text-[#D91B5C]/10 rotate-12 group-hover:rotate-45 transition-transform duration-700" />
+                <Settings size={64} className="absolute -right-4 -bottom-4 text-primary/10 rotate-12 group-hover:rotate-45 transition-transform duration-700" />
               </div>
             </section>
 
             <button 
               onClick={handleLogout}
-              className="w-full py-4 bg-[#D91B5C]/5 text-[#D91B5C] border border-[#D91B5C]/20 rounded-[8px] font-bold text-sm hover:bg-[#D91B5C] hover:text-[#FFFFFF] transition-all flex items-center justify-center gap-3 group active:scale-95 uppercase tracking-widest"
+              className="w-full py-4 bg-primary/5 text-primary border border-primary/20 rounded-xl font-bold text-sm hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-3 group active:scale-95 uppercase tracking-widest"
             >
               <LogIn className="rotate-180 group-hover:-translate-x-1 transition-transform" size={20} aria-hidden="true" /> Oturumu Sonlandır
             </button>
@@ -214,22 +214,22 @@ export default function ProfilePage() {
 
 function ProfileItem({ icon, label, value, badge }: { icon: React.ReactNode, label: string, value: string, badge?: string }) {
   return (
-    <div className="flex items-center justify-between p-4 md:p-6 bg-[#F9F9FB] rounded-[1.2rem] border border-[#E5E7EB] transition-all group/item">
+    <div className="flex items-center justify-between p-4 md:p-6 bg-muted/20 rounded-[1.2rem] border border-border transition-all group/item">
       <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
-        <div className="p-2 md:p-3 bg-[#FFFFFF] rounded-xl border border-[#E5E7EB] text-primary shrink-0 group-hover/item:scale-110 transition-transform">{icon}</div>
+        <div className="p-2 md:p-3 bg-card rounded-xl border border-border text-primary shrink-0 group-hover/item:scale-110 transition-transform">{icon}</div>
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-bold text-[#999999] uppercase tracking-widest mb-0.5">{label}</p>
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-0.5">{label}</p>
           <div className="flex items-center gap-2">
-            <p className="font-bold text-sm md:text-lg tracking-tight break-words line-clamp-1 text-[#1A1A1A]">{value}</p>
+            <p className="font-bold text-sm md:text-lg tracking-tight break-words line-clamp-1 text-foreground">{value}</p>
             {badge && (
-              <span className={`px-2 py-0.5 rounded-full text-xs font-black uppercase tracking-widest ${badge}`}>
+              <span className={`px-2 py-0.5 rounded-full text-[11px] font-black uppercase tracking-widest ${badge}`}>
                  AKTİF
               </span>
             )}
           </div>
         </div>
       </div>
-      <ChevronRight size={18} className="text-[#999999]/50 group-hover/item:translate-x-1 transition-transform shrink-0 ml-2" />
+      <ChevronRight size={18} className="text-muted-foreground/50 group-hover/item:translate-x-1 transition-transform shrink-0 ml-2" />
     </div>
   );
 }

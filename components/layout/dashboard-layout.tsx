@@ -5,9 +5,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Navbar } from './navbar';
 import { Footer } from './footer';
-import { cn } from '@/lib/utils';
-import { Home, MessageSquare, Users, Info, User, AlertCircle, Database } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { Home, MessageSquare, Users, Info, Settings, User, AlertCircle, Database } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
+import { cn } from '@/lib/utils';
+
+const AccessibilityToolbar = dynamic(() => import('@/components/ui/accessibility-toolbar').then((mod) => mod.AccessibilityToolbar), { ssr: false });
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -67,6 +70,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
       <Footer />
+      <AccessibilityToolbar />
     </div>
   );
 }

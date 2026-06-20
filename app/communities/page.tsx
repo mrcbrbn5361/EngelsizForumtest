@@ -222,7 +222,7 @@ export default function CommunitiesPage() {
               </div>
               <div className="space-y-1">
                 <div className="font-bold text-primary text-xs uppercase tracking-widest">YÖNETİM</div>
-                <p className="text-sm text-muted-foreground">Her konu, alanında deneyimli olan "Deneyimsel Uzmanlar" tarafından denetlenir.</p>
+                <p className="text-sm text-muted-foreground">Her konu, alanında deneyimli olan &quot;Deneyimsel Uzmanlar&quot; tarafından denetlenir.</p>
               </div>
               <div className="space-y-1">
                 <div className="font-bold text-primary text-xs uppercase tracking-widest">YAPAY ZEKA</div>
@@ -323,7 +323,7 @@ export default function CommunitiesPage() {
             
             <div className="space-y-8">
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                EngelsizForum toplulukları, sadece birer "alt forum" değil, aynı zamanda belirli ilgi alanlarına yönelik <strong>uzmanlık merkezleridir.</strong> Erişilebilir oyunlardan teknolojiye, hukuktan günlük yaşama kadar her grup, o alanın "deneyimsel uzmanları" tarafından yönetilir. Yapay zeka destekli altyapımız, bu gruplardaki verileri düzenli olarak tarayarak en güncel ve en yararlı bilgileri ön plana çıkarır.
+                EngelsizForum toplulukları, sadece birer &quot;alt forum&quot; değil, aynı zamanda belirli ilgi alanlarına yönelik <strong>uzmanlık merkezleridir.</strong> Erişilebilir oyunlardan teknolojiye, hukuktan günlük yaşama kadar her grup, o alanın &quot;deneyimsel uzmanları&quot; tarafından yönetilir. Yapay zeka destekli altyapımız, bu gruplardaki verileri düzenli olarak tarayarak en güncel ve en yararlı bilgileri ön plana çıkarır.
               </p>
 
               <div className="grid md:grid-cols-2 gap-10">
@@ -344,7 +344,7 @@ export default function CommunitiesPage() {
               <div className="p-8 bg-card rounded-2xl border border-border shadow-lg">
                 <h3 className="text-2xl font-black mb-4">Bir Topluluk Nasıl Başlatılır?</h3>
                 <p className="text-muted-foreground mb-4">
-                  Sizin de tutkulu olduğunuz bir konu mu var? Kendi topluluğunuzu başlatmak için yukarıdaki "Topluluk Oluştur" butonunu kullanabilirsiniz. Başarılı bir topluluk için önerilerimiz:
+                  Sizin de tutkulu olduğunuz bir konu mu var? Kendi topluluğunuzu başlatmak için yukarıdaki &quot;Topluluk Oluştur&quot; butonunu kullanabilirsiniz. Başarılı bir topluluk için önerilerimiz:
                 </p>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0 ml-0">
                   <li className="flex gap-2"><span>📌</span> <strong>Net Bir Odak:</strong> Grubun ismini ve amacını spesifik tutun.</li>
