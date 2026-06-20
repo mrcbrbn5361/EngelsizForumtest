@@ -318,7 +318,7 @@ export default function Home() {
             <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
               <h3 className="text-xl md:text-2xl font-black mb-4">Yapay zeka (AI) bu forumda nasıl bir rol oynuyor?</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların &quot;Zeka Puanı&quot; (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır.
+                Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların "Zeka Puanı" (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır.
               </p>
             </div>
 
@@ -332,7 +332,7 @@ export default function Home() {
             <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
               <h3 className="text-xl md:text-2xl font-black mb-4">İçeriklerin doğruluğu nasıl sağlanıyor?</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve &quot;Uzman&quot; rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur.
+                Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve "Uzman" rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur.
               </p>
             </div>
           </div>

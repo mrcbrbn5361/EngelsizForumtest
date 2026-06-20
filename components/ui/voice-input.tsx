@@ -41,7 +41,7 @@ export function VoiceInput({ onTranscript, label = 'Sesle Yaz' }: VoiceInputProp
 
   return (
     <div className="flex items-center gap-2 p-2 bg-muted rounded-xl border border-border">
-      <span className="text-xs font-black uppercase tracking-widest text-primary ml-2">{label}</span>
+      <span className="text-[10px] font-black uppercase tracking-widest text-primary ml-2">{label}</span>
       <div className="flex-1 flex items-center gap-2 overflow-hidden px-2">
         {listening && <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shrink-0" />}
         <span className="text-xs truncate text-muted-foreground italic">

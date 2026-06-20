@@ -21,7 +21,7 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
           <button 
             type="button" 
             onClick={() => setIsPreview(false)} 
-            className={`flex-1 sm:flex-none px-3 md:px-4 py-2 rounded-md md:rounded-lg text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${
+            className={`flex-1 sm:flex-none px-3 md:px-4 py-2 rounded-md md:rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${
               !isPreview ? 'bg-card shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -30,14 +30,14 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
           <button 
             type="button" 
             onClick={() => setIsPreview(true)} 
-            className={`flex-1 sm:flex-none px-3 md:px-4 py-2 rounded-md md:rounded-lg text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${
+            className={`flex-1 sm:flex-none px-3 md:px-4 py-2 rounded-md md:rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${
               isPreview ? 'bg-card shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             <Eye size={14} /> Önizle
           </button>
         </div>
-        <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest text-center">
+        <div className="text-[9px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest text-center">
           Markdown Desteklenir
         </div>
       </div>

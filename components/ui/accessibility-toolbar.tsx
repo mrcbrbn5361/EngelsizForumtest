@@ -45,7 +45,7 @@ export function AccessibilityToolbar() {
             <div className="space-y-8">
               {/* Text Size */}
               <section>
-                <label className="mb-3 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-muted-foreground">
+                <label className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                   <Type size={14} className="text-primary" /> Metin Boyutu
                 </label>
                 <div className="flex gap-2">

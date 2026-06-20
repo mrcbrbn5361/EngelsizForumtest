@@ -81,7 +81,9 @@ export default function DiscussionsPage() {
     let isMounted = true;
     const loadData = async () => {
       if (!isMounted) return;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       await fetchCategories();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       await fetchTopics();
     };
     loadData();
@@ -179,7 +181,7 @@ export default function DiscussionsPage() {
             <div className="absolute inset-0 bg-primary/5 -z-10 group-hover:scale-105 transition-transform duration-500" />
             <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
               <div className="space-y-4">
-                <p className="text-xs font-bold text-primary uppercase tracking-widest">TARTIŞMA PLATFORMU</p>
+                <p className="text-[10px] font-bold text-primary uppercase tracking-widest">TARTIŞMA PLATFORMU</p>
                 <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-foreground">Topluluk Konuşmaları</h1>
                 <p className="text-muted-foreground text-sm md:text-lg font-medium leading-relaxed max-w-xl">
                   Yardımlaşmak, deneyim paylaşmak ve yeni insanlarla tanışmak için en doğru yerdesiniz.
@@ -209,7 +211,7 @@ export default function DiscussionsPage() {
 
         <nav className="mb-12 px-2" aria-label="Kategori filtreleri">
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8">
-            <div className="flex items-center gap-4 overflow-x-auto pb-6 -mb-6 scrollbar-hide no-scrollbar snap-x relative min-w-0 flex-1">
+            <div className="flex items-center gap-4 overflow-x-auto pb-6 -mb-6 scrollbar-hide no-scrollbar snap-x relative min-w-0 flex-1" role="list">
               {[
                 { label: 'Tümü', id: null },
                 ...categories.filter(c => !c.parent_id).map(c => ({ label: c.name, id: c.id }))
@@ -217,6 +219,7 @@ export default function DiscussionsPage() {
                 <button 
                   key={item.id || 'all'} 
                   onClick={() => setSelectedCategoryId(item.id)}
+                  role="listitem"
                   aria-label={`${item.label} kategorisini filtrele`}
                   aria-pressed={selectedCategoryId === item.id}
                   className={cn(
@@ -240,7 +243,7 @@ export default function DiscussionsPage() {
               <button 
                 key={item.label} 
                 onClick={() => setSortBy(item.value as any)}
-                className={`flex-1 xl:flex-none px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                className={`flex-1 xl:flex-none px-6 py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                   sortBy === item.value 
                     ? 'bg-background text-foreground shadow-lg' 
                     : 'text-muted-foreground hover:text-foreground'
@@ -296,7 +299,7 @@ export default function DiscussionsPage() {
                       {category.description || 'Bu grup henüz bir açıklamaya sahip değil.'}
                     </p>
                   </div>
-                  <div className="mt-auto flex items-center gap-2 text-xs font-black text-primary uppercase tracking-widest">
+                  <div className="mt-auto flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest">
                     BAŞLIKLARI GÖR <ChevronRight size={16} />
                   </div>
                 </button>
@@ -324,26 +327,26 @@ export default function DiscussionsPage() {
                         {topic.title}
                       </Link>
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-primary uppercase tracking-widest">
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-primary uppercase tracking-widest">
                           <Plus size={14} /> {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
                         </div>
                         {topic.is_pinned && (
-                          <div className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-xs font-black uppercase tracking-widest">
+                          <div className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
                             <Pin size={12} /> SABİTLENDİ
                           </div>
                         )}
                         {topic.is_locked && (
-                          <div className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-orange-500/10 text-orange-500 text-xs font-black uppercase tracking-widest">
+                          <div className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-orange-500/10 text-orange-500 text-[10px] font-black uppercase tracking-widest">
                             <Lock size={12} /> KİLİTLİ
                           </div>
                         )}
-                        <div className="px-3 py-1 rounded-full bg-muted text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                        <div className="px-3 py-1 rounded-full bg-muted text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                           {topic.category?.name || 'Genel'}
                         </div>
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                           <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
                         </div>
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                           <MessageSquare size={14} className="text-primary" /> {topic.comments?.[0]?.count || 0} CEVAP
                         </div>
                       </div>
@@ -357,7 +360,7 @@ export default function DiscussionsPage() {
                       className="p-3 bg-primary/5 text-primary rounded-xl hover:bg-primary/10 transition-all disabled:opacity-50 group/ai flex items-center gap-2"
                     >
                       {summarizingId === topic.id ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
-                      <span className="text-xs font-black uppercase tracking-widest hidden group-hover/ai:inline">Özetle</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest hidden group-hover/ai:inline">Özetle</span>
                     </button>
                     <Link 
                       href={`/discussions/${topic.id}`}

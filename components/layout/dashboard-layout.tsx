@@ -49,7 +49,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <div className="border-t border-border"></div>
 
             <nav className="flex flex-col gap-2" aria-label="Kategori Gezintisi">
-              <h4 className="text-xs uppercase font-black text-primary tracking-widest ml-4 mb-2">Engeller</h4>
+              <h4 className="text-[10px] uppercase font-black text-primary tracking-widest ml-4 mb-2">Engeller</h4>
                 <Link href="/communities" className="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-muted-foreground hover:text-foreground hover:bg-muted transition-all" aria-label="Görme engelliler topluluğu">
                     <AlertCircle size={18} /> Görme
                 </Link>
@@ -60,7 +60,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
             {user && (
                 <nav className="flex flex-col gap-2 mt-auto" aria-label="Hesap Gezintisi">
-                    <h4 className="text-xs uppercase font-black text-primary tracking-widest ml-4 mb-2">Hesap</h4>
+                    <h4 className="text-[10px] uppercase font-black text-primary tracking-widest ml-4 mb-2">Hesap</h4>
                     <NavItem href="/profile" icon={User} label="Profil" />
                 </nav>
             )}

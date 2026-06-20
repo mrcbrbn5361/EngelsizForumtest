@@ -27,12 +27,12 @@
   --foreground: #0f172a;
   --card: #ffffff;
   --card-foreground: #0f172a;
-  --primary: #D91B5C;
+  --primary: #0f766e;
   --primary-foreground: #ffffff;
   --muted: #f1f5f9;
-  --muted-foreground: #334155;
+  --muted-foreground: #475569;
   --border: #e2e8f0;
-  --ring: #D91B5C;
+  --ring: #0f766e;
   --radius: 0.75rem;
 }
 

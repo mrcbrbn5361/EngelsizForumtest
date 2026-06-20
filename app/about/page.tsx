@@ -183,7 +183,7 @@ export default function AboutPage() {
 
             <h2 className="text-3xl font-black mb-8 tracking-tight">Kuruluş Hikayemiz ve Ekibimiz</h2>
             <p className="text-[#666666] leading-relaxed">
-              2024 yılında bir grup erişilebilirlik meraklısı ve yazılım geliştirici tarafından kurulan EngelsizForum, &quot;İnternette bariyer olmamalı&quot; mottosuyla yola çıktı. Ekibimiz, kendi hayatlarında da çeşitli erişilebilirlik sorunlarıyla karşılaşan veya bu alanda yıllarca akademik çalışmalar yapmış isimlerden oluşmaktadır. 
+              2024 yılında bir grup erişilebilirlik meraklısı ve yazılım geliştirici tarafından kurulan EngelsizForum, "İnternette bariyer olmamalı" mottosuyla yola çıktı. Ekibimiz, kendi hayatlarında da çeşitli erişilebilirlik sorunlarıyla karşılaşan veya bu alanda yıllarca akademik çalışmalar yapmış isimlerden oluşmaktadır. 
             </p>
             <p className="text-[#666666] leading-relaxed mt-4">
               Bu <strong>deneyimsel uzmanlık (Experience)</strong>, platformumuzun her bir pikseline yansımaktadır. Kullanıcılarımızın ihtiyaçlarını tahmin etmek yerine, doğrudan onlarla birlikte tasarlıyoruz. Bu da bizi sadece bir platform değil, bir dayanışma hareketi kılıyor.

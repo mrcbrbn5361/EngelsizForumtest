@@ -303,13 +303,13 @@ export default function DiscussionDetailPage() {
               <header className="mb-10 space-y-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="flex flex-wrap items-center gap-4">
-                    <div className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-black uppercase tracking-widest">
+                    <div className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
                       {topic.category?.name || 'Genel'}
                     </div>
-                    <div className="flex items-center gap-2 text-xs font-black text-muted-foreground uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                       <Users size={14} className="text-primary" /> {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
                     </div>
-                    <div className="flex items-center gap-2 text-xs font-black text-muted-foreground uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                       <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
                     </div>
                   </div>
@@ -413,12 +413,12 @@ export default function DiscussionDetailPage() {
                       </div>
                       <div className="flex-1 min-w-0 space-y-4">
                         <div className="flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-4 text-xs font-black uppercase tracking-widest text-muted-foreground">
+                          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                             <span className="text-primary flex items-center gap-1.5">
                               {comment.author?.full_name || comment.author?.username || 'Kullanıcı'}
                               {(comment.author?.role === 'admin' || comment.author?.role === 'moderator') && (
-                                <span className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center gap-1 leading-none">
-                                  <Shield size={10} /> {comment.author.role}
+                                <span className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[8px] flex items-center gap-1 leading-none">
+                                  <Shield size={8} /> {comment.author.role}
                                 </span>
                               )}
                             </span>
@@ -456,7 +456,7 @@ export default function DiscussionDetailPage() {
                     className="bg-card p-6 md:p-10 rounded-[2.5rem] border border-border shadow-2xl relative overflow-hidden mt-12"
                   >
                     <div className="absolute top-0 left-0 w-full h-2 bg-primary/20" />
-                    <p className="text-xs font-black text-primary uppercase tracking-widest mb-6">{topic.is_locked ? 'ADMİN PANELİ: KİLİTLİ BAŞLIĞA YANIT YAZ' : 'YENİ YANIT GÖNDER'}</p>
+                    <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-6">{topic.is_locked ? 'ADMİN PANELİ: KİLİTLİ BAŞLIĞA YANIT YAZ' : 'YENİ YANIT GÖNDER'}</p>
                     <textarea
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
@@ -493,24 +493,24 @@ export default function DiscussionDetailPage() {
           {/* Sidebar */}
           <aside className="space-y-8">
             <section className="bg-card p-8 rounded-[2rem] border border-border shadow-sm">
-              <h3 className="text-xs font-black text-primary uppercase tracking-widest mb-8">Kategori Detayları</h3>
+              <h3 className="text-[10px] font-black text-primary uppercase tracking-widest mb-8">Kategori Detayları</h3>
               <div className="space-y-6">
                 <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-2xl border border-border/50">
                   <div className="w-12 h-12 rounded-xl bg-background flex items-center justify-center text-primary shrink-0">
                     <MessageSquare size={24} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-1">Grup</p>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Grup</p>
                     <p className="text-lg font-black truncate text-foreground">{topic.category?.name || 'Genel'}</p>
                   </div>
                 </div>
                 <div className="flex items-center justify-between px-2 pt-2 border-t border-border/50">
-                  <span className="text-xs font-black text-muted-foreground uppercase tracking-widest">Durum</span>
-                  <span className="text-xs font-black text-green-500 uppercase tracking-widest flex items-center gap-1.5"><Shield size={14} /> AKTİF</span>
+                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Durum</span>
+                  <span className="text-[10px] font-black text-green-500 uppercase tracking-widest flex items-center gap-1.5"><Shield size={14} /> AKTİF</span>
                 </div>
                 <div className="flex items-center justify-between px-2">
-                  <span className="text-xs font-black text-muted-foreground uppercase tracking-widest">Görünürlük</span>
-                  <span className="text-xs font-black text-primary uppercase tracking-widest flex items-center gap-1.5"><Globe size={14} /> HERKESE AÇIK</span>
+                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Görünürlük</span>
+                  <span className="text-[10px] font-black text-primary uppercase tracking-widest flex items-center gap-1.5"><Globe size={14} /> HERKESE AÇIK</span>
                 </div>
               </div>
             </section>
@@ -520,7 +520,7 @@ export default function DiscussionDetailPage() {
                 <Sparkles size={160} />
               </div>
               <div className="relative z-10">
-                <h3 className="text-xs font-black uppercase tracking-widest mb-4 opacity-70">AI ASİSTAN</h3>
+                <h3 className="text-[10px] font-black uppercase tracking-widest mb-4 opacity-70">AI ASİSTAN</h3>
                 <p className="text-lg font-bold mb-8 leading-tight tracking-tight">Kısa bir özet mi lazım? AI teknolojimiz emrinizde.</p>
                 <button 
                    onClick={handleSummarize}
@@ -533,12 +533,12 @@ export default function DiscussionDetailPage() {
             </div>
 
             <section className="bg-card p-8 rounded-[2rem] border border-border">
-              <h3 className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-6 px-2">Benzer Başlıklar</h3>
+              <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-6 px-2">Benzer Başlıklar</h3>
               <div className="space-y-4">
                 {[1, 2, 3].map(i => (
                   <div key={i} className="group p-4 rounded-xl hover:bg-muted/50 transition-all">
                     <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2 tracking-tight">Erişilebilirlik hakkında genel sorular ve cevaplar...</p>
-                    <div className="flex items-center gap-2 text-xs font-black text-muted-foreground uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                       KEŞFET <ChevronRight size={14} />
                     </div>
                   </div>

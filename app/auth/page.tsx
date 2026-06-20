@@ -146,7 +146,7 @@ export default function AuthPage() {
           <form onSubmit={handleAuth} className="space-y-6">
             {!isLogin && (
               <div className="space-y-3">
-                <label htmlFor="username" className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-2">
+                <label htmlFor="username" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">
                   Kullanıcı Adı
                 </label>
                 <div className="relative group">
@@ -165,7 +165,7 @@ export default function AuthPage() {
             )}
 
             <div className="space-y-3">
-              <label htmlFor="email" className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-2">
+              <label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">
                 E-posta Adresi
               </label>
               <div className="relative group">
@@ -183,7 +183,7 @@ export default function AuthPage() {
             </div>
 
             <div className="space-y-3">
-              <label htmlFor="password" className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-2">
+              <label htmlFor="password" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-2">
                 Şifre
               </label>
               <div className="relative group">

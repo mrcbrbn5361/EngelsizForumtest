@@ -29,7 +29,6 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://engelsizforum.miracdeveloper.com.tr'),
   title: {
     default: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
     template: '%s | EngelsizForum'
@@ -40,14 +39,20 @@ export const metadata: Metadata = {
   creator: 'EngelsizForum',
   publisher: 'EngelsizForum',
   robots: 'index, follow',
+  alternates: {
+    canonical: 'https://engelsizforum.miracdeveloper.com.tr',
+    languages: {
+      'tr-TR': 'https://engelsizforum.miracdeveloper.com.tr',
+    },
+  },
   openGraph: {
     title: 'EngelsizForum: Erişilebilir Forum',
     description: 'Engelli bireyler için tam erişilebilir forum platformu.',
-    url: '/',
+    url: 'https://engelsizforum.miracdeveloper.com.tr',
     siteName: 'EngelsizForum',
     images: [
       {
-        url: '/og-image.png',
+        url: 'https://engelsizforum.miracdeveloper.com.tr/og-image.png',
         width: 1200,
         height: 630,
         alt: 'EngelsizForum - Erişilebilir Topluluk Platformu',

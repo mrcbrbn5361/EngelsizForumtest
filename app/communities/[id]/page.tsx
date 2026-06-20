@@ -69,6 +69,7 @@ export default function CommunityDetailPage() {
 
   useEffect(() => {
     if (id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchCommunityData();
     }
   }, [id, fetchCommunityData]);
@@ -146,7 +147,7 @@ export default function CommunityDetailPage() {
                     <Users size={32} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">TOPLULUK</p>
+                    <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2">TOPLULUK</p>
                     <h1 className="text-3xl md:text-5xl font-black break-words whitespace-normal tracking-tighter text-foreground leading-tight">{community.name}</h1>
                   </div>
                 </div>
@@ -195,7 +196,7 @@ export default function CommunityDetailPage() {
                             exit={{ opacity: 0, scale: 0.95 }}
                             className="mt-3 p-6 md:p-8 bg-primary/5 border border-primary/10 rounded-2xl relative overflow-hidden ring-1 ring-primary/20"
                           >
-                            <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest mb-4">
+                            <div className="flex items-center gap-2 text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest mb-4">
                               <Sparkles size={16} /> AI ÖZETİ
                             </div>
                             <div className="text-base md:text-lg leading-relaxed font-bold text-foreground italic">
@@ -203,7 +204,7 @@ export default function CommunityDetailPage() {
                             </div>
                             <button 
                               onClick={() => setSummaryResult(null)}
-                              className="mt-6 text-xs font-black text-muted-foreground hover:text-primary transition-colors underline uppercase tracking-widest"
+                              className="mt-6 text-[10px] font-black text-muted-foreground hover:text-primary transition-colors underline uppercase tracking-widest"
                             >
                               Özeti Kapat
                             </button>
@@ -241,7 +242,7 @@ export default function CommunityDetailPage() {
             </section>
 
             <div className="bg-muted/30 p-6 md:p-10 rounded-[2rem] border border-border">
-              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-8">İstatistikler</h3>
+              <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-8">İstatistikler</h3>
               <div className="space-y-6">
                 <div className="flex items-center justify-between border-b border-border/50 pb-4">
                   <span className="text-sm md:text-base text-muted-foreground font-bold flex items-center gap-3"><Users size={20} /> Üyeler</span>
@@ -249,11 +250,11 @@ export default function CommunityDetailPage() {
                 </div>
                 <div className="flex items-center justify-between border-b border-border/50 pb-4">
                   <span className="text-sm md:text-base text-muted-foreground font-bold flex items-center gap-3"><Globe size={20} /> Görünürlük</span>
-                  <span className="text-xs font-bold text-primary uppercase tracking-widest">AÇIK TOPLULUK</span>
+                  <span className="text-[10px] font-bold text-primary uppercase tracking-widest">AÇIK TOPLULUK</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm md:text-base text-muted-foreground font-bold flex items-center gap-3"><Shield size={20} /> Durum</span>
-                  <span className="text-xs font-bold text-green-500 uppercase tracking-widest">GÜVENLİ</span>
+                  <span className="text-[10px] font-bold text-green-500 uppercase tracking-widest">GÜVENLİ</span>
                 </div>
               </div>
             </div>
@@ -263,7 +264,7 @@ export default function CommunityDetailPage() {
                 <Shield size={160} />
               </div>
               <div className="relative z-10">
-                <h3 className="text-xs font-bold uppercase tracking-widest mb-4 opacity-70">HIZLI YARDIM</h3>
+                <h3 className="text-[10px] font-bold uppercase tracking-widest mb-4 opacity-70">HIZLI YARDIM</h3>
                 <p className="text-lg md:text-xl font-bold mb-8 leading-tight tracking-tight">Topluluk hakkında sorun mu var? Moderatörlere hemen yaz.</p>
                 <button className="w-full py-4 bg-white text-primary rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white/90 transition-all active:scale-95 shadow-lg">
                   BİZE ULAŞIN
@@ -280,7 +281,7 @@ export default function CommunityDetailPage() {
 function RuleItem({ title, description }: { title: string, description: string }) {
   return (
     <li className="flex gap-4">
-      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-black text-primary mt-1 border border-primary/20">
+      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-black text-primary mt-1 border border-primary/20">
         ✓
       </div>
       <div>
