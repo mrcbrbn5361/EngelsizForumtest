@@ -5,12 +5,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Navbar } from './navbar';
 import { Footer } from './footer';
-import dynamic from 'next/dynamic';
-import { Home, MessageSquare, Users, Info, Settings, User, AlertCircle, Database } from 'lucide-react';
-import { useAuth } from '@/components/providers/auth-provider';
 import { cn } from '@/lib/utils';
-
-const AccessibilityToolbar = dynamic(() => import('@/components/ui/accessibility-toolbar').then((mod) => mod.AccessibilityToolbar), { ssr: false });
+import { Home, MessageSquare, Users, Info, User, AlertCircle, Database } from 'lucide-react';
+import { useAuth } from '@/components/providers/auth-provider';
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -49,7 +46,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <div className="border-t border-border"></div>
 
             <nav className="flex flex-col gap-2" aria-label="Kategori Gezintisi">
-              <h4 className="text-[10px] uppercase font-black text-primary tracking-widest ml-4 mb-2">Engeller</h4>
+              <h4 className="text-xs uppercase font-black text-primary tracking-widest ml-4 mb-2">Engeller</h4>
                 <Link href="/communities" className="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-muted-foreground hover:text-foreground hover:bg-muted transition-all" aria-label="Görme engelliler topluluğu">
                     <AlertCircle size={18} /> Görme
                 </Link>
@@ -60,7 +57,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
             {user && (
                 <nav className="flex flex-col gap-2 mt-auto" aria-label="Hesap Gezintisi">
-                    <h4 className="text-[10px] uppercase font-black text-primary tracking-widest ml-4 mb-2">Hesap</h4>
+                    <h4 className="text-xs uppercase font-black text-primary tracking-widest ml-4 mb-2">Hesap</h4>
                     <NavItem href="/profile" icon={User} label="Profil" />
                 </nav>
             )}
@@ -70,7 +67,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
       <Footer />
-      <AccessibilityToolbar />
     </div>
   );
 }

@@ -57,7 +57,7 @@ export function Navbar() {
                   {isStaff && (
                     <Link
                       href="/admin"
-                      className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest animate-pulse border border-white/20 hover:scale-105 transition-transform"
+                      className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-black uppercase tracking-widest animate-pulse border border-white/20 hover:scale-105 transition-transform"
                       aria-label={`${profile?.role} Paneline Git`}
                     >
                       <Shield size={12} aria-hidden="true" /> {profile?.role}
@@ -72,7 +72,7 @@ export function Navbar() {
                     <div className="relative h-7 w-7 md:h-8 md:w-8 rounded-lg overflow-hidden border border-border group-hover:border-primary/30">
                       <Image 
                         src={user.user_metadata.avatar_url || user.user_metadata.picture} 
-                        alt="Profil resmim" 
+                        alt="Kullanıcı Profil Resmi" 
                         fill
                         unoptimized
                         className="object-cover"
@@ -144,7 +144,7 @@ export function Navbar() {
                   </div>
 
                   <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-                    <h4 className="text-[10px] uppercase font-black text-muted-foreground tracking-[0.2em] ml-4 mb-3">Navigasyon</h4>
+                    <h4 className="text-xs uppercase font-black text-muted-foreground tracking-[0.2em] ml-4 mb-3">Navigasyon</h4>
                     <MobileNavLink href="/" icon={<Home size={20} />} label="Ana Sayfa" onClick={() => setIsOpen(false)} />
                     <MobileNavLink href="/discussions" icon={<MessageSquare size={20} />} label="Tartışmalar" onClick={() => setIsOpen(false)} />
                     <MobileNavLink href="/communities" icon={<Users size={20} />} label="Topluluklar" onClick={() => setIsOpen(false)} />
@@ -152,7 +152,7 @@ export function Navbar() {
                     <MobileNavLink href="/search" icon={<Search size={20} />} label="Arama Yap" onClick={() => setIsOpen(false)} />
                     
                     <div className="pt-6 mt-6 border-t border-border">
-                      <h4 className="text-[10px] uppercase font-black text-muted-foreground tracking-[0.2em] ml-4 mb-3">Hesap</h4>
+                      <h4 className="text-xs uppercase font-black text-muted-foreground tracking-[0.2em] ml-4 mb-3">Hesap</h4>
                       {isStaff && (
                         <Link
                           href="/admin"
@@ -164,7 +164,7 @@ export function Navbar() {
                               <Shield size={18} />
                             </div>
                             <div>
-                              <p className="text-[10px] font-black uppercase tracking-widest leading-none mb-1 text-primary/70">Admin Paneli</p>
+                              <p className="text-xs font-black uppercase tracking-widest leading-none mb-1 text-primary/70">Admin Paneli</p>
                               <p className="text-xs font-bold uppercase tracking-tighter">{profile?.role}</p>
                             </div>
                           </div>
@@ -183,7 +183,7 @@ export function Navbar() {
                               {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
                                 <Image 
                                   src={user.user_metadata.avatar_url || user.user_metadata.picture} 
-                                  alt="" 
+                                  alt="Hesap Profil Resmi" 
                                   width={40} 
                                   height={40} 
                                   className="object-cover"
@@ -196,7 +196,7 @@ export function Navbar() {
                             </div>
                             <div className="flex-1">
                               <p className="text-sm font-bold truncate">{profile?.full_name || user.email}</p>
-                              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">Profilim</p>
+                              <p className="text-xs text-muted-foreground uppercase tracking-widest font-black">Profilim</p>
                             </div>
                           </Link>
                           <button
@@ -225,7 +225,7 @@ export function Navbar() {
                   </div>
                   
                   <div className="p-6 border-t border-border bg-muted/30">
-                    <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                    <p className="text-center text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">
                       v1.4.0 • EngelsizForum
                     </p>
                   </div>

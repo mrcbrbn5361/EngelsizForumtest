@@ -1,20 +1,14 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { Navbar } from '@/components/layout/navbar';
-import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { FileQuestion, Home, ArrowLeft } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#FFFFFF]">
-      <Navbar />
-      <main className="flex-1 container mx-auto px-4 flex items-center justify-center">
-        <div className="text-center space-y-8">
+    <div className="min-h-screen flex flex-col bg-[#FFFFFF] items-center justify-center">
+        <div className="text-center space-y-8 px-4">
           <div className="relative inline-block">
-            <div className="absolute inset-0 bg-[#FFF0F6] blur-3xl rounded-full"></div>
-            <FileQuestion size={120} className="text-[#FF4D94] relative z-10" />
+            <div className="absolute inset-0 bg-[#FFF1F2] blur-3xl rounded-full"></div>
+            <FileQuestion size={120} className="text-[#D91B5C] relative z-10" />
           </div>
           
           <div className="space-y-6">
@@ -28,7 +22,7 @@ export default function NotFound() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-10">
             <Link 
               href="/"
-              className="px-12 py-4 bg-[#FF4D94] text-[#FFFFFF] rounded-[8px] font-bold text-lg hover:bg-[#FF4D94]/90 transition-all flex items-center gap-3"
+              className="px-12 py-4 bg-[#D91B5C] text-[#FFFFFF] rounded-[8px] font-bold text-lg hover:bg-[#D91B5C]/90 transition-all flex items-center gap-3"
             >
               <Home size={24} /> Ana Sayfa
             </Link>
@@ -40,8 +34,6 @@ export default function NotFound() {
             </Link>
           </div>
         </div>
-      </main>
-      <AccessibilityToolbar />
     </div>
   );
 }

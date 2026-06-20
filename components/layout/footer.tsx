@@ -13,7 +13,7 @@ export function Footer() {
             © 2026 Herkes İçin Eşit İletişim.
           </div>
         </div>
-        <div className="grid grid-cols-2 sm:flex sm:flex-row gap-x-8 gap-y-4 md:gap-10 text-[10px] md:text-xs font-black uppercase tracking-widest text-center md:text-right">
+        <div className="grid grid-cols-2 sm:flex sm:flex-row gap-x-8 gap-y-4 md:gap-10 text-xs font-black uppercase tracking-widest text-center md:text-right">
           <Link href="/about" className="hover:text-primary transition-colors py-2 whitespace-nowrap">Hakkımızda</Link>
           <Link href="/discussions" className="hover:text-primary transition-colors py-2 whitespace-nowrap">Tartışmalar</Link>
           <Link href="/communities" className="hover:text-primary transition-colors py-2 whitespace-nowrap">Topluluklar</Link>

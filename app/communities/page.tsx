@@ -135,7 +135,7 @@ export default function CommunitiesPage() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="mb-6 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest"
+            className="mb-6 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest"
           >
             TOPLULUKLARIMIZ
           </motion.div>
@@ -175,7 +175,7 @@ export default function CommunitiesPage() {
                 <p className="text-muted-foreground font-medium">Topluluğunuzu başlatın ve insanları bir araya getirin.</p>
               </div>
               <div className="space-y-2">
-                <label htmlFor="community-name" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-4">GRUP ADI</label>
+                <label htmlFor="community-name" className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-4">GRUP ADI</label>
                 <input 
                   id="community-name"
                   type="text" 
@@ -187,7 +187,7 @@ export default function CommunitiesPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="community-desc" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-4">AÇIKLAMA</label>
+                <label htmlFor="community-desc" className="text-xs font-bold text-muted-foreground uppercase tracking-widest ml-4">AÇIKLAMA</label>
                 <textarea 
                   id="community-desc"
                   placeholder="Grubun amacını kısaca yazın..." 
@@ -287,7 +287,7 @@ export default function CommunitiesPage() {
                         {getIcon(community.icon)}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1.5">TOPLULUK</p>
+                        <p className="text-xs font-bold text-primary uppercase tracking-widest mb-1.5">TOPLULUK</p>
                         <h2 className="text-xl md:text-2xl font-black transition-colors break-words whitespace-normal tracking-tighter text-foreground group-hover:text-primary">
                           <Link href={`/communities/${community.id}`} className="after:absolute after:inset-0 outline-none">
                             {community.name}

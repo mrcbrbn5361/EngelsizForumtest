@@ -1,9 +1,6 @@
-'use client';
-
 import React from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Shield, Heart, Globe, Target } from 'lucide-react';
-import { motion } from 'motion/react';
 import Link from 'next/link';
 
 export default function AboutPage() {
@@ -45,19 +42,17 @@ export default function AboutPage() {
         }}
       />
         <div className="max-w-5xl mx-auto p-4">
-          <nav className="flex justify-center gap-6 mb-12 text-sm font-bold uppercase tracking-widest text-[#FF4D94]">
+          <nav className="flex justify-center gap-6 mb-12 text-sm font-bold uppercase tracking-widest text-[#D91B5C]">
             <Link href="/" className="hover:underline">Ana Sayfa</Link>
             <Link href="/discussions" className="hover:underline">Tartışmalar</Link>
             <Link href="/communities" className="hover:underline">Topluluklar</Link>
           </nav>
           <section className="mb-20 md:mb-32 text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="inline-block p-6 bg-[#FFF0F6] rounded-[8px] mb-8"
+            <div
+              className="inline-block p-6 bg-[#FFF1F2] rounded-[8px] mb-8"
             >
-              <Shield size={48} className="text-[#FF4D94]" />
-            </motion.div>
+              <Shield size={48} className="text-[#D91B5C]" />
+            </div>
             <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter text-[#1A1A1A]">EngelsizForum Nedir?</h1>
             <p className="text-base md:text-xl text-[#666666] leading-relaxed px-4 max-w-2xl mx-auto font-medium">
               EngelsizForum, her bireyin dijital dünyada eşit haklara ve erişebilirliğe sahip olması gerektiği inancıyla doğmuş, 
@@ -93,27 +88,20 @@ export default function AboutPage() {
           </section>
 
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 mb-24 md:mb-40">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            <div 
               className="bg-[#FFFFFF] p-8 rounded-[8px] border border-[#E5E7EB] group"
             >
-              <div className="mb-5 inline-flex p-4 bg-[#FFF0F6] rounded-[8px] text-[#FF4D94] transition-all">
+              <div className="mb-5 inline-flex p-4 bg-[#FFF1F2] rounded-[8px] text-[#D91B5C] transition-all">
                 <Target size={28} />
               </div>
               <h2 className="text-2xl md:text-3xl font-bold mb-4 tracking-tight text-[#1A1A1A]">Misyonumuz</h2>
               <p className="text-sm md:text-lg text-[#666666] leading-relaxed font-medium">
                 Engelli bireylerin teknoloji, sosyal yaşam ve günlük zorluklar hakkında birbirleriyle yardımlaşabileceği, 
-                AI desteğiyle karmaşık içeriklerin basitleştirildiği ve <span className="text-[#FF4D94] font-bold">WCAG 2.1</span> standartlarının ötesinde bir kullanıcı deneyimi sunmaktır.
+                AI desteğiyle karmaşık içeriklerin basitleştirildiği ve <span className="text-[#D91B5C] font-bold">WCAG 2.1</span> standartlarının ötesinde bir kullanıcı deneyimi sunmaktır.
               </p>
-            </motion.div>
+            </div>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
+            <div 
               className="bg-[#FFFFFF] p-8 rounded-[8px] border border-[#E5E7EB] group"
             >
               <div className="mb-5 inline-flex p-4 bg-red-50 rounded-[8px] text-red-500 transition-all">
@@ -121,9 +109,9 @@ export default function AboutPage() {
               </div>
               <h2 className="text-2xl md:text-3xl font-bold mb-4 tracking-tight text-[#1A1A1A]">Değerlerimiz</h2>
               <p className="text-sm md:text-lg text-[#666666] leading-relaxed font-medium">
-                Kapsayıcılık, Şeffaflık ve Yenilikçilik ana değerlerimizdir. Platformumuzdaki her bir özellik, <span className="text-[#FF4D94] font-bold">engelli topluluğunun</span> doğrudan geri bildirimleri ile şekillenmektedir.
+                Kapsayıcılık, Şeffaflık ve Yenilikçilik ana değerlerimizdir. Platformumuzdaki her bir özellik, <span className="text-[#D91B5C] font-bold">engelli topluluğunun</span> doğrudan geri bildirimleri ile şekillenmektedir.
               </p>
-            </motion.div>
+            </div>
           </div>
 
           <section className="mb-24 prose prose-lg dark:prose-invert max-w-none">
@@ -210,7 +198,7 @@ export default function AboutPage() {
             </div>
           </section>
 
-          <section className="bg-[#FF4D94] text-[#FFFFFF] rounded-[8px] p-12 md:p-24 text-center shadow-lg relative overflow-hidden group">
+          <section className="bg-[#D91B5C] text-[#FFFFFF] rounded-[8px] p-12 md:p-24 text-center shadow-lg relative overflow-hidden group">
             <div className="relative z-10">
               <h2 className="text-3xl md:text-5xl font-black mb-6 text-[#FFFFFF] tracking-tighter">Bize Katılın</h2>
               <p className="text-base md:text-xl font-medium text-[#FFFFFF]/80 mb-10 max-w-xl mx-auto leading-relaxed">
@@ -219,7 +207,7 @@ export default function AboutPage() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link 
                   href="/auth" 
-                  className="w-full sm:w-auto px-12 py-4 bg-[#FFFFFF] text-[#FF4D94] rounded-[8px] font-bold text-lg hover:bg-white/90 transition-all text-center"
+                  className="w-full sm:w-auto px-12 py-4 bg-[#FFFFFF] text-[#D91B5C] rounded-[8px] font-bold text-lg hover:bg-white/90 transition-all text-center"
                 >
                   Hemen Üye Ol
                 </Link>

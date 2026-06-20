@@ -94,6 +94,18 @@ h1, h2, h3, h4, h5, h6 {
   word-spacing: 0.2em;
 }
 
+.hidden-by-default-bionic {
+  display: none;
+}
+
+.bionic-reading .hidden-by-default-bionic {
+  display: inline;
+}
+
+.bionic-reading .bionic-reading-hidden {
+  display: none;
+}
+
 /* 4. Font Size Overrides */
 [data-font-size="sm"] { font-size: 0.875rem; }
 [data-font-size="md"] { font-size: 1rem; }

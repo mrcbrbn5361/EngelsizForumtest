@@ -41,17 +41,17 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
         <div className="flex-1 min-w-0">
           <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
             {topic.is_pinned && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] md:text-xs font-bold text-primary shrink-0">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary shrink-0">
                 <Pin size={10} className="md:w-3 md:h-3" /> <span className="hidden sm:inline">SABİT</span>
               </span>
             )}
             {topic.is_solved && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-3 py-1 text-[10px] md:text-xs font-bold text-green-600 shrink-0">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-3 py-1 text-xs font-bold text-green-600 shrink-0">
                 ÇÖZÜLDÜ
               </span>
             )}
             {topic.is_locked && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-[10px] md:text-xs font-bold text-red-600 shrink-0">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-xs font-bold text-red-600 shrink-0">
                 KİLİTLİ
               </span>
             )}
@@ -84,7 +84,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
               onSummarize(topic.id);
             }}
             disabled={isLoading}
-            className="flex h-9 md:h-11 items-center justify-center gap-2 rounded-xl bg-primary/5 px-3 md:px-5 text-[10px] md:text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all disabled:opacity-50 border border-primary/10 group/ai uppercase tracking-widest"
+            className="flex h-9 md:h-11 items-center justify-center gap-2 rounded-xl bg-primary/5 px-3 md:px-5 text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all disabled:opacity-50 border border-primary/10 group/ai uppercase tracking-widest"
             aria-label="AI ile özetle"
           >
             {isLoading ? (
@@ -101,7 +101,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
         {topic.content}
       </p>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] md:text-xs text-muted-foreground relative z-10 pointer-events-none">
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground relative z-10 pointer-events-none">
         <div className="flex items-center gap-2 min-w-0">
           <div className="h-5 w-5 md:h-7 md:w-7 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border shrink-0">
             {topic.author?.avatar_url ? (

@@ -4,6 +4,11 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './auth-provider';
 import { RouteAnnouncer } from './route-announcer';
+import dynamic from 'next/dynamic';
+
+const AccessibilityToolbar = dynamic(() => import('@/components/ui/accessibility-toolbar').then(mod => mod.AccessibilityToolbar), {
+  ssr: false,
+});
 
 type FontSize = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -143,6 +148,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       <div className={`accessibility-wrapper min-h-screen ${settings.highContrast ? 'dark contrast-more' : ''}`}>
         <RouteAnnouncer />
         {children}
+        <AccessibilityToolbar />
       </div>
     </AccessibilityContext.Provider>
   );

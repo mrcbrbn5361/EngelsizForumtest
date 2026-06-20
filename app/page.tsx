@@ -67,19 +67,21 @@ export default function Home() {
           <div className="absolute inset-0 bg-primary/5 rounded-[3rem] -z-10 opacity-30" />
           <div className="max-w-4xl mx-auto px-4">
             <div
-              className="inline-block mb-6 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-lg shadow-primary/10"
+              className="inline-block mb-6 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-xs md:text-sm font-bold uppercase tracking-widest shadow-lg shadow-primary/10"
             >
               ENGELSİZ FORUM&apos;A HOŞ GELDİNİZ
             </div>
             <h1 
               className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-8 tracking-tighter text-foreground leading-[0.9] sm:leading-[0.85]"
             >
-              <BionicText text="Herkes İçin Erişilebilir Bir Topluluk" />
+              <span className="bionic-reading-hidden">Herkes İçin Erişilebilir Bir Topluluk</span>
+              <BionicText text="Herkes İçin Erişilebilir Bir Topluluk" className="hidden-by-default-bionic" />
             </h1>
             <p 
               className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-muted-foreground mb-12 font-medium leading-relaxed px-4"
             >
-              <BionicText text="Engelleri birlikte aşmak için tasarlanan, yapay zeka destekli ve tam erişilebilir forum platformu." />
+              <span className="bionic-reading-hidden">Engelleri birlikte aşmak için tasarlanan, yapay zeka destekli ve tam erişilebilir forum platformu.</span>
+              <BionicText text="Engelleri birlikte aşmak için tasarlanan, yapay zeka destekli ve tam erişilebilir forum platformu." className="hidden-by-default-bionic" />
             </p>
             <div
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
