@@ -26,20 +26,20 @@ export function Navbar() {
           className="flex items-center gap-2 outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 group shrink-0"
           aria-label="EngelsizForum Ana Sayfa"
         >
-          <div className="flex items-center justify-center h-9 w-9 md:h-11 md:w-11 bg-primary text-primary-foreground rounded-xl md:rounded-2xl select-none shadow-md transition-all group-hover:rotate-6 group-hover:scale-105" aria-hidden="true">
-            <span className="text-lg md:text-xl font-black">e</span>
+          <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-primary text-primary-foreground rounded-2xl select-none shadow-xl shadow-primary/20 transition-all group-hover:rotate-6 group-hover:scale-105" aria-hidden="true" suppressHydrationWarning>
+            <span className="text-xl md:text-2xl font-black" suppressHydrationWarning>E</span>
           </div>
-          <span className="select-none text-xl md:text-2xl font-black tracking-tighter lowercase leading-none">
-            engelsiz<span className="text-primary/80 group-hover:text-primary transition-colors">forum</span>
+          <span className="select-none text-xl md:text-2xl font-black tracking-tighter uppercase leading-none" suppressHydrationWarning>
+            engelsiz<span className="text-primary/80 group-hover:text-primary transition-colors" suppressHydrationWarning>forum</span>
           </span>
         </Link>
 
         {/* Desktop Navigation */}
         <div className="flex items-center gap-1 sm:gap-2">
           <div className="hidden md:flex items-center gap-1">
-            <NavLink href="/discussions" icon={<MessageSquare size={16} />} label="Tartışmalar" />
-            <NavLink href="/communities" icon={<Users size={16} />} label="Topluluklar" />
-            <NavLink href="/about" icon={<Info size={16} />} label="Hakkımızda" />
+            <NavLink href="/discussions" icon={<MessageSquare size={16} aria-hidden="true" />} label="TARTIŞMALAR" />
+            <NavLink href="/communities" icon={<Users size={16} aria-hidden="true" />} label="TOPLULUKLAR" />
+            <NavLink href="/about" icon={<Info size={16} aria-hidden="true" />} label="HAKKIMIZDA" />
           </div>
           
           <div className="flex items-center gap-1 min-w-[32px] sm:min-w-[48px]">
@@ -84,7 +84,7 @@ export function Navbar() {
                       <User size={16} aria-hidden="true" />
                     </div>
                   )}
-                  <span className="hidden sm:inline">Profil</span>
+                  <span className="hidden sm:inline uppercase tracking-widest font-black">PROFİL</span>
                 </Link>
                 <button
                   onClick={async () => {
@@ -92,21 +92,21 @@ export function Navbar() {
                     await supabase.auth.signOut();
                     window.location.href = '/';
                   }}
-                  className="hidden sm:flex ml-1 items-center justify-center p-2 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all"
+                  className="hidden sm:flex ml-1 items-center justify-center p-2.5 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all"
                   aria-label="Çıkış Yap"
                   title="Çıkış Yap"
                 >
-                  <LogIn className="rotate-180" size={18} />
+                  <LogIn className="rotate-180" size={20} />
                 </button>
               </div>
               ) : (
                 <Link
                   href="/auth"
-                  className="ml-1 flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs md:text-sm font-black text-primary-foreground transition-all hover:shadow-lg hover:shadow-primary/20 focus:ring-4 focus:ring-primary/20 shadow-md uppercase tracking-wider"
+                  className="vibe-button-primary h-12 px-6 text-xs"
                   aria-label="Giriş yap veya Kayıt ol"
                 >
-                  <LogIn size={18} aria-hidden="true" />
-                  <span>Giriş</span>
+                  <LogIn size={18} aria-hidden="true" className="mr-2" />
+                  GİRİŞ
                 </Link>
               )
             )}
@@ -132,9 +132,11 @@ export function Navbar() {
                   <Dialog.Description className="sr-only">Forum sayfalarına hızlı erişim menüsü.</Dialog.Description>
                   
                   <div className="flex items-center justify-between p-6 border-b border-border">
-                    <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2 outline-none focus:ring-2 focus:ring-primary rounded-lg px-1">
-                      <div className="flex items-center justify-center h-8 w-8 bg-primary text-primary-foreground rounded-lg font-black text-sm">e</div>
-                      <span className="text-xl font-black tracking-tighter">engelsiz<span className="text-primary">forum</span></span>
+                    <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2 outline-none focus:ring-2 focus:ring-primary rounded-lg px-1 group">
+                      <div className="flex items-center justify-center h-10 w-10 bg-primary text-primary-foreground rounded-xl font-black text-xl shadow-lg shadow-primary/20" suppressHydrationWarning>E</div>
+                      <span className="text-xl md:text-2xl font-black tracking-tighter uppercase leading-none" suppressHydrationWarning>
+                        engelsiz<span className="text-primary/80" suppressHydrationWarning>forum</span>
+                      </span>
                     </Link>
                     <Dialog.Close asChild>
                       <button className="rounded-xl p-2.5 hover:bg-muted text-muted-foreground transition-all active:scale-90" aria-label="Menüyü Kapat">
@@ -144,15 +146,15 @@ export function Navbar() {
                   </div>
 
                   <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-                    <h4 className="text-[10px] uppercase font-black text-muted-foreground tracking-[0.2em] ml-4 mb-3">Navigasyon</h4>
-                    <MobileNavLink href="/" icon={<Home size={20} />} label="Ana Sayfa" onClick={() => setIsOpen(false)} />
-                    <MobileNavLink href="/discussions" icon={<MessageSquare size={20} />} label="Tartışmalar" onClick={() => setIsOpen(false)} />
-                    <MobileNavLink href="/communities" icon={<Users size={20} />} label="Topluluklar" onClick={() => setIsOpen(false)} />
-                    <MobileNavLink href="/about" icon={<Info size={20} />} label="Hakkımızda" onClick={() => setIsOpen(false)} />
-                    <MobileNavLink href="/search" icon={<Search size={20} />} label="Arama Yap" onClick={() => setIsOpen(false)} />
+                    <h4 className="vibe-label ml-4 mb-4">NAVİGASYON</h4>
+                    <MobileNavLink href="/" icon={<Home size={20} />} label="ANA SAYFA" onClick={() => setIsOpen(false)} />
+                    <MobileNavLink href="/discussions" icon={<MessageSquare size={20} />} label="TARTIŞMALAR" onClick={() => setIsOpen(false)} />
+                    <MobileNavLink href="/communities" icon={<Users size={20} />} label="TOPLULUKLAR" onClick={() => setIsOpen(false)} />
+                    <MobileNavLink href="/about" icon={<Info size={20} />} label="HAKKIMIZDA" onClick={() => setIsOpen(false)} />
+                    <MobileNavLink href="/search" icon={<Search size={20} />} label="ARAMA YAP" onClick={() => setIsOpen(false)} />
                     
                     <div className="pt-6 mt-6 border-t border-border">
-                      <h4 className="text-[10px] uppercase font-black text-muted-foreground tracking-[0.2em] ml-4 mb-3">Hesap</h4>
+                      <h4 className="vibe-label ml-4 mb-4">HESAP</h4>
                       {isStaff && (
                         <Link
                           href="/admin"

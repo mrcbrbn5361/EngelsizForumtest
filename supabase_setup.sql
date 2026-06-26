@@ -1,243 +1,112 @@
--- Supabase Database Setup for EngelsizForum
--- Run this in your Supabase SQL Editor
+-- SUPABASE SETUP SCRIPT FOR ENGELSIZFORUM
+-- This script sets up the necessary tables, policies, and triggers.
 
--- 1. Profiles Table (with roles)
-CREATE TABLE IF NOT EXISTS public.profiles (
-  id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
-  username TEXT UNIQUE,
-  full_name TEXT,
-  avatar_url TEXT,
-  role TEXT DEFAULT 'user' CHECK (role IN ('admin', 'moderator', 'user')),
-  level INTEGER DEFAULT 1,
-  xp INTEGER DEFAULT 0,
-  accessibility_prefs JSONB DEFAULT '{"fontSize": "md", "highContrast": false, "dyslexicFont": false, "reducedMotion": false}'::jsonb,
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- 1. PROFILES TABLE
+create table if not exists public.profiles (
+  id uuid references auth.users on delete cascade primary key,
+  username text unique,
+  full_name text,
+  avatar_url text,
+  role text default 'user',
+  is_verified boolean default false,
+  xp_points integer default 0,
+  bio text,
+  accessibility_settings jsonb default '{"highContrast": false, "bionicText": false, "dyslexicFont": false}'::jsonb,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
--- Function to check if user is staff (admin or moderator) without recursion
-CREATE OR REPLACE FUNCTION public.check_is_staff()
-RETURNS BOOLEAN AS $$
-BEGIN
-  RETURN EXISTS (
-    SELECT 1 FROM public.profiles 
-    WHERE id = auth.uid() 
-    AND role IN ('admin', 'moderator')
+-- 2. CATEGORIES TABLE
+create table if not exists public.categories (
+  id uuid default gen_random_uuid() primary key,
+  name text not null,
+  slug text unique not null,
+  description text,
+  icon text,
+  parent_id uuid references public.categories(id),
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- 3. TOPICS (DISCUSSIONS) TABLE
+create table if not exists public.topics (
+  id uuid default gen_random_uuid() primary key,
+  title text not null,
+  content text not null,
+  author_id uuid references public.profiles(id) on delete cascade not null,
+  category_id uuid references public.categories(id) on delete set null,
+  is_pinned boolean default false,
+  is_locked boolean default false,
+  is_solved boolean default false,
+  view_count integer default 0,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- 4. COMMENTS TABLE
+create table if not exists public.comments (
+  id uuid default gen_random_uuid() primary key,
+  topic_id uuid references public.topics(id) on delete cascade not null,
+  author_id uuid references public.profiles(id) on delete cascade not null,
+  content text not null,
+  parent_id uuid references public.comments(id) on delete cascade,
+  is_solution boolean default false,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- 5. ROW LEVEL SECURITY (RLS) Policies
+
+-- Profiles: Public can view, owner can update
+alter table public.profiles enable row level security;
+create policy "Public profiles are viewable by everyone." on public.profiles for select using (true);
+create policy "Users can update own profile." on public.profiles for update using (auth.uid() = id);
+
+-- Categories: Public can view, only staff/admin can modify (simulated for now)
+alter table public.categories enable row level security;
+create policy "Categories are viewable by everyone." on public.categories for select using (true);
+
+-- Topics: Public can view, auth users can create, owner can update/delete
+alter table public.topics enable row level security;
+create policy "Topics are viewable by everyone." on public.topics for select using (true);
+create policy "Authenticated users can insert topics." on public.topics for insert with check (auth.role() = 'authenticated');
+create policy "Users can update own topics." on public.topics for update using (auth.uid() = author_id);
+create policy "Users can delete own topics." on public.topics for delete using (auth.uid() = author_id);
+
+-- Comments: Public can view, auth users can create, owner can update/delete
+alter table public.comments enable row level security;
+create policy "Comments are viewable by everyone." on public.comments for select using (true);
+create policy "Authenticated users can insert comments." on public.comments for insert with check (auth.role() = 'authenticated');
+create policy "Users can update own comments." on public.comments for update using (auth.uid() = author_id);
+create policy "Users can delete own comments." on public.comments for delete using (auth.uid() = author_id);
+
+-- 6. FUNCTIONS & TRIGGERS
+
+-- Automatically create profile on signup
+create or replace function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, username, full_name, avatar_url)
+  values (
+    new.id, 
+    coalesce(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1)),
+    coalesce(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)),
+    new.raw_user_meta_data->>'avatar_url'
   );
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+  return new;
+end;
+$$ language plpgsql security definer;
 
--- Enable RLS
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
 
--- Profiles Policies - Radical Reset to stop recursion
-DO $$ 
-DECLARE 
-    pol record;
-BEGIN 
-    FOR pol IN (SELECT policyname FROM pg_policies WHERE tablename = 'profiles' AND schemaname = 'public') 
-    LOOP
-        EXECUTE format('DROP POLICY IF EXISTS %I ON public.profiles', pol.policyname);
-    END LOOP;
-END $$;
-
--- Explicitly drop known legacy names just in case
-DROP POLICY IF EXISTS "Users can view any profile" ON public.profiles;
-DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
-DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
-DROP POLICY IF EXISTS "Admins can update any profile" ON public.profiles;
-DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
-DROP POLICY IF EXISTS "Staff can manage profiles" ON public.profiles;
-DROP POLICY IF EXISTS "profiles_select_policy" ON public.profiles;
-DROP POLICY IF EXISTS "profiles_update_policy" ON public.profiles;
-DROP POLICY IF EXISTS "profiles_insert_policy" ON public.profiles;
-DROP POLICY IF EXISTS "profiles_v1_select" ON public.profiles;
-DROP POLICY IF EXISTS "profiles_v1_update" ON public.profiles;
-DROP POLICY IF EXISTS "profiles_v1_insert" ON public.profiles;
-
--- Final, ultra-simple policies for profiles
--- FOR SELECT: Anyone can see any profile (standard for forums)
-CREATE POLICY "profiles_v2_select" 
-ON public.profiles FOR SELECT 
-USING (true);
-
--- FOR UPDATE: Only user can update their own profile
-CREATE POLICY "profiles_v2_update" 
-ON public.profiles FOR UPDATE 
-USING (auth.uid() = id);
-
--- FOR INSERT: Only user can insert their own profile
-CREATE POLICY "profiles_v2_insert" 
-ON public.profiles FOR INSERT 
-WITH CHECK (auth.uid() = id);
-
--- FOR DELETE: Only the user themselves (or admins, but keeping it simple for now)
-CREATE POLICY "profiles_v2_delete"
-ON public.profiles FOR DELETE
-USING (auth.uid() = id);
-
--- 2. Categories Table (with parent_id for hierarchy)
-CREATE TABLE IF NOT EXISTS public.categories (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  parent_id UUID REFERENCES public.categories(id),
-  name TEXT NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-  description TEXT,
-  icon TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
-
--- Consolidate drops to prevent errors
-DO $$ 
-BEGIN 
-    DROP POLICY IF EXISTS "Anyone can view categories" ON public.categories;
-    DROP POLICY IF EXISTS "categories_v1_select" ON public.categories;
-END $$;
-
-CREATE POLICY "categories_v1_select" ON public.categories FOR SELECT USING (true);
-
--- 3. Topics Table
-CREATE TABLE IF NOT EXISTS public.topics (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  category_id UUID REFERENCES public.categories(id),
-  author_id UUID REFERENCES public.profiles(id),
-  title TEXT NOT NULL,
-  content TEXT NOT NULL,
-  is_solved BOOLEAN DEFAULT false,
-  is_pinned BOOLEAN DEFAULT false,
-  is_locked BOOLEAN DEFAULT false,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Indexes for performance
-CREATE INDEX IF NOT EXISTS idx_topics_category_id ON public.topics(category_id);
-CREATE INDEX IF NOT EXISTS idx_topics_author_id ON public.topics(author_id);
-CREATE INDEX IF NOT EXISTS idx_topics_is_pinned ON public.topics(is_pinned) WHERE is_pinned = true;
-
--- 4. Comments Table
-CREATE TABLE IF NOT EXISTS public.comments (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  topic_id UUID REFERENCES public.topics(id),
-  author_id UUID REFERENCES public.profiles(id),
-  content TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-CREATE INDEX IF NOT EXISTS idx_comments_topic_id ON public.comments(topic_id);
-CREATE INDEX IF NOT EXISTS idx_comments_author_id ON public.comments(author_id);
-
--- 3. Topics Policies
-ALTER TABLE public.topics ENABLE ROW LEVEL SECURITY;
-
-DO $$ 
-BEGIN 
-    DROP POLICY IF EXISTS "Anyone can view topics" ON public.topics;
-    DROP POLICY IF EXISTS "topics_v1_select" ON public.topics;
-    DROP POLICY IF EXISTS "Authenticated users can create topics" ON public.topics;
-    DROP POLICY IF EXISTS "topics_v1_insert" ON public.topics;
-    DROP POLICY IF EXISTS "topics_v1_update" ON public.topics;
-    DROP POLICY IF EXISTS "topics_v1_delete" ON public.topics;
-END $$;
-
-CREATE POLICY "topics_v1_select" ON public.topics FOR SELECT USING (true);
-CREATE POLICY "topics_v1_insert" ON public.topics FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "topics_v1_update" ON public.topics FOR UPDATE USING (auth.uid() = author_id OR public.check_is_staff());
-CREATE POLICY "topics_v1_delete" ON public.topics FOR DELETE USING (public.check_is_staff());
-
--- 4. Comments Policies
-ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
-
-DO $$ 
-BEGIN 
-    DROP POLICY IF EXISTS "Anyone can view comments" ON public.comments;
-    DROP POLICY IF EXISTS "comments_v1_select" ON public.comments;
-    DROP POLICY IF EXISTS "Authenticated users can create comments" ON public.comments;
-    DROP POLICY IF EXISTS "comments_v1_insert" ON public.comments;
-    DROP POLICY IF EXISTS "comments_v1_update" ON public.comments;
-    DROP POLICY IF EXISTS "comments_v1_delete" ON public.comments;
-END $$;
-
-CREATE POLICY "comments_v1_select" ON public.comments FOR SELECT USING (true);
-CREATE POLICY "comments_v1_insert" ON public.comments FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "comments_v1_update" ON public.comments FOR UPDATE USING (auth.uid() = author_id OR public.check_is_staff());
-CREATE POLICY "comments_v1_delete" ON public.comments FOR DELETE USING (public.check_is_staff());
-
--- 5. Badges Table
-CREATE TABLE IF NOT EXISTS public.badges (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL,
-  description TEXT,
-  icon TEXT
-);
-
-CREATE TABLE IF NOT EXISTS public.user_badges (
-  user_id UUID REFERENCES public.profiles(id),
-  badge_id UUID REFERENCES public.badges(id),
-  awarded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  PRIMARY KEY (user_id, badge_id)
-);
-
--- 7. Reactions Table
-CREATE TABLE IF NOT EXISTS public.reactions (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-  topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE,
-  reaction_type TEXT NOT NULL,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE(user_id, topic_id)
-);
-
--- 8. Reports Table
-CREATE TABLE IF NOT EXISTS public.reports (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  reporter_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
-  topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE,
-  reason TEXT NOT NULL,
-  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'resolved', 'dismissed')),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- 9. Trigger for XP calculation
-CREATE OR REPLACE FUNCTION public.update_user_xp()
-RETURNS TRIGGER AS $$
-BEGIN
-  UPDATE public.profiles
-  SET xp = xp + 10
-  WHERE id = NEW.author_id;
-
-  -- Level up logic (simple)
-  UPDATE public.profiles
-  SET level = (xp / 100) + 1
-  WHERE id = NEW.author_id;
-
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-DROP TRIGGER IF EXISTS on_comment_created ON public.comments;
-CREATE TRIGGER on_comment_created
-  AFTER INSERT ON public.comments
-  FOR EACH ROW EXECUTE PROCEDURE public.update_user_xp();
-
--- 10. Trigger for profile creation on signup
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS trigger AS $$
-BEGIN
-  INSERT INTO public.profiles (id, username, avatar_url)
-  VALUES (new.id, new.raw_user_meta_data->>'username', new.raw_user_meta_data->>'avatar_url');
-  RETURN new;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
-
--- 11. Custom Role Assignments
-UPDATE public.profiles 
-SET role = 'moderator' 
-WHERE id IN (
-  SELECT id FROM auth.users WHERE email IN ('brtapardi@gmail.com', 'yigitfirat3405@gmail.com')
-);
-
+-- 7. SEED DATA (Initial Categories)
+insert into public.categories (name, slug, description, icon)
+values 
+  ('Erişilebilirlik', 'erisilebilirlik', 'Web ve fiziksel dünyada erişilebilirlik standartları.', 'accessibility'),
+  ('Yardımcı Teknolojiler', 'yardimci-teknolojiler', 'Ekran okuyucular, bionik gözler ve diğer cihazlar.', 'cpu'),
+  ('Engelli Hakları', 'engelli-haklari', 'Hukuki haklar ve güncel mevzuat tartışmaları.', 'shield'),
+  ('Sosyal Yaşam', 'sosyal-yasam', 'Günlük hayat, seyahat ve etkinlik paylaşımları.', 'users'),
+  ('İş & Eğitim', 'is-ve-egitim', 'Kariyer fırsatları ve eğitim kaynakları.', 'book')
+on conflict (slug) do nothing;

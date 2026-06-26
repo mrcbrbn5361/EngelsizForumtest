@@ -1,23 +1,75 @@
 import React from 'react';
 import Link from 'next/link';
+import { MessageSquare, Users, Info, Shield, HelpCircle, Mail, MapPin } from 'lucide-react';
 
 export function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="border-t border-border py-12 md:py-16 pb-24 md:pb-16 bg-card w-full overflow-hidden">
-      <div className="w-full max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10 md:gap-12">
-        <div className="flex flex-col items-center md:items-start gap-4">
-          <div className="text-2xl md:text-3xl font-black tracking-tighter">
-            ENGELSİZ<span className="text-primary">FORUM</span>
+    <footer className="border-t border-border bg-card w-full overflow-hidden" role="contentinfo">
+      <div className="w-full max-w-7xl mx-auto px-6 py-20 md:py-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
+          {/* Brand Column */}
+          <div className="space-y-8 text-center md:text-left">
+            <Link href="/" className="inline-block group">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center h-10 w-10 bg-primary text-primary-foreground rounded-2xl font-black text-xl shadow-xl shadow-primary/20 group-hover:rotate-6 transition-transform">E</div>
+                <div className="text-2xl font-black tracking-tighter uppercase">
+                  ENGELSİZ<span className="text-primary">FORUM</span>
+                </div>
+              </div>
+            </Link>
+            <p className="text-muted-foreground text-base font-medium leading-relaxed max-w-xs mx-auto md:mx-0">
+              Türkiye&apos;nin ilk tam erişilebilir, yapay zeka destekli topluluk platformu. Engelleri tasarım ve teknoloji ile aşıyoruz.
+            </p>
           </div>
-          <div className="text-sm font-bold text-muted-foreground">
-            © 2026 Herkes İçin Eşit İletişim.
+
+          {/* Quick Links */}
+          <div className="space-y-8 text-center md:text-left">
+            <h3 className="vibe-label ml-0">PLATFORM</h3>
+            <ul className="space-y-4 text-sm font-black text-muted-foreground uppercase tracking-widest">
+              <li><Link href="/discussions" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><MessageSquare size={18} className="text-primary" /> TARTIŞMALAR</Link></li>
+              <li><Link href="/communities" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Users size={18} className="text-primary" /> TOPLULUKLAR</Link></li>
+              <li><Link href="/about" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Info size={18} className="text-primary" /> HAKKIMIZDA</Link></li>
+              <li><Link href="/help" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><HelpCircle size={18} className="text-primary" /> YARDIM MERKEZİ</Link></li>
+            </ul>
+          </div>
+
+          {/* Legal / Safety */}
+          <div className="space-y-8 text-center md:text-left">
+            <h3 className="vibe-label ml-0">GÜVENLİK</h3>
+            <ul className="space-y-4 text-sm font-black text-muted-foreground uppercase tracking-widest">
+              <li><Link href="/security" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Shield size={18} className="text-primary" /> BİLGİ GÜVENLİĞİ</Link></li>
+              <li><Link href="/privacy" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Shield size={18} className="text-primary" /> GİZLİLİK POLİTİKASI</Link></li>
+              <li><Link href="/terms" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Info size={18} className="text-primary" /> KULLANIM ŞARTLARI</Link></li>
+              <li><Link href="/accessibility" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><HelpCircle size={18} className="text-primary" /> ERİŞİLEBİLİRLİK BEYANI</Link></li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div className="space-y-8 text-center md:text-left">
+            <h3 className="vibe-label ml-0">İLETİŞİM</h3>
+            <ul className="space-y-6 text-sm font-black text-muted-foreground uppercase tracking-widest">
+              <li className="flex items-start justify-center md:justify-start gap-4">
+                <MapPin size={22} className="text-primary shrink-0" />
+                <span className="text-xs leading-relaxed">Bağcılar / İstanbul, Türkiye</span>
+              </li>
+              <li className="flex items-center justify-center md:justify-start gap-4">
+                <Mail size={22} className="text-primary shrink-0" />
+                <a href="mailto:info@miracdeveloper.com.tr" className="hover:text-primary transition-colors text-xs">info@miracdeveloper.com.tr</a>
+              </li>
+            </ul>
           </div>
         </div>
-        <div className="grid grid-cols-2 sm:flex sm:flex-row gap-x-8 gap-y-4 md:gap-10 text-[10px] md:text-xs font-black uppercase tracking-widest text-center md:text-right">
-          <Link href="/about" className="hover:text-primary transition-colors py-2 whitespace-nowrap">Hakkımızda</Link>
-          <Link href="/discussions" className="hover:text-primary transition-colors py-2 whitespace-nowrap">Tartışmalar</Link>
-          <Link href="/communities" className="hover:text-primary transition-colors py-2 whitespace-nowrap">Topluluklar</Link>
-          <Link href="/privacy" className="hover:text-primary transition-colors py-2 whitespace-nowrap">Gizlilik</Link>
+
+        <div className="pt-10 border-t border-border flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="text-[10px] md:text-xs font-black text-muted-foreground uppercase tracking-[0.3em] text-center">
+            © {currentYear} ENGELSİZFORUM • TÜM HAKLARI SAKLIDIR
+          </div>
+          <div className="flex items-center gap-6 text-[8px] md:text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
+            <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> YAPAY ZEKA DESTEKLİ</span>
+            <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> ERİŞİLEBİLİR ALTYAPI</span>
+          </div>
         </div>
       </div>
     </footer>

@@ -44,12 +44,37 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }
 
+/* Vibe System Utilities */
+.vibe-container {
+  @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
 .vibe-card {
-  @apply rounded-2xl border border-border bg-card p-6 md:p-8 shadow-sm transition-all hover:shadow-md;
+  @apply bg-card border border-border rounded-[2.5rem] shadow-sm overflow-hidden transition-all duration-300 p-6 md:p-8;
+}
+
+.vibe-card-hover {
+  @apply hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1;
+}
+
+.vibe-section-title {
+  @apply text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter text-foreground leading-[1.1];
+}
+
+.vibe-badge {
+  @apply px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest;
+}
+
+.vibe-input {
+  @apply w-full px-6 py-4 rounded-2xl border border-border bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-lg outline-none;
+}
+
+.vibe-label {
+  @apply text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block ml-2;
 }
 
 .vibe-button-primary {
-  @apply inline-flex items-center justify-center rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 active:scale-95 shadow-sm;
+  @apply inline-flex items-center justify-center rounded-2xl bg-primary px-8 py-4 text-base font-black text-primary-foreground transition-all hover:opacity-90 active:scale-95 shadow-xl shadow-primary/20 uppercase tracking-widest;
 }
 
 /* Accessibility Overrides */
@@ -68,11 +93,19 @@ h1, h2, h3, h4, h5, h6 {
   --ring: #ffff00;
 }
 
-.high-contrast * {
-  text-shadow: none !important;
+.high-contrast h1, 
+.high-contrast h2, 
+.high-contrast h3, 
+.high-contrast p, 
+.high-contrast span,
+.high-contrast label,
+.high-contrast a {
   color: var(--foreground) !important;
+}
+
+.high-contrast .vibe-card {
+  border: 4px solid var(--border) !important;
   background-color: var(--background) !important;
-  border-color: var(--border) !important;
 }
 
 .high-contrast .vibe-button-primary,
@@ -81,6 +114,26 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--primary-foreground) !important;
   border: 4px solid var(--primary) !important;
   font-weight: 900 !important;
+}
+
+.high-contrast .border,
+.high-contrast .border-t,
+.high-contrast .border-b,
+.high-contrast .border-l,
+.high-contrast .border-r {
+  border-color: var(--border) !important;
+}
+
+.high-contrast input,
+.high-contrast textarea,
+.high-contrast select {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+  border: 2px solid var(--border) !important;
+}
+
+.high-contrast svg {
+  stroke: currentColor !important;
 }
 
 /* 2. Dyslexic Font */

@@ -44,84 +44,84 @@ export default function AboutPage() {
           })
         }}
       />
-        <div className="max-w-5xl mx-auto p-4">
-          <nav className="flex justify-center gap-6 mb-12 text-sm font-bold uppercase tracking-widest text-[#FF4D94]">
-            <Link href="/" className="hover:underline">Ana Sayfa</Link>
-            <Link href="/discussions" className="hover:underline">Tartışmalar</Link>
-            <Link href="/communities" className="hover:underline">Topluluklar</Link>
+        <div className="vibe-container py-12 md:py-24">
+          <nav className="flex justify-center gap-8 mb-16 text-[10px] font-black uppercase tracking-[0.3em] text-primary">
+            <Link href="/" className="hover:underline">ANA SAYFA</Link>
+            <Link href="/discussions" className="hover:underline">TARTIŞMALAR</Link>
+            <Link href="/communities" className="hover:underline">TOPLULUKLAR</Link>
           </nav>
-          <section className="mb-20 md:mb-32 text-center">
+          <header className="mb-24 md:mb-40 text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="inline-block p-6 bg-[#FFF0F6] rounded-[8px] mb-8"
+              className="inline-block p-8 bg-primary/10 rounded-[2rem] mb-10 shadow-2xl shadow-primary/5"
             >
-              <Shield size={48} className="text-[#FF4D94]" />
+              <Shield size={64} className="text-primary" />
             </motion.div>
-            <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter text-[#1A1A1A]">EngelsizForum Nedir?</h1>
-            <p className="text-base md:text-xl text-[#666666] leading-relaxed px-4 max-w-2xl mx-auto font-medium">
+            <h1 className="vibe-section-title mb-8 uppercase">EngelsizForum Nedir?</h1>
+            <p className="text-lg md:text-2xl text-muted-foreground leading-relaxed px-4 max-w-4xl mx-auto font-medium">
               EngelsizForum, her bireyin dijital dünyada eşit haklara ve erişebilirliğe sahip olması gerektiği inancıyla doğmuş, 
               Türkiye&apos;nin ilk tam erişilebilir topluluk platformudur.
             </p>
-          </section>
+          </header>
 
           {/* Key Takeaways Section */}
-          <section className="mb-24">
-            <div className="bg-primary/5 border border-primary/20 rounded-[2rem] p-8 md:p-12">
-              <h2 className="text-2xl font-black mb-6 flex items-center gap-3">
-                <span className="text-primary">💡</span> Vizyon Özeti
+          <section className="mb-32">
+            <div className="bg-primary/5 border border-primary/20 rounded-[3rem] p-10 md:p-16">
+              <h2 className="text-2xl md:text-3xl font-black mb-10 flex items-center gap-4">
+                <span className="text-primary text-4xl">💡</span> Vizyon Özeti
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="space-y-1">
-                  <div className="font-bold text-primary text-xs uppercase tracking-widest">AMACIMIZ</div>
-                  <p className="text-sm text-muted-foreground">Dijital dünyadaki erişilebilirlik bariyerlerini tamamen ortadan kaldırmak.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <div className="space-y-3">
+                  <div className="vibe-label ml-0 text-primary">AMACIMIZ</div>
+                  <p className="text-sm md:text-base font-medium text-muted-foreground leading-relaxed">Dijital dünyadaki erişilebilirlik bariyerlerini tamamen ortadan kaldırmak.</p>
                 </div>
-                <div className="space-y-1">
-                  <div className="font-bold text-primary text-xs uppercase tracking-widest">YÖNTEMİMİZ</div>
-                  <p className="text-sm text-muted-foreground">Yapay zeka ve WCAG 2.1 standartlarını harmanlayan yenilikçi çözümler.</p>
+                <div className="space-y-3">
+                  <div className="vibe-label ml-0 text-primary">YÖNTEMİMİZ</div>
+                  <p className="text-sm md:text-base font-medium text-muted-foreground leading-relaxed">Yapay zeka ve WCAG 2.1 standartlarını harmanlayan yenilikçi çözümler.</p>
                 </div>
-                <div className="space-y-1">
-                  <div className="font-bold text-primary text-xs uppercase tracking-widest">GÜCÜMÜZ</div>
-                  <p className="text-sm text-muted-foreground">Kendi deneyimlerini paylaşan büyük ve uzman bir topluluk desteği.</p>
+                <div className="space-y-3">
+                  <div className="vibe-label ml-0 text-primary">GÜCÜMÜZ</div>
+                  <p className="text-sm md:text-base font-medium text-muted-foreground leading-relaxed">Kendi deneyimlerini paylaşan büyük ve uzman bir topluluk desteği.</p>
                 </div>
-                <div className="space-y-1">
-                  <div className="font-bold text-primary text-xs uppercase tracking-widest">HEDEFİMİZ</div>
-                  <p className="text-sm text-muted-foreground">Herkesin bilgiye ve sosyal etkileşime saniyeler içinde ulaşması.</p>
+                <div className="space-y-3">
+                  <div className="vibe-label ml-0 text-primary">HEDEFİMİZ</div>
+                  <p className="text-sm md:text-base font-medium text-muted-foreground leading-relaxed">Herkesin bilgiye ve sosyal etkileşime saniyeler içinde ulaşması.</p>
                 </div>
               </div>
             </div>
           </section>
 
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 mb-24 md:mb-40">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 mb-32 md:mb-48">
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-[#FFFFFF] p-8 rounded-[8px] border border-[#E5E7EB] group"
+              className="vibe-card vibe-card-hover p-10 md:p-16"
             >
-              <div className="mb-5 inline-flex p-4 bg-[#FFF0F6] rounded-[8px] text-[#FF4D94] transition-all">
-                <Target size={28} />
+              <div className="mb-8 inline-flex p-6 bg-primary/10 rounded-3xl text-primary transition-all">
+                <Target size={40} />
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-4 tracking-tight text-[#1A1A1A]">Misyonumuz</h2>
-              <p className="text-sm md:text-lg text-[#666666] leading-relaxed font-medium">
+              <h2 className="text-2xl md:text-4xl font-black mb-6 tracking-tight text-foreground">Misyonumuz</h2>
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
                 Engelli bireylerin teknoloji, sosyal yaşam ve günlük zorluklar hakkında birbirleriyle yardımlaşabileceği, 
-                AI desteğiyle karmaşık içeriklerin basitleştirildiği ve <span className="text-[#FF4D94] font-bold">WCAG 2.1</span> standartlarının ötesinde bir kullanıcı deneyimi sunmaktır.
+                AI desteğiyle karmaşık içeriklerin basitleştirildiği ve <span className="text-primary font-black">WCAG 2.1</span> standartlarının ötesinde bir kullanıcı deneyimi sunmaktır.
               </p>
             </motion.div>
 
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="bg-[#FFFFFF] p-8 rounded-[8px] border border-[#E5E7EB] group"
+              className="vibe-card vibe-card-hover p-10 md:p-16"
             >
-              <div className="mb-5 inline-flex p-4 bg-red-50 rounded-[8px] text-red-500 transition-all">
-                <Heart size={28} />
+              <div className="mb-8 inline-flex p-6 bg-destructive/10 rounded-3xl text-destructive transition-all">
+                <Heart size={40} />
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-4 tracking-tight text-[#1A1A1A]">Değerlerimiz</h2>
-              <p className="text-sm md:text-lg text-[#666666] leading-relaxed font-medium">
-                Kapsayıcılık, Şeffaflık ve Yenilikçilik ana değerlerimizdir. Platformumuzdaki her bir özellik, <span className="text-[#FF4D94] font-bold">engelli topluluğunun</span> doğrudan geri bildirimleri ile şekillenmektedir.
+              <h2 className="text-2xl md:text-4xl font-black mb-6 tracking-tight text-foreground">Değerlerimiz</h2>
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
+                Kapsayıcılık, Şeffaflık ve Yenilikçilik ana değerlerimizdir. Platformumuzdaki her bir özellik, <span className="text-primary font-black">engelli topluluğunun</span> doğrudan geri bildirimleri ile şekillenmektedir.
               </p>
             </motion.div>
           </div>
@@ -210,29 +210,29 @@ export default function AboutPage() {
             </div>
           </section>
 
-          <section className="bg-[#FF4D94] text-[#FFFFFF] rounded-[8px] p-12 md:p-24 text-center shadow-lg relative overflow-hidden group">
+          <section className="bg-primary p-12 md:p-24 rounded-[3rem] text-primary-foreground text-center shadow-2xl relative overflow-hidden group">
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-5xl font-black mb-6 text-[#FFFFFF] tracking-tighter">Bize Katılın</h2>
-              <p className="text-base md:text-xl font-medium text-[#FFFFFF]/80 mb-10 max-w-xl mx-auto leading-relaxed">
+              <h2 className="vibe-section-title text-white mb-8 tracking-tighter">Bize Katılın</h2>
+              <p className="text-lg md:text-2xl font-medium text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed">
                 Daha erişilebilir bir gelecek için sesinizi duyurun, başkalarına yardım edin veya sadece topluluğumuzun bir parçası olun.
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                 <Link 
                   href="/auth" 
-                  className="w-full sm:w-auto px-12 py-4 bg-[#FFFFFF] text-[#FF4D94] rounded-[8px] font-bold text-lg hover:bg-white/90 transition-all text-center"
+                  className="w-full sm:w-auto h-20 px-16 bg-white text-primary rounded-[2rem] font-black text-xl hover:bg-white/90 transition-all flex items-center justify-center shadow-2xl active:scale-95"
                 >
-                  Hemen Üye Ol
+                  HEMEN ÜYE OL
                 </Link>
                 <Link 
                   href="/discussions" 
-                  className="w-full sm:w-auto px-12 py-4 bg-primary text-primary-foreground rounded-[8px] font-bold text-lg hover:opacity-90 transition-all text-center border border-white/20"
+                  className="w-full sm:w-auto h-20 px-16 bg-primary-foreground/10 border-2 border-white/20 text-white rounded-[2rem] font-black text-xl hover:bg-white/10 transition-all flex items-center justify-center active:scale-95"
                 >
-                  Tartışmaları Keşfet
+                  KEŞFET
                 </Link>
               </div>
             </div>
-            <Globe className="absolute -bottom-20 -right-20 size-64 md:size-[400px] opacity-10 transition-all duration-1000" />
-            <div className="absolute top-0 left-0 size-[300px] bg-white/5 rounded-full -translate-y-1/2 -translate-x-1/2 blur-[80px]"></div>
+            <Globe className="absolute -bottom-20 -right-20 size-64 md:size-[500px] opacity-10 transition-all duration-1000 group-hover:rotate-12 group-hover:scale-110" />
+            <div className="absolute top-0 left-0 size-[400px] bg-white/5 rounded-full -translate-y-1/2 -translate-x-1/2 blur-[100px]"></div>
           </section>
         </div>
       </DashboardLayout>

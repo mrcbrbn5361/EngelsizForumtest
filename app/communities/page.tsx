@@ -124,39 +124,32 @@ export default function CommunitiesPage() {
           })
         }}
       />
-      <main className="w-full max-w-7xl mx-auto px-4 py-8 md:py-16">
-        <nav className="flex justify-center gap-6 mb-12 text-sm font-bold uppercase tracking-widest text-primary">
-          <Link href="/" className="hover:underline">Ana Sayfa</Link>
-          <Link href="/discussions" className="hover:underline">Tartışmalar</Link>
-          <Link href="/about" className="hover:underline">Hakkımızda</Link>
-          <Link href="/privacy" className="hover:underline">Gizlilik</Link>
+      <main className="vibe-container py-12 md:py-16">
+        <nav className="flex justify-center gap-8 mb-16 text-[10px] font-black uppercase tracking-[0.3em] text-primary">
+          <Link href="/" className="hover:underline">ANA SAYFA</Link>
+          <Link href="/discussions" className="hover:underline">TARTIŞMALAR</Link>
+          <Link href="/about" className="hover:underline">HAKKIMIZDA</Link>
+          <Link href="/privacy" className="hover:underline">GİZLİLİK</Link>
         </nav>
-        <header className="mb-12 md:mb-16 flex flex-col items-center text-center px-4">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-6 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest"
-          >
-            TOPLULUKLARIMIZ
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-black mb-6 tracking-tighter text-foreground"
-          >
-            Özel İlgi Grupları
-          </motion.h1>
-          <div className="flex flex-col items-center justify-center gap-8 w-full max-w-3xl">
-            <p className="text-muted-foreground text-base md:text-xl leading-relaxed font-medium">
-              Deneyimlerinizi paylaşabileceğiniz ve benzer ilgi alanlarına sahip kişilerle tanışabileceğiniz topluluklara katılın.
-            </p>
-            <button 
-              onClick={() => setShowCreateForm(!showCreateForm)}
-              className="px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-primary/20"
-            >
-              <Plus size={24} className={showCreateForm ? 'rotate-45 transition-transform' : 'transition-transform'} />
-              {showCreateForm ? 'Vazgeç' : 'Topluluk Oluştur'}
-            </button>
+        <header className="mb-16">
+          <div className="vibe-card p-12 md:p-20 relative overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 bg-primary/[0.03] -z-10" />
+            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
+              <div className="space-y-8">
+                <p className="vibe-label ml-0">TOPLULUK REHBERİ</p>
+                <h1 className="vibe-section-title uppercase">Uzmanlık Grupları</h1>
+                <p className="text-muted-foreground text-xl md:text-2xl font-medium leading-relaxed max-w-2xl">
+                  İlgi alanlarınıza ve ihtiyaçlarınıza göre özelleşmiş alt toplulukları keşfedin.
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowCreateForm(!showCreateForm)}
+                className="vibe-button-primary h-20 px-12 text-xl shrink-0"
+              >
+                <Plus size={32} className={showCreateForm ? 'rotate-45 transition-transform mr-2' : 'transition-transform mr-2'} />
+                {showCreateForm ? 'VAZGEÇ' : 'YENİ GRUP'}
+              </button>
+            </div>
           </div>
         </header>
 
@@ -168,43 +161,67 @@ export default function CommunitiesPage() {
           >
             <form 
               onSubmit={createCommunity}
-              className="bg-card p-6 md:p-10 rounded-3xl border border-border max-w-2xl mx-auto space-y-8 shadow-2xl"
+              className="vibe-card p-10 md:p-16 space-y-10 border-primary/20 shadow-2xl"
             >
-              <div className="text-center space-y-2">
-                <h2 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">Yeni Bir Grup Kur</h2>
-                <p className="text-muted-foreground font-medium">Topluluğunuzu başlatın ve insanları bir araya getirin.</p>
+              <div className="space-y-4">
+                <h2 className="text-3xl font-black text-foreground tracking-tight">Yeni Bir Grup Kur</h2>
+                <p className="text-muted-foreground text-lg font-medium">Topluluğunuzu başlatın ve insanları bir araya getirin.</p>
               </div>
-              <div className="space-y-2">
-                <label htmlFor="community-name" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-4">GRUP ADI</label>
-                <input 
-                  id="community-name"
-                  type="text" 
-                  placeholder="Örn: Erişilebilir Oyunlar" 
-                  value={newCommunity.name}
-                  onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
-                  required
-                  className="w-full px-6 py-4 rounded-2xl border border-border bg-muted/30 focus:border-primary focus:bg-background outline-none transition-all text-lg font-bold"
-                />
+              <div className="grid md:grid-cols-2 gap-10">
+                <div className="space-y-4">
+                  <label htmlFor="community-name" className="vibe-label">Grup Adı</label>
+                  <input 
+                    id="community-name"
+                    type="text" 
+                    placeholder="Örn: Erişilebilir Oyunlar" 
+                    value={newCommunity.name}
+                    onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
+                    required
+                    className="vibe-input h-16 text-lg"
+                  />
+                </div>
+                <div className="space-y-4">
+                  <label htmlFor="community-icon" className="vibe-label">İkon</label>
+                  <select 
+                    id="community-icon"
+                    className="vibe-input h-16 text-lg appearance-none cursor-pointer"
+                    value={newCommunity.icon}
+                    onChange={(e) => setNewCommunity({...newCommunity, icon: e.target.value})}
+                  >
+                    <option value="users">Kullanıcılar</option>
+                    <option value="message">Mesaj</option>
+                    <option value="handshake">El Sıkışma</option>
+                  </select>
+                </div>
               </div>
-              <div className="space-y-2">
-                <label htmlFor="community-desc" className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-4">AÇIKLAMA</label>
+              <div className="space-y-4">
+                <label htmlFor="community-desc" className="vibe-label">Açıklama</label>
                 <textarea 
                   id="community-desc"
                   placeholder="Grubun amacını kısaca yazın..." 
                   value={newCommunity.description}
                   onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
                   required
-                  className="w-full px-6 py-4 rounded-2xl border border-border bg-muted/30 focus:border-primary focus:bg-background outline-none transition-all text-lg min-h-[120px] font-medium resize-none"
+                  className="vibe-input min-h-[150px] py-6 text-lg"
                 />
               </div>
-              <button 
-                type="submit" 
-                disabled={creating}
-                className="w-full py-5 px-8 bg-primary text-primary-foreground rounded-2xl font-black text-xl flex items-center justify-center gap-3 hover:opacity-90 transition-all disabled:opacity-50"
-              >
-                {creating ? <Loader2 size={24} className="animate-spin" /> : <Save size={24} />}
-                {creating ? 'Kuruluyor...' : 'Grubu Kur'}
-              </button>
+              <div className="flex justify-end gap-6">
+                <button 
+                  type="button"
+                  onClick={() => setShowCreateForm(false)}
+                  className="px-10 py-5 rounded-2xl font-black text-lg text-muted-foreground hover:bg-muted transition-all"
+                >
+                  İPTAL
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={creating}
+                  className="vibe-button-primary h-20 px-12 text-xl"
+                >
+                  {creating ? <Loader2 size={24} className="animate-spin" /> : <Save size={24} />}
+                  {creating ? 'KURULUYOR...' : 'GRUBU KUR'}
+                </button>
+              </div>
             </form>
           </motion.div>
         )}
@@ -236,14 +253,14 @@ export default function CommunitiesPage() {
           </div>
         </section>
 
-        <div className="relative mb-12 max-w-3xl mx-auto group">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={24} />
+        <div className="relative mb-20 max-w-5xl mx-auto group">
+          <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" size={28} />
           <input 
             type="text" 
-            placeholder="Gruplarda ara..." 
+            placeholder="GRUPLARDA ARA..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-16 pr-8 py-5 h-[62px] rounded-2xl border border-border bg-muted/30 focus:border-primary focus:bg-background outline-none transition-all text-lg font-bold shadow-sm"
+            className="vibe-input pl-20 h-20 text-xl uppercase"
           />
         </div>
 
@@ -269,40 +286,40 @@ export default function CommunitiesPage() {
             ))}
           </div>
         ) : filteredCommunities.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8 md:gap-10">
             {filteredCommunities.map((community, index) => (
               <motion.div 
                 key={community.id}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
-                className="group relative bg-card p-6 md:p-10 rounded-3xl border border-border hover:border-primary/50 transition-all flex flex-col justify-between overflow-hidden"
+                className="vibe-card vibe-card-hover p-10 flex flex-col justify-between group"
               >
-                  <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                     {getIcon(community.icon)}
                   </div>
                   <div>
-                    <div className="flex items-start gap-4 mb-8">
-                      <div className="p-4 bg-muted rounded-2xl group-hover:bg-primary/10 transition-colors">
+                    <div className="flex items-start gap-6 mb-10">
+                      <div className="p-6 bg-primary/10 rounded-2xl group-hover:bg-primary group-hover:text-white transition-all text-primary">
                         {getIcon(community.icon)}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1.5">TOPLULUK</p>
-                        <h2 className="text-xl md:text-2xl font-black transition-colors break-words whitespace-normal tracking-tighter text-foreground group-hover:text-primary">
+                        <p className="vibe-label ml-0">TOPLULUK</p>
+                        <h2 className="text-xl md:text-3xl font-black transition-colors break-words whitespace-normal tracking-tighter text-foreground group-hover:text-primary">
                           <Link href={`/communities/${community.id}`} className="after:absolute after:inset-0 outline-none">
                             {community.name}
                           </Link>
                         </h2>
                       </div>
                     </div>
-                    <p className="text-sm md:text-base text-muted-foreground mb-8 leading-relaxed line-clamp-3 font-medium">
+                    <p className="text-base md:text-lg text-muted-foreground mb-10 leading-relaxed line-clamp-3 font-medium">
                       {community.description}
                     </p>
                   </div>
                   
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-border/50">
-                    <div className="flex items-center gap-2 text-primary font-black text-sm uppercase tracking-widest group-hover:translate-x-1 transition-transform">
-                      KEŞFET <ChevronRight size={18} />
+                  <div className="flex items-center justify-between mt-auto pt-8 border-t border-border">
+                    <div className="flex items-center gap-3 text-primary font-black text-sm uppercase tracking-[0.2em] group-hover:translate-x-2 transition-transform">
+                      KEŞFET <ChevronRight size={20} />
                     </div>
                   </div>
                 </motion.div>

@@ -7,6 +7,7 @@ import { Topic } from '@/types/database';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { cn } from '@/lib/utils';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
@@ -66,88 +67,94 @@ export default function SearchPage() {
 
   return (
     <DashboardLayout>
-      <main className="max-w-4xl mx-auto py-8 md:py-16 px-4">
-        <header className="mb-10 md:mb-16">
-          <h1 className="text-3xl md:text-6xl font-bold mb-6 md:mb-10 tracking-tight leading-tight text-[#1A1A1A]">Forumda Ara</h1>
-          <form onSubmit={handleSearch} className="relative group">
-            <Search className="absolute left-5 md:left-6 transition-colors group-focus-within:text-[#FF4D94]" size={20} style={{ top: '50%', transform: 'translateY(-50%)' }} />
+      <main className="vibe-container py-12 md:py-24">
+        <header className="mb-16">
+          <p className="vibe-label ml-0">GELİŞMİŞ ARAMA</p>
+          <h1 className="vibe-section-title mb-12 uppercase">Toplulukta Keşfedin</h1>
+          <form onSubmit={handleSearch} className="relative group max-w-5xl">
+            <Search className="absolute left-8 text-muted-foreground group-focus-within:text-primary transition-colors" size={28} style={{ top: '50%', transform: 'translateY(-50%)' }} />
             <input 
               type="text" 
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Arama yapın..." 
-              className="w-full h-[48px] pl-12 md:pl-16 pr-32 md:pr-40 py-4 md:py-6 rounded-[12px] border border-[#E5E7EB] bg-[#FAFAFA] focus:ring-1 focus:ring-[#FF4D94] outline-none transition-all text-base md:text-2xl font-bold tracking-tight"
+              placeholder="TARTIŞMA VEYA TOPLULUK ARA..." 
+              className="vibe-input pl-20 pr-48 h-20 text-xl uppercase"
               autoFocus
             />
-            <div className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 md:gap-2">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
               <button 
                 type="button"
                 onClick={startVoiceSearch}
-                className={`p-2 md:p-3 rounded-[8px] transition-all ${isListening ? 'bg-red-500 text-[#FFFFFF] animate-pulse' : 'bg-[#FAFAFA] hover:bg-[#E5E7EB] text-[#999999] active:scale-95 border border-[#E5E7EB]'}`}
+                className={cn(
+                  "p-4 rounded-xl transition-all border-2 border-border shadow-sm",
+                  isListening ? 'bg-destructive text-white animate-pulse border-destructive' : 'bg-muted/50 hover:bg-muted text-muted-foreground active:scale-95'
+                )}
                 title="Sesli Ara"
               >
-                <Mic size={18} />
+                <Mic size={24} />
               </button>
               <button 
                 type="submit"
                 disabled={loading}
-                className="bg-[#FF4D94] text-[#FFFFFF] px-4 md:px-8 py-2 md:py-3.5 rounded-[8px] font-bold font-sm md:text-lg hover:bg-[#FF4D94]/90 transition-all disabled:opacity-50 active:scale-95 uppercase tracking-widest"
+                className="vibe-button-primary h-14 px-8 text-sm"
               >
-                {loading ? <Loader2 size={18} className="animate-spin" /> : 'Ara'}
+                {loading ? <Loader2 size={24} className="animate-spin" /> : 'ARA'}
               </button>
             </div>
           </form>
         </header>
 
         <section>
-          <div className="flex items-center justify-between mb-6 border-b border-[#E5E7EB] pb-3">
-            <h2 className="text-[10px] md:text-xs font-bold text-[#999999] uppercase tracking-widest">
+          <div className="flex items-center justify-between mb-8 border-b border-border pb-4">
+            <h2 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
               {loading ? 'ARANIYOR...' : `${results.length} SONUÇ BULUNDU`}
             </h2>
           </div>
 
-          <div className="grid gap-4 md:gap-6">
+          <div className="grid gap-6">
             <AnimatePresence mode="popLayout">
               {results.length > 0 ? (
                 results.map((topic, index) => (
                   <motion.div
                     key={topic.id}
-                    initial={{ opacity: 0, y: 15 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
                     exit={{ opacity: 0, scale: 0.98 }}
                   >
                     <Link 
                       href={`/discussions/${topic.id}`}
-                      className="block group bg-[#FFFFFF] border border-[#E5E7EB] rounded-[8px] p-5 md:p-8 hover:border-[#FF4D94] transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                      className="vibe-card vibe-card-hover block p-8"
                     >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="space-y-3 min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-6">
+                        <div className="space-y-4 min-w-0 flex-1">
                           <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-bold px-2.5 py-0.5 bg-[#FFF0F6] border border-[#FF4D94]/10 rounded-[8px] text-[#FF4D94] uppercase tracking-widest">
+                            <span className="vibe-badge bg-primary/10 text-primary">
                               {topic.category?.name || 'Genel'}
                             </span>
-                            <span className="text-[9px] font-medium text-[#999999] uppercase tracking-widest opacity-60">
+                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
                               {new Date(topic.created_at).toLocaleDateString('tr-TR')}
                             </span>
                           </div>
-                          <h3 className="text-lg md:text-2xl font-bold group-hover:text-[#FF4D94] transition-colors tracking-tight leading-tight line-clamp-1 text-[#1A1A1A]">{topic.title}</h3>
-                          <p className="text-sm md:text-base text-[#666666] line-clamp-2 leading-relaxed font-medium">
+                          <h3 className="text-xl md:text-3xl font-black group-hover:text-primary transition-colors tracking-tighter leading-tight line-clamp-1 text-foreground">{topic.title}</h3>
+                          <p className="text-sm md:text-lg text-muted-foreground line-clamp-2 leading-relaxed font-medium">
                             {topic.content}
                           </p>
                         </div>
-                        <div className="p-3 md:p-4 rounded-[8px] bg-[#F9F9FB] group-hover:bg-[#FF4D94] group-hover:text-[#FFFFFF] transition-all shadow-sm shrink-0">
-                          <ArrowRight size={20} className="md:size-6" />
+                        <div className="p-4 rounded-2xl bg-muted group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-sm shrink-0">
+                          <ArrowRight size={24} />
                         </div>
                       </div>
                     </Link>
                   </motion.div>
                 ))
               ) : !loading && query && (
-                <div className="text-center py-16 md:py-24 bg-[#F9F9FB] rounded-[8px] border border-dashed border-[#E5E7EB]">
-                  <Search size={48} className="mx-auto text-[#999999]/30 mb-4" />
-                  <p className="text-lg md:text-2xl font-bold text-[#666666] mb-2">Sonuç Bulunamadı</p>
-                  <p className="text-xs text-[#999999] font-medium uppercase tracking-widest opacity-60">Farklı anahtar kelimeler deneyin</p>
+                <div className="text-center py-32 bg-card rounded-[3rem] border-4 border-dashed border-border px-8">
+                  <Search size={80} className="mx-auto text-muted-foreground/10 mb-8" />
+                  <h3 className="text-2xl md:text-4xl font-black text-foreground mb-4 tracking-tight">Sonuç Bulunamadı</h3>
+                  <p className="text-base md:text-xl text-muted-foreground font-medium max-w-lg mx-auto leading-relaxed">
+                    Aradığınız kriterlere uygun bir içerik bulamadık. Lütfen farklı anahtar kelimeler kullanarak tekrar deneyin.
+                  </p>
                 </div>
               )}
             </AnimatePresence>

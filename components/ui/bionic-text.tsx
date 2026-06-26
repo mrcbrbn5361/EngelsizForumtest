@@ -29,9 +29,9 @@ export function BionicText({ text, className = '', as: Component = 'span' }: Bio
       const end = word.slice(mid);
       
       return (
-        <span key={idx} className="inline-block mr-1">
+        <span key={idx} className="whitespace-nowrap">
           <strong className="font-extrabold">{start}</strong>
-          {end}
+          {end}{' '}
         </span>
       );
     });

@@ -111,12 +111,12 @@ function NewTopicForm() {
     <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-3xl">
       <button 
         onClick={() => router.back()} 
-        className="mb-6 flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-primary transition-all group uppercase tracking-widest"
+        className="mb-8 flex items-center gap-3 text-sm font-black text-muted-foreground hover:text-primary transition-all group uppercase tracking-[0.2em] px-2"
       >
-        <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Geri Dön
+        <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" /> GERİ DÖN
       </button>
 
-      <div className="vibe-card p-6 md:p-10 relative overflow-hidden">
+      <div className="vibe-card p-8 md:p-16 relative overflow-hidden shadow-2xl">
         <div className="absolute top-0 right-0 size-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
         
         <header className="mb-8 text-center relative z-10">
@@ -126,9 +126,9 @@ function NewTopicForm() {
           </p>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8 relative z-10">
-          <div className="space-y-2">
-            <label htmlFor="title" className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground ml-2">TARTIŞMA BAŞLIĞI</label>
+        <form onSubmit={handleSubmit} className="space-y-10 md:space-y-12 relative z-10">
+          <div className="space-y-4">
+            <label htmlFor="title" className="vibe-label">TARTIŞMA BAŞLIĞI</label>
             <input 
               id="title"
               type="text" 
@@ -137,12 +137,12 @@ function NewTopicForm() {
               placeholder="Örn: Erişilebilir web tasarımı" 
               value={title} 
               onChange={e => setTitle(e.target.value)}
-              className="w-full p-4 md:p-5 rounded-xl border border-border bg-muted/20 outline-none focus:border-primary transition-all font-bold text-base md:text-xl placeholder:text-muted-foreground/30 disabled:opacity-50"
+              className="vibe-input h-20 text-xl"
             />
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="category" className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground ml-2">KATEGORİ SEÇİMİ</label>
+          <div className="space-y-4">
+            <label htmlFor="category" className="vibe-label">KATEGORİ SEÇİMİ</label>
             <div className="relative">
               <select 
                 id="category"
@@ -150,7 +150,7 @@ function NewTopicForm() {
                 disabled={loading}
                 value={categoryId} 
                 onChange={e => setCategoryId(e.target.value)}
-                className="w-full p-4 md:p-5 rounded-xl border border-border bg-muted/20 outline-none focus:border-primary transition-all font-bold text-sm md:text-lg appearance-none cursor-pointer disabled:opacity-50"
+                className="vibe-input h-20 text-lg appearance-none cursor-pointer"
               >
                   <option value="">{categories.length === 0 ? "Kategoriler yükleniyor veya boş..." : "Bir kategori seçin..."}</option>
                   {leafCategories.map(cat => (
@@ -160,8 +160,8 @@ function NewTopicForm() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-muted-foreground ml-2">DETAYLI İÇERİK (MARKDOWN)</label>
+          <div className="space-y-4">
+            <label className="vibe-label">DETAYLI İÇERİK (MARKDOWN)</label>
             <TopicEditor value={content} onChange={setContent} />
           </div>
 

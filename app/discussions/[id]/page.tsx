@@ -213,21 +213,27 @@ export default function DiscussionDetailPage() {
   };
 
   const handleSummarize = async () => {
-    if (!topic || !process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
-      alert('AI Özeti için API anahtarı ayarlanmamış.');
-      return;
-    }
+    if (!topic) return;
     
     setIsSummarizing(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
-      
-      const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
-        contents: `Lütfen aşağıdaki forum başlığını ve içeriğini kısa ve öz bir şekilde (maksimum 4 cümle) Türkçe özetle:\n\nBaşlık: ${topic.title}\nİçerik: ${topic.content}`,
+      const response = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          title: topic.title, 
+          content: topic.content,
+          type: 'topic_summary'
+        }),
       });
       
-      setSummary(response.text || "Özet oluşturulamadı.");
+      const data = await response.json();
+      
+      if (data.text) {
+        setSummary(data.text);
+      } else {
+        throw new Error(data.error || 'Özet oluşturulamadı.');
+      }
     } catch (err: any) {
       console.error('Summarization failed:', err);
       alert('Özet oluşturulurken bir hata oluştu: ' + err.message);
@@ -291,25 +297,26 @@ export default function DiscussionDetailPage() {
       <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12">
         <button 
           onClick={() => router.back()}
-          className="mb-8 flex items-center gap-2 text-sm font-black text-muted-foreground hover:text-primary transition-colors group uppercase tracking-widest px-2"
+          className="mb-8 flex items-center gap-3 text-sm font-black text-muted-foreground hover:text-primary transition-all group uppercase tracking-[0.2em] px-2"
         >
-          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Geri Dön
+          <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" /> GERİ DÖN
         </button>
 
-        <div className="grid lg:grid-cols-[1fr_360px] gap-8 md:gap-12">
+        <div className="grid lg:grid-cols-[1fr_360px] gap-10 md:gap-16">
           {/* Main Content */}
-          <div className="space-y-12 min-w-0">
-            <article className="bg-card p-6 md:p-12 rounded-[2.5rem] border border-border shadow-sm">
-              <header className="mb-10 space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex flex-wrap items-center gap-4">
-                    <div className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
-                      {topic.category?.name || 'Genel'}
+          <div className="space-y-16 min-w-0">
+            <article className="vibe-card p-8 md:p-16 relative overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 size-96 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl -z-10"></div>
+              <header className="mb-12 space-y-8">
+                <div className="flex flex-wrap items-center justify-between gap-6">
+                  <div className="flex flex-wrap items-center gap-6">
+                    <div className="px-5 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
+                      {topic.category?.name?.toUpperCase() || 'GENEL'}
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                      <Users size={14} className="text-primary" /> {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
+                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
+                      <Users size={14} className="text-primary" /> {topic.author?.full_name?.toUpperCase() || topic.author?.username?.toUpperCase() || 'KULLANICI'}
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
                       <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
                     </div>
                   </div>
@@ -335,10 +342,10 @@ export default function DiscussionDetailPage() {
                     </div>
                   )}
                 </div>
-                <h1 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-tight break-words">{topic.title}</h1>
+                <h1 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-tight break-words uppercase">{topic.title}</h1>
               </header>
 
-              <div className="prose prose-lg dark:prose-invert max-w-none font-medium leading-relaxed text-muted-foreground">
+              <div className="vibe-markdown-body prose prose-lg dark:prose-invert max-w-none font-medium leading-relaxed text-muted-foreground">
                 <ReactMarkdown>{topic.content}</ReactMarkdown>
               </div>
 
@@ -390,35 +397,35 @@ export default function DiscussionDetailPage() {
             </article>
 
             {/* Comments Section */}
-            <section className="space-y-10">
-              <h2 className="text-2xl md:text-4xl font-black px-4 flex items-center gap-4 tracking-tighter text-foreground">
-                <MessageSquare size={32} className="text-primary" /> Yanıtlar 
-                <span className="text-primary/30">{comments.length}</span>
+            <section className="space-y-12">
+              <h2 className="vibe-section-title px-4 flex items-center gap-6">
+                <MessageSquare size={48} className="text-primary" /> Yanıtlar 
+                <span className="text-primary/20">{comments.length}</span>
               </h2>
 
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {comments.length > 0 ? (
                   comments.map((comment, index) => (
                     <motion.div
                       key={comment.id}
-                      initial={{ opacity: 0, x: -10 }}
+                      initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className="bg-card p-6 md:p-10 rounded-[2rem] border border-border flex gap-4 md:gap-8 hover:border-primary/30 transition-all group"
+                      className="vibe-card p-8 md:p-12 flex gap-6 md:gap-10 hover:border-primary/30 transition-all group"
                     >
                       <div className="flex-shrink-0">
-                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-colors">
-                          <User size={24} />
+                        <div className="w-14 h-14 md:w-20 md:h-20 rounded-3xl bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-all">
+                          <User size={32} />
                         </div>
                       </div>
-                      <div className="flex-1 min-w-0 space-y-4">
+                      <div className="flex-1 min-w-0 space-y-6">
                         <div className="flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                            <span className="text-primary flex items-center gap-1.5">
-                              {comment.author?.full_name || comment.author?.username || 'Kullanıcı'}
+                          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+                            <span className="text-primary flex items-center gap-2">
+                              {comment.author?.full_name?.toUpperCase() || comment.author?.username?.toUpperCase() || 'KULLANICI'}
                               {(comment.author?.role === 'admin' || comment.author?.role === 'moderator') && (
-                                <span className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[8px] flex items-center gap-1 leading-none">
-                                  <Shield size={8} /> {comment.author.role}
+                                <span className="px-3 py-1 rounded-full bg-primary text-primary-foreground text-[8px] flex items-center gap-1.5 leading-none shadow-lg shadow-primary/20">
+                                  <Shield size={10} /> {comment.author.role.toUpperCase()}
                                 </span>
                               )}
                             </span>
@@ -453,24 +460,24 @@ export default function DiscussionDetailPage() {
                 ) : (
                   <form 
                     onSubmit={handlePostComment}
-                    className="bg-card p-6 md:p-10 rounded-[2.5rem] border border-border shadow-2xl relative overflow-hidden mt-12"
+                    className="vibe-card p-8 md:p-16 space-y-10 border-primary/20 shadow-2xl relative overflow-hidden mt-16"
                   >
-                    <div className="absolute top-0 left-0 w-full h-2 bg-primary/20" />
-                    <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-6">{topic.is_locked ? 'ADMİN PANELİ: KİLİTLİ BAŞLIĞA YANIT YAZ' : 'YENİ YANIT GÖNDER'}</p>
+                    <div className="absolute top-0 left-0 w-full h-3 bg-primary/20" />
+                    <p className="vibe-label ml-0">{topic.is_locked ? 'ADMİN PANELİ: KİLİTLİ BAŞLIĞA YANIT YAZ' : 'YENİ YANIT GÖNDER'}</p>
                     <textarea
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       placeholder="Bir şeyler yazın..."
-                      className="w-full min-h-[180px] p-8 rounded-[1.5rem] bg-muted/30 border border-border focus:border-primary focus:bg-background outline-none transition-all text-lg font-medium resize-none mb-6"
+                      className="vibe-input min-h-[220px] p-8 text-xl"
                       required
                     />
                     <div className="flex justify-end">
                       <button
                         type="submit"
                         disabled={sending}
-                        className="px-10 py-5 bg-primary text-primary-foreground rounded-2xl font-black text-xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3 disabled:opacity-50"
+                        className="vibe-button-primary h-20 px-12 text-xl"
                       >
-                        {sending ? <Loader2 size={24} className="animate-spin" /> : <Send size={24} />} {sending ? 'Gönderiliyor...' : 'Gönder'}
+                        {sending ? <Loader2 size={24} className="animate-spin" /> : <Send size={28} />} {sending ? 'GÖNDERİLİYOR...' : 'GÖNDER'}
                       </button>
                     </div>
                   </form>
@@ -491,55 +498,55 @@ export default function DiscussionDetailPage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="space-y-8">
-            <section className="bg-card p-8 rounded-[2rem] border border-border shadow-sm">
-              <h3 className="text-[10px] font-black text-primary uppercase tracking-widest mb-8">Kategori Detayları</h3>
-              <div className="space-y-6">
-                <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-2xl border border-border/50">
-                  <div className="w-12 h-12 rounded-xl bg-background flex items-center justify-center text-primary shrink-0">
-                    <MessageSquare size={24} />
+          <aside className="space-y-10">
+            <section className="vibe-card p-8 md:p-10">
+              <h3 className="vibe-label ml-0 mb-10">KATEGORİ DETAYLARI</h3>
+              <div className="space-y-8">
+                <div className="flex items-center gap-6 p-6 bg-primary/5 rounded-[2rem] border border-primary/10">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                    <MessageSquare size={32} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Grup</p>
-                    <p className="text-lg font-black truncate text-foreground">{topic.category?.name || 'Genel'}</p>
+                    <p className="vibe-label ml-0 mb-1">GRUP</p>
+                    <p className="text-xl md:text-2xl font-black truncate text-foreground">{topic.category?.name?.toUpperCase() || 'GENEL'}</p>
                   </div>
                 </div>
-                <div className="flex items-center justify-between px-2 pt-2 border-t border-border/50">
-                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Durum</span>
-                  <span className="text-[10px] font-black text-green-500 uppercase tracking-widest flex items-center gap-1.5"><Shield size={14} /> AKTİF</span>
+                <div className="flex items-center justify-between px-4 pt-4 border-t border-border">
+                  <span className="vibe-label ml-0">DURUM</span>
+                  <span className="text-[10px] font-black text-green-500 uppercase tracking-[0.2em] flex items-center gap-2"><Shield size={16} /> AKTİF</span>
                 </div>
-                <div className="flex items-center justify-between px-2">
-                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Görünürlük</span>
-                  <span className="text-[10px] font-black text-primary uppercase tracking-widest flex items-center gap-1.5"><Globe size={14} /> HERKESE AÇIK</span>
+                <div className="flex items-center justify-between px-4">
+                  <span className="vibe-label ml-0">GÖRÜNÜRLÜK</span>
+                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] flex items-center gap-2"><Globe size={16} /> HERKESE AÇIK</span>
                 </div>
               </div>
             </section>
 
-            <div className="bg-primary p-8 rounded-[2rem] text-primary-foreground shadow-2xl relative overflow-hidden group">
-              <div className="absolute -right-8 -bottom-8 opacity-10 group-hover:scale-110 transition-transform">
-                <Sparkles size={160} />
+            <div className="bg-primary p-10 rounded-[2.5rem] text-primary-foreground shadow-2xl relative overflow-hidden group">
+              <div className="absolute -right-12 -bottom-12 opacity-10 group-hover:scale-110 transition-transform">
+                <Sparkles size={200} />
               </div>
               <div className="relative z-10">
-                <h3 className="text-[10px] font-black uppercase tracking-widest mb-4 opacity-70">AI ASİSTAN</h3>
-                <p className="text-lg font-bold mb-8 leading-tight tracking-tight">Kısa bir özet mi lazım? AI teknolojimiz emrinizde.</p>
+                <h3 className="vibe-label ml-0 mb-6 text-white/70">AI ASİSTAN</h3>
+                <p className="text-xl md:text-2xl font-black mb-10 leading-tight tracking-tight">Kısa bir özet mi lazım? AI teknolojimiz emrinizde.</p>
                 <button 
                    onClick={handleSummarize}
                    disabled={isSummarizing}
-                   className="w-full py-4 bg-white text-primary rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white/90 active:scale-95 transition-all shadow-lg"
+                   className="w-full h-16 bg-white text-primary rounded-2xl font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-white/90 active:scale-95 transition-all shadow-xl"
                 >
-                  {isSummarizing ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />} ŞİMDİ ÖZETLE
+                  {isSummarizing ? <Loader2 size={24} className="animate-spin" /> : <Sparkles size={24} />} ŞİMDİ ÖZETLE
                 </button>
               </div>
             </div>
 
-            <section className="bg-card p-8 rounded-[2rem] border border-border">
-              <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-6 px-2">Benzer Başlıklar</h3>
-              <div className="space-y-4">
+            <section className="vibe-card p-10">
+              <h3 className="vibe-label ml-0 mb-8">BENZER BAŞLIKLAR</h3>
+              <div className="space-y-6">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="group p-4 rounded-xl hover:bg-muted/50 transition-all">
-                    <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2 tracking-tight">Erişilebilirlik hakkında genel sorular ve cevaplar...</p>
-                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                      KEŞFET <ChevronRight size={14} />
+                  <div key={i} className="group p-6 rounded-2xl hover:bg-muted/50 transition-all border border-transparent hover:border-border">
+                    <p className="text-base font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-3 tracking-tight">Erişilebilirlik hakkında genel sorular ve cevaplar...</p>
+                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
+                      KEŞFET <ChevronRight size={16} />
                     </div>
                   </div>
                 ))}

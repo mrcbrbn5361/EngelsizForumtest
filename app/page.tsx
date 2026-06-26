@@ -1,7 +1,7 @@
 import React from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import Link from 'next/link';
-import { BionicText } from '@/components/ui/bionic-text';
+import { Sparkles } from 'lucide-react';
 
 export default function Home() {
   const startHref = '/discussions';
@@ -62,44 +62,50 @@ export default function Home() {
       <main className="flex-1 w-full overflow-x-hidden">
         {/* Hero Section */}
         <section 
-          className="w-full px-4 py-20 md:py-32 lg:py-40 text-center relative"
+          className="relative min-h-[85vh] flex items-center justify-center overflow-hidden pt-20"
         >
-          <div className="absolute inset-0 bg-primary/5 rounded-[3rem] -z-10 opacity-30" />
-          <div className="max-w-4xl mx-auto px-4">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--primary)_0%,transparent_70%)] opacity-[0.05] -z-10" />
+          <div className="vibe-container py-24 md:py-36 text-center relative z-10">
             <div
-              className="inline-block mb-6 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-[10px] md:text-xs font-bold uppercase tracking-widest shadow-lg shadow-primary/10"
+              className="inline-flex items-center gap-3 px-6 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] md:text-xs font-black uppercase tracking-[0.3em] mb-10 shadow-xl shadow-primary/5 animate-fade-in"
             >
-              ENGELSİZ FORUM&apos;A HOŞ GELDİNİZ
+              <Sparkles size={16} /> TÜRKİYE&apos;NİN İLK ERİŞİLEBİLİR FORUMU
             </div>
             <h1 
-              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-8 tracking-tighter text-foreground leading-[0.9] sm:leading-[0.85]"
+              className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-12 tracking-tighter text-foreground leading-[0.85] uppercase"
             >
-              <BionicText text="Herkes İçin Erişilebilir Bir Topluluk" />
+              ENGELSİZ <br />
+              <span className="text-primary italic">DİJİTAL</span> <br />
+              DÜNYA
             </h1>
             <p 
-              className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-muted-foreground mb-12 font-medium leading-relaxed px-4"
+              className="mx-auto max-w-3xl text-lg md:text-2xl text-muted-foreground mb-16 font-medium leading-relaxed px-4"
             >
-              <BionicText text="Engelleri birlikte aşmak için tasarlanan, yapay zeka destekli ve tam erişilebilir forum platformu." />
+              Yapay zeka destekli, tam erişilebilir ve kapsayıcı topluluk platformu ile tanışın. Herkes için bilgi, herkes için forum.
             </p>
             <div
-              className="flex flex-col sm:flex-row items-center justify-center gap-4"
+              className="flex flex-col sm:flex-row items-center justify-center gap-6 px-4"
             >
               <Link
-                href={startHref}
-                className="w-full sm:w-auto bg-primary text-primary-foreground px-10 py-5 rounded-2xl font-black text-xl shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center min-h-[64px]"
+                href="/auth"
+                className="vibe-button-primary w-full sm:w-auto h-20 px-12 text-xl"
                 aria-label="Platformu kullanmaya başla"
               >
-                Hemen Başla
+                HEMEN BAŞLA
               </Link>
               <Link
                 href="/discussions"
-                className="w-full sm:w-auto bg-muted text-foreground px-10 py-5 rounded-2xl font-black text-xl hover:bg-muted/80 hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center min-h-[64px]"
+                className="w-full sm:w-auto bg-muted border-2 border-transparent hover:border-primary/20 text-foreground px-12 py-5 rounded-[2rem] font-black text-xl hover:bg-muted/80 hover:scale-[1.02] active:scale-95 transition-all text-center flex items-center justify-center min-h-[80px] uppercase tracking-widest"
                 aria-label="Tüm tartışmaları görüntüle"
               >
-                Tartışmaları Gör
+                TARTIŞMALARI GÖR
               </Link>
             </div>
           </div>
+          
+          {/* Decorative Elements */}
+          <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -z-20 animate-pulse" />
+          <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -z-20 animate-pulse" />
         </section>
 
         {/* Key Takeaways Section */}
@@ -136,23 +142,23 @@ export default function Home() {
         </section>
 
         {/* Feature Grid */}
-        <section className="max-w-7xl mx-auto px-4 py-20 border-b border-border">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl md:text-5xl font-black tracking-tight">Gelişmiş Teknolojik Özellikler</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Platformumuz, en yeni yapay zeka ve web standartlarını kullanarak engelleri ortadan kaldırıyor.</p>
+        <section className="max-w-7xl mx-auto px-4 py-32 border-b border-border">
+          <div className="text-center mb-24 space-y-8">
+            <h2 className="vibe-section-title">Gelişmiş Teknolojik Özellikler</h2>
+            <p className="text-muted-foreground text-xl md:text-2xl max-w-3xl mx-auto font-medium">Platformumuz, en yeni yapay zeka ve web standartlarını kullanarak engelleri ortadan kaldırıyor.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 lg:gap-20">
             {[
               { 
                 title: "AI Destekli Özetleme", 
                 desc: "Vakit nakittir. Özellikle onlarca sayfalık tartışmaları takip etmek zor olabilir. Bizim yapay zekamız, konuyu saniyeler içinde analiz eder ve en önemli noktaları maddeler halinde size sunar.",
-                icon: "✨",
+                icon: "🪄",
                 color: "bg-blue-500/10 text-blue-500"
               },
               { 
                 title: "Gelişmiş Erişilebilirlik", 
                 desc: "Sadece renkleri değiştirmekle kalmıyoruz. WCAG 2.1 standartlarına göre her buton, her link ve her görsel ekran okuyucular için mükemmel şekilde etiketlenmiştir. Tam klavye kontrolü standarttır.",
-                icon: "♿",
+                icon: "👁️",
                 color: "bg-green-500/10 text-green-500"
               },
               { 
@@ -164,13 +170,16 @@ export default function Home() {
             ].map((feature, i) => (
               <div
                 key={i}
-                className="bg-card border border-border p-8 rounded-3xl hover:border-primary/50 transition-all group shadow-sm"
+                className="vibe-card vibe-card-hover p-12 md:p-16 shadow-2xl relative group"
               >
-                <div className={`w-14 h-14 rounded-2xl ${feature.color} flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform`} aria-hidden="true">
+                <div className={`w-20 h-20 rounded-[2rem] ${feature.color} flex items-center justify-center text-5xl mb-10 group-hover:rotate-12 transition-transform`} aria-hidden="true">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl md:text-2xl font-black mb-4 tracking-tight">{feature.title}</h3>
-                <p className="text-muted-foreground font-medium leading-relaxed">{feature.desc}</p>
+                <h3 className="text-3xl md:text-4xl font-black mb-6 tracking-tight uppercase leading-tight">{feature.title}</h3>
+                <p className="text-muted-foreground font-medium leading-relaxed text-lg md:text-xl">{feature.desc}</p>
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Sparkles size={24} className="text-primary/20" />
+                </div>
               </div>
             ))}
           </div>
@@ -294,68 +303,65 @@ export default function Home() {
         </section>
 
         {/* E-E-A-T Section & FAQ */}
-        <section className="max-w-4xl mx-auto px-4 py-20">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">Sıkça Sorulan Sorular</h2>
-            <p className="text-muted-foreground text-lg">Platformumuz hakkında merak edilenler ve GEO (Yapay Zeka Arama) uyumlu yanıtlarımız.</p>
+        <section className="max-w-4xl mx-auto px-4 py-32">
+          <div className="text-center mb-24 space-y-6">
+            <h2 className="vibe-section-title">Sıkça Sorulan Sorular</h2>
+            <p className="text-muted-foreground text-xl font-medium">Platformumuz hakkında merak edilenler ve GEO (Yapay Zeka Arama) uyumlu yanıtlarımız.</p>
           </div>
 
-          <div className="space-y-8">
-            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
-              <h3 className="text-xl md:text-2xl font-black mb-4">EngelsizForum nedir ve kimler içindir?</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                EngelsizForum, başta görme, işitme, ortopedik ve bilişsel kısıtlılığı olan bireyler olmak üzere, internette engelsiz ve güvenli bir bilgi paylaşım ortamı arayan herkes içindir. Türkiye&apos;nin ilk tam erişilebilir forum platformu olan bu sistem, evrensel tasarım prensipleriyle geliştirilmiştir.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
-              <h3 className="text-xl md:text-2xl font-black mb-4">Platformda hangi erişilebilirlik özellikleri var?</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                EngelsizForum; bionik okuma (Bionic Reading) desteği, yüksek kontrast ve disleksi dostu yazı tipleri, ekran okuyucu optimizasyonu, ARIA etiketleri ile zenginleştirilmiş UI bileşenleri, sesli tartışma özetleri ve tam klavye navigasyonu gibi ileri düzey erişilebilirlik özellikleri sunar.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
-              <h3 className="text-xl md:text-2xl font-black mb-4">Yapay zeka (AI) bu forumda nasıl bir rol oynuyor?</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların "Zeka Puanı" (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
-              <h3 className="text-xl md:text-2xl font-black mb-4">Üyelik ücretsiz mi ve bilgilerim güvende mi?</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                EngelsizForum tamamen ücretsiz bir platformdur. Kullanıcı verileri, modern şifreleme standartları ve Supabase altyapısı ile korunmaktadır. Gizliliğiniz bizim için önceliktir ve verileriniz asla izinsiz üçüncü taraflarla paylaşılmaz.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border p-8 rounded-3xl shadow-sm">
-              <h3 className="text-xl md:text-2xl font-black mb-4">İçeriklerin doğruluğu nasıl sağlanıyor?</h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve "Uzman" rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur.
-              </p>
-            </div>
+          <div className="space-y-10">
+            {[
+              {
+                q: "EngelsizForum nedir ve kimler içindir?",
+                a: "EngelsizForum, başta görme, işitme, ortopedik ve bilişsel kısıtlılığı olan bireyler olmak üzere, internette engelsiz ve güvenli bir bilgi paylaşım ortamı arayan herkes içindir. Türkiye'nin ilk tam erişilebilir forum platformu olan bu sistem, evrensel tasarım prensipleriyle geliştirilmiştir."
+              },
+              {
+                q: "Platformda hangi erişilebilirlik özellikleri var?",
+                a: "EngelsizForum; bionik okuma (Bionic Reading) desteği, yüksek kontrast ve disleksi dostu yazı tipleri, ekran okuyucu optimizasyonu, ARIA etiketleri ile zenginleştirilmiş UI bileşenleri, sesli tartışma özetleri ve tam klavye navigasyonu gibi ileri düzey erişilebilirlik özellikleri sunar."
+              },
+              {
+                q: "Yapay zeka (AI) bu forumda nasıl bir rol oynuyor?",
+                a: "Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların 'Zeka Puanı' (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır."
+              },
+              {
+                q: "Üyelik ücretsiz mi ve bilgilerim güvende mi?",
+                a: "EngelsizForum tamamen ücretsiz bir platformdur. Kullanıcı verileri, modern şifreleme standartları ve Supabase altyapısı ile korunmaktadır. Gizliliğiniz bizim için önceliktir ve verileriniz asla izinsiz üçüncü taraflarla paylaşılmaz."
+              },
+              {
+                q: "İçeriklerin doğruluğu nasıl sağlanıyor?",
+                a: "Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve 'Uzman' rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur."
+              }
+            ].map((item, i) => (
+              <div key={i} className="vibe-card p-10 md:p-12 shadow-sm border-primary/5 hover:border-primary/20 transition-all">
+                <h3 className="text-2xl md:text-3xl font-black mb-6 tracking-tight text-foreground">{item.q}</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed font-medium">
+                  {item.a}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 
         {/* Authoritative Badge Section */}
-        <section className="bg-primary text-primary-foreground py-12">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-            <div>
-              <h2 className="text-2xl md:text-4xl font-black tracking-tight mb-2 uppercase">Erişilebilirlik Taahhüdü</h2>
-              <p className="opacity-90 font-medium">Bilişimde engel yok, sadece henüz çözülmemiş tasarım sorunları var.</p>
+        <section className="bg-primary text-primary-foreground py-24 md:py-32 relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-12 text-center md:text-left relative z-10">
+            <div className="space-y-4">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-[0.9]">Erişilebilirlik Taahhüdü</h2>
+              <p className="text-xl md:text-2xl opacity-90 font-medium max-w-xl">Bilişimde engel yok, sadece henüz çözülmemiş tasarım sorunları var.</p>
             </div>
-            <div className="flex gap-4">
-              <div className="px-6 py-4 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/20">
-                <div className="text-3xl font-black">2.1</div>
-                <div className="text-xs uppercase font-bold tracking-widest opacity-80">WCAG Uyumu</div>
+            <div className="flex gap-6">
+              <div className="px-10 py-8 bg-white/10 rounded-[2.5rem] backdrop-blur-xl border border-white/20 shadow-2xl">
+                <div className="text-5xl font-black mb-1">2.1</div>
+                <div className="text-[10px] uppercase font-black tracking-[0.3em] opacity-80">WCAG UYUMU</div>
               </div>
-              <div className="px-6 py-4 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/20">
-                <div className="text-3xl font-black">100%</div>
-                <div className="text-xs uppercase font-bold tracking-widest opacity-80">Erişilebilirlik</div>
+              <div className="px-10 py-8 bg-white/10 rounded-[2.5rem] backdrop-blur-xl border border-white/20 shadow-2xl">
+                <div className="text-5xl font-black mb-1">100%</div>
+                <div className="text-[10px] uppercase font-black tracking-[0.3em] opacity-80">ERİŞİLEBİLİRLİK</div>
               </div>
             </div>
           </div>
+          <div className="absolute top-0 right-0 size-96 bg-white/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
+          <div className="absolute bottom-0 left-0 size-96 bg-black/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2"></div>
         </section>
       </main>
     </DashboardLayout>

@@ -23,13 +23,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         href={href} 
         aria-current={isActive ? 'page' : undefined}
         className={cn(
-          "flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all mb-1",
+          "flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all mb-2",
           isActive 
-            ? "bg-primary text-primary-foreground shadow-lg shadow-primary/10" 
-            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            ? "bg-primary text-primary-foreground shadow-2xl shadow-primary/20 scale-[1.02]" 
+            : "text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent hover:border-border"
         )}
       >
-        <Icon size={18} /> {label}
+        <Icon size={20} /> {label}
       </Link>
     );
   };
@@ -37,35 +37,35 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
-      <div className="flex flex-1 w-full max-w-7xl mx-auto">
-        <aside role="complementary" aria-label="Yan Menü" className="hidden lg:flex w-[280px] p-6 flex-col gap-8 sticky top-16 h-[calc(100vh-64px)] overflow-y-auto bg-muted/5 border-r border-border shrink-0">
+      <div className="flex flex-1 w-full max-w-7xl mx-auto px-4 md:px-8">
+        <aside role="complementary" aria-label="Yan Menü" className="hidden lg:flex w-[320px] p-10 flex-col gap-12 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto bg-muted/5 border-r-2 border-border/50 shrink-0">
             <nav className="flex flex-col gap-2" aria-label="Ana Gezinti">
-                <NavItem href="/" icon={Home} label="Ana Sayfa" />
-                <NavItem href="/discussions" icon={MessageSquare} label="Tartışmalar" />
-                <NavItem href="/communities" icon={Users} label="Topluluklar" />
-                <NavItem href="/about" icon={Info} label="Hakkımızda" />
+                <NavItem href="/" icon={Home} label="ANA SAYFA" />
+                <NavItem href="/discussions" icon={MessageSquare} label="TARTIŞMALAR" />
+                <NavItem href="/communities" icon={Users} label="TOPLULUKLAR" />
+                <NavItem href="/about" icon={Info} label="HAKKIMIZDA" />
             </nav>
 
-            <div className="border-t border-border"></div>
+            <div className="border-t-2 border-border/50"></div>
 
             <nav className="flex flex-col gap-2" aria-label="Kategori Gezintisi">
-              <h4 className="text-[10px] uppercase font-black text-primary tracking-widest ml-4 mb-2">Engeller</h4>
-                <Link href="/communities" className="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-muted-foreground hover:text-foreground hover:bg-muted transition-all" aria-label="Görme engelliler topluluğu">
-                    <AlertCircle size={18} /> Görme
+              <h4 className="vibe-label ml-4 mb-4">TOPLULUKLAR</h4>
+                <Link href="/communities" className="flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent hover:border-border transition-all" aria-label="Görme engelliler topluluğu">
+                    <AlertCircle size={20} className="text-primary" /> GÖRME
                 </Link>
-                <Link href="/communities" className="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-muted-foreground hover:text-foreground hover:bg-muted transition-all" aria-label="İşitme engelliler topluluğu">
-                    <Database size={18} /> İşitme
+                <Link href="/communities" className="flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent hover:border-border transition-all" aria-label="İşitme engelliler topluluğu">
+                    <Database size={20} className="text-primary" /> İŞİTME
                 </Link>
             </nav>
 
             {user && (
                 <nav className="flex flex-col gap-2 mt-auto" aria-label="Hesap Gezintisi">
-                    <h4 className="text-[10px] uppercase font-black text-primary tracking-widest ml-4 mb-2">Hesap</h4>
-                    <NavItem href="/profile" icon={User} label="Profil" />
+                    <h4 className="vibe-label ml-4 mb-4">HESAP</h4>
+                    <NavItem href="/profile" icon={User} label="PROFİL" />
                 </nav>
             )}
         </aside>
-        <div className="flex-1 p-4 md:p-6 lg:p-10 bg-background min-w-0 w-full overflow-x-hidden">
+        <div className="flex-1 p-6 md:p-12 lg:p-16 bg-background min-w-0 w-full overflow-x-hidden">
           {children}
         </div>
       </div>

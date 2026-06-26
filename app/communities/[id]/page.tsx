@@ -133,45 +133,46 @@ export default function CommunityDetailPage() {
       <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12">
         <button 
           onClick={() => router.push('/communities')}
-          className="mb-8 flex items-center gap-2 text-sm font-black text-muted-foreground hover:text-primary transition-colors group uppercase tracking-widest px-2"
+          className="mb-8 flex items-center gap-3 text-sm font-black text-muted-foreground hover:text-primary transition-all group uppercase tracking-[0.2em] px-2"
         >
-          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Topluluklar
+          <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" /> TOPLULUKLAR
         </button>
 
-        <div className="grid lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_380px] gap-8 md:gap-12">
-          <div className="space-y-12">
-            <header className="bg-card p-6 md:p-12 rounded-[2rem] border border-border overflow-hidden relative shadow-sm">
-              <div className="relative z-10 space-y-8">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-6">
-                  <div className="w-16 h-16 md:w-20 md:h-20 bg-primary/10 rounded-2xl md:rounded-3xl flex items-center justify-center text-primary shrink-0 text-3xl">
-                    <Users size={32} />
+        <div className="grid lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_380px] gap-10 md:gap-16">
+          <div className="space-y-16">
+            <header className="vibe-card p-8 md:p-16 relative overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 size-96 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl -z-10"></div>
+              <div className="relative z-10 space-y-10">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-8">
+                  <div className="w-20 h-20 md:w-28 md:h-28 bg-primary/10 rounded-[2rem] md:rounded-[2.5rem] flex items-center justify-center text-primary shrink-0 transition-all group-hover:scale-105">
+                    <Users size={48} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2">TOPLULUK</p>
-                    <h1 className="text-3xl md:text-5xl font-black break-words whitespace-normal tracking-tighter text-foreground leading-tight">{community.name}</h1>
+                    <p className="vibe-label ml-0 mb-3">TOPLULUK</p>
+                    <h1 className="vibe-section-title text-4xl md:text-6xl">{community.name}</h1>
                   </div>
                 </div>
-                <p className="text-base md:text-xl text-muted-foreground font-medium leading-relaxed max-w-3xl">
+                <p className="text-lg md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-3xl">
                   {community.description}
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                  <button className="bg-primary text-primary-foreground px-10 py-4 rounded-2xl font-black text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all outline-none focus:ring-2 focus:ring-primary">
-                    Gruba Katıl
+                <div className="flex flex-col sm:flex-row gap-6 pt-6">
+                  <button className="vibe-button-primary h-20 px-12 text-xl">
+                    GRUBA KATIL
                   </button>
                   <Link 
                     href={`/discussions/new?category_id=${community.id}`}
-                    className="bg-muted text-foreground px-10 py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-3 hover:bg-muted/80 hover:scale-[1.02] active:scale-95 transition-all outline-none focus:ring-2 focus:ring-primary"
+                    className="h-20 px-12 rounded-[2rem] bg-muted border-2 border-transparent hover:border-primary/20 text-foreground font-black text-xl flex items-center justify-center gap-4 hover:bg-muted/80 hover:scale-[1.02] active:scale-95 transition-all outline-none focus:ring-4 focus:ring-primary/10"
                   >
-                    <Plus size={20} /> Başlık Aç
+                    <Plus size={28} /> BAŞLIK AÇ
                   </Link>
                 </div>
               </div>
             </header>
 
-            <section className="space-y-8">
-              <h2 className="text-2xl md:text-4xl font-black flex items-center gap-4 px-2 tracking-tighter text-foreground">
-                <MessageSquare size={32} className="text-primary" /> Tartışmalar 
-                <span className="text-primary/30">{topics.length}</span>
+            <section className="space-y-12">
+              <h2 className="vibe-section-title px-4 flex items-center gap-6">
+                <MessageSquare size={48} className="text-primary" /> Tartışmalar 
+                <span className="text-primary/20">{topics.length}</span>
               </h2>
               
               <div className="grid gap-6">
@@ -229,44 +230,44 @@ export default function CommunityDetailPage() {
             </section>
           </div>
 
-          <aside className="space-y-8">
-            <section className="bg-card p-6 md:p-10 rounded-[2rem] border border-border shadow-sm">
-              <h2 className="text-xl md:text-2xl font-black mb-8 flex items-center gap-3 tracking-tighter text-foreground">
-                <Shield size={24} className="text-primary" /> Kurallar
+          <aside className="space-y-10">
+            <section className="vibe-card p-8 md:p-12">
+              <h2 className="text-2xl font-black mb-10 flex items-center gap-4 tracking-tighter text-foreground">
+                <Shield size={32} className="text-primary" /> KURALLAR
               </h2>
-              <ul className="space-y-8">
+              <ul className="space-y-10">
                 <RuleItem title="Saygı ve Nezaket" description="Tüm üyelere saygılı davranın ve yapıcı geri bildirimler verin." />
                 <RuleItem title="Erişilebilirlik" description="Paylaşılan içeriğin herkes tarafından anlaşılır olduğundan emin olun." />
                 <RuleItem title="Güvenlik" description="Topluluk güvenliğini sarsacak her türlü davranıştan kaçının." />
               </ul>
             </section>
 
-            <div className="bg-muted/30 p-6 md:p-10 rounded-[2rem] border border-border">
-              <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-8">İstatistikler</h3>
-              <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-border/50 pb-4">
-                  <span className="text-sm md:text-base text-muted-foreground font-bold flex items-center gap-3"><Users size={20} /> Üyeler</span>
-                  <span className="text-lg font-black text-primary tracking-tighter">2.5K+</span>
+            <div className="vibe-card p-8 md:p-12">
+              <h3 className="vibe-label ml-0 mb-10">İSTATİSTİKLER</h3>
+              <div className="space-y-8">
+                <div className="flex items-center justify-between border-b border-border pb-6">
+                  <span className="text-lg text-muted-foreground font-black flex items-center gap-4 tracking-tight"><Users size={24} /> Üyeler</span>
+                  <span className="text-2xl font-black text-primary tracking-tighter">2.5K+</span>
                 </div>
-                <div className="flex items-center justify-between border-b border-border/50 pb-4">
-                  <span className="text-sm md:text-base text-muted-foreground font-bold flex items-center gap-3"><Globe size={20} /> Görünürlük</span>
-                  <span className="text-[10px] font-bold text-primary uppercase tracking-widest">AÇIK TOPLULUK</span>
+                <div className="flex items-center justify-between border-b border-border pb-6">
+                  <span className="text-lg text-muted-foreground font-black flex items-center gap-4 tracking-tight"><Globe size={24} /> Görünürlük</span>
+                  <span className="vibe-label ml-0">AÇIK TOPLULUK</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm md:text-base text-muted-foreground font-bold flex items-center gap-3"><Shield size={20} /> Durum</span>
-                  <span className="text-[10px] font-bold text-green-500 uppercase tracking-widest">GÜVENLİ</span>
+                  <span className="text-lg text-muted-foreground font-black flex items-center gap-4 tracking-tight"><Shield size={24} /> Durum</span>
+                  <span className="text-[10px] font-black text-green-500 uppercase tracking-[0.2em]">GÜVENLİ</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-primary p-8 md:p-10 rounded-[2rem] text-primary-foreground relative overflow-hidden shadow-2xl group">
-              <div className="absolute -right-8 -bottom-8 opacity-10 group-hover:scale-110 transition-transform">
-                <Shield size={160} />
+            <div className="bg-primary p-12 rounded-[2.5rem] text-primary-foreground relative overflow-hidden shadow-2xl group">
+              <div className="absolute -right-16 -bottom-16 opacity-10 group-hover:scale-110 transition-transform">
+                <Shield size={220} />
               </div>
               <div className="relative z-10">
-                <h3 className="text-[10px] font-bold uppercase tracking-widest mb-4 opacity-70">HIZLI YARDIM</h3>
-                <p className="text-lg md:text-xl font-bold mb-8 leading-tight tracking-tight">Topluluk hakkında sorun mu var? Moderatörlere hemen yaz.</p>
-                <button className="w-full py-4 bg-white text-primary rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-white/90 transition-all active:scale-95 shadow-lg">
+                <h3 className="vibe-label ml-0 mb-6 text-white/70">HIZLI YARDIM</h3>
+                <p className="text-2xl font-black mb-10 leading-tight tracking-tight">Topluluk hakkında sorun mu var? Moderatörlere hemen yaz.</p>
+                <button className="w-full h-18 bg-white text-primary rounded-[1.5rem] font-black text-sm uppercase tracking-[0.2em] hover:bg-white/90 transition-all active:scale-95 shadow-2xl shadow-black/20">
                   BİZE ULAŞIN
                 </button>
               </div>
