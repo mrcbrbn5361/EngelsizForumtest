@@ -130,7 +130,7 @@ export default function AuthPage() {
                     required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="vibe-input pl-16 h-16 text-base"
+                    className="vibe-input !pl-16 h-16 text-base"
                     placeholder="kullanici_adiniz"
                   />
                 </div>
@@ -147,7 +147,7 @@ export default function AuthPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="vibe-input pl-16 h-16 text-base"
+                  className="vibe-input !pl-16 h-16 text-base"
                   placeholder="e-posta@adresiniz.com"
                 />
               </div>
@@ -163,7 +163,7 @@ export default function AuthPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="vibe-input pl-16 h-16 text-base"
+                  className="vibe-input !pl-16 h-16 text-base"
                   placeholder="En az 6 karakter"
                 />
               </div>
