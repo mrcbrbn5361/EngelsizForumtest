@@ -23,21 +23,23 @@
 }
 
 :root {
-  --background: #fdfdfd;
-  --foreground: #0f172a;
+  --background: #fcf8fb;
+  --foreground: #1c1b1d;
   --card: #ffffff;
-  --card-foreground: #0f172a;
-  --primary: #0f766e;
+  --card-foreground: #1c1b1d;
+  --primary: #005c55;
   --primary-foreground: #ffffff;
-  --muted: #f1f5f9;
-  --muted-foreground: #475569;
-  --border: #e2e8f0;
-  --ring: #0f766e;
-  --radius: 0.75rem;
+  --muted: #f0edf0;
+  --muted-foreground: #3e4947;
+  --border: #bdc9c6;
+  --ring: #2563EB;
+  --radius: 0.25rem;
 }
 
 html {
   font-family: var(--font-sans);
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -46,35 +48,35 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Vibe System Utilities */
 .vibe-container {
-  @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  @apply w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8;
 }
 
 .vibe-card {
-  @apply bg-card border border-border rounded-[2.5rem] shadow-sm overflow-hidden transition-all duration-300 p-6 md:p-8;
+  @apply bg-card border border-border rounded-lg shadow-none overflow-hidden transition-all duration-200 p-6 md:p-8;
 }
 
 .vibe-card-hover {
-  @apply hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1;
+  @apply hover:border-primary/50 hover:bg-muted/10;
 }
 
 .vibe-section-title {
-  @apply text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter text-foreground leading-[1.1];
+  @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground leading-tight;
 }
 
 .vibe-badge {
-  @apply px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest;
+  @apply px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-wider bg-muted text-foreground border border-border;
 }
 
 .vibe-input {
-  @apply w-full px-6 py-4 rounded-2xl border border-border bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-lg outline-none;
+  @apply w-full px-4 py-3 rounded border border-border bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-normal text-base outline-none;
 }
 
 .vibe-label {
-  @apply text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2 block ml-2;
+  @apply text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 block ml-1;
 }
 
 .vibe-button-primary {
-  @apply inline-flex items-center justify-center rounded-2xl bg-primary px-8 py-4 text-base font-black text-primary-foreground transition-all hover:opacity-90 active:scale-95 shadow-xl shadow-primary/20 uppercase tracking-widest;
+  @apply inline-flex items-center justify-center rounded bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-all duration-200 hover:brightness-110 active:scale-95 shadow-none tracking-normal min-h-[48px];
 }
 
 /* Accessibility Overrides */

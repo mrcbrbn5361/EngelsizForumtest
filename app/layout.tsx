@@ -1,16 +1,17 @@
 import type { Metadata, Viewport } from 'next';
-import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Atkinson_Hyperlegible, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { AccessibilityProvider } from '@/components/providers/accessibility-provider';
 import { AuthProvider } from '@/components/providers/auth-provider';
 
-const headingFont = Outfit({
+const headingFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-heading',
   display: 'swap',
 });
 
-const bodyFont = Plus_Jakarta_Sans({
+const bodyFont = Atkinson_Hyperlegible({
+  weight: ['400', '700'],
   subsets: ['latin'],
   variable: '--font-body',
   display: 'swap',

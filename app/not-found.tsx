@@ -1,47 +1,59 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { Navbar } from '@/components/layout/navbar';
-import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { FileQuestion, Home, ArrowLeft } from 'lucide-react';
 
+export const metadata = {
+  title: '404 - Sayfa Bulunamadı | EngelsizForum',
+  description: 'Aradığınız sayfa engellerimize takıldı.',
+};
+
+/**
+ * Modern, fully accessible 404 page.
+ * Implemented as a clean, responsive server component to guarantee zero hydration/context errors.
+ */
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#FFFFFF]">
-      <Navbar />
-      <main className="flex-1 container mx-auto px-4 flex items-center justify-center">
-        <div className="text-center space-y-8">
-          <div className="relative inline-block">
-            <div className="absolute inset-0 bg-[#FFF0F6] blur-3xl rounded-full"></div>
-            <FileQuestion size={120} className="text-[#FF4D94] relative z-10" />
-          </div>
-          
-          <div className="space-y-6">
-            <h1 className="text-8xl md:text-9xl font-black text-[#1A1A1A]">404</h1>
-            <p className="text-3xl md:text-4xl font-black text-[#1A1A1A] tracking-tight">Bu sayfa engellerimize takıldı!</p>
-            <p className="max-w-xl mx-auto text-lg md:text-xl text-[#666666] font-medium leading-relaxed">
-              Gitmek istediğiniz sayfa silinmiş, taşınmış veya henüz inşa edilmemiş olabilir. Panik yapmayın, birlikte aşarız.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-10">
-            <Link 
-              href="/"
-              className="px-12 py-4 bg-[#FF4D94] text-[#FFFFFF] rounded-[8px] font-bold text-lg hover:bg-[#FF4D94]/90 transition-all flex items-center gap-3"
-            >
-              <Home size={24} /> Ana Sayfa
-            </Link>
-            <Link 
-              href="/discussions"
-              className="px-6 py-4 bg-[#F9F9FB] text-[#1A1A1A] rounded-[8px] font-bold text-sm uppercase tracking-widest flex items-center gap-3 border border-[#E5E7EB] hover:bg-[#E5E7EB] transition-all"
-            >
-              <ArrowLeft size={20} /> Tartışmalara Dön
-            </Link>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6 py-12 text-center" role="main">
+      <div className="w-full max-w-2xl mx-auto space-y-12">
+        {/* Visual Element */}
+        <div className="relative inline-block mx-auto">
+          <div className="absolute inset-0 bg-primary/5 blur-3xl rounded-full" aria-hidden="true" />
+          <div className="relative z-10 flex h-24 w-24 md:h-32 md:w-32 items-center justify-center rounded-3xl bg-primary/10 text-primary border border-primary/20 shadow-xl shadow-primary/5 mx-auto">
+            <FileQuestion size={48} className="md:size-64" aria-hidden="true" />
           </div>
         </div>
-      </main>
-      <AccessibilityToolbar />
+        
+        {/* Content */}
+        <div className="space-y-6">
+          <h1 className="text-8xl md:text-9xl font-black text-foreground tracking-tighter" id="error-title">
+            404
+          </h1>
+          <p className="text-2xl md:text-3xl font-bold text-foreground tracking-tight" aria-describedby="error-desc">
+            Bu sayfa engellerimize takıldı!
+          </p>
+          <p id="error-desc" className="max-w-md mx-auto text-base md:text-lg text-muted-foreground leading-relaxed font-medium">
+            Gitmek istediğiniz sayfa silinmiş, taşınmış veya henüz inşa edilmemiş olabilir. Panik yapmayın, birlikte aşarız.
+          </p>
+        </div>
+
+        {/* Action Links */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <Link 
+            href="/"
+            className="w-full sm:w-auto vibe-button-primary h-14 px-10 text-base"
+            aria-label="Ana Sayfaya Dön"
+          >
+            <Home size={20} className="mr-3" aria-hidden="true" /> Ana Sayfa
+          </Link>
+          <Link 
+            href="/discussions"
+            className="w-full sm:w-auto flex items-center justify-center rounded-2xl bg-muted hover:bg-muted/80 text-foreground px-8 h-14 font-black text-sm uppercase tracking-widest border border-border transition-all active:scale-95"
+            aria-label="Tartışmalar sayfasına dön"
+          >
+            <ArrowLeft size={18} className="mr-3" aria-hidden="true" /> Tartışmalara Dön
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

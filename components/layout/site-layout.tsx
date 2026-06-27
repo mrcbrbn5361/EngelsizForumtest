@@ -1,0 +1,21 @@
+'use client';
+
+import React from 'react';
+import { Navbar } from './navbar';
+import { Footer } from './footer';
+import dynamic from 'next/dynamic';
+
+const AccessibilityToolbar = dynamic(() => import('@/components/ui/accessibility-toolbar').then((mod) => mod.AccessibilityToolbar), { ssr: false });
+
+export function SiteLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col min-h-screen bg-background">
+      <Navbar />
+      <main className="flex-1 w-full">
+        {children}
+      </main>
+      <Footer />
+      <AccessibilityToolbar />
+    </div>
+  );
+}
