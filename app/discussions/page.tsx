@@ -177,14 +177,14 @@ export default function DiscussionsPage() {
             </div>
             
             <div className="mt-16 relative group/search">
-              <Search className="absolute left-8 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/search:text-primary transition-colors" size={28} />
+              <Search className="absolute left-6 md:left-8 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within/search:text-primary transition-colors size-6 md:size-7" />
               <input 
                 type="text"
                 placeholder="TARTIŞMALARDA ARA..."
                 aria-label="Tartışma başlıklarında ara"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="vibe-input pl-20 h-20 text-xl uppercase"
+                className="vibe-input !pl-16 md:!pl-20 h-16 md:h-20 text-base md:text-xl uppercase"
               />
             </div>
           </div>
@@ -192,7 +192,7 @@ export default function DiscussionsPage() {
 
         <nav className="mb-16 px-2" aria-label="Kategori filtreleri">
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-10">
-            <div className="flex items-center gap-6 overflow-x-auto pb-6 -mb-6 scrollbar-hide no-scrollbar snap-x relative min-w-0 flex-1" role="list">
+            <div className="flex items-center gap-4 overflow-x-auto pb-6 -mb-6 scrollbar-hide no-scrollbar snap-x relative min-w-0 flex-1" role="list">
               {[
                 { label: 'TÜMÜ', id: null },
                 ...categories.filter(c => !c.parent_id).map(c => ({ label: c.name.toUpperCase(), id: c.id }))
@@ -204,9 +204,9 @@ export default function DiscussionsPage() {
                   aria-label={`${item.label} kategorisini filtrele`}
                   aria-pressed={selectedCategoryId === item.id}
                   className={cn(
-                    "px-10 py-5 rounded-2xl text-xs font-black tracking-[0.2em] transition-all whitespace-nowrap border-2 shrink-0 snap-start active:scale-95 outline-none focus:ring-4 focus:ring-primary/20 shadow-sm",
+                    "px-6 py-3.5 md:px-10 md:py-5 rounded-2xl text-xs font-black tracking-[0.2em] transition-all whitespace-nowrap border-2 shrink-0 snap-start active:scale-95 outline-none focus:ring-4 focus:ring-primary/20 shadow-sm",
                     selectedCategoryId === item.id 
-                      ? 'border-primary bg-primary text-primary-foreground shadow-xl shadow-primary/20 scale-[1.05]' 
+                      ? 'border-primary bg-primary text-primary-foreground shadow-xl shadow-primary/20 scale-[1.02]' 
                       : 'border-border bg-card text-muted-foreground hover:text-foreground hover:bg-muted'
                   )}
                 >
@@ -215,7 +215,7 @@ export default function DiscussionsPage() {
               ))}
             </div>
             
-            <div className="flex bg-muted/50 p-2 rounded-[2rem] shrink-0 self-start xl:self-auto w-full xl:w-auto overflow-x-auto no-scrollbar border-2 border-border/50">
+            <div className="flex flex-row flex-nowrap items-center bg-muted/50 p-1.5 rounded-[2rem] shrink-0 self-start xl:self-auto w-full xl:w-auto overflow-x-auto no-scrollbar border-2 border-border/50">
               {[
                 { label: 'EN YENİ', value: 'Latest' },
                 { label: 'POPÜLER', value: 'Popular' },
@@ -224,9 +224,9 @@ export default function DiscussionsPage() {
                 <button 
                   key={item.label} 
                   onClick={() => setSortBy(item.value as any)}
-                  className={`flex-1 xl:flex-none px-8 py-4 rounded-[1.5rem] text-[10px] sm:text-xs font-black tracking-[0.2em] transition-all whitespace-nowrap ${
+                  className={`flex-1 xl:flex-none px-5 md:px-8 py-3 rounded-[1.5rem] text-[10px] sm:text-xs font-black tracking-[0.2em] transition-all whitespace-nowrap shrink-0 ${
                     sortBy === item.value 
-                      ? 'bg-background text-foreground shadow-xl' 
+                      ? 'bg-background text-foreground shadow-md' 
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >

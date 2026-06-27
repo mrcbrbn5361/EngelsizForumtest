@@ -71,34 +71,48 @@ export default function SearchPage() {
         <header className="mb-16">
           <p className="vibe-label ml-0">GELİŞMİŞ ARAMA</p>
           <h1 className="vibe-section-title mb-12 uppercase">Toplulukta Keşfedin</h1>
-          <form onSubmit={handleSearch} className="relative group max-w-5xl">
-            <Search className="absolute left-8 text-muted-foreground group-focus-within:text-primary transition-colors" size={28} style={{ top: '50%', transform: 'translateY(-50%)' }} />
-            <input 
-              type="text" 
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="TARTIŞMA VEYA TOPLULUK ARA..." 
-              className="vibe-input pl-20 pr-48 h-20 text-xl uppercase"
-              autoFocus
-            />
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
-              <button 
-                type="button"
-                onClick={startVoiceSearch}
-                className={cn(
-                  "p-4 rounded-xl transition-all border-2 border-border shadow-sm",
-                  isListening ? 'bg-destructive text-white animate-pulse border-destructive' : 'bg-muted/50 hover:bg-muted text-muted-foreground active:scale-95'
-                )}
-                title="Sesli Ara"
-              >
-                <Mic size={24} />
-              </button>
+          <form onSubmit={handleSearch} className="w-full max-w-5xl space-y-4">
+            <div className="relative group">
+              <Search className="absolute left-6 text-muted-foreground group-focus-within:text-primary transition-colors" size={24} style={{ top: '50%', transform: 'translateY(-50%)' }} />
+              <input 
+                type="text" 
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="TARTIŞMA VEYA TOPLULUK ARA..." 
+                className="vibe-input !pl-16 md:!pl-20 !pr-20 md:!pr-56 h-16 md:h-20 text-base md:text-xl uppercase"
+                autoFocus
+              />
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
+                <button 
+                  type="button"
+                  onClick={startVoiceSearch}
+                  className={cn(
+                    "p-2.5 md:p-4 rounded-xl transition-all border border-border md:border-2 shadow-sm",
+                    isListening ? 'bg-destructive text-white animate-pulse border-destructive' : 'bg-muted/50 hover:bg-muted text-muted-foreground active:scale-95'
+                  )}
+                  title="Sesli Ara"
+                >
+                  <Mic className="size-5 md:size-6" />
+                </button>
+                <div className="hidden md:block">
+                  <button 
+                    type="submit"
+                    disabled={loading}
+                    className="vibe-button-primary h-14 px-8 text-sm flex items-center justify-center"
+                  >
+                    {loading ? <Loader2 size={24} className="animate-spin" /> : 'ARA'}
+                  </button>
+                </div>
+              </div>
+            </div>
+            {/* Mobile Submit Button */}
+            <div className="md:hidden">
               <button 
                 type="submit"
                 disabled={loading}
-                className="vibe-button-primary h-14 px-8 text-sm"
+                className="w-full vibe-button-primary h-14 text-base font-black tracking-widest uppercase"
               >
-                {loading ? <Loader2 size={24} className="animate-spin" /> : 'ARA'}
+                {loading ? <Loader2 size={24} className="animate-spin mr-2 inline" /> : 'ARA'}
               </button>
             </div>
           </form>

@@ -124,7 +124,7 @@ export default function CommunitiesPage() {
         }}
       />
       <main className="vibe-container py-12">
-        <nav className="flex justify-center gap-8 mb-12 text-xs font-bold uppercase tracking-wider text-primary">
+        <nav className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mb-12 text-xs font-bold uppercase tracking-wider text-primary">
           <Link href="/" className="hover:underline">ANA SAYFA</Link>
           <Link href="/discussions" className="hover:underline">TARTIŞMALAR</Link>
           <Link href="/about" className="hover:underline">HAKKIMIZDA</Link>
@@ -259,7 +259,7 @@ export default function CommunitiesPage() {
             placeholder="GRUPLARDA ARA..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="vibe-input pl-12 pr-4 h-12 text-sm uppercase rounded border border-border bg-background w-full"
+            className="vibe-input !pl-12 pr-4 h-12 text-sm uppercase rounded border border-border bg-background w-full"
           />
         </div>
 
@@ -351,11 +351,31 @@ export default function CommunitiesPage() {
                 <p className="mb-4">
                   Sizin de tutkulu olduğunuz bir konu mu var? Kendi topluluğunuzu başlatmak için yukarıdaki &quot;Topluluk Oluştur&quot; butonunu kullanabilirsiniz. Başarılı bir topluluk için önerilerimiz:
                 </p>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 list-none p-0 ml-0 text-xs md:text-sm">
-                  <li className="flex gap-2"><span>📌</span> <strong>Net Bir Odak:</strong> Grubun ismini ve amacını spesifik tutun.</li>
-                  <li className="flex gap-2"><span>📌</span> <strong>Kapsayıcı Dil:</strong> Herkesin kendini rahat hissedeceği bir açıklama yazın.</li>
-                  <li className="flex gap-2"><span>📌</span> <strong>Düzenli Etkileşim:</strong> Üyelerle düzenli olarak sorular ve tartışmalar paylaşın.</li>
-                  <li className="flex gap-2"><span>📌</span> <strong>AI Özetleri:</strong> Uzun tartışmaların AI tarafından özetlenmesini takip ederek üyelerinize zaman kazandırın.</li>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0 ml-0 text-xs md:text-sm">
+                  <li className="flex gap-3 items-start">
+                    <span className="shrink-0 mt-0.5" aria-hidden="true">📌</span>
+                    <div>
+                      <strong>Net Bir Odak:</strong> Grubun ismini ve amacını spesifik tutun.
+                    </div>
+                  </li>
+                  <li className="flex gap-3 items-start">
+                    <span className="shrink-0 mt-0.5" aria-hidden="true">📌</span>
+                    <div>
+                      <strong>Kapsayıcı Dil:</strong> Herkesin kendini rahat hissedeceği bir açıklama yazın.
+                    </div>
+                  </li>
+                  <li className="flex gap-3 items-start">
+                    <span className="shrink-0 mt-0.5" aria-hidden="true">📌</span>
+                    <div>
+                      <strong>Düzenli Etkileşim:</strong> Üyelerle düzenli olarak sorular ve tartışmalar paylaşın.
+                    </div>
+                  </li>
+                  <li className="flex gap-3 items-start">
+                    <span className="shrink-0 mt-0.5" aria-hidden="true">📌</span>
+                    <div>
+                      <strong>AI Özetleri:</strong> Uzun tartışmaların AI tarafından özetlenmesini takip ederek üyelerinize zaman kazandırın.
+                    </div>
+                  </li>
                 </ul>
               </div>
 

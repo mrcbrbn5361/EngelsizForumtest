@@ -45,7 +45,7 @@ export default function AboutPage() {
         }}
       />
       <div className="vibe-container py-12 md:py-24">
-        <nav className="flex justify-center gap-8 mb-16 text-xs font-bold uppercase tracking-wider text-primary">
+        <nav className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mb-16 text-xs font-bold uppercase tracking-wider text-primary">
           <Link href="/" className="hover:underline">ANA SAYFA</Link>
           <Link href="/discussions" className="hover:underline">TARTIŞMALAR</Link>
           <Link href="/communities" className="hover:underline">TOPLULUKLAR</Link>
