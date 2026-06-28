@@ -11,107 +11,73 @@ export default function Home() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@graph": [
+            "@type": "FAQPage",
+            "mainEntity": [
               {
-                "@type": "FAQPage",
-                "mainEntity": [
-                  {
-                    "@type": "Question",
-                    "name": "EngelsizForum nedir ve kimler içindir?",
-                    "acceptedAnswer": {
-                      "@type": "Answer",
-                      "text": "EngelsizForum, başta görme, işitme, ortopedik ve bilişsel kısıtlılığı olan bireyler olmak üzere, internette engelsiz ve güvenli bir bilgi paylaşım ortamı arayan herkes içindir. Türkiye'nin ilk tam erişilebilir forum platformu olan bu sistem, evrensel tasarım prensipleriyle geliştirilmiştir."
-                    }
-                  },
-                  {
-                    "@type": "Question",
-                    "name": "Platformda hangi erişilebilirlik özellikleri var?",
-                    "acceptedAnswer": {
-                      "@type": "Answer",
-                      "text": "EngelsizForum; bionik okuma (Bionic Reading) desteği, yüksek kontrast ve disleksi dostu yazı tipleri, ekran okuyucu optimizasyonu, ARIA etiketleri ile zenginleştirilmiş UI bileşenleri, sesli tartışma özetleri ve tam klavye navigasyonu gibi ileri düzey erişilebilirlik özellikleri sunar."
-                    }
-                  },
-                  {
-                    "@type": "Question",
-                    "name": "Yapay zeka (AI) bu forumda nasıl bir rol oynuyor?",
-                    "acceptedAnswer": {
-                      "@type": "Answer",
-                      "text": "Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların 'Zeka Puanı' (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır."
-                    }
-                  },
-                  {
-                    "@type": "Question",
-                    "name": "Üyelik ücretsiz mi ve bilgilerim güvende mi?",
-                    "acceptedAnswer": {
-                      "@type": "Answer",
-                      "text": "EngelsizForum tamamen ücretsiz bir platformdur. Kullanıcı verileri, modern şifreleme standartları ve Supabase altyapısı ile korunmaktadır. Gizliliğiniz bizim için önceliktir ve verileriniz asla izinsiz üçüncü taraflarla paylaşılmaz."
-                    }
-                  },
-                  {
-                    "@type": "Question",
-                    "name": "İçeriklerin doğruluğu nasıl sağlanıyor?",
-                    "acceptedAnswer": {
-                      "@type": "Answer",
-                      "text": "Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve 'Uzman' rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur."
-                    }
-                  }
-                ]
+                "@type": "Question",
+                "name": "EngelsizForum nedir ve kimler içindir?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "EngelsizForum, başta görme, işitme, ortopedik ve bilişsel kısıtlılığı olan bireyler olmak üzere, internette engelsiz ve güvenli bir bilgi paylaşım ortamı arayan herkes içindir. Türkiye'nin ilk tam erişilebilir forum platformu olan bu sistem, evrensel tasarım prensipleriyle geliştirilmiştir."
+                }
               },
               {
-                "@type": "WebApplication",
-                "@id": "https://engelsizforum.miracdeveloper.com.tr/#webapp",
-                "name": "EngelsizForum",
-                "url": "https://engelsizforum.miracdeveloper.com.tr",
-                "applicationCategory": "SocialNetworkingApplication",
-                "operatingSystem": "All",
-                "description": "Engelli bireyler için tam erişilebilir, kapsayıcı, yapay zeka destekli ve GEO (Generative Engine Optimization) uyumlu bir topluluk platformu.",
-                "aggregateRating": {
-                  "@type": "AggregateRating",
-                  "ratingValue": "4.9",
-                  "reviewCount": "124",
-                  "bestRating": "5",
-                  "worstRating": "1"
-                },
-                "review": [
-                  {
-                    "@type": "Review",
-                    "author": {
-                      "@type": "Person",
-                      "name": "Ahmet Yılmaz"
-                    },
-                    "datePublished": "2026-05-10",
-                    "reviewBody": "Ekran okuyucu desteği ve biyonik okuma özellikleri harika! Platformda dolaşırken hiçbir engelle karşılaşmadım.",
-                    "reviewRating": {
-                      "@type": "Rating",
-                      "ratingValue": "5",
-                      "bestRating": "5",
-                      "worstRating": "1"
-                    }
-                  },
-                  {
-                    "@type": "Review",
-                    "author": {
-                      "@type": "Person",
-                      "name": "Elif Demir"
-                    },
-                    "datePublished": "2026-06-01",
-                    "reviewBody": "Disleksi dostu fontlar sayesinde uzun tartışmaları yorulmadan okuyabiliyorum. Yapay zeka seslendirmeleri de çok başarılı.",
-                    "reviewRating": {
-                      "@type": "Rating",
-                      "ratingValue": "5",
-                      "bestRating": "5",
-                      "worstRating": "1"
-                    }
-                  }
-                ]
+                "@type": "Question",
+                "name": "Platformda hangi erişilebilirlik özellikleri var?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "EngelsizForum; bionik okuma (Bionic Reading) desteği, yüksek kontrast ve disleksi dostu yazı tipleri, ekran okuyucu optimizasyonu, ARIA etiketleri ile zenginleştirilmiş UI bileşenleri, sesli tartışma özetleri ve tam klavye navigasyonu gibi ileri düzey erişilebilirlik özellikleri sunar."
+                }
               },
+              {
+                "@type": "Question",
+                "name": "Yapay zeka (AI) bu forumda nasıl bir rol oynuyor?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların 'Zeka Puanı' (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Üyelik ücretsiz mi ve bilgilerim güvende mi?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "EngelsizForum tamamen ücretsiz bir platformdur. Kullanıcı verileri, modern şifreleme standartları ve Supabase altyapısı ile korunmaktadır. Gizliliğiniz bizim için önceliktir ve verileriniz asla izinsiz üçüncü taraflarla paylaşılmaz."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "İçeriklerin doğruluğu nasıl sağlanıyor?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve 'Uzman' rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur."
+                }
+              }
+            ]
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "EngelsizForum",
+            "url": "https://engelsizforum.miracdeveloper.com.tr",
+            "applicationCategory": "SocialNetworkingApplication",
+            "operatingSystem": "All",
+            "description": "Engelli bireyler için tam erişilebilir, kapsayıcı, yapay zeka destekli ve GEO (Generative Engine Optimization) uyumlu bir topluluk platformu.",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "124",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
               {
                 "@type": "Review",
-                "@id": "https://engelsizforum.miracdeveloper.com.tr/#review1",
-                "itemReviewed": {
-                  "@type": "WebApplication",
-                  "@id": "https://engelsizforum.miracdeveloper.com.tr/#webapp"
-                },
                 "author": {
                   "@type": "Person",
                   "name": "Ahmet Yılmaz"
@@ -127,11 +93,6 @@ export default function Home() {
               },
               {
                 "@type": "Review",
-                "@id": "https://engelsizforum.miracdeveloper.com.tr/#review2",
-                "itemReviewed": {
-                  "@type": "WebApplication",
-                  "@id": "https://engelsizforum.miracdeveloper.com.tr/#webapp"
-                },
                 "author": {
                   "@type": "Person",
                   "name": "Elif Demir"
@@ -144,19 +105,72 @@ export default function Home() {
                   "bestRating": "5",
                   "worstRating": "1"
                 }
+              }
+            ]
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": "EngelsizForum Platformu",
+            "image": "https://engelsizforum.miracdeveloper.com.tr/og-image.png",
+            "description": "Engelli bireyler için tam erişilebilir, yapay zeka destekli yerli sosyal topluluk platformu.",
+            "brand": {
+              "@type": "Brand",
+              "name": "EngelsizForum"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "124",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "review": [
+              {
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Ahmet Yılmaz"
+                },
+                "datePublished": "2026-05-10",
+                "reviewBody": "Ekran okuyucu desteği ve biyonik okuma özellikleri harika! Platformda dolaşırken hiçbir engelle karşılaşmadım.",
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5",
+                  "worstRating": "1"
+                }
               },
               {
-                "@type": "AggregateRating",
-                "@id": "https://engelsizforum.miracdeveloper.com.tr/#rating",
-                "itemReviewed": {
-                  "@type": "WebApplication",
-                  "@id": "https://engelsizforum.miracdeveloper.com.tr/#webapp"
+                "@type": "Review",
+                "author": {
+                  "@type": "Person",
+                  "name": "Elif Demir"
                 },
-                "ratingValue": "4.9",
-                "reviewCount": "124",
-                "bestRating": "5",
-                "worstRating": "1"
-              },
+                "datePublished": "2026-06-01",
+                "reviewBody": "Disleksi dostu fontlar sayesinde uzun tartışmaları yorulmadan okuyabiliyorum. Yapay zeka seslendirmeleri de çok başarılı.",
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5",
+                  "worstRating": "1"
+                }
+              }
+            ]
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
               {
                 "@type": "WebPage",
                 "@id": "https://engelsizforum.miracdeveloper.com.tr/#webpage",
@@ -194,7 +208,7 @@ export default function Home() {
                   {
                     "@type": "HowToStep",
                     "name": "Erişilebilirlik Panelini Açın",
-                    "text": "Ekranın sol alt köşesinde yer alan mavi çark/insan simgeli erişilebilirlik ikonuna tıklayın veya klavyenizden 'Tab' tušu ile odağı oraya getirip 'Enter' tuşuna basın.",
+                    "text": "Ekranın sol alt köşesinde yer alan mavi çark/insan simgeli erişilebilirlik ikonuna tıklayın veya klavyenizden 'Tab' tuşu ile odağı oraya getirip 'Enter' tuşuna basın.",
                     "url": "https://engelsizforum.miracdeveloper.com.tr/#step1"
                   },
                   {
@@ -221,52 +235,6 @@ export default function Home() {
                     "position": 1,
                     "name": "Ana Sayfa",
                     "item": "https://engelsizforum.miracdeveloper.com.tr"
-                  }
-                ]
-              },
-              {
-                "@type": "Product",
-                "@id": "https://engelsizforum.miracdeveloper.com.tr/#product",
-                "name": "EngelsizForum Platformu",
-                "image": "https://engelsizforum.miracdeveloper.com.tr/og-image.png",
-                "description": "Engelli bireyler için tam erişilebilir, yapay zeka destekli yerli sosyal topluluk platformu.",
-                "brand": {
-                  "@type": "Brand",
-                  "name": "EngelsizForum"
-                },
-                "aggregateRating": {
-                  "@type": "AggregateRating",
-                  "ratingValue": "4.9",
-                  "reviewCount": "124",
-                  "bestRating": "5",
-                  "worstRating": "1"
-                },
-                "review": [
-                  {
-                    "@type": "Review",
-                    "author": {
-                      "@type": "Person",
-                      "name": "Ahmet Yılmaz"
-                    },
-                    "datePublished": "2026-05-10",
-                    "reviewBody": "Ekran okuyucu desteği ve biyonik okuma özellikleri harika! Platformda dolaşırken hiçbir engelle karşılaşmadım.",
-                    "reviewRating": {
-                      "@type": "Rating",
-                      "ratingValue": "5"
-                    }
-                  },
-                  {
-                    "@type": "Review",
-                    "author": {
-                      "@type": "Person",
-                      "name": "Elif Demir"
-                    },
-                    "datePublished": "2026-06-01",
-                    "reviewBody": "Disleksi dostu fontlar sayesinde uzun tartışmaları yorulmadan okuyabiliyorum. Yapay zeka seslendirmeleri de çok başarılı.",
-                    "reviewRating": {
-                      "@type": "Rating",
-                      "ratingValue": "5"
-                    }
                   }
                 ]
               },
@@ -498,9 +466,9 @@ export default function Home() {
               <div className="pt-6 border-t border-border">
                 <h4 className="text-sm font-bold mb-3 text-foreground">Referanslar ve Kaynaklar</h4>
                 <ul className="text-xs text-muted-foreground space-y-2 list-disc ml-4">
-                  <li>W3C Web Content Accessibility Guidelines (WCAG) 2.1 - <a href="https://www.w3.org/TR/WCAG21/" className="text-primary hover:underline">w3.org</a></li>
-                  <li>WHO - Disability and Health Statistics - <a href="https://www.who.int/news-room/fact-sheets/detail/disability-and-health" className="text-primary hover:underline">who.int</a></li>
-                  <li>Google Search E-E-A-T Guidelines - <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content" className="text-primary hover:underline">google.com</a></li>
+                  <li>W3C Web Content Accessibility Guidelines (WCAG) 2.1 - <a href="https://www.w3.org/TR/WCAG21/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">w3.org</a></li>
+                  <li>WHO - Disability and Health Statistics - <a href="https://www.who.int/news-room/fact-sheets/detail/disability-and-health" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">who.int</a></li>
+                  <li>Google Search E-E-A-T Guidelines - <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">google.com</a></li>
                   <li>Generative Engine Optimization (GEO) Framework - University Research Papers</li>
                 </ul>
               </div>
