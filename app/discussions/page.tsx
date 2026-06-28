@@ -190,9 +190,9 @@ export default function DiscussionsPage() {
           </div>
         </header>
 
-        <nav className="mb-16 px-2" aria-label="Kategori filtreleri">
-          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-10">
-            <div className="flex items-center gap-4 overflow-x-auto pb-6 -mb-6 scrollbar-hide no-scrollbar snap-x relative min-w-0 flex-1" role="list">
+        <nav className="mb-12" aria-label="Kategori filtreleri">
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 sm:gap-10">
+            <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto py-3 no-scrollbar snap-x relative min-w-0 flex-1 -mx-4 px-4 sm:mx-0 sm:px-0" role="list">
               {[
                 { label: 'TÜMÜ', id: null },
                 ...categories.filter(c => !c.parent_id).map(c => ({ label: c.name.toUpperCase(), id: c.id }))
@@ -204,7 +204,7 @@ export default function DiscussionsPage() {
                   aria-label={`${item.label} kategorisini filtrele`}
                   aria-pressed={selectedCategoryId === item.id}
                   className={cn(
-                    "px-6 py-3.5 md:px-10 md:py-5 rounded-2xl text-xs font-black tracking-[0.2em] transition-all whitespace-nowrap border-2 shrink-0 snap-start active:scale-95 outline-none focus:ring-4 focus:ring-primary/20 shadow-sm",
+                    "px-4 py-2.5 sm:px-6 sm:py-3.5 md:px-10 md:py-5 rounded-2xl text-[10px] sm:text-xs font-black tracking-[0.15em] sm:tracking-[0.2em] transition-all whitespace-nowrap border-2 shrink-0 snap-start active:scale-95 outline-none focus:ring-4 focus:ring-primary/20 shadow-sm",
                     selectedCategoryId === item.id 
                       ? 'border-primary bg-primary text-primary-foreground shadow-xl shadow-primary/20 scale-[1.02]' 
                       : 'border-border bg-card text-muted-foreground hover:text-foreground hover:bg-muted'
@@ -224,7 +224,7 @@ export default function DiscussionsPage() {
                 <button 
                   key={item.label} 
                   onClick={() => setSortBy(item.value as any)}
-                  className={`flex-1 xl:flex-none px-5 md:px-8 py-3 rounded-[1.5rem] text-[10px] sm:text-xs font-black tracking-[0.2em] transition-all whitespace-nowrap shrink-0 ${
+                  className={`flex-1 xl:flex-none px-3 sm:px-5 md:px-8 py-2.5 sm:py-3 rounded-[1.5rem] text-[10px] sm:text-xs font-black tracking-[0.15em] sm:tracking-[0.2em] transition-all whitespace-nowrap shrink-0 ${
                     sortBy === item.value 
                       ? 'bg-background text-foreground shadow-md' 
                       : 'text-muted-foreground hover:text-foreground'
