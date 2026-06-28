@@ -14,31 +14,62 @@ export default function AboutPage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
+            "@graph": [
               {
-                "@type": "Question",
-                "name": "EngelsizForum hangi standartları destekliyor?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Platformumuz WCAG 2.1 AA seviyesini temel alır, ancak birçok noktada AAA standartlarını (örneğin renk kontrast oranları) hedefleyen geliştirmeler içerir."
-                }
+                "@type": "FAQPage",
+                "mainEntity": [
+                  {
+                    "@type": "Question",
+                    "name": "EngelsizForum hangi standartları destekliyor?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Platformumuz WCAG 2.1 AA seviyesini temel alır, ancak birçok noktada AAA standartlarını (örneğin renk kontrast oranları) hedefleyen geliştirmeler içerir."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "AI özellikleri verilerimi nasıl etkiliyor?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Yapay zeka sadece içerik analizi ve özetleme için kullanılır. Kişisel verileriniz asla AI modellerini eğitmek amacıyla kullanılmaz veya üçüncü taraflarla paylaşılmaz."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "EngelsizForum'a nasıl katkıda bulunabilirim?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Topluluğumuza üye olarak, deneyimlerinizi paylaşarak veya yeni tartışmalar başlatarak katkıda bulunabilirsiniz. Ayrıca topluluk kurallarımızı takip ederek güvenli bir ortam oluşturmamıza yardımcı olabilirsiniz."
+                    }
+                  }
+                ]
               },
               {
-                "@type": "Question",
-                "name": "AI özellikleri verilerimi nasıl etkiliyor?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yapay zeka sadece içerik analizi ve özetleme için kullanılır. Kişisel verileriniz asla AI modellerini eğitmek amacıyla kullanılmaz veya üçüncü taraflarla paylaşılmaz."
-                }
+                "@type": "AboutPage",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/about#webpage",
+                "url": "https://engelsizforum.miracdeveloper.com.tr/about",
+                "name": "Hakkımızda | EngelsizForum",
+                "description": "EngelsizForum projesinin evrensel tasarım felsefesi, vizyonu, misyonu ve dijital erişilebilirlik standartları hakkında bilgi alın.",
+                "isPartOf": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#website" },
+                "inLanguage": "tr-TR"
               },
               {
-                "@type": "Question",
-                "name": "EngelsizForum'a nasıl katkıda bulunabilirim?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Topluluğumuza üye olarak, deneyimlerinizi paylaşarak veya yeni tartışmalar başlatarak katkıda bulunabilirsiniz. Ayrıca topluluk kurallarımızı takip ederek güvenli bir ortam oluşturmamıza yardımcı olabilirsiniz."
-                }
+                "@type": "BreadcrumbList",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/about#breadcrumb",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Ana Sayfa",
+                    "item": "https://engelsizforum.miracdeveloper.com.tr"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Hakkımızda",
+                    "item": "https://engelsizforum.miracdeveloper.com.tr/about"
+                  }
+                ]
               }
             ]
           })

@@ -71,6 +71,91 @@ export default function Home() {
                   "reviewCount": "124",
                   "bestRating": "5",
                   "worstRating": "1"
+                }
+              },
+              {
+                "@type": "WebPage",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#webpage",
+                "url": "https://engelsizforum.miracdeveloper.com.tr",
+                "name": "EngelsizForum | Tam Erişilebilir Topluluk Platformu",
+                "description": "Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve bilgi paylaşım platformu.",
+                "isPartOf": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#website" },
+                "about": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#organization" },
+                "inLanguage": "tr-TR",
+                "breadcrumb": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#breadcrumb" }
+              },
+              {
+                "@type": "TechArticle",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#article",
+                "mainEntityOfPage": "https://engelsizforum.miracdeveloper.com.tr",
+                "headline": "Evrensel Tasarım ve Yapay Zeka Destekli Erişilebilirlik",
+                "description": "EngelsizForum, engelli bireyler için %100 uyumlu, biyonik okuma ve yapay zeka özetleme destekli ilk yerli forum altyapısıdır.",
+                "image": "https://engelsizforum.miracdeveloper.com.tr/og-image.png",
+                "datePublished": "2026-06-28T07:00:00Z",
+                "dateModified": "2026-06-28T07:00:00Z",
+                "author": {
+                  "@type": "Organization",
+                  "name": "EngelsizForum"
+                },
+                "publisher": {
+                  "@id": "https://engelsizforum.miracdeveloper.com.tr/#organization"
+                }
+              },
+              {
+                "@type": "HowTo",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#howto",
+                "name": "Erişilebilirlik Özellikleri Nasıl Kullanılır?",
+                "description": "EngelsizForum üzerindeki Biyonik Okuma, Disleksi Dostu Yazı Tipleri ve Yapay Zeka Seslendirmelerinin adım adım aktif edilme kılavuzu.",
+                "step": [
+                  {
+                    "@type": "HowToStep",
+                    "name": "Erişilebilirlik Panelini Açın",
+                    "text": "Ekranın sol alt köşesinde yer alan mavi çark/insan simgeli erişilebilirlik ikonuna tıklayın veya klavyenizden 'Tab' tuşu ile odağı oraya getirip 'Enter' tuşuna basın.",
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/#step1"
+                  },
+                  {
+                    "@type": "HowToStep",
+                    "name": "Erişilebilirlik Profilinizi Seçin",
+                    "text": "Açılan panelden 'Biyonik Okuma', 'Disleksi Dostu Yazı Tipi' veya 'Yüksek Kontrast' gibi engelsiz okuma seçeneklerinden birini etkinleştirin.",
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/#step2"
+                  },
+                  {
+                    "@type": "HowToStep",
+                    "name": "Yapay Zeka Seslendirmelerini Başlatın",
+                    "text": "Okumak istediğiniz tartışma gönderisinin yanındaki 'Yapay Zeka Destekli Özet' veya 'Seslendir' butonuna tıklayarak içeriği dinleyin.",
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/#step3"
+                  }
+                ],
+                "totalTime": "PT1M"
+              },
+              {
+                "@type": "BreadcrumbList",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#breadcrumb",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Ana Sayfa",
+                    "item": "https://engelsizforum.miracdeveloper.com.tr"
+                  }
+                ]
+              },
+              {
+                "@type": "Product",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#product",
+                "name": "EngelsizForum Platformu",
+                "image": "https://engelsizforum.miracdeveloper.com.tr/og-image.png",
+                "description": "Engelli bireyler için tam erişilebilir, yapay zeka destekli yerli sosyal topluluk platformu.",
+                "brand": {
+                  "@type": "Brand",
+                  "name": "EngelsizForum"
+                },
+                "aggregateRating": {
+                  "@type": "AggregateRating",
+                  "ratingValue": "4.9",
+                  "reviewCount": "124",
+                  "bestRating": "5",
+                  "worstRating": "1"
                 },
                 "review": [
                   {

@@ -129,6 +129,43 @@ export default function DiscussionsPage() {
 
   return (
     <DashboardLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "WebPage",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/discussions#webpage",
+                "url": "https://engelsizforum.miracdeveloper.com.tr/discussions",
+                "name": "Tartışmalar | EngelsizForum",
+                "description": "Erişilebilirlik, yardımcı teknolojiler ve engelsiz yaşam üzerine yapılan topluluk tartışmaları.",
+                "isPartOf": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#website" },
+                "inLanguage": "tr-TR"
+              },
+              {
+                "@type": "BreadcrumbList",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/discussions#breadcrumb",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Ana Sayfa",
+                    "item": "https://engelsizforum.miracdeveloper.com.tr"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Tartışmalar",
+                    "item": "https://engelsizforum.miracdeveloper.com.tr/discussions"
+                  }
+                ]
+              }
+            ]
+          })
+        }}
+      />
       <div className="vibe-container py-12 md:py-16">
         <header className="mb-16">
           <div className="mb-10 grid grid-cols-1 md:grid-cols-3 gap-6">

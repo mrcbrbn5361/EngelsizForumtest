@@ -101,23 +101,54 @@ export default function CommunitiesPage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
+            "@graph": [
               {
-                "@type": "Question",
-                "name": "EngelsizForum toplulukları nedir?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Erişilebilirlik, teknoloji ve sosyal yaşam gibi konularda özelleşmiş, engelli bireylerin bir araya geldiği bilgi paylaşım gruplarıdır."
-                }
+                "@type": "FAQPage",
+                "mainEntity": [
+                  {
+                    "@type": "Question",
+                    "name": "EngelsizForum toplulukları nedir?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Erişilebilirlik, teknoloji ve sosyal yaşam gibi konularda özelleşmiş, engelli bireylerin bir araya geldiği bilgi paylaşım gruplarıdır."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Yeni bir topluluk nasıl oluşturulur?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Sayfanın üst kısmındaki 'Topluluk Oluştur' butonunu kullanarak, belirlediğiniz bir konuda yeni bir ilgi grubu başlatabilirsiniz."
+                    }
+                  }
+                ]
               },
               {
-                "@type": "Question",
-                "name": "Yeni bir topluluk nasıl oluşturulur?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Sayfanın üst kısmındaki 'Topluluk Oluştur' butonunu kullanarak, belirlediğiniz bir konuda yeni bir ilgi grubu başlatabilirsiniz."
-                }
+                "@type": "WebPage",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/communities#webpage",
+                "url": "https://engelsizforum.miracdeveloper.com.tr/communities",
+                "name": "Topluluklar | EngelsizForum",
+                "description": "Erişilebilirlik, teknoloji, engelsiz yaşam ve sosyal konular üzerine odaklanmış uzmanlık grupları ve topluluklar.",
+                "isPartOf": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#website" },
+                "inLanguage": "tr-TR"
+              },
+              {
+                "@type": "BreadcrumbList",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/communities#breadcrumb",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Ana Sayfa",
+                    "item": "https://engelsizforum.miracdeveloper.com.tr"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Topluluklar",
+                    "item": "https://engelsizforum.miracdeveloper.com.tr/communities"
+                  }
+                ]
               }
             ]
           })
