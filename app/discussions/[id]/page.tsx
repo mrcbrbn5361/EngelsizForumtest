@@ -272,24 +272,60 @@ export default function DiscussionDetailPage() {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "DiscussionForumPosting",
-              "headline": topic.title,
-              "articleBody": topic.content,
-              "author": {
-                "@type": "Person",
-                "name": topic.author?.full_name || topic.author?.username || 'Kullanıcı'
-              },
-              "datePublished": topic.created_at,
-              "commentCount": comments.length,
-              "comment": comments.map(c => ({
-                "@type": "Comment",
-                "text": c.content,
-                "author": {
-                  "@type": "Person",
-                  "name": c.author?.full_name || c.author?.username || 'Kullanıcı'
+              "@graph": [
+                {
+                  "@type": "WebPage",
+                  "@id": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}#webpage`,
+                  "url": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}`,
+                  "name": topic.title,
+                  "description": topic.content?.substring(0, 150) || "EngelsizForum Tartışması",
+                  "breadcrumb": {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                      {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Ana Sayfa",
+                        "item": "https://engelsizforum.miracdeveloper.com.tr"
+                      },
+                      {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Tartışmalar",
+                        "item": "https://engelsizforum.miracdeveloper.com.tr/discussions"
+                      },
+                      {
+                        "@type": "ListItem",
+                        "position": 3,
+                        "name": topic.title,
+                        "item": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}`
+                      }
+                    ]
+                  }
                 },
-                "dateCreated": c.created_at
-              }))
+                {
+                  "@type": "DiscussionForumPosting",
+                  "@id": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}#posting`,
+                  "mainEntityOfPage": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}#webpage`,
+                  "headline": topic.title,
+                  "articleBody": topic.content,
+                  "author": {
+                    "@type": "Person",
+                    "name": topic.author?.full_name || topic.author?.username || 'Kullanıcı'
+                  },
+                  "datePublished": topic.created_at,
+                  "commentCount": comments.length,
+                  "comment": comments.map(c => ({
+                    "@type": "Comment",
+                    "text": c.content,
+                    "author": {
+                      "@type": "Person",
+                      "name": c.author?.full_name || c.author?.username || 'Kullanıcı'
+                    },
+                    "dateCreated": c.created_at
+                  }))
+                }
+              ]
             })
           }}
         />

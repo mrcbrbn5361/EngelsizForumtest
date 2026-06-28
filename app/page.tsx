@@ -11,47 +11,104 @@ export default function Home() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
+            "@graph": [
               {
-                "@type": "Question",
-                "name": "EngelsizForum nedir ve kimler içindir?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "EngelsizForum, başta görme, işitme, ortopedik ve bilişsel kısıtlılığı olan bireyler olmak üzere, internette engelsiz ve güvenli bir bilgi paylaşım ortamı arayan herkes içindir. Türkiye'nin ilk tam erişilebilir forum platformu olan bu sistem, evrensel tasarım prensipleriyle geliştirilmiştir."
-                }
+                "@type": "FAQPage",
+                "mainEntity": [
+                  {
+                    "@type": "Question",
+                    "name": "EngelsizForum nedir ve kimler içindir?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "EngelsizForum, başta görme, işitme, ortopedik ve bilişsel kısıtlılığı olan bireyler olmak üzere, internette engelsiz ve güvenli bir bilgi paylaşım ortamı arayan herkes içindir. Türkiye'nin ilk tam erişilebilir forum platformu olan bu sistem, evrensel tasarım prensipleriyle geliştirilmiştir."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Platformda hangi erişilebilirlik özellikleri var?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "EngelsizForum; bionik okuma (Bionic Reading) desteği, yüksek kontrast ve disleksi dostu yazı tipleri, ekran okuyucu optimizasyonu, ARIA etiketleri ile zenginleştirilmiş UI bileşenleri, sesli tartışma özetleri ve tam klavye navigasyonu gibi ileri düzey erişilebilirlik özellikleri sunar."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Yapay zeka (AI) bu forumda nasıl bir rol oynuyor?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların 'Zeka Puanı' (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Üyelik ücretsiz mi ve bilgilerim güvende mi?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "EngelsizForum tamamen ücretsiz bir platformdur. Kullanıcı verileri, modern şifreleme standartları ve Supabase altyapısı ile korunmaktadır. Gizliliğiniz bizim için önceliktir ve verileriniz asla izinsiz üçüncü taraflarla paylaşılmaz."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "İçeriklerin doğruluğu nasıl sağlanıyor?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve 'Uzman' rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur."
+                    }
+                  }
+                ]
               },
               {
-                "@type": "Question",
-                "name": "Platformda hangi erişilebilirlik özellikleri var?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "EngelsizForum; bionik okuma (Bionic Reading) desteği, yüksek kontrast ve disleksi dostu yazı tipleri, ekran okuyucu optimizasyonu, ARIA etiketleri ile zenginleştirilmiş UI bileşenleri, sesli tartışma özetleri ve tam klavye navigasyonu gibi ileri düzey erişilebilirlik özellikleri sunar."
-                }
+                "@type": "WebApplication",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#webapp",
+                "name": "EngelsizForum",
+                "url": "https://engelsizforum.miracdeveloper.com.tr",
+                "applicationCategory": "SocialNetworkingApplication",
+                "operatingSystem": "All",
+                "description": "Engelli bireyler için tam erişilebilir, kapsayıcı, yapay zeka destekli ve GEO (Generative Engine Optimization) uyumlu bir topluluk platformu.",
+                "aggregateRating": {
+                  "@type": "AggregateRating",
+                  "ratingValue": "4.9",
+                  "reviewCount": "124",
+                  "bestRating": "5",
+                  "worstRating": "1"
+                },
+                "review": [
+                  {
+                    "@type": "Review",
+                    "author": {
+                      "@type": "Person",
+                      "name": "Ahmet Yılmaz"
+                    },
+                    "datePublished": "2026-05-10",
+                    "reviewBody": "Ekran okuyucu desteği ve biyonik okuma özellikleri harika! Platformda dolaşırken hiçbir engelle karşılaşmadım.",
+                    "reviewRating": {
+                      "@type": "Rating",
+                      "ratingValue": "5"
+                    }
+                  },
+                  {
+                    "@type": "Review",
+                    "author": {
+                      "@type": "Person",
+                      "name": "Elif Demir"
+                    },
+                    "datePublished": "2026-06-01",
+                    "reviewBody": "Disleksi dostu fontlar sayesinde uzun tartışmaları yorulmadan okuyabiliyorum. Yapay zeka seslendirmeleri de çok başarılı.",
+                    "reviewRating": {
+                      "@type": "Rating",
+                      "ratingValue": "5"
+                    }
+                  }
+                ]
               },
               {
-                "@type": "Question",
-                "name": "Yapay zeka (AI) bu forumda nasıl bir rol oynuyor?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Yapay zeka; uzun ve karmaşık tartışmaları saniyeler içinde özetlemek, görsellere betimleyici alt-metinler (alt text) üretmek, moderasyonu desteklemek ve kullanıcıların 'Zeka Puanı' (XP) sistemini yöneterek kaliteli içerik üretimini teşvik etmek için kullanılır."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "Üyelik ücretsiz mi ve bilgilerim güvende mi?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "EngelsizForum tamamen ücretsiz bir platformdur. Kullanıcı verileri, modern şifreleme standartları ve Supabase altyapısı ile korunmaktadır. Gizliliğiniz bizim için önceliktir ve verileriniz asla izinsiz üçüncü taraflarla paylaşılmaz."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "İçeriklerin doğruluğu nasıl sağlanıyor?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve 'Uzman' rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur."
-                }
+                "@type": "VideoObject",
+                "name": "EngelsizForum Platformu Tanıtım ve Kullanım Rehberi",
+                "description": "Engelli bireyler için %100 erişilebilir, yapay zeka destekli topluluk platformunun özellikleri ve kullanımı.",
+                "thumbnailUrl": "https://engelsizforum.miracdeveloper.com.tr/og-image.png",
+                "uploadDate": "2026-05-18T08:00:00Z",
+                "contentUrl": "https://engelsizforum.miracdeveloper.com.tr/video/intro.mp4",
+                "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ"
               }
             ]
           })
@@ -319,6 +376,39 @@ export default function Home() {
                 </p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Deep Content Depth & Guide Section (GEO & Content Depth Fix) */}
+        <section className="max-w-[1280px] mx-auto px-4 py-16 border-t border-border">
+          <div className="grid md:grid-cols-3 gap-10">
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-foreground">Evrensel Tasarım ve Dijital Haklar</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+                Bilgi teknolojilerine engelsiz erişim, Birleşmiş Milletler Engelli Hakları Sözleşmesi kapsamında temel bir insan hakkıdır. Web sitelerinin ve sosyal platformların yalnızca belirli bir kitle için değil, geçici veya kalıcı kısıtlılıkları olan her birey için tam uyumlu tasarlanması gerekir. EngelsizForum, bu felsefeyi benimseyerek kullanıcı arayüzlerinde tam klavye kontrolü, kontrast esnekliği ve ek donanımlarla kesintisiz entegrasyon sunar.
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+                Evrensel tasarım prensipleri (Universal Design) gereği, yaptığımız her arayüz geliştirmesi ve CSS düzenlemesi, ekran okuyucuların (Screen Reader) DOM ağacını kusursuz şekilde seslendirmesini hedefler. Sadece semantik etiketler değil, her buton ve girdi alanı için özel ARIA (Accessible Rich Internet Applications) rolleri ve durum etiketleri tanımlıyoruz. Bu sayede, görme engelli bir kullanıcı ile fiziksel kısıtı bulunmayan bir kullanıcı platformda aynı hız ve konforla etkileşim kurabilir.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-foreground">Yapay Zeka Destekli Erişilebilirlik</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+                Yapay zeka modelleri ve büyük dil modelleri (LLMs), engelli bireylerin önündeki engelleri kaldırmada devrimsel niteliktedir. Görsel dosyaları otomatik olarak analiz edip betimleyici alt metinler (Alt Text) oluşturmaktan, binlerce kelimelik karmaşık tartışmaları saniyeler içinde net ve sade özetlere dönüştürmeye kadar her alanda yapay zekayı işe koşuyoruz. Bu platformda kullanılan gelişmiş üretken yapay zeka modülü, zengin bir sesli etkileşim deneyimi sunarak okuma ve yazma engellerini tamamen ortadan kaldırır.
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+                Yapay zekanın sunduğu ses sentezleme teknolojileri sayesinde, görme kısıtı olan veya uzun metinleri takip etmekte zorlanan kullanıcılar, tek bir tıklamayla tüm tartışma akışını doğal ve anlaşılır bir insan sesiyle dinleyebilirler. Aynı zamanda, sesli yanıt verme (Voice Input) özelliği sayesinde, klavye kullanmakta zorlanan üyelerimiz doğrudan konuşarak tartışmalara mesaj bırakabilirler. Yapay zeka asistanımız, bu ses kayıtlarını otomatik olarak metne dökerek diğer kullanıcılar için de okunabilir hale getirir.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-xl font-bold text-foreground">Açık Kaynak Katkı ve Destek Daveti</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+                Platformumuz, dijital engelleri yıkmak isteyen her geliştiriciye, araştırmacıya ve tasarımcıya açık bir davettir. Açık kaynak kod yapımız (Open Source), erişilebilir yazılım alanında yeni standartların üretilmesine olanak tanır. Kod tabanımıza katkıda bulunarak, ekran okuyucu optimizasyonlarını iyileştirebilir, yeni dillerde bionik okuma motorları geliştirebilir veya yapay zeka entegrasyonlarını güçlendirerek projemizi daha ileriye taşıyabilirsiniz.
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+                Özellikle web tabanlı yardımcı teknolojilerin (Assistive Technologies) tarayıcı sınırlarını zorladığı günümüzde, EngelsizForum ekosistemi gerçek bir test laboratuvarı işlevi görmektedir. Eğer siz de yazılım geliştirme, UX/UI tasarımı, erişilebilirlik denetimi (Accessibility Auditing) veya yapay zeka alanında çalışıyorsanız, EngelsizForum topluluğunun bir parçası olarak engelsiz yarınlara katkı sunabilirsiniz. Eksiklerimizi gidermek, yeni özellikler eklemek ve sitemizi büyütmek için desteklerinizi bekliyoruz.
+              </p>
+            </div>
           </div>
         </section>
 

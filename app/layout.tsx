@@ -79,6 +79,14 @@ export const metadata: Metadata = {
     address: false,
     email: false,
   },
+  icons: {
+    icon: [
+      { url: '/logo.png', sizes: 'any' },
+      { url: '/logo.png', type: 'image/png', sizes: '32x32' }
+    ],
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
   manifest: '/manifest.json',
 };
 

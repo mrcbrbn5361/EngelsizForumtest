@@ -10,31 +10,94 @@ export default function HelpPage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
+            "@graph": [
               {
-                "@type": "Question",
-                "name": "Erişilebilirlik panelini nasıl açarım?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Ekranın sol alt köşesinde bulunan veya klavyeden 'Tab' tuşuyla gezilebilen erişilebilirlik ikonuna tıklayarak renk kontrastı, font boyutu ve biyonik okuma gibi özellikleri yönetebilirsiniz."
-                }
+                "@type": "FAQPage",
+                "mainEntity": [
+                  {
+                    "@type": "Question",
+                    "name": "Erişilebilirlik panelini nasıl açarım?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Ekranın sol alt köşesinde bulunan veya klavyeden 'Tab' tuşuyla gezilebilen erişilebilirlik ikonuna tıklayarak renk kontrastı, font boyutu ve biyonik okuma gibi özellikleri yönetebilirsiniz."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Yapay zeka asistanı nasıl çalışır?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Tartışmalarda ve gönderilerde yer alan 'Yapay Zeka Destekli Özet' butonuna tıklayarak uzun yazıları saniyeler içinde seslendirilebilir, sadeleştirilmiş veya özetlenmiş hale getirebilirsiniz."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Destek ekibiyle nasıl iletişim kurarım?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Destek ekibimize dilediğiniz zaman info@miracdeveloper.com.tr adresinden e-posta göndererek ulaşabilirsiniz."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "EngelsizForum tamamen ücretsiz mi?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Evet. EngelsizForum, engelli bireylerin bilgiye ve topluluğa erişimini kolaylaştırmak amacıyla tamamen ücretsiz olarak sunulan açık kaynaklı bir sosyal platformdur."
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "Ekran okuyucu kullanırken sorun yaşıyorum, ne yapmalıyım?",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "Platformumuz NVDA, JAWS ve VoiceOver ekran okuyucularıyla tam uyumlu çalışacak şekilde tasarlanmıştır. Sorun yaşarsanız, sol alttaki erişilebilirlik menüsünden ilgili profili optimize edebilir veya bizimle iletişime geçebilirsiniz."
+                    }
+                  }
+                ]
               },
               {
-                "@type": "Question",
-                "name": "Yapay zeka asistanı nasıl çalışır?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Tartışmalarda ve gönderilerde yer alan 'Yapay Zeka Destekli Özet' butonuna tıklayarak uzun yazıları saniyeler içinde seslendirilebilir, sadeleştirilmiş veya özetlenmiş hale getirebilirsiniz."
-                }
+                "@type": "HowTo",
+                "name": "Erişilebilirlik Paneli Nasıl Kullanılır?",
+                "description": "EngelsizForum platformundaki bionik okuma, kontrast ayarları ve disleksi yazı tiplerini etkinleştirme rehberi.",
+                "step": [
+                  {
+                    "@type": "HowToStep",
+                    "name": "Erişilebilirlik Menüsünü Açın",
+                    "text": "Ekranın sol alt köşesindeki erişilebilirlik ikonuna (dişli/çark veya insan simgesi) tıklayın ya da klavyeden Tab tuşu ile odaklanıp Enter tuşuna basın.",
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/help#step1"
+                  },
+                  {
+                    "@type": "HowToStep",
+                    "name": "Profil veya Özellik Seçin",
+                    "text": "Açılan panelde 'Biyonik Okuma', 'Disleksi Yazı Tipi' veya 'Yüksek Kontrast' gibi erişilebilirlik ayarlarından dilediğinizi aktif edin.",
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/help#step2"
+                  },
+                  {
+                    "@type": "HowToStep",
+                    "name": "Ayarları Kaydedin",
+                    "text": "Yaptığınız tercihler otomatik olarak tarayıcı yerel hafızasına kaydedilir ve sonraki ziyaretlerinizde de geçerli olur.",
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/help#step3"
+                  }
+                ],
+                "totalTime": "PT1M"
               },
               {
-                "@type": "Question",
-                "name": "Destek ekibiyle nasıl iletişim kurarım?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Destek ekibimize dilediğiniz zaman info@miracdeveloper.com.tr adresinden e-posta göndererek ulaşabilirsiniz."
-                }
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Ana Sayfa",
+                    "item": "https://engelsizforum.miracdeveloper.com.tr"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Yardım Merkezi",
+                    "item": "https://engelsizforum.miracdeveloper.com.tr/help"
+                  }
+                ]
               }
             ]
           })
