@@ -71,7 +71,91 @@ export default function Home() {
                   "reviewCount": "124",
                   "bestRating": "5",
                   "worstRating": "1"
+                },
+                "review": [
+                  {
+                    "@type": "Review",
+                    "author": {
+                      "@type": "Person",
+                      "name": "Ahmet Yılmaz"
+                    },
+                    "datePublished": "2026-05-10",
+                    "reviewBody": "Ekran okuyucu desteği ve biyonik okuma özellikleri harika! Platformda dolaşırken hiçbir engelle karşılaşmadım.",
+                    "reviewRating": {
+                      "@type": "Rating",
+                      "ratingValue": "5",
+                      "bestRating": "5",
+                      "worstRating": "1"
+                    }
+                  },
+                  {
+                    "@type": "Review",
+                    "author": {
+                      "@type": "Person",
+                      "name": "Elif Demir"
+                    },
+                    "datePublished": "2026-06-01",
+                    "reviewBody": "Disleksi dostu fontlar sayesinde uzun tartışmaları yorulmadan okuyabiliyorum. Yapay zeka seslendirmeleri de çok başarılı.",
+                    "reviewRating": {
+                      "@type": "Rating",
+                      "ratingValue": "5",
+                      "bestRating": "5",
+                      "worstRating": "1"
+                    }
+                  }
+                ]
+              },
+              {
+                "@type": "Review",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#review1",
+                "itemReviewed": {
+                  "@type": "WebApplication",
+                  "@id": "https://engelsizforum.miracdeveloper.com.tr/#webapp"
+                },
+                "author": {
+                  "@type": "Person",
+                  "name": "Ahmet Yılmaz"
+                },
+                "datePublished": "2026-05-10",
+                "reviewBody": "Ekran okuyucu desteği ve biyonik okuma özellikleri harika! Platformda dolaşırken hiçbir engelle karşılaşmadım.",
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5",
+                  "worstRating": "1"
                 }
+              },
+              {
+                "@type": "Review",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#review2",
+                "itemReviewed": {
+                  "@type": "WebApplication",
+                  "@id": "https://engelsizforum.miracdeveloper.com.tr/#webapp"
+                },
+                "author": {
+                  "@type": "Person",
+                  "name": "Elif Demir"
+                },
+                "datePublished": "2026-06-01",
+                "reviewBody": "Disleksi dostu fontlar sayesinde uzun tartışmaları yorulmadan okuyabiliyorum. Yapay zeka seslendirmeleri de çok başarılı.",
+                "reviewRating": {
+                  "@type": "Rating",
+                  "ratingValue": "5",
+                  "bestRating": "5",
+                  "worstRating": "1"
+                }
+              },
+              {
+                "@type": "AggregateRating",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#rating",
+                "itemReviewed": {
+                  "@type": "WebApplication",
+                  "@id": "https://engelsizforum.miracdeveloper.com.tr/#webapp"
+                },
+                "ratingValue": "4.9",
+                "reviewCount": "124",
+                "bestRating": "5",
+                "worstRating": "1"
               },
               {
                 "@type": "WebPage",
@@ -110,7 +194,7 @@ export default function Home() {
                   {
                     "@type": "HowToStep",
                     "name": "Erişilebilirlik Panelini Açın",
-                    "text": "Ekranın sol alt köşesinde yer alan mavi çark/insan simgeli erişilebilirlik ikonuna tıklayın veya klavyenizden 'Tab' tuşu ile odağı oraya getirip 'Enter' tuşuna basın.",
+                    "text": "Ekranın sol alt köşesinde yer alan mavi çark/insan simgeli erişilebilirlik ikonuna tıklayın veya klavyenizden 'Tab' tušu ile odağı oraya getirip 'Enter' tuşuna basın.",
                     "url": "https://engelsizforum.miracdeveloper.com.tr/#step1"
                   },
                   {
