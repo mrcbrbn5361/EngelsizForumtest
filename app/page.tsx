@@ -466,9 +466,9 @@ export default function Home() {
               <div className="pt-6 border-t border-border">
                 <h4 className="text-sm font-bold mb-3 text-foreground">Referanslar ve Kaynaklar</h4>
                 <ul className="text-xs text-muted-foreground space-y-2 list-disc ml-4">
-                  <li>W3C Web Content Accessibility Guidelines (WCAG) 2.1 - <a href="https://www.w3.org/TR/WCAG21/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">w3.org</a></li>
-                  <li>WHO - Disability and Health Statistics - <a href="https://www.who.int/news-room/fact-sheets/detail/disability-and-health" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">who.int</a></li>
-                  <li>Google Search E-E-A-T Guidelines - <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">google.com</a></li>
+                  <li>W3C Web Content Accessibility Guidelines (WCAG) 2.1 - <a href="https://www.w3.org/TR/WCAG21/" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">w3.org</a></li>
+                  <li>WHO - Disability and Health Statistics - <a href="https://www.who.int/news-room/fact-sheets/detail/disability-and-health" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">who.int</a></li>
+                  <li>Google Search E-E-A-T Guidelines - <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">google.com</a></li>
                   <li>Generative Engine Optimization (GEO) Framework - University Research Papers</li>
                 </ul>
               </div>
