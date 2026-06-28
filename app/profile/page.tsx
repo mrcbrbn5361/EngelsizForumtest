@@ -102,7 +102,7 @@ export default function ProfilePage() {
             <div className="absolute -bottom-12 -left-12 size-64 bg-black/10 rounded-full blur-3xl"></div>
           </div>
           
-          <div className="p-8 md:p-12 space-y-12">
+          <div className="p-4 sm:p-8 md:p-12 space-y-12">
             <section>
               <div className="flex items-center justify-between mb-8">
                 <h2 className="vibe-label flex items-center gap-2">
@@ -117,7 +117,7 @@ export default function ProfilePage() {
               </div>
 
               {editMode ? (
-                <form onSubmit={handleUpdateProfile} className="space-y-6 bg-muted/30 p-8 rounded-[2rem] border border-border">
+                <form onSubmit={handleUpdateProfile} className="space-y-6 bg-muted/30 p-4 sm:p-8 rounded-[2rem] border border-border">
                   <div className="space-y-2">
                     <label className="vibe-label">Profil Resmi (URL)</label>
                     <input 
@@ -168,14 +168,14 @@ export default function ProfilePage() {
                     value={profile?.role.toUpperCase() || 'USER'} 
                     badge={profile?.role === 'admin' || profile?.role === 'moderator' ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}
                   />
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-6 bg-muted/30 rounded-3xl border border-border">
-                       <p className="vibe-label">SEVİYE</p>
-                       <p className="text-3xl font-black text-primary">{profile?.level || 1}</p>
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    <div className="p-4 sm:p-6 bg-muted/30 rounded-3xl border border-border">
+                       <p className="vibe-label whitespace-nowrap truncate">SEVİYE</p>
+                       <p className="text-2xl sm:text-3xl font-black text-primary">{profile?.level || 1}</p>
                     </div>
-                    <div className="p-6 bg-muted/30 rounded-3xl border border-border">
-                       <p className="vibe-label">TOPLAM XP</p>
-                       <p className="text-3xl font-black text-primary">{profile?.xp || 0}</p>
+                    <div className="p-4 sm:p-6 bg-muted/30 rounded-3xl border border-border">
+                       <p className="vibe-label whitespace-nowrap truncate">TOPLAM XP</p>
+                       <p className="text-2xl sm:text-3xl font-black text-primary">{profile?.xp || 0}</p>
                     </div>
                   </div>
                 </div>
@@ -186,7 +186,7 @@ export default function ProfilePage() {
               <h2 className="vibe-label flex items-center gap-2 mb-6">
                 <Settings size={18} className="text-primary" /> ERİŞİLEBİLİRLİK SİSTEMİ
               </h2>
-              <div className="bg-primary/5 border border-primary/20 rounded-[2rem] p-8 md:p-10 relative overflow-hidden group">
+              <div className="bg-primary/5 border border-primary/20 rounded-[2rem] p-6 sm:p-8 md:p-10 relative overflow-hidden group">
                 <div className="relative z-10">
                   <p className="text-lg font-black text-foreground mb-6 leading-tight max-w-md">
                     Kişiselleştirilmiş erişilebilirlik ayarlarınız tüm cihazlarınızda güvenle saklanır.
@@ -221,22 +221,22 @@ export default function ProfilePage() {
 
 function ProfileItem({ icon, label, value, badge }: { icon: React.ReactNode, label: string, value: string, badge?: string }) {
   return (
-    <div className="flex items-center justify-between p-6 bg-card rounded-[2rem] border border-border transition-all group/item hover:border-primary/30 shadow-sm">
-      <div className="flex items-center gap-4 min-w-0 flex-1">
-        <div className="p-4 bg-muted rounded-2xl text-primary shrink-0 group-hover/item:scale-110 transition-transform">{icon}</div>
+    <div className="flex items-center justify-between p-4 sm:p-6 bg-card rounded-[2rem] border border-border transition-all group/item hover:border-primary/30 shadow-sm min-w-0 w-full">
+      <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+        <div className="p-3 sm:p-4 bg-muted rounded-2xl text-primary shrink-0 group-hover/item:scale-110 transition-transform">{icon}</div>
         <div className="min-w-0 flex-1">
-          <p className="vibe-label mb-0">{label}</p>
-          <div className="flex items-center gap-3">
-            <p className="font-black text-lg md:text-xl tracking-tighter break-words line-clamp-1 text-foreground">{value}</p>
+          <p className="vibe-label mb-0 whitespace-nowrap truncate">{label}</p>
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 w-full">
+            <p className="font-black text-sm sm:text-base md:text-xl tracking-tighter truncate text-foreground flex-1 min-w-0" title={value}>{value}</p>
             {badge && (
-              <span className={`px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${badge}`}>
+              <span className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[8px] font-black uppercase tracking-widest shrink-0 ${badge}`}>
                  AKTİF
               </span>
             )}
           </div>
         </div>
       </div>
-      <ChevronRight size={24} className="text-muted-foreground/30 group-hover/item:translate-x-1 transition-transform shrink-0 ml-4" />
+      <ChevronRight size={20} className="text-muted-foreground/30 group-hover/item:translate-x-1 transition-transform shrink-0 ml-2 sm:ml-4" />
     </div>
   );
 }

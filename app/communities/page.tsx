@@ -259,7 +259,7 @@ export default function CommunitiesPage() {
             placeholder="GRUPLARDA ARA..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="vibe-input !pl-12 pr-4 h-12 text-sm uppercase rounded border border-border bg-background w-full"
+            className="vibe-input vibe-input-pl-12 pr-4 h-12 text-sm uppercase rounded border border-border bg-background w-full"
           />
         </div>
 

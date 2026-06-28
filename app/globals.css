@@ -71,6 +71,59 @@ h1, h2, h3, h4, h5, h6 {
   @apply w-full px-4 py-3 rounded border border-border bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-normal text-base outline-none;
 }
 
+.vibe-input-pl-12 {
+  padding-left: 3rem !important;
+  padding-inline-start: 3rem !important;
+}
+
+.vibe-input-pl-16 {
+  padding-left: 4rem !important;
+  padding-inline-start: 4rem !important;
+}
+
+.vibe-input-pl-20 {
+  padding-left: 5rem !important;
+  padding-inline-start: 5rem !important;
+}
+
+.vibe-input-search {
+  padding-left: 4rem !important;
+  padding-inline-start: 4rem !important;
+}
+
+@media (min-width: 768px) {
+  .vibe-input-search {
+    padding-left: 5rem !important;
+    padding-inline-start: 5rem !important;
+  }
+}
+
+.vibe-input-search-full {
+  padding-left: 4rem !important;
+  padding-inline-start: 4rem !important;
+  padding-right: 5rem !important;
+  padding-inline-end: 5rem !important;
+}
+
+@media (min-width: 768px) {
+  .vibe-input-search-full {
+    padding-left: 5rem !important;
+    padding-inline-start: 5rem !important;
+    padding-right: 14rem !important;
+    padding-inline-end: 14rem !important;
+  }
+}
+
+.vibe-input-pr-20 {
+  padding-right: 5rem !important;
+  padding-inline-end: 5rem !important;
+}
+
+.vibe-input-pr-56 {
+  padding-right: 14rem !important;
+  padding-inline-end: 14rem !important;
+}
+
 .vibe-label {
   @apply text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2 block ml-1;
 }

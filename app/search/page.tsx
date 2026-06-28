@@ -79,7 +79,7 @@ export default function SearchPage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="TARTIŞMA VEYA TOPLULUK ARA..." 
-                className="vibe-input !pl-16 md:!pl-20 !pr-20 md:!pr-56 h-16 md:h-20 text-base md:text-xl uppercase"
+                className="vibe-input vibe-input-search-full h-16 md:h-20 text-base md:text-xl uppercase"
                 autoFocus
               />
               <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">

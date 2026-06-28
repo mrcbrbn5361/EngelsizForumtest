@@ -184,7 +184,7 @@ export default function DiscussionsPage() {
                 aria-label="Tartışma başlıklarında ara"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="vibe-input !pl-16 md:!pl-20 h-16 md:h-20 text-base md:text-xl uppercase"
+                className="vibe-input vibe-input-search h-16 md:h-20 text-base md:text-xl uppercase"
               />
             </div>
           </div>
