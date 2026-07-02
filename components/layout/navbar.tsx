@@ -127,7 +127,7 @@ export function Navbar() {
               </Dialog.Trigger>
               <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm DialogOverlay" />
-                <Dialog.Content className="fixed inset-y-0 right-0 z-50 w-[85vw] max-w-sm bg-background p-0 shadow-2xl focus:outline-none focus:ring-0 DialogContent border-l border-border flex flex-col">
+                <Dialog.Content className="fixed inset-y-0 right-0 z-50 w-[85vw] max-w-sm bg-background p-0 shadow-2xl focus:outline-none focus:ring-0 DialogContentRight border-l border-border flex flex-col">
                   <Dialog.Title className="sr-only">Navigasyon Menüsü</Dialog.Title>
                   <Dialog.Description className="sr-only">Forum sayfalarına hızlı erişim menüsü.</Dialog.Description>
                   
