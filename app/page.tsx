@@ -1,9 +1,132 @@
 import React from 'react';
 import { SiteLayout } from '@/components/layout/site-layout';
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Plus, MessageSquare } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
-export default function Home() {
+export default async function Home() {
+  // Resiliently fetch dynamic data on the server side
+  let latestTopics: any[] = [];
+  let featuredCommunities: any[] = [];
+  let isDbConnected = false;
+
+  const isSupabaseConfigured = 
+    process.env.NEXT_PUBLIC_SUPABASE_URL && 
+    process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co' &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (isSupabaseConfigured) {
+    try {
+      // Fetch latest topics
+      const { data: topicsData, error: topicsError } = await supabase
+        .from('topics')
+        .select(`
+          *,
+          author:profiles(username, avatar_url, full_name),
+          category:categories(name),
+          comments(count)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(3);
+
+      // Fetch featured categories (communities)
+      const { data: catsData, error: catsError } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name')
+        .limit(3);
+
+      if (!topicsError && topicsData) {
+        latestTopics = topicsData;
+        isDbConnected = true;
+      }
+      if (!catsError && catsData) {
+        featuredCommunities = catsData;
+      }
+    } catch (e) {
+      console.warn("Home server side fetch failed, falling back to mock:", e);
+    }
+  }
+
+  // Fallback to high-quality default mock data if DB has no data or is not configured
+  if (latestTopics.length === 0) {
+    latestTopics = [
+      {
+        id: "mock-1",
+        title: "Ekran Okuyucu NVDA 2026.1 Güncellemesi ve Türkçe Ses Sentezleyici İncelemesi",
+        content: "Yeni NVDA güncellemesi ile gelen Türkçe konuşma motoru iyileştirmelerini test ettim. Ses hızı ve tonlaması çok daha doğal hale gelmiş. Detayları konumuzda bulabilirsiniz...",
+        created_at: new Date(Date.now() - 3600000 * 2).toISOString(), // 2 hours ago
+        likes_count: 24,
+        is_pinned: true,
+        is_solved: true,
+        category: { name: "Görme Engelliler Teknolojileri" },
+        author: { full_name: "Miraç Birben", username: "mirac", avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=mirac" },
+        comments: [{ count: 12 }]
+      },
+      {
+        id: "mock-2",
+        title: "Disleksi Dostu Yazı Tiplerinin Okuma Hızına Etkisi: Bilimsel Araştırma",
+        content: "Atkinson Hyperlegible ve OpenDyslexic yazı tiplerinin okuma doğruluğunu %15 oranında artırdığı saptandı. Forumumuzda bu fontları aktif ederek deneyimlerinizi paylaşabilirsiniz.",
+        created_at: new Date(Date.now() - 3600000 * 18).toISOString(), // 18 hours ago
+        likes_count: 18,
+        is_pinned: false,
+        is_solved: false,
+        category: { name: "Bilişsel & Psikolojik Destek" },
+        author: { full_name: "Aria Geliştirici", username: "aria", avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=aria" },
+        comments: [{ count: 5 }]
+      },
+      {
+        id: "mock-3",
+        title: "Kamu Binalarında Engelsiz Erişim ve Ortapedik Rampa Standartları Rehberi",
+        content: "TSE standartlarına göre tekerlekli sandalye rampalarının eğimi maksimum %6 olmalıdır. Yaşadığınız şehirlerdeki erişilebilirlik sorunlarını ve çözümlerini burada tartışalım.",
+        created_at: new Date(Date.now() - 3600000 * 36).toISOString(), // 36 hours ago
+        likes_count: 31,
+        is_pinned: false,
+        is_solved: true,
+        category: { name: "Engelli Hakları & Hukuk" },
+        author: { full_name: "Felix Moderatör", username: "felix", avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=felix" },
+        comments: [{ count: 9 }]
+      }
+    ];
+  }
+
+  if (featuredCommunities.length === 0) {
+    featuredCommunities = [
+      {
+        id: "cat-gorme",
+        name: "Görme Engelliler Teknolojileri",
+        description: "Ekran okuyucular, kabartma ekranlar, sesli asistanlar ve günlük yaşamı kolaylaştıran teknolojik çözümler.",
+        icon: "users",
+        slug: "gorme-engelliler"
+      },
+      {
+        id: "cat-haklar",
+        name: "Engelli Hakları & Hukuk",
+        description: "Mevzuat, erişilebilirlik yasaları, istihdam hakları ve yasal destek süreçlerine dair rehber paylaşımlar.",
+        icon: "handshake",
+        slug: "engelli-haklari"
+      },
+      {
+        id: "cat-bilissel",
+        name: "Bilişsel & Psikolojik Destek",
+        description: "Disleksi, otizm, DEHB ve ruh sağlığı süreçlerinde deneyim paylaşımları ve akran desteği.",
+        icon: "message",
+        slug: "bilissel-destek"
+      }
+    ];
+  }
+
+  function formatTRDate(dateStr: string) {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    if (diffHours < 1) return 'Az önce';
+    if (diffHours < 24) return `${diffHours} saat önce`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays} gün önce`;
+  }
+
   return (
     <SiteLayout>
       <script
@@ -315,6 +438,126 @@ export default function Home() {
               <span className="mx-2">•</span>
               <span>📖 Okuma Süresi: 6 Dakika</span>
             </div>
+          </div>
+        </section>
+
+        {/* Dynamic Interactive Content Section */}
+        <section className="max-w-[1280px] mx-auto px-4 py-16 border-b border-border">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            {/* Featured Communities */}
+            <div className="lg:col-span-4 space-y-8">
+              <div>
+                <span className="vibe-label ml-0">ÖNE ÇIKAN GRUPLAR</span>
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground uppercase mt-2">Popüler Topluluklar</h2>
+                <p className="text-muted-foreground text-sm font-normal mt-2 leading-relaxed">
+                  Özel gereksinimli bireylerin ve destekçilerin deneyimlerini paylaştığı aktif ilgi gruplarımız.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {featuredCommunities.map((community) => (
+                  <Link
+                    key={community.id}
+                    href={`/communities`}
+                    className="vibe-card block p-6 hover:border-primary/50 transition-all cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-primary/10 rounded text-primary group-hover:scale-110 transition-transform text-2xl">
+                        {community.icon === 'handshake' ? '🤝' : community.icon === 'message' ? '💬' : '👥'}
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-foreground text-base group-hover:text-primary transition-colors">{community.name}</h3>
+                        <p className="text-xs text-muted-foreground line-clamp-1 mt-1">{community.description}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  href="/communities"
+                  className="w-full bg-muted border border-border text-foreground px-6 py-3.5 rounded font-bold text-sm hover:bg-muted/80 transition-all text-center flex items-center justify-center min-h-[44px]"
+                >
+                  TÜM TOPLULUKLARI KEŞFET
+                </Link>
+              </div>
+            </div>
+
+            {/* Latest Discussions */}
+            <div className="lg:col-span-8 space-y-8">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span className="vibe-label ml-0">SON PAYLAŞIMLAR</span>
+                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground uppercase mt-2">Aktif Tartışmalar</h2>
+                </div>
+                <Link
+                  href="/discussions"
+                  className="vibe-button-primary px-6 py-3 min-h-[44px] text-sm font-semibold rounded shrink-0 flex items-center justify-center gap-2"
+                >
+                  <Plus size={16} /> TARTIŞMALARI İNCELE
+                </Link>
+              </div>
+
+              <div className="space-y-4">
+                {latestTopics.map((topic) => (
+                  <article
+                    key={topic.id}
+                    className="vibe-card p-6 md:p-8 hover:border-primary/50 transition-all relative"
+                  >
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-border/50">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`}
+                          alt={`${topic.author?.full_name || 'Kullanıcı'} avatarı`}
+                          className="w-10 h-10 rounded-full border border-border bg-muted"
+                        />
+                        <div>
+                          <div className="font-bold text-sm text-foreground">{topic.author?.full_name || 'Katılımcı'}</div>
+                          <div className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">@{topic.author?.username || 'user'}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {topic.is_pinned && (
+                          <span className="bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">SABİTLENDİ</span>
+                        )}
+                        {topic.is_solved && (
+                          <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">ÇÖZÜLDÜ</span>
+                        )}
+                        <span className="bg-muted text-muted-foreground text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider font-mono">
+                          {topic.category?.name || topic.category || 'Genel'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <Link href={`/discussions`} className="block group">
+                      <h3 className="text-lg md:text-xl font-bold mb-3 tracking-tight text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                        {topic.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground font-normal leading-relaxed line-clamp-2 mb-6">
+                        {topic.content}
+                      </p>
+                    </Link>
+
+                    <div className="flex items-center justify-between text-xs text-muted-foreground font-semibold pt-2">
+                      <div className="flex items-center gap-6">
+                        <span className="flex items-center gap-2">
+                          <span>👍</span> {topic.likes_count || 0} Beğeni
+                        </span>
+                        <Link href={`/discussions`} className="flex items-center gap-2 hover:text-primary transition-colors">
+                          <MessageSquare size={14} /> {topic.comments?.[0]?.count || topic.comments?.count || 0} Yorum
+                        </Link>
+                      </div>
+                      <time className="font-mono text-[10px] text-muted-foreground" dateTime={topic.created_at}>
+                        {formatTRDate(topic.created_at)}
+                      </time>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
           </div>
         </section>
 

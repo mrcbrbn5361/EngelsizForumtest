@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { Topic, Category } from '@/types/database';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
-import { GoogleGenAI } from '@google/genai';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { DiscussionCard } from '@/components/forum/discussion-card';
