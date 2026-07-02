@@ -70,10 +70,53 @@ export default async function DiscussionsPage({
 
   return (
     <DashboardLayout>
-      {/* ... Re-added layout components (I will need to add them properly here) */}
       <div className="vibe-container py-12 md:py-16">
         <header className="mb-16">
-            {/* Header, Search, Navigation... (re-add here) */}
+          <div className="mb-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-primary/5 border border-primary/20 rounded-3xl p-8 transition-all hover:bg-primary/10">
+              <h2 className="text-sm font-black text-primary uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
+                <span className="text-xl">🔥</span> POPÜLER KONULAR
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground font-medium leading-relaxed">
+                Yardımcı teknolojiler, erişilebilir oyun dünyası ve engelli hakları bu hafta en çok konuşulan başlıklar arasında.
+              </p>
+            </div>
+            <div className="bg-primary/5 border border-primary/20 rounded-3xl p-8 transition-all hover:bg-primary/10">
+              <h2 className="text-sm font-black text-primary uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
+                <span className="text-xl">🤖</span> AI ANALİZİ
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground font-medium leading-relaxed">
+                Topluluğumuzdaki tartışmaların %80'i pratik çözüm önerileri içeriyor. AI özetleme özelliği ile saniyeler içinde bilgiye ulaşın.
+              </p>
+            </div>
+            <div className="bg-primary/5 border border-primary/20 rounded-3xl p-8 transition-all hover:bg-primary/10">
+              <h2 className="text-sm font-black text-primary uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
+                <span className="text-xl">🤝</span> ÜYE DAYANIŞMASI
+              </h2>
+              <p className="text-xs md:text-sm text-muted-foreground font-medium leading-relaxed">
+                Her gün ortalama 50+ yeni çözüm önerisi paylaşılıyor. Kendi deneyiminizi paylaşarak topluluğa uzmanlık katın.
+              </p>
+            </div>
+          </div>
+
+          <div className="vibe-card p-10 md:p-16 relative overflow-hidden shadow-2xl">
+            <div className="absolute inset-0 bg-primary/[0.02] -z-10" />
+            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+              <div className="space-y-6">
+                <p className="vibe-label ml-0">TARTIŞMA PLATFORMU</p>
+                <h1 className="vibe-section-title uppercase">Topluluk Konuşmaları</h1>
+                <p className="text-muted-foreground text-lg md:text-xl font-medium leading-relaxed max-w-2xl">
+                  Yardımlaşmak, deneyim paylaşmak ve yeni insanlarla tanışmak için en doğru yerdesiniz.
+                </p>
+              </div>
+              <Link 
+                href="/discussions/new"
+                className="vibe-button-primary h-20 px-10 text-xl shrink-0 flex items-center gap-2"
+              >
+                <Plus size={32} /> YENİ BAŞLIK
+              </Link>
+            </div>
+          </div>
         </header>
         
         <section className="space-y-6">
@@ -83,12 +126,10 @@ export default async function DiscussionsPage({
                 <DiscussionCard 
                   key={topic.id}
                   topic={topic}
-                  // Client-side AI summary needs to be handled via client components
                 />
               ))}
             </div>
           ) : (
-             /* Empty state ... */
              <div className="text-center py-32 bg-card rounded-[3rem] border-4 border-dashed border-border px-8">
                <MessageSquare size={120} className="mx-auto text-muted-foreground/10 mb-8" />
                <h3 className="text-3xl md:text-5xl font-black mb-6 tracking-tighter text-foreground">Başlık Bulunamadı</h3>

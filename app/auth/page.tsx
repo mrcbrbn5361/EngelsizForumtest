@@ -8,6 +8,7 @@ import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { useAuth } from '@/components/providers/auth-provider';
 import { LogIn, UserPlus, Mail, Lock, AlertCircle, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import Link from 'next/link';
 
 /**
  * Accessible Auth Page for EngelsizForum with Google Login.
@@ -189,9 +190,9 @@ export default function AuthPage() {
             
             {isLogin && (
               <div className="text-center">
-                <a href="/auth/forgot-password" className="vibe-label inline-block hover:text-primary transition-colors cursor-pointer">
+                <Link href="/auth/forgot-password" className="vibe-label inline-block hover:text-primary transition-colors cursor-pointer">
                   ŞİFREMİ UNUTTUM?
-                </a>
+                </Link>
               </div>
             )}
           </form>

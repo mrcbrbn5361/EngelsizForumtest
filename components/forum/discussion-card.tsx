@@ -11,7 +11,7 @@ import Link from 'next/link';
 
 interface DiscussionCardProps {
   topic: Topic;
-  onSummarize: (id: string) => void;
+  onSummarize?: (id: string) => void;
   isLoading?: boolean;
 }
 
@@ -20,6 +20,13 @@ interface DiscussionCardProps {
  */
 export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCardProps) {
   const { isStaff } = useRole();
+
+  // ... rest of the component
+  
+  // In the JSX, conditionally render the AI button:
+  // {onSummarize && (
+  //   <button ... onClick={(e) => { ... onSummarize(topic.id); }} ...>
+  // ...
 
   const handleDelete = async () => {
     if (!confirm('Bu tartışmayı silmek istediğinize emin misiniz?')) return;
@@ -77,23 +84,25 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
             </button>
           )}
 
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onSummarize(topic.id);
-            }}
-            disabled={isLoading}
-            className="flex h-9 md:h-11 items-center justify-center gap-2 rounded-xl bg-primary/5 px-3 md:px-5 text-[10px] md:text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all disabled:opacity-50 border border-primary/10 group/ai uppercase tracking-widest"
-            aria-label="AI ile özetle"
-          >
-            {isLoading ? (
-              <Loader2 className="animate-spin" size={14} />
-            ) : (
-              <Sparkles size={14} className="group-hover/ai:rotate-12 transition-transform" />
-            )}
-            <span className="hidden sm:inline">{isLoading ? 'ÖZETLENİYOR...' : 'AI ÖZETLE'}</span>
-          </button>
+          {onSummarize && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onSummarize(topic.id);
+              }}
+              disabled={isLoading}
+              className="flex h-9 md:h-11 items-center justify-center gap-2 rounded-xl bg-primary/5 px-3 md:px-5 text-[10px] md:text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all disabled:opacity-50 border border-primary/10 group/ai uppercase tracking-widest"
+              aria-label="AI ile özetle"
+            >
+              {isLoading ? (
+                <Loader2 className="animate-spin" size={14} />
+              ) : (
+                <Sparkles size={14} className="group-hover/ai:rotate-12 transition-transform" />
+              )}
+              <span className="hidden sm:inline">{isLoading ? 'ÖZETLENİYOR...' : 'AI ÖZETLE'}</span>
+            </button>
+          )}
         </div>
       </div>
 
