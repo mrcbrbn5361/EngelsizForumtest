@@ -315,32 +315,35 @@ export default function CommunitiesPage() {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.03 }}
-                className="vibe-card vibe-card-hover relative p-6 flex flex-col justify-between group"
+                className="group"
               >
-                <div>
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="p-3 bg-primary/10 rounded text-primary">
-                      {getIcon(community.icon)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="vibe-label text-[10px] uppercase font-bold tracking-wider text-muted-foreground ml-0">TOPLULUK</p>
-                      <h2 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors truncate">
-                        <Link href={`/communities/${community.id}`} className="after:absolute after:inset-0 after:content-[''] outline-none">
+                <Link 
+                  href={`/communities/${community.id}`}
+                  className="vibe-card vibe-card-hover block p-6 h-full flex flex-col justify-between relative cursor-pointer"
+                >
+                  <div>
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="p-3 bg-primary/10 rounded text-primary">
+                        {getIcon(community.icon)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="vibe-label text-[10px] uppercase font-bold tracking-wider text-muted-foreground ml-0">TOPLULUK</p>
+                        <h2 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors truncate">
                           {community.name}
-                        </Link>
-                      </h2>
+                        </h2>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                      {community.description}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">
+                    <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+                      KEŞFET <ChevronRight size={16} />
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
-                    {community.description}
-                  </p>
-                </div>
-                
-                <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">
-                  <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider group-hover:translate-x-1 transition-transform">
-                    KEŞFET <ChevronRight size={16} />
-                  </div>
-                </div>
+                </Link>
               </motion.div>
             ))}
           </div>

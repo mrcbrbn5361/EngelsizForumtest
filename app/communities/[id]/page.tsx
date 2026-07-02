@@ -138,18 +138,18 @@ export default function CommunityDetailPage() {
           <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" /> TOPLULUKLAR
         </button>
 
-        <div className="grid lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_380px] gap-10 md:gap-16">
+        <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] 2xl:grid-cols-[1fr_380px] gap-8 md:gap-12">
           <div className="space-y-16">
-            <header className="vibe-card p-8 md:p-16 relative overflow-hidden shadow-2xl">
+            <header className="vibe-card p-6 sm:p-8 md:p-12 relative overflow-hidden shadow-2xl">
               <div className="absolute top-0 right-0 size-96 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl -z-10"></div>
               <div className="relative z-10 space-y-10">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-8">
                   <div className="w-20 h-20 md:w-28 md:h-28 bg-primary/10 rounded-[2rem] md:rounded-[2.5rem] flex items-center justify-center text-primary shrink-0 transition-all group-hover:scale-105">
                     <Users size={48} />
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="vibe-label ml-0 mb-3">TOPLULUK</p>
-                    <h1 className="vibe-section-title text-4xl md:text-6xl">{community.name}</h1>
+                    <h1 className="vibe-section-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl">{community.name}</h1>
                   </div>
                 </div>
                 <p className="text-lg md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-3xl">
