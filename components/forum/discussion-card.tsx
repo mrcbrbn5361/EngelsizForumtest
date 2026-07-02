@@ -31,7 +31,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
   return (
     <motion.article 
       whileHover={{ y: -4 }}
-      className={`vibe-card vibe-card-hover p-6 md:p-8 ${
+      className={`vibe-card vibe-card-hover relative p-6 md:p-8 ${
         topic.is_pinned 
           ? 'border-primary/30 bg-primary/[0.02] shadow-[0_0_20px_-12px_rgba(var(--primary),0.2)]' 
           : ''

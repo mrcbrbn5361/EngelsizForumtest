@@ -315,7 +315,7 @@ export default function CommunitiesPage() {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.03 }}
-                className="vibe-card vibe-card-hover p-6 flex flex-col justify-between group"
+                className="vibe-card vibe-card-hover relative p-6 flex flex-col justify-between group"
               >
                 <div>
                   <div className="flex items-center gap-4 mb-4">
