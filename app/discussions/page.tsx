@@ -229,7 +229,7 @@ export default function DiscussionsPage() {
 
         <nav className="mb-12" aria-label="Kategori filtreleri">
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 sm:gap-10">
-            <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto py-4 md:py-5 no-scrollbar snap-x relative min-w-0 flex-1 -mx-4 px-4 sm:mx-0 sm:px-0" role="list">
+            <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto py-6 -my-2 no-scrollbar snap-x relative min-w-0 flex-1 -mx-4 px-4 sm:mx-0 sm:px-0" role="list">
               {[
                 { label: 'TÜMÜ', id: null },
                 ...categories.filter(c => !c.parent_id).map(c => ({ label: c.name.toUpperCase(), id: c.id }))

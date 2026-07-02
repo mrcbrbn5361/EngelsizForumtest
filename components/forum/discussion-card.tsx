@@ -60,7 +60,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
             </span>
           </div>
           <h2 className="text-lg md:text-2xl font-bold leading-tight group-hover:text-primary transition-colors tracking-tight break-words">
-            <Link href={`/discussions/${topic.id}`} className="outline-none after:absolute after:inset-0 after:z-0">
+            <Link href={`/discussions/${topic.id}`} className="outline-none after:absolute after:inset-0 after:content-[''] after:z-0">
               {topic.title}
             </Link>
           </h2>

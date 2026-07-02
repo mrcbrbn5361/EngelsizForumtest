@@ -325,7 +325,7 @@ export default function CommunitiesPage() {
                     <div className="min-w-0 flex-1">
                       <p className="vibe-label text-[10px] uppercase font-bold tracking-wider text-muted-foreground ml-0">TOPLULUK</p>
                       <h2 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors truncate">
-                        <Link href={`/communities/${community.id}`} className="after:absolute after:inset-0 outline-none">
+                        <Link href={`/communities/${community.id}`} className="after:absolute after:inset-0 after:content-[''] outline-none">
                           {community.name}
                         </Link>
                       </h2>
