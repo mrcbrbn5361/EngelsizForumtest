@@ -9,12 +9,35 @@ import dynamic from 'next/dynamic';
 import { Home, MessageSquare, Users, Info, Settings, User, AlertCircle, Database } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/lib/supabase';
 
 const AccessibilityToolbar = dynamic(() => import('@/components/ui/accessibility-toolbar').then((mod) => mod.AccessibilityToolbar), { ssr: false });
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const pathname = usePathname();
+  const [sidebarCategories, setSidebarCategories] = React.useState<any[]>([
+    { name: 'GÖRME', slug: 'gorme-engelli', icon: 'AlertCircle' },
+    { name: 'İŞİTME', slug: 'isitme-engelli', icon: 'Database' }
+  ]);
+
+  React.useEffect(() => {
+    const fetchSidebarCats = async () => {
+      try {
+        const { data } = await supabase
+          .from('categories')
+          .select('id, name, slug, icon')
+          .order('name');
+        
+        if (data && data.length > 0) {
+          setSidebarCategories(data);
+        }
+      } catch (err) {
+        console.error('Error fetching sidebar categories:', err);
+      }
+    };
+    fetchSidebarCats();
+  }, []);
   
   const NavItem = ({ href, icon: Icon, label }: { href: string, icon: any, label: string }) => {
     const isActive = pathname === href;
@@ -50,12 +73,19 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
             <nav className="flex flex-col gap-2" aria-label="Kategori Gezintisi">
               <h4 className="vibe-label ml-4 mb-4">TOPLULUKLAR</h4>
-                <Link href="/communities" className="flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent hover:border-border transition-all" aria-label="Görme engelliler topluluğu">
-                    <AlertCircle size={20} className="text-primary" /> GÖRME
-                </Link>
-                <Link href="/communities" className="flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent hover:border-border transition-all" aria-label="İşitme engelliler topluluğu">
-                    <Database size={20} className="text-primary" /> İŞİTME
-                </Link>
+              {sidebarCategories.map((cat) => {
+                const IconComponent = cat.icon === 'Database' || cat.slug === 'isitme-engelli' ? Database : AlertCircle;
+                return (
+                  <Link 
+                    key={cat.id || cat.slug}
+                    href={`/communities/${cat.slug || cat.id}`} 
+                    className="flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent hover:border-border transition-all" 
+                    aria-label={`${cat.name} topluluğu`}
+                  >
+                    <IconComponent size={20} className="text-primary" /> {cat.name.split(' ')[0].toUpperCase()}
+                  </Link>
+                );
+              })}
             </nav>
 
             {user && (

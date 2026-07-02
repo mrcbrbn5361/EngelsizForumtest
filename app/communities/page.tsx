@@ -167,7 +167,7 @@ export default function CommunitiesPage() {
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
               <div className="space-y-4">
                 <p className="vibe-label ml-0">TOPLULUK REHBERİ</p>
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground uppercase">Uzmanlık Grupları</h1>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground uppercase">Topluluklar</h1>
                 <p className="text-muted-foreground text-base md:text-lg font-normal leading-relaxed max-w-2xl">
                   İlgi alanlarınıza ve ihtiyaçlarınıza göre özelleşmiş alt toplulukları keşfedin.
                 </p>
@@ -177,7 +177,7 @@ export default function CommunitiesPage() {
                 className="vibe-button-primary px-6 py-3 min-h-[48px] text-base font-semibold rounded shrink-0 flex items-center justify-center gap-2"
               >
                 <Plus size={18} className={showCreateForm ? 'rotate-45 transition-transform' : 'transition-transform'} />
-                {showCreateForm ? 'VAZGEÇ' : 'YENİ GRUP'}
+                {showCreateForm ? 'VAZGEÇ' : 'YENİ TOPLULUK'}
               </button>
             </div>
           </div>
@@ -194,12 +194,12 @@ export default function CommunitiesPage() {
               className="bg-card border border-border rounded-lg p-6 md:p-10 space-y-6"
             >
               <div className="space-y-2">
-                <h2 className="text-xl font-bold text-foreground">Yeni Bir Grup Kur</h2>
+                <h2 className="text-xl font-bold text-foreground">Yeni Bir Topluluk Kur</h2>
                 <p className="text-muted-foreground text-sm font-normal">Topluluğunuzu başlatın ve insanları bir araya getirin.</p>
               </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor="community-name" className="vibe-label text-xs uppercase font-bold tracking-wider text-muted-foreground">Grup Adı</label>
+                  <label htmlFor="community-name" className="vibe-label text-xs uppercase font-bold tracking-wider text-muted-foreground">Topluluk Adı</label>
                   <input 
                     id="community-name"
                     type="text" 
@@ -249,7 +249,7 @@ export default function CommunitiesPage() {
                   className="vibe-button-primary px-6 py-2.5 min-h-[44px] text-sm font-bold rounded flex items-center justify-center gap-2"
                 >
                   {creating ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                  {creating ? 'KURULUYOR...' : 'GRUBU KUR'}
+                  {creating ? 'KURULUYOR...' : 'TOPLULUĞU KUR'}
                 </button>
               </div>
             </form>
@@ -260,12 +260,12 @@ export default function CommunitiesPage() {
         <section className="mb-12">
           <div className="bg-card border border-border rounded-lg p-6 md:p-8">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-3 text-foreground">
-              <span className="text-primary text-2xl">💡</span> Grup Özeti
+              <span className="text-primary text-2xl">💡</span> Topluluk Özeti
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="space-y-1">
                 <div className="font-bold text-primary text-xs uppercase tracking-wider">ÇEŞİTLİLİK</div>
-                <p className="text-xs text-muted-foreground leading-relaxed">Erişilebilirlik, teknoloji, hukuk ve sosyal yaşam gibi birçok farklı alanda özelleşmiş gruplar.</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">Erişilebilirlik, teknoloji, hukuk ve sosyal yaşam gibi birçok farklı alanda özelleşmiş topluluklar.</p>
               </div>
               <div className="space-y-1">
                 <div className="font-bold text-primary text-xs uppercase tracking-wider">YÖNETİM</div>
@@ -273,7 +273,7 @@ export default function CommunitiesPage() {
               </div>
               <div className="space-y-1">
                 <div className="font-bold text-primary text-xs uppercase tracking-wider">YAPAY ZEKA</div>
-                <p className="text-xs text-muted-foreground leading-relaxed">Gruplardaki uzun tartışmalar AI ile özetlenerek bilgiye ulaşım hızlandırılır.</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">Topluluklardaki uzun tartışmalar AI ile özetlenerek bilgiye ulaşım hızlandırılır.</p>
               </div>
               <div className="space-y-1">
                 <div className="font-bold text-primary text-xs uppercase tracking-wider">DEMOKRASİ</div>
@@ -287,7 +287,7 @@ export default function CommunitiesPage() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
           <input 
             type="text" 
-            placeholder="GRUPLARDA ARA..." 
+            placeholder="TOPLULUKLARDA ARA..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="vibe-input vibe-input-pl-12 pr-4 h-12 text-sm uppercase rounded border border-border bg-background w-full"

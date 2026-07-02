@@ -22,6 +22,31 @@ export default function DiscussionsPage() {
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaryResult, setSummaryResult] = useState<{ id: string, text: string } | null>(null);
 
+  const chipContainerRef = React.useRef<HTMLDivElement>(null);
+
+  const handleChipKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!chipContainerRef.current) return;
+    const buttons = Array.from(chipContainerRef.current.querySelectorAll('button'));
+    const activeIndex = buttons.indexOf(document.activeElement as HTMLButtonElement);
+    if (activeIndex === -1) return;
+
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      const nextIndex = (activeIndex + 1) % buttons.length;
+      buttons[nextIndex].focus();
+      buttons[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      const val = buttons[nextIndex].getAttribute('data-id');
+      setSelectedCategoryId(val === 'all' ? null : val);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const prevIndex = (activeIndex - 1 + buttons.length) % buttons.length;
+      buttons[prevIndex].focus();
+      buttons[prevIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      const val = buttons[prevIndex].getAttribute('data-id');
+      setSelectedCategoryId(val === 'all' ? null : val);
+    }
+  };
+
   const fetchTopics = useCallback(async () => {
     const isSupabaseConfigured = 
       process.env.NEXT_PUBLIC_SUPABASE_URL && 
@@ -86,7 +111,38 @@ export default function DiscussionsPage() {
       await fetchTopics();
     };
     loadData();
-    return () => { isMounted = false; };
+
+    // Set up Realtime subscriptions
+    const channel = supabase
+      .channel('discussions-realtime-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'topics',
+        },
+        () => {
+          if (isMounted) fetchTopics();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'comments',
+        },
+        () => {
+          if (isMounted) fetchTopics();
+        }
+      )
+      .subscribe();
+
+    return () => { 
+      isMounted = false; 
+      supabase.removeChannel(channel);
+    };
   }, [fetchTopics, fetchCategories]);
 
   const handleSummarize = async (id: string) => {
@@ -229,13 +285,19 @@ export default function DiscussionsPage() {
 
         <nav className="mb-12" aria-label="Kategori filtreleri">
           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 sm:gap-10">
-            <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto py-4 sm:py-5 no-scrollbar snap-x relative min-w-0 flex-1 -mx-4 px-4 sm:mx-0 sm:px-0" role="list">
+            <div 
+              ref={chipContainerRef}
+              onKeyDown={handleChipKeyDown}
+              className="flex items-center gap-3 sm:gap-4 overflow-x-auto py-4 sm:py-5 no-scrollbar snap-x relative min-w-0 flex-1 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth" 
+              role="list"
+            >
               {[
                 { label: 'TÜMÜ', id: null },
                 ...categories.filter(c => !c.parent_id).map(c => ({ label: c.name.toUpperCase(), id: c.id }))
               ].map(item => (
                 <button 
                   key={item.id || 'all'} 
+                  data-id={item.id || 'all'}
                   onClick={() => setSelectedCategoryId(item.id)}
                   role="listitem"
                   aria-label={`${item.label} kategorisini filtrele`}

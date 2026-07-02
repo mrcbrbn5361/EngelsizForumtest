@@ -62,14 +62,16 @@ export default function ForgotPasswordPage() {
 
             {message && (
               <div 
-                className={`flex items-center gap-2 text-sm p-3 rounded-lg border ${
+                role="status"
+                aria-live="polite"
+                className={`flex items-center gap-3 p-4 rounded-2xl border-2 font-bold text-sm ${
                   message.type === 'success' 
                     ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
                     : 'bg-destructive/10 text-destructive border-destructive/20'
                 }`}
               >
-                {message.type === 'success' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
-                {message.text}
+                {message.type === 'success' ? <CheckCircle size={20} className="shrink-0" /> : <AlertCircle size={20} className="shrink-0" />}
+                <p>{message.text}</p>
               </div>
             )}
 

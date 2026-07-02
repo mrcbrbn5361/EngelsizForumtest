@@ -26,6 +26,11 @@ export default function CommunityDetailPage() {
   const [loading, setLoading] = useState(true);
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaryResult, setSummaryResult] = useState<{ id: string, text: string } | null>(null);
+  const [memberCount, setMemberCount] = useState<number>(0);
+  
+  const formatCompact = (val: number) => {
+    return new Intl.NumberFormat('tr-TR', { notation: 'compact' }).format(val);
+  };
   
   const fetchCommunityData = useCallback(async () => {
     const isSupabaseConfigured = 
@@ -38,11 +43,16 @@ export default function CommunityDetailPage() {
     }
 
     try {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*')
-        .eq('id', id)
-        .single();
+      const isUuid = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+      
+      let catQuery = supabase.from('categories').select('*');
+      if (isUuid(id as string)) {
+        catQuery = catQuery.eq('id', id);
+      } else {
+        catQuery = catQuery.eq('slug', id);
+      }
+      
+      const { data, error } = await catQuery.single();
       
       if (error) throw error;
       setCommunity(data);
@@ -51,15 +61,22 @@ export default function CommunityDetailPage() {
         .from('topics')
         .select(`
           *,
-          author:profiles(username, avatar_url),
+          author:profiles(username, avatar_url, full_name),
           category:categories(name),
           comments(count)
         `)
-        .eq('category_id', id)
+        .eq('category_id', data.id)
         .order('created_at', { ascending: false });
 
       if (topicsError) throw topicsError;
       setTopics(topicsData || []);
+
+      const { count: totalProfiles } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+      if (totalProfiles) {
+        setMemberCount(totalProfiles);
+      }
     } catch (error) {
       console.error('Error fetching community data:', error);
     } finally {
@@ -247,7 +264,7 @@ export default function CommunityDetailPage() {
               <div className="space-y-8">
                 <div className="flex items-center justify-between border-b border-border pb-6">
                   <span className="text-lg text-muted-foreground font-black flex items-center gap-4 tracking-tight"><Users size={24} /> Üyeler</span>
-                  <span className="text-2xl font-black text-primary tracking-tighter">2.5K+</span>
+                  <span className="text-2xl font-black text-primary tracking-tighter">{memberCount > 0 ? formatCompact(memberCount) : '...'}</span>
                 </div>
                 <div className="flex items-center justify-between border-b border-border pb-6">
                   <span className="text-lg text-muted-foreground font-black flex items-center gap-4 tracking-tight"><Globe size={24} /> Görünürlük</span>
