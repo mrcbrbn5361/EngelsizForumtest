@@ -40,8 +40,13 @@ export default function AuthCallbackPage() {
       if (!mounted) return;
       const { data } = await supabase.auth.getSession();
       if (data?.session && window.location.pathname === '/auth/callback') {
-          // If we haven't already been redirected by auth listener, just go home
-          router.push('/');
+          // Check if this is a password recovery session, if so, redirect to reset-password
+          // Supabase doesn't easily expose this in getSession, but we can check the URL
+          if (window.location.hash.includes('type=recovery') || window.location.hash.includes('type=password_recovery')) {
+              router.push('/auth/reset-password');
+          } else {
+              router.push('/');
+          }
       } else if (!data?.session) {
           router.push('/auth');
       }

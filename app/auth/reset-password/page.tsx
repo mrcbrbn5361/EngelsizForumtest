@@ -16,7 +16,7 @@ export default function ResetPasswordPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
-    // 1. Listen for auth state changes
+    // 1. Set up auth listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log('Reset Password Auth Event:', event);
       if (event === 'PASSWORD_RECOVERY') {
@@ -25,33 +25,13 @@ export default function ResetPasswordPage() {
       }
     });
 
-    // 2. Also check if session is already established
-    const verifyRecoverySession = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          setIsRecovery(true);
-          setVerifying(false);
-        } else {
-          // If there is no hash token in window, it is invalid/expired
-          if (typeof window !== 'undefined' && !window.location.hash.includes('access_token')) {
-            setIsRecovery(false);
-            setVerifying(false);
-          } else {
-            // Wait up to 3 seconds for Supabase to process URL hash
-            const timer = setTimeout(() => {
-              setVerifying(false);
-            }, 3000);
-            return () => clearTimeout(timer);
-          }
-        }
-      } catch (err) {
-        console.error('Error verifying recovery session:', err);
-        setVerifying(false);
+    // 2. Immediate session check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setIsRecovery(true);
       }
-    };
-
-    verifyRecoverySession();
+      setVerifying(false);
+    });
 
     return () => {
       subscription.unsubscribe();

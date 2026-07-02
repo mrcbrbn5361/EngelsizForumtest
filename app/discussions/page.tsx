@@ -287,7 +287,7 @@ export default function DiscussionsPage() {
             <div 
               ref={chipContainerRef}
               onKeyDown={handleChipKeyDown}
-              className="flex items-center gap-3 sm:gap-4 overflow-x-auto py-4 sm:py-5 no-scrollbar snap-x relative min-w-0 flex-1 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth" 
+              className="flex flex-wrap items-center gap-2 py-4 sm:py-5 relative min-w-0 flex-1 -mx-4 px-4 sm:mx-0 sm:px-0" 
               role="list"
             >
               {[
