@@ -127,7 +127,7 @@ export function Navbar() {
               </Dialog.Trigger>
               <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm DialogOverlay" />
-                <Dialog.Content className="fixed inset-y-0 left-0 z-50 w-[85vw] max-w-sm bg-background p-0 shadow-2xl focus:outline-none focus:ring-0 DialogContent border-r border-border flex flex-col">
+                <Dialog.Content className="fixed inset-y-0 right-0 z-50 w-[85vw] max-w-sm bg-background p-0 shadow-2xl focus:outline-none focus:ring-0 DialogContent border-l border-border flex flex-col">
                   <Dialog.Title className="sr-only">Navigasyon Menüsü</Dialog.Title>
                   <Dialog.Description className="sr-only">Forum sayfalarına hızlı erişim menüsü.</Dialog.Description>
                   
@@ -148,10 +148,23 @@ export function Navbar() {
                   <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
                     <h4 className="vibe-label ml-4 mb-4">NAVİGASYON</h4>
                     <MobileNavLink href="/" icon={<Home size={20} />} label="ANA SAYFA" onClick={() => setIsOpen(false)} />
-                    <MobileNavLink href="/discussions" icon={<MessageSquare size={20} />} label="TARTIŞMALAR" onClick={() => setIsOpen(false)} />
-                    <MobileNavLink href="/communities" icon={<Users size={20} />} label="TOPLULUKLAR" onClick={() => setIsOpen(false)} />
-                    <MobileNavLink href="/about" icon={<Info size={20} />} label="HAKKIMIZDA" onClick={() => setIsOpen(false)} />
                     <MobileNavLink href="/search" icon={<Search size={20} />} label="ARAMA YAP" onClick={() => setIsOpen(false)} />
+
+                    <div className="pt-6 mt-6 border-t border-border">
+                      <h4 className="vibe-label ml-4 mb-4">PLATFORM</h4>
+                      <MobileNavLink href="/discussions" icon={<MessageSquare size={20} />} label="TARTIŞMALAR" onClick={() => setIsOpen(false)} />
+                      <MobileNavLink href="/communities" icon={<Users size={20} />} label="TOPLULUKLAR" onClick={() => setIsOpen(false)} />
+                      <MobileNavLink href="/about" icon={<Info size={20} />} label="HAKKIMIZDA" onClick={() => setIsOpen(false)} />
+                      <MobileNavLink href="/help" icon={<AlertCircle size={20} />} label="YARDIM MERKEZİ" onClick={() => setIsOpen(false)} />
+                    </div>
+
+                    <div className="pt-6 mt-6 border-t border-border">
+                      <h4 className="vibe-label ml-4 mb-4">GÜVENLİK</h4>
+                      <MobileNavLink href="/security" icon={<Shield size={20} />} label="BİLGİ GÜVENLİĞİ" onClick={() => setIsOpen(false)} />
+                      <MobileNavLink href="/privacy" icon={<Shield size={20} />} label="GİZLİLİK POLİTİKASI" onClick={() => setIsOpen(false)} />
+                      <MobileNavLink href="/terms" icon={<Info size={20} />} label="KULLANIM ŞARTLARI" onClick={() => setIsOpen(false)} />
+                      <MobileNavLink href="/accessibility" icon={<Info size={20} />} label="ERİŞİLEBİLİRLİK BEYANI" onClick={() => setIsOpen(false)} />
+                    </div>
                     
                     <div className="pt-6 mt-6 border-t border-border">
                       <h4 className="vibe-label ml-4 mb-4">HESAP</h4>
