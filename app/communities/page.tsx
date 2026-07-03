@@ -296,7 +296,7 @@ export default function CommunitiesPage() {
         </div>
 
         {loading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="bg-card p-6 rounded-lg border border-border h-[220px] flex flex-col justify-between">
                 <div className="space-y-3">
@@ -309,7 +309,7 @@ export default function CommunitiesPage() {
             ))}
           </div>
         ) : filteredCommunities.length > 0 ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredCommunities.map((community, index) => (
               <motion.div 
                 key={community.id}

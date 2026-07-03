@@ -153,7 +153,7 @@ export default function CommunityDetailPage() {
 
   return (
     <DashboardLayout>
-      <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12">
+      <div className="w-full py-8 md:py-12">
         <button 
           onClick={() => router.push('/communities')}
           className="mb-8 flex items-center gap-3 text-sm font-black text-muted-foreground hover:text-primary transition-all group uppercase tracking-[0.2em] px-2"

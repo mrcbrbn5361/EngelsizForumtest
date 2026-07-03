@@ -60,7 +60,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
-      <div className="flex flex-1 w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="flex flex-1 w-full max-w-[1440px] mx-auto px-4 md:px-8">
         <aside role="complementary" aria-label="Yan Menü" className="hidden lg:flex w-[320px] p-10 flex-col gap-12 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto bg-muted/5 border-r-2 border-border/50 shrink-0">
             <nav className="flex flex-col gap-2" aria-label="Ana Gezinti">
                 <NavItem href="/" icon={Home} label="ANA SAYFA" />
@@ -95,7 +95,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 </nav>
             )}
         </aside>
-        <div className="flex-1 px-0 py-6 sm:p-6 md:p-12 lg:p-16 bg-background min-w-0 w-full overflow-x-hidden">
+        <div className="flex-1 px-0 py-6 sm:p-6 md:p-8 lg:p-10 xl:p-12 bg-background min-w-0 w-full overflow-x-hidden">
           {children}
         </div>
       </div>
