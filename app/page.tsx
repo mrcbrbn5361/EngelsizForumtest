@@ -1,5 +1,6 @@
 import React from 'react';
 import { SiteLayout } from '@/components/layout/site-layout';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Sparkles, Plus, MessageSquare } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -508,10 +509,13 @@ export default async function Home() {
                   >
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-border/50">
                       <div className="flex items-center gap-3">
-                        <img
+                        <Image
                           src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`}
                           alt={`${topic.author?.full_name || 'Kullanıcı'} avatarı`}
-                          className="w-10 h-10 rounded-full border border-border bg-muted"
+                          width={40}
+                          height={40}
+                          className="w-10 h-10 rounded-full border border-border bg-muted object-cover"
+                          referrerPolicy="no-referrer"
                         />
                         <div>
                           <div className="font-bold text-sm text-foreground">{topic.author?.full_name || 'Katılımcı'}</div>

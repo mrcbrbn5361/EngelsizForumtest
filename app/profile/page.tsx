@@ -85,7 +85,6 @@ export default function ProfilePage() {
                   alt={profile.full_name || 'Profile'} 
                   fill 
                   className="object-cover" 
-                  unoptimized
                   referrerPolicy="no-referrer"
                 />
               ) : (

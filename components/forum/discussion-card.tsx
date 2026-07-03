@@ -121,7 +121,6 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
                 width={28} 
                 height={28} 
                 className="object-cover h-full w-full" 
-                unoptimized 
                 referrerPolicy="no-referrer" 
               />
             ) : (

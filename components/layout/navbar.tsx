@@ -75,7 +75,6 @@ export function Navbar() {
                         src={user.user_metadata.avatar_url || user.user_metadata.picture} 
                         alt="Profil resmim" 
                         fill
-                        unoptimized
                         className="object-cover"
                         referrerPolicy="no-referrer"
                       />

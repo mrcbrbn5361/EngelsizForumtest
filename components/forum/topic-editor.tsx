@@ -2,9 +2,13 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import ReactMarkdown from 'react-markdown';
 import { Eye, Edit3 } from 'lucide-react';
-import { VoiceInput } from '@/components/ui/voice-input';
+import dynamic from 'next/dynamic';
+const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false });
+const VoiceInput = dynamic(
+  () => import('@/components/ui/voice-input').then(mod => mod.VoiceInput),
+  { ssr: false }
+);
 
 interface TopicEditorProps {
   value: string;

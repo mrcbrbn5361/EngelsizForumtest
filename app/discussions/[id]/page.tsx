@@ -11,9 +11,15 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
-import { TextToSpeechControls } from '@/components/ui/text-to-speech-controls';
-import { VoiceInput } from '@/components/ui/voice-input';
 const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: true });
+const TextToSpeechControls = dynamic(
+  () => import('@/components/ui/text-to-speech-controls').then(mod => mod.TextToSpeechControls),
+  { ssr: false }
+);
+const VoiceInput = dynamic(
+  () => import('@/components/ui/voice-input').then(mod => mod.VoiceInput),
+  { ssr: false }
+);
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { cn } from '@/lib/utils';
 
