@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
@@ -40,7 +41,7 @@ export default function SearchPage() {
 
   const startVoiceSearch = () => {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert('Tarayıcınız ses tanımayı desteklemiyor.');
+      toast.error('Tarayıcınız ses tanımayı desteklemiyor.');
       return;
     }
 

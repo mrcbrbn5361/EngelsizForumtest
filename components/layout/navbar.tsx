@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -94,7 +95,7 @@ export function Navbar() {
                       window.location.href = '/';
                     } catch (error) {
                       console.error('Error signing out:', error);
-                      alert('Çıkış yapılırken bir hata oluştu.');
+                      toast.error('Çıkış yapılırken bir hata oluştu.');
                     }
                   }}
                   className="hidden sm:flex ml-1 items-center justify-center p-2.5 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all"
@@ -227,7 +228,7 @@ export function Navbar() {
                                 window.location.href = '/';
                               } catch (error) {
                                 console.error('Error signing out:', error);
-                                alert('Çıkış yapılırken bir hata oluştu.');
+                                toast.error('Çıkış yapılırken bir hata oluştu.');
                               }
                             }}
                             className="w-full flex items-center justify-center gap-2 rounded-xl bg-destructive/5 px-4 py-4 text-sm font-black text-destructive hover:bg-destructive/10 transition-all active:scale-95 border border-destructive/10"

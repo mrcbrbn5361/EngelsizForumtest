@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -8,7 +9,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '@/lib/supabase';
 import { Topic } from '@/types/database';
 import { DiscussionCard } from '@/components/forum/discussion-card';
-import { GoogleGenAI } from '@google/genai';
 import Link from 'next/link';
 
 interface Community {
@@ -91,32 +91,38 @@ export default function CommunityDetailPage() {
     }
   }, [id, fetchCommunityData]);
 
-  const handleSummarize = async (id: string) => {
+    const handleSummarize = async (id: string) => {
     const topic = topics.find(t => t.id === id);
-    if (!topic || !process.env.NEXT_PUBLIC_GEMINI_API_KEY) {
-      alert('AI Özeti için gerekli veriler eksik.');
+    if (!topic) {
+      toast.error('AI Özeti için gerekli veriler eksik.');
       return;
     }
 
     setSummarizingId(id);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
-      
-      const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
-        contents: `Lütfen aşağıdaki forum başlığı içeriğini kısa ve öz bir şekilde (maksimum 3 cümle) Türkçe özetle:\n\n${topic.content}`,
+      const response = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: topic.title, content: topic.content, type: 'topic_summary' })
       });
       
-      if (response.text) {
-        setSummaryResult({ id, text: response.text });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Özet oluşturulamadı');
+      }
+      
+      if (data.text) {
+        setSummaryResult({ id, text: data.text });
       }
     } catch (error: any) {
       console.error('Summarization failed:', error);
-      alert('Özet oluşturulurken bir hata oluştu: ' + error.message);
+      toast.error('Özet oluşturulurken bir hata oluştu: ' + error.message);
     } finally {
       setSummarizingId(null);
     }
   };
+
 
   if (loading) {
     return (
@@ -160,27 +166,27 @@ export default function CommunityDetailPage() {
             <header className="vibe-card p-6 sm:p-8 md:p-12 relative overflow-hidden shadow-2xl">
               <div className="absolute top-0 right-0 size-96 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl -z-10"></div>
               <div className="relative z-10 space-y-10">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-8">
-                  <div className="w-20 h-20 md:w-28 md:h-28 bg-primary/10 rounded-[2rem] md:rounded-[2.5rem] flex items-center justify-center text-primary shrink-0 transition-all group-hover:scale-105">
-                    <Users size={48} />
+                <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
+                  <div className="w-16 h-16 md:w-28 md:h-28 bg-primary/10 rounded-2xl md:rounded-[2.5rem] flex items-center justify-center text-primary shrink-0 transition-all group-hover:scale-105">
+                    <Users className="w-8 h-8 md:w-12 md:h-12" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="vibe-label ml-0 mb-3">TOPLULUK</p>
-                    <h1 className="vibe-section-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl">{community.name}</h1>
+                    <p className="vibe-label ml-0 mb-2 md:mb-3">TOPLULUK</p>
+                    <h1 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tight leading-tight text-foreground whitespace-normal break-normal">{community.name}</h1>
                   </div>
                 </div>
-                <p className="text-lg md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-3xl">
+                <p className="text-base sm:text-lg md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-3xl">
                   {community.description}
                 </p>
-                <div className="flex flex-col sm:flex-row gap-6 pt-6">
-                  <button className="vibe-button-primary h-20 px-12 text-xl">
+                <div className="flex flex-wrap gap-4 pt-6">
+                  <button className="vibe-button-primary h-14 sm:h-20 px-8 sm:px-12 text-lg sm:text-xl flex-1 sm:flex-none">
                     GRUBA KATIL
                   </button>
                   <Link 
                     href={`/discussions/new?category_id=${community.id}`}
-                    className="h-20 px-12 rounded-[2rem] bg-muted border-2 border-transparent hover:border-primary/20 text-foreground font-black text-xl flex items-center justify-center gap-4 hover:bg-muted/80 hover:scale-[1.02] active:scale-95 transition-all outline-none focus:ring-4 focus:ring-primary/10"
+                    className="h-14 sm:h-20 px-8 sm:px-12 rounded-[1.5rem] sm:rounded-[2rem] bg-muted border-2 border-transparent hover:border-primary/20 text-foreground font-black text-lg sm:text-xl flex items-center justify-center gap-3 hover:bg-muted/80 hover:scale-[1.02] active:scale-95 transition-all outline-none focus:ring-4 focus:ring-primary/10 flex-1 sm:flex-none text-center"
                   >
-                    <Plus size={28} /> BAŞLIK AÇ
+                    <Plus size={24} className="shrink-0" /> BAŞLIK AÇ
                   </Link>
                 </div>
               </div>

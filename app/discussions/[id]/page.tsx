@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -8,9 +9,10 @@ import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
-import { GoogleGenAI } from '@google/genai';
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
+import { TextToSpeechControls } from '@/components/ui/text-to-speech-controls';
+import { VoiceInput } from '@/components/ui/voice-input';
 const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: true });
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { cn } from '@/lib/utils';
@@ -57,7 +59,7 @@ export default function DiscussionDetailPage() {
 
   const handleToggleLike = async () => {
     if (!user) {
-      alert('Beğenmek için giriş yapmalısınız.');
+      toast('Beğenmek için giriş yapmalısınız.');
       return;
     }
 
@@ -86,14 +88,14 @@ export default function DiscussionDetailPage() {
         setLikesCount(prev => prev + 1);
       }
     } catch (err: any) {
-      alert('İşlem başarısız: ' + err.message);
+      toast('İşlem başarısız: ' + err.message);
     }
   };
 
   const deleteTopic = async () => {
     if (!confirm('Bu tartışmayı silmek istediğinize emin misiniz?')) return;
     const { error } = await supabase.from('topics').delete().eq('id', id);
-    if (error) alert('Silme işlemi başarısız: ' + error.message);
+    if (error) toast('Silme işlemi başarısız: ' + error.message);
     else router.push('/discussions');
   };
 
@@ -103,7 +105,7 @@ export default function DiscussionDetailPage() {
       .from('topics')
       .update({ is_pinned: !topic.is_pinned })
       .eq('id', id);
-    if (error) alert('Hata: ' + error.message);
+    if (error) toast('Hata: ' + error.message);
     else setTopic({ ...topic, is_pinned: !topic.is_pinned });
   };
 
@@ -113,14 +115,14 @@ export default function DiscussionDetailPage() {
       .from('topics')
       .update({ is_locked: !topic.is_locked })
       .eq('id', id);
-    if (error) alert('Hata: ' + error.message);
+    if (error) toast('Hata: ' + error.message);
     else setTopic({ ...topic, is_locked: !topic.is_locked });
   };
 
   const deleteComment = async (commentId: string) => {
     if (!confirm('Bu yorumu silmek istediğinize emin misiniz?')) return;
     const { error } = await supabase.from('comments').delete().eq('id', commentId);
-    if (error) alert('Silme işlemi başarısız: ' + error.message);
+    if (error) toast('Silme işlemi başarısız: ' + error.message);
     else setComments(comments.filter(c => c.id !== commentId));
   };
 
@@ -206,7 +208,7 @@ export default function DiscussionDetailPage() {
       setComments([...comments, data]);
       setNewComment('');
     } catch (err: any) {
-      alert('Yorum gönderilemedi: ' + err.message);
+      toast('Yorum gönderilemedi: ' + err.message);
     } finally {
       setSending(false);
     }
@@ -236,7 +238,7 @@ export default function DiscussionDetailPage() {
       }
     } catch (err: any) {
       console.error('Summarization failed:', err);
-      alert('Özet oluşturulurken bir hata oluştu: ' + err.message);
+      toast('Özet oluşturulurken bir hata oluştu: ' + err.message);
     } finally {
       setIsSummarizing(false);
     }
@@ -381,6 +383,8 @@ export default function DiscussionDetailPage() {
                 <h1 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-tight break-words uppercase">{topic.title}</h1>
               </header>
 
+              <TextToSpeechControls text={topic.content} title={topic.title} className="mb-10" />
+
               <div className="vibe-markdown-body prose prose-lg dark:prose-invert max-w-none font-medium leading-relaxed text-muted-foreground">
                 <ReactMarkdown>{topic.content}</ReactMarkdown>
               </div>
@@ -500,6 +504,7 @@ export default function DiscussionDetailPage() {
                   >
                     <div className="absolute top-0 left-0 w-full h-3 bg-primary/20" />
                     <p className="vibe-label ml-0">{topic.is_locked ? 'ADMİN PANELİ: KİLİTLİ BAŞLIĞA YANIT YAZ' : 'YENİ YANIT GÖNDER'}</p>
+                    <VoiceInput onTranscript={(text) => setNewComment(prev => prev ? `${prev} ${text}` : text)} label="Yanıtı Sesle Yaz" />
                     <textarea
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}

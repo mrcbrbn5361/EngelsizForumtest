@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
@@ -52,10 +53,10 @@ export default function ProfilePage() {
       
       if (error) throw error;
       setEditMode(false);
-      alert('Profil başarıyla güncellendi!');
+      toast.success('Profil başarıyla güncellendi!');
     } catch (err: any) {
       console.error('Update error:', err);
-      alert('Hata: ' + err.message);
+      toast.error('Hata: ' + err.message);
     } finally {
       setUpdating(false);
     }

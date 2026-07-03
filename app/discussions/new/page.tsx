@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -52,22 +53,22 @@ function NewTopicForm() {
     e.preventDefault();
     
     if (!user) {
-      alert('Lütfen önce giriş yapın.');
+      toast.error('Lütfen önce giriş yapın.');
       return;
     }
 
     if (!title.trim()) {
-      alert('Lütfen bir başlık girin.');
+      toast.error('Lütfen bir başlık girin.');
       return;
     }
 
     if (!categoryId) {
-      alert('Lütfen bir kategori seçin.');
+      toast.error('Lütfen bir kategori seçin.');
       return;
     }
 
     if (!content.trim()) {
-      alert('Lütfen tartışma içeriğini yazın.');
+      toast.error('Lütfen tartışma içeriğini yazın.');
       return;
     }
 
@@ -91,7 +92,7 @@ function NewTopicForm() {
       
       router.push(`/discussions/${data.id}`);
     } catch (err: any) {
-      alert('Tartışma yayınlanırken hata oluştu: ' + (err.message || 'Bilinmeyen hata'));
+      toast.error('Tartışma yayınlanırken hata oluştu: ' + (err.message || 'Bilinmeyen hata'));
     } finally {
       setLoading(false);
     }

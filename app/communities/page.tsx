@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import React, { useEffect, useState } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
@@ -65,7 +66,7 @@ export default function CommunitiesPage() {
       await fetchCommunities();
     } catch (err) {
       console.error('Error creating community:', err);
-      alert('Topluluk oluşturulurken hata oluştu.');
+      toast.error('Topluluk oluşturulurken hata oluştu.');
     } finally {
       setCreating(false);
     }
@@ -328,7 +329,7 @@ export default function CommunitiesPage() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="vibe-label text-[10px] uppercase font-bold tracking-wider text-muted-foreground ml-0">TOPLULUK</p>
-                        <h2 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors truncate">
+                        <h2 className="text-base sm:text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors whitespace-normal break-words">
                           {community.name}
                         </h2>
                       </div>

@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Atkinson_Hyperlegible, JetBrains_Mono } from 'next/f
 import Script from 'next/script';
 import './globals.css';
 import { AccessibilityProvider } from '@/components/providers/accessibility-provider';
+import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/providers/auth-provider';
 
 const headingFont = Plus_Jakarta_Sans({
@@ -131,43 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="tr" className={`${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} h-full`} suppressHydrationWarning>
       <head>
         <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if (typeof window !== 'undefined') {
-                let needsReload = false;
-                if ('serviceWorker' in navigator) {
-                  navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                    if (registrations && registrations.length > 0) {
-                      for(let registration of registrations) {
-                        registration.unregister();
-                      }
-                      needsReload = true;
-                    }
-                  }).catch(function(err) {
-                    console.warn('Service worker unregistration failed:', err);
-                  });
-                }
-                if ('caches' in window) {
-                  caches.keys().then(function(names) {
-                    if (names && names.length > 0) {
-                      for (let name of names) {
-                        caches.delete(name);
-                      }
-                      needsReload = true;
-                    }
-                    if (needsReload) {
-                      console.log('Stale cache or Service Worker detected. Performing a fresh reload...');
-                      window.location.reload();
-                    }
-                  }).catch(function(err) {
-                    console.warn('Cache clearing failed:', err);
-                  });
-                }
-              }
-            `
-          }}
-        />
+        
       </head>
       <body className="bg-background text-foreground transition-colors duration-300 overflow-x-hidden min-h-screen flex flex-col font-sans">
         {/* Google tag (gtag.js) */}
@@ -197,6 +162,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </main>
             </AccessibilityProvider>
         </AuthProvider>
+        <Toaster />
       </body>
     </html>
   );

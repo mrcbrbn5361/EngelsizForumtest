@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import React from 'react';
 import { motion } from 'motion/react';
@@ -31,7 +32,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
   const handleDelete = async () => {
     if (!confirm('Bu tartışmayı silmek istediğinize emin misiniz?')) return;
     const { error } = await supabase.from('topics').delete().eq('id', topic.id);
-    if (error) alert('Silme işlemi başarısız: ' + error.message);
+    if (error) toast.error('Silme işlemi başarısız: ' + error.message);
     else window.location.reload();
   };
 

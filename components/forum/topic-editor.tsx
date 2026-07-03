@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import ReactMarkdown from 'react-markdown';
 import { Eye, Edit3 } from 'lucide-react';
+import { VoiceInput } from '@/components/ui/voice-input';
 
 interface TopicEditorProps {
   value: string;
@@ -13,6 +14,12 @@ interface TopicEditorProps {
 
 export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) {
   const [isPreview, setIsPreview] = useState(false);
+
+  const handleVoiceTranscript = (text: string) => {
+    if (text) {
+      onChange(value ? `${value} ${text}` : text);
+    }
+  };
 
   return (
     <div className="w-full border border-border rounded-xl md:rounded-2xl bg-card overflow-hidden transition-all shadow-sm focus-within:shadow-md">
@@ -41,6 +48,13 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
           Markdown Desteklenir
         </div>
       </div>
+      
+      {!isPreview && (
+        <div className="px-4 py-2 bg-muted/20 border-b border-border/50">
+          <VoiceInput onTranscript={handleVoiceTranscript} label="Konuyu Sesle Yaz" />
+        </div>
+      )}
+
       <div className="p-0 min-h-[250px] md:min-h-[350px] relative">
         <AnimatePresence mode="wait">
           {!isPreview ? (

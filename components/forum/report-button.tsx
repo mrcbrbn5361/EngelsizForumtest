@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { Flag } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
@@ -12,7 +13,7 @@ export function ReportButton({ topicId }: { topicId: string }) {
     if (!reason) return;
     try {
       await supabase.from('reports').insert({ topic_id: topicId, reporter_id: user.id, reason });
-      alert('Rapor başarıyla gönderildi.');
+      toast.success('Rapor başarıyla gönderildi.');
     } catch (err) {
       console.error(err);
     }

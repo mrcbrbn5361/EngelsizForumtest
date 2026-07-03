@@ -2,11 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 import { FileQuestion, Home, ArrowLeft } from 'lucide-react';
 
-export const metadata = {
-  title: '404 - Sayfa Bulunamadı | EngelsizForum',
-  description: 'Aradığınız sayfa engellerimize takıldı.',
-};
-
 /**
  * Modern, fully accessible 404 page.
  * Implemented as a clean, responsive server component to guarantee zero hydration/context errors.
