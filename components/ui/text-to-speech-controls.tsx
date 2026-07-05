@@ -147,15 +147,15 @@ export function TextToSpeechControls({ text, title = "Metni Seslendir", classNam
               >
                 {trVoices.length > 0 && (
                   <optgroup label="Türkçe Sesler">
-                    {trVoices.map(v => (
-                      <option key={v.name} value={v.name}>{v.name} ({v.lang})</option>
+                    {trVoices.map((v, index) => (
+                      <option key={`${v.name}-${v.lang}-${index}`} value={v.name}>{v.name} ({v.lang})</option>
                     ))}
                   </optgroup>
                 )}
                 {otherVoices.length > 0 && (
                   <optgroup label="Diğer Sesler">
-                    {otherVoices.slice(0, 15).map(v => (
-                      <option key={v.name} value={v.name}>{v.name} ({v.lang})</option>
+                    {otherVoices.slice(0, 15).map((v, index) => (
+                      <option key={`${v.name}-${v.lang}-${index}`} value={v.name}>{v.name} ({v.lang})</option>
                     ))}
                   </optgroup>
                 )}
