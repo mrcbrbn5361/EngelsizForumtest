@@ -14,6 +14,39 @@ export async function POST(req: NextRequest) {
   try {
     const { title, content, type } = await req.json();
     
+    // Check if Yeterly API is configured and should take precedence
+    const yeterlyKey = process.env.YETERLY_ENGELSIZFORUM_API_KEY;
+    if (yeterlyKey) {
+      const textToSummarize = title ? `Başlık: ${title}\nİçerik: ${content}` : content;
+      const apiBase = process.env.YETERLY_ENGELSIZFORUM_API_BASE || 'https://engelsizforum-ai.yeterly.ai';
+      
+      const upstream = await fetch(
+        `${apiBase}/v1/projects/engelsizforum/summarize`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${yeterlyKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            text: textToSummarize,
+            language: 'tr',
+            style: 'short',
+          }),
+          cache: 'no-store',
+        }
+      );
+
+      const data = await upstream.json();
+
+      if (upstream.ok && data.summary) {
+        console.log(`[Yeterly AI Audit] Summarized using Yeterly. Characters: ${textToSummarize?.length || 0}`);
+        return NextResponse.json({ text: data.summary });
+      } else {
+        console.warn('Yeterly upstream error, falling back to Gemini if available...', data);
+      }
+    }
+
     if (!process.env.GEMINI_API_KEY) {
       return NextResponse.json({ error: "Gemini API key is not configured on the server." }, { status: 500 });
     }

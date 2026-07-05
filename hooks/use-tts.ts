@@ -16,8 +16,12 @@ export function useTTS() {
   const [isPaused, setIsPaused] = useState(false);
   const [boundary, setBoundary] = useState<TTSBoundary | null>(null);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  
+  // Ref for the Yeterly high quality audio player
+  const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
+  const isYeterlyPlayingRef = useRef<boolean>(false);
 
-  // Load available voices
+  // Load available voices (for local fallback)
   useEffect(() => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
 
@@ -43,26 +47,35 @@ export function useTTS() {
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.pause();
+        audioPlayerRef.current = null;
+      }
     };
   }, []);
 
   const stop = useCallback(() => {
-    if (typeof window === 'undefined' || !window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
+    // 1. Stop Yeterly Audio
+    if (audioPlayerRef.current) {
+      audioPlayerRef.current.pause();
+      audioPlayerRef.current = null;
+    }
+    isYeterlyPlayingRef.current = false;
+
+    // 2. Stop Browser Synthesis
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+
     setIsPlaying(false);
     setIsPaused(false);
     setBoundary(null);
   }, []);
 
-  const play = useCallback((text: string) => {
+  // Web Speech API fallback player
+  const playWebSpeechFallback = useCallback((cleanText: string) => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
 
-    // Stop current speaking
-    window.speechSynthesis.cancel();
-
-    if (!text.trim()) return;
-
-    const cleanText = text.replace(/<[^>]*>/g, ''); // Strip any HTML tags
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utteranceRef.current = utterance;
 
@@ -92,7 +105,6 @@ export function useTTS() {
       }
     };
 
-    // Highlight text segments
     utterance.onboundary = (event) => {
       if (event.name === 'word') {
         setBoundary({
@@ -105,7 +117,82 @@ export function useTTS() {
     window.speechSynthesis.speak(utterance);
   }, [selectedVoice, rate, pitch]);
 
+  const play = useCallback(async (text: string) => {
+    if (typeof window === 'undefined') return;
+
+    // Stop anything currently speaking/playing
+    stop();
+
+    if (!text.trim()) return;
+
+    const cleanText = text.replace(/<[^>]*>/g, '').trim(); // Strip HTML tags
+
+    try {
+      // Attempt Yeterly TTS
+      const res = await fetch('/api/yeterly/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: cleanText }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Yeterly API returned non-200 status');
+      }
+
+      const data = await res.json();
+      if (data.audio_base64) {
+        // High quality voice synthesized successfully
+        const audioUrl = `data:audio/mpeg;base64,${data.audio_base64}`;
+        const audio = new Audio(audioUrl);
+        audioPlayerRef.current = audio;
+        isYeterlyPlayingRef.current = true;
+
+        audio.onplay = () => {
+          setIsPlaying(true);
+          setIsPaused(false);
+        };
+
+        audio.onpause = () => {
+          setIsPaused(true);
+        };
+
+        audio.onended = () => {
+          setIsPlaying(false);
+          setIsPaused(false);
+          isYeterlyPlayingRef.current = false;
+          audioPlayerRef.current = null;
+        };
+
+        audio.onerror = (e) => {
+          console.error('Yeterly Audio playback error:', e);
+          setIsPlaying(false);
+          setIsPaused(false);
+          isYeterlyPlayingRef.current = false;
+          audioPlayerRef.current = null;
+          // Failover on runtime audio error
+          playWebSpeechFallback(cleanText);
+        };
+
+        await audio.play();
+        return;
+      } else {
+        throw new Error('No audio base64 returned');
+      }
+    } catch (err) {
+      console.warn('Yeterly TTS failed or not configured, falling back to Web Speech API:', err);
+      // Fallback
+      isYeterlyPlayingRef.current = false;
+      playWebSpeechFallback(cleanText);
+    }
+  }, [stop, playWebSpeechFallback]);
+
   const pause = useCallback(() => {
+    if (isYeterlyPlayingRef.current && audioPlayerRef.current) {
+      audioPlayerRef.current.pause();
+      setIsPaused(true);
+      return;
+    }
+
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
     if (isPlaying && !isPaused) {
       window.speechSynthesis.pause();
@@ -114,6 +201,14 @@ export function useTTS() {
   }, [isPlaying, isPaused]);
 
   const resume = useCallback(() => {
+    if (isYeterlyPlayingRef.current && audioPlayerRef.current) {
+      audioPlayerRef.current.play().catch(err => {
+        console.error('Failed to resume Yeterly audio:', err);
+      });
+      setIsPaused(false);
+      return;
+    }
+
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
     if (isPlaying && isPaused) {
       window.speechSynthesis.resume();
