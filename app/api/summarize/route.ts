@@ -1,77 +1,53 @@
-import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
-
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  httpOptions: {
-    headers: {
-      'User-Agent': 'aistudio-build',
-    }
-  }
-});
 
 export async function POST(req: NextRequest) {
   try {
     const { title, content, type } = await req.json();
     
-    // Check if Yeterly API is configured and should take precedence
+    // Check if Yeterly API is configured
     const yeterlyKey = process.env.YETERLY_ENGELSIZFORUM_API_KEY;
-    if (yeterlyKey) {
-      const textToSummarize = title ? `Başlık: ${title}\nİçerik: ${content}` : content;
-      const apiBase = process.env.YETERLY_ENGELSIZFORUM_API_BASE || 'https://engelsizforum-ai.yeterly.ai';
-      
-      const upstream = await fetch(
-        `${apiBase}/v1/projects/engelsizforum/summarize`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${yeterlyKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            text: textToSummarize,
-            language: 'tr',
-            style: 'short',
-          }),
-          cache: 'no-store',
-        }
+    if (!yeterlyKey) {
+      return NextResponse.json(
+        { error: "Yeterly AI API anahtarı (YETERLY_ENGELSIZFORUM_API_KEY) sunucuda tanımlanmamış. Lütfen çevre değişkenlerini yapılandırın." },
+        { status: 500 }
       );
+    }
 
-      const data = await upstream.json();
-
-      if (upstream.ok && data.summary) {
-        console.log(`[Yeterly AI Audit] Summarized using Yeterly. Characters: ${textToSummarize?.length || 0}`);
-        return NextResponse.json({ text: data.summary });
-      } else {
-        console.warn('Yeterly upstream error, falling back to Gemini if available...', data);
+    const textToSummarize = title ? `Başlık: ${title}\nİçerik: ${content}` : content;
+    const apiBase = process.env.YETERLY_ENGELSIZFORUM_API_BASE || 'https://engelsizforum-ai.yeterly.ai';
+    
+    const upstream = await fetch(
+      `${apiBase}/v1/projects/engelsizforum/summarize`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${yeterlyKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: textToSummarize,
+          language: 'tr',
+          style: 'short',
+        }),
+        cache: 'no-store',
       }
+    );
+
+    const data = await upstream.json();
+
+    if (!upstream.ok) {
+      return NextResponse.json(
+        { error: 'Özetleme servisi başarısız oldu', detail: data },
+        { status: upstream.status }
+      );
     }
 
-    if (!process.env.GEMINI_API_KEY) {
-      return NextResponse.json({ error: "Gemini API key is not configured on the server." }, { status: 500 });
-    }
-
-    let prompt = "";
-    if (type === "topic_summary") {
-      prompt = `Lütfen aşağıdaki forum başlığını ve içeriğini kısa ve öz bir şekilde (maksimum 4 cümle) Türkçe özetle. Önemli noktaları vurgula.\n\nBaşlık: ${title}\nİçerik: ${content}`;
-    } else {
-      prompt = `Lütfen aşağıdaki içeriği kısa ve öz bir şekilde Türkçe özetle:\n\n${content}`;
-    }
-
-    const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
-      contents: prompt,
-      config: {
-        systemInstruction: "Sen engelli bireyler için tasarlanmış EngelsizForum platformunun yardımcı yapay zeka asistanısın. Sunacağın özetler her zaman yapıcı, destekleyici, net ve kolay anlaşılır olmalıdır. Özet sonuna mutlaka şu uyarıyı ekle: '\\n\\n*Not: Bu özet yapay zeka tarafından oluşturulmuştur. Kritik bilgiler için orijinal tartışmayı okuyun ve uzman görüşü alın.*'",
-      }
-    });
-
-    const text = response.text || "Özet üretilemedi.";
-    console.log(`[AI Audit] Summarized content type: ${type}. Characters: ${content?.length || 0}`);
-
+    const text = data.summary || "Özet üretilemedi.";
+    console.log(`[Yeterly AI Audit] Summarized using Yeterly. Characters: ${textToSummarize?.length || 0}`);
+    
     return NextResponse.json({ text });
   } catch (error: any) {
-    console.error("Gemini API Error:", error);
-    return NextResponse.json({ error: error.message || "Failed to generate summary" }, { status: 500 });
+    console.error("Yeterly Summarize API Error:", error);
+    return NextResponse.json({ error: error.message || "Özetleme isteği sırasında bir hata oluştu" }, { status: 500 });
   }
 }

@@ -208,7 +208,7 @@ export default function AboutPage() {
               </li>
               <li className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                 <span className="text-primary font-bold">3. Bilişsel AI:</span> 
-                <span className="text-muted-foreground">Gemini 1.5 Pro tabanlı AI modelimiz, karmaşık tıbbi veya hukuki terimleri topluluk üyelerimizin kavrayabileceği basitlikte açıklar.</span>
+                <span className="text-muted-foreground">Yeterly AI tabanlı modelimiz, karmaşık tıbbi veya hukuki terimleri topluluk üyelerimizin kavrayabileceği basitlikte açıklar.</span>
               </li>
             </ul>
           </div>
