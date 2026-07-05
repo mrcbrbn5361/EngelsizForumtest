@@ -35,11 +35,41 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    const data = await upstream.json();
+    let data: any = null;
+    const responseText = await upstream.text();
+    try {
+      data = JSON.parse(responseText);
+    } catch (e) {
+      // Not a JSON response
+    }
 
     if (!upstream.ok) {
+      let errorMsg = 'Özetleme servisi başarısız oldu';
+      if (upstream.status === 401) {
+        errorMsg = 'API anahtarı (YETERLY_ENGELSIZFORUM_API_KEY) hatalı veya yetkisiz. Lütfen doğru anahtarı girdiğinizden emin olun.';
+      } else if (upstream.status === 429) {
+        errorMsg = 'API kullanım limiti (Günlük 100 istek veya özetleme limiti) aşıldı.';
+      } else if (upstream.status === 413) {
+        errorMsg = 'Gönderilen metin çok uzun. Maksimum limit 20.000 karakterdir.';
+      } else if (upstream.status === 400) {
+        errorMsg = 'Geçersiz istek. Lütfen gönderilen içeriği kontrol edin.';
+      } else if (upstream.status === 404) {
+        errorMsg = 'API servisinde EngelsizForum projesi bulunamadı.';
+      } else if (upstream.status >= 500) {
+        errorMsg = 'Yeterly AI sunucularında geçici bir kesinti yaşanıyor veya Azure AI servislerine erişilemiyor.';
+      }
+
+      if (data && (data.error || data.message)) {
+        const detailMsg = data.error || data.message;
+        errorMsg += ` (Detay: ${typeof detailMsg === 'object' ? JSON.stringify(detailMsg) : detailMsg})`;
+      } else if (responseText && responseText.length < 200) {
+        errorMsg += ` (Sunucu Yanıtı: ${responseText})`;
+      } else {
+        errorMsg += ` (HTTP Durum: ${upstream.status})`;
+      }
+
       return NextResponse.json(
-        { error: 'Özetleme servisi başarısız oldu', detail: data },
+        { error: errorMsg, detail: data || responseText },
         { status: upstream.status }
       );
     }
