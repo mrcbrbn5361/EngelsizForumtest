@@ -40,12 +40,25 @@ export async function POST(request: Request) {
         created_at: new Date().toISOString()
     });
     
-    if (insertError) throw insertError;
+    if (insertError) {
+      if (insertError.code === '42P01') {
+        return NextResponse.json({
+          success: false,
+          error: 'api_keys_missing',
+          message: 'Veritabanında "api_keys" tablosu bulunamadı. Lütfen SQL kodunu Supabase panelinde çalıştırın.'
+        }, { status: 400 });
+      }
+      throw insertError;
+    }
 
     return NextResponse.json({ success: true, key: newKey });
 
   } catch (error: any) {
     console.error('API Key Creation Error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: 'internal_error',
+      message: error.message || 'Anahtar oluşturma sırasında bir hata oluştu.' 
+    }, { status: 500 });
   }
 }

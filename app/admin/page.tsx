@@ -19,7 +19,8 @@ import {
   MoreVertical,
   ChevronRight,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  Copy
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -599,6 +600,28 @@ function AnalyticsTab() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [newToken, setNewToken] = useState<string | null>(null);
+  const [keys, setKeys] = useState<any[]>([]);
+  const [keysLoading, setKeysLoading] = useState(true);
+
+  const fetchKeys = useCallback(async () => {
+    setKeysLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('api_keys')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        console.error('Fetch keys error:', error);
+      } else {
+        setKeys(data || []);
+      }
+    } catch (err) {
+      console.error('Fetch keys error:', err);
+    } finally {
+      setKeysLoading(false);
+    }
+  }, []);
 
   const handleGenerateKey = async () => {
     try {
@@ -619,14 +642,54 @@ function AnalyticsTab() {
         if (result.success) {
             setNewToken(result.key);
             toast.success('Yeni API anahtarı oluşturuldu');
+            fetchKeys();
         } else {
-            toast.error(result.error || 'Anahtar oluşturulamadı');
+            toast.error(result.message || result.error || 'Anahtar oluşturulamadı');
         }
     } catch (err) {
         console.error('Key generation error:', err);
         toast.error('Anahtar oluşturma sırasında bir hata oluştu');
     }
-};
+  };
+
+  const handleDeleteKey = async (id: string) => {
+    if (!confirm('Bu API anahtarını silmek istediğinize emin misiniz? Bu anahtarla yapılan entegrasyonlar artık çalışmayacaktır.')) return;
+    try {
+      const { error } = await supabase
+        .from('api_keys')
+        .delete()
+        .eq('id', id);
+      
+      if (error) {
+        toast.error('Anahtar silinemedi: ' + error.message);
+      } else {
+        toast.success('API anahtarı başarıyla silindi');
+        fetchKeys();
+      }
+    } catch (err) {
+      console.error('Delete key error:', err);
+      toast.error('Anahtar silme sırasında bir hata oluştu');
+    }
+  };
+
+  const handleToggleKeyActive = async (id: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('api_keys')
+        .update({ is_active: !currentStatus })
+        .eq('id', id);
+      
+      if (error) {
+        toast.error('Anahtar durumu güncellenemedi: ' + error.message);
+      } else {
+        toast.success(currentStatus ? 'Anahtar devre dışı bırakıldı' : 'Anahtar aktifleştirildi');
+        fetchKeys();
+      }
+    } catch (err) {
+      console.error('Toggle key error:', err);
+      toast.error('Anahtar güncelleme sırasında bir hata oluştu');
+    }
+  };
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
@@ -660,9 +723,15 @@ function AnalyticsTab() {
 
   useEffect(() => {
     fetchStats();
+    fetchKeys();
     const interval = setInterval(fetchStats, 30000);
     return () => clearInterval(interval);
-  }, [fetchStats]);
+  }, [fetchStats, fetchKeys]);
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Token kopyalandı');
+  };
 
   return (
     <div className="space-y-6">
@@ -724,20 +793,108 @@ function AnalyticsTab() {
         
         <AnalyticsApiExamples />
         
-        <div className="mt-4 p-4 bg-muted/50 rounded-2xl">
-          <div className="flex items-center justify-between mb-2">
-              <h4 className="text-xs font-black uppercase tracking-widest">Yeni Token Oluştur (Test)</h4>
-              <button 
-                  onClick={handleGenerateKey}
-                  className="text-xs font-bold bg-primary text-primary-foreground px-3 py-1.5 rounded-lg hover:bg-primary/90"
-              >
-                  Oluştur
-              </button>
-          </div>
-          {newToken && (
-              <div className="mt-2 p-3 bg-card border border-border rounded-xl font-mono text-xs break-all">
-                  {newToken}
+        <div className="mt-8 border-t border-border pt-6">
+          <h4 className="text-sm font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+            <Settings size={18} className="text-primary" /> API Anahtarlarım
+          </h4>
+          
+          <div className="space-y-4 mb-6">
+            {keysLoading ? (
+              <div className="h-20 bg-muted animate-pulse rounded-2xl" />
+            ) : keys.length === 0 ? (
+              <div className="p-8 text-center border-2 border-dashed border-border rounded-2xl text-muted-foreground font-bold text-sm">
+                Aktif API anahtarınız bulunmuyor. Yeni bir tane oluşturabilirsiniz.
               </div>
+            ) : (
+              <div className="overflow-x-auto rounded-2xl border border-border shadow-sm">
+                <table className="w-full text-left border-collapse">
+                  <thead className="bg-muted/50 border-b border-border">
+                    <tr>
+                      <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Anahtar (Key)</th>
+                      <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Oluşturulma</th>
+                      <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Son Kullanım</th>
+                      <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Durum</th>
+                      <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground text-right">Eylemler</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {keys.map((k) => (
+                      <tr key={k.id} className="hover:bg-muted/10 transition-colors">
+                        <td className="px-6 py-4 font-mono text-xs max-w-xs truncate">
+                          <span className="bg-muted px-2 py-1 rounded select-all font-bold">
+                            {k.key.substring(0, 10)}...{k.key.substring(k.key.length - 4)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-xs font-bold text-muted-foreground">
+                          {new Date(k.created_at).toLocaleDateString('tr-TR')}
+                        </td>
+                        <td className="px-6 py-4 text-xs font-bold text-muted-foreground">
+                          {k.last_used_at ? new Date(k.last_used_at).toLocaleDateString('tr-TR') + ' ' + new Date(k.last_used_at).toLocaleTimeString('tr-TR') : 'Hiç kullanılmadı'}
+                        </td>
+                        <td className="px-6 py-4">
+                          <button
+                            onClick={() => handleToggleKeyActive(k.id, k.is_active)}
+                            className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                              k.is_active 
+                                ? 'bg-green-500/10 text-green-500 border border-green-500/20' 
+                                : 'bg-red-500/10 text-red-500 border border-red-500/20'
+                            }`}
+                          >
+                            {k.is_active ? 'Aktif' : 'Pasif'}
+                          </button>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex justify-end gap-2">
+                            <button
+                              onClick={() => handleCopy(k.key)}
+                              className="p-2 hover:bg-muted rounded-xl transition-colors text-muted-foreground hover:text-primary"
+                              title="Tamamını Kopyala"
+                            >
+                              <Copy size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteKey(k.id)}
+                              className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-xl transition-colors text-muted-foreground"
+                              title="Sil"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          <div className="p-4 bg-muted/50 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h4 className="text-xs font-black uppercase tracking-widest mb-1">Yeni API Anahtarı Oluştur</h4>
+              <p className="text-xs text-muted-foreground">Her yeni oluşturulan anahtar sistemde aktif olarak kaydedilir.</p>
+            </div>
+            <button 
+              onClick={handleGenerateKey}
+              className="w-full sm:w-auto text-xs font-bold bg-primary text-primary-foreground px-4 py-2.5 rounded-xl hover:bg-primary/90 transition-all flex items-center justify-center gap-1.5 shadow-lg"
+            >
+              <Plus size={14} /> Anahtar Üret
+            </button>
+          </div>
+
+          {newToken && (
+            <div className="mt-4 p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl">
+              <p className="text-xs font-bold text-emerald-600 mb-2">Lütfen yeni anahtarınızı güvenli bir yere kaydedin. Bu anahtarı bir daha görüntüleyemeyeceksiniz:</p>
+              <div className="flex items-center justify-between p-3 bg-background border border-border rounded-xl">
+                <span className="font-mono text-xs break-all select-all pr-4 text-foreground/80">{newToken}</span>
+                <button
+                  onClick={() => handleCopy(newToken)}
+                  className="px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-lg hover:bg-primary/90 transition-all whitespace-nowrap"
+                >
+                  Kopyala
+                </button>
+              </div>
+            </div>
           )}
         </div>
         

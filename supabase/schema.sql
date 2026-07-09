@@ -382,3 +382,54 @@ BEGIN
   DO UPDATE SET last_active_at = EXCLUDED.last_active_at;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ==========================================
+-- API KEYS FOR EXTERNAL ANALYTICS INTEGRATION
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS public.api_keys (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  key TEXT UNIQUE NOT NULL,
+  created_by UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  is_active BOOLEAN DEFAULT true NOT NULL,
+  last_used_at TIMESTAMP WITH TIME ZONE
+);
+
+ALTER TABLE public.api_keys ENABLE ROW LEVEL SECURITY;
+
+-- Admins can view and manage their own API keys
+DROP POLICY IF EXISTS "Admins can manage their own API keys" ON public.api_keys;
+CREATE POLICY "Admins can manage their own API keys" 
+  ON public.api_keys FOR ALL
+  USING (
+    auth.uid() = created_by AND 
+    EXISTS (
+      SELECT 1 FROM public.profiles
+      WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+    )
+  );
+
+-- Secure RPC function to verify API keys (Runs with SECURITY DEFINER privileges)
+CREATE OR REPLACE FUNCTION verify_api_key(p_key TEXT)
+RETURNS TABLE (is_valid BOOLEAN, user_id UUID, user_role public.user_role)
+SECURITY DEFINER
+AS $$
+BEGIN
+  -- Update last_used_at timestamp
+  UPDATE public.api_keys
+  SET last_used_at = timezone('utc'::text, now())
+  WHERE key = p_key AND is_active = TRUE;
+
+  RETURN QUERY
+  SELECT 
+    TRUE as is_valid,
+    a.created_by as user_id,
+    p.role as user_role
+  FROM public.api_keys a
+  JOIN public.profiles p ON p.id = a.created_by
+  WHERE a.key = p_key AND a.is_active = TRUE
+  LIMIT 1;
+END;
+$$ LANGUAGE plpgsql;
+

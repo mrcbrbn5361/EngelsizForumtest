@@ -16,19 +16,49 @@ export async function GET(request: Request) {
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      { global: { headers: { Authorization: `Bearer ${token}` } } }
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    
-    if (userError || !user) {
-      return NextResponse.json({ error: 'Unauthorized', message: 'Invalid or expired token.' }, { status: 401 });
-    }
+    let isAdmin = false;
 
-    // Verify admin role
-    const { data: profile, error: profileError } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-    if (profileError || profile?.role !== 'admin') {
+    if (token.startsWith('sk_')) {
+      // It's a custom API Key
+      const { data: keyVerifyData, error: keyVerifyError } = await supabase.rpc('verify_api_key', { p_key: token });
+      
+      if (keyVerifyError || !keyVerifyData || keyVerifyData.length === 0) {
+        return NextResponse.json({ error: 'Unauthorized', message: 'Invalid or inactive API key.' }, { status: 401 });
+      }
+      
+      const keyInfo = keyVerifyData[0];
+      if (keyInfo.user_role === 'admin') {
+        isAdmin = true;
+      } else {
+        return NextResponse.json({ error: 'Forbidden', message: 'Admin access required.' }, { status: 403 });
+      }
+    } else {
+      // It's a normal user session JWT
+      const authSupabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        { global: { headers: { Authorization: `Bearer ${token}` } } }
+      );
+
+      const { data: { user }, error: userError } = await authSupabase.auth.getUser();
+      
+      if (userError || !user) {
+        return NextResponse.json({ error: 'Unauthorized', message: 'Invalid or expired token.' }, { status: 401 });
+      }
+
+      // Verify admin role
+      const { data: profile, error: profileError } = await authSupabase.from('profiles').select('role').eq('id', user.id).single();
+      if (profileError || profile?.role !== 'admin') {
+        return NextResponse.json({ error: 'Forbidden', message: 'Admin access required.' }, { status: 403 });
+      }
+      
+      isAdmin = true;
+    }
+    
+    if (!isAdmin) {
       return NextResponse.json({ error: 'Forbidden', message: 'Admin access required.' }, { status: 403 });
     }
     
