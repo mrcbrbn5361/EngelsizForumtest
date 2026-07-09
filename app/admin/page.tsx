@@ -19,8 +19,7 @@ import {
   MoreVertical,
   ChevronRight,
   TrendingUp,
-  AlertTriangle,
-  Copy
+  AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -45,14 +44,10 @@ export default function AdminDashboard() {
 
   // Protected route check
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        router.push('/auth');
-      } else if (profile && !isStaff) {
-        router.push('/');
-      }
+    if (!loading && !isStaff) {
+      router.push('/');
     }
-  }, [loading, user, profile, isStaff, router]);
+  }, [isStaff, loading, router]);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -103,7 +98,7 @@ export default function AdminDashboard() {
     }
   }, [isStaff, fetchAllData]);
 
-  if (loading || (user && !profile) || !isStaff) {
+  if (loading || !isStaff) {
     return (
       <div className="flex min-h-screen bg-background p-8">
         <div className="max-w-7xl mx-auto w-full space-y-8">
@@ -306,7 +301,7 @@ function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
           </div>
         ) : (
           topics.map((topic) => (
-            <div key={topic.id} className="p-4 sm:p-6 rounded-3xl border border-border bg-card shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div key={topic.id} className="p-6 rounded-3xl border border-border bg-card shadow-sm flex items-center justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[10px] font-black uppercase tracking-widest text-primary">@{topic.author?.username}</span>
@@ -316,7 +311,7 @@ function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
                 <p className="text-xs text-muted-foreground line-clamp-1 mt-1 opacity-80">{topic.content}</p>
               </div>
               
-              <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <button 
                   onClick={() => handleToggleLock(topic.id, topic.is_locked)}
                   className={`p-3 rounded-xl transition-all ${topic.is_locked ? 'bg-amber-500 text-white' : 'bg-muted text-muted-foreground hover:bg-amber-500/10 hover:text-amber-500'}`}
@@ -344,7 +339,7 @@ function TabButton({ value, icon, label }: { value: string, icon: React.ReactNod
   return (
     <Tabs.Trigger 
       value={value}
-      className="flex items-center gap-1.5 md:gap-2 px-3 md:px-6 py-2.5 md:py-3 text-xs md:text-sm font-black rounded-xl transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary uppercase tracking-widest whitespace-nowrap shrink-0"
+      className="flex items-center gap-2 px-6 py-3 text-sm font-black rounded-xl transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary uppercase tracking-widest"
     >
       {icon}
       <span>{label}</span>
@@ -354,7 +349,7 @@ function TabButton({ value, icon, label }: { value: string, icon: React.ReactNod
 
 function StatCard({ label, value, icon }: { label: string, value: number, icon: React.ReactNode }) {
   return (
-    <div className="p-4 sm:p-6 rounded-3xl border border-border bg-card shadow-sm">
+    <div className="p-6 rounded-3xl border border-border bg-card shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div className="p-2 bg-muted rounded-xl">{icon}</div>
         <TrendingUp size={16} className="text-muted-foreground" />
@@ -513,46 +508,7 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
         </div>
       </div>
 
-      {/* Mobile Card List */}
-      <div className="grid grid-cols-1 gap-4 md:hidden">
-        {filteredUsers.map((u) => (
-          <div key={u.id} className="p-4 rounded-3xl border border-border bg-card shadow-sm flex items-center justify-between">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm border border-primary/20 shrink-0">
-                {(u.username || '?')[0].toUpperCase()}
-              </div>
-              <div className="min-w-0">
-                <p className="font-bold truncate">@{u.username || 'isimsiz'}</p>
-                <p className="text-xs text-muted-foreground truncate">{u.full_name || 'İsimsiz Üye'}</p>
-                <div className="mt-1">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                    u.role === 'admin' ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
-                    u.role === 'moderator' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20' : 
-                    'bg-muted text-muted-foreground border border-border'
-                  }`}>
-                    {u.role}
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <DropdownMenu 
-                trigger={<button className="p-3 hover:bg-muted rounded-xl transition-colors" aria-label="Eylemler menüsünü aç"><MoreVertical size={18}/></button>}
-                items={[
-                  { label: 'Admin Yap', onClick: () => handleRoleChange(u.id, 'admin'), hide: u.role === 'admin' || !isAdmin },
-                  { label: 'Moderatör Yap', onClick: () => handleRoleChange(u.id, 'moderator'), hide: u.role === 'moderator' || !isAdmin },
-                  { label: 'Normal Üye Yap', onClick: () => handleRoleChange(u.id, 'user'), hide: u.role === 'user' || !isAdmin },
-                  { label: 'Profili Gör', onClick: () => {}, isExternal: true },
-                ]}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Desktop Table */}
-      <div className="hidden md:block overflow-x-auto rounded-3xl border border-border shadow-sm">
+      <div className="overflow-x-auto rounded-3xl border border-border shadow-sm">
         <table className="w-full text-left border-collapse">
           <thead className="bg-muted/50 border-b border-border">
             <tr>
@@ -642,97 +598,6 @@ function AnalyticsTab() {
   const [stats, setStats] = useState({ active: 0, total: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [newToken, setNewToken] = useState<string | null>(null);
-  const [keys, setKeys] = useState<any[]>([]);
-  const [keysLoading, setKeysLoading] = useState(true);
-
-  const fetchKeys = useCallback(async () => {
-    setKeysLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('api_keys')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (error) {
-        console.error('Fetch keys error:', error);
-      } else {
-        setKeys(data || []);
-      }
-    } catch (err) {
-      console.error('Fetch keys error:', err);
-    } finally {
-      setKeysLoading(false);
-    }
-  }, []);
-
-  const handleGenerateKey = async () => {
-    try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-            toast.error('Oturum bulunamadı');
-            return;
-        }
-
-        const response = await fetch('/api/analytics/keys/create', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${session.access_token}`
-            }
-        });
-
-        const result = await response.json();
-        if (result.success) {
-            setNewToken(result.key);
-            toast.success('Yeni API anahtarı oluşturuldu');
-            fetchKeys();
-        } else {
-            toast.error(result.message || result.error || 'Anahtar oluşturulamadı');
-        }
-    } catch (err) {
-        console.error('Key generation error:', err);
-        toast.error('Anahtar oluşturma sırasında bir hata oluştu');
-    }
-  };
-
-  const handleDeleteKey = async (id: string) => {
-    if (!confirm('Bu API anahtarını silmek istediğinize emin misiniz? Bu anahtarla yapılan entegrasyonlar artık çalışmayacaktır.')) return;
-    try {
-      const { error } = await supabase
-        .from('api_keys')
-        .delete()
-        .eq('id', id);
-      
-      if (error) {
-        toast.error('Anahtar silinemedi: ' + error.message);
-      } else {
-        toast.success('API anahtarı başarıyla silindi');
-        fetchKeys();
-      }
-    } catch (err) {
-      console.error('Delete key error:', err);
-      toast.error('Anahtar silme sırasında bir hata oluştu');
-    }
-  };
-
-  const handleToggleKeyActive = async (id: string, currentStatus: boolean) => {
-    try {
-      const { error } = await supabase
-        .from('api_keys')
-        .update({ is_active: !currentStatus })
-        .eq('id', id);
-      
-      if (error) {
-        toast.error('Anahtar durumu güncellenemedi: ' + error.message);
-      } else {
-        toast.success(currentStatus ? 'Anahtar devre dışı bırakıldı' : 'Anahtar aktifleştirildi');
-        fetchKeys();
-      }
-    } catch (err) {
-      console.error('Toggle key error:', err);
-      toast.error('Anahtar güncelleme sırasında bir hata oluştu');
-    }
-  };
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
@@ -766,15 +631,9 @@ function AnalyticsTab() {
 
   useEffect(() => {
     fetchStats();
-    fetchKeys();
     const interval = setInterval(fetchStats, 30000);
     return () => clearInterval(interval);
-  }, [fetchStats, fetchKeys]);
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success('Token kopyalandı');
-  };
+  }, [fetchStats]);
 
   return (
     <div className="space-y-6">
@@ -835,167 +694,6 @@ function AnalyticsTab() {
         </p>
         
         <AnalyticsApiExamples />
-        
-        <div className="mt-8 border-t border-border pt-6">
-          <h4 className="text-sm font-black uppercase tracking-widest mb-4 flex items-center gap-2">
-            <Settings size={18} className="text-primary" /> API Anahtarlarım
-          </h4>
-          
-          <div className="space-y-4 mb-6">
-            {keysLoading ? (
-              <div className="h-20 bg-muted animate-pulse rounded-2xl" />
-            ) : keys.length === 0 ? (
-              <div className="p-8 text-center border-2 border-dashed border-border rounded-2xl text-muted-foreground font-bold text-sm">
-                Aktif API anahtarınız bulunmuyor. Yeni bir tane oluşturabilirsiniz.
-              </div>
-            ) : (
-              <>
-                {/* Mobile API Keys List */}
-                <div className="grid grid-cols-1 gap-4 lg:hidden">
-                  {keys.map((k) => (
-                    <div key={k.id} className="p-4 rounded-3xl border border-border bg-card shadow-sm space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-xs bg-muted px-2 py-1 rounded select-all font-bold">
-                          {k.key.substring(0, 10)}...{k.key.substring(k.key.length - 4)}
-                        </span>
-                        <button
-                          onClick={() => handleToggleKeyActive(k.id, k.is_active)}
-                          className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                            k.is_active 
-                              ? 'bg-green-500/10 text-green-500 border border-green-500/20' 
-                              : 'bg-red-500/10 text-red-500 border border-red-500/20'
-                          }`}
-                        >
-                          {k.is_active ? 'Aktif' : 'Pasif'}
-                        </button>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-2 text-xs border-t border-border pt-3">
-                        <div>
-                          <p className="text-[10px] font-black uppercase tracking-wider text-muted-foreground leading-none mb-1">Oluşturulma</p>
-                          <p className="font-bold text-muted-foreground">{new Date(k.created_at).toLocaleDateString('tr-TR')}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-black uppercase tracking-wider text-muted-foreground leading-none mb-1">Son Kullanım</p>
-                          <p className="font-bold text-muted-foreground truncate">
-                            {k.last_used_at ? new Date(k.last_used_at).toLocaleDateString('tr-TR') : 'Hiç kullanılmadı'}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex justify-end gap-2 border-t border-border pt-3">
-                        <button
-                          onClick={() => handleCopy(k.key)}
-                          className="flex items-center gap-1.5 px-3 py-2 bg-muted hover:bg-muted/80 rounded-xl text-xs font-bold text-muted-foreground hover:text-primary transition-all"
-                          title="Tamamını Kopyala"
-                        >
-                          <Copy size={14} /> Kopyala
-                        </button>
-                        <button
-                          onClick={() => handleDeleteKey(k.id)}
-                          className="flex items-center gap-1.5 px-3 py-2 bg-red-500/10 hover:bg-red-500 hover:text-white rounded-xl text-xs font-bold text-red-500 transition-all"
-                          title="Sil"
-                        >
-                          <Trash2 size={14} /> Sil
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Desktop API Keys Table */}
-                <div className="hidden lg:block overflow-x-auto rounded-2xl border border-border shadow-sm">
-                  <table className="w-full text-left border-collapse">
-                    <thead className="bg-muted/50 border-b border-border">
-                      <tr>
-                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Anahtar (Key)</th>
-                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Oluşturulma</th>
-                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Son Kullanım</th>
-                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Durum</th>
-                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground text-right">Eylemler</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {keys.map((k) => (
-                        <tr key={k.id} className="hover:bg-muted/10 transition-colors">
-                          <td className="px-6 py-4 font-mono text-xs max-w-xs truncate">
-                            <span className="bg-muted px-2 py-1 rounded select-all font-bold">
-                              {k.key.substring(0, 10)}...{k.key.substring(k.key.length - 4)}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-xs font-bold text-muted-foreground">
-                            {new Date(k.created_at).toLocaleDateString('tr-TR')}
-                          </td>
-                          <td className="px-6 py-4 text-xs font-bold text-muted-foreground">
-                            {k.last_used_at ? new Date(k.last_used_at).toLocaleDateString('tr-TR') + ' ' + new Date(k.last_used_at).toLocaleTimeString('tr-TR') : 'Hiç kullanılmadı'}
-                          </td>
-                          <td className="px-6 py-4">
-                            <button
-                              onClick={() => handleToggleKeyActive(k.id, k.is_active)}
-                              className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                                k.is_active 
-                                  ? 'bg-green-500/10 text-green-500 border border-green-500/20' 
-                                  : 'bg-red-500/10 text-red-500 border border-red-500/20'
-                              }`}
-                            >
-                              {k.is_active ? 'Aktif' : 'Pasif'}
-                            </button>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div className="flex justify-end gap-2">
-                              <button
-                                onClick={() => handleCopy(k.key)}
-                                className="p-2 hover:bg-muted rounded-xl transition-colors text-muted-foreground hover:text-primary"
-                                title="Tamamını Kopyala"
-                              >
-                                <Copy size={14} />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteKey(k.id)}
-                                className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-xl transition-colors text-muted-foreground"
-                                title="Sil"
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </>
-            )}
-          </div>
-
-          <div className="p-4 bg-muted/50 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h4 className="text-xs font-black uppercase tracking-widest mb-1">Yeni API Anahtarı Oluştur</h4>
-              <p className="text-xs text-muted-foreground">Her yeni oluşturulan anahtar sistemde aktif olarak kaydedilir.</p>
-            </div>
-            <button 
-              onClick={handleGenerateKey}
-              className="w-full sm:w-auto text-xs font-bold bg-primary text-primary-foreground px-4 py-2.5 rounded-xl hover:bg-primary/90 transition-all flex items-center justify-center gap-1.5 shadow-lg"
-            >
-              <Plus size={14} /> Anahtar Üret
-            </button>
-          </div>
-
-          {newToken && (
-            <div className="mt-4 p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl">
-              <p className="text-xs font-bold text-emerald-600 mb-2">Lütfen yeni anahtarınızı güvenli bir yere kaydedin. Bu anahtarı bir daha görüntüleyemeyeceksiniz:</p>
-              <div className="flex items-center justify-between p-3 bg-background border border-border rounded-xl">
-                <span className="font-mono text-xs break-all select-all pr-4 text-foreground/80">{newToken}</span>
-                <button
-                  onClick={() => handleCopy(newToken)}
-                  className="px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-lg hover:bg-primary/90 transition-all whitespace-nowrap"
-                >
-                  Kopyala
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
         
         <p className="mt-4 text-xs font-bold text-muted-foreground flex items-center gap-2">
           <CheckCircle size={14} className="text-green-500" /> API Güvenliği: Aktif (Sadece Admin)
