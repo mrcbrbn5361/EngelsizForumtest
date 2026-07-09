@@ -69,6 +69,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
         
+        // If we are on the reset-password page or URL has recovery token, do NOT set the user context
+        if (window.location.pathname === '/auth/reset-password' || window.location.hash.includes('type=recovery')) {
+          setUser(null);
+          setProfile(null);
+          setLoading(false);
+          if (window.location.pathname !== '/auth/reset-password') {
+            window.location.href = '/auth/reset-password' + window.location.hash;
+          }
+          return;
+        }
+
         setUser(session?.user ?? null);
         if (session?.user) {
           await fetchProfile(session.user.id);
@@ -88,10 +99,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.log('Password recovery mode active!');
           // We wait a bit to ensure session is stored in localStorage by Supabase
           setTimeout(() => {
-             window.location.href = '/auth/reset-password';
+             // Only redirect if we are not already on the reset-password page
+             if (window.location.pathname !== '/auth/reset-password') {
+               window.location.href = '/auth/reset-password';
+             }
           }, 100);
+          
+          // DO NOT set the user context during recovery, so they appear logged out
+          setUser(null);
+          setProfile(null);
+          setLoading(false);
           return;
         }
+        
+        // If they are on the reset-password page but the event is not PASSWORD_RECOVERY,
+        // and they just landed there with a recovery token, we shouldn't show them as logged in.
+        if (window.location.pathname === '/auth/reset-password' || window.location.hash.includes('type=recovery')) {
+          setUser(null);
+          setProfile(null);
+          setLoading(false);
+          if (window.location.pathname !== '/auth/reset-password') {
+            window.location.href = '/auth/reset-password' + window.location.hash;
+          }
+          return;
+        }
+
         setUser(session?.user ?? null);
         if (session?.user) {
           await fetchProfile(session.user.id);

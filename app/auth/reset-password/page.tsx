@@ -68,13 +68,13 @@ export default function ResetPasswordPage() {
 
       setMessage({ 
         type: 'success', 
-        text: 'Şifreniz başarıyla güncellendi! 2 saniye içinde giriş sayfasına yönlendiriliyorsunuz.' 
+        text: 'Şifreniz başarıyla güncellendi! Giriş sayfasına yönlendiriliyorsunuz...' 
       });
       
-      // Auto redirect to login after 2 seconds
+      // Auto redirect to login
       setTimeout(() => {
         window.location.href = '/auth';
-      }, 2000);
+      }, 1500);
     } catch (err: any) {
       console.error('Update password error:', err);
       setMessage({ 
