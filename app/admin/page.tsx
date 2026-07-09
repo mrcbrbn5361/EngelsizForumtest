@@ -726,7 +726,7 @@ function AnalyticsTab() {
         
         <div className="mt-4 p-4 bg-muted/50 rounded-2xl">
           <div className="flex items-center justify-between mb-2">
-              <h4 className="text-xs font-black uppercase tracking-widest">Yeni Token Oluştur</h4>
+              <h4 className="text-xs font-black uppercase tracking-widest">Yeni Token Oluştur (Test)</h4>
               <button 
                   onClick={handleGenerateKey}
                   className="text-xs font-bold bg-primary text-primary-foreground px-3 py-1.5 rounded-lg hover:bg-primary/90"
