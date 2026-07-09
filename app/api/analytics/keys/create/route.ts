@@ -11,6 +11,7 @@ export async function POST(request: Request) {
 
     const token = authHeader.split(' ')[1];
     
+    // Supabase client'ı başlat
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -23,24 +24,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Verify admin role
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    // Kullanıcının admin olup olmadığını kontrol et
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
     
-    if (profile?.role !== 'admin') {
+    if (profileError || profile?.role !== 'admin') {
       return NextResponse.json({ error: 'Forbidden', message: 'Admin access required.' }, { status: 403 });
     }
 
-    // Generate Key
-    const newKey = `sk_${Math.random().toString(36).substring(2, 15)}_${Math.random().toString(36).substring(2, 15)}`;
+    // Güvenli ve tahmin edilemez bir anahtar üret
+    const newKey = `sk_${crypto.randomUUID().replace(/-/g, '')}`;
     
-    // Insert into DB (Assuming api_keys table exists)
+    // Veritabanına kaydet
     const { error: insertError } = await supabase.from('api_keys').insert({
         key: newKey,
-        created_by: user.id,
-        created_at: new Date().toISOString()
+        created_by: user.id
     });
     
-    if (insertError) throw insertError;
+    if (insertError) {
+      console.error('Database insertion error:', insertError);
+      return NextResponse.json({ error: 'Database error', details: insertError.message }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true, key: newKey });
 
