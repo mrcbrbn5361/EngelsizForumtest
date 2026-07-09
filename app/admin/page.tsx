@@ -692,16 +692,78 @@ function AnalyticsTab() {
         <p className="text-sm text-muted-foreground mb-4">
           Bu istatistikleri harici sistemlerde kullanmak için oluşturulmuş API servisini çağırabilirsiniz. API sadece <strong>Admin</strong> yetkisine sahip kullanıcıların erişim tokenları ile çalışır.
         </p>
-        <div className="bg-muted/50 rounded-2xl p-4 border border-border overflow-x-auto">
-          <code className="text-sm text-primary/80 font-mono">
-            GET /api/analytics/stats<br/>
-            Authorization: Bearer {'<SUPABASE_ACCESS_TOKEN>'}
-          </code>
-        </div>
+        
+        <AnalyticsApiExamples />
+        
         <p className="mt-4 text-xs font-bold text-muted-foreground flex items-center gap-2">
           <CheckCircle size={14} className="text-green-500" /> API Güvenliği: Aktif (Sadece Admin)
         </p>
       </div>
+    </div>
+  );
+}
+
+function AnalyticsApiExamples() {
+  const [activeLang, setActiveLang] = useState('curl');
+  
+  const examples: Record<string, string> = {
+    curl: `curl -X GET https://engelsizforum.com/api/analytics/stats \\
+  -H "Authorization: Bearer <TOKEN>"`,
+    javascript: `fetch('https://engelsizforum.com/api/analytics/stats', {
+  headers: {
+    'Authorization': 'Bearer <TOKEN>'
+  }
+})
+.then(res => res.json())
+.then(data => console.log(data));`,
+    python: `import requests
+
+headers = {'Authorization': 'Bearer <TOKEN>'}
+response = requests.get('https://engelsizforum.com/api/analytics/stats', headers=headers)
+print(response.json())`,
+    nodejs: `const axios = require('axios');
+
+axios.get('https://engelsizforum.com/api/analytics/stats', {
+  headers: { 'Authorization': 'Bearer <TOKEN>' }
+})
+.then(response => console.log(response.data));`,
+    go: `package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func main() {
+	client := &http.Client{}
+	req, _ := http.NewRequest("GET", "https://engelsizforum.com/api/analytics/stats", nil)
+	req.Header.Set("Authorization", "Bearer <TOKEN>")
+	
+	resp, _ := client.Do(req)
+	fmt.Println(resp.Status)
+}`
+  };
+
+  return (
+    <div className="bg-muted/30 rounded-2xl p-6 mt-6 border border-border">
+      <h3 className="text-sm font-black uppercase tracking-widest mb-4">API Örnekleri</h3>
+      <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
+        {Object.keys(examples).map((lang) => (
+          <button
+            key={lang}
+            onClick={() => setActiveLang(lang)}
+            className={cn(
+              "px-3 py-1 text-xs font-bold rounded-lg uppercase transition-colors",
+              activeLang === lang ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'
+            )}
+          >
+            {lang}
+          </button>
+        ))}
+      </div>
+      <pre className="bg-background p-4 rounded-xl overflow-x-auto text-xs font-mono text-foreground/80 border border-border">
+        <code>{examples[activeLang]}</code>
+      </pre>
     </div>
   );
 }

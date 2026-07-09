@@ -13,7 +13,7 @@ export function RouteAnnouncer() {
   useEffect(() => {
     const pageName = pathname === '/' 
       ? 'Anasayfa' 
-      : pathname.split('/').filter(Boolean).pop()?.replace(/-/g, ' ') || 'Sayfa';
+      : pathname?.split('/').filter(Boolean).pop()?.replace(/-/g, ' ') || 'Sayfa';
     
     const capitalized = pageName.charAt(0).toUpperCase() + pageName.slice(1);
     setAnnouncement(`${capitalized} sayfası yüklendi`);

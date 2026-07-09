@@ -19,7 +19,8 @@ interface Community {
 }
 
 export default function CommunityDetailPage() {
-  const { id } = useParams();
+  const params = useParams<{ id: string }>();
+  const id = params?.id;
   const router = useRouter();
   const [community, setCommunity] = useState<Community | null>(null);
   const [topics, setTopics] = useState<Topic[]>([]);

@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://engelsizforum.miracdeveloper.com.tr/</loc>
+    <loc>https://engelsizforum.com/</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://engelsizforum.miracdeveloper.com.tr/discussions</loc>
+    <loc>https://engelsizforum.com/discussions</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>always</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://engelsizforum.miracdeveloper.com.tr/communities</loc>
+    <loc>https://engelsizforum.com/communities</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://engelsizforum.miracdeveloper.com.tr/about</loc>
+    <loc>https://engelsizforum.com/about</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://engelsizforum.miracdeveloper.com.tr/help</loc>
+    <loc>https://engelsizforum.com/help</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://engelsizforum.miracdeveloper.com.tr/security</loc>
+    <loc>https://engelsizforum.com/security</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://engelsizforum.miracdeveloper.com.tr/privacy</loc>
+    <loc>https://engelsizforum.com/privacy</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://engelsizforum.miracdeveloper.com.tr/terms</loc>
+    <loc>https://engelsizforum.com/terms</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://engelsizforum.miracdeveloper.com.tr/accessibility</loc>
+    <loc>https://engelsizforum.com/accessibility</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://engelsizforum.miracdeveloper.com.tr/search</loc>
+    <loc>https://engelsizforum.com/search</loc>
     <lastmod>2026-06-27</lastmod>
     <changefreq>always</changefreq>
     <priority>0.5</priority>

@@ -15,13 +15,19 @@ export function VisitorTracker() {
     
     const trackVisitor = async () => {
       try {
-        await fetch('/api/analytics/track', {
+        const response = await fetch('/api/analytics/track', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ visitorId })
         });
+        
+        if (!response.ok) {
+          console.error('Visitor tracking failed with status:', response.status);
+          const errorData = await response.json().catch(() => ({}));
+          console.error('Error details:', errorData);
+        }
       } catch (err) {
-        console.error('Failed to track visitor:', err);
+        console.error('Failed to track visitor (network error):', err);
       }
     };
 

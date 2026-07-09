@@ -44,19 +44,19 @@ export const metadata: Metadata = {
   publisher: 'EngelsizForum',
   robots: 'index, follow',
   alternates: {
-    canonical: 'https://engelsizforum.miracdeveloper.com.tr',
+    canonical: 'https://engelsizforum.com',
     languages: {
-      'tr-TR': 'https://engelsizforum.miracdeveloper.com.tr',
+      'tr-TR': 'https://engelsizforum.com',
     },
   },
   openGraph: {
     title: 'EngelsizForum: Erişilebilir Forum',
     description: 'Engelli bireyler için tam erişilebilir forum platformu.',
-    url: 'https://engelsizforum.miracdeveloper.com.tr',
+    url: 'https://engelsizforum.com',
     siteName: 'EngelsizForum',
     images: [
       {
-        url: 'https://engelsizforum.miracdeveloper.com.tr/og-image.png',
+        url: 'https://engelsizforum.com/og-image.png',
         width: 1200,
         height: 630,
         alt: 'EngelsizForum - Erişilebilir Topluluk Platformu',
@@ -98,10 +98,10 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://engelsizforum.miracdeveloper.com.tr/#organization",
+      "@id": "https://engelsizforum.com/#organization",
       "name": "EngelsizForum",
-      "url": "https://engelsizforum.miracdeveloper.com.tr",
-      "logo": "https://engelsizforum.miracdeveloper.com.tr/logo.png",
+      "url": "https://engelsizforum.com",
+      "logo": "https://engelsizforum.com/logo.png",
       "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve forum platformu.",
       "sameAs": [
         "https://twitter.com/engelsizforum",
@@ -113,14 +113,14 @@ const jsonLd = {
     },
     {
       "@type": "WebSite",
-      "@id": "https://engelsizforum.miracdeveloper.com.tr/#website",
-      "url": "https://engelsizforum.miracdeveloper.com.tr",
+      "@id": "https://engelsizforum.com/#website",
+      "url": "https://engelsizforum.com",
       "name": "EngelsizForum",
       "description": "Tam Erişilebilir Topluluk ve Bilgi Paylaşım Platformu",
-      "publisher": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#organization" },
+      "publisher": { "@id": "https://engelsizforum.com/#organization" },
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://engelsizforum.miracdeveloper.com.tr/search?q={search_term_string}",
+        "target": "https://engelsizforum.com/search?q={search_term_string}",
         "query-input": "required name=search_term_string"
       },
       "inLanguage": "tr-TR"

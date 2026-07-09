@@ -5,9 +5,6 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    optimizePackageImports: ['lucide-react', 'motion/react'],
-  },
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
