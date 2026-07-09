@@ -1,9 +1,12 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { useAuth } from '@/components/providers/auth-provider';
 
 export function VisitorTracker() {
+  const { user } = useAuth();
   const trackedRef = useRef(false);
+  const lastUserIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     // Generate or retrieve a unique visitor session ID
@@ -18,7 +21,10 @@ export function VisitorTracker() {
         await fetch('/api/analytics/track', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ visitorId })
+          body: JSON.stringify({ 
+            visitorId,
+            userId: user?.id || null
+          })
         });
       } catch (err) {
         console.error('Failed to track visitor:', err);
@@ -29,13 +35,18 @@ export function VisitorTracker() {
     if (!trackedRef.current) {
       trackVisitor();
       trackedRef.current = true;
+      lastUserIdRef.current = user?.id || null;
+    } else if (user?.id !== lastUserIdRef.current) {
+      // If user logs in or changes, track immediately
+      trackVisitor();
+      lastUserIdRef.current = user?.id || null;
     }
     
-    // Ping every 1 minute to keep "active" status alive
-    const interval = setInterval(trackVisitor, 60 * 1000);
+    // Ping every 2 minutes to keep "active" status alive (reduced frequency for performance)
+    const interval = setInterval(trackVisitor, 2 * 60 * 1000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [user?.id]);
 
   return null;
 }

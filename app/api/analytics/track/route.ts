@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 
 export async function POST(request: Request) {
   try {
-    const { visitorId } = await request.json();
+    const { visitorId, userId } = await request.json();
     
     if (!visitorId) {
       return NextResponse.json({ error: 'Missing visitorId' }, { status: 400 });
@@ -15,7 +15,11 @@ export async function POST(request: Request) {
     );
 
     // Call the secure RPC function to track the visitor
-    const { error } = await supabase.rpc('track_visitor', { p_session_id: visitorId });
+    // Passing p_user_id to track members vs guests
+    const { error } = await supabase.rpc('track_visitor', { 
+      p_session_id: visitorId,
+      p_user_id: userId || null
+    });
 
     if (error) {
       console.error('Analytics tracking error:', error);
