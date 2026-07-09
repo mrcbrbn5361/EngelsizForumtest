@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 export async function GET(request: Request) {
   try {
     const authHeader = request.headers.get('Authorization');
+    console.log('Authorization Header:', authHeader);
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json({ 
