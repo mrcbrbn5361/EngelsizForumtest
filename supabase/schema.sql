@@ -348,3 +348,37 @@ CREATE POLICY "Topic authors can manage tags" ON public.topic_tags FOR ALL USING
 -- NOT: Supabase dashboard üzerinden publication yapılandırılmalıdır,
 -- veya admin rolü ile aşağıdaki komut çalıştırılabilir:
 -- ALTER PUBLICATION supabase_realtime ADD TABLE public.comments, public.reactions, public.notifications;
+
+-- ==========================================
+-- ANALYTICS TRACKING
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS public.analytics_visitors (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id TEXT UNIQUE NOT NULL,
+  last_active_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+ALTER TABLE public.analytics_visitors ENABLE ROW LEVEL SECURITY;
+
+-- Admins can view analytics
+CREATE POLICY "Admins can view analytics" 
+  ON public.analytics_visitors FOR SELECT 
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles
+      WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+    )
+  );
+
+-- Secure RPC for tracking without RLS bypass issues on client
+CREATE OR REPLACE FUNCTION track_visitor(p_session_id TEXT)
+RETURNS void AS $$
+BEGIN
+  INSERT INTO public.analytics_visitors (session_id, last_active_at)
+  VALUES (p_session_id, timezone('utc'::text, now()))
+  ON CONFLICT (session_id) 
+  DO UPDATE SET last_active_at = EXCLUDED.last_active_at;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

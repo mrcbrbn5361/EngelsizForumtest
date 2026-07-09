@@ -5,6 +5,7 @@ import './globals.css';
 import { AccessibilityProvider } from '@/components/providers/accessibility-provider';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/providers/auth-provider';
+import { VisitorTracker } from '@/components/analytics/visitor-tracker';
 
 const headingFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -152,6 +153,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <VisitorTracker />
         <a href="#main-content" className="skip-link">
           Ana içeriğe atla
         </a>
