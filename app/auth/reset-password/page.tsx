@@ -62,6 +62,10 @@ export default function ResetPasswordPage() {
 
       if (error) throw error;
 
+      // Kullanıcının şifresi güncellendikten sonra otomatik olarak oturum açık kalmasını engelle
+      // Güvenlik gereği tekrar e-posta ve şifre ile giriş yapması için çıkış yaptır
+      await supabase.auth.signOut();
+
       setMessage({ 
         type: 'success', 
         text: 'Şifreniz başarıyla güncellendi! 2 saniye içinde giriş sayfasına yönlendiriliyorsunuz.' 
