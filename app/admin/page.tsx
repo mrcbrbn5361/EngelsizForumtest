@@ -598,6 +598,35 @@ function AnalyticsTab() {
   const [stats, setStats] = useState({ active: 0, total: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [newToken, setNewToken] = useState<string | null>(null);
+
+  const handleGenerateKey = async () => {
+    try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            toast.error('Oturum bulunamadı');
+            return;
+        }
+
+        const response = await fetch('/api/analytics/keys/create', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${session.access_token}`
+            }
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            setNewToken(result.key);
+            toast.success('Yeni API anahtarı oluşturuldu');
+        } else {
+            toast.error(result.error || 'Anahtar oluşturulamadı');
+        }
+    } catch (err) {
+        console.error('Key generation error:', err);
+        toast.error('Anahtar oluşturma sırasında bir hata oluştu');
+    }
+};
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
@@ -694,6 +723,23 @@ function AnalyticsTab() {
         </p>
         
         <AnalyticsApiExamples />
+        
+        <div className="mt-4 p-4 bg-muted/50 rounded-2xl">
+          <div className="flex items-center justify-between mb-2">
+              <h4 className="text-xs font-black uppercase tracking-widest">Yeni Token Oluştur</h4>
+              <button 
+                  onClick={handleGenerateKey}
+                  className="text-xs font-bold bg-primary text-primary-foreground px-3 py-1.5 rounded-lg hover:bg-primary/90"
+              >
+                  Oluştur
+              </button>
+          </div>
+          {newToken && (
+              <div className="mt-2 p-3 bg-card border border-border rounded-xl font-mono text-xs break-all">
+                  {newToken}
+              </div>
+          )}
+        </div>
         
         <p className="mt-4 text-xs font-bold text-muted-foreground flex items-center gap-2">
           <CheckCircle size={14} className="text-green-500" /> API Güvenliği: Aktif (Sadece Admin)
