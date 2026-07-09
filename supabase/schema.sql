@@ -387,7 +387,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- API KEYS FOR EXTERNAL ANALYTICS INTEGRATION
 -- ==========================================
 
-CREATE TABLE IF NOT EXISTS public.api_keys (
+DROP TABLE IF EXISTS public.api_keys CASCADE;
+
+CREATE TABLE public.api_keys (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   key TEXT UNIQUE NOT NULL,
   created_by UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
