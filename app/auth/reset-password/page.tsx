@@ -64,6 +64,7 @@ export default function ResetPasswordPage() {
 
       // Kullanıcının şifresi güncellendikten sonra otomatik olarak oturum açık kalmasını engelle
       // Güvenlik gereği tekrar e-posta ve şifre ile giriş yapması için çıkış yaptır
+      sessionStorage.removeItem('password_recovery_active');
       await supabase.auth.signOut();
 
       setMessage({ 

@@ -20,16 +20,25 @@ export default function AuthCallbackPage() {
 
     handleAuth();
 
+    let redirectTimeout: NodeJS.Timeout;
+
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return;
       
       console.log('Auth callback event:', event);
 
       if (event === 'PASSWORD_RECOVERY') {
+        clearTimeout(redirectTimeout);
         setMessage('Şifre sıfırlama sayfasına yönlendiriliyorsunuz...');
         router.push('/auth/reset-password');
       } else if (event === 'SIGNED_IN' && session) {
-        router.push('/');
+        // Wait a little bit to see if a PASSWORD_RECOVERY event follows it
+        // In the PKCE flow, Supabase sometimes fires SIGNED_IN right before PASSWORD_RECOVERY
+        redirectTimeout = setTimeout(() => {
+          if (mounted) {
+            router.push('/');
+          }
+        }, 500);
       } else if (event === 'SIGNED_OUT') {
         router.push('/auth');
       }
