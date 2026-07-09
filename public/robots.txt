@@ -3,5 +3,5 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
-Sitemap: https://engelsizforum.com/sitemap.xml
+Sitemap: https://engelsizforum.miracdeveloper.com.tr/sitemap.xml
 Allow: /llms.txt

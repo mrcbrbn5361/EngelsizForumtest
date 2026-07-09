@@ -72,7 +72,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
             .from('profiles')
             .select('accessibility_prefs')
             .eq('id', user.id)
-            .single();
+            .maybeSingle();
 
           if (error) {
             console.warn('Could not fetch prefs from Supabase:', error.message);

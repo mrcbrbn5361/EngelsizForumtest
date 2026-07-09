@@ -1,15 +1,23 @@
--- 🚀 ENGELSİZFORUM — TEK KAYNAK DOĞRULU (SINGLE SOURCE OF TRUTH)
--- Sürüm: 2.0
+-- 🚀 ENGELSİZFORUM — TEMİZLENMİŞ SQL ŞEMASI (V2.2)
+-- Analitikler ve log tabloları kaldırıldı. Idempotent (tekrar çalıştırılabilir) hale getirildi.
 
 -- ==========================================
 -- 1. EXTENSIONS & ENUMS
 -- ==========================================
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Enum types
-CREATE TYPE public.user_role AS ENUM ('user', 'moderator', 'admin');
-CREATE TYPE public.report_status AS ENUM ('pending', 'investigating', 'resolved', 'dismissed');
-CREATE TYPE public.reaction_type AS ENUM ('like', 'heart', 'insightful', 'support');
+-- Enum tipleri (Hata almamak için DO blokları ile kontrol ediliyor)
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+        CREATE TYPE public.user_role AS ENUM ('user', 'moderator', 'admin');
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'report_status') THEN
+        CREATE TYPE public.report_status AS ENUM ('pending', 'investigating', 'resolved', 'dismissed');
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'reaction_type') THEN
+        CREATE TYPE public.reaction_type AS ENUM ('like', 'heart', 'insightful', 'support');
+    END IF;
+END $$;
 
 -- ==========================================
 -- 2. TABLES
@@ -17,18 +25,19 @@ CREATE TYPE public.reaction_type AS ENUM ('like', 'heart', 'insightful', 'suppor
 
 -- PROFILES
 CREATE TABLE IF NOT EXISTS public.profiles (
-  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   username TEXT UNIQUE NOT NULL,
   full_name TEXT,
   avatar_url TEXT,
-  role public.user_role DEFAULT 'user'::public.user_role,
+  role public.user_role DEFAULT 'user',
   level INTEGER DEFAULT 1,
   xp INTEGER DEFAULT 0,
   bio TEXT,
   is_verified BOOLEAN DEFAULT false,
   accessibility_prefs JSONB DEFAULT '{"fontSize": 100, "highContrast": false, "dyslexicFont": false, "reducedMotion": false, "bionicReading": false, "focusMode": false, "voiceMode": false}'::jsonb,
   created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  CONSTRAINT username_length CHECK (char_length(username) >= 3)
 );
 
 -- CATEGORIES
@@ -132,17 +141,6 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- AUDIT_LOGS
-CREATE TABLE IF NOT EXISTS public.audit_logs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  actor_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
-  action TEXT NOT NULL,
-  target_type TEXT NOT NULL,
-  target_id UUID,
-  metadata JSONB,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
 -- BOOKMARKS
 CREATE TABLE IF NOT EXISTS public.bookmarks (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -167,19 +165,9 @@ CREATE TABLE IF NOT EXISTS public.topic_tags (
   PRIMARY KEY (topic_id, tag_id)
 );
 
-
 -- ==========================================
 -- 3. FUNCTIONS & TRIGGERS
 -- ==========================================
-
--- is_staff helper function
-CREATE OR REPLACE FUNCTION public.is_staff()
-RETURNS BOOLEAN LANGUAGE sql SECURITY DEFINER STABLE AS $$
-  SELECT EXISTS (
-    SELECT 1 FROM public.profiles
-    WHERE id = auth.uid() AND role IN ('admin', 'moderator')
-  );
-$$;
 
 -- handle updated_at
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
@@ -190,10 +178,20 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Profile update triggers
+DROP TRIGGER IF EXISTS update_profiles_updated_at ON public.profiles;
 CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON public.profiles FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS update_categories_updated_at ON public.categories;
 CREATE TRIGGER update_categories_updated_at BEFORE UPDATE ON public.categories FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS update_topics_updated_at ON public.topics;
 CREATE TRIGGER update_topics_updated_at BEFORE UPDATE ON public.topics FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS update_comments_updated_at ON public.comments;
 CREATE TRIGGER update_comments_updated_at BEFORE UPDATE ON public.comments FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+DROP TRIGGER IF EXISTS update_reports_updated_at ON public.reports;
 CREATE TRIGGER update_reports_updated_at BEFORE UPDATE ON public.reports FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
 -- handle new user (auth.users -> profiles)
@@ -212,7 +210,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger only if not exists
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
@@ -239,7 +236,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS on_reaction_added_topic ON public.reactions;
 CREATE TRIGGER on_reaction_added_topic AFTER INSERT ON public.reactions FOR EACH ROW EXECUTE FUNCTION public.increment_topic_likes();
+
+DROP TRIGGER IF EXISTS on_reaction_removed_topic ON public.reactions;
 CREATE TRIGGER on_reaction_removed_topic AFTER DELETE ON public.reactions FOR EACH ROW EXECUTE FUNCTION public.decrement_topic_likes();
 
 -- Comment count
@@ -251,17 +251,18 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS on_comment_added ON public.comments;
 CREATE TRIGGER on_comment_added AFTER INSERT ON public.comments FOR EACH ROW EXECUTE FUNCTION public.increment_comment_count();
 
 -- ==========================================
 -- 4. INDEXES
 -- ==========================================
-CREATE INDEX IF NOT EXISTS topics_search_idx ON topics USING GIN (search_vector);
-CREATE INDEX IF NOT EXISTS idx_topics_category ON topics(category_id);
-CREATE INDEX IF NOT EXISTS idx_topics_author ON topics(author_id);
-CREATE INDEX IF NOT EXISTS idx_topics_created ON topics(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_comments_topic ON comments(topic_id);
-CREATE INDEX IF NOT EXISTS idx_comments_author ON comments(author_id);
+CREATE INDEX IF NOT EXISTS topics_search_idx ON public.topics USING GIN (search_vector);
+CREATE INDEX IF NOT EXISTS idx_topics_category ON public.topics(category_id);
+CREATE INDEX IF NOT EXISTS idx_topics_author ON public.topics(author_id);
+CREATE INDEX IF NOT EXISTS idx_topics_created ON public.topics(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_comments_topic ON public.comments(topic_id);
+CREATE INDEX IF NOT EXISTS idx_comments_author ON public.comments(author_id);
 
 -- ==========================================
 -- 5. ROW LEVEL SECURITY (RLS)
@@ -275,10 +276,18 @@ ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.badges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_badges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.bookmarks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.topic_tags ENABLE ROW LEVEL SECURITY;
+
+-- Helper function for staff check (admin/moderator)
+CREATE OR REPLACE FUNCTION public.is_staff()
+RETURNS BOOLEAN AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role IN ('admin', 'moderator')
+  );
+$$ LANGUAGE sql STABLE SECURITY DEFINER;
 
 -- Profiles
 CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
@@ -324,9 +333,6 @@ CREATE POLICY "Users can view own notifications" ON public.notifications FOR SEL
 CREATE POLICY "Users can update own notifications" ON public.notifications FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "Users can delete own notifications" ON public.notifications FOR DELETE USING (auth.uid() = user_id);
 
--- Audit Logs
-CREATE POLICY "Staff can view audit logs" ON public.audit_logs FOR SELECT USING (public.is_staff());
-
 -- Bookmarks
 CREATE POLICY "Users can view own bookmarks" ON public.bookmarks FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "Users can insert own bookmarks" ON public.bookmarks FOR INSERT WITH CHECK (auth.uid() = user_id);
@@ -345,40 +351,5 @@ CREATE POLICY "Topic authors can manage tags" ON public.topic_tags FOR ALL USING
 -- ==========================================
 -- 6. REALTIME
 -- ==========================================
--- NOT: Supabase dashboard üzerinden publication yapılandırılmalıdır,
--- veya admin rolü ile aşağıdaki komut çalıştırılabilir:
--- ALTER PUBLICATION supabase_realtime ADD TABLE public.comments, public.reactions, public.notifications;
-
--- ==========================================
--- ANALYTICS TRACKING
--- ==========================================
-
-CREATE TABLE IF NOT EXISTS public.analytics_visitors (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  session_id TEXT UNIQUE NOT NULL,
-  last_active_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
-ALTER TABLE public.analytics_visitors ENABLE ROW LEVEL SECURITY;
-
--- Admins can view analytics
-CREATE POLICY "Admins can view analytics" 
-  ON public.analytics_visitors FOR SELECT 
-  USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles
-      WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
-    )
-  );
-
--- Secure RPC for tracking without RLS bypass issues on client
-CREATE OR REPLACE FUNCTION track_visitor(p_session_id TEXT)
-RETURNS void AS $$
-BEGIN
-  INSERT INTO public.analytics_visitors (session_id, last_active_at)
-  VALUES (p_session_id, timezone('utc'::text, now()))
-  ON CONFLICT (session_id) 
-  DO UPDATE SET last_active_at = EXCLUDED.last_active_at;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- Supabase Dashboard > Database > Replication > 'supabase_realtime' publication
+-- ALT: ALTER PUBLICATION supabase_realtime ADD TABLE public.comments, public.reactions, public.notifications;

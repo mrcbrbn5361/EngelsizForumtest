@@ -9,7 +9,6 @@ import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCi
 import * as Dialog from '@radix-ui/react-dialog';
 import { useAuth } from '@/components/providers/auth-provider';
 import { cn } from '@/lib/utils';
-import { LiveStats } from '@/components/admin/live-stats';
 
 /**
  * Accessible Navbar for EngelsizForum.
@@ -43,9 +42,6 @@ export function Navbar() {
             <NavLink href="/communities" icon={<Users size={16} aria-hidden="true" />} label="TOPLULUKLAR" />
             <NavLink href="/about" icon={<Info size={16} aria-hidden="true" />} label="HAKKIMIZDA" />
           </div>
-
-          {/* Admin Stats Integration */}
-          {isStaff && <LiveStats />}
           
           <div className="flex items-center gap-1 min-w-[32px] sm:min-w-[48px]">
             <Link

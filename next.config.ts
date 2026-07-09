@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'motion/react'],
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
@@ -16,6 +19,10 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'source.unsplash.com' },
       { protocol: 'https', hostname: '*.supabase.co' },
       { protocol: 'https', hostname: '*.supabase.in' },
+      { protocol: 'https', hostname: '*.vercel.app' },
+      { protocol: 'https', hostname: '*-projects.vercel.app' },
+      { protocol: 'https', hostname: 'engelsizforum.com' },
+      { protocol: 'https', hostname: 'www.engelsizforum.com' },
     ],
   },
   async headers() {

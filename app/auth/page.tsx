@@ -77,7 +77,21 @@ export default function AuthPage() {
   };
 
   const handleGoogleLogin = async () => {
-    setError('Google ile giriş şu anda bakım aşamasındadır. Lütfen e-posta ve şifre ile giriş yapın.');
+    setLoading(true);
+    setError(null);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+    } catch (err: any) {
+      console.error("Google Login Error:", err);
+      setError(err.message || 'Google ile giriş yapılamadı.');
+      setLoading(false);
+    }
   };
 
   return (

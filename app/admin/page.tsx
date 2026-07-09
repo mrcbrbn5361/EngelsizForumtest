@@ -156,7 +156,6 @@ export default function AdminDashboard() {
               <TabButton value="categories" icon={<FolderTree size={18} />} label="Kategori" />
               <TabButton value="users" icon={<Users size={18} />} label="Üyeler" />
               <TabButton value="moderation" icon={<MessageSquare size={18} />} label="Mod" />
-              <TabButton value="analytics" icon={<TrendingUp size={18} />} label="Analitik" />
             </Tabs.List>
           </div>
 
@@ -235,10 +234,6 @@ export default function AdminDashboard() {
 
           <Tabs.Content value="moderation" className="outline-none">
             <ModerationManager onTopicChange={fetchAllData} />
-          </Tabs.Content>
-
-          <Tabs.Content value="analytics" className="outline-none">
-            <AnalyticsTab />
           </Tabs.Content>
         </Tabs.Root>
       </main>
@@ -590,180 +585,6 @@ function DropdownMenu({ trigger, items }: { trigger: React.ReactNode, items: { l
           </>
         )}
       </AnimatePresence>
-    </div>
-  );
-}
-
-function AnalyticsTab() {
-  const [stats, setStats] = useState({ active: 0, total: 0 });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const fetchStats = useCallback(async () => {
-    setLoading(true);
-    try {
-      const { count: total, error: totalError } = await supabase
-        .from('analytics_visitors')
-        .select('*', { count: 'exact', head: true });
-        
-      if (totalError) throw totalError;
-
-      const fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-      const { count: active, error: activeError } = await supabase
-        .from('analytics_visitors')
-        .select('*', { count: 'exact', head: true })
-        .gte('last_active_at', fiveMinsAgo);
-
-      if (activeError) throw activeError;
-
-      setStats({
-        active: active || 0,
-        total: total || 0
-      });
-      setError('');
-    } catch (err: any) {
-      console.error('Stats error:', err);
-      setError('İstatistikler yüklenemedi. Lütfen Supabase SQL Editor üzerinden veritabanı kurallarının (SQL) uygulandığından emin olun.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchStats();
-    const interval = setInterval(fetchStats, 30000);
-    return () => clearInterval(interval);
-  }, [fetchStats]);
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-black tracking-tight">Ziyaretçi Analitikleri</h2>
-        <button 
-          onClick={fetchStats}
-          className="px-4 py-2 text-sm font-bold bg-muted hover:bg-muted/80 rounded-xl transition-colors"
-        >
-          Yenile
-        </button>
-      </div>
-
-      {error && (
-        <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-2xl flex items-start">
-          <AlertTriangle className="w-5 h-5 mr-3 flex-shrink-0 mt-0.5" />
-          <p className="text-sm font-medium">{error}</p>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-card rounded-3xl border border-border p-6 shadow-sm flex items-center">
-          <div className="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mr-5">
-            <TrendingUp size={28} />
-          </div>
-          <div>
-            <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Aktif Ziyaretçiler</p>
-            <div className="flex items-end gap-2">
-              <p className="text-4xl font-black">{loading ? '-' : stats.active}</p>
-              <span className="text-xs font-bold text-green-500 mb-1.5 flex items-center gap-1">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                Son 5 Dk
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-card rounded-3xl border border-border p-6 shadow-sm flex items-center">
-          <div className="w-14 h-14 rounded-2xl bg-green-500/10 text-green-500 flex items-center justify-center mr-5">
-            <Users size={28} />
-          </div>
-          <div>
-            <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1">Toplam Tekil Ziyaretçi</p>
-            <p className="text-4xl font-black">{loading ? '-' : stats.total}</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-8 bg-card rounded-3xl p-6 border border-border shadow-sm">
-        <h3 className="text-lg font-black tracking-tight mb-4 flex items-center gap-2">
-          <Settings size={20} className="text-primary" /> API Entegrasyonu
-        </h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          Bu istatistikleri harici sistemlerde kullanmak için oluşturulmuş API servisini çağırabilirsiniz. API sadece <strong>Admin</strong> yetkisine sahip kullanıcıların erişim tokenları ile çalışır.
-        </p>
-        
-        <AnalyticsApiExamples />
-        
-        <p className="mt-4 text-xs font-bold text-muted-foreground flex items-center gap-2">
-          <CheckCircle size={14} className="text-green-500" /> API Güvenliği: Aktif (Sadece Admin)
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function AnalyticsApiExamples() {
-  const [activeLang, setActiveLang] = useState('curl');
-  
-  const examples: Record<string, string> = {
-    curl: `curl -X GET https://engelsizforum.com/api/analytics/stats \\
-  -H "Authorization: Bearer <TOKEN>"`,
-    javascript: `fetch('https://engelsizforum.com/api/analytics/stats', {
-  headers: {
-    'Authorization': 'Bearer <TOKEN>'
-  }
-})
-.then(res => res.json())
-.then(data => console.log(data));`,
-    python: `import requests
-
-headers = {'Authorization': 'Bearer <TOKEN>'}
-response = requests.get('https://engelsizforum.com/api/analytics/stats', headers=headers)
-print(response.json())`,
-    nodejs: `const axios = require('axios');
-
-axios.get('https://engelsizforum.com/api/analytics/stats', {
-  headers: { 'Authorization': 'Bearer <TOKEN>' }
-})
-.then(response => console.log(response.data));`,
-    go: `package main
-
-import (
-	"fmt"
-	"net/http"
-)
-
-func main() {
-	client := &http.Client{}
-	req, _ := http.NewRequest("GET", "https://engelsizforum.com/api/analytics/stats", nil)
-	req.Header.Set("Authorization", "Bearer <TOKEN>")
-	
-	resp, _ := client.Do(req)
-	fmt.Println(resp.Status)
-}`
-  };
-
-  return (
-    <div className="bg-muted/30 rounded-2xl p-6 mt-6 border border-border">
-      <h3 className="text-sm font-black uppercase tracking-widest mb-4">API Örnekleri</h3>
-      <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
-        {Object.keys(examples).map((lang) => (
-          <button
-            key={lang}
-            onClick={() => setActiveLang(lang)}
-            className={cn(
-              "px-3 py-1 text-xs font-bold rounded-lg uppercase transition-colors",
-              activeLang === lang ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/80'
-            )}
-          >
-            {lang}
-          </button>
-        ))}
-      </div>
-      <pre className="bg-background p-4 rounded-xl overflow-x-auto text-xs font-mono text-foreground/80 border border-border">
-        <code>{examples[activeLang]}</code>
-      </pre>
     </div>
   );
 }

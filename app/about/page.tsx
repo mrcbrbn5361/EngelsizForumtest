@@ -46,28 +46,28 @@ export default function AboutPage() {
               },
               {
                 "@type": "AboutPage",
-                "@id": "https://engelsizforum.com/about#webpage",
-                "url": "https://engelsizforum.com/about",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/about#webpage",
+                "url": "https://engelsizforum.miracdeveloper.com.tr/about",
                 "name": "Hakkımızda | EngelsizForum",
                 "description": "EngelsizForum projesinin evrensel tasarım felsefesi, vizyonu, misyonu ve dijital erişilebilirlik standartları hakkında bilgi alın.",
-                "isPartOf": { "@id": "https://engelsizforum.com/#website" },
+                "isPartOf": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#website" },
                 "inLanguage": "tr-TR"
               },
               {
                 "@type": "BreadcrumbList",
-                "@id": "https://engelsizforum.com/about#breadcrumb",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/about#breadcrumb",
                 "itemListElement": [
                   {
                     "@type": "ListItem",
                     "position": 1,
                     "name": "Ana Sayfa",
-                    "item": "https://engelsizforum.com"
+                    "item": "https://engelsizforum.miracdeveloper.com.tr"
                   },
                   {
                     "@type": "ListItem",
                     "position": 2,
                     "name": "Hakkımızda",
-                    "item": "https://engelsizforum.com/about"
+                    "item": "https://engelsizforum.miracdeveloper.com.tr/about"
                   }
                 ]
               }

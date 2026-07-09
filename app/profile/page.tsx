@@ -84,6 +84,7 @@ export default function ProfilePage() {
                   src={profile.avatar_url} 
                   alt={profile.full_name || 'Profile'} 
                   fill 
+                  sizes="(max-width: 768px) 96px, 128px"
                   className="object-cover" 
                   referrerPolicy="no-referrer"
                 />

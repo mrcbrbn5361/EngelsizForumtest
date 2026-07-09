@@ -20,44 +20,60 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchProfile = useCallback(async (userId: string) => {
     let lastError = null;
-    for (let i = 0; i < 3; i++) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const isSupabaseConfigured = 
+      supabaseUrl && 
+      !supabaseUrl.includes('placeholder') &&
+      supabaseUrl !== '';
+
+    if (!isSupabaseConfigured) {
+      console.warn('Supabase URL is not configured or is a placeholder.');
+      return;
+    }
+
+    // Try multiple times with exponential backoff to allow the auth trigger to create the profile
+    for (let i = 0; i < 5; i++) {
       try {
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', userId)
-          .single();
-        
+          .maybeSingle();
+
         if (error) {
           lastError = error;
-          const isRecursionError = error.message?.toLowerCase().includes('recursion');
-          if (isRecursionError) break; // Don't retry if it's recursion
-
-          if (i < 2) {
-            await new Promise(resolve => setTimeout(resolve, 500));
-            continue;
-          }
-          break;
+          console.error(`Attempt ${i + 1} to fetch profile failed:`, error.message);
+        } else if (data) {
+          setProfile(data);
+          return;
+        } else {
+          console.log(`Attempt ${i + 1}: Profile not found yet (waiting for trigger)...`);
         }
-        setProfile(data);
-        return; // Success
       } catch (err: any) {
         lastError = err;
-        if (err.message?.toLowerCase().includes('recursion')) break;
-        if (i < 2) await new Promise(resolve => setTimeout(resolve, 500));
+        console.error(`Exception during profile fetch attempt ${i + 1}:`, err);
       }
+      
+      // Wait before next retry (500ms, 1000ms, 2000ms, 4000ms, 8000ms)
+      await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 500));
     }
     
     if (lastError) {
-      console.error('Error fetching profile from Supabase:', lastError);
-      setLoading(false);
+      console.error('Final error fetching profile from Supabase:', {
+        message: lastError.message || lastError,
+        code: lastError.code,
+        details: lastError.details,
+        hint: lastError.hint
+      });
     }
   }, []);
 
   useEffect(() => {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
+      supabaseUrl && 
+      !supabaseUrl.includes('placeholder') &&
+      supabaseUrl !== '';
 
     const checkSession = async () => {
       if (!isSupabaseConfigured) {

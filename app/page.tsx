@@ -188,7 +188,7 @@ export default async function Home() {
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
             "name": "EngelsizForum",
-            "url": "https://engelsizforum.com",
+            "url": "https://engelsizforum.miracdeveloper.com.tr",
             "applicationCategory": "SocialNetworkingApplication",
             "operatingSystem": "All",
             "description": "Engelli bireyler için tam erişilebilir, kapsayıcı, yapay zeka destekli ve GEO (Generative Engine Optimization) uyumlu bir topluluk platformu.",
@@ -241,7 +241,7 @@ export default async function Home() {
             "@context": "https://schema.org",
             "@type": "Product",
             "name": "EngelsizForum Platformu",
-            "image": "https://engelsizforum.com/og-image.png",
+            "image": "https://engelsizforum.miracdeveloper.com.tr/og-image.png",
             "description": "Engelli bireyler için tam erişilebilir, yapay zeka destekli yerli sosyal topluluk platformu.",
             "brand": {
               "@type": "Brand",
@@ -297,22 +297,22 @@ export default async function Home() {
             "@graph": [
               {
                 "@type": "WebPage",
-                "@id": "https://engelsizforum.com/#webpage",
-                "url": "https://engelsizforum.com",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#webpage",
+                "url": "https://engelsizforum.miracdeveloper.com.tr",
                 "name": "EngelsizForum | Tam Erişilebilir Topluluk Platformu",
                 "description": "Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve bilgi paylaşım platformu.",
-                "isPartOf": { "@id": "https://engelsizforum.com/#website" },
-                "about": { "@id": "https://engelsizforum.com/#organization" },
+                "isPartOf": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#website" },
+                "about": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#organization" },
                 "inLanguage": "tr-TR",
-                "breadcrumb": { "@id": "https://engelsizforum.com/#breadcrumb" }
+                "breadcrumb": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#breadcrumb" }
               },
               {
                 "@type": "TechArticle",
-                "@id": "https://engelsizforum.com/#article",
-                "mainEntityOfPage": "https://engelsizforum.com",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#article",
+                "mainEntityOfPage": "https://engelsizforum.miracdeveloper.com.tr",
                 "headline": "Evrensel Tasarım ve Yapay Zeka Destekli Erişilebilirlik",
                 "description": "EngelsizForum, engelli bireyler için %100 uyumlu, biyonik okuma ve yapay zeka özetleme destekli ilk yerli forum altyapısıdır.",
-                "image": "https://engelsizforum.com/og-image.png",
+                "image": "https://engelsizforum.miracdeveloper.com.tr/og-image.png",
                 "datePublished": "2026-06-28T07:00:00Z",
                 "dateModified": "2026-06-28T07:00:00Z",
                 "author": {
@@ -320,12 +320,12 @@ export default async function Home() {
                   "name": "EngelsizForum"
                 },
                 "publisher": {
-                  "@id": "https://engelsizforum.com/#organization"
+                  "@id": "https://engelsizforum.miracdeveloper.com.tr/#organization"
                 }
               },
               {
                 "@type": "HowTo",
-                "@id": "https://engelsizforum.com/#howto",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#howto",
                 "name": "Erişilebilirlik Özellikleri Nasıl Kullanılır?",
                 "description": "EngelsizForum üzerindeki Biyonik Okuma, Disleksi Dostu Yazı Tipleri ve Yapay Zeka Seslendirmelerinin adım adım aktif edilme kılavuzu.",
                 "step": [
@@ -333,32 +333,32 @@ export default async function Home() {
                     "@type": "HowToStep",
                     "name": "Erişilebilirlik Panelini Açın",
                     "text": "Ekranın sol alt köşesinde yer alan mavi çark/insan simgeli erişilebilirlik ikonuna tıklayın veya klavyenizden 'Tab' tuşu ile odağı oraya getirip 'Enter' tuşuna basın.",
-                    "url": "https://engelsizforum.com/#step1"
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/#step1"
                   },
                   {
                     "@type": "HowToStep",
                     "name": "Erişilebilirlik Profilinizi Seçin",
                     "text": "Açılan panelden 'Biyonik Okuma', 'Disleksi Dostu Yazı Tipi' veya 'Yüksek Kontrast' gibi engelsiz okuma seçeneklerinden birini etkinleştirin.",
-                    "url": "https://engelsizforum.com/#step2"
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/#step2"
                   },
                   {
                     "@type": "HowToStep",
                     "name": "Yapay Zeka Seslendirmelerini Başlatın",
                     "text": "Okumak istediğiniz tartışma gönderisinin yanındaki 'Yapay Zeka Destekli Özet' veya 'Seslendir' butonuna tıklayarak içeriği dinleyin.",
-                    "url": "https://engelsizforum.com/#step3"
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/#step3"
                   }
                 ],
                 "totalTime": "PT1M"
               },
               {
                 "@type": "BreadcrumbList",
-                "@id": "https://engelsizforum.com/#breadcrumb",
+                "@id": "https://engelsizforum.miracdeveloper.com.tr/#breadcrumb",
                 "itemListElement": [
                   {
                     "@type": "ListItem",
                     "position": 1,
                     "name": "Ana Sayfa",
-                    "item": "https://engelsizforum.com"
+                    "item": "https://engelsizforum.miracdeveloper.com.tr"
                   }
                 ]
               },
@@ -366,9 +366,9 @@ export default async function Home() {
                 "@type": "VideoObject",
                 "name": "EngelsizForum Platformu Tanıtım ve Kullanım Rehberi",
                 "description": "Engelli bireyler için %100 erişilebilir, yapay zeka destekli topluluk platformunun özellikleri ve kullanımı.",
-                "thumbnailUrl": "https://engelsizforum.com/og-image.png",
+                "thumbnailUrl": "https://engelsizforum.miracdeveloper.com.tr/og-image.png",
                 "uploadDate": "2026-05-18T08:00:00Z",
-                "contentUrl": "https://engelsizforum.com/video/intro.mp4",
+                "contentUrl": "https://engelsizforum.miracdeveloper.com.tr/video/intro.mp4",
                 "embedUrl": "https://www.youtube.com/embed/dQw4w9WgXcQ"
               }
             ]

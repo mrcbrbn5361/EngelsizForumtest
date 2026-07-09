@@ -5,7 +5,6 @@ import './globals.css';
 import { AccessibilityProvider } from '@/components/providers/accessibility-provider';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/providers/auth-provider';
-import { VisitorTracker } from '@/components/analytics/visitor-tracker';
 
 const headingFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -44,19 +43,19 @@ export const metadata: Metadata = {
   publisher: 'EngelsizForum',
   robots: 'index, follow',
   alternates: {
-    canonical: 'https://engelsizforum.com',
+    canonical: 'https://engelsizforum.miracdeveloper.com.tr',
     languages: {
-      'tr-TR': 'https://engelsizforum.com',
+      'tr-TR': 'https://engelsizforum.miracdeveloper.com.tr',
     },
   },
   openGraph: {
     title: 'EngelsizForum: Erişilebilir Forum',
     description: 'Engelli bireyler için tam erişilebilir forum platformu.',
-    url: 'https://engelsizforum.com',
+    url: 'https://engelsizforum.miracdeveloper.com.tr',
     siteName: 'EngelsizForum',
     images: [
       {
-        url: 'https://engelsizforum.com/og-image.png',
+        url: 'https://engelsizforum.miracdeveloper.com.tr/og-image.png',
         width: 1200,
         height: 630,
         alt: 'EngelsizForum - Erişilebilir Topluluk Platformu',
@@ -98,10 +97,10 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://engelsizforum.com/#organization",
+      "@id": "https://engelsizforum.miracdeveloper.com.tr/#organization",
       "name": "EngelsizForum",
-      "url": "https://engelsizforum.com",
-      "logo": "https://engelsizforum.com/logo.png",
+      "url": "https://engelsizforum.miracdeveloper.com.tr",
+      "logo": "https://engelsizforum.miracdeveloper.com.tr/logo.png",
       "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve forum platformu.",
       "sameAs": [
         "https://twitter.com/engelsizforum",
@@ -113,14 +112,14 @@ const jsonLd = {
     },
     {
       "@type": "WebSite",
-      "@id": "https://engelsizforum.com/#website",
-      "url": "https://engelsizforum.com",
+      "@id": "https://engelsizforum.miracdeveloper.com.tr/#website",
+      "url": "https://engelsizforum.miracdeveloper.com.tr",
       "name": "EngelsizForum",
       "description": "Tam Erişilebilir Topluluk ve Bilgi Paylaşım Platformu",
-      "publisher": { "@id": "https://engelsizforum.com/#organization" },
+      "publisher": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#organization" },
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://engelsizforum.com/search?q={search_term_string}",
+        "target": "https://engelsizforum.miracdeveloper.com.tr/search?q={search_term_string}",
         "query-input": "required name=search_term_string"
       },
       "inLanguage": "tr-TR"
@@ -153,7 +152,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <VisitorTracker />
         <a href="#main-content" className="skip-link">
           Ana içeriğe atla
         </a>

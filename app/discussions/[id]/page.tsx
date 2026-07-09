@@ -24,8 +24,7 @@ import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { cn } from '@/lib/utils';
 
 export default function DiscussionDetailPage() {
-  const params = useParams<{ id: string }>();
-  const id = params?.id;
+  const { id } = useParams();
   const router = useRouter();
   const { user } = useAuth();
   const { isStaff } = useRole();
@@ -284,8 +283,8 @@ export default function DiscussionDetailPage() {
               "@graph": [
                 {
                   "@type": "WebPage",
-                  "@id": `https://engelsizforum.com/discussions/${id}#webpage`,
-                  "url": `https://engelsizforum.com/discussions/${id}`,
+                  "@id": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}#webpage`,
+                  "url": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}`,
                   "name": topic.title,
                   "description": topic.content?.substring(0, 150) || "EngelsizForum Tartışması",
                   "breadcrumb": {
@@ -295,27 +294,27 @@ export default function DiscussionDetailPage() {
                         "@type": "ListItem",
                         "position": 1,
                         "name": "Ana Sayfa",
-                        "item": "https://engelsizforum.com"
+                        "item": "https://engelsizforum.miracdeveloper.com.tr"
                       },
                       {
                         "@type": "ListItem",
                         "position": 2,
                         "name": "Tartışmalar",
-                        "item": "https://engelsizforum.com/discussions"
+                        "item": "https://engelsizforum.miracdeveloper.com.tr/discussions"
                       },
                       {
                         "@type": "ListItem",
                         "position": 3,
                         "name": topic.title,
-                        "item": `https://engelsizforum.com/discussions/${id}`
+                        "item": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}`
                       }
                     ]
                   }
                 },
                 {
                   "@type": "DiscussionForumPosting",
-                  "@id": `https://engelsizforum.com/discussions/${id}#posting`,
-                  "mainEntityOfPage": `https://engelsizforum.com/discussions/${id}#webpage`,
+                  "@id": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}#posting`,
+                  "mainEntityOfPage": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}#webpage`,
                   "headline": topic.title,
                   "articleBody": topic.content,
                   "author": {

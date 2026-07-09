@@ -65,19 +65,19 @@ export default function HelpPage() {
                     "@type": "HowToStep",
                     "name": "Erişilebilirlik Menüsünü Açın",
                     "text": "Ekranın sol alt köşesindeki erişilebilirlik ikonuna (dişli/çark veya insan simgesi) tıklayın ya da klavyeden Tab tuşu ile odaklanıp Enter tuşuna basın.",
-                    "url": "https://engelsizforum.com/help#step1"
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/help#step1"
                   },
                   {
                     "@type": "HowToStep",
                     "name": "Profil veya Özellik Seçin",
                     "text": "Açılan panelde 'Biyonik Okuma', 'Disleksi Yazı Tipi' veya 'Yüksek Kontrast' gibi erişilebilirlik ayarlarından dilediğinizi aktif edin.",
-                    "url": "https://engelsizforum.com/help#step2"
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/help#step2"
                   },
                   {
                     "@type": "HowToStep",
                     "name": "Ayarları Kaydedin",
                     "text": "Yaptığınız tercihler otomatik olarak tarayıcı yerel hafızasına kaydedilir ve sonraki ziyaretlerinizde de geçerli olur.",
-                    "url": "https://engelsizforum.com/help#step3"
+                    "url": "https://engelsizforum.miracdeveloper.com.tr/help#step3"
                   }
                 ],
                 "totalTime": "PT1M"
@@ -89,13 +89,13 @@ export default function HelpPage() {
                     "@type": "ListItem",
                     "position": 1,
                     "name": "Ana Sayfa",
-                    "item": "https://engelsizforum.com"
+                    "item": "https://engelsizforum.miracdeveloper.com.tr"
                   },
                   {
                     "@type": "ListItem",
                     "position": 2,
                     "name": "Yardım Merkezi",
-                    "item": "https://engelsizforum.com/help"
+                    "item": "https://engelsizforum.miracdeveloper.com.tr/help"
                   }
                 ]
               }
