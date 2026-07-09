@@ -80,10 +80,14 @@ export default function AuthPage() {
     setLoading(true);
     setError(null);
     try {
+      const redirectTo = window.location.origin.includes('run.app') 
+        ? `${window.location.origin}/auth/callback` 
+        : 'https://engelsizforum.com/auth/callback';
+        
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo,
         },
       });
       if (error) throw error;

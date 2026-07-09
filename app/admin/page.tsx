@@ -152,7 +152,7 @@ export default function AdminDashboard() {
         <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col gap-6 md:gap-8">
           <div className="overflow-x-auto no-scrollbar pb-2 md:pb-0">
             <Tabs.List className="flex gap-2 p-1 bg-muted rounded-2xl w-fit">
-              <TabButton value="overview" icon={<LayoutDashboard size={18} />} label="Genel" />
+              <TabButton value="overview" icon={<LayoutDashboard size={18} />} label="Özet" />
               <TabButton value="categories" icon={<FolderTree size={18} />} label="Kategori" />
               <TabButton value="users" icon={<Users size={18} />} label="Üyeler" />
               <TabButton value="moderation" icon={<MessageSquare size={18} />} label="Mod" />
@@ -160,13 +160,6 @@ export default function AdminDashboard() {
           </div>
 
           <Tabs.Content value="overview" className="outline-none space-y-6 md:space-y-8">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              <StatCard label="Üye" value={stats.users} icon={<Users className="text-blue-500" />} />
-              <StatCard label="Konu" value={stats.topics} icon={<MessageSquare className="text-green-500" />} />
-              <StatCard label="Yorum" value={stats.comments} icon={<Edit className="text-amber-500" />} />
-              <StatCard label="Kategori" value={stats.categories} icon={<FolderTree className="text-purple-500" />} />
-            </div>
-
             <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
               <div className="rounded-3xl border border-border p-6 bg-card shadow-sm">
                 <div className="flex items-center justify-between mb-6">
@@ -188,37 +181,6 @@ export default function AdminDashboard() {
                       <ChevronRight size={16} className="text-muted-foreground" />
                     </div>
                   ))}
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-border p-6 bg-card shadow-sm">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-black tracking-tight">Sistem Durumu</h3>
-                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
-                </div>
-                <div className="space-y-6">
-                  <div>
-                    <div className="flex justify-between text-sm font-bold mb-2">
-                      <span>Veritabanı</span>
-                      <span className="text-green-500">Bağlı</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div className="bg-green-500 h-2 rounded-full w-full"></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-sm font-bold mb-2">
-                      <span>API Servisi</span>
-                      <span className="text-green-500">Çalışıyor</span>
-                    </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div className="bg-green-500 h-2 rounded-full w-[98%]"></div>
-                    </div>
-                  </div>
-                  <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex gap-3 text-amber-700">
-                    <AlertTriangle size={20} className="shrink-0" />
-                    <p className="text-xs font-medium">Önemli: Yeni moderatör atamaları yalnızca Admin yetkisine sahip kişilerce yapılabilir.</p>
-                  </div>
                 </div>
               </div>
             </div>
@@ -347,7 +309,6 @@ function StatCard({ label, value, icon }: { label: string, value: number, icon: 
     <div className="p-6 rounded-3xl border border-border bg-card shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div className="p-2 bg-muted rounded-xl">{icon}</div>
-        <TrendingUp size={16} className="text-muted-foreground" />
       </div>
       <div>
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
