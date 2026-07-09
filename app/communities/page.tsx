@@ -126,28 +126,28 @@ export default function CommunitiesPage() {
               },
               {
                 "@type": "WebPage",
-                "@id": "https://engelsizforum.miracdeveloper.com.tr/communities#webpage",
-                "url": "https://engelsizforum.miracdeveloper.com.tr/communities",
+                "@id": "https://engelsizforum.com/communities#webpage",
+                "url": "https://engelsizforum.com/communities",
                 "name": "Topluluklar | EngelsizForum",
                 "description": "Erişilebilirlik, teknoloji, engelsiz yaşam ve sosyal konular üzerine odaklanmış uzmanlık grupları ve topluluklar.",
-                "isPartOf": { "@id": "https://engelsizforum.miracdeveloper.com.tr/#website" },
+                "isPartOf": { "@id": "https://engelsizforum.com/#website" },
                 "inLanguage": "tr-TR"
               },
               {
                 "@type": "BreadcrumbList",
-                "@id": "https://engelsizforum.miracdeveloper.com.tr/communities#breadcrumb",
+                "@id": "https://engelsizforum.com/communities#breadcrumb",
                 "itemListElement": [
                   {
                     "@type": "ListItem",
                     "position": 1,
                     "name": "Ana Sayfa",
-                    "item": "https://engelsizforum.miracdeveloper.com.tr"
+                    "item": "https://engelsizforum.com"
                   },
                   {
                     "@type": "ListItem",
                     "position": 2,
                     "name": "Topluluklar",
-                    "item": "https://engelsizforum.miracdeveloper.com.tr/communities"
+                    "item": "https://engelsizforum.com/communities"
                   }
                 ]
               }

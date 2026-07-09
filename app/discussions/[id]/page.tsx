@@ -283,8 +283,8 @@ export default function DiscussionDetailPage() {
               "@graph": [
                 {
                   "@type": "WebPage",
-                  "@id": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}#webpage`,
-                  "url": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}`,
+                  "@id": `https://engelsizforum.com/discussions/${id}#webpage`,
+                  "url": `https://engelsizforum.com/discussions/${id}`,
                   "name": topic.title,
                   "description": topic.content?.substring(0, 150) || "EngelsizForum Tartışması",
                   "breadcrumb": {
@@ -294,27 +294,27 @@ export default function DiscussionDetailPage() {
                         "@type": "ListItem",
                         "position": 1,
                         "name": "Ana Sayfa",
-                        "item": "https://engelsizforum.miracdeveloper.com.tr"
+                        "item": "https://engelsizforum.com"
                       },
                       {
                         "@type": "ListItem",
                         "position": 2,
                         "name": "Tartışmalar",
-                        "item": "https://engelsizforum.miracdeveloper.com.tr/discussions"
+                        "item": "https://engelsizforum.com/discussions"
                       },
                       {
                         "@type": "ListItem",
                         "position": 3,
                         "name": topic.title,
-                        "item": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}`
+                        "item": `https://engelsizforum.com/discussions/${id}`
                       }
                     ]
                   }
                 },
                 {
                   "@type": "DiscussionForumPosting",
-                  "@id": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}#posting`,
-                  "mainEntityOfPage": `https://engelsizforum.miracdeveloper.com.tr/discussions/${id}#webpage`,
+                  "@id": `https://engelsizforum.com/discussions/${id}#posting`,
+                  "mainEntityOfPage": `https://engelsizforum.com/discussions/${id}#webpage`,
                   "headline": topic.title,
                   "articleBody": topic.content,
                   "author": {
