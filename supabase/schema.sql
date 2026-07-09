@@ -6,10 +6,19 @@
 -- ==========================================
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Enum types
-CREATE TYPE public.user_role AS ENUM ('user', 'moderator', 'admin');
-CREATE TYPE public.report_status AS ENUM ('pending', 'investigating', 'resolved', 'dismissed');
-CREATE TYPE public.reaction_type AS ENUM ('like', 'heart', 'insightful', 'support');
+-- Enum types (Safe & Idempotent Creation)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
+    CREATE TYPE public.user_role AS ENUM ('user', 'moderator', 'admin');
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'report_status') THEN
+    CREATE TYPE public.report_status AS ENUM ('pending', 'investigating', 'resolved', 'dismissed');
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'reaction_type') THEN
+    CREATE TYPE public.reaction_type AS ENUM ('like', 'heart', 'insightful', 'support');
+  END IF;
+END$$;
 
 -- ==========================================
 -- 2. TABLES
@@ -30,6 +39,28 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- Safe Migration for Profiles Role column if table already exists with TEXT type
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 
+    FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+      AND table_name = 'profiles' 
+      AND column_name = 'role' 
+      AND data_type = 'text'
+  ) THEN
+    -- Remove check constraint if exists
+    ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_role_check;
+    -- Alter type to public.user_role casting safely
+    ALTER TABLE public.profiles 
+      ALTER COLUMN role TYPE public.user_role 
+      USING role::public.user_role;
+    -- Re-apply default value
+    ALTER TABLE public.profiles ALTER COLUMN role SET DEFAULT 'user'::public.user_role;
+  END IF;
+END$$;
 
 -- CATEGORIES
 CREATE TABLE IF NOT EXISTS public.categories (
@@ -199,14 +230,21 @@ CREATE TRIGGER update_reports_updated_at BEFORE UPDATE ON public.reports FOR EAC
 -- handle new user (auth.users -> profiles)
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  v_role public.user_role := 'user'::public.user_role;
 BEGIN
+  -- Auto-assign admin role to designated emails
+  IF NEW.email IN ('miracbirben@gmail.com', 'brtapardi@gmail.com', 'yigitfirat3405@gmail.com') THEN
+    v_role := 'admin'::public.user_role;
+  END IF;
+
   INSERT INTO public.profiles (id, username, full_name, avatar_url, role)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'username', 'user_' || substr(NEW.id::text, 1, 8)),
     COALESCE(NEW.raw_user_meta_data->>'full_name', 'Yeni Kullanıcı'),
     COALESCE(NEW.raw_user_meta_data->>'avatar_url', ''),
-    'user'
+    v_role
   );
   RETURN NEW;
 END;
@@ -427,11 +465,19 @@ BEGIN
   SELECT 
     TRUE as is_valid,
     a.created_by as user_id,
-    p.role as user_role
+    p.role::public.user_role as user_role
   FROM public.api_keys a
   JOIN public.profiles p ON p.id = a.created_by
   WHERE a.key = p_key AND a.is_active = TRUE
   LIMIT 1;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Ensure known admin emails are promoted to admin in existing profiles
+UPDATE public.profiles
+SET role = 'admin'::public.user_role
+WHERE id IN (
+  SELECT id FROM auth.users
+  WHERE email IN ('miracbirben@gmail.com', 'brtapardi@gmail.com', 'yigitfirat3405@gmail.com')
+);
 

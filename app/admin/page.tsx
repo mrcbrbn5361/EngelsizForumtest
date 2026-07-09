@@ -45,10 +45,14 @@ export default function AdminDashboard() {
 
   // Protected route check
   useEffect(() => {
-    if (!loading && !isStaff) {
-      router.push('/');
+    if (!loading) {
+      if (!user) {
+        router.push('/auth');
+      } else if (profile && !isStaff) {
+        router.push('/');
+      }
     }
-  }, [isStaff, loading, router]);
+  }, [loading, user, profile, isStaff, router]);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -99,7 +103,7 @@ export default function AdminDashboard() {
     }
   }, [isStaff, fetchAllData]);
 
-  if (loading || !isStaff) {
+  if (loading || (user && !profile) || !isStaff) {
     return (
       <div className="flex min-h-screen bg-background p-8">
         <div className="max-w-7xl mx-auto w-full space-y-8">
@@ -302,7 +306,7 @@ function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
           </div>
         ) : (
           topics.map((topic) => (
-            <div key={topic.id} className="p-6 rounded-3xl border border-border bg-card shadow-sm flex items-center justify-between gap-4">
+            <div key={topic.id} className="p-4 sm:p-6 rounded-3xl border border-border bg-card shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[10px] font-black uppercase tracking-widest text-primary">@{topic.author?.username}</span>
@@ -312,7 +316,7 @@ function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
                 <p className="text-xs text-muted-foreground line-clamp-1 mt-1 opacity-80">{topic.content}</p>
               </div>
               
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
                 <button 
                   onClick={() => handleToggleLock(topic.id, topic.is_locked)}
                   className={`p-3 rounded-xl transition-all ${topic.is_locked ? 'bg-amber-500 text-white' : 'bg-muted text-muted-foreground hover:bg-amber-500/10 hover:text-amber-500'}`}
@@ -340,7 +344,7 @@ function TabButton({ value, icon, label }: { value: string, icon: React.ReactNod
   return (
     <Tabs.Trigger 
       value={value}
-      className="flex items-center gap-2 px-6 py-3 text-sm font-black rounded-xl transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary uppercase tracking-widest"
+      className="flex items-center gap-1.5 md:gap-2 px-3 md:px-6 py-2.5 md:py-3 text-xs md:text-sm font-black rounded-xl transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary uppercase tracking-widest whitespace-nowrap shrink-0"
     >
       {icon}
       <span>{label}</span>
@@ -350,7 +354,7 @@ function TabButton({ value, icon, label }: { value: string, icon: React.ReactNod
 
 function StatCard({ label, value, icon }: { label: string, value: number, icon: React.ReactNode }) {
   return (
-    <div className="p-6 rounded-3xl border border-border bg-card shadow-sm">
+    <div className="p-4 sm:p-6 rounded-3xl border border-border bg-card shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div className="p-2 bg-muted rounded-xl">{icon}</div>
         <TrendingUp size={16} className="text-muted-foreground" />
@@ -509,7 +513,46 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-3xl border border-border shadow-sm">
+      {/* Mobile Card List */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {filteredUsers.map((u) => (
+          <div key={u.id} className="p-4 rounded-3xl border border-border bg-card shadow-sm flex items-center justify-between">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm border border-primary/20 shrink-0">
+                {(u.username || '?')[0].toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <p className="font-bold truncate">@{u.username || 'isimsiz'}</p>
+                <p className="text-xs text-muted-foreground truncate">{u.full_name || 'İsimsiz Üye'}</p>
+                <div className="mt-1">
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                    u.role === 'admin' ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
+                    u.role === 'moderator' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20' : 
+                    'bg-muted text-muted-foreground border border-border'
+                  }`}>
+                    {u.role}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <DropdownMenu 
+                trigger={<button className="p-3 hover:bg-muted rounded-xl transition-colors" aria-label="Eylemler menüsünü aç"><MoreVertical size={18}/></button>}
+                items={[
+                  { label: 'Admin Yap', onClick: () => handleRoleChange(u.id, 'admin'), hide: u.role === 'admin' || !isAdmin },
+                  { label: 'Moderatör Yap', onClick: () => handleRoleChange(u.id, 'moderator'), hide: u.role === 'moderator' || !isAdmin },
+                  { label: 'Normal Üye Yap', onClick: () => handleRoleChange(u.id, 'user'), hide: u.role === 'user' || !isAdmin },
+                  { label: 'Profili Gör', onClick: () => {}, isExternal: true },
+                ]}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop Table */}
+      <div className="hidden md:block overflow-x-auto rounded-3xl border border-border shadow-sm">
         <table className="w-full text-left border-collapse">
           <thead className="bg-muted/50 border-b border-border">
             <tr>
@@ -806,66 +849,122 @@ function AnalyticsTab() {
                 Aktif API anahtarınız bulunmuyor. Yeni bir tane oluşturabilirsiniz.
               </div>
             ) : (
-              <div className="overflow-x-auto rounded-2xl border border-border shadow-sm">
-                <table className="w-full text-left border-collapse">
-                  <thead className="bg-muted/50 border-b border-border">
-                    <tr>
-                      <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Anahtar (Key)</th>
-                      <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Oluşturulma</th>
-                      <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Son Kullanım</th>
-                      <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Durum</th>
-                      <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground text-right">Eylemler</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {keys.map((k) => (
-                      <tr key={k.id} className="hover:bg-muted/10 transition-colors">
-                        <td className="px-6 py-4 font-mono text-xs max-w-xs truncate">
-                          <span className="bg-muted px-2 py-1 rounded select-all font-bold">
-                            {k.key.substring(0, 10)}...{k.key.substring(k.key.length - 4)}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-xs font-bold text-muted-foreground">
-                          {new Date(k.created_at).toLocaleDateString('tr-TR')}
-                        </td>
-                        <td className="px-6 py-4 text-xs font-bold text-muted-foreground">
-                          {k.last_used_at ? new Date(k.last_used_at).toLocaleDateString('tr-TR') + ' ' + new Date(k.last_used_at).toLocaleTimeString('tr-TR') : 'Hiç kullanılmadı'}
-                        </td>
-                        <td className="px-6 py-4">
-                          <button
-                            onClick={() => handleToggleKeyActive(k.id, k.is_active)}
-                            className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                              k.is_active 
-                                ? 'bg-green-500/10 text-green-500 border border-green-500/20' 
-                                : 'bg-red-500/10 text-red-500 border border-red-500/20'
-                            }`}
-                          >
-                            {k.is_active ? 'Aktif' : 'Pasif'}
-                          </button>
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="flex justify-end gap-2">
-                            <button
-                              onClick={() => handleCopy(k.key)}
-                              className="p-2 hover:bg-muted rounded-xl transition-colors text-muted-foreground hover:text-primary"
-                              title="Tamamını Kopyala"
-                            >
-                              <Copy size={14} />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteKey(k.id)}
-                              className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-xl transition-colors text-muted-foreground"
-                              title="Sil"
-                            >
-                              <Trash2 size={14} />
-                            </button>
-                          </div>
-                        </td>
+              <>
+                {/* Mobile API Keys List */}
+                <div className="grid grid-cols-1 gap-4 lg:hidden">
+                  {keys.map((k) => (
+                    <div key={k.id} className="p-4 rounded-3xl border border-border bg-card shadow-sm space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs bg-muted px-2 py-1 rounded select-all font-bold">
+                          {k.key.substring(0, 10)}...{k.key.substring(k.key.length - 4)}
+                        </span>
+                        <button
+                          onClick={() => handleToggleKeyActive(k.id, k.is_active)}
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                            k.is_active 
+                              ? 'bg-green-500/10 text-green-500 border border-green-500/20' 
+                              : 'bg-red-500/10 text-red-500 border border-red-500/20'
+                          }`}
+                        >
+                          {k.is_active ? 'Aktif' : 'Pasif'}
+                        </button>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-2 text-xs border-t border-border pt-3">
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-wider text-muted-foreground leading-none mb-1">Oluşturulma</p>
+                          <p className="font-bold text-muted-foreground">{new Date(k.created_at).toLocaleDateString('tr-TR')}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-wider text-muted-foreground leading-none mb-1">Son Kullanım</p>
+                          <p className="font-bold text-muted-foreground truncate">
+                            {k.last_used_at ? new Date(k.last_used_at).toLocaleDateString('tr-TR') : 'Hiç kullanılmadı'}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end gap-2 border-t border-border pt-3">
+                        <button
+                          onClick={() => handleCopy(k.key)}
+                          className="flex items-center gap-1.5 px-3 py-2 bg-muted hover:bg-muted/80 rounded-xl text-xs font-bold text-muted-foreground hover:text-primary transition-all"
+                          title="Tamamını Kopyala"
+                        >
+                          <Copy size={14} /> Kopyala
+                        </button>
+                        <button
+                          onClick={() => handleDeleteKey(k.id)}
+                          className="flex items-center gap-1.5 px-3 py-2 bg-red-500/10 hover:bg-red-500 hover:text-white rounded-xl text-xs font-bold text-red-500 transition-all"
+                          title="Sil"
+                        >
+                          <Trash2 size={14} /> Sil
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop API Keys Table */}
+                <div className="hidden lg:block overflow-x-auto rounded-2xl border border-border shadow-sm">
+                  <table className="w-full text-left border-collapse">
+                    <thead className="bg-muted/50 border-b border-border">
+                      <tr>
+                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Anahtar (Key)</th>
+                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Oluşturulma</th>
+                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Son Kullanım</th>
+                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Durum</th>
+                        <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground text-right">Eylemler</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {keys.map((k) => (
+                        <tr key={k.id} className="hover:bg-muted/10 transition-colors">
+                          <td className="px-6 py-4 font-mono text-xs max-w-xs truncate">
+                            <span className="bg-muted px-2 py-1 rounded select-all font-bold">
+                              {k.key.substring(0, 10)}...{k.key.substring(k.key.length - 4)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-xs font-bold text-muted-foreground">
+                            {new Date(k.created_at).toLocaleDateString('tr-TR')}
+                          </td>
+                          <td className="px-6 py-4 text-xs font-bold text-muted-foreground">
+                            {k.last_used_at ? new Date(k.last_used_at).toLocaleDateString('tr-TR') + ' ' + new Date(k.last_used_at).toLocaleTimeString('tr-TR') : 'Hiç kullanılmadı'}
+                          </td>
+                          <td className="px-6 py-4">
+                            <button
+                              onClick={() => handleToggleKeyActive(k.id, k.is_active)}
+                              className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                                k.is_active 
+                                  ? 'bg-green-500/10 text-green-500 border border-green-500/20' 
+                                  : 'bg-red-500/10 text-red-500 border border-red-500/20'
+                              }`}
+                            >
+                              {k.is_active ? 'Aktif' : 'Pasif'}
+                            </button>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={() => handleCopy(k.key)}
+                                className="p-2 hover:bg-muted rounded-xl transition-colors text-muted-foreground hover:text-primary"
+                                title="Tamamını Kopyala"
+                              >
+                                <Copy size={14} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteKey(k.id)}
+                                className="p-2 hover:bg-red-500/10 hover:text-red-500 rounded-xl transition-colors text-muted-foreground"
+                                title="Sil"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             )}
           </div>
 
