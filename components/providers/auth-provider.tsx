@@ -33,14 +33,69 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const isRecursionError = error.message?.toLowerCase().includes('recursion');
           if (isRecursionError) break; // Don't retry if it's recursion
 
+          // Self-healing: if profile doesn't exist (PGRST116), create one!
+          if (error.code === 'PGRST116') {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user && user.id === userId) {
+              const email = user.email;
+              const designatedAdmins = ['miracbirben@gmail.com', 'brtapardi@gmail.com', 'yigitfirat3405@gmail.com'];
+              const isDesignatedAdmin = email && designatedAdmins.includes(email.toLowerCase());
+              const defaultRole = isDesignatedAdmin ? 'admin' : 'user';
+
+              const { data: newProfile, error: insertError } = await supabase
+                .from('profiles')
+                .insert({
+                  id: user.id,
+                  username: user.user_metadata?.username || 'user_' + user.id.substring(0, 8),
+                  full_name: user.user_metadata?.full_name || 'Yeni Kullanıcı',
+                  avatar_url: user.user_metadata?.avatar_url || '',
+                  role: defaultRole
+                })
+                .select()
+                .single();
+              
+              if (!insertError && newProfile) {
+                setProfile(newProfile);
+                return; // Success
+              } else {
+                console.error('Failed to auto-create profile:', insertError);
+              }
+            }
+          }
+
           if (i < 2) {
             await new Promise(resolve => setTimeout(resolve, 500));
             continue;
           }
           break;
         }
-        setProfile(data);
-        return; // Success
+
+        if (data) {
+          // Self-healing: Promote on the fly if this is a designated admin but has wrong role in DB
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user && user.id === userId && user.email) {
+            const email = user.email.toLowerCase();
+            const designatedAdmins = ['miracbirben@gmail.com', 'brtapardi@gmail.com', 'yigitfirat3405@gmail.com'];
+            if (designatedAdmins.includes(email) && data.role !== 'admin') {
+              const { data: updatedProfile, error: updateError } = await supabase
+                .from('profiles')
+                .update({ role: 'admin' })
+                .eq('id', userId)
+                .select()
+                .single();
+              
+              if (!updateError && updatedProfile) {
+                setProfile(updatedProfile);
+                return; // Success
+              } else {
+                console.error('Failed to auto-promote admin profile:', updateError);
+              }
+            }
+          }
+
+          setProfile(data);
+          return; // Success
+        }
       } catch (err: any) {
         lastError = err;
         if (err.message?.toLowerCase().includes('recursion')) break;
