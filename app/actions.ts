@@ -31,7 +31,11 @@ export async function getVisitorStats() {
   if (profile?.role !== 'admin') throw new Error('Unauthorized');
 
   const { data, error } = await supabaseServer.from('visitors').select('total_visitors, active_visitors').single();
-  if (error) throw new Error('Failed to fetch data');
+  if (error) {
+    console.error('Failed to fetch data from visitors table:', error);
+    throw new Error('Failed to fetch data: ' + error.message);
+  }
 
+  console.log('Visitor stats fetched:', data);
   return data;
 }
