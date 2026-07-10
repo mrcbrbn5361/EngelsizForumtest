@@ -21,6 +21,12 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
   }
 
-  const stats = await getVisitorStats();
-  return NextResponse.json(stats, { headers: corsHeaders });
+  try {
+    const stats = await getVisitorStats();
+    console.log('API visitor-stats called successfully, returning:', stats);
+    return NextResponse.json(stats, { headers: corsHeaders });
+  } catch (error) {
+    console.error('API visitor-stats internal error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500, headers: corsHeaders });
+  }
 }
