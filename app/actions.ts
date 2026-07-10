@@ -42,21 +42,23 @@ export async function getVisitorStats() {
 
   const { count: total_visitors, error: totalError } = await supabaseServer
     .from('visitors')
-    .select('mac_address', { count: 'exact', head: true });
+    .select('*', { count: 'exact', head: true });
     
   if (totalError) {
-    console.error('Failed to fetch total visitors:', JSON.stringify(totalError, null, 2));
-    throw new Error('Failed to fetch data: ' + JSON.stringify(totalError));
+    console.error('Failed to fetch total visitors:', totalError);
+    // Return 0 instead of throwing an error to avoid breaking the UI
+    return { total_visitors: 0, active_visitors: 0 };
   }
 
   const { count: active_visitors, error: activeError } = await supabaseServer
     .from('visitors')
-    .select('mac_address', { count: 'exact', head: true })
+    .select('*', { count: 'exact', head: true })
     .gt('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString()); // Son 5 dakika
 
   if (activeError) {
     console.error('Failed to fetch active visitors:', activeError);
-    throw new Error('Failed to fetch data: ' + activeError.message);
+    // Return 0 instead of throwing an error
+    return { total_visitors: total_visitors || 0, active_visitors: 0 };
   }
 
   const stats = { total_visitors: total_visitors || 0, active_visitors: active_visitors || 0 };
