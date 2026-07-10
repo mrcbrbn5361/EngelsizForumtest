@@ -216,24 +216,31 @@ export default function AdminDashboard() {
               </p>
               <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl font-mono text-sm overflow-x-auto">
 {`import requests
+import time
+import uuid
 
 # Uygulamanızın URL'ini buraya yazın
 API_URL = "https://www.engelsizforum.com/api/visitor-update" 
 TOKEN = "engelsizforumteknofesttanitim"
+# Cihaz için benzersiz bir ID (MAC adresi yerine)
+DEVICE_ID = ':'.join(['{:02x}'.format((uuid.getnode() >> elements) & 0xff) for elements in range(0, 2*6, 2)][::-1])
 
 def send_data():
     try:
         response = requests.post(
             API_URL,
-            json={"visitor_count": 1},
+            json={"mac_address": DEVICE_ID},
             headers={"Authorization": f"Bearer {TOKEN}"}
         )
-        print(f"Status: {response.status_code}")
+        print(f"Status: {response.status_code}, Veri başarıyla gönderildi (ID: {DEVICE_ID}).")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Hata: {e}")
 
 if __name__ == "__main__":
-    send_data()`}
+    print(f"Veri gönderimi başlatıldı (ID: {DEVICE_ID}, Her 60 saniyede bir)...")
+    while True:
+        send_data()
+        time.sleep(60) # 1 dakikada bir gönder`}
               </pre>
             </div>
           </Tabs.Content>

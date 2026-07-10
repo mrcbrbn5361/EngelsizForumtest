@@ -19,14 +19,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
   }
 
-  const { visitor_count } = await req.json();
+  const { mac_address } = await req.json();
 
-  // For now, let's just log it if we can't find the table.
-  // We should ideally update the database.
+  if (!mac_address) {
+    return NextResponse.json({ error: 'Missing mac_address' }, { status: 400, headers: corsHeaders });
+  }
+
   try {
-    // Assuming table exists
-    // const { error } = await supabaseServer.from('visitors').update(...)
-    console.log('Received visitor update:', visitor_count);
+    const { error } = await supabaseServer
+      .from('visitors')
+      .upsert({ mac_address, last_seen: new Date().toISOString() }, { onConflict: 'mac_address' });
+
+    if (error) {
+      console.error('Visitor update error:', error);
+      return NextResponse.json({ error: 'Database error' }, { status: 500, headers: corsHeaders });
+    }
+
+    console.log('Received visitor update:', mac_address);
     return NextResponse.json({ success: true }, { headers: corsHeaders });
   } catch (error) {
     console.error('Visitor update error:', error);
