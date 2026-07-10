@@ -228,7 +228,7 @@ import uuid
 # Uygulamanızın URL'ini buraya yazın
 API_URL = "https://www.engelsizforum.com/api/visitor-stats" 
 TOKEN = "engelsizforumteknofesttanitim"
-# Cihaz için benzersiz bir ID (MAC adresi yerine)
+# Cihaz için benzersiz bir ID
 DEVICE_ID = ':'.join(['{:02x}'.format((uuid.getnode() >> elements) & 0xff) for elements in range(0, 2*6, 2)][::-1])
 
 def veriyi_cek():
@@ -236,20 +236,25 @@ def veriyi_cek():
         # Sadece istatistikleri çekiyoruz (GET isteği)
         response = requests.get(
             API_URL,
-            headers={"Authorization": f"Bearer {TOKEN}"},
-            timeout=10
+            headers={
+                "Authorization": f"Bearer {TOKEN}",
+                "User-Agent": "VisitorTracker/1.0"
+            },
+            timeout=15
         )
         
         if response.status_code == 200:
             data = response.json()
-            print(f"Toplam: {data.get('total_visitors')}, Anlık: {data.get('active_visitors')}")
+            print(f"[{time.strftime('%H:%M:%S')}] Toplam: {data.get('total_visitors', 0)}, Anlık: {data.get('active_visitors', 0)}")
         else:
-            print(f"Hata: {response.status_code}")
+            print(f"[{time.strftime('%H:%M:%S')}] Hata: Sunucu {response.status_code} koduyla yanıt verdi.")
+    except requests.exceptions.RequestException as e:
+        print(f"[{time.strftime('%H:%M:%S')}] Bağlantı Hatası: {e}")
     except Exception as e:
-        print(f"Hata: {e}")
+        print(f"[{time.strftime('%H:%M:%S')}] Beklenmedik Hata: {e}")
 
 if __name__ == "__main__":
-    print(f"--- Ziyaretçi Takip Başlatıldı (5 dakikada bir) ---")
+    print(f"--- Engelsiz Forum Ziyaretçi Takip Başlatıldı (5 dakikada bir) ---")
     while True:
         veriyi_cek()
         time.sleep(300) # 5 dakikada bir`}
