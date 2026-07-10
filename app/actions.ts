@@ -25,17 +25,27 @@ export async function getVisitorStats() {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error('Unauthorized');
+  if (!user) {
+    console.error('getVisitorStats: No user found');
+    throw new Error('Unauthorized');
+  }
 
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-  if (profile?.role !== 'admin') throw new Error('Unauthorized');
+  if (profile?.role !== 'admin') {
+    console.error('getVisitorStats: User is not admin', profile);
+    throw new Error('Unauthorized');
+  }
 
-  const { data, error } = await supabaseServer.from('visitors').select('total_visitors, active_visitors').single();
+  const { data, error } = await supabaseServer.from('visitors').select('total_visitors, active_visitors');
   if (error) {
     console.error('Failed to fetch data from visitors table:', error);
     throw new Error('Failed to fetch data: ' + error.message);
   }
 
-  console.log('Visitor stats fetched:', data);
-  return data;
+  if (!data || data.length === 0) {
+    return { total_visitors: 0, active_visitors: 0 };
+  }
+
+  console.log('Visitor stats fetched:', data[0]);
+  return data[0];
 }

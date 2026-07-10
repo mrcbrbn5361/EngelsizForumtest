@@ -51,14 +51,21 @@ export default function AdminDashboard() {
   }, [isStaff, loading, router]);
 
   const fetchStats = useCallback(async () => {
+    setIsDataLoading(true);
     try {
-      const [u, t, c, cat, visitors] = await Promise.all([
+      const [u, t, c, cat] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('topics').select('id', { count: 'exact', head: true }),
         supabase.from('comments').select('id', { count: 'exact', head: true }),
         supabase.from('categories').select('id', { count: 'exact', head: true }),
-        getVisitorStats(),
       ]);
+      
+      let visitors = { total_visitors: 0, active_visitors: 0 };
+      try {
+        visitors = await getVisitorStats();
+      } catch (e) {
+        console.error('Visitor stats error (non-blocking):', e);
+      }
 
       setStats({
         users: u.count || 0,
@@ -70,8 +77,10 @@ export default function AdminDashboard() {
       });
     } catch (error) {
       console.error('Stats error:', error);
+    } finally {
+      setIsDataLoading(false);
     }
-  }, []);
+  }, [supabase]);
 
   const fetchCategories = useCallback(async () => {
     const { data, error } = await supabase.from('categories').select('*').order('name');
@@ -157,6 +166,7 @@ export default function AdminDashboard() {
           <div className="overflow-x-auto no-scrollbar pb-2 md:pb-0">
             <Tabs.List className="flex gap-2 p-1 bg-muted rounded-2xl w-fit">
               <TabButton value="overview" icon={<LayoutDashboard size={18} />} label="Özet" />
+              <TabButton value="analiz" icon={<TrendingUp size={18} />} label="Analiz" />
               <TabButton value="categories" icon={<FolderTree size={18} />} label="Kategori" />
               <TabButton value="users" icon={<Users size={18} />} label="Üyeler" />
               <TabButton value="moderation" icon={<MessageSquare size={18} />} label="Mod" />
@@ -164,12 +174,6 @@ export default function AdminDashboard() {
           </div>
 
           <Tabs.Content value="overview" className="outline-none space-y-6 md:space-y-8">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              <StatCard label="Toplam Ziyaretçi" value={stats.total_visitors} icon={<Users size={20} />} />
-              <StatCard label="Anlık Ziyaretçi" value={stats.active_visitors} icon={<Users size={20} />} />
-              <StatCard label="Üyeler" value={stats.users} icon={<Users size={20} />} />
-              <StatCard label="Konular" value={stats.topics} icon={<MessageSquare size={20} />} />
-            </div>
             <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
               <div className="rounded-3xl border border-border p-6 bg-card shadow-sm">
                 <div className="flex items-center justify-between mb-6">
@@ -193,6 +197,15 @@ export default function AdminDashboard() {
                   ))}
                 </div>
               </div>
+            </div>
+          </Tabs.Content>
+
+          <Tabs.Content value="analiz" className="outline-none space-y-6 md:space-y-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              <StatCard label="Toplam Ziyaretçi" value={stats.total_visitors} icon={<Users size={20} />} />
+              <StatCard label="Anlık Ziyaretçi" value={stats.active_visitors} icon={<Users size={20} />} />
+              <StatCard label="Üyeler" value={stats.users} icon={<Users size={20} />} />
+              <StatCard label="Konular" value={stats.topics} icon={<MessageSquare size={20} />} />
             </div>
           </Tabs.Content>
 
