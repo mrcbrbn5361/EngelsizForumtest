@@ -207,6 +207,35 @@ export default function AdminDashboard() {
               <StatCard label="Üyeler" value={stats.users} icon={<Users size={20} />} />
               <StatCard label="Konular" value={stats.topics} icon={<MessageSquare size={20} />} />
             </div>
+
+            <div className="rounded-3xl border border-border p-6 bg-card shadow-sm">
+              <h3 className="text-lg font-black mb-4">Raspberry Pi Entegrasyon Kodu</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Bu kodu Raspberry Pi cihazınızda çalıştırarak verileri admin panelinize gönderebilirsiniz. 
+                Gereksinim: <code>pip install requests</code>
+              </p>
+              <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl font-mono text-sm overflow-x-auto">
+{`import requests
+
+# Uygulamanızın URL'ini buraya yazın
+API_URL = "https://www.engelsizforum.com/api/visitor-update" 
+TOKEN = "engelsizforumteknofesttanitim"
+
+def send_data():
+    try:
+        response = requests.post(
+            API_URL,
+            json={"visitor_count": 1},
+            headers={"Authorization": f"Bearer {TOKEN}"}
+        )
+        print(f"Status: {response.status_code}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    send_data()`}
+              </pre>
+            </div>
           </Tabs.Content>
 
           <Tabs.Content value="categories" className="outline-none">
