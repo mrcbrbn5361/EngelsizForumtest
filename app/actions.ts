@@ -52,8 +52,8 @@ export async function getVisitorStats() {
 
   const { count: active_visitors, error: activeError } = await supabaseServer
     .from('visitors')
-    .select('*', { count: 'exact', head: true })
-    .gt('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString()); // Son 5 dakika
+    .select('*', { count: 'exact', head: true });
+    // .gt('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString()); // Son 5 dakika
 
   if (activeError) {
     console.error('Failed to fetch active visitors:', activeError);

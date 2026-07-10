@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   try {
     const { error } = await supabaseServer
       .from('visitors')
-      .upsert({ mac_address, last_seen: new Date().toISOString() }, { onConflict: 'mac_address' });
+      .upsert({ mac_address }, { onConflict: 'mac_address' });
 
     if (error) {
       console.error('Visitor update error (DB):', JSON.stringify(error, null, 2));
