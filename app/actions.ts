@@ -40,19 +40,25 @@ export async function getVisitorStats() {
   //   throw new Error('Unauthorized');
   // }
 
-  const { data, error } = await supabaseServer
+  const { count: totalCount, error: totalError } = await supabaseServer
     .from('visitors')
-    .select('total_visitors, active_visitors')
-    .eq('id', '00000000-0000-0000-0000-000000000000')
-    .single();
+    .select('*', { count: 'exact', head: true });
 
-  if (error) {
-    console.error('Failed to fetch data from visitors table:', error);
-    return { total_visitors: 0, active_visitors: 0 };
+  if (totalError) {
+    console.error('Failed to fetch total visitors:', totalError);
+  }
+
+  const { count: activeCount, error: activeError } = await supabaseServer
+    .from('visitors')
+    .select('*', { count: 'exact', head: true })
+    .gt('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString());
+
+  if (activeError) {
+    console.error('Failed to fetch active visitors:', activeError);
   }
   
   return { 
-    total_visitors: data.total_visitors || 0, 
-    active_visitors: data.active_visitors || 0 
+    total_visitors: totalCount || 0, 
+    active_visitors: activeCount || 0 
   };
 }
