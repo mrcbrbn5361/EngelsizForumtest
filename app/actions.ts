@@ -40,6 +40,17 @@ export async function getVisitorStats() {
   //   throw new Error('Unauthorized');
   // }
 
+  const { data, error } = await supabaseServer
+    .from('visitors')
+    .select('*')
+    .limit(1);
+
+  if (error) {
+    console.error('Failed to fetch data from visitors table:', error);
+  } else {
+    console.log('Visitors table data:', data);
+  }
+
   const { count: total_visitors, error: totalError } = await supabaseServer
     .from('visitors')
     .select('*', { count: 'exact', head: true });
