@@ -150,6 +150,12 @@ CREATE TABLE IF NOT EXISTS public.bookmarks (
   UNIQUE(user_id, topic_id)
 );
 
+-- VISITORS (Raspberry Pi Data)
+CREATE TABLE IF NOT EXISTS public.visitors (
+  mac_address TEXT PRIMARY KEY,
+  last_seen TIMESTAMPTZ DEFAULT now()
+);
+
 -- TAGS
 CREATE TABLE IF NOT EXISTS public.tags (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
