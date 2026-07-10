@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     const { data, error: fetchError } = await supabaseServer
       .from('visitors')
       .select('total_visitors, active_visitors')
-      .eq('id', true)
+      .eq('id', '00000000-0000-0000-0000-000000000000')
       .single();
 
     if (fetchError || !data) {
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
         active_visitors: data.active_visitors + 1,
         last_seen: new Date().toISOString()
       })
-      .eq('id', true);
+      .eq('id', '00000000-0000-0000-0000-000000000000');
 
     if (updateError) {
       console.error('Visitor update error (DB):', JSON.stringify(updateError, null, 2));

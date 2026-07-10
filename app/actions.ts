@@ -43,7 +43,7 @@ export async function getVisitorStats() {
   const { data, error } = await supabaseServer
     .from('visitors')
     .select('total_visitors, active_visitors')
-    .eq('id', true)
+    .eq('id', '00000000-0000-0000-0000-000000000000')
     .single();
 
   if (error) {
