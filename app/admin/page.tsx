@@ -226,7 +226,7 @@ import time
 import uuid
 
 # Uygulamanızın URL'ini buraya yazın
-API_URL = "https://ais-dev-ix4syl6g7zxz77ys7mkpvf-91223103933.europe-west2.run.app/api/visitor-stats" 
+API_URL = "https://www.engelsizforum.com/api/visitor-stats" 
 TOKEN = "engelsizforumteknofesttanitim"
 # Cihaz için benzersiz bir ID (MAC adresi yerine)
 DEVICE_ID = ':'.join(['{:02x}'.format((uuid.getnode() >> elements) & 0xff) for elements in range(0, 2*6, 2)][::-1])
