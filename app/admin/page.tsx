@@ -206,6 +206,9 @@ export default function AdminDashboard() {
               <StatCard label="Anlık Ziyaretçi" value={stats.active_visitors} icon={<Users size={20} />} />
               <StatCard label="Üyeler" value={stats.users} icon={<Users size={20} />} />
               <StatCard label="Konular" value={stats.topics} icon={<MessageSquare size={20} />} />
+              <div className="col-span-2 lg:col-span-4">
+                <SummaryCounter stats={stats} />
+              </div>
             </div>
 
             <div className="rounded-3xl border border-border p-6 bg-card shadow-sm">
@@ -368,13 +371,28 @@ function TabButton({ value, icon, label }: { value: string, icon: React.ReactNod
 
 function StatCard({ label, value, icon }: { label: string, value: number, icon: React.ReactNode }) {
   return (
-    <div className="p-6 rounded-3xl border border-border bg-card shadow-sm">
+    <div className="p-6 rounded-3xl border border-border bg-card shadow-sm hover:border-primary/30 transition-colors">
       <div className="flex items-center justify-between mb-4">
-        <div className="p-2 bg-muted rounded-xl">{icon}</div>
+        <div className="p-2 bg-muted rounded-xl text-primary">{icon}</div>
       </div>
       <div>
         <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
         <p className="text-3xl font-black tabular-nums">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function SummaryCounter({ stats }: { stats: any }) {
+  const total = stats.total_visitors + stats.active_visitors + stats.users + stats.topics;
+  return (
+    <div className="p-6 rounded-3xl border border-primary/20 bg-primary/5 shadow-sm">
+      <div className="flex items-center justify-between mb-4">
+        <div className="p-2 bg-primary/10 rounded-xl text-primary"><TrendingUp size={20} /></div>
+      </div>
+      <div>
+        <p className="text-xs font-black text-primary uppercase tracking-widest mb-1">Genel Özet Sayacı</p>
+        <p className="text-3xl font-black tabular-nums text-primary">{total}</p>
       </div>
     </div>
   );
