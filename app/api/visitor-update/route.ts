@@ -19,23 +19,38 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
   }
 
-  const { mac_address } = await req.json();
-
-  if (!mac_address) {
-    return NextResponse.json({ error: 'Missing mac_address' }, { status: 400, headers: corsHeaders });
-  }
-
   try {
-    const { error } = await supabaseServer
+    // Increment total and active visitors in the single row (where id = true)
+    // Using Postgres' atomic increment: UPDATE ... SET count = count + 1
+    // Supabase RPC is better for this, but if we can't use RPC, we fetch and update.
+    
+    // For simplicity, let's use a standard query if possible, or RPC.
+    // Let's assume there's a row with id = true
+    const { data, error: fetchError } = await supabaseServer
       .from('visitors')
-      .upsert({ mac_address }, { onConflict: 'mac_address' });
+      .select('total_visitors, active_visitors')
+      .eq('id', true)
+      .single();
 
-    if (error) {
-      console.error('Visitor update error (DB):', JSON.stringify(error, null, 2));
-      return NextResponse.json({ error: 'Database error', details: error }, { status: 500, headers: corsHeaders });
+    if (fetchError || !data) {
+        console.error('Error fetching visitor stats:', fetchError);
+        return NextResponse.json({ error: 'Database error' }, { status: 500, headers: corsHeaders });
     }
 
-    console.log('Received visitor update:', mac_address);
+    const { error: updateError } = await supabaseServer
+      .from('visitors')
+      .update({ 
+        total_visitors: data.total_visitors + 1, 
+        active_visitors: data.active_visitors + 1,
+        last_seen: new Date().toISOString()
+      })
+      .eq('id', true);
+
+    if (updateError) {
+      console.error('Visitor update error (DB):', JSON.stringify(updateError, null, 2));
+      return NextResponse.json({ error: 'Database error', details: updateError }, { status: 500, headers: corsHeaders });
+    }
+
     return NextResponse.json({ success: true }, { headers: corsHeaders });
   } catch (error) {
     console.error('Visitor update error:', error);
