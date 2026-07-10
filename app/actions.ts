@@ -45,8 +45,8 @@ export async function getVisitorStats() {
     .select('mac_address', { count: 'exact', head: true });
     
   if (totalError) {
-    console.error('Failed to fetch total visitors:', totalError);
-    throw new Error('Failed to fetch data: ' + totalError.message);
+    console.error('Failed to fetch total visitors:', JSON.stringify(totalError, null, 2));
+    throw new Error('Failed to fetch data: ' + JSON.stringify(totalError));
   }
 
   const { count: active_visitors, error: activeError } = await supabaseServer

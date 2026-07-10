@@ -232,7 +232,10 @@ def send_data():
             json={"mac_address": DEVICE_ID},
             headers={"Authorization": f"Bearer {TOKEN}"}
         )
-        print(f"Status: {response.status_code}, Veri başarıyla gönderildi (ID: {DEVICE_ID}).")
+        if response.status_code == 200:
+            print(f"Status: {response.status_code}, Veri başarıyla gönderildi (ID: {DEVICE_ID}).")
+        else:
+            print(f"Status: {response.status_code}, Hata: {response.text}")
     except Exception as e:
         print(f"Hata: {e}")
 

@@ -31,8 +31,8 @@ export async function POST(req: NextRequest) {
       .upsert({ mac_address, last_seen: new Date().toISOString() }, { onConflict: 'mac_address' });
 
     if (error) {
-      console.error('Visitor update error:', error);
-      return NextResponse.json({ error: 'Database error' }, { status: 500, headers: corsHeaders });
+      console.error('Visitor update error (DB):', JSON.stringify(error, null, 2));
+      return NextResponse.json({ error: 'Database error', details: error }, { status: 500, headers: corsHeaders });
     }
 
     console.log('Received visitor update:', mac_address);
