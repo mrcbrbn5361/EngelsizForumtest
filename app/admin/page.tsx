@@ -62,7 +62,10 @@ export default function AdminDashboard() {
       
       let visitors = { total_visitors: 0, active_visitors: 0 };
       try {
-        visitors = await getVisitorStats();
+        const res = await fetch('/api/visitor-stats', {
+          headers: { 'Authorization': 'Bearer engelsizforumteknofesttanitim' }
+        });
+        if (res.ok) visitors = await res.json();
       } catch (e) {
         console.error('Visitor stats error (non-blocking):', e);
       }
@@ -223,30 +226,33 @@ import time
 import uuid
 
 # Uygulamanızın URL'ini buraya yazın
-API_URL = "https://www.engelsizforum.com/api/visitor-update" 
+API_URL = "https://ais-dev-ix4syl6g7zxz77ys7mkpvf-91223103933.europe-west2.run.app/api/visitor-stats" 
 TOKEN = "engelsizforumteknofesttanitim"
 # Cihaz için benzersiz bir ID (MAC adresi yerine)
 DEVICE_ID = ':'.join(['{:02x}'.format((uuid.getnode() >> elements) & 0xff) for elements in range(0, 2*6, 2)][::-1])
 
-def send_data():
+def veriyi_cek():
     try:
-        response = requests.post(
+        # Sadece istatistikleri çekiyoruz (GET isteği)
+        response = requests.get(
             API_URL,
-            json={"mac_address": DEVICE_ID},
-            headers={"Authorization": f"Bearer {TOKEN}"}
+            headers={"Authorization": f"Bearer {TOKEN}"},
+            timeout=10
         )
+        
         if response.status_code == 200:
-            print(f"Status: {response.status_code}, Veri başarıyla gönderildi (ID: {DEVICE_ID}).")
+            data = response.json()
+            print(f"Toplam: {data.get('total_visitors')}, Anlık: {data.get('active_visitors')}")
         else:
-            print(f"Status: {response.status_code}, Hata: {response.text}")
+            print(f"Hata: {response.status_code}")
     except Exception as e:
         print(f"Hata: {e}")
 
 if __name__ == "__main__":
-    print(f"Veri gönderimi başlatıldı (ID: {DEVICE_ID}, Her 60 saniyede bir)...")
+    print(f"--- Ziyaretçi Takip Başlatıldı (5 dakikada bir) ---")
     while True:
-        send_data()
-        time.sleep(60) # 1 dakikada bir gönder`}
+        veriyi_cek()
+        time.sleep(300) # 5 dakikada bir`}
               </pre>
             </div>
           </Tabs.Content>
