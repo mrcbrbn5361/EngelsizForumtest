@@ -48,6 +48,7 @@ export async function getVisitorStats() {
     console.error('Failed to fetch total visitors:', totalError);
   }
 
+  // Son 5 dakika içinde aktif olanları say
   const { count: activeCount, error: activeError } = await supabaseServer
     .from('visitors')
     .select('*', { count: 'exact', head: true })
@@ -61,4 +62,21 @@ export async function getVisitorStats() {
     total_visitors: totalCount || 0, 
     active_visitors: activeCount || 0 
   };
+}
+
+export async function recordVisitor(deviceId: string) {
+  if (!deviceId) return;
+
+  const { error } = await supabaseServer
+    .from('visitors')
+    .upsert(
+      { device_id: deviceId, last_seen: new Date().toISOString() },
+      { onConflict: 'device_id' }
+    );
+
+  if (error) {
+    console.error('Error recording visitor:', error);
+    throw error;
+  }
+  return { success: true };
 }

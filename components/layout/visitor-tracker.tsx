@@ -1,0 +1,38 @@
+'use client';
+
+import { useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+
+export default function VisitorTracker() {
+  useEffect(() => {
+    const trackVisitor = async () => {
+      // Get or create a persistent device ID for this browser
+      let deviceId = localStorage.getItem('visitor_device_id');
+      if (!deviceId) {
+        deviceId = uuidv4();
+        localStorage.setItem('visitor_device_id', deviceId);
+      }
+
+      try {
+        await fetch('/api/visitor-stats', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer engelsizforumteknofesttanitim'
+          },
+          body: JSON.stringify({ device_id: deviceId }),
+        });
+      } catch (error) {
+        // Silently fail to not interrupt user experience
+        console.debug('Tracking skipped');
+      }
+    };
+
+    trackVisitor();
+    // Refresh activity every 4 minutes (before the 5-minute timeout)
+    const interval = setInterval(trackVisitor, 4 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return null;
+}

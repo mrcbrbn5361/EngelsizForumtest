@@ -1,21 +1,24 @@
 import { NextResponse } from 'next/server';
-import { getVisitorStats } from '@/app/actions';
+import { getVisitorStats, recordVisitor } from '@/app/actions';
+
+export async function OPTIONS(req: Request) {
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+  return new NextResponse(null, { status: 204, headers: corsHeaders });
+}
 
 export async function GET(req: Request) {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   };
 
-  if (req.method === 'OPTIONS') {
-    return new NextResponse(null, { status: 204, headers: corsHeaders });
-  }
-
   const authHeader = req.headers.get('Authorization');
-  // Token'i environment variable'dan almanız daha güvenli, ancak kullanıcının 
-  // mevcut Python kodundaki ile eşleşmesi için kontrolü yapıyoruz.
-  const expectedToken = process.env.VISITOR_TOKEN || "engelsizforumteknofesttanitim";
+  const expectedToken = process.env.VISITOR_API_TOKEN || "engelsizforumteknofesttanitim";
   
   if (authHeader !== `Bearer ${expectedToken}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
@@ -23,10 +26,36 @@ export async function GET(req: Request) {
 
   try {
     const stats = await getVisitorStats();
-    console.log('API visitor-stats called successfully, returning:', stats);
     return NextResponse.json(stats, { headers: corsHeaders });
   } catch (error) {
-    console.error('API visitor-stats internal error:', error);
+    console.error('API visitor-stats GET error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500, headers: corsHeaders });
+  }
+}
+
+export async function POST(req: Request) {
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+
+  const authHeader = req.headers.get('Authorization');
+  const expectedToken = process.env.VISITOR_API_TOKEN || "engelsizforumteknofesttanitim";
+  
+  if (authHeader !== `Bearer ${expectedToken}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
+  }
+
+  try {
+    const { device_id } = await req.json();
+    if (!device_id) {
+      return NextResponse.json({ error: 'device_id required' }, { status: 400, headers: corsHeaders });
+    }
+    await recordVisitor(device_id);
+    return NextResponse.json({ success: true }, { headers: corsHeaders });
+  } catch (error) {
+    console.error('API visitor-stats POST error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500, headers: corsHeaders });
   }
 }

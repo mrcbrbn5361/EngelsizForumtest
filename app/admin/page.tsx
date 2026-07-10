@@ -233,7 +233,18 @@ DEVICE_ID = ':'.join(['{:02x}'.format((uuid.getnode() >> elements) & 0xff) for e
 
 def veriyi_cek():
     try:
-        # Sadece istatistikleri çekiyoruz (GET isteği)
+        # Önce bu cihazı aktif olarak kaydediyoruz (POST)
+        requests.post(
+            API_URL,
+            json={"device_id": DEVICE_ID},
+            headers={
+                "Authorization": f"Bearer {TOKEN}",
+                "Content-Type": "application/json"
+            },
+            timeout=10
+        )
+        
+        # Sonra güncel istatistikleri çekiyoruz (GET)
         response = requests.get(
             API_URL,
             headers={
