@@ -1,4 +1,5 @@
 'use client';
+import { getVisitorStats } from '../actions';
 import { toast } from 'sonner';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -37,7 +38,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
 
   // State for data
-  const [stats, setStats] = useState({ users: 0, topics: 0, comments: 0, categories: 0 });
+  const [stats, setStats] = useState({ users: 0, topics: 0, comments: 0, categories: 0, total_visitors: 0, active_visitors: 0 });
   const [categories, setCategories] = useState<any[]>([]);
   const [usersList, setUsersList] = useState<any[]>([]);
   const [isDataLoading, setIsDataLoading] = useState(true);
@@ -51,18 +52,21 @@ export default function AdminDashboard() {
 
   const fetchStats = useCallback(async () => {
     try {
-      const [u, t, c, cat] = await Promise.all([
+      const [u, t, c, cat, visitors] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
         supabase.from('topics').select('id', { count: 'exact', head: true }),
         supabase.from('comments').select('id', { count: 'exact', head: true }),
         supabase.from('categories').select('id', { count: 'exact', head: true }),
+        getVisitorStats(),
       ]);
 
       setStats({
         users: u.count || 0,
         topics: t.count || 0,
         comments: c.count || 0,
-        categories: cat.count || 0
+        categories: cat.count || 0,
+        total_visitors: visitors.total_visitors || 0,
+        active_visitors: visitors.active_visitors || 0,
       });
     } catch (error) {
       console.error('Stats error:', error);
@@ -160,6 +164,12 @@ export default function AdminDashboard() {
           </div>
 
           <Tabs.Content value="overview" className="outline-none space-y-6 md:space-y-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+              <StatCard label="Toplam Ziyaretçi" value={stats.total_visitors} icon={<Users size={20} />} />
+              <StatCard label="Anlık Ziyaretçi" value={stats.active_visitors} icon={<Users size={20} />} />
+              <StatCard label="Üyeler" value={stats.users} icon={<Users size={20} />} />
+              <StatCard label="Konular" value={stats.topics} icon={<MessageSquare size={20} />} />
+            </div>
             <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
               <div className="rounded-3xl border border-border p-6 bg-card shadow-sm">
                 <div className="flex items-center justify-between mb-6">
