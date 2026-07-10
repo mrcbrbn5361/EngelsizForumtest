@@ -32,9 +32,22 @@ export async function POST(req: NextRequest) {
       .eq('id', '00000000-0000-0000-0000-000000000000')
       .single();
 
-    if (fetchError || !data) {
-        console.error('Error fetching visitor stats:', fetchError);
-        return NextResponse.json({ error: 'Database error' }, { status: 500, headers: corsHeaders });
+    if (fetchError) {
+        // If row doesn't exist, insert it with a dummy mac_address
+        const { error: insertError } = await supabaseServer
+          .from('visitors')
+          .insert({ 
+            id: '00000000-0000-0000-0000-000000000000', 
+            mac_address: 'GLOBAL_STATS',
+            total_visitors: 1,
+            active_visitors: 1,
+            last_seen: new Date().toISOString()
+          });
+        if (insertError) {
+            console.error('Error inserting visitor stats:', insertError);
+            return NextResponse.json({ error: 'Database error' }, { status: 500, headers: corsHeaders });
+        }
+        return NextResponse.json({ success: true }, { headers: corsHeaders });
     }
 
     const { error: updateError } = await supabaseServer
