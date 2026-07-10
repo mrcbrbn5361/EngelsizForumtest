@@ -64,7 +64,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Database error', details: updateError }, { status: 500, headers: corsHeaders });
     }
 
-    return NextResponse.json({ success: true }, { headers: corsHeaders });
+    return NextResponse.json({ 
+        success: true, 
+        total_visitors: data.total_visitors + 1, 
+        active_visitors: data.active_visitors + 1 
+    }, { headers: corsHeaders });
   } catch (error) {
     console.error('Visitor update error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500, headers: corsHeaders });
