@@ -17,7 +17,6 @@ export function AccessibilityToolbar() {
     reducedMotion, 
     bionicReading,
     focusMode,
-    voiceMode,
     updateSettings, 
     resetSettings 
   } = useAccessibility();
@@ -27,12 +26,12 @@ export function AccessibilityToolbar() {
     <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
         {isOpen && (
             <div
-            className="mb-4 w-[calc(100vw-2rem)] sm:w-96 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-[2.5rem] border-4 border-border p-8 bg-card shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] z-[60] animate-in slide-in-from-bottom-4 fade-in duration-300"
+            className="mb-4 w-[calc(100vw-2rem)] sm:w-96 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-[2.5rem] border-4 border-border p-5 sm:p-8 bg-card shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] z-[60] animate-in slide-in-from-bottom-4 fade-in duration-300"
             role="dialog"
             aria-label="Erişilebilirlik Ayarları"
           >
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-xl font-black uppercase tracking-tighter">Erişilebilirlik</h2>
+            <div className="mb-4 sm:mb-6 flex items-center justify-between">
+              <h2 className="text-lg sm:text-xl font-black uppercase tracking-tighter">Erişilebilirlik</h2>
               <button 
                 onClick={() => setIsOpen(false)}
                 className="rounded-full p-2 hover:bg-muted transition-colors"
@@ -42,7 +41,7 @@ export function AccessibilityToolbar() {
               </button>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-5 sm:space-y-8">
               {/* Text Size */}
               <section>
                 <label className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
@@ -141,24 +140,9 @@ export function AccessibilityToolbar() {
                 </button>
               </section>
 
-              {/* Voice Mode */}
-              <section className="flex items-center justify-between group">
-                <label className="flex items-center gap-2 text-sm font-bold group-hover:text-primary transition-colors">
-                  <Mic size={18} className="text-primary" /> Sesli Mod (STT)
-                </label>
-                <button
-                  onClick={() => updateSettings({ voiceMode: !voiceMode })}
-                  className={`relative h-7 w-14 rounded-full border-2 border-border transition-all ${voiceMode ? 'bg-primary ring-4 ring-primary/10' : 'bg-muted'}`}
-                  role="switch"
-                  aria-checked={voiceMode}
-                >
-                  <span className={`absolute left-1 top-0.5 h-5 w-5 rounded-full transition-all shadow-sm ${voiceMode ? 'translate-x-7 bg-white' : 'bg-foreground/50'}`} />
-                </button>
-              </section>
-
               <button
                 onClick={resetSettings}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-border py-4 text-xs font-black uppercase tracking-widest hover:bg-muted transition-colors active:scale-95"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-border py-3 sm:py-4 text-xs font-black uppercase tracking-widest hover:bg-muted transition-colors active:scale-95"
               >
                 <RotateCcw size={16} /> Varsayılana Dön
               </button>

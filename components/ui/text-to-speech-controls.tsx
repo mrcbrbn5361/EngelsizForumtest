@@ -76,18 +76,18 @@ export function TextToSpeechControls({ text, title = "Metni Seslendir", classNam
 
   return (
     <div className={cn("rounded-3xl border border-border bg-card p-6 shadow-lg", className)} role="region" aria-label="Ekran Okuyucu ve Seslendirme Paneli">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/50 pb-4 mb-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-primary/10 text-primary rounded-2xl">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border/50 pb-4 mb-4">
+        <div className="flex items-start md:items-center gap-3 min-w-0">
+          <div className="p-2.5 bg-primary/10 text-primary rounded-2xl shrink-0 mt-1 md:mt-0">
             <Volume2 size={20} aria-hidden="true" />
           </div>
-          <div>
-            <h4 className="font-black text-sm tracking-widest uppercase text-foreground">{title}</h4>
-            <p className="text-xs text-muted-foreground font-medium">Biyonik okuma ve kelime odaklı seslendirme kontrolü</p>
+          <div className="min-w-0 flex-1">
+            <h4 className="font-black text-sm tracking-widest uppercase text-foreground break-words line-clamp-2 md:line-clamp-1" title={title}>{title}</h4>
+            <p className="text-[10px] md:text-xs text-muted-foreground font-medium truncate md:whitespace-normal">Biyonik okuma ve kelime odaklı seslendirme kontrolü</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
           {/* Main TTS Action Button */}
           <button
             onClick={handlePlayToggle}

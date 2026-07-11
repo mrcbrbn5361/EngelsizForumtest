@@ -14,7 +14,6 @@ interface AccessibilitySettings {
   reducedMotion: boolean;
   bionicReading: boolean;
   focusMode: boolean;
-  voiceMode: boolean;
 }
 
 interface AccessibilityContextType extends AccessibilitySettings {
@@ -29,7 +28,6 @@ const defaultSettings: AccessibilitySettings = {
   reducedMotion: false,
   bionicReading: false,
   focusMode: false,
-  voiceMode: false,
 };
 
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
@@ -102,7 +100,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     root.classList.toggle('reduced-motion', settings.reducedMotion);
     root.classList.toggle('bionic-reading', settings.bionicReading);
     root.classList.toggle('focus-mode', settings.focusMode);
-    root.classList.toggle('voice-mode', settings.voiceMode);
 
     localStorage.setItem('accessibility_prefs', JSON.stringify(settings));
 
