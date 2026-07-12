@@ -72,6 +72,15 @@ function NewTopicForm() {
       return;
     }
 
+    const forbiddenWords = ['spam', 'reklam', 'kumar', 'bet', 'casino'];
+    const lowerContent = content.toLowerCase();
+    const lowerTitle = title.toLowerCase();
+    const isSpam = forbiddenWords.some(word => lowerContent.includes(word) || lowerTitle.includes(word));
+    if (isSpam) {
+      toast.error('İçeriğiniz otomatik spam filtresine takıldı. Lütfen kurallara uygun içerik girin.');
+      return;
+    }
+
     setLoading(true);
     try {
       const { data, error } = await supabase

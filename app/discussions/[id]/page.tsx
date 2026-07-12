@@ -11,6 +11,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
 import { supabase } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
+import { BionicMarkdown } from '@/components/ui/bionic-markdown';
 const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: true });
 const TextToSpeechControls = dynamic(
   () => import('@/components/ui/text-to-speech-controls').then(mod => mod.TextToSpeechControls),
@@ -392,7 +393,7 @@ export default function DiscussionDetailPage() {
               <TextToSpeechControls text={topic.content} title={topic.title} className="mb-10" />
 
               <div className="vibe-markdown-body prose prose-lg dark:prose-invert max-w-none font-medium leading-relaxed text-muted-foreground">
-                <ReactMarkdown>{topic.content}</ReactMarkdown>
+                <BionicMarkdown content={topic.content} />
               </div>
 
               <div className="mt-12 pt-8 border-t border-border/50 flex flex-wrap items-center justify-between gap-6">
@@ -483,7 +484,7 @@ export default function DiscussionDetailPage() {
                           )}
                         </div>
                         <div className="text-base md:text-lg font-medium leading-relaxed break-words text-foreground/90">
-                          <ReactMarkdown>{comment.content}</ReactMarkdown>
+                          <BionicMarkdown content={comment.content} />
                         </div>
                       </div>
                     </motion.div>

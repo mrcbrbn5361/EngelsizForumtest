@@ -1,9 +1,9 @@
 'use client';
-import { toast } from 'sonner';
 
+import { toast } from 'sonner';
 import React, { useState, useEffect, useCallback } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
-import { Search, MessageSquare, Filter, ArrowRight, Loader2, Mic } from 'lucide-react';
+import { Search, Filter, ArrowRight, Loader2, Mic } from 'lucide-react';
 import { Topic } from '@/types/database';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
@@ -12,24 +12,42 @@ import { cn } from '@/lib/utils';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
+  const [categoryId, setCategoryId] = useState<string>('');
+  const [categories, setCategories] = useState<any[]>([]);
   const [results, setResults] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
-  const performSearch = useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data } = await supabase.from('categories').select('*').order('name');
+      if (data) setCategories(data);
+    };
+    fetchCategories();
+  }, []);
+
+  const performSearch = useCallback(async (searchQuery: string, catId: string) => {
+    if (!searchQuery.trim() && !catId) {
       setResults([]);
       return;
     }
-
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      let queryBuilder = supabase
         .from('topics')
         .select('*, category:categories(*), author:profiles(*)')
-        .or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`)
         .limit(20);
+
+      if (searchQuery.trim()) {
+        queryBuilder = queryBuilder.or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`);
+      }
       
+      if (catId) {
+        queryBuilder = queryBuilder.eq('category_id', catId);
+      }
+            
+      const { data, error } = await queryBuilder;
       if (error) throw error;
       setResults(data || []);
     } catch (err) {
@@ -44,7 +62,6 @@ export default function SearchPage() {
       toast.error('Tarayıcınız ses tanımayı desteklemiyor.');
       return;
     }
-
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     recognition.lang = 'tr-TR';
@@ -55,15 +72,14 @@ export default function SearchPage() {
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       setQuery(transcript);
-      performSearch(transcript);
+      performSearch(transcript, categoryId);
     };
-
     recognition.start();
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    performSearch(query);
+    performSearch(query, categoryId);
   };
 
   return (
@@ -72,6 +88,7 @@ export default function SearchPage() {
         <header className="mb-16">
           <p className="vibe-label ml-0">GELİŞMİŞ ARAMA</p>
           <h1 className="vibe-section-title mb-12 uppercase">Toplulukta Keşfedin</h1>
+
           <form onSubmit={handleSearch} className="w-full max-w-5xl space-y-4">
             <div className="relative group">
               <Search className="absolute left-6 text-muted-foreground group-focus-within:text-primary transition-colors" size={24} style={{ top: '50%', transform: 'translateY(-50%)' }} />
@@ -79,11 +96,24 @@ export default function SearchPage() {
                 type="text" 
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="TARTIŞMA VEYA TOPLULUK ARA..." 
-                className="vibe-input vibe-input-search-full h-16 md:h-20 text-base md:text-xl uppercase"
+                placeholder="TARTIŞMA VEYA İÇERİK ARA..." 
+                className="vibe-input vibe-input-search-full h-16 md:h-20 text-base md:text-xl uppercase pr-[120px] md:pr-[220px]"
                 autoFocus
               />
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-3">
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2 md:gap-3">
+                <button 
+                  type="button"
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={cn(
+                    "p-2.5 md:p-4 rounded-xl transition-all border shadow-sm flex items-center gap-2",
+                    showFilters ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted/50 hover:bg-muted text-muted-foreground border-border md:border-2'
+                  )}
+                  title="Filtreler"
+                >
+                  <Filter className="size-5 md:size-6" />
+                  <span className="hidden md:inline font-bold text-xs uppercase tracking-widest">Filtrele</span>
+                </button>
+
                 <button 
                   type="button"
                   onClick={startVoiceSearch}
@@ -106,8 +136,36 @@ export default function SearchPage() {
                 </div>
               </div>
             </div>
+
+            <AnimatePresence>
+              {showFilters && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="p-6 bg-card border-2 border-border rounded-2xl md:rounded-[2rem] shadow-sm flex flex-col md:flex-row gap-6 mt-4">
+                    <div className="flex-1 space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Kategori Filtresi</label>
+                      <select 
+                        value={categoryId}
+                        onChange={(e) => setCategoryId(e.target.value)}
+                        className="w-full h-14 bg-muted border border-border rounded-xl px-4 text-sm font-bold outline-none focus:ring-4 focus:ring-primary/20 appearance-none cursor-pointer"
+                      >
+                        <option value="">TÜM KATEGORİLER</option>
+                        {categories.map(c => (
+                          <option key={c.id} value={c.id}>{c.name.toUpperCase()}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Mobile Submit Button */}
-            <div className="md:hidden">
+            <div className="md:hidden pt-2">
               <button 
                 type="submit"
                 disabled={loading}
@@ -163,7 +221,7 @@ export default function SearchPage() {
                     </Link>
                   </motion.div>
                 ))
-              ) : !loading && query && (
+              ) : !loading && (query || categoryId) && (
                 <div className="text-center py-32 bg-card rounded-[3rem] border-4 border-dashed border-border px-8">
                   <Search size={80} className="mx-auto text-muted-foreground/10 mb-8" />
                   <h3 className="text-2xl md:text-4xl font-black text-foreground mb-4 tracking-tight">Sonuç Bulunamadı</h3>

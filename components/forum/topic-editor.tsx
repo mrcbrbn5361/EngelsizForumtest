@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Eye, Edit3 } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { BionicMarkdown } from '@/components/ui/bionic-markdown';
 const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false });
 const VoiceInput = dynamic(
   () => import('@/components/ui/voice-input').then(mod => mod.VoiceInput),
@@ -87,7 +88,7 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
             >
               <div className="markdown-body prose prose-sm md:prose-base prose-slate max-w-none dark:prose-invert break-words overflow-hidden min-h-[250px] md:min-h-[350px]">
                 {value ? (
-                  <ReactMarkdown>{value}</ReactMarkdown>
+                  <BionicMarkdown content={value} />
                 ) : (
                   <p className="text-muted-foreground italic">Henüz bir şey yazmadınız. Önizleme boş.</p>
                 )}
