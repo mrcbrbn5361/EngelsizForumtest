@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { toast } from 'sonner';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -358,8 +359,20 @@ export default function DiscussionDetailPage() {
                     <div className="px-5 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
                       {topic.category?.name?.toUpperCase() || 'GENEL'}
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
-                      <Users size={14} className="text-primary" /> {topic.author?.full_name?.toUpperCase() || topic.author?.username?.toUpperCase() || 'KULLANICI'}
+                    <div className="flex items-center gap-3 text-[10px] font-black text-foreground uppercase tracking-[0.2em]">
+                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border relative">
+                        {topic.author?.avatar_url ? (
+                          <img 
+                            src={topic.author.avatar_url} 
+                            alt="Profil" 
+                            className="object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                        ) : (
+                          <User size={14} className="text-muted-foreground" />
+                        )}
+                      </div>
+                      {topic.author?.full_name?.toUpperCase() || topic.author?.username?.toUpperCase() || 'KULLANICI'}
                     </div>
                     <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
                       <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
@@ -407,7 +420,7 @@ export default function DiscussionDetailPage() {
                         : "bg-muted text-muted-foreground hover:bg-red-500/10 hover:text-red-500"
                     )}
                   >
-                    <Heart size={18} fill={isLiked ? "currentColor" : "none"} /> 
+                    <Heart size={18} fill={isLiked ? "currentColor" : "none"} />
                     {likesCount > 0 && <span className="mr-1">{likesCount}</span>}
                     {isLiked ? 'BEĞENDİN' : 'BEĞEN'}
                   </button>
@@ -461,8 +474,17 @@ export default function DiscussionDetailPage() {
                       className="vibe-card p-8 md:p-12 flex gap-6 md:gap-10 hover:border-primary/30 transition-all group"
                     >
                       <div className="flex-shrink-0">
-                        <div className="w-14 h-14 md:w-20 md:h-20 rounded-3xl bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-all">
-                          <User size={32} />
+                        <div className="w-14 h-14 md:w-20 md:h-20 rounded-[2rem] bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-all overflow-hidden border-2 border-transparent group-hover:border-primary/20 relative">
+                          {comment.author?.avatar_url ? (
+                            <img 
+                              src={comment.author.avatar_url} 
+                              alt="Profil" 
+                              className="object-cover"
+                              referrerPolicy="no-referrer"
+                            />
+                          ) : (
+                            <User size={32} />
+                          )}
                         </div>
                       </div>
                       <div className="flex-1 min-w-0 space-y-6">

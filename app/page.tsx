@@ -509,7 +509,7 @@ export default async function Home() {
                   >
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-border/50">
                       <div className="flex items-center gap-3">
-                        <Image
+                        <img
                           src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`}
                           alt={`${topic.author?.full_name || 'Kullanıcı'} avatarı`}
                           width={40}

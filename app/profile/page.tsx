@@ -80,11 +80,9 @@ export default function ProfilePage() {
           <div className="bg-primary px-8 py-16 text-primary-foreground text-center relative overflow-hidden">
             <div className="mx-auto h-24 w-24 md:h-32 md:w-32 rounded-[2rem] bg-white/20 flex items-center justify-center mb-6 border-4 border-white/30 backdrop-blur-md relative z-10 overflow-hidden shadow-2xl">
               {profile?.avatar_url ? (
-                <Image 
+                <img 
                   src={profile.avatar_url} 
                   alt={profile.full_name || 'Profile'} 
-                  fill 
-                  sizes="(max-width: 768px) 96px, 128px"
                   className="object-cover" 
                   referrerPolicy="no-referrer"
                 />

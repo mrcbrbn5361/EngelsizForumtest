@@ -115,7 +115,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
         <div className="flex items-center gap-2 min-w-0">
           <div className="h-5 w-5 md:h-7 md:w-7 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border shrink-0">
             {topic.author?.avatar_url ? (
-              <Image 
+              <img 
                 src={topic.author.avatar_url} 
                 alt={`${topic.author?.username || 'Kullanıcı'} profil resmi`} 
                 width={28} 
