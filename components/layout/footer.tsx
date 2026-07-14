@@ -56,7 +56,7 @@ export function Footer() {
               </li>
               <li className="flex items-center justify-center md:justify-start gap-4">
                 <Mail size={22} className="text-primary shrink-0" />
-                <a href="mailto:info@miracdeveloper.com.tr" className="hover:text-primary transition-colors text-xs">info@miracdeveloper.com.tr</a>
+                <a href="mailto:miracbirben@engelsizforum.com" className="hover:text-primary transition-colors text-xs">miracbirben@engelsizforum.com</a>
               </li>
             </ul>
           </div>

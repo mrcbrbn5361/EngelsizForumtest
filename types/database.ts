@@ -6,21 +6,20 @@ export type Profile = {
   role: 'admin' | 'moderator' | 'user';
   level: number;
   xp: number;
-  accessibility_prefs: {
-    fontSize: 'sm' | 'md' | 'lg' | 'xl';
-    highContrast: boolean;
-    dyslexicFont: boolean;
-    reducedMotion: boolean;
-  } | null;
+  bio: string | null;
+  is_verified: boolean;
+  accessibility_prefs: any | null;
   updated_at: string;
 };
 
 export type Category = {
   id: string;
-  parent_id: string | null;
   name: string;
   slug: string;
   description: string | null;
+  icon: string | null;
+  color: string | null;
+  sort_order: number;
   created_at: string;
 };
 
@@ -30,10 +29,12 @@ export type Topic = {
   author_id: string;
   title: string;
   content: string;
-  is_solved: boolean;
+  likes_count: number;
+  comments_count: number;
+  views_count: number;
   is_pinned: boolean;
   is_locked: boolean;
-  likes_count?: number;
+  is_solved?: boolean;
   created_at: string;
   author?: Profile;
   category?: Category;
@@ -44,7 +45,9 @@ export type Comment = {
   id: string;
   topic_id: string;
   author_id: string;
+  parent_id: string | null;
   content: string;
+  is_solution: boolean;
   created_at: string;
   author?: Profile;
 };
@@ -70,5 +73,38 @@ export type Report = {
   topic_id: string;
   reason: string;
   status: 'pending' | 'resolved' | 'dismissed';
+  created_at: string;
+};
+
+export type Conversation = {
+  id: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Message = {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  content: string;
+  read_at: string | null;
+  created_at: string;
+};
+
+export type Upload = {
+  id: string;
+  user_id: string;
+  file_path: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  created_at: string;
+};
+
+export type Attachment = {
+  id: string;
+  topic_id: string | null;
+  comment_id: string | null;
+  upload_id: string;
   created_at: string;
 };

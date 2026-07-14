@@ -10,18 +10,21 @@ import { TopicEditor } from '@/components/forum/topic-editor';
 import { ArrowLeft, Save, Loader2, Plus } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase } from '@/lib/supabase';
-import { createTopic } from '@/app/actions';
 
 function NewTopicForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   
   const [title, setTitle] = useState('');
   const [categoryId, setCategoryId] = useState(searchParams?.get('category_id') || '');
   const [content, setContent] = useState('');
+  const [isPinned, setIsPinned] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
 
   const leafCategories = React.useMemo(() => {
     const parentIds = new Set(categories.map(c => c.parent_id).filter(Boolean));
@@ -84,12 +87,23 @@ function NewTopicForm() {
 
     setLoading(true);
     try {
-      const data = await createTopic({
-        title: title.trim(),
-        category_id: categoryId,
-        content: content.trim(),
-        author_id: user.id
-      });
+      const { data, error } = await supabase
+        .from('topics')
+        .insert({
+          title: title.trim(),
+          category_id: categoryId,
+          content: content.trim(),
+          author_id: user.id,
+          is_pinned: isPinned,
+          is_locked: isLocked
+        })
+        .select()
+        .single();
+      
+      if (error) {
+        console.error('Supabase Error:', error);
+        throw error;
+      }
       
       router.push(`/discussions/${data.id}`);
     } catch (err: any) {
@@ -166,6 +180,35 @@ function NewTopicForm() {
             <label className="vibe-label">DETAYLI İÇERİK (MARKDOWN)</label>
             <TopicEditor value={content} onChange={setContent} />
           </div>
+
+          {isStaff && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-2xl bg-primary/5 border border-primary/10">
+              <div className="flex items-center justify-between p-4 rounded-xl bg-card border shadow-sm">
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-black uppercase tracking-wider">Konuyu Sabitle</span>
+                  <span className="text-[10px] text-muted-foreground font-bold uppercase">En üstte görünür</span>
+                </div>
+                <input 
+                  type="checkbox" 
+                  checked={isPinned} 
+                  onChange={e => setIsPinned(e.target.checked)}
+                  className="size-6 accent-primary cursor-pointer"
+                />
+              </div>
+              <div className="flex items-center justify-between p-4 rounded-xl bg-card border shadow-sm">
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-black uppercase tracking-wider">Konuyu Kilitle</span>
+                  <span className="text-[10px] text-muted-foreground font-bold uppercase">Yeni cevap yazılamaz</span>
+                </div>
+                <input 
+                  type="checkbox" 
+                  checked={isLocked} 
+                  onChange={e => setIsLocked(e.target.checked)}
+                  className="size-6 accent-primary cursor-pointer"
+                />
+              </div>
+            </div>
+          )}
 
           <div className="pt-4">
             <button 

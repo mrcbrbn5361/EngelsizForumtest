@@ -59,7 +59,7 @@ export default function SecurityPage() {
             Platformumuzda bir güvenlik zafiyeti tespit ederseniz veya şüpheli bir güvenlik durumuyla karşılaşırsanız, bunu toplulukla paylaşmadan önce sorumlu bir şekilde bize iletmenizi rica ederiz. Güvenlik bildirimlerini çok ciddiye alıyor ve hızla aksiyon alıyoruz.
           </p>
           <p className="font-semibold text-foreground text-base mt-4">
-            Zafiyet Raporlama E-postası: <a href="mailto:info@miracdeveloper.com.tr" className="text-primary hover:underline">info@miracdeveloper.com.tr</a>
+            Zafiyet Raporlama E-postası: <a href="mailto:miracbirben@engelsizforum.com" className="text-primary hover:underline">miracbirben@engelsizforum.com</a>
           </p>
 
           <div className="mt-16 pt-10 border-t border-border">

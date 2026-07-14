@@ -69,7 +69,7 @@ export default function AccessibilityStatementPage() {
             Platformumuzun erişilebilirliğini artırmak için sürekli çalışıyoruz. Eğer bir sayfada, görselde veya etkileşimde erişilebilirlik engeliyle karşılaşırsanız, lütfen bize bildirmekten çekinmeyin. Geri bildirimlerinizi büyük bir önemle inceleyip en kısa sürede düzeltiyoruz.
           </p>
           <p className="font-semibold text-foreground text-base mt-4">
-            E-posta: <a href="mailto:info@miracdeveloper.com.tr" className="text-primary hover:underline">info@miracdeveloper.com.tr</a>
+            E-posta: <a href="mailto:miracbirben@engelsizforum.com" className="text-primary hover:underline">miracbirben@engelsizforum.com</a>
           </p>
 
           <div className="mt-16 pt-10 border-t border-border">

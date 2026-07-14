@@ -6,7 +6,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Topic, Comment } from '@/types/database';
-import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, User, ChevronRight, Plus, Lock, Trash2, Pin, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, User, ChevronRight, Plus, Lock, Trash2, Pin } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
@@ -24,8 +24,140 @@ const VoiceInput = dynamic(
 );
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { cn } from '@/lib/utils';
-import { createComment, markAsSolved, toggleLike } from '@/app/actions';
-import { ReportButton } from '@/components/forum/report-button';
+
+function CommentItem({ 
+  comment, 
+  allComments, 
+  topicAuthorId, 
+  isStaff, 
+  onReply, 
+  onDelete, 
+  onMarkSolution,
+  currentUserId,
+  depth = 0
+}: { 
+  comment: Comment; 
+  allComments: Comment[]; 
+  topicAuthorId: string; 
+  isStaff: boolean; 
+  onReply: (id: string) => void;
+  onDelete: (id: string) => void;
+  onMarkSolution: (id: string) => void;
+  currentUserId?: string;
+  depth?: number;
+}) {
+  const replies = allComments.filter(c => c.parent_id === comment.id);
+
+  return (
+    <div className="space-y-4">
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className={cn(
+          "vibe-card p-6 md:p-8 flex gap-4 md:gap-8 hover:border-primary/30 transition-all group relative",
+          comment.is_solution && "border-2 border-emerald-500 shadow-lg shadow-emerald-500/10",
+          depth > 0 && "ml-8 md:ml-16"
+        )}
+      >
+        {comment.is_solution && (
+          <div className="absolute top-0 right-0 bg-emerald-500 text-white text-[8px] font-black px-4 py-1.5 rounded-bl-xl uppercase tracking-widest flex items-center gap-2">
+            <Sparkles size={10} /> EN İYİ ÇÖZÜM
+          </div>
+        )}
+
+        <div className="flex-shrink-0">
+          <div className={cn(
+            "rounded-[1.5rem] bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-all overflow-hidden border-2 border-transparent group-hover:border-primary/20 relative",
+            depth > 0 ? "w-10 h-10 md:w-14 md:h-14" : "w-14 h-14 md:w-20 md:h-20"
+          )}>
+            {comment.author?.avatar_url ? (
+              <img 
+                src={comment.author.avatar_url} 
+                alt="Profil" 
+                className="object-cover"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <User size={depth > 0 ? 18 : 32} />
+            )}
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-0 space-y-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.1em] text-muted-foreground flex-wrap">
+              <span className="text-primary flex items-center gap-2">
+                {comment.author?.full_name?.toUpperCase() || comment.author?.username?.toUpperCase() || 'KULLANICI'}
+                {(comment.author?.role === 'admin' || comment.author?.role === 'moderator') && (
+                  <span className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[8px] flex items-center gap-1 leading-none">
+                    <Shield size={8} /> {comment.author.role.toUpperCase()}
+                  </span>
+                )}
+                {comment.author?.id === topicAuthorId && (
+                  <span className="px-2 py-0.5 rounded-full bg-muted text-foreground text-[8px] flex items-center gap-1 leading-none border border-border">
+                    YAZAR
+                  </span>
+                )}
+              </span>
+              <span>•</span>
+              <span>{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
+            </div>
+          </div>
+
+          <div className="text-sm md:text-base font-medium leading-relaxed break-words text-foreground/90">
+            <BionicMarkdown content={comment.content} />
+          </div>
+
+          <div className="flex items-center gap-4 pt-2">
+            {currentUserId && (
+              <button 
+                onClick={() => onReply(comment.id)}
+                className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline flex items-center gap-1.5"
+              >
+                <Plus size={14} /> Yanıtla
+              </button>
+            )}
+            {currentUserId === topicAuthorId && !comment.is_solution && (
+              <button 
+                onClick={() => onMarkSolution(comment.id)}
+                className="text-[10px] font-black text-emerald-500 uppercase tracking-widest hover:underline flex items-center gap-1.5"
+              >
+                <Sparkles size={14} /> Çözüm Olarak İşaretle
+              </button>
+            )}
+            {(isStaff || currentUserId === comment.author_id) && (
+              <button 
+                onClick={() => onDelete(comment.id)}
+                className="text-[10px] font-black text-red-500 uppercase tracking-widest hover:underline flex items-center gap-1.5"
+              >
+                <Trash2 size={14} /> Sil
+              </button>
+            )}
+          </div>
+        </div>
+      </motion.div>
+
+      {replies.length > 0 && (
+        <div className="space-y-4">
+          {replies.map(reply => (
+            <CommentItem 
+              key={reply.id} 
+              comment={reply} 
+              allComments={allComments}
+              topicAuthorId={topicAuthorId}
+              isStaff={isStaff}
+              onReply={onReply}
+              onDelete={onDelete}
+              onMarkSolution={onMarkSolution}
+              currentUserId={currentUserId}
+              depth={depth + 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function DiscussionDetailPage() {
   const { id } = useParams();
@@ -42,6 +174,7 @@ export default function DiscussionDetailPage() {
   const [sending, setSending] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
+  const [replyToId, setReplyToId] = useState<string | null>(null);
 
   const fetchLikeStatus = useCallback(async () => {
     if (!user || !id) return;
@@ -74,10 +207,29 @@ export default function DiscussionDetailPage() {
     }
 
     try {
-      const { liked } = await toggleLike(id as string, user.id);
-      setIsLiked(liked);
-      setLikesCount(prev => liked ? prev + 1 : Math.max(0, prev - 1));
-      if (liked) toast.success('Beğendiniz! XP kazandınız.');
+      if (isLiked) {
+        const { error } = await supabase
+          .from('reactions')
+          .delete()
+          .eq('topic_id', id)
+          .eq('user_id', user.id);
+        
+        if (error) throw error;
+        setIsLiked(false);
+        setLikesCount(prev => Math.max(0, prev - 1));
+      } else {
+        const { error } = await supabase
+          .from('reactions')
+          .insert({
+            topic_id: id,
+            user_id: user.id,
+            reaction_type: 'like'
+          });
+        
+        if (error) throw error;
+        setIsLiked(true);
+        setLikesCount(prev => prev + 1);
+      }
     } catch (err: any) {
       toast('İşlem başarısız: ' + err.message);
     }
@@ -115,6 +267,39 @@ export default function DiscussionDetailPage() {
     const { error } = await supabase.from('comments').delete().eq('id', commentId);
     if (error) toast('Silme işlemi başarısız: ' + error.message);
     else setComments(comments.filter(c => c.id !== commentId));
+  };
+
+  const handleMarkSolution = async (commentId: string) => {
+    if (!topic || topic.author_id !== user?.id) return;
+
+    try {
+      // Unmark any previous solution
+      await supabase
+        .from('comments')
+        .update({ is_solution: false })
+        .eq('topic_id', id);
+
+      const { error } = await supabase
+        .from('comments')
+        .update({ is_solution: true })
+        .eq('id', commentId);
+
+      if (error) throw error;
+
+      await supabase
+        .from('topics')
+        .update({ is_solved: true })
+        .eq('id', id);
+
+      setComments(comments.map(c => ({
+        ...c,
+        is_solution: c.id === commentId
+      })));
+      setTopic({ ...topic, is_solved: true });
+      toast('Çözüm olarak işaretlendi!');
+    } catch (err: any) {
+      toast('Hata: ' + err.message);
+    }
   };
 
   const fetchTopic = useCallback(async () => {
@@ -185,30 +370,25 @@ export default function DiscussionDetailPage() {
 
     setSending(true);
     try {
-      const data = await createComment({
-        topic_id: id as string,
-        author_id: user.id,
-        content: newComment.trim()
-      });
+      const { data, error } = await supabase
+        .from('comments')
+        .insert({
+          topic_id: id,
+          author_id: user.id,
+          content: newComment.trim(),
+          parent_id: replyToId
+        })
+        .select('*, author:profiles(*)')
+        .single();
 
+      if (error) throw error;
       setComments([...comments, data]);
       setNewComment('');
-      toast.success('Yorumunuz gönderildi ve XP kazandınız!');
+      setReplyToId(null);
     } catch (err: any) {
       toast('Yorum gönderilemedi: ' + err.message);
     } finally {
       setSending(false);
-    }
-  };
-
-  const handleSolve = async () => {
-    if (!user || !topic) return;
-    try {
-      await markAsSolved(id as string, user.id);
-      setTopic({ ...topic, is_solved: true });
-      toast.success('Başlık çözüldü olarak işaretlendi! Büyük XP kazandınız.');
-    } catch (err: any) {
-      toast.error(err.message);
     }
   };
 
@@ -346,11 +526,6 @@ export default function DiscussionDetailPage() {
               <header className="mb-12 space-y-8">
                 <div className="flex flex-wrap items-center justify-between gap-6">
                   <div className="flex flex-wrap items-center gap-6">
-                    {topic.is_solved && (
-                      <div className="px-5 py-2 rounded-full bg-green-500 text-white text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 animate-pulse">
-                        <CheckCircle size={14} /> ÇÖZÜLDÜ
-                      </div>
-                    )}
                     <div className="px-5 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
                       {topic.category?.name?.toUpperCase() || 'GENEL'}
                     </div>
@@ -372,41 +547,28 @@ export default function DiscussionDetailPage() {
                     <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
                       <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
                     </div>
-                    <ReportButton topicId={id as string} />
                   </div>
-                  {(isStaff || (user && user.id === topic.author_id)) && (
+                  {isStaff && (
                     <div className="flex items-center gap-2">
-                       {user && user.id === topic.author_id && !topic.is_solved && (
-                         <button 
-                          onClick={handleSolve}
-                          className="px-4 py-2 bg-green-500/10 text-green-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-green-500 hover:text-white transition-all shadow-sm"
-                         >
-                           <CheckCircle size={14} /> ÇÖZÜLDÜ İŞARETLE
-                         </button>
-                       )}
-                       {isStaff && (
-                         <>
-                           <button 
-                            onClick={togglePin} 
-                            className={`p-2 rounded-xl transition-all ${topic.is_pinned ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:bg-muted'}`}
-                            title={topic.is_pinned ? "İğnelemeyi Kaldır" : "İğnele"}
-                           >
-                            <Pin size={18} />
-                           </button>
-                           <button 
-                            onClick={toggleLock} 
-                            className={`p-2 rounded-xl transition-all ${topic.is_locked ? 'text-orange-500 bg-orange-500/10' : 'text-muted-foreground hover:bg-muted'}`}
-                            title={topic.is_locked ? "Kilidi Aç" : "Kilitle"}
-                           >
-                            <Lock size={18} />
-                           </button>
-                           <button onClick={deleteTopic} className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-xl transition-all" title="Sil">
-                            <Trash2 size={18} />
-                           </button>
-                         </>
-                       )}
-                     </div>
-                   )}
+                       <button 
+                        onClick={togglePin} 
+                        className={`p-2 rounded-xl transition-all ${topic.is_pinned ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:bg-muted'}`}
+                        title={topic.is_pinned ? "İğnelemeyi Kaldır" : "İğnele"}
+                      >
+                        <Pin size={18} />
+                      </button>
+                      <button 
+                        onClick={toggleLock} 
+                        className={`p-2 rounded-xl transition-all ${topic.is_locked ? 'text-orange-500 bg-orange-500/10' : 'text-muted-foreground hover:bg-muted'}`}
+                        title={topic.is_locked ? "Kilidi Aç" : "Kilitle"}
+                      >
+                        <Lock size={18} />
+                      </button>
+                      <button onClick={deleteTopic} className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-xl transition-all" title="Sil">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-tight break-words uppercase">{topic.title}</h1>
               </header>
@@ -473,52 +635,21 @@ export default function DiscussionDetailPage() {
 
               <div className="space-y-8">
                 {comments.length > 0 ? (
-                  comments.map((comment, index) => (
-                    <motion.div
-                      key={comment.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="vibe-card p-8 md:p-12 flex gap-6 md:gap-10 hover:border-primary/30 transition-all group"
-                    >
-                      <div className="flex-shrink-0">
-                        <div className="w-14 h-14 md:w-20 md:h-20 rounded-[2rem] bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-all overflow-hidden border-2 border-transparent group-hover:border-primary/20 relative">
-                          {comment.author?.avatar_url ? (
-                            <img 
-                              src={comment.author.avatar_url} 
-                              alt="Profil" 
-                              className="object-cover"
-                              referrerPolicy="no-referrer"
-                            />
-                          ) : (
-                            <User size={32} />
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0 space-y-6">
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
-                            <span className="text-primary flex items-center gap-2">
-                              {comment.author?.full_name?.toUpperCase() || comment.author?.username?.toUpperCase() || 'KULLANICI'}
-                              {(comment.author?.role === 'admin' || comment.author?.role === 'moderator') && (
-                                <span className="px-3 py-1 rounded-full bg-primary text-primary-foreground text-[8px] flex items-center gap-1.5 leading-none shadow-lg shadow-primary/20">
-                                  <Shield size={10} /> {comment.author.role.toUpperCase()}
-                                </span>
-                              )}
-                            </span>
-                            <span>•</span>
-                            <span>{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
-                            <ReportButton commentId={comment.id} />
-                          </div>
-                          {isStaff && (
-                            <button onClick={() => deleteComment(comment.id)} className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-all"><Trash2 size={16} /></button>
-                          )}
-                        </div>
-                        <div className="text-base md:text-lg font-medium leading-relaxed break-words text-foreground/90">
-                          <BionicMarkdown content={comment.content} />
-                        </div>
-                      </div>
-                    </motion.div>
+                  comments.filter(c => !c.parent_id).map((comment, index) => (
+                    <CommentItem 
+                      key={comment.id} 
+                      comment={comment} 
+                      allComments={comments}
+                      topicAuthorId={topic.author_id}
+                      isStaff={isStaff}
+                      onReply={(id) => {
+                        setReplyToId(id);
+                        document.querySelector('textarea')?.focus();
+                      }}
+                      onDelete={deleteComment}
+                      onMarkSolution={handleMarkSolution}
+                      currentUserId={user?.id}
+                    />
                   ))
                 ) : (
                   <div className="text-center py-20 bg-muted/20 rounded-[2rem] border-2 border-dashed border-border px-8">
@@ -541,12 +672,25 @@ export default function DiscussionDetailPage() {
                     className="vibe-card p-8 md:p-16 space-y-10 border-primary/20 shadow-2xl relative overflow-hidden mt-16"
                   >
                     <div className="absolute top-0 left-0 w-full h-3 bg-primary/20" />
-                    <p className="vibe-label ml-0">{topic.is_locked ? 'ADMİN PANELİ: KİLİTLİ BAŞLIĞA YANIT YAZ' : 'YENİ YANIT GÖNDER'}</p>
+                    <p className="vibe-label ml-0">
+                      {replyToId 
+                        ? `${comments.find(c => c.id === replyToId)?.author?.username} adlı kullanıcıya yanıt ver` 
+                        : (topic.is_locked ? 'ADMİN PANELİ: KİLİTLİ BAŞLIĞA YANIT YAZ' : 'YENİ YANIT GÖNDER')}
+                    </p>
+                    {replyToId && (
+                      <button 
+                        type="button" 
+                        onClick={() => setReplyToId(null)}
+                        className="text-[10px] font-black text-red-500 uppercase tracking-widest hover:underline"
+                      >
+                        İPTAL ET
+                      </button>
+                    )}
                     <VoiceInput onTranscript={(text) => setNewComment(prev => prev ? `${prev} ${text}` : text)} label="Yanıtı Sesle Yaz" />
                     <textarea
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
-                      placeholder="Bir şeyler yazın..."
+                      placeholder={replyToId ? "Yanıtınızı buraya yazın..." : "Bir şeyler yazın..."}
                       className="vibe-input min-h-[220px] p-8 text-xl"
                       required
                     />
@@ -556,7 +700,7 @@ export default function DiscussionDetailPage() {
                         disabled={sending}
                         className="vibe-button-primary h-20 px-12 text-xl"
                       >
-                        {sending ? <Loader2 size={24} className="animate-spin" /> : <Send size={28} />} {sending ? 'GÖNDERİLİYOR...' : 'GÖNDER'}
+                        {sending ? <Loader2 size={24} className="animate-spin" /> : <Send size={28} />} {sending ? 'GÖNDERİLİYOR...' : (replyToId ? 'YANITLA' : 'GÖNDER')}
                       </button>
                     </div>
                   </form>

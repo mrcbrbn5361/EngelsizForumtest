@@ -35,7 +35,7 @@ export default function HelpPage() {
                     "name": "Destek ekibiyle nasıl iletişim kurarım?",
                     "acceptedAnswer": {
                       "@type": "Answer",
-                      "text": "Destek ekibimize dilediğiniz zaman info@miracdeveloper.com.tr adresinden e-posta göndererek ulaşabilirsiniz."
+                      "text": "Destek ekibimize dilediğiniz zaman miracbirben@engelsizforum.com adresinden e-posta göndererek ulaşabilirsiniz."
                     }
                   },
                   {
@@ -193,10 +193,10 @@ export default function HelpPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <a 
-              href="mailto:info@miracdeveloper.com.tr" 
+              href="mailto:miracbirben@engelsizforum.com" 
               className="px-6 py-3 bg-primary text-primary-foreground rounded font-bold hover:brightness-110 active:scale-[0.98] transition-all text-sm flex items-center gap-2 min-h-[48px]"
             >
-              <Mail size={16} /> info@miracdeveloper.com.tr
+              <Mail size={16} /> miracbirben@engelsizforum.com
             </a>
           </div>
         </section>

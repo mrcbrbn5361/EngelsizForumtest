@@ -127,6 +127,8 @@ const jsonLd = {
   ]
 };
 
+import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="tr" className={`${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} h-full`} suppressHydrationWarning>
@@ -148,6 +150,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <main id="main-content" className="flex-1 w-full flex flex-col outline-none" tabIndex={-1}>
                 {children}
               </main>
+              <AccessibilityToolbar />
             </AccessibilityProvider>
         </AuthProvider>
         <Toaster />

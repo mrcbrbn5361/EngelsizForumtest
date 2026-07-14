@@ -4,39 +4,24 @@ import { Flag } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
 
-export function ReportButton({ topicId, commentId }: { topicId?: string; commentId?: string }) {
+export function ReportButton({ topicId }: { topicId: string }) {
   const { user } = useAuth();
 
   const handleReport = async () => {
-    if (!user) {
-      toast.error('Raporlamak için giriş yapmalısınız.');
-      return;
-    }
-    const reason = window.prompt('Neden bildirmek istiyorsunuz? (Spam, Hakaret, Uygunsuz İçerik vb.)');
-    if (!reason || reason.trim().length < 3) return;
-    
+    if (!user) return;
+    const reason = prompt('Neden bildirmek istiyorsunuz?');
+    if (!reason) return;
     try {
-      const { error } = await supabase.from('reports').insert({ 
-        topic_id: topicId || null, 
-        comment_id: commentId || null,
-        reporter_id: user.id, 
-        reason: reason.trim() 
-      });
-      
-      if (error) throw error;
-      toast.success('Rapor başarıyla gönderildi. İncelemeye alınacaktır.');
-    } catch (err: any) {
-      toast.error('Rapor gönderilemedi: ' + err.message);
+      await supabase.from('reports').insert({ topic_id: topicId, reporter_id: user.id, reason });
+      toast.success('Rapor başarıyla gönderildi.');
+    } catch (err) {
+      console.error(err);
     }
   };
 
   return (
-    <button 
-      onClick={handleReport} 
-      className="text-muted-foreground hover:text-red-500 p-2 rounded-lg hover:bg-red-500/10 transition-all group/report"
-      title="Bildir"
-    >
-      <Flag size={18} className="group-hover/report:scale-110 transition-transform" />
+    <button onClick={handleReport} className="text-muted-foreground hover:text-red-500">
+      <Flag size={18} />
     </button>
   );
 }

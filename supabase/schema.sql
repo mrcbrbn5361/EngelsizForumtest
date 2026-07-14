@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS public.topics (
   views_count INTEGER DEFAULT 0,
   is_pinned BOOLEAN DEFAULT false,
   is_locked BOOLEAN DEFAULT false,
+  is_solved BOOLEAN DEFAULT false,
   search_vector TSVECTOR GENERATED ALWAYS AS (to_tsvector('turkish', coalesce(title,'') || ' ' || coalesce(content,''))) STORED,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
@@ -148,6 +149,51 @@ CREATE TABLE IF NOT EXISTS public.bookmarks (
   topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE NOT NULL,
   created_at TIMESTAMPTZ DEFAULT now(),
   UNIQUE(user_id, topic_id)
+);
+
+-- CONVERSATIONS
+CREATE TABLE IF NOT EXISTS public.conversations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- CONVERSATION_MEMBERS
+CREATE TABLE IF NOT EXISTS public.conversation_members (
+  conversation_id UUID REFERENCES public.conversations(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  PRIMARY KEY (conversation_id, user_id)
+);
+
+-- MESSAGES
+CREATE TABLE IF NOT EXISTS public.messages (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  conversation_id UUID REFERENCES public.conversations(id) ON DELETE CASCADE,
+  sender_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  read_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- UPLOADS
+CREATE TABLE IF NOT EXISTS public.uploads (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE,
+  file_path TEXT NOT NULL,
+  file_name TEXT NOT NULL,
+  file_type TEXT NOT NULL,
+  file_size BIGINT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ATTACHMENTS
+CREATE TABLE IF NOT EXISTS public.attachments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE,
+  comment_id UUID REFERENCES public.comments(id) ON DELETE CASCADE,
+  upload_id UUID REFERENCES public.uploads(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  CHECK (num_nonnulls(topic_id, comment_id) = 1)
 );
 
 -- VISITORS (Raspberry Pi Data)
@@ -296,66 +342,172 @@ RETURNS BOOLEAN AS $$
 $$ LANGUAGE sql STABLE SECURITY DEFINER;
 
 -- Profiles
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
 CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
 CREATE POLICY "Users can insert their own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id OR public.is_staff());
 
 -- Categories
+DROP POLICY IF EXISTS "Categories are viewable by everyone" ON public.categories;
 CREATE POLICY "Categories are viewable by everyone" ON public.categories FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Staff can manage categories" ON public.categories;
 CREATE POLICY "Staff can manage categories" ON public.categories FOR ALL USING (public.is_staff());
 
 -- Topics
+DROP POLICY IF EXISTS "Topics are viewable by everyone" ON public.topics;
 CREATE POLICY "Topics are viewable by everyone" ON public.topics FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Authenticated users can insert topics" ON public.topics;
 CREATE POLICY "Authenticated users can insert topics" ON public.topics FOR INSERT WITH CHECK (auth.uid() = author_id);
+
+DROP POLICY IF EXISTS "Users can update own topics or staff" ON public.topics;
 CREATE POLICY "Users can update own topics or staff" ON public.topics FOR UPDATE USING (auth.uid() = author_id OR public.is_staff());
+
+DROP POLICY IF EXISTS "Users can delete own topics or staff" ON public.topics;
 CREATE POLICY "Users can delete own topics or staff" ON public.topics FOR DELETE USING (auth.uid() = author_id OR public.is_staff());
 
 -- Comments
+DROP POLICY IF EXISTS "Comments are viewable by everyone" ON public.comments;
 CREATE POLICY "Comments are viewable by everyone" ON public.comments FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Authenticated users can insert comments" ON public.comments;
 CREATE POLICY "Authenticated users can insert comments" ON public.comments FOR INSERT WITH CHECK (auth.uid() = author_id);
+
+DROP POLICY IF EXISTS "Users can update own comments or staff" ON public.comments;
 CREATE POLICY "Users can update own comments or staff" ON public.comments FOR UPDATE USING (auth.uid() = author_id OR public.is_staff());
+
+DROP POLICY IF EXISTS "Users can delete own comments or staff" ON public.comments;
 CREATE POLICY "Users can delete own comments or staff" ON public.comments FOR DELETE USING (auth.uid() = author_id OR public.is_staff());
 
 -- Reactions
+DROP POLICY IF EXISTS "Reactions are viewable by everyone" ON public.reactions;
 CREATE POLICY "Reactions are viewable by everyone" ON public.reactions FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Authenticated users can insert reactions" ON public.reactions;
 CREATE POLICY "Authenticated users can insert reactions" ON public.reactions FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can delete own reactions" ON public.reactions;
 CREATE POLICY "Users can delete own reactions" ON public.reactions FOR DELETE USING (auth.uid() = user_id);
 
 -- Reports
+DROP POLICY IF EXISTS "Staff can view reports" ON public.reports;
 CREATE POLICY "Staff can view reports" ON public.reports FOR SELECT USING (public.is_staff());
+
+DROP POLICY IF EXISTS "Authenticated users can insert reports" ON public.reports;
 CREATE POLICY "Authenticated users can insert reports" ON public.reports FOR INSERT WITH CHECK (auth.uid() = reporter_id);
+
+DROP POLICY IF EXISTS "Staff can update reports" ON public.reports;
 CREATE POLICY "Staff can update reports" ON public.reports FOR UPDATE USING (public.is_staff());
 
 -- Badges
+DROP POLICY IF EXISTS "Badges are viewable by everyone" ON public.badges;
 CREATE POLICY "Badges are viewable by everyone" ON public.badges FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Staff can manage badges" ON public.badges;
 CREATE POLICY "Staff can manage badges" ON public.badges FOR ALL USING (public.is_staff());
 
 -- User Badges
+DROP POLICY IF EXISTS "User badges are viewable by everyone" ON public.user_badges;
 CREATE POLICY "User badges are viewable by everyone" ON public.user_badges FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Staff can manage user badges" ON public.user_badges;
 CREATE POLICY "Staff can manage user badges" ON public.user_badges FOR ALL USING (public.is_staff());
 
 -- Notifications
+DROP POLICY IF EXISTS "Users can view own notifications" ON public.notifications;
 CREATE POLICY "Users can view own notifications" ON public.notifications FOR SELECT USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can update own notifications" ON public.notifications;
 CREATE POLICY "Users can update own notifications" ON public.notifications FOR UPDATE USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can delete own notifications" ON public.notifications;
 CREATE POLICY "Users can delete own notifications" ON public.notifications FOR DELETE USING (auth.uid() = user_id);
 
 -- Bookmarks
+DROP POLICY IF EXISTS "Users can view own bookmarks" ON public.bookmarks;
 CREATE POLICY "Users can view own bookmarks" ON public.bookmarks FOR SELECT USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can insert own bookmarks" ON public.bookmarks;
 CREATE POLICY "Users can insert own bookmarks" ON public.bookmarks FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can delete own bookmarks" ON public.bookmarks;
 CREATE POLICY "Users can delete own bookmarks" ON public.bookmarks FOR DELETE USING (auth.uid() = user_id);
 
 -- Tags
+DROP POLICY IF EXISTS "Tags are viewable by everyone" ON public.tags;
 CREATE POLICY "Tags are viewable by everyone" ON public.tags FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Authenticated users can insert tags" ON public.tags;
 CREATE POLICY "Authenticated users can insert tags" ON public.tags FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 
 -- Topic Tags
+DROP POLICY IF EXISTS "Topic tags are viewable by everyone" ON public.topic_tags;
 CREATE POLICY "Topic tags are viewable by everyone" ON public.topic_tags FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Topic authors can manage tags" ON public.topic_tags;
 CREATE POLICY "Topic authors can manage tags" ON public.topic_tags FOR ALL USING (
   EXISTS (SELECT 1 FROM public.topics WHERE id = topic_id AND (author_id = auth.uid() OR public.is_staff()))
 );
+
+-- Conversations
+ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view their own conversations" ON public.conversations;
+CREATE POLICY "Users can view their own conversations" ON public.conversations FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.conversation_members WHERE conversation_id = id AND user_id = auth.uid())
+);
+
+-- Conversation Members
+ALTER TABLE public.conversation_members ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view members of their own conversations" ON public.conversation_members;
+CREATE POLICY "Users can view members of their own conversations" ON public.conversation_members FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.conversation_members cm WHERE cm.conversation_id = conversation_id AND cm.user_id = auth.uid())
+);
+
+-- Messages
+ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view messages in their own conversations" ON public.messages;
+CREATE POLICY "Users can view messages in their own conversations" ON public.messages FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.conversation_members WHERE conversation_id = messages.conversation_id AND user_id = auth.uid())
+);
+
+DROP POLICY IF EXISTS "Users can insert messages in their own conversations" ON public.messages;
+CREATE POLICY "Users can insert messages in their own conversations" ON public.messages FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM public.conversation_members WHERE conversation_id = messages.conversation_id AND user_id = auth.uid())
+  AND auth.uid() = sender_id
+);
+
+-- Uploads
+ALTER TABLE public.uploads ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view their own uploads" ON public.uploads;
+CREATE POLICY "Users can view their own uploads" ON public.uploads FOR SELECT USING (auth.uid() = user_id OR public.is_staff());
+
+DROP POLICY IF EXISTS "Users can insert their own uploads" ON public.uploads;
+CREATE POLICY "Users can insert their own uploads" ON public.uploads FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- Attachments
+ALTER TABLE public.attachments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Attachments are viewable by everyone" ON public.attachments;
+CREATE POLICY "Attachments are viewable by everyone" ON public.attachments FOR SELECT USING (true);
 
 -- ==========================================
 -- 6. REALTIME
 -- ==========================================
 -- Supabase Dashboard > Database > Replication > 'supabase_realtime' publication
--- ALT: ALTER PUBLICATION supabase_realtime ADD TABLE public.comments, public.reactions, public.notifications;
+-- ==========================================
+-- 6. STORAGE BUCKETS
+-- ==========================================
+-- Note: Requires storage extension enabled
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('uploads', 'uploads', true)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "Public Access" ON storage.objects;
+CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = 'uploads');
+
+DROP POLICY IF EXISTS "Authenticated Upload" ON storage.objects;
+CREATE POLICY "Authenticated Upload" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'uploads' AND auth.role() = 'authenticated');
