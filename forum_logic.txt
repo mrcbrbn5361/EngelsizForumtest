@@ -1,0 +1,35 @@
+# EngelsizForum: Tam Fonksiyonel Forum Mantığı ve İş Akışı
+
+Bu belge, bir forum sitesinin temel çalışma mantığını, EngelsizForum projesine özel gereksinimlerle birleştirerek detaylı bir şekilde açıklar.
+
+## 1. Kullanıcı ve İtibar Yönetimi (User & Rep System)
+- **Kayıt ve Giriş:** Kullanıcıların e-posta veya sosyal medya ile kayıt olması.
+- **Profil Yönetimi:** Kullanıcının temel bilgileri, avatarı ve kendi belirlediği erişilebilirlik tercihleri (font boyutu, renk modu vb.).
+- **XP ve Seviye Sistemi (Gamification):**
+  - **Aksiyon:** Tartışma açma, yorum yapma, çözülen sorular.
+  - **Logic:** Her aksiyon belirli bir XP kazandırır. XP arttıkça kullanıcının seviyesi (Level) artar. Bu sistem topluluğa aktif katılımı teşvik eder.
+
+## 2. İçerik Hiyerarşisi (Content Hierarchy)
+Forum yapısı 3 temel seviyeden oluşur:
+1. **Topluluklar (Categories):** Konu başlıklarını gruplayan ana çatılar (Örn: "Görme Engelliler", "Teknoloji", "Eğitim").
+2. **Tartışmalar (Topics):** Topluluk içinde kullanıcılar tarafından açılan ana başlıklar. Bir tartışma; başlık, içerik, yazar, kategori, çözüldü mü (is_solved) ve sabitlendi mi (is_pinned) durumlarını içerir.
+3. **Yorumlar (Comments):** Tartışmaların altına eklenen, hiyerarşik veya düz sırada listelenen kullanıcı yanıtları.
+
+## 3. Etkileşim İş Akışları (Interaction Workflows)
+- **Tartışma Oluşturma:** Kullanıcı kategori seçer -> Başlık ve içerik girer -> Yayınlar -> Tartışma veritabanında oluşturulur ve XP kazanılır.
+- **Yanıtlama:** Kullanıcı bir tartışmaya girer -> Yorum alanına metni yazar -> Yayınlar -> Yorum veritabanına eklenir ve XP kazanılır.
+- **Çözüldü İşareti:** Tartışma sahibi veya moderatör, tartışmayı "Çözüldü" olarak işaretleyebilir.
+
+## 4. Moderasyon ve Güvenlik
+- **Raporlama (Flagging):** Kullanıcılar uygunsuz içerikleri "Rapor Et" butonu ile bildirebilir.
+- **Moderasyon Paneli:** Moderatörler, raporlanan içerikleri görür -> İçeriği inceleyebilir, silebilir veya raporu reddedebilir.
+- **Status Flagging:** Raporlanan içeriklerin `status` alanı (pending, resolved, dismissed) üzerinden durumu yönetilir.
+
+## 5. Arama ve Keşif
+- **Global Arama:** Tüm veritabanında anahtar kelimelere göre (başlık ve içerik bazlı) arama yapma.
+- **Kategori Filtreleme:** Kullanıcıların belirli kategoriler altındaki içeriklere hızlıca ulaşması.
+
+## 6. Özel Özellikler (EngelsizForum'a Özgü)
+- **Metin Okuma (TTS):** Tartışma içeriği veya yorumları, kullanıcı "Oku" butonuna tıkladığında API (örneğin Web Speech API veya Wix Velo entegrasyonu) kullanılarak seslendirilir.
+- **Erişilebilirlik Toggles:** Kullanıcı arayüzünde "Yüksek Kontrast", "Font Büyütme" gibi seçeneklerin anlık olarak uygulanması (CSS sınıflarının `document.body` üzerine eklenmesi/çıkarılması).
+- **AI Özetleme:** Uzun tartışmaların, AI (Gemini/OpenAI) tarafından özetlenerek tartışma detay sayfasının en üstünde "Tartışma Özeti" olarak sunulması.

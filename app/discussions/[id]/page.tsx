@@ -6,7 +6,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Topic, Comment } from '@/types/database';
-import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, User, ChevronRight, Plus, Lock, Trash2, Pin } from 'lucide-react';
+import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, User, ChevronRight, Plus, Lock, Trash2, Pin, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
@@ -24,6 +24,8 @@ const VoiceInput = dynamic(
 );
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { cn } from '@/lib/utils';
+import { createComment, markAsSolved, toggleLike } from '@/app/actions';
+import { ReportButton } from '@/components/forum/report-button';
 
 export default function DiscussionDetailPage() {
   const { id } = useParams();
@@ -72,29 +74,10 @@ export default function DiscussionDetailPage() {
     }
 
     try {
-      if (isLiked) {
-        const { error } = await supabase
-          .from('reactions')
-          .delete()
-          .eq('topic_id', id)
-          .eq('user_id', user.id);
-        
-        if (error) throw error;
-        setIsLiked(false);
-        setLikesCount(prev => Math.max(0, prev - 1));
-      } else {
-        const { error } = await supabase
-          .from('reactions')
-          .insert({
-            topic_id: id,
-            user_id: user.id,
-            reaction_type: 'like'
-          });
-        
-        if (error) throw error;
-        setIsLiked(true);
-        setLikesCount(prev => prev + 1);
-      }
+      const { liked } = await toggleLike(id as string, user.id);
+      setIsLiked(liked);
+      setLikesCount(prev => liked ? prev + 1 : Math.max(0, prev - 1));
+      if (liked) toast.success('Beğendiniz! XP kazandınız.');
     } catch (err: any) {
       toast('İşlem başarısız: ' + err.message);
     }
@@ -202,23 +185,30 @@ export default function DiscussionDetailPage() {
 
     setSending(true);
     try {
-      const { data, error } = await supabase
-        .from('comments')
-        .insert({
-          topic_id: id,
-          author_id: user.id,
-          content: newComment.trim()
-        })
-        .select('*, author:profiles(*)')
-        .single();
+      const data = await createComment({
+        topic_id: id as string,
+        author_id: user.id,
+        content: newComment.trim()
+      });
 
-      if (error) throw error;
       setComments([...comments, data]);
       setNewComment('');
+      toast.success('Yorumunuz gönderildi ve XP kazandınız!');
     } catch (err: any) {
       toast('Yorum gönderilemedi: ' + err.message);
     } finally {
       setSending(false);
+    }
+  };
+
+  const handleSolve = async () => {
+    if (!user || !topic) return;
+    try {
+      await markAsSolved(id as string, user.id);
+      setTopic({ ...topic, is_solved: true });
+      toast.success('Başlık çözüldü olarak işaretlendi! Büyük XP kazandınız.');
+    } catch (err: any) {
+      toast.error(err.message);
     }
   };
 
@@ -356,6 +346,11 @@ export default function DiscussionDetailPage() {
               <header className="mb-12 space-y-8">
                 <div className="flex flex-wrap items-center justify-between gap-6">
                   <div className="flex flex-wrap items-center gap-6">
+                    {topic.is_solved && (
+                      <div className="px-5 py-2 rounded-full bg-green-500 text-white text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 animate-pulse">
+                        <CheckCircle size={14} /> ÇÖZÜLDÜ
+                      </div>
+                    )}
                     <div className="px-5 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
                       {topic.category?.name?.toUpperCase() || 'GENEL'}
                     </div>
@@ -377,28 +372,41 @@ export default function DiscussionDetailPage() {
                     <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
                       <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
                     </div>
+                    <ReportButton topicId={id as string} />
                   </div>
-                  {isStaff && (
+                  {(isStaff || (user && user.id === topic.author_id)) && (
                     <div className="flex items-center gap-2">
-                       <button 
-                        onClick={togglePin} 
-                        className={`p-2 rounded-xl transition-all ${topic.is_pinned ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:bg-muted'}`}
-                        title={topic.is_pinned ? "İğnelemeyi Kaldır" : "İğnele"}
-                      >
-                        <Pin size={18} />
-                      </button>
-                      <button 
-                        onClick={toggleLock} 
-                        className={`p-2 rounded-xl transition-all ${topic.is_locked ? 'text-orange-500 bg-orange-500/10' : 'text-muted-foreground hover:bg-muted'}`}
-                        title={topic.is_locked ? "Kilidi Aç" : "Kilitle"}
-                      >
-                        <Lock size={18} />
-                      </button>
-                      <button onClick={deleteTopic} className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-xl transition-all" title="Sil">
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  )}
+                       {user && user.id === topic.author_id && !topic.is_solved && (
+                         <button 
+                          onClick={handleSolve}
+                          className="px-4 py-2 bg-green-500/10 text-green-500 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-green-500 hover:text-white transition-all shadow-sm"
+                         >
+                           <CheckCircle size={14} /> ÇÖZÜLDÜ İŞARETLE
+                         </button>
+                       )}
+                       {isStaff && (
+                         <>
+                           <button 
+                            onClick={togglePin} 
+                            className={`p-2 rounded-xl transition-all ${topic.is_pinned ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:bg-muted'}`}
+                            title={topic.is_pinned ? "İğnelemeyi Kaldır" : "İğnele"}
+                           >
+                            <Pin size={18} />
+                           </button>
+                           <button 
+                            onClick={toggleLock} 
+                            className={`p-2 rounded-xl transition-all ${topic.is_locked ? 'text-orange-500 bg-orange-500/10' : 'text-muted-foreground hover:bg-muted'}`}
+                            title={topic.is_locked ? "Kilidi Aç" : "Kilitle"}
+                           >
+                            <Lock size={18} />
+                           </button>
+                           <button onClick={deleteTopic} className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-xl transition-all" title="Sil">
+                            <Trash2 size={18} />
+                           </button>
+                         </>
+                       )}
+                     </div>
+                   )}
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-tight break-words uppercase">{topic.title}</h1>
               </header>
@@ -500,6 +508,7 @@ export default function DiscussionDetailPage() {
                             </span>
                             <span>•</span>
                             <span>{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
+                            <ReportButton commentId={comment.id} />
                           </div>
                           {isStaff && (
                             <button onClick={() => deleteComment(comment.id)} className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg transition-all"><Trash2 size={16} /></button>

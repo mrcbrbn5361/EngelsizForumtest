@@ -1,0 +1,76 @@
+# EngelsizForum: Kapsamlı Proje ve Geliştirme Promptu
+
+Bu belge, EngelsizForum projesinin mimarisini, veritabanı şemasını, iş akışlarını ve teknik gereksinimlerini içeren, Wix (Velo/CMS) veya benzeri bir platformda yeniden inşa etmek için hazırlanmış kapsamlı bir kılavuzdur.
+
+---
+
+## 1. Proje Özeti ve Mimari
+EngelsizForum, engelli bireyler için tam erişilebilir (WCAG 2.1 uyumlu), kapsayıcı ve topluluk odaklı bir forum platformudur.
+
+- **Frontend:** Modern, minimalist, yüksek okunabilirlik ve erişilebilirlik öncelikli.
+- **Backend:** Kullanıcı yönetimi, AI destekli özetleme, ziyaretçi takibi ve moderasyon yönetimi.
+- **Veritabanı:** İlişkisel veri yapısı (Kullanıcılar, Tartışmalar, Yorumlar, Kategoriler).
+
+---
+
+## 2. Sayfa Yapısı ve İşlevleri
+Wix editöründe her biri için ayrı bir sayfa oluşturmalı ve belirtilen işlevleri Velo ile bağlamalısınız:
+
+### Ana Sayfa ve Genel
+- **Anasayfa (`/`):** Topluluklara hızlı erişim, öne çıkan tartışmalar ve platform tanıtımı.
+- **Hakkımızda (`/about`):** EngelsizForum'un vizyonu ve amacı.
+- **Yardım (`/help`):** Sıkça sorulan sorular ve kullanım kılavuzu.
+- **Arama (`/search`):** Tartışmalar ve topluluklar içinde anahtar kelime araması.
+
+### Kullanıcı Yönetimi ve Profil
+- **Giriş (`/login`):** Kullanıcı oturum açma formu.
+- **Kayıt (`/register`):** Yeni üyelik oluşturma formu.
+- **Şifremi Unuttum (`/auth/forgot-password`):** Şifre sıfırlama talebi.
+- **Profil (`/profile`):** Kullanıcı bilgileri, erişilebilirlik tercihleri ve aktiviteler (XP/Seviye).
+
+### Topluluklar ve Tartışmalar
+- **Topluluklar (`/communities`):** Mevcut tüm toplulukların listesi.
+- **Topluluk Detay (`/communities/[id]`):** Belirli topluluğun tartışmaları ve üyeleri.
+- **Tartışmalar (`/discussions`):** Platform genelindeki tüm tartışmalar.
+- **Yeni Tartışma (`/discussions/new`):** Tartışma oluşturma ve kategori seçimi formu.
+- **Tartışma Detay (`/discussions/[id]`):** Tartışma başlığı, içerik ve yorumlar.
+
+### Yönetim ve Yasal
+- **Admin Paneli (`/admin`):** Kullanıcı yönetimi, içerik denetleme (raporlar) ve istatistikler.
+- **Gizlilik Politikası (`/privacy`):** Veri işleme politikası.
+- **Kullanım Koşulları (`/terms`):** Kullanıcı sözleşmesi.
+- **Erişilebilirlik Bildirimi (`/accessibility`):** Platformun erişilebilirlik standartları.
+
+---
+
+## 3. Veritabanı Şeması (Wix CMS/Collection Yapısı)
+Aşağıdaki yapıları CMS içerisinde koleksiyon olarak oluşturun:
+
+- **Profiles:** `id`, `username`, `full_name`, `role` (Admin/User), `level`, `xp`, `accessibility_prefs` (JSON).
+- **Categories:** `name`, `slug`, `description`.
+- **Topics:** `category_id` (Ref), `author_id` (Ref), `title`, `content` (Rich Text), `is_solved`, `is_pinned`.
+- **Comments:** `topic_id` (Ref), `author_id` (Ref), `content`.
+- **Reports:** `topic_id` (Ref), `reason`, `status` (Pending/Resolved/Dismissed).
+
+---
+
+## 4. Forum Mantığı ve İş Akışı
+
+### Kullanıcı ve İtibar Yönetimi
+- **XP ve Seviye Sistemi:** Aksiyonlar (tartışma açma, yorum yapma) XP kazandırır. XP arttıkça seviye artar (Gamification).
+
+### Etkileşim İş Akışları
+- **Tartışma Oluşturma:** Kategori seç -> Başlık/İçerik -> Yayınla.
+- **Yanıtlama:** Tartışmaya gir -> Yorumu yayınla.
+- **Çözüldü İşareti:** Tartışma sahibi tartışmayı "Çözüldü" olarak işaretleyebilir.
+
+### Özel Özellikler (EngelsizForum Farkı)
+- **Metin Okuma (TTS):** İçerik ve yorumlar için sesli okuma entegrasyonu.
+- **Erişilebilirlik Toggles:** Yüksek kontrast, font büyütme ayarlarının anlık uygulanması.
+- **AI Özetleme:** Uzun tartışmaların AI tarafından özetlenerek detay sayfasında sunulması.
+
+---
+
+## 5. Frontend / UI ve Backend / Velo Gereksinimleri
+- **UI:** Tam erişilebilirlik (WCAG 2.1), klavye gezilebilirliği, yüksek renk kontrastı, minimalist tasarım.
+- **Backend (Velo):** Wix Members API ile oturum yönetimi, Velo üzerinden AI API (Gemini/OpenAI) entegrasyonu, `wix-tracking-frontend` ile istatistikler.

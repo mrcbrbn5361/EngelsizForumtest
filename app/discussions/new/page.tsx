@@ -10,6 +10,7 @@ import { TopicEditor } from '@/components/forum/topic-editor';
 import { ArrowLeft, Save, Loader2, Plus } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase } from '@/lib/supabase';
+import { createTopic } from '@/app/actions';
 
 function NewTopicForm() {
   const router = useRouter();
@@ -83,21 +84,12 @@ function NewTopicForm() {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('topics')
-        .insert({
-          title: title.trim(),
-          category_id: categoryId,
-          content: content.trim(),
-          author_id: user.id
-        })
-        .select()
-        .single();
-      
-      if (error) {
-        console.error('Supabase Error:', error);
-        throw error;
-      }
+      const data = await createTopic({
+        title: title.trim(),
+        category_id: categoryId,
+        content: content.trim(),
+        author_id: user.id
+      });
       
       router.push(`/discussions/${data.id}`);
     } catch (err: any) {

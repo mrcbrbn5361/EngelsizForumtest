@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getVisitorStats, recordVisitor } from '@/app/actions';
 
+export const dynamic = 'force-dynamic';
+
 export async function OPTIONS(req: Request) {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',

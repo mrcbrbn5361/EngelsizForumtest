@@ -1,0 +1,59 @@
+# PROJE ÖZELLİKLERİ VE TEKNİK ŞARTNAME: EngelsizForum (Wix Yeniden İnşa Taslağı)
+
+Bu belge, EngelsizForum'un tam kapsamlı işlevsel özelliklerini ve veri yapısını içerir. Wix (Velo/CMS) ortamında bu projeyi yeniden oluştururken bu şartnameyi baz alabilirsiniz.
+
+## 1. Proje Amacı ve Kapsamı
+EngelsizForum, engelli bireyler için tam erişilebilir (WCAG 2.1 uyumlu), kapsayıcı ve topluluk odaklı bir platformdur.
+
+## 2. Sayfa Yapısı ve İşlevleri (Eksiksiz Liste)
+
+Wix editöründe her biri için ayrı bir sayfa oluşturmalı ve belirtilen işlevleri Velo ile bağlamalısınız:
+
+### Ana Sayfa ve Genel
+- **Anasayfa (`/`):** Topluluklara hızlı erişim, öne çıkan tartışmalar ve platform tanıtımı.
+- **Hakkımızda (`/about`):** EngelsizForum'un vizyonu ve amacı.
+- **Yardım (`/help`):** Sıkça sorulan sorular ve kullanım kılavuzu.
+- **Arama (`/search`):** Tartışmalar ve topluluklar içinde anahtar kelime araması.
+
+### Kullanıcı Yönetimi ve Profil
+- **Giriş (`/login`):** Kullanıcı oturum açma formu.
+- **Kayıt (`/register`):** Yeni üyelik oluşturma formu.
+- **Şifremi Unuttum (`/auth/forgot-password`):** Şifre sıfırlama talebi.
+- **Şifre Sıfırlama (`/auth/reset-password`):** Yeni şifre belirleme formu.
+- **Profil (`/profile`):** Kullanıcı bilgileri, erişilebilirlik tercihleri ve aktiviteler.
+
+### Topluluklar ve Tartışmalar
+- **Topluluklar (`/communities`):** Mevcut tüm toplulukların listesi.
+- **Topluluk Detay (`/communities/[id]`):** Belirli topluluğun tartışmaları ve üyeleri.
+- **Tartışmalar (`/discussions`):** Platform genelindeki tüm tartışmalar.
+- **Yeni Tartışma (`/discussions/new`):** Tartışma oluşturma ve kategori seçimi formu.
+- **Tartışma Detay (`/discussions/[id]`):** Tartışma başlığı, içerik ve yorumlar.
+
+### Yönetim ve Yasal
+- **Admin Paneli (`/admin`):** Kullanıcı yönetimi, içerik denetleme (raporlar) ve istatistikler.
+- **Gizlilik Politikası (`/privacy`):** Veri işleme politikası.
+- **Kullanım Koşulları (`/terms`):** Kullanıcı sözleşmesi.
+- **Erişilebilirlik Bildirimi (`/accessibility`):** Platformun erişilebilirlik standartları.
+- **Güvenlik (`/security`):** Güvenlik protokolleri ve kullanıcı uyarıları.
+
+## 3. Veritabanı Şeması (Wix CMS için Veri Modeli)
+
+Aşağıdaki yapıları Wix CMS'de "Collections" (Koleksiyonlar) olarak oluşturmalısınız:
+
+### Koleksiyonlar:
+- **Profiles:** `id`, `username`, `full_name`, `role`, `level`, `xp`, `accessibility_prefs`
+- **Categories:** `name`, `slug`, `description`
+- **Topics:** `category_id` (Ref), `author_id` (Ref), `title`, `content`, `is_solved`, `is_pinned`
+- **Comments:** `topic_id` (Ref), `author_id` (Ref), `content`
+- **Reports:** `topic_id` (Ref), `reason`, `status`
+
+## 4. Frontend / UI Gereksinimleri
+- **Tam Erişilebilirlik:** Tüm elementler klavye ile gezilebilir olmalı, yeterli renk kontrastına sahip olmalı.
+- **Kişiselleştirilebilir Arayüz:** Kullanıcılar font boyutu, yüksek kontrast gibi ayarları profil üzerinden yönetebilmeli.
+- **Duyarlı Tasarım:** Mobil ve masaüstü arasında akıcı geçiş.
+
+## 5. Backend / İşlevsel Gereksinimler (Wix Velo ile)
+- **Auth:** Wix Members API ile oturum yönetimi.
+- **AI Destekli İçerik:** Wix Velo API üzerinden (Gemini/OpenAI) özetleme ve içerik üretimi.
+- **Ziyaretçi Takibi:** `wix-tracking-frontend` ile istatistikler.
+- **Metin Okuma (TTS):** Velo ile metinleri sese dönüştüren arayüz.

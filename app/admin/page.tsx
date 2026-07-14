@@ -20,7 +20,8 @@ import {
   MoreVertical,
   ChevronRight,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  Flag
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -173,6 +174,7 @@ export default function AdminDashboard() {
               <TabButton value="categories" icon={<FolderTree size={18} />} label="Kategori" />
               <TabButton value="users" icon={<Users size={18} />} label="Üyeler" />
               <TabButton value="moderation" icon={<MessageSquare size={18} />} label="Mod" />
+              <TabButton value="reports" icon={<Flag size={18} />} label="Raporlar" />
             </Tabs.List>
           </div>
 
@@ -284,6 +286,10 @@ if __name__ == "__main__":
           <Tabs.Content value="moderation" className="outline-none">
             <ModerationManager onTopicChange={fetchAllData} />
           </Tabs.Content>
+
+          <Tabs.Content value="reports" className="outline-none">
+            <ReportsManager />
+          </Tabs.Content>
         </Tabs.Root>
       </main>
     </div>
@@ -370,6 +376,81 @@ function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
                 >
                   <Trash2 size={18} />
                 </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ReportsManager() {
+  const [reports, setReports] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchReports = useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('reports')
+      .select('*, reporter:profiles!reports_reporter_id_fkey(username), topic:topics(title), comment:comments(content)')
+      .order('created_at', { ascending: false });
+    
+    if (data) setReports(data);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
+
+  const handleResolve = async (id: string) => {
+    const { error } = await supabase.from('reports').delete().eq('id', id);
+    if (error) toast.error('Hata: ' + error.message);
+    else {
+      toast.success('Rapor çözüldü (silindi)');
+      fetchReports();
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-black tracking-tight">Kullanıcı Raporları</h2>
+      <div className="space-y-4">
+        {loading ? (
+          <div className="h-40 animate-pulse bg-muted rounded-3xl"></div>
+        ) : reports.length === 0 ? (
+          <div className="p-12 text-center border-2 border-dashed border-border rounded-3xl text-muted-foreground font-bold">
+            Aktif rapor bulunmuyor.
+          </div>
+        ) : (
+          reports.map((report) => (
+            <div key={report.id} className="p-6 rounded-3xl border border-border bg-card shadow-sm space-y-4">
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-primary">RAPORLAYAN: @{report.reporter?.username}</span>
+                    <span className="text-[10px] text-muted-foreground">• {new Date(report.created_at).toLocaleDateString('tr-TR')}</span>
+                  </div>
+                  <h4 className="font-bold text-lg text-destructive flex items-center gap-2">
+                    <AlertTriangle size={18} /> {report.reason}
+                  </h4>
+                </div>
+                <button 
+                  onClick={() => handleResolve(report.id)}
+                  className="px-4 py-2 bg-green-500/10 text-green-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-green-500 hover:text-white transition-all"
+                >
+                  ÇÖZÜLDÜ
+                </button>
+              </div>
+              
+              <div className="p-4 bg-muted rounded-2xl border border-border">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-2">İÇERİK:</p>
+                {report.topic_id ? (
+                  <p className="font-bold">Konu: <span className="text-primary">{report.topic?.title}</span></p>
+                ) : (
+                  <p className="text-sm italic">&ldquo;{report.comment?.content}&rdquo;</p>
+                )}
               </div>
             </div>
           ))

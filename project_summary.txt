@@ -1,0 +1,44 @@
+# Proje Özeti ve Yapısı: EngelsizForum
+
+Bu belge, EngelsizForum projesinin mimarisini, frontend, backend ve veritabanı yapısını özetler.
+
+## 1. Proje Yapısı (Ağaç)
+- app/ (Next.js App Router sayfaları)
+- components/ (Reusable bileşenler: layout, ui)
+- lib/ (Supabase istemcisi, yardımcı fonksiyonlar)
+- types/ (Veritabanı tipleri)
+- public/ (Statik varlıklar)
+
+## 2. Frontend (Next.js & Tailwind)
+- **Stil:** Tailwind CSS.
+- **Bileşenler:** `components/layout/` (site-layout, dashboard-layout, visitor-tracker), `components/providers/` (auth, accessibility).
+- **Temel Sayfalar:** 
+  - `app/page.tsx`: Ana sayfa, topluluklar ve tartışmalar listelenir.
+  - `app/auth/page.tsx`: Giriş ve kayıt.
+  - `app/discussions/[id]/page.tsx`: Tartışma detayları.
+  - `app/communities/[id]/page.tsx`: Topluluklar.
+
+## 3. Backend (Next.js API & Server Actions)
+- **API Routes (`app/api/`):** 
+  - `summarize/`, `yeterly/`: AI destekli özetleme ve metin okuma.
+  - `visitor-stats/`: Ziyaretçi takibi.
+  - `admin/`: Admin operasyonları.
+- **Server Actions (`app/actions.ts`):** Veritabanı ile doğrudan sunucu tarafı etkileşimi (recordVisitor, getVisitorStats).
+- **Middleware (`middleware.ts`):** Auth koruması ve oturum yönetimi.
+
+## 4. Veritabanı (Supabase & PostgreSQL)
+- **Tipleri:** `types/database.ts` dosyasında tanımlanmıştır.
+- **Tablolar:**
+  - `profiles`: Kullanıcı profilleri.
+  - `topics`: Tartışmalar.
+  - `categories`: Topluluklar/Kategoriler.
+  - `comments`: Tartışma yorumları.
+  - `visitors`: Ziyaretçi logları.
+
+---
+
+### Wix'te Test Etmek İçin Önemli Not
+Bu proje **Next.js (React)** ve **Supabase (PostgreSQL)** üzerine kuruludur. Wix, kendine has bir yapıya (Wix Velo, Wix CMS) sahiptir ve Next.js kodunu doğrudan çalıştıramaz. Bu yapıyı Wix'e taşımak için:
+1. Frontend bileşenlerini Wix'in sürükle-bırak editörüne uygun şekilde tasarlamanız gerekir.
+2. Backend API mantığını **Wix Velo** (server-side) tarafında yeniden yazmanız gerekir.
+3. Veritabanı kısmını (Supabase), Wix'in kendi veritabanı (CMS) sistemine veya harici bir veritabanı bağlantısına dönüştürmeniz gerekir.
