@@ -3,7 +3,7 @@ import time
 
 # Uygulama Bilgileri
 # Lütfen buradaki URL'yi kendi yayındaki URL'nizle güncelleyin
-API_URL = "https://ais-dev-ix4syl6g7zxz77ys7mkpvf-91223103933.europe-west2.run.app/api/visitor-stats"
+API_URL = "https://www.engelsizforum.com/api/visitor-stats"
 TOKEN = "engelsizforumteknofesttanitim"
 
 def veriyi_cek():

@@ -208,7 +208,7 @@ export default function VisitorStatsMonitor() {
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
-  const originUrl = mounted && typeof window !== 'undefined' ? window.location.origin : 'https://www.engelsizforum.com';
+  const originUrl = 'https://www.engelsizforum.com';
 
   // Python integration script code
   const pythonScript = `import requests
