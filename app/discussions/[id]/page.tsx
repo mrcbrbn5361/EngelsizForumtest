@@ -175,6 +175,7 @@ export default function DiscussionDetailPage() {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [replyToId, setReplyToId] = useState<string | null>(null);
+  const [supportsParentId, setSupportsParentId] = useState<boolean>(true);
 
   const fetchLikeStatus = useCallback(async () => {
     if (!user || !id) return;
@@ -337,6 +338,15 @@ export default function DiscussionDetailPage() {
     }
 
     try {
+      // Probe if 'parent_id' column exists in comments table
+      const { error: probeError } = await supabase
+        .from('comments')
+        .select('parent_id')
+        .limit(1);
+
+      const hasParentId = !probeError || (probeError.code !== 'PGRST100' && probeError.code !== '42703');
+      setSupportsParentId(hasParentId);
+
       const { data, error } = await supabase
         .from('comments')
         .select('*, author:profiles(*)')
@@ -370,14 +380,19 @@ export default function DiscussionDetailPage() {
 
     setSending(true);
     try {
+      const insertData: any = {
+        topic_id: id,
+        author_id: user.id,
+        content: newComment.trim(),
+      };
+      
+      if (supportsParentId && replyToId) {
+        insertData.parent_id = replyToId;
+      }
+
       const { data, error } = await supabase
         .from('comments')
-        .insert({
-          topic_id: id,
-          author_id: user.id,
-          content: newComment.trim(),
-          parent_id: replyToId
-        })
+        .insert(insertData)
         .select('*, author:profiles(*)')
         .single();
 
@@ -635,7 +650,7 @@ export default function DiscussionDetailPage() {
 
               <div className="space-y-8">
                 {comments.length > 0 ? (
-                  comments.filter(c => !c.parent_id).map((comment, index) => (
+                  comments.filter(c => !supportsParentId || !c.parent_id).map((comment, index) => (
                     <CommentItem 
                       key={comment.id} 
                       comment={comment} 

@@ -37,7 +37,27 @@ export default function CommunityDetailPage() {
       process.env.NEXT_PUBLIC_SUPABASE_URL && 
       process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
 
-    if (!isSupabaseConfigured) {
+    const mockCategories = [
+      { id: "mock-child-1-1", name: "Engelli Hakları ve Yasalar", slug: "engelli-haklari-ve-yasalar", description: "Engellilerin anayasal hakları, yasalar, hak arama yolları ve mevzuat tartışmaları." },
+      { id: "mock-child-1-2", name: "Maaşlar, Ödenekler ve Sosyal Yardımlar", slug: "maaslar-odenekler-ve-sosyal-yardimlar", description: "2022 engelli maaşı, evde bakım aylığı, vakıf yardımları ve başvuru koşulları." },
+      { id: "mock-child-1-3", name: "Malulen Emeklilik ve Vergi İndirimi", slug: "malulen-emeklilik-ve-vergi-indirimi", description: "Vergi indirimi dereceleri, erken emeklilik şartları, maluliyet tespiti ve SGK işlemleri." },
+      { id: "mock-child-1-4", name: "EKPSS (Sınav ve Atamalar)", slug: "ekpss-sinav-ve-atamalar", description: "Engelli Kamu Personeli Seçme Sınavı hazırlık, başvuru, tercih, kadrolar ve atama haberleri." },
+      { id: "mock-child-2-1", name: "Engelli Sağlık Raporu", slug: "engelli-saglik-raporu", description: "Sağlık kurulu raporu alma süreci, engelli oranları, itirazlar ve hastane deneyimleri." },
+      { id: "mock-child-2-2", name: "Medikal Cihazlar ve Protez/Ortez", slug: "medikal-cihazlar-ve-protez-ortez", description: "Tekerlekli sandalyeler, işitme cihazları, protezler, SGK ödemeleri and marka deneyimleri." },
+      { id: "mock-child-2-3", name: "Kronik Hastalıklar ve İlaç Paylaşımları", slug: "kronik-hastaliklar-ve-ilac-paylasimlari", description: "Kronik rahatsızlıklarla yaşam, tedavi protokolleri, ilaçlar ve yan etki paylaşımları." },
+      { id: "mock-child-3-1", name: "Görme Engelliler Teknolojileri", slug: "gorme-engelliler-teknolojileri", description: "NVDA, Jaws, VoiceOver ekran okuyucular, kabartma cihazlar ve sesli kütüphaneler." },
+      { id: "mock-child-3-2", name: "İşitme ve Dil Çözümleri", slug: "isitme-ve-dil-cozumleri", description: "İşitme cihazı ayarları, koklear implant, işaret dili eğitimleri ve alt yazı araçları." },
+      { id: "mock-child-3-3", name: "Fiziksel Mekan ve Ulaşım Erişilebilirliği", slug: "fiziksel-mekan-ve-ulasim-erisilebilirligi", description: "Tekerlekli sandalye dostu mekanlar, toplu taşıma, rampalar ve erişilebilirlik haritaları." },
+      { id: "mock-child-4-1", name: "Eğitim ve İstihdam", slug: "egitim-ve-istihdam", description: "Engelli öğrencilerin eğitim hakları, özel eğitim, iş ilanları ve çalışma hayatı zorlukları." },
+      { id: "mock-child-4-2", name: "Buluşma ve Etkinlikler", slug: "bulusma-ve-etkinlikler", description: "Fiziksel veya çevrimiçi engelsiz buluşmalar, sanatsal ve sportif faaliyet duyuruları." },
+      { id: "mock-child-4-3", name: "Ayrımcılık Bildirimi ve Hak İhlalleri", slug: "ayrimcilik-bildirimi-ve-hak-ihlalleri", description: "Günlük yaşamda karşılaşılan engelli ayrımcılığı, hak ihlalleri ve hukuki başvuru takibi." }
+    ];
+
+    if (!isSupabaseConfigured || (typeof id === 'string' && id.startsWith('mock-'))) {
+      const matched = mockCategories.find(c => c.id === id || c.slug === id);
+      if (matched) {
+        setCommunity(matched);
+      }
       setLoading(false);
       return;
     }
@@ -54,22 +74,30 @@ export default function CommunityDetailPage() {
       
       const { data, error } = await catQuery.single();
       
-      if (error) throw error;
-      setCommunity(data);
+      if (error || !data) {
+        const matched = mockCategories.find(c => c.id === id || c.slug === id);
+        if (matched) {
+          setCommunity(matched);
+        } else {
+          throw error || new Error('Category not found');
+        }
+      } else {
+        setCommunity(data);
+        
+        const { data: topicsData, error: topicsError } = await supabase
+          .from('topics')
+          .select(`
+            *,
+            author:profiles(username, avatar_url, full_name),
+            category:categories(name),
+            comments(count)
+          `)
+          .eq('category_id', data.id)
+          .order('created_at', { ascending: false });
 
-      const { data: topicsData, error: topicsError } = await supabase
-        .from('topics')
-        .select(`
-          *,
-          author:profiles(username, avatar_url, full_name),
-          category:categories(name),
-          comments(count)
-        `)
-        .eq('category_id', data.id)
-        .order('created_at', { ascending: false });
-
-      if (topicsError) throw topicsError;
-      setTopics(topicsData || []);
+        if (topicsError) throw topicsError;
+        setTopics(topicsData || []);
+      }
 
       const { count: totalProfiles } = await supabase
         .from('profiles')
@@ -79,6 +107,10 @@ export default function CommunityDetailPage() {
       }
     } catch (error) {
       console.error('Error fetching community data:', error);
+      const matched = mockCategories.find(c => c.id === id || c.slug === id);
+      if (matched) {
+        setCommunity(matched);
+      }
     } finally {
       setLoading(false);
     }

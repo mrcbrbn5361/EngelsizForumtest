@@ -3,7 +3,10 @@ import { toast } from 'sonner';
 
 import React, { useEffect, useState } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
-import { Users, Search, ChevronRight, MessageSquare, Handshake, Loader2, Plus, Save } from 'lucide-react';
+import { 
+  Users, Search, ChevronRight, MessageSquare, Handshake, Loader2, Plus, Save,
+  Scale, CreditCard, PiggyBank, Award, FileText, HeartPulse, Activity, Eye, Volume2, MapPin, GraduationCap, Calendar, AlertTriangle, FolderTree, HelpCircle
+} from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -16,6 +19,7 @@ interface Community {
   slug: string;
   icon?: string;
   member_count?: number;
+  parent_id?: string | null;
 }
 
 export default function CommunitiesPage() {
@@ -87,11 +91,32 @@ export default function CommunitiesPage() {
   );
 
   const getIcon = (iconName?: string) => {
-    switch (iconName) {
+    switch (iconName?.toLowerCase()) {
+      case 'scale': return <Scale className="text-primary" />;
+      case 'creditcard':
+      case 'credit-card': return <CreditCard className="text-primary" />;
+      case 'piggybank':
+      case 'piggy-bank': return <PiggyBank className="text-primary" />;
+      case 'award': return <Award className="text-primary" />;
+      case 'filetext':
+      case 'file-text': return <FileText className="text-primary" />;
+      case 'heartpulse':
+      case 'heart-pulse': return <HeartPulse className="text-primary text-red-500/80" />;
+      case 'activity': return <Activity className="text-primary" />;
+      case 'eye': return <Eye className="text-primary" />;
+      case 'volume2':
+      case 'volume-2': return <Volume2 className="text-primary" />;
+      case 'mappin':
+      case 'map-pin': return <MapPin className="text-primary" />;
+      case 'graduationcap':
+      case 'graduation-cap': return <GraduationCap className="text-primary" />;
+      case 'calendar': return <Calendar className="text-primary" />;
+      case 'alerttriangle':
+      case 'alert-triangle': return <AlertTriangle className="text-primary text-amber-500/80" />;
       case 'users': return <Users className="text-primary" />;
       case 'message': return <MessageSquare className="text-primary" />;
       case 'handshake': return <Handshake className="text-primary" />;
-      default: return <Users className="text-primary" />;
+      default: return <FolderTree className="text-primary" />;
     }
   };
 
@@ -308,52 +333,178 @@ export default function CommunitiesPage() {
               </div>
             ))}
           </div>
-        ) : filteredCommunities.length > 0 ? (
-          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredCommunities.map((community, index) => (
-              <motion.div 
-                key={community.id}
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.03 }}
-                className="group"
-              >
-                <Link 
-                  href={`/communities/${community.id}`}
-                  className="vibe-card vibe-card-hover block p-6 h-full flex flex-col justify-between relative cursor-pointer"
-                >
-                  <div>
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="p-3 bg-primary/10 rounded text-primary">
-                        {getIcon(community.icon)}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="vibe-label text-[10px] uppercase font-bold tracking-wider text-muted-foreground ml-0">TOPLULUK</p>
-                        <h2 className="text-base sm:text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors whitespace-normal break-words">
-                          {community.name}
-                        </h2>
-                      </div>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
-                      {community.description}
-                    </p>
-                  </div>
-                  
-                  <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">
-                    <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider group-hover:translate-x-1 transition-transform">
-                      KEŞFET <ChevronRight size={16} />
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
         ) : (
-          <div className="text-center py-16 px-6 bg-card rounded-lg border border-dashed border-border">
-            <Users className="mx-auto text-muted-foreground mb-4 opacity-20" size={64} />
-            <h3 className="text-xl font-bold mb-2 text-foreground tracking-tight">Topluluk Bulunamadı</h3>
-            <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">Aradığınız kriterlere uygun bir grup henüz yok. Kendi topluluğunuzu başlatmaya ne dersiniz?</p>
-          </div>
+          (() => {
+            let activeCategories = filteredCommunities;
+            
+            if (activeCategories.length === 0 && !searchQuery) {
+              activeCategories = [
+                // Haklar ve Mevzuat
+                { id: "mock-parent-1", name: "Haklar ve Mevzuat", slug: "haklar-ve-mevzuat", description: "Engelli hakları, yasalar, hak arama yolları ve mevzuat tartışmaları.", parent_id: null },
+                { id: "mock-child-1-1", name: "Engelli Hakları ve Yasalar", slug: "engelli-haklari-ve-yasalar", description: "Engellilerin anayasal hakları, yasalar, hak arama yolları ve mevzuat tartışmaları.", icon: "Scale", parent_id: "mock-parent-1" },
+                { id: "mock-child-1-2", name: "Maaşlar, Ödenekler ve Sosyal Yardımlar", slug: "maaslar-odenekler-ve-sosyal-yardimlar", description: "2022 engelli maaşı, evde bakım aylığı, vakıf yardımları ve başvuru koşulları.", icon: "CreditCard", parent_id: "mock-parent-1" },
+                { id: "mock-child-1-3", name: "Malulen Emeklilik ve Vergi İndirimi", slug: "malulen-emeklilik-ve-vergi-indirimi", description: "Vergi indirimi dereceleri, erken emeklilik şartları, maluliyet tespiti ve SGK işlemleri.", icon: "PiggyBank", parent_id: "mock-parent-1" },
+                { id: "mock-child-1-4", name: "EKPSS (Sınav ve Atamalar)", slug: "ekpss-sinav-ve-atamalar", description: "Engelli Kamu Personeli Seçme Sınavı hazırlık, başvuru, tercih, kadrolar ve atama haberleri.", icon: "Award", parent_id: "mock-parent-1" },
+                
+                // Sağlık ve Medikal
+                { id: "mock-parent-2", name: "Sağlık ve Medikal", slug: "saglik-ve-medikal", description: "Rapor alımı, tıbbi tedaviler, medikal cihazlar ve protez/ortez deneyimleri.", parent_id: null },
+                { id: "mock-child-2-1", name: "Engelli Sağlık Raporu", slug: "engelli-saglik-raporu", description: "Sağlık kurulu raporu alma süreci, engelli oranları, itirazlar ve hastane deneyimleri.", icon: "FileText", parent_id: "mock-parent-2" },
+                { id: "mock-child-2-2", name: "Medikal Cihazlar ve Protez/Ortez", slug: "medikal-cihazlar-ve-protez-ortez", description: "Tekerlekli sandalyeler, işitme cihazları, protezler, SGK ödemeleri ve marka deneyimleri.", icon: "HeartPulse", parent_id: "mock-parent-2" },
+                { id: "mock-child-2-3", name: "Kronik Hastalıklar ve İlaç Paylaşımları", slug: "kronik-hastaliklar-ve-ilac-paylasimlari", description: "Kronik rahatsızlıklarla yaşam, tedavi protokolleri, ilaçlar ve yan etki paylaşımları.", icon: "Activity", parent_id: "mock-parent-2" },
+                
+                // Erişilebilirlik ve Teknoloji
+                { id: "mock-parent-3", name: "Erişilebilirlik ve Teknoloji", slug: "erisilebilirlik-ve-teknoloji", description: "Ekran okuyucular, fiziksel mekan tasarımı ve akıllı yardımcı araçlar.", parent_id: null },
+                { id: "mock-child-3-1", name: "Görme Engelliler Teknolojileri", slug: "gorme-engelliler-teknolojileri", description: "NVDA, Jaws, VoiceOver ekran okuyucular, kabartma cihazlar ve sesli kütüphaneler.", icon: "Eye", parent_id: "mock-parent-3" },
+                { id: "mock-child-3-2", name: "İşitme ve Dil Çözümleri", slug: "isitme-ve-dil-cozumleri", description: "İşitme cihazı ayarları, koklear implant, işaret dili eğitimleri ve alt yazı araçları.", icon: "Volume2", parent_id: "mock-parent-3" },
+                { id: "mock-child-3-3", name: "Fiziksel Mekan ve Ulaşım Erişilebilirliği", slug: "fiziksel-mekan-ve-ulasim-erisilebilirligi", description: "Tekerlekli sandalye dostu mekanlar, toplu taşıma, rampalar ve erişilebilirlik haritaları.", icon: "MapPin", parent_id: "mock-parent-3" },
+                
+                // Sosyal Yaşam ve Akran Desteği
+                { id: "mock-parent-4", name: "Sosyal Yaşam ve Akran Desteği", slug: "sosyal-yasam-ve-akran-destegi", description: "Eğitim, kariyer, sosyal yardımlaşma ve farkındalık paylaşımları.", parent_id: null },
+                { id: "mock-child-4-1", name: "Eğitim ve İstihdam", slug: "egitim-ve-istihdam", description: "Engelli öğrencilerin eğitim hakları, özel eğitim, iş ilanları ve çalışma hayatı zorlukları.", icon: "GraduationCap", parent_id: "mock-parent-4" },
+                { id: "mock-child-4-2", name: "Buluşma ve Etkinlikler", slug: "bulusma-ve-etkinlikler", description: "Fiziksel veya çevrimiçi engelsiz buluşmalar, sanatsal ve sportif faaliyet duyuruları.", icon: "Calendar", parent_id: "mock-parent-4" },
+                { id: "mock-child-4-3", name: "Ayrımcılık Bildirimi ve Hak İhlalleri", slug: "ayrimcilik-bildirimi-ve-hak-ihlalleri", description: "Günlük yaşamda karşılaşılan engelli ayrımcılığı, hak ihlalleri ve hukuki başvuru takibi.", icon: "AlertTriangle", parent_id: "mock-parent-4" }
+              ];
+            }
+
+            if (activeCategories.length === 0) {
+              return (
+                <div className="text-center py-16 px-6 bg-card rounded-lg border border-dashed border-border">
+                  <Users className="mx-auto text-muted-foreground mb-4 opacity-20" size={64} />
+                  <h3 className="text-xl font-bold mb-2 text-foreground tracking-tight">Topluluk Bulunamadı</h3>
+                  <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">Aradığınız kriterlere uygun bir grup henüz yok. Kendi topluluğunuzu başlatmaya ne dersiniz?</p>
+                </div>
+              );
+            }
+
+            const parentSections = activeCategories.filter(c => !c.parent_id);
+            const childrenByParent: { [id: string]: Community[] } = {};
+            activeCategories.filter(c => c.parent_id).forEach(c => {
+              const pid = c.parent_id!;
+              if (!childrenByParent[pid]) childrenByParent[pid] = [];
+              childrenByParent[pid].push(c);
+            });
+
+            if (searchQuery || parentSections.length === 0) {
+              return (
+                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {activeCategories.map((community, index) => (
+                    <motion.div 
+                      key={community.id}
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.03 }}
+                      className="group"
+                    >
+                      <Link 
+                        href={`/communities/${community.id}`}
+                        className="vibe-card vibe-card-hover block p-6 h-full flex flex-col justify-between relative cursor-pointer"
+                      >
+                        <div>
+                          <div className="flex items-center gap-4 mb-4">
+                            <div className="p-3 bg-primary/10 rounded-xl text-primary">
+                              {getIcon(community.icon)}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="vibe-label text-[10px] uppercase font-bold tracking-wider text-muted-foreground ml-0">TOPLULUK</p>
+                              <h2 className="text-base sm:text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors whitespace-normal break-words">
+                                {community.name}
+                              </h2>
+                            </div>
+                          </div>
+                          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                            {community.description}
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">
+                          <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+                            KEŞFET <ChevronRight size={16} />
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  ))}
+                </div>
+              );
+            }
+
+            return (
+              <div className="space-y-16">
+                {parentSections.map((section, secIndex) => {
+                  const sectionChildren = childrenByParent[section.id] || [];
+                  if (sectionChildren.length === 0) return null;
+
+                  return (
+                    <section 
+                      key={section.id} 
+                      aria-labelledby={`sec-title-${section.id}`}
+                      className="space-y-6"
+                    >
+                      <div className="flex items-center gap-4 border-b border-border/80 pb-4">
+                        <div className="p-2.5 bg-primary/5 rounded-2xl text-primary">
+                          {getIcon(section.icon || 'FolderTree')}
+                        </div>
+                        <div>
+                          <h2 
+                            id={`sec-title-${section.id}`}
+                            className="text-xl md:text-2xl font-black tracking-tight text-foreground uppercase"
+                          >
+                            {section.name}
+                          </h2>
+                          <p className="text-xs text-muted-foreground font-medium mt-0.5">{section.description}</p>
+                        </div>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {sectionChildren.map((community, index) => (
+                          <motion.div 
+                            key={community.id}
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: index * 0.02 + secIndex * 0.05 }}
+                            className="group"
+                          >
+                            <Link 
+                              href={`/communities/${community.id}`}
+                              className="vibe-card vibe-card-hover block p-6 h-full flex flex-col justify-between relative cursor-pointer"
+                              aria-describedby={`desc-${community.id}`}
+                            >
+                              <div>
+                                <div className="flex items-center gap-4 mb-4">
+                                  <div className="p-3 bg-primary/10 rounded-xl text-primary shrink-0">
+                                    {getIcon(community.icon)}
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    <span className="sr-only">{section.name} kategorisinde alt forum: </span>
+                                    <h3 className="text-base sm:text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors whitespace-normal break-words leading-snug">
+                                      {community.name}
+                                    </h3>
+                                  </div>
+                                </div>
+                                <p 
+                                  id={`desc-${community.id}`}
+                                  className="text-sm text-muted-foreground leading-relaxed line-clamp-3"
+                                >
+                                  {community.description}
+                                </p>
+                              </div>
+                              
+                              <div className="flex items-center justify-between mt-6 pt-4 border-t border-border">
+                                <span className="sr-only">{community.name} konusuna </span>
+                                <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider group-hover:translate-x-1 transition-transform">
+                                  TARTIŞMALARI GÖR <ChevronRight size={16} />
+                                </div>
+                              </div>
+                            </Link>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            );
+          })()
         )}
 
         {/* Informational Section for GEO */}

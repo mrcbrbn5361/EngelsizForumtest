@@ -45,7 +45,33 @@ function NewTopicForm() {
           console.error('Error fetching categories:', error);
           return;
         }
-        if (data) setCategories(data);
+        if (data && data.length > 0) {
+          setCategories(data);
+        } else {
+          // Fallback detailed Turkish categories
+          setCategories([
+            { id: "mock-parent-1", name: "Haklar ve Mevzuat", slug: "haklar-ve-mevzuat", description: "Engelli hakları, yasalar, hak arama yolları ve mevzuat tartışmaları.", parent_id: null },
+            { id: "mock-child-1-1", name: "Engelli Hakları ve Yasalar", slug: "engelli-haklari-ve-yasalar", description: "Engellilerin anayasal hakları, yasalar, hak arama yolları.", parent_id: "mock-parent-1" },
+            { id: "mock-child-1-2", name: "Maaşlar, Ödenekler ve Sosyal Yardımlar", slug: "maaslar-odenekler-ve-sosyal-yardimlar", description: "2022 engelli maaşı, evde bakım aylığı.", parent_id: "mock-parent-1" },
+            { id: "mock-child-1-3", name: "Malulen Emeklilik ve Vergi İndirimi", slug: "malulen-emeklilik-ve-vergi-indirimi", description: "Vergi indirimi dereceleri, erken emeklilik şartları.", parent_id: "mock-parent-1" },
+            { id: "mock-child-1-4", name: "EKPSS (Sınav ve Atamalar)", slug: "ekpss-sinav-ve-atamalar", description: "Engelli Kamu Personeli Seçme Sınavı hazırlık.", parent_id: "mock-parent-1" },
+            
+            { id: "mock-parent-2", name: "Sağlık ve Medikal", slug: "saglik-ve-medikal", description: "Rapor alımı, tıbbi tedaviler.", parent_id: null },
+            { id: "mock-child-2-1", name: "Engelli Sağlık Raporu", slug: "engelli-saglik-raporu", description: "Sağlık kurulu raporu alma süreci.", parent_id: "mock-parent-2" },
+            { id: "mock-child-2-2", name: "Medikal Cihazlar ve Protez/Ortez", slug: "medikal-cihazlar-ve-protez-ortez", description: "Tekerlekli sandalyeler, işitme cihazları.", parent_id: "mock-parent-2" },
+            { id: "mock-child-2-3", name: "Kronik Hastalıklar ve İlaç Paylaşımları", slug: "kronik-hastaliklar-ve-ilac-paylasimlari", description: "Kronik rahatsızlıklarla yaşam.", parent_id: "mock-parent-2" },
+            
+            { id: "mock-parent-3", name: "Erişilebilirlik ve Teknoloji", slug: "erisilebilirlik-ve-teknoloji", description: "Ekran okuyucular, yardımcı teknolojiler.", parent_id: null },
+            { id: "mock-child-3-1", name: "Görme Engelliler Teknolojileri", slug: "gorme-engelliler-teknolojileri", description: "NVDA, Jaws, VoiceOver ekran okuyucular.", parent_id: "mock-parent-3" },
+            { id: "mock-child-3-2", name: "İşitme ve Dil Çözümleri", slug: "isitme-ve-dil-cozumleri", description: "İşitme cihazı ayarları, koklear implant.", parent_id: "mock-parent-3" },
+            { id: "mock-child-3-3", name: "Fiziksel Mekan ve Ulaşım Erişilebilirliği", slug: "fiziksel-mekan-ve-ulasim-erisilebilirligi", description: "Tekerlekli sandalye dostu mekanlar.", parent_id: "mock-parent-3" },
+            
+            { id: "mock-parent-4", name: "Sosyal Yaşam ve Akran Desteği", slug: "sosyal-yasam-ve-akran-destegi", description: "Eğitim, kariyer.", parent_id: null },
+            { id: "mock-child-4-1", name: "Eğitim ve İstihdam", slug: "egitim-ve-istihdam", description: "Engelli öğrencilerin eğitim hakları.", parent_id: "mock-parent-4" },
+            { id: "mock-child-4-2", name: "Buluşma ve Etkinlikler", slug: "bulusma-ve-etkinlikler", description: "Fiziksel veya çevrimiçi engelsiz buluşmalar.", parent_id: "mock-parent-4" },
+            { id: "mock-child-4-3", name: "Ayrımcılık Bildirimi ve Hak İhlalleri", slug: "ayrimcilik-bildirimi-ve-hak-ihlalleri", description: "Ayrımcılık bildirimleri.", parent_id: "mock-parent-4" }
+          ]);
+        }
       } catch (err) {
         console.error('Error in category fetch:', err);
       }
@@ -169,9 +195,13 @@ function NewTopicForm() {
                 className="vibe-input h-20 text-lg appearance-none cursor-pointer"
               >
                   <option value="">{categories.length === 0 ? "Kategoriler yükleniyor veya boş..." : "Bir kategori seçin..."}</option>
-                  {leafCategories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                  ))}
+                  {leafCategories.map(cat => {
+                    const parent = categories.find(p => p.id === cat.parent_id);
+                    const displayName = parent ? `${parent.name} › ${cat.name}` : cat.name;
+                    return (
+                      <option key={cat.id} value={cat.id}>{displayName}</option>
+                    );
+                  })}
               </select>
             </div>
           </div>

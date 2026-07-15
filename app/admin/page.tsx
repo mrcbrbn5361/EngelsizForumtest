@@ -20,7 +20,8 @@ import {
   MoreVertical,
   ChevronRight,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -423,26 +424,121 @@ function SummaryCounter({ stats }: { stats: any }) {
 // Sub-components
 function CategoryManager({ categories, onRefresh }: { categories: any[], onRefresh: () => void }) {
   const [isAdding, setIsAdding] = useState(false);
-  const [formData, setFormData] = useState({ name: '', description: '', icon: 'MessageSquare' });
+  const [seeding, setSeeding] = useState(false);
+  const [formData, setFormData] = useState({ name: '', description: '', icon: 'MessageSquare', parent_id: '' });
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    const slug = formData.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    const slug = formData.name.toLowerCase()
+      .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
+      .replace(/ /g, '-').replace(/[^\w-]+/g, '');
     
-    const { error } = await supabase.from('categories').insert([{ ...formData, slug }]);
+    const insertData: any = {
+      name: formData.name,
+      description: formData.description,
+      icon: formData.icon,
+      slug
+    };
+
+    if (formData.parent_id) {
+      insertData.parent_id = formData.parent_id;
+    }
+    
+    const { error } = await supabase.from('categories').insert([insertData]);
     
     if (error) {
       toast.error('Hata: ' + error.message);
     } else {
       toast.success('Kategori eklendi');
       setIsAdding(false);
-      setFormData({ name: '', description: '', icon: 'MessageSquare' });
-      onRefresh(); // Bu artık fetchAllData'yı tetikleyecek
+      setFormData({ name: '', description: '', icon: 'MessageSquare', parent_id: '' });
+      onRefresh();
+    }
+  };
+
+  const handleSeedDefaultCategories = async () => {
+    if (!confirm('Varsayılan detaylı engelli forum hiyerarşisini (Mevzuat, Sağlık, Erişilebilirlik, Sosyal Yaşam ve alt forumlarını) yüklemek istediğinize emin misiniz? (Mevcut verileriniz silinmez, üzerine eklenir.)')) return;
+    
+    setSeeding(true);
+    try {
+      const parents = [
+        { name: "Haklar ve Mevzuat", slug: "haklar-ve-mevzuat", icon: "Scale", description: "Engelli hakları, yasalar, hak arama yolları ve mevzuat tartışmaları.", sort_order: 10 },
+        { name: "Sağlık ve Medikal", slug: "saglik-ve-medikal", icon: "HeartPulse", description: "Rapor alımı, tıbbi tedaviler, medikal cihazlar ve protez/ortez deneyimleri.", sort_order: 20 },
+        { name: "Erişilebilirlik ve Teknoloji", slug: "erisilebilirlik-ve-teknoloji", icon: "Eye", description: "Ekran okuyucular, fiziksel mekan tasarımı ve akıllı yardımcı araçlar.", sort_order: 30 },
+        { name: "Sosyal Yaşam ve Akran Desteği", slug: "sosyal-yasam-ve-akran-destegi", icon: "Users", description: "Eğitim, kariyer, sosyal yardımlaşma ve farkındalık paylaşımları.", sort_order: 40 }
+      ];
+
+      const insertedParents: any[] = [];
+
+      for (const parent of parents) {
+        const { data, error } = await supabase
+          .from('categories')
+          .insert([parent])
+          .select()
+          .single();
+        
+        if (!error && data) {
+          insertedParents.push(data);
+        } else {
+          const { data: existing } = await supabase
+            .from('categories')
+            .select()
+            .eq('slug', parent.slug)
+            .single();
+          if (existing) {
+            insertedParents.push(existing);
+          }
+        }
+      }
+
+      const parentMap = new Map(insertedParents.map(p => [p.slug, p.id]));
+
+      const subforums = [
+        { name: "Engelli Hakları ve Yasalar", slug: "engelli-haklari-ve-yasalar", icon: "Scale", description: "Engellilerin anayasal hakları, yasalar, hak arama yolları ve mevzuat tartışmaları.", sort_order: 11, parent_slug: "haklar-ve-mevzuat" },
+        { name: "Maaşlar, Ödenekler ve Sosyal Yardımlar", slug: "maaslar-odenekler-ve-sosyal-yardimlar", icon: "CreditCard", description: "2022 engelli maaşı, evde bakım aylığı, vakıf yardımları ve başvuru koşulları.", sort_order: 12, parent_slug: "haklar-ve-mevzuat" },
+        { name: "Malulen Emeklilik ve Vergi İndirimi", slug: "malulen-emeklilik-ve-vergi-indirimi", icon: "PiggyBank", description: "Vergi indirimi dereceleri, erken emeklilik şartları, maluliyet tespiti ve SGK işlemleri.", sort_order: 13, parent_slug: "haklar-ve-mevzuat" },
+        { name: "EKPSS (Sınav ve Atamalar)", slug: "ekpss-sinav-ve-atamalar", icon: "Award", description: "Engelli Kamu Personeli Seçme Sınavı hazırlık, başvuru, tercih, kadrolar ve atama haberleri.", sort_order: 14, parent_slug: "haklar-ve-mevzuat" },
+
+        { name: "Engelli Sağlık Raporu", slug: "engelli-saglik-raporu", icon: "FileText", description: "Sağlık kurulu raporu alma süreci, engelli oranları, itirazlar ve hastane deneyimleri.", sort_order: 21, parent_slug: "saglik-ve-medikal" },
+        { name: "Medikal Cihazlar ve Protez/Ortez", slug: "medikal-cihazlar-ve-protez-ortez", icon: "HeartPulse", description: "Tekerlekli sandalyeler, işitme cihazları, protezler, SGK ödemeleri ve marka deneyimleri.", sort_order: 22, parent_slug: "saglik-ve-medikal" },
+        { name: "Kronik Hastalıklar ve İlaç Paylaşımları", slug: "kronik-hastaliklar-ve-ilac-paylasimlari", icon: "Activity", description: "Kronik rahatsızlıklarla yaşam, tedavi protokolleri, ilaçlar ve yan etki paylaşımları.", sort_order: 23, parent_slug: "saglik-ve-medikal" },
+
+        { name: "Görme Engelliler Teknolojileri", slug: "gorme-engelliler-teknolojileri", icon: "Eye", description: "NVDA, Jaws, VoiceOver ekran okuyucular, kabartma cihazlar ve sesli kütüphaneler.", sort_order: 31, parent_slug: "erisilebilirlik-ve-teknoloji" },
+        { name: "İşitme ve Dil Çözümleri", slug: "isitme-ve-dil-cozumleri", icon: "Volume2", description: "İşitme cihazı ayarları, koklear implant, işaret dili eğitimleri ve alt yazı araçları.", sort_order: 32, parent_slug: "erisilebilirlik-ve-teknoloji" },
+        { name: "Fiziksel Mekan ve Ulaşım Erişilebilirliği", slug: "fiziksel-mekan-ve-ulasim-erisilebilirligi", icon: "MapPin", description: "Tekerlekli sandalye dostu mekanlar, toplu taşıma, rampalar ve erişilebilirlik haritaları.", sort_order: 33, parent_slug: "erisilebilirlik-ve-teknoloji" },
+
+        { name: "Eğitim ve İstihdam", slug: "egitim-ve-istihdam", icon: "GraduationCap", description: "Engelli öğrencilerin eğitim hakları, özel eğitim, iş ilanları ve çalışma hayatı zorlukları.", sort_order: 41, parent_slug: "sosyal-yasam-ve-akran-destegi" },
+        { name: "Buluşma ve Etkinlikler", slug: "bulusma-ve-etkinlikler", icon: "Calendar", description: "Fiziksel veya çevrimiçi engelsiz buluşmalar, sanatsal ve sportif faaliyet duyuruları.", sort_order: 42, parent_slug: "sosyal-yasam-ve-akran-destegi" },
+        { name: "Ayrımcılık Bildirimi ve Hak İhlalleri", slug: "ayrimcilik-bildirimi-ve-hak-ihlalleri", icon: "AlertTriangle", description: "Günlük yaşamda karşılaşılan engelli ayrımcılığı, hak ihlalleri ve hukuki başvuru takibi.", sort_order: 43, parent_slug: "sosyal-yasam-ve-akran-destegi" }
+      ];
+
+      for (const sub of subforums) {
+        const parentId = parentMap.get(sub.parent_slug);
+        if (parentId) {
+          await supabase
+            .from('categories')
+            .insert([{
+              name: sub.name,
+              slug: sub.slug,
+              icon: sub.icon,
+              description: sub.description,
+              sort_order: sub.sort_order,
+              parent_id: parentId
+            }]);
+        }
+      }
+
+      toast.success('Detaylı engelli forum hiyerarşisi başarıyla yüklendi!');
+      onRefresh();
+    } catch (err: any) {
+      toast.error('Kategoriler yüklenirken hata oluştu: ' + err.message);
+    } finally {
+      setSeeding(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Bu kategoriyi silmek istediğinize emin misiniz?')) return;
+    if (!confirm('Bu kategoriyi silmek istediğinize emin misiniz? Alt kategorileri varsa onlar da silinecektir.')) return;
     
     const { error } = await supabase.from('categories').delete().eq('id', id);
     if (error) toast.error('Hata: ' + error.message);
@@ -452,38 +548,73 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
     }
   };
 
+  // Filter only main (parent) categories for dropdown list
+  const parentCategoriesList = categories.filter(c => !c.parent_id);
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-black tracking-tight">Kategori Yönetimi</h2>
-        <button 
-          onClick={() => setIsAdding(true)}
-          className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-bold shadow-lg hover:scale-105 transition-transform"
-        >
-          <Plus size={18} /> Yeni Kategori
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-black tracking-tight">Kategori Yönetimi</h2>
+          <p className="text-sm text-muted-foreground font-medium">Forum yapısını ve alt forumları hiyerarşik olarak düzenleyin.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleSeedDefaultCategories}
+            disabled={seeding}
+            className="flex items-center gap-2 bg-secondary text-secondary-foreground border border-border px-4 py-2 rounded-xl text-sm font-bold shadow hover:bg-muted transition-all disabled:opacity-50"
+          >
+            {seeding ? <Loader2 size={18} className="animate-spin" /> : <FolderTree size={18} />}
+            Varsayılan Hiyerarşiyi Seed Et
+          </button>
+          <button 
+            onClick={() => setIsAdding(true)}
+            className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-bold shadow-lg hover:scale-105 transition-transform"
+          >
+            <Plus size={18} /> Yeni Kategori / Alt Forum
+          </button>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {categories.map((cat) => (
-          <div key={cat.id} className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-md transition-all group">
-            <div className="flex items-start justify-between">
-              <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center text-primary mb-4">
-                <FolderTree size={20} />
+        {categories.map((cat) => {
+          const parentName = cat.parent_id 
+            ? categories.find(p => p.id === cat.parent_id)?.name 
+            : null;
+
+          return (
+            <div key={cat.id} className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-md transition-all group relative flex flex-col justify-between">
+              <div>
+                <div className="flex items-start justify-between">
+                  <div className="h-10 w-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary mb-4 font-bold">
+                    {cat.parent_id ? '↳' : '⊞'}
+                  </div>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => handleDelete(cat.id)} className="p-2 rounded-full hover:bg-red-50 text-red-500 transition-colors" title="Sil"><Trash2 size={14}/></button>
+                  </div>
+                </div>
+                <div className="mb-2">
+                  {parentName && (
+                    <span className="inline-block text-[10px] font-black uppercase tracking-widest text-primary/80 bg-primary/5 px-2 py-0.5 rounded-full mb-1">
+                      Alt Forum / {parentName}
+                    </span>
+                  )}
+                  {!cat.parent_id && (
+                    <span className="inline-block text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-muted px-2 py-0.5 rounded-full mb-1">
+                      Ana Forum Bölümü
+                    </span>
+                  )}
+                  <h4 className="font-black text-lg leading-tight mt-1">{cat.name}</h4>
+                </div>
+                <p className="text-xs text-muted-foreground font-medium leading-relaxed mb-4 line-clamp-2">{cat.description || 'Açıklama yok.'}</p>
               </div>
-              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="p-2 rounded-full hover:bg-muted text-muted-foreground transition-colors"><Edit size={14}/></button>
-                <button onClick={() => handleDelete(cat.id)} className="p-2 rounded-full hover:bg-red-50 text-red-500 transition-colors"><Trash2 size={14}/></button>
+              <div className="flex items-center gap-2 py-2 px-3 bg-muted rounded-xl w-fit">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">SLUG:</span>
+                <span className="text-[10px] font-mono font-bold text-foreground/80">{cat.slug}</span>
               </div>
             </div>
-            <h4 className="font-black text-lg mb-1">{cat.name}</h4>
-            <p className="text-xs text-muted-foreground font-medium leading-relaxed mb-4 line-clamp-2">{cat.description || 'Açıklama yok.'}</p>
-            <div className="flex items-center gap-2 py-2 px-3 bg-muted rounded-xl w-fit">
-              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">SLUG:</span>
-              <span className="text-[10px] font-mono font-bold">{cat.slug}</span>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <Dialog.Root open={isAdding} onOpenChange={setIsAdding}>
@@ -491,11 +622,11 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
           <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" />
           <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md bg-background p-8 rounded-3xl shadow-2xl focus:outline-none">
             <Dialog.Title className="text-2xl font-black tracking-tight mb-2">Yeni Kategori Ekle</Dialog.Title>
-            <Dialog.Description className="text-sm text-muted-foreground mb-6 font-medium">Bu kategori tüm üyeler tarafından forum ana sayfasında ve tartışma bölümlerinde görülecektir.</Dialog.Description>
+            <Dialog.Description className="text-sm text-muted-foreground mb-6 font-medium">Bu kategori veya alt forum tüm üyeler tarafından forum ana sayfasında görülecektir.</Dialog.Description>
             
             <form onSubmit={handleAdd} className="space-y-4">
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest mb-1.5 ml-1">Kategori Adı</label>
+                <label className="block text-xs font-black uppercase tracking-widest mb-1.5 ml-1">Kategori / Alt Forum Adı</label>
                 <input 
                   required
                   type="text" 
@@ -504,6 +635,20 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
                   className="w-full p-4 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary focus:bg-background outline-none transition-all font-bold" 
                   placeholder="Erişilebilirlik Sorunları"
                 />
+              </div>
+              <div>
+                <label className="block text-xs font-black uppercase tracking-widest mb-1.5 ml-1">Üst Kategori (Opsiyonel)</label>
+                <select 
+                  value={formData.parent_id}
+                  onChange={(e) => setFormData({...formData, parent_id: e.target.value})}
+                  className="w-full p-4 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary focus:bg-background outline-none transition-all font-bold cursor-pointer"
+                >
+                  <option value="">-- Ana Forum Bölümü Yap (Üst Kategori Yok) --</option>
+                  {parentCategoriesList.map(parent => (
+                    <option key={parent.id} value={parent.id}>{parent.name}</option>
+                  ))}
+                </select>
+                <p className="text-[10px] text-muted-foreground mt-1 ml-1 font-medium">Eğer bu bir Alt Forum olacaksa, bağlı olduğu Ana Bölümü seçin.</p>
               </div>
               <div>
                 <label className="block text-xs font-black uppercase tracking-widest mb-1.5 ml-1">Açıklama</label>
@@ -518,7 +663,7 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
                 <Dialog.Close asChild>
                   <button type="button" className="flex-1 p-4 rounded-xl bg-muted font-bold hover:bg-muted/80 transition-colors">İptal</button>
                 </Dialog.Close>
-                <button type="submit" className="flex-1 p-4 rounded-xl bg-primary text-primary-foreground font-black shadow-lg hover:shadow-primary/20 transition-all">Sanal Olarak Oluştur</button>
+                <button type="submit" className="flex-1 p-4 rounded-xl bg-primary text-primary-foreground font-black shadow-lg hover:shadow-primary/20 transition-all">Oluştur</button>
               </div>
             </form>
           </Dialog.Content>
