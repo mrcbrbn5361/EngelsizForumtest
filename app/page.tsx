@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Sparkles, Plus, MessageSquare } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { ForumIndexClient } from '@/components/forum/forum-index-client';
 
 export default async function Home() {
   // Resiliently fetch dynamic data on the server side
@@ -24,18 +25,18 @@ export default async function Home() {
         .select(`
           *,
           author:profiles(username, avatar_url, full_name),
-          category:categories(name),
+          category:categories(name, slug, description, icon, color),
           comments(count)
         `)
         .order('created_at', { ascending: false })
-        .limit(3);
+        .limit(100);
 
       // Fetch featured categories (communities)
       const { data: catsData, error: catsError } = await supabase
         .from('categories')
         .select('*')
         .order('name')
-        .limit(3);
+        .limit(50);
 
       if (!topicsError && topicsData) {
         latestTopics = topicsData;
@@ -49,74 +50,7 @@ export default async function Home() {
     }
   }
 
-  // Fallback to high-quality default mock data if DB has no data or is not configured
-  if (latestTopics.length === 0) {
-    latestTopics = [
-      {
-        id: "mock-1",
-        title: "Ekran Okuyucu NVDA 2026.1 Güncellemesi ve Türkçe Ses Sentezleyici İncelemesi",
-        content: "Yeni NVDA güncellemesi ile gelen Türkçe konuşma motoru iyileştirmelerini test ettim. Ses hızı ve tonlaması çok daha doğal hale gelmiş. Detayları konumuzda bulabilirsiniz...",
-        created_at: new Date(Date.now() - 3600000 * 2).toISOString(), // 2 hours ago
-        likes_count: 24,
-        is_pinned: true,
-        is_solved: true,
-        category: { name: "Görme Engelliler Teknolojileri" },
-        author: { full_name: "Miraç Birben", username: "mirac", avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=mirac" },
-        comments: [{ count: 12 }]
-      },
-      {
-        id: "mock-2",
-        title: "Disleksi Dostu Yazı Tiplerinin Okuma Hızına Etkisi: Bilimsel Araştırma",
-        content: "Atkinson Hyperlegible ve OpenDyslexic yazı tiplerinin okuma doğruluğunu %15 oranında artırdığı saptandı. Forumumuzda bu fontları aktif ederek deneyimlerinizi paylaşabilirsiniz.",
-        created_at: new Date(Date.now() - 3600000 * 18).toISOString(), // 18 hours ago
-        likes_count: 18,
-        is_pinned: false,
-        is_solved: false,
-        category: { name: "Bilişsel & Psikolojik Destek" },
-        author: { full_name: "Aria Geliştirici", username: "aria", avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=aria" },
-        comments: [{ count: 5 }]
-      },
-      {
-        id: "mock-3",
-        title: "Kamu Binalarında Engelsiz Erişim ve Ortapedik Rampa Standartları Rehberi",
-        content: "TSE standartlarına göre tekerlekli sandalye rampalarının eğimi maksimum %6 olmalıdır. Yaşadığınız şehirlerdeki erişilebilirlik sorunlarını ve çözümlerini burada tartışalım.",
-        created_at: new Date(Date.now() - 3600000 * 36).toISOString(), // 36 hours ago
-        likes_count: 31,
-        is_pinned: false,
-        is_solved: true,
-        category: { name: "Engelli Hakları & Hukuk" },
-        author: { full_name: "Felix Moderatör", username: "felix", avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=felix" },
-        comments: [{ count: 9 }]
-      }
-    ];
-  }
-
-  if (featuredCommunities.length === 0) {
-    featuredCommunities = [
-      {
-        id: "cat-gorme",
-        name: "Görme Engelliler Teknolojileri",
-        description: "Ekran okuyucular, kabartma ekranlar, sesli asistanlar ve günlük yaşamı kolaylaştıran teknolojik çözümler.",
-        icon: "users",
-        slug: "gorme-engelliler"
-      },
-      {
-        id: "cat-haklar",
-        name: "Engelli Hakları & Hukuk",
-        description: "Mevzuat, erişilebilirlik yasaları, istihdam hakları ve yasal destek süreçlerine dair rehber paylaşımlar.",
-        icon: "handshake",
-        slug: "engelli-haklari"
-      },
-      {
-        id: "cat-bilissel",
-        name: "Bilişsel & Psikolojik Destek",
-        description: "Disleksi, otizm, DEHB ve ruh sağlığı süreçlerinde deneyim paylaşımları ve akran desteği.",
-        icon: "message",
-        slug: "bilissel-destek"
-      }
-    ];
-  }
-
+  // No fallback mock data allowed. Real data must be fetched dynamically from the database.
   function formatTRDate(dateStr: string) {
     const date = new Date(dateStr);
     const now = new Date();
@@ -375,347 +309,118 @@ export default async function Home() {
           })
         }}
       />
-      <main className="flex-1 w-full overflow-x-hidden">
-        {/* Hero Section */}
-        <section className="relative flex items-center justify-center pt-16 bg-background">
-          <div className="vibe-container py-16 md:py-24 text-center relative z-10">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-8">
-              <Sparkles size={14} /> TÜRKİYE&apos;NİN İLK ERİŞİLEBİLİR FORUMU
-            </div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-8 tracking-tight text-foreground leading-tight">
-              ENGELSİZ <br />
-              <span className="text-primary">DİJİTAL</span> <br />
-              DÜNYA
-            </h1>
-            <p className="mx-auto max-w-2xl text-lg md:text-xl text-muted-foreground mb-10 font-normal leading-relaxed px-4">
-              Yapay zeka destekli, tam erişilebilir ve kapsayıcı topluluk platformu ile tanışın. Herkes için bilgi, herkes için forum.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
-              <Link
-                href="/auth"
-                className="vibe-button-primary w-full sm:w-auto px-8 py-3 text-base min-h-[48px] rounded flex items-center justify-center"
-                aria-label="Platformu kullanmaya başla"
-              >
-                HEMEN BAŞLA
-              </Link>
-              <Link
-                href="/discussions"
-                className="w-full sm:w-auto bg-muted border border-border text-foreground px-8 py-3 rounded font-semibold text-base hover:bg-muted/80 transition-all text-center flex items-center justify-center min-h-[48px]"
-                aria-label="Tüm tartışmaları görüntüle"
-              >
-                TARTIŞMALARI GÖR
-              </Link>
-            </div>
-          </div>
-        </section>
+      <ForumIndexClient initialTopics={latestTopics} initialCategories={featuredCommunities} />
 
-        {/* Key Takeaways Section */}
-        <section className="max-w-[1280px] mx-auto px-4 py-8">
-          <div className="bg-card border border-border rounded-lg p-6 md:p-10">
-            <h2 className="text-xl md:text-2xl font-bold mb-6 flex items-center gap-3 text-foreground">
-              <span className="text-primary">💡</span> Özet ve Önemli Noktalar
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="space-y-2">
-                <div className="font-bold text-primary uppercase tracking-wider text-xs">ERİŞİLEBİLİRLİK</div>
-                <p className="text-sm font-normal text-muted-foreground">WCAG 2.1 AA standartlarına tam uyum ve bionik okuma desteği.</p>
-              </div>
-              <div className="space-y-2">
-                <div className="font-bold text-primary uppercase tracking-wider text-xs">YAPAY ZEKA</div>
-                <p className="text-sm font-normal text-muted-foreground">Uzun tartışmaların AI tarafından özetlenmesi ve otomatik alt-metin üretimi.</p>
-              </div>
-              <div className="space-y-2">
-                <div className="font-bold text-primary uppercase tracking-wider text-xs">TOPLULUK</div>
-                <p className="text-sm font-normal text-muted-foreground">Farklı engel gruplarına yönelik özelleşmiş yardımlaşma kategorileri.</p>
-              </div>
-              <div className="space-y-2">
-                <div className="font-bold text-primary uppercase tracking-wider text-xs">GÜVENİLİRLİK</div>
-                <p className="text-sm font-normal text-muted-foreground">E-E-A-T prensipleriyle denetlenen, kullanıcı onaylı ve uzman görüşlü içerikler.</p>
-              </div>
-            </div>
-            <div className="mt-8 pt-6 border-t border-border text-xs text-muted-foreground font-normal flex flex-wrap items-center gap-2">
-              <span>📅 Son Güncelleme:</span>
-              <time dateTime="2026-05-18">18 Mayıs 2026</time>
-              <span className="mx-2">•</span>
-              <span>📖 Okuma Süresi: 6 Dakika</span>
-            </div>
-          </div>
-        </section>
-
-        {/* Dynamic Interactive Content Section */}
-        <section className="max-w-[1280px] mx-auto px-4 py-16 border-b border-border">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            
-            {/* Featured Communities */}
-            <div className="lg:col-span-4 space-y-8">
-              <div>
-                <span className="vibe-label ml-0">ÖNE ÇIKAN GRUPLAR</span>
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground uppercase mt-2">Popüler Topluluklar</h2>
-                <p className="text-muted-foreground text-sm font-normal mt-2 leading-relaxed">
-                  Özel gereksinimli bireylerin ve destekçilerin deneyimlerini paylaştığı aktif ilgi gruplarımız.
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                {featuredCommunities.map((community) => (
-                  <Link
-                    key={community.id}
-                    href={`/communities`}
-                    className="vibe-card block p-6 hover:border-primary/50 transition-all cursor-pointer group"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-primary/10 rounded text-primary group-hover:scale-110 transition-transform text-2xl">
-                        {community.icon === 'handshake' ? '🤝' : community.icon === 'message' ? '💬' : '👥'}
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-foreground text-base group-hover:text-primary transition-colors">{community.name}</h3>
-                        <p className="text-xs text-muted-foreground line-clamp-1 mt-1">{community.description}</p>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-
-              <div className="pt-2">
-                <Link
-                  href="/communities"
-                  className="w-full bg-muted border border-border text-foreground px-6 py-3.5 rounded font-bold text-sm hover:bg-muted/80 transition-all text-center flex items-center justify-center min-h-[44px]"
-                >
-                  TÜM TOPLULUKLARI KEŞFET
-                </Link>
-              </div>
-            </div>
-
-            {/* Latest Discussions */}
-            <div className="lg:col-span-8 space-y-8">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <span className="vibe-label ml-0">SON PAYLAŞIMLAR</span>
-                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground uppercase mt-2">Aktif Tartışmalar</h2>
-                </div>
-                <Link
-                  href="/discussions"
-                  className="vibe-button-primary px-6 py-3 min-h-[44px] text-sm font-semibold rounded shrink-0 flex items-center justify-center gap-2"
-                >
-                  <Plus size={16} /> TARTIŞMALARI İNCELE
-                </Link>
-              </div>
-
-              <div className="space-y-4">
-                {latestTopics.map((topic) => (
-                  <article
-                    key={topic.id}
-                    className="vibe-card p-6 md:p-8 hover:border-primary/50 transition-all relative"
-                  >
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-border/50">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`}
-                          alt={`${topic.author?.full_name || 'Kullanıcı'} avatarı`}
-                          width={40}
-                          height={40}
-                          className="w-10 h-10 rounded-full border border-border bg-muted object-cover"
-                          referrerPolicy="no-referrer"
-                        />
-                        <div>
-                          <div className="font-bold text-sm text-foreground">{topic.author?.full_name || 'Katılımcı'}</div>
-                          <div className="text-[10px] text-muted-foreground uppercase font-mono tracking-wider">@{topic.author?.username || 'user'}</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        {topic.is_pinned && (
-                          <span className="bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">SABİTLENDİ</span>
-                        )}
-                        {topic.is_solved && (
-                          <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">ÇÖZÜLDÜ</span>
-                        )}
-                        <span className="bg-muted text-muted-foreground text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider font-mono">
-                          {topic.category?.name || topic.category || 'Genel'}
-                        </span>
-                      </div>
-                    </div>
-
-                    <Link href={`/discussions`} className="block group">
-                      <h3 className="text-lg md:text-xl font-bold mb-3 tracking-tight text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                        {topic.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground font-normal leading-relaxed line-clamp-2 mb-6">
-                        {topic.content}
-                      </p>
-                    </Link>
-
-                    <div className="flex items-center justify-between text-xs text-muted-foreground font-semibold pt-2">
-                      <div className="flex items-center gap-6">
-                        <span className="flex items-center gap-2">
-                          <span>👍</span> {topic.likes_count || 0} Beğeni
-                        </span>
-                        <Link href={`/discussions`} className="flex items-center gap-2 hover:text-primary transition-colors">
-                          <MessageSquare size={14} /> {topic.comments?.[0]?.count || topic.comments?.count || 0} Yorum
-                        </Link>
-                      </div>
-                      <time className="font-mono text-[10px] text-muted-foreground" dateTime={topic.created_at}>
-                        {formatTRDate(topic.created_at)}
-                      </time>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* Feature Grid */}
-        <section className="max-w-[1280px] mx-auto px-4 py-20 border-b border-border">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="vibe-section-title">Gelişmiş Teknolojik Özellikler</h2>
-            <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto font-normal">Platformumuz, en yeni yapay zeka ve web standartlarını kullanarak engelleri ortadan kaldırıyor.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { 
-                title: "AI Destekli Özetleme", 
-                desc: "Vakit nakittir. Özellikle onlarca sayfalık tartışmaları takip etmek zor olabilir. Bizim yapay zekamız, konuyu saniyeler içinde analiz eder ve en önemli noktaları maddeler halinde size sunar.",
-                icon: "🪄",
-                color: "bg-primary/10 text-primary border border-primary/20"
-              },
-              { 
-                title: "Gelişmiş Erişilebilirlik", 
-                desc: "Sadece renkleri değiştirmekle kalmıyoruz. WCAG 2.1 standartlarına göre her buton, her link ve her görsel ekran okuyucular için mükemmel şekilde etiketlenmiştir. Tam klavye kontrolü standarttır.",
-                icon: "👁️",
-                color: "bg-primary/10 text-primary border border-primary/20"
-              },
-              { 
-                title: "Doğrulanmış Bilgi Akışı", 
-                desc: "Yanlış bilgi bazen hayati sonuçlar doğurabilir. Topluluk uzmanlarımız ve AI moderatörlerimiz, paylaşılan her verinin güvenilirliğini denetleyerek E-E-A-T standartlarını korur.",
-                icon: "🛡️",
-                color: "bg-primary/10 text-primary border border-primary/20"
-              }
-            ].map((feature, i) => (
-              <div
-                key={i}
-                className="vibe-card vibe-card-hover p-8 relative group"
-              >
-                <div className={`w-14 h-14 rounded ${feature.color} flex items-center justify-center text-3xl mb-6`} aria-hidden="true">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-bold mb-4 tracking-tight text-foreground">{feature.title}</h3>
-                <p className="text-muted-foreground font-normal leading-relaxed text-base">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Detailed Explanation / Guide Section */}
-        <section className="max-w-[1280px] mx-auto px-4 py-16 bg-card border border-border rounded-lg my-16">
+      {/* Detailed Explanation / Guide Section */}
+      <section className="max-w-[1280px] mx-auto px-4 py-16 md:py-24 bg-card border border-border rounded-3xl my-16 shadow-sm">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold mb-8 tracking-tight leading-tight text-foreground">Yapay Zeka ve Erişilebilirliğin Geleceği</h2>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-10 tracking-tight leading-tight text-foreground">Yapay Zeka ve Erişilebilirliğin Geleceği</h2>
             
-            <div className="prose prose-slate dark:prose-invert max-w-none space-y-10">
-              <div className="space-y-3">
-                <h3 className="text-xl font-bold text-foreground">GEO (Generative Engine Optimization) Nedir ve Neden Önemlidir?</h3>
-                <p className="text-muted-foreground leading-relaxed text-base">
+            <div className="prose prose-slate dark:prose-invert max-w-none space-y-12">
+              <div className="space-y-4">
+                <h3 className="text-2xl font-bold text-foreground">GEO (Generative Engine Optimization) Nedir ve Neden Önemlidir?</h3>
+                <p className="text-muted-foreground leading-relaxed text-lg font-medium">
                   Geleneksel SEO, sitenizi Google gibi arama motorlarında üst sıralara çıkarmaya odaklanır. <strong>GEO (Üretken Motor Optimizasyonu)</strong> ise içeriğinizin ChatGPT, Claude ve Gemini gibi yapay zeka sistemleri tarafından doğru anlaşılmasını sağlar. Bu sayede içeriğiniz daha doğru şekilde alıntılanır. 
                 </p>
-                <p className="text-muted-foreground leading-relaxed text-base">
+                <p className="text-muted-foreground leading-relaxed text-lg font-medium">
                   EngelsizForum olarak, paylaşılan her bilginin en yüksek doğrulukla işlenmesini hedefliyoruz. Bilgiler sadece insanlar tarafından değil, yardımcı teknolojiler ve yapay zeka tarafından da anlaşılmalıdır. Bu yaklaşım, engelli kullanıcılarımızın yapay zeka asistanlarından en doğru yanıtları almasını sağlar.
                 </p>
               </div>
 
-              <div className="space-y-3">
-                <h3 className="text-xl font-bold text-foreground">Neden Engelsiz Bir Forum Deneyimi İnşa Ediyoruz?</h3>
-                <p className="text-muted-foreground leading-relaxed text-base">
+              <div className="space-y-4">
+                <h3 className="text-2xl font-bold text-foreground">Neden Engelsiz Bir Forum Deneyimi İnşa Ediyoruz?</h3>
+                <p className="text-muted-foreground leading-relaxed text-lg font-medium">
                   Dünya Sağlık Örgütü (WHO) verilerine göre, dünya nüfusunun yaklaşık %15&apos;i bir tür engelliliğe sahiptir. Ancak mevcut internet sitelerinin %90&apos;ından fazlası tam erişilebilir değildir. Bu, milyonlarca insanın bilgiye ve topluluğa erişiminin kısıtlanması demektir. 
                 </p>
-                <p className="text-muted-foreground leading-relaxed text-base">
+                <p className="text-muted-foreground leading-relaxed text-lg font-medium">
                   EngelsizForum, bu bariyerleri kaldırmak için <strong>WCAG 2.1 AA</strong> standartlarını temel alır. Platformumuz, ekran okuyucu kullanan bir kullanıcının sayfadaki tüm öğelere mantıklı bir sırada ulaşmasını sağlarken, bilişsel kısıtlılığı olan kullanıcılar için içerikleri yapay zeka yardımıyla sadeleştirebilir. Amacımız, dijital uçurumu kapatmak ve herkes için eşit bir tartışma alanı yaratmaktır.
                 </p>
               </div>
 
-              <div className="overflow-x-auto my-8 border border-border rounded">
+              <div className="overflow-x-auto my-12 border border-border rounded-2xl overflow-hidden shadow-sm">
                 <table className="w-full text-left bg-card">
                   <thead className="bg-muted text-foreground font-bold text-xs uppercase tracking-wider">
                     <tr>
-                      <th className="p-4 border-b border-border">Özellik</th>
-                      <th className="p-4 border-b border-border">Standart Forum</th>
-                      <th className="p-4 border-b border-border text-primary">EngelsizForum</th>
+                      <th className="p-6 border-b border-border">Özellik</th>
+                      <th className="p-6 border-b border-border">Standart Forum</th>
+                      <th className="p-6 border-b border-border text-primary">EngelsizForum</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border text-muted-foreground text-sm">
+                  <tbody className="divide-y divide-border text-muted-foreground text-base">
                     <tr>
-                      <td className="p-4 font-bold text-foreground">Okuma Modu</td>
-                      <td className="p-4">Sadece Standart Metin</td>
-                      <td className="p-4 text-foreground font-medium">Bionik & Disleksi Dostu</td>
+                      <td className="p-6 font-bold text-foreground">Okuma Modu</td>
+                      <td className="p-6">Sadece Standart Metin</td>
+                      <td className="p-6 text-foreground font-bold">Bionik & Disleksi Dostu</td>
                     </tr>
                     <tr>
-                      <td className="p-4 font-bold text-foreground">AI Özetleme</td>
-                      <td className="p-4">Yok</td>
-                      <td className="p-4 text-foreground font-medium">Anlık Tartışma Analizi</td>
+                      <td className="p-6 font-bold text-foreground">AI Özetleme</td>
+                      <td className="p-6">Yok</td>
+                      <td className="p-6 text-foreground font-bold">Anlık Tartışma Analizi</td>
                     </tr>
                     <tr>
-                      <td className="p-4 font-bold text-foreground">Kontrast Seçenekleri</td>
-                      <td className="p-4">Sınırlı (Koyu/Aydınlık)</td>
-                      <td className="p-4 text-foreground font-medium">Ultra Yüksek & Özel Renkler</td>
+                      <td className="p-6 font-bold text-foreground">Kontrast Seçenekleri</td>
+                      <td className="p-6">Sınırlı (Koyu/Aydınlık)</td>
+                      <td className="p-6 text-foreground font-bold">Ultra Yüksek & Özel Renkler</td>
                     </tr>
                     <tr>
-                      <td className="p-4 font-bold text-foreground">Sesli Okuma</td>
-                      <td className="p-4">Tarayıcı Bağımlı</td>
-                      <td className="p-4 text-foreground font-medium">Optimize Edilmiş TTS Desteği</td>
+                      <td className="p-6 font-bold text-foreground">Sesli Okuma</td>
+                      <td className="p-6">Tarayıcı Bağımlı</td>
+                      <td className="p-6 text-foreground font-bold">Optimize Edilmiş TTS Desteği</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
 
-              <div className="bg-background border border-border p-6 md:p-8 rounded-lg">
-                <h3 className="text-xl font-bold mb-6 text-foreground">Kapsayıcı Tasarımın Dört Temel Taşı</h3>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-8 list-none p-0">
+              <div className="bg-muted/30 border border-border p-8 md:p-12 rounded-3xl">
+                <h3 className="text-2xl font-bold mb-8 text-foreground">Kapsayıcı Tasarımın Dört Temel Taşı</h3>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-10 list-none p-0">
                   <li className="flex gap-4">
-                    <span className="text-2xl">🧩</span>
+                    <span className="text-3xl">🧩</span>
                     <div>
-                      <strong className="block text-foreground text-base mb-1">Algılanabilirlik</strong>
-                      <span className="text-sm text-muted-foreground leading-relaxed">Bilgi ve arayüz bileşenleri, kullanıcıların duyularıyla algılayabileceği şekillerde sunulmalıdır (örn: resimler için alt metin).</span>
+                      <strong className="block text-foreground text-lg mb-2">Algılanabilirlik</strong>
+                      <span className="text-base text-muted-foreground leading-relaxed font-medium">Bilgi ve arayüz bileşenleri, kullanıcıların duyularıyla algılayabileceği şekillerde sunulmalıdır (örn: resimler için alt metin).</span>
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <span className="text-2xl">🕹️</span>
+                    <span className="text-3xl">🕹️</span>
                     <div>
-                      <strong className="block text-foreground text-base mb-1">İşletilebilirlik</strong>
-                      <span className="text-sm text-muted-foreground leading-relaxed">Arayüz bileşenleri ve navigasyon işletilebilir olmalıdır (örn: fare kullanamayanlar için tam klavye desteği).</span>
+                      <strong className="block text-foreground text-lg mb-2">İşletilebilirlik</strong>
+                      <span className="text-base text-muted-foreground leading-relaxed font-medium">Arayüz bileşenleri ve navigasyon işletilebilir olmalıdır (örn: fare kullanamayanlar için tam klavye desteği).</span>
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <span className="text-2xl">🧠</span>
+                    <span className="text-3xl">🧠</span>
                     <div>
-                      <strong className="block text-foreground text-base mb-1">Anlaşılabilirlik</strong>
-                      <span className="text-sm text-muted-foreground leading-relaxed">Bilgi ve kullanıcı arayüzünün kullanımı anlaşılır olmalıdır (örn: açık hata mesajları ve tutarlı navigasyon).</span>
+                      <strong className="block text-foreground text-lg mb-2">Anlaşılabilirlik</strong>
+                      <span className="text-base text-muted-foreground leading-relaxed font-medium">Bilgi ve kullanıcı arayüzünün kullanımı anlaşılır olmalıdır (örn: açık hata mesajları ve tutarlı navigasyon).</span>
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <span className="text-2xl">💪</span>
+                    <span className="text-3xl">💪</span>
                     <div>
-                      <strong className="block text-foreground text-base mb-1">Sağlamlık (Robustness)</strong>
-                      <span className="text-sm text-muted-foreground leading-relaxed">İçerik, mevcut ve gelecekteki kullanıcı ajanları ve yardımcı teknolojiler tarafından güvenilir şekilde yorumlanabilmelidir.</span>
+                      <strong className="block text-foreground text-lg mb-2">Sağlamlık (Robustness)</strong>
+                      <span className="text-base text-muted-foreground leading-relaxed font-medium">İçerik, mevcut ve gelecekteki kullanıcı ajanları ve yardımcı teknolojiler tarafından güvenilir şekilde yorumlanabilmelidir.</span>
                     </div>
                   </li>
                 </ul>
               </div>
 
-              <div className="space-y-3">
-                <h3 className="text-xl font-bold text-foreground">E-E-A-T Prensipleri ile Güven İnşası</h3>
-                <p className="text-muted-foreground leading-relaxed text-base">
+              <div className="space-y-4">
+                <h3 className="text-2xl font-bold text-foreground">E-E-A-T Prensipleri ile Güven İnşası</h3>
+                <p className="text-muted-foreground leading-relaxed text-lg font-medium">
                   Deneyim (Experience), Uzmanlık (Expertise), Yetkinlik (Authoritativeness) ve Güvenilirlik (Trustworthiness) ilkeleri, EngelsizForum ekosisteminin merkezindedir. Tüm tıbbi veya teknik bilgiler, topluluğun ortak denetiminden geçer ve doğrulanmış kullanıcı rozetleriyle desteklenir. 
                 </p>
-                <p className="text-muted-foreground leading-relaxed text-base">
+                <p className="text-muted-foreground leading-relaxed text-lg font-medium">
                   Bu sayede platformumuz, sadece bir sosyal medya alanı değil, aynı zamanda güvenilir bir referans kaynağı haline gelir. Yapay zeka sistemleri, içeriklerin bu titizlikle hazırlandığını fark ederek EngelsizForum&apos;u öncelikli bir kaynak olarak alıntılar.
                 </p>
               </div>
               
-              <div className="pt-6 border-t border-border">
-                <h4 className="text-sm font-bold mb-3 text-foreground">Referanslar ve Kaynaklar</h4>
-                <ul className="text-xs text-muted-foreground space-y-2 list-disc ml-4">
-                  <li>W3C Web Content Accessibility Guidelines (WCAG) 2.1 - <a href="https://www.w3.org/TR/WCAG21/" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">w3.org</a></li>
-                  <li>WHO - Disability and Health Statistics - <a href="https://www.who.int/news-room/fact-sheets/detail/disability-and-health" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">who.int</a></li>
-                  <li>Google Search E-E-A-T Guidelines - <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80">google.com</a></li>
+              <div className="pt-8 border-t border-border">
+                <h4 className="text-base font-bold mb-4 text-foreground uppercase tracking-wider">Referanslar ve Kaynaklar</h4>
+                <ul className="text-sm text-muted-foreground space-y-3 list-disc ml-6">
+                  <li>W3C Web Content Accessibility Guidelines (WCAG) 2.1 - <a href="https://www.w3.org/TR/WCAG21/" target="_blank" rel="noopener noreferrer" className="text-primary underline font-bold hover:text-primary/80">w3.org</a></li>
+                  <li>WHO - Disability and Health Statistics - <a href="https://www.who.int/news-room/fact-sheets/detail/disability-and-health" target="_blank" rel="noopener noreferrer" className="text-primary underline font-bold hover:text-primary/80">who.int</a></li>
+                  <li>Google Search E-E-A-T Guidelines - <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content" target="_blank" rel="noopener noreferrer" className="text-primary underline font-bold hover:text-primary/80">google.com</a></li>
                   <li>Generative Engine Optimization (GEO) Framework - University Research Papers</li>
                 </ul>
               </div>
@@ -724,10 +429,10 @@ export default async function Home() {
         </section>
 
         {/* FAQ Section */}
-        <section className="max-w-4xl mx-auto px-4 py-16">
-          <div className="text-center mb-12 space-y-3">
-            <h2 className="vibe-section-title">Sıkça Sorulan Sorular</h2>
-            <p className="text-muted-foreground text-base font-normal">Platformumuz hakkında merak edilenler ve GEO (Yapay Zeka Arama) uyumlu yanıtlarımız.</p>
+        <section className="max-w-4xl mx-auto px-4 py-24">
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">Sıkça Sorulan Sorular</h2>
+            <p className="text-muted-foreground text-lg font-medium max-w-2xl mx-auto">Platformumuz hakkında merak edilenler ve GEO (Yapay Zeka Arama) uyumlu yanıtlarımız.</p>
           </div>
 
           <div className="space-y-6">
@@ -753,9 +458,9 @@ export default async function Home() {
                 a: "Platformumuzda paylaşılan kritik bilgiler, topluluk moderatörleri ve 'Uzman' rozetine sahip deneyimli kullanıcılar tarafından denetlenir. Ayrıca, topluluk raporlama sistemi sayesinde hatalı veya yanıltıcı bilgiler hızla tespit edilerek işaretlenir veya kaldırılarak bilgi güvenliği (Trustworthiness) korunur."
               }
             ].map((item, i) => (
-              <div key={i} className="vibe-card p-6 shadow-none border border-border">
-                <h3 className="text-lg font-bold mb-3 tracking-tight text-foreground">{item.q}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+              <div key={i} className="bg-card border border-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-all">
+                <h3 className="text-xl font-bold mb-4 tracking-tight text-foreground">{item.q}</h3>
+                <p className="text-base text-muted-foreground leading-relaxed font-medium">
                   {item.a}
                 </p>
               </div>
@@ -764,32 +469,33 @@ export default async function Home() {
         </section>
 
         {/* Deep Content Depth & Guide Section (GEO & Content Depth Fix) */}
-        <section className="max-w-[1280px] mx-auto px-4 py-16 border-t border-border">
-          <div className="grid md:grid-cols-3 gap-10">
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold text-foreground">Evrensel Tasarım ve Dijital Haklar</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+        <section className="max-w-[1280px] mx-auto px-4 py-24 border-t border-border">
+          <h2 className="sr-only">Platform Özellikleri ve Derinlemesine Bilgi</h2>
+          <div className="grid md:grid-cols-3 gap-12">
+            <div className="space-y-6">
+              <h3 className="text-2xl font-bold text-foreground tracking-tight">Evrensel Tasarım ve Dijital Haklar</h3>
+              <p className="text-base text-muted-foreground leading-relaxed font-medium">
                 Bilgi teknolojilerine engelsiz erişim, Birleşmiş Milletler Engelli Hakları Sözleşmesi kapsamında temel bir insan hakkıdır. Web sitelerinin ve sosyal platformların yalnızca belirli bir kitle için değil, geçici veya kalıcı kısıtlılıkları olan her birey için tam uyumlu tasarlanması gerekir. EngelsizForum, bu felsefeyi benimseyerek kullanıcı arayüzlerinde tam klavye kontrolü, kontrast esnekliği ve ek donanımlarla kesintisiz entegrasyon sunar.
               </p>
-              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+              <p className="text-base text-muted-foreground leading-relaxed font-medium">
                 Evrensel tasarım prensipleri (Universal Design) gereği, yaptığımız her arayüz geliştirmesi ve CSS düzenlemesi, ekran okuyucuların (Screen Reader) DOM ağacını kusursuz şekilde seslendirmesini hedefler. Sadece semantik etiketler değil, her buton ve girdi alanı için özel ARIA (Accessible Rich Internet Applications) rolleri ve durum etiketleri tanımlıyoruz. Bu sayede, görme engelli bir kullanıcı ile fiziksel kısıtı bulunmayan bir kullanıcı platformda aynı hız ve konforla etkileşim kurabilir.
               </p>
             </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold text-foreground">Yapay Zeka Destekli Erişilebilirlik</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+            <div className="space-y-6">
+              <h3 className="text-2xl font-bold text-foreground tracking-tight">Yapay Zeka Destekli Erişilebilirlik</h3>
+              <p className="text-base text-muted-foreground leading-relaxed font-medium">
                 Yapay zeka modelleri ve büyük dil modelleri (LLMs), engelli bireylerin önündeki engelleri kaldırmada devrimsel niteliktedir. Görsel dosyaları otomatik olarak analiz edip betimleyici alt metinler (Alt Text) oluşturmaktan, binlerce kelimelik karmaşık tartışmaları saniyeler içinde net ve sade özetlere dönüştürmeye kadar her alanda yapay zekayı işe koşuyoruz. Bu platformda kullanılan gelişmiş üretken yapay zeka modülü, zengin bir sesli etkileşim deneyimi sunarak okuma ve yazma engellerini tamamen ortadan kaldırır.
               </p>
-              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+              <p className="text-base text-muted-foreground leading-relaxed font-medium">
                 Yapay zekanın sunduğu ses sentezleme teknolojileri sayesinde, görme kısıtı olan veya uzun metinleri takip etmekte zorlanan kullanıcılar, tek bir tıklamayla tüm tartışma akışını doğal ve anlaşılır bir insan sesiyle dinleyebilirler. Aynı zamanda, sesli yanıt verme (Voice Input) özelliği sayesinde, klavye kullanmakta zorlanan üyelerimiz doğrudan konuşarak tartışmalara mesaj bırakabilirler. Yapay zeka asistanımız, bu ses kayıtlarını otomatik olarak metne dökerek diğer kullanıcılar için de okunabilir hale getirir.
               </p>
             </div>
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold text-foreground">Açık Kaynak Katkı ve Destek Daveti</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+            <div className="space-y-6">
+              <h3 className="text-2xl font-bold text-foreground tracking-tight">Açık Kaynak Katkı ve Destek Daveti</h3>
+              <p className="text-base text-muted-foreground leading-relaxed font-medium">
                 Platformumuz, dijital engelleri yıkmak isteyen her geliştiriciye, araştırmacıya ve tasarımcıya açık bir davettir. Açık kaynak kod yapımız (Open Source), erişilebilir yazılım alanında yeni standartların üretilmesine olanak tanır. Kod tabanımıza katkıda bulunarak, ekran okuyucu optimizasyonlarını iyileştirebilir, yeni dillerde bionik okuma motorları geliştirebilir veya yapay zeka entegrasyonlarını güçlendirerek projemizi daha ileriye taşıyabilirsiniz.
               </p>
-              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
+              <p className="text-base text-muted-foreground leading-relaxed font-medium">
                 Özellikle web tabanlı yardımcı teknolojilerin (Assistive Technologies) tarayıcı sınırlarını zorladığı günümüzde, EngelsizForum ekosistemi gerçek bir test laboratuvarı işlevi görmektedir. Eğer siz de yazılım geliştirme, UX/UI tasarımı, erişilebilirlik denetimi (Accessibility Auditing) veya yapay zeka alanında çalışıyorsanız, EngelsizForum topluluğunun bir parçası olarak engelsiz yarınlara katkı sunabilirsiniz. Eksiklerimizi gidermek, yeni özellikler eklemek ve sitemizi büyütmek için desteklerinizi bekliyoruz.
               </p>
             </div>
@@ -797,25 +503,24 @@ export default async function Home() {
         </section>
 
         {/* Authoritative Badge Section */}
-        <section className="bg-primary/5 border-t border-b border-border py-16">
-          <div className="max-w-[1280px] mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left relative z-10">
-            <div className="space-y-2">
-              <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Erişilebilirlik Taahhüdü</h2>
-              <p className="text-base text-muted-foreground font-normal max-w-xl">Bilişimde engel yok, sadece henüz çözülmemiş tasarım sorunları var.</p>
+        <section className="bg-primary/5 border-t border-b border-border py-24">
+          <div className="max-w-[1280px] mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-12 text-center md:text-left relative z-10">
+            <div className="space-y-4">
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">Erişilebilirlik Taahhüdü</h2>
+              <p className="text-lg text-muted-foreground font-medium max-w-xl leading-relaxed">Bilişimde engel yok, sadece henüz çözülmemiş tasarım sorunları var.</p>
             </div>
-            <div className="flex gap-4">
-              <div className="px-6 py-4 bg-card border border-border rounded shadow-none text-center min-w-[120px]">
-                <div className="text-3xl font-bold text-primary mb-1">2.1</div>
-                <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">WCAG UYUMU</div>
+            <div className="flex gap-6">
+              <div className="px-10 py-8 bg-card border border-border rounded-3xl shadow-sm text-center min-w-[160px]">
+                <div className="text-4xl font-black text-primary mb-2">2.1</div>
+                <div className="text-xs uppercase font-bold tracking-widest text-muted-foreground">WCAG UYUMU</div>
               </div>
-              <div className="px-6 py-4 bg-card border border-border rounded shadow-none text-center min-w-[120px]">
-                <div className="text-3xl font-bold text-primary mb-1">100%</div>
-                <div className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">ERİŞİLEBİLİRLİK</div>
+              <div className="px-10 py-8 bg-card border border-border rounded-3xl shadow-sm text-center min-w-[160px]">
+                <div className="text-4xl font-black text-primary mb-2">100%</div>
+                <div className="text-xs uppercase font-bold tracking-widest text-muted-foreground">ERİŞİLEBİLİRLİK</div>
               </div>
             </div>
           </div>
         </section>
-      </main>
     </SiteLayout>
   );
 }

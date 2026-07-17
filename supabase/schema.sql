@@ -512,3 +512,56 @@ CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = '
 
 DROP POLICY IF EXISTS "Authenticated Upload" ON storage.objects;
 CREATE POLICY "Authenticated Upload" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'uploads' AND auth.role() = 'authenticated');
+
+-- ==========================================
+-- 7. SEED DATA (TEMİZLENMİŞ)
+-- ==========================================
+
+-- 1. MOCK DATA VE EŞLEŞMEYEN VERİ TEMİZLEME
+DELETE FROM public.topics WHERE author_id IN (
+    SELECT p.id FROM public.profiles p
+    LEFT JOIN auth.users u ON p.id = u.id
+    WHERE u.id IS NULL OR p.username LIKE 'mock_%' OR p.full_name LIKE 'Mock%'
+);
+
+DELETE FROM public.profiles
+WHERE id NOT IN (SELECT id FROM auth.users)
+OR username LIKE 'mock_%' OR full_name LIKE 'Mock%';
+
+-- 2. KATEGORİLER (Ana)
+INSERT INTO public.categories (name, slug, description) VALUES
+('Engelli Hakları', 'engelli-haklari', 'Engelli hakları savunuculuğu.'),
+('İstihdam', 'istihdam', 'İş ilanları ve kariyer.'),
+('ÖTV', 'otv', 'Araç alımı ve mevzuat.'),
+('SGK', 'sgk', 'Emeklilik ve prim.'),
+('Sosyal Haklar', 'sosyal-haklar', 'Yardımlar.'),
+('Araçlar', 'araclar', 'Yardımcı ekipmanlar.'),
+('Eğitim', 'egitim', 'Özel eğitim.'),
+('Sağlık', 'saglik', 'Raporlar ve tedavi.'),
+('Teknoloji', 'teknoloji', 'Erişilebilir teknoloji.'),
+('Yapay Zeka', 'yapay-zeka', 'Yapay zeka araçları.'),
+('Yazılım', 'yazilim', 'Erişilebilir yazılım.'),
+('EKPSS', 'ekpss', 'Sınav hazırlık.'),
+('Günlük Yaşam', 'gunluk-yasam', 'Hobi ve sosyal.'),
+('Kamu Duyuruları', 'kamu-duyurulari', 'Resmi ilanlar.')
+ON CONFLICT (slug) DO UPDATE SET description = EXCLUDED.description;
+
+-- 3. ALT KATEGORİLERİ ZORLA OLUŞTURMA
+DO $$
+DECLARE
+    cat_rec RECORD;
+    sub_names TEXT[] := ARRAY['Genel', 'Mevzuat', 'Destek', 'Sıkça Sorulanlar', 'Gelişmeler'];
+BEGIN
+    FOR cat_rec IN SELECT id, slug, name FROM public.categories WHERE parent_id IS NULL LOOP
+        FOR i IN 1..5 LOOP
+            INSERT INTO public.categories (name, slug, description, parent_id)
+            VALUES (
+                sub_names[i],
+                cat_rec.slug || '-alt-' || i,
+                sub_names[i] || ' - ' || cat_rec.name,
+                cat_rec.id
+            )
+            ON CONFLICT (slug) DO NOTHING;
+        END LOOP;
+    END LOOP;
+END $$;

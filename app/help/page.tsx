@@ -103,111 +103,82 @@ export default function HelpPage() {
           })
         }}
       />
-      <div className="max-w-4xl mx-auto py-12 px-6">
-        <h1 className="text-3xl font-bold mb-8 tracking-tight text-foreground">Yardım Merkezi</h1>
+      <div className="container mx-auto px-4 py-16 md:py-24">
+        <header className="mb-24 text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-6">Yardım Merkezi</h1>
+          <p className="text-xl text-muted-foreground leading-relaxed max-w-4xl mx-auto font-medium">
+            Platform araçlarımız, sesli kontrol özellikleri ve erişilebilirlik panelleriyle ilgili tüm detaylara buradan ulaşabilirsiniz.
+          </p>
+        </header>
 
         {/* Categories Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <div className="bg-card border border-border rounded-lg p-6 hover:border-primary/50 transition-colors">
-            <div className="p-3 bg-primary/10 text-primary w-fit rounded mb-4" aria-hidden="true">
-              <BookOpen size={24} />
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+          {[
+            { icon: <BookOpen size={28} />, title: 'Kullanım Kılavuzu', text: 'Platformun erişilebilirlik araçlarını, sesli giriş özelliklerini ve yapay zeka özetleyicisini nasıl kullanacağınızı öğrenin.' },
+            { icon: <User size={28} />, title: 'Hesap Yönetimi', text: 'Profil oluşturma, şifre sıfırlama, bildirim tercihleri ve hesap silme süreçleri hakkında detaylı yönergeler.' },
+            { icon: <ShieldAlert size={28} />, title: 'Güvenlik ve Topluluk', text: 'Güvenliğiniz için aldığımız önlemler, moderasyon kuralları ve platform etik ilkeleri.' },
+            { icon: <FileText size={28} />, title: 'Sorun Giderme', text: 'Tarayıcı uyumluluğu, oturum açma sorunları ve ekran okuyucu optimizasyonu hakkında teknik destek bilgileri.' },
+          ].map((item, index) => (
+            <div key={index} className="bg-card border border-border rounded-3xl p-8 md:p-10 shadow-sm transition-all hover:shadow-md">
+              <div className="p-4 bg-primary/10 text-primary w-fit rounded-2xl mb-6" aria-hidden="true">
+                {item.icon}
+              </div>
+              <h2 className="text-2xl font-bold mb-4 tracking-tight text-foreground">{item.title}</h2>
+              <p className="text-muted-foreground leading-relaxed font-medium">
+                {item.text}
+              </p>
             </div>
-            <h2 className="text-lg font-bold mb-2 text-foreground">Kullanım Kılavuzu</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Platformun erişilebilirlik araçlarını, sesli giriş özelliklerini ve yapay zeka özetleyicisini nasıl kullanacağınızı öğrenin.
-            </p>
-          </div>
-
-          <div className="bg-card border border-border rounded-lg p-6 hover:border-primary/50 transition-colors">
-            <div className="p-3 bg-primary/10 text-primary w-fit rounded mb-4" aria-hidden="true">
-              <User size={24} />
-            </div>
-            <h2 className="text-lg font-bold mb-2 text-foreground">Hesap Yönetimi</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Profil oluşturma, şifre sıfırlama, bildirim tercihleri ve hesap silme süreçleri hakkında detaylı yönergeler.
-            </p>
-          </div>
-
-          <div className="bg-card border border-border rounded-lg p-6 hover:border-primary/50 transition-colors">
-            <div className="p-3 bg-primary/10 text-primary w-fit rounded mb-4" aria-hidden="true">
-              <ShieldAlert size={24} />
-            </div>
-            <h2 className="text-lg font-bold mb-2 text-foreground">Güvenlik ve Topluluk</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Güvenliğiniz için aldığımız önlemler, moderasyon kuralları ve platform etik ilkeleri.
-            </p>
-          </div>
-
-          <div className="bg-card border border-border rounded-lg p-6 hover:border-primary/50 transition-colors">
-            <div className="p-3 bg-primary/10 text-primary w-fit rounded mb-4" aria-hidden="true">
-              <FileText size={24} />
-            </div>
-            <h2 className="text-lg font-bold mb-2 text-foreground">Sorun Giderme</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Tarayıcı uyumluluğu, oturum açma sorunları ve ekran okuyucu optimizasyonu hakkında teknik destek bilgileri.
-            </p>
-          </div>
+          ))}
         </section>
 
         {/* FAQ List */}
-        <section className="mb-12 space-y-6">
-          <h2 className="text-2xl font-bold mb-6 text-foreground tracking-tight">Sıkça Sorulan Sorular</h2>
+        <section className="mb-24 space-y-12">
+          <h2 className="text-3xl font-extrabold text-foreground tracking-tight">Sıkça Sorulan Sorular</h2>
           
-          <div className="bg-card border border-border rounded-lg p-6 md:p-8 space-y-6">
-            <div>
-              <h3 className="text-base font-bold text-foreground mb-2 flex gap-2">
-                <span className="text-primary" aria-hidden="true">Q.</span> EngelsizForum tamamen ücretsiz mi?
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Evet. EngelsizForum, engelli bireylerin bilgiye ve topluluğa erişimini kolaylaştırmak amacıyla tamamen ücretsiz olarak sunulan açık kaynaklı bir sosyal platformdur.
-              </p>
-            </div>
-
-            <div className="pt-6 border-t border-border">
-              <h3 className="text-base font-bold text-foreground mb-2 flex gap-2">
-                <span className="text-primary" aria-hidden="true">Q.</span> Ekran okuyucu kullanırken sorun yaşıyorum, ne yapmalıyım?
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Platformumuz NVDA, JAWS ve VoiceOver ekran okuyucularıyla tam uyumlu çalışacak şekilde tasarlanmıştır. Sorun yaşarsanız, sol alttaki erişilebilirlik menüsünden ilgili profili optimize edebilir veya bizimle iletişime geçebilirsiniz.
-              </p>
-            </div>
-
-            <div className="pt-6 border-t border-border">
-              <h3 className="text-base font-bold text-foreground mb-2 flex gap-2">
-                <span className="text-primary" aria-hidden="true">Q.</span> Yapay zeka sesli desteği nasıl çalışıyor?
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Gönderilerdeki &apos;Yapay Zeka Seslendir&apos; butonunu kullanarak metinleri doğal konuşma sesiyle dinleyebilirsiniz. Ayrıca sesinizi kullanarak sesli yanıtlar gönderebilir ve tartışmalara katılabilirsiniz.
-              </p>
-            </div>
+          <div className="bg-card border border-border rounded-3xl p-8 md:p-12 space-y-10 shadow-sm">
+            {[
+              { q: "EngelsizForum tamamen ücretsiz mi?", a: "Evet. EngelsizForum, engelli bireylerin bilgiye ve topluluğa erişimini kolaylaştırmak amacıyla tamamen ücretsiz olarak sunulan açık kaynaklı bir sosyal platformdur." },
+              { q: "Ekran okuyucu kullanırken sorun yaşıyorum, ne yapmalıyım?", a: "Platformumuz NVDA, JAWS & VoiceOver ekran okuyucularıyla tam uyumlu çalışacak şekilde tasarlanmıştır. Sorun yaşarsanız, sol alttaki erişilebilirlik menüsünden ilgili profili optimize edebilir veya bizimle iletişime geçebilirsiniz." },
+              { q: "Yapay zeka sesli desteği nasıl çalışıyor?", a: "Gönderilerdeki 'Yapay Zeka Seslendir' butonunu kullanarak metinleri doğal konuşma sesiyle dinleyebilirsiniz. Ayrıca sesinizi kullanarak sesli yanıtlar gönderebilir ve tartışmalara katılabilirsiniz." }
+            ].map((item, index) => (
+              <div key={index} className="space-y-4 p-8 bg-muted/30 rounded-2xl border border-border/50">
+                <h3 className="text-lg font-bold text-foreground flex gap-3">
+                  <span className="text-primary">Q.</span> {item.q}
+                </h3>
+                <p className="text-muted-foreground leading-relaxed pl-8 font-medium">
+                  {item.a}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 
         {/* Support Section */}
-        <section className="bg-primary/5 border border-primary/20 rounded-lg p-6 md:p-8 mb-12">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-3 text-foreground">
-            <Mail size={24} className="text-primary" /> Bize Ulaşın
-          </h2>
-          <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-            Aradığınız yanıtı bulamadınız mı? Destek ekibimize doğrudan ulaşın. 24 saat içinde geri dönüş sağlıyoruz.
-          </p>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <section className="bg-primary/5 border border-primary/10 p-10 md:p-16 rounded-3xl mb-24 relative overflow-hidden">
+          <div className="absolute top-0 right-0 size-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="relative z-10 max-w-2xl">
+            <h2 className="text-3xl font-extrabold mb-6 flex items-center gap-4 text-foreground">
+              <Mail size={32} className="text-primary" /> Bize Ulaşın
+            </h2>
+            <p className="text-lg text-muted-foreground font-medium mb-10 leading-relaxed">
+              Aradığınız yanıtı bulamadınız mı? Destek ekibimize doğrudan ulaşın. 24 saat içinde geri dönüş sağlıyoruz.
+            </p>
             <a 
               href="mailto:miracbirben@engelsizforum.com" 
-              className="px-6 py-3 bg-primary text-primary-foreground rounded font-bold hover:brightness-110 active:scale-[0.98] transition-all text-sm flex items-center gap-2 min-h-[48px]"
+              className="inline-flex items-center justify-center gap-3 rounded-xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition hover:bg-primary/90"
             >
-              <Mail size={16} /> miracbirben@engelsizforum.com
+              <Mail size={18} /> miracbirben@engelsizforum.com
             </a>
           </div>
         </section>
 
         {/* Back Link */}
-        <div className="flex gap-4">
+        <div className="flex gap-6">
           <Link 
             href="/" 
-            className="px-6 py-3 bg-muted border border-border text-foreground rounded font-bold text-sm flex items-center gap-2 hover:bg-muted/80 active:scale-[0.98] transition-all min-h-[48px]"
+            className="inline-flex items-center justify-center gap-3 rounded-xl bg-background border border-border px-8 py-4 text-sm font-bold text-foreground transition hover:bg-muted"
           >
-            <ArrowLeft size={16} /> Ana Sayfaya Dön
+            <ArrowLeft size={18} /> Ana Sayfaya Dön
           </Link>
         </div>
       </div>

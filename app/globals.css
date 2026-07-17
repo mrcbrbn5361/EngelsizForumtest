@@ -1,11 +1,5 @@
 @import "tailwindcss";
 
-@layer base {
-  * {
-    @apply min-w-0;
-  }
-}
-
 @theme {
   --font-heading: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
@@ -52,23 +46,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .vibe-card {
-  @apply bg-card border border-border rounded-lg shadow-none overflow-hidden transition-all duration-200 p-6 md:p-8;
+  @apply bg-card border-2 border-border/80 rounded-3xl shadow-sm overflow-hidden transition-all duration-300 p-6 sm:p-8 md:p-10;
 }
 
 .vibe-card-hover {
-  @apply hover:border-primary/50 hover:bg-muted/10;
+  @apply hover:border-primary/50 hover:bg-muted/10 hover:shadow-md;
 }
 
 .vibe-section-title {
-  @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground leading-tight;
+  @apply text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-foreground leading-tight uppercase;
 }
 
 .vibe-badge {
-  @apply px-3 py-1.5 rounded-sm text-xs font-bold uppercase tracking-wider bg-muted text-foreground border border-border;
+  @apply px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-muted text-foreground border border-border;
 }
 
 .vibe-input {
-  @apply w-full px-4 py-3 rounded border border-border bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-normal text-base outline-none;
+  @apply w-full px-6 py-4 rounded-2xl border-2 border-border/80 bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-bold text-sm uppercase tracking-wider outline-none h-14;
 }
 
 .vibe-input-pl-12 {
@@ -129,7 +123,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .vibe-button-primary {
-  @apply inline-flex items-center justify-center rounded bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-all duration-200 hover:brightness-110 active:scale-95 shadow-none tracking-normal min-h-[48px];
+  @apply inline-flex items-center justify-center rounded-2xl bg-primary px-8 py-4 text-xs font-black uppercase tracking-widest text-primary-foreground transition-all duration-300 hover:brightness-110 hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary/20 min-h-[48px];
 }
 
 /* Accessibility Overrides */

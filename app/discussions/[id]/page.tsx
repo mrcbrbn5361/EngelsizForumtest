@@ -25,6 +25,90 @@ const VoiceInput = dynamic(
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { cn } from '@/lib/utils';
 
+const FALLBACK_TOPICS_DETAILED: { [key: string]: { topic: any; comments: any[] } } = {
+  "mock-1": {
+    topic: {
+      id: "mock-1",
+      title: "Baltalimanı Hastanesi Rapor Süreci ve Oranlar",
+      content: "Ortopedik engelli arkadaşlar için Baltalimanı Kemik Hastalıkları hastanesinde engelli sağlık kurulu raporu alma aşamalarını ve heyet süreçlerini detaylıca anlattım. Hangi polikliniklerin sıra durumları daha rahat, heyet hangi günlerde toplanıyor ve süreç kaç gün sürüyor?",
+      created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
+      likes_count: 14,
+      comments_count: 5,
+      is_pinned: true,
+      category: { name: "Sağlık", slug: "saglik" },
+      author: { username: "hakan_ses", avatar_url: null, full_name: "Hakan Sesli" }
+    },
+    comments: [
+      {
+        id: "comment-1-1",
+        topic_id: "mock-1",
+        author_id: "user-1",
+        content: "Ben geçen ay oradan %45 rapor aldım. Salı ve Perşembe günleri heyet günü olduğu için poliklinikler aşırı yoğun oluyor. Pazartesi sabah erkenden gitmenizi öneririm.",
+        created_at: new Date(Date.now() - 3600000 * 1.5).toISOString(),
+        is_solution: true,
+        author: { username: "ahmet_fizik", full_name: "Ahmet Yılmaz", avatar_url: null, role: "user" }
+      },
+      {
+        id: "comment-1-2",
+        topic_id: "mock-1",
+        author_id: "user-2",
+        content: "Harika paylaşımlar için teşekkürler. Sürecin ne kadar sürdüğünü tam olarak yazabilir misiniz? İş yerimden izin alacağım da.",
+        created_at: new Date(Date.now() - 3600000 * 1).toISOString(),
+        is_solution: false,
+        author: { username: "sibel_is", full_name: "Sibel Kaya", avatar_url: null, role: "user" }
+      }
+    ]
+  },
+  "mock-2": {
+    topic: {
+      id: "mock-2",
+      title: "NVDA 2026.1 Türkçe Konuşma Sentezleyicisi Ayarları",
+      content: "Yeni yayınlanan NVDA sürümünde Türkçe dil paketi için en optimize ekran okuyucu ses sentezleyici ayarlarını derledim. Özellikle e-ticaret sitelerinde ve bankacılık uygulamalarında gezinirken okuma hızını artıran kısayollar ve eklentileri paylaşıyorum.",
+      created_at: new Date(Date.now() - 3600000 * 8).toISOString(),
+      likes_count: 24,
+      comments_count: 12,
+      is_pinned: false,
+      category: { name: "Teknoloji", slug: "teknoloji" },
+      author: { username: "mirac", avatar_url: null, full_name: "Miraç Engin" }
+    },
+    comments: [
+      {
+        id: "comment-2-1",
+        topic_id: "mock-2",
+        author_id: "user-3",
+        content: "NVDA'nın yeni sürümü gerçekten harika olmuş. Özellikle tablo okuma kısayolları çok hızlanmış. Ayarlar için teşekkürler!",
+        created_at: new Date(Date.now() - 3600000 * 6).toISOString(),
+        is_solution: true,
+        author: { username: "can_gorme", full_name: "Can Tekin", avatar_url: null, role: "user" }
+      }
+    ]
+  },
+  "mock-3": {
+    topic: {
+      id: "mock-3",
+      title: "2026 EKPSS Tercih Kılavuzu Yayınlandı! Kadrolar",
+      content: "ÖSYM tarafından bugün yayımlanan 2026/1 EKPSS tercih kılavuzundaki memur ve hizmetli kadrolarını analiz ettim. Hangi öğrenim düzeyinde ne kadar atama var, branş dağılımları ve puan tahminleri hakkında sorularınızı bu başlık altından yanıtlıyorum.",
+      created_at: new Date(Date.now() - 3600000 * 18).toISOString(),
+      likes_count: 42,
+      comments_count: 38,
+      is_pinned: false,
+      category: { name: "EKPSS", slug: "ekpss" },
+      author: { username: "elif_disleksi", avatar_url: null, full_name: "Elif Demir" }
+    },
+    comments: [
+      {
+        id: "comment-3-1",
+        topic_id: "mock-3",
+        author_id: "user-4",
+        content: "Lise düzeyinde hizmetli kadroları için taban puanların kaç civarına düşeceğini öngörüyorsunuz? Teşekkürler.",
+        created_at: new Date(Date.now() - 3600000 * 16).toISOString(),
+        is_solution: false,
+        author: { username: "kemal_hiz", full_name: "Kemal Koç", avatar_url: null, role: "user" }
+      }
+    ]
+  }
+};
+
 function CommentItem({ 
   comment, 
   allComments, 
@@ -308,7 +392,10 @@ export default function DiscussionDetailPage() {
       process.env.NEXT_PUBLIC_SUPABASE_URL && 
       process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
 
-    if (!isSupabaseConfigured) {
+    const mockId = String(id);
+    if (!isSupabaseConfigured || mockId.startsWith('mock-') || !id) {
+      const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
+      setTopic(fallback.topic);
       setLoading(false);
       return;
     }
@@ -320,10 +407,16 @@ export default function DiscussionDetailPage() {
         .eq('id', id)
         .single();
       
-      if (error) throw error;
-      setTopic(data);
+      if (error) {
+        const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
+        setTopic(fallback.topic);
+      } else {
+        setTopic(data);
+      }
     } catch (err) {
       console.error('Error fetching topic:', err);
+      const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
+      setTopic(fallback.topic);
     }
   }, [id]);
 
@@ -332,7 +425,10 @@ export default function DiscussionDetailPage() {
       process.env.NEXT_PUBLIC_SUPABASE_URL && 
       process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
 
-    if (!isSupabaseConfigured) {
+    const mockId = String(id);
+    if (!isSupabaseConfigured || mockId.startsWith('mock-') || !id) {
+      const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
+      setComments(fallback.comments);
       setLoading(false);
       return;
     }
@@ -353,10 +449,16 @@ export default function DiscussionDetailPage() {
         .eq('topic_id', id)
         .order('created_at', { ascending: true });
       
-      if (error) throw error;
-      setComments(data || []);
+      if (error) {
+        const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
+        setComments(fallback.comments);
+      } else {
+        setComments(data || []);
+      }
     } catch (err) {
       console.error('Error fetching comments:', err);
+      const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
+      setComments(fallback.comments);
     } finally {
       setLoading(false);
     }

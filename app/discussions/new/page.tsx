@@ -17,7 +17,7 @@ function NewTopicForm() {
   const { user, profile } = useAuth();
   
   const [title, setTitle] = useState('');
-  const [categoryId, setCategoryId] = useState(searchParams?.get('category_id') || '');
+  const [categoryId, setCategoryId] = useState(searchParams?.get('category_id') || searchParams?.get('kategori') || '');
   const [content, setContent] = useState('');
   const [isPinned, setIsPinned] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
@@ -30,6 +30,19 @@ function NewTopicForm() {
     const parentIds = new Set(categories.map(c => c.parent_id).filter(Boolean));
     return categories.filter(c => !parentIds.has(c.id));
   }, [categories]);
+
+  // Handle auto-selecting category if query param is slug or ID
+  useEffect(() => {
+    if (categories.length > 0) {
+      const urlCat = searchParams?.get('category_id') || searchParams?.get('kategori') || searchParams?.get('category');
+      if (urlCat) {
+        const found = categories.find(c => c.id === urlCat || c.slug === urlCat);
+        if (found) {
+          setCategoryId(found.id);
+        }
+      }
+    }
+  }, [categories, searchParams]);
 
   useEffect(() => {
     const isSupabaseConfigured = 

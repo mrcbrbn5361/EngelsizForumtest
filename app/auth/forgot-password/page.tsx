@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Mail, ArrowLeft, AlertCircle, CheckCircle } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Navbar } from '@/components/layout/navbar';
+import { SiteLayout } from '@/components/layout/site-layout';
+import Link from 'next/link';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -31,31 +32,28 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-muted/30">
-      <Navbar />
-      <main className="flex-1 flex items-center justify-center p-4">
+    <SiteLayout>
+      <main className="vibe-container py-12 md:py-24 flex items-center justify-center">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md bg-card border border-border rounded-3xl shadow-xl p-8"
+          className="w-full max-w-md vibe-card p-8 shadow-2xl"
         >
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">Şifremi Unuttum</h1>
-            <p className="text-muted-foreground">E-posta adresinizi girin, size şifre sıfırlama bağlantısı gönderelim.</p>
+            <h1 className="text-3xl font-black mb-2 tracking-tight uppercase">Şifremi Unuttum</h1>
+            <p className="text-muted-foreground font-medium text-sm">E-posta adresinizi girin, size şifre sıfırlama bağlantısı gönderelim.</p>
           </div>
 
-          <form onSubmit={handleReset} className="space-y-4">
+          <form onSubmit={handleReset} className="space-y-6">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium flex items-center gap-2">
-                <Mail size={16} /> E-posta
-              </label>
+              <label htmlFor="email" className="vibe-label">E-posta</label>
               <input
                 id="email"
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-border bg-background outline-none focus:ring-2 focus:ring-primary transition-all"
+                className="vibe-input h-14"
                 placeholder="e-posta@adresiniz.com"
               />
             </div>
@@ -64,9 +62,9 @@ export default function ForgotPasswordPage() {
               <div 
                 role="status"
                 aria-live="polite"
-                className={`flex items-center gap-3 p-4 rounded-2xl border-2 font-bold text-sm ${
+                className={`flex items-center gap-3 p-4 rounded-2xl border-2 font-black text-xs uppercase tracking-widest ${
                   message.type === 'success' 
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                    ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' 
                     : 'bg-destructive/10 text-destructive border-destructive/20'
                 }`}
               >
@@ -78,19 +76,19 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-xl bg-primary text-primary-foreground font-bold shadow-lg hover:bg-primary/90 transition-all disabled:opacity-50"
+              className="vibe-button-primary w-full h-14"
             >
-              {loading ? 'Gönderiliyor...' : 'Bağlantı Gönder'}
+              {loading ? 'GÖNDERİLİYOR...' : 'BAĞLANTI GÖNDER'}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <a href="/auth" className="text-sm text-primary font-medium hover:underline flex items-center justify-center gap-2">
-              <ArrowLeft size={16} /> Geri dön
-            </a>
+          <div className="mt-8 text-center">
+            <Link href="/auth" className="text-xs font-black uppercase tracking-widest text-primary hover:underline flex items-center justify-center gap-2">
+              <ArrowLeft size={16} /> GERİ DÖN
+            </Link>
           </div>
         </motion.div>
       </main>
-    </div>
+    </SiteLayout>
   );
 }

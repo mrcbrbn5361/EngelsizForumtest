@@ -1,14 +1,16 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-  httpOptions: {
-    headers: {
-      'User-Agent': 'aistudio-build',
-    }
-  }
-});
+const ai = process.env.GEMINI_API_KEY
+  ? new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY,
+      httpOptions: {
+        headers: {
+          'User-Agent': 'aistudio-build',
+        }
+      }
+    })
+  : null;
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,6 +18,13 @@ export async function POST(req: NextRequest) {
 
     if (!imageBase64) {
       return NextResponse.json({ error: "Image data is required" }, { status: 400 });
+    }
+
+    if (!ai) {
+      console.warn("[Gemini AI Alt Text] GEMINI_API_KEY is not configured. Returning fallback alt text.");
+      return NextResponse.json({ 
+        altText: "Yüklenen görsel (AI betimleme anahtarı eksik)" 
+      });
     }
 
     const imagePart = {

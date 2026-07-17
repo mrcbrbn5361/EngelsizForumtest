@@ -31,6 +31,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
 
 export default function AdminDashboard() {
   const { user, profile, loading } = useAuth();
@@ -139,36 +140,31 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md px-4 md:px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg shrink-0">
-              <Shield size={24} />
+    <DashboardLayout>
+      <div className="container mx-auto px-4 py-8 md:py-12 space-y-8">
+        <header className="flex items-center justify-between gap-4 border-b border-border pb-8">
+          <div className="flex items-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
+              <Shield size={32} />
             </div>
-            <div className="min-w-0">
-              <h1 className="text-lg md:text-xl font-black tracking-tight leading-none uppercase truncate">Yetkili Paneli</h1>
-              <p className="text-[10px] md:text-xs text-muted-foreground font-bold mt-1 truncate">
-                <span className="hidden sm:inline">Hoş geldin, </span><span className="text-primary">{profile?.username}</span> • {profile?.role}
+            <div>
+              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Yetkili Paneli</h1>
+              <p className="text-sm text-muted-foreground font-medium mt-1">
+                Hoş geldin, <span className="text-foreground font-bold">{profile?.username}</span> • {profile?.role}
               </p>
             </div>
           </div>
-          
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={() => router.push('/')}
-              className="px-3 md:px-4 py-2 text-xs md:text-sm font-bold rounded-xl border border-border hover:bg-muted transition-colors shrink-0"
-            >
-              Foruma Dön
-            </button>
-          </div>
-        </div>
-      </header>
+          <button 
+            onClick={() => router.push('/')}
+            className="inline-flex items-center justify-center rounded-xl bg-background px-6 py-3 text-sm font-bold text-foreground border border-border transition hover:bg-muted"
+          >
+            Foruma Dön
+          </button>
+        </header>
 
-      <main className="max-w-7xl mx-auto p-4 md:p-8">
-        <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col gap-6 md:gap-8">
-          <div className="overflow-x-auto no-scrollbar pb-2 md:pb-0">
-            <Tabs.List className="flex gap-2 p-1 bg-muted rounded-2xl w-fit">
+        <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col gap-8">
+          <div className="overflow-x-auto no-scrollbar pb-2">
+            <Tabs.List className="flex gap-2 p-1.5 bg-muted rounded-2xl w-fit">
               <TabButton value="overview" icon={<LayoutDashboard size={18} />} label="Özet" />
               <TabButton value="analiz" icon={<TrendingUp size={18} />} label="Analiz" />
               <TabButton value="categories" icon={<FolderTree size={18} />} label="Kategori" />
@@ -177,26 +173,26 @@ export default function AdminDashboard() {
             </Tabs.List>
           </div>
 
-          <Tabs.Content value="overview" className="outline-none space-y-6 md:space-y-8">
-            <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
-              <div className="rounded-3xl border border-border p-6 bg-card shadow-sm">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-black tracking-tight">Son Kayıt Olun Üyeler</h3>
-                  <button onClick={() => setActiveTab('users')} className="text-xs font-bold text-primary hover:underline">Tümünü Gör</button>
+          <Tabs.Content value="overview" className="outline-none space-y-8">
+            <div className="grid lg:grid-cols-2 gap-8">
+              <div className="rounded-3xl border border-border p-8 bg-card shadow-sm">
+                <div className="flex items-center justify-between mb-8">
+                  <h3 className="text-xl font-extrabold tracking-tight">Son Kayıt Olan Üyeler</h3>
+                  <button onClick={() => setActiveTab('users')} className="text-sm font-bold text-primary hover:underline">Tümünü Gör</button>
                 </div>
                 <div className="space-y-4">
                   {usersList.slice(0, 5).map((u) => (
-                    <div key={u.id} className="flex items-center justify-between p-3 rounded-2xl hover:bg-muted/50 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xs border border-primary/20">
+                    <div key={u.id} className="flex items-center justify-between p-4 rounded-2xl hover:bg-muted/50 transition-colors border border-transparent hover:border-border">
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm border border-primary/20">
                           {(u.username || '?')[0].toUpperCase()}
                         </div>
                         <div>
-                          <p className="text-sm font-bold">@{u.username || 'isimsiz'}</p>
-                          <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{u.role}</p>
+                          <p className="font-bold">@{u.username || 'isimsiz'}</p>
+                          <p className="text-xs text-muted-foreground uppercase tracking-wider">{u.role}</p>
                         </div>
                       </div>
-                      <ChevronRight size={16} className="text-muted-foreground" />
+                      <ChevronRight size={18} className="text-muted-foreground" />
                     </div>
                   ))}
                 </div>
@@ -204,8 +200,8 @@ export default function AdminDashboard() {
             </div>
           </Tabs.Content>
 
-          <Tabs.Content value="analiz" className="outline-none space-y-6 md:space-y-8">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <Tabs.Content value="analiz" className="outline-none space-y-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
               <StatCard label="Toplam Ziyaretçi" value={stats.total_visitors} icon={<Users size={20} />} />
               <StatCard label="Anlık Ziyaretçi" value={stats.active_visitors} icon={<Users size={20} />} />
               <StatCard label="Üyeler" value={stats.users} icon={<Users size={20} />} />
@@ -215,13 +211,12 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-border p-6 bg-card shadow-sm">
-              <h3 className="text-lg font-black mb-4">Raspberry Pi Entegrasyon Kodu</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Bu kodu Raspberry Pi cihazınızda çalıştırarak verileri admin panelinize gönderebilirsiniz. 
-                Gereksinim: <code>pip install requests</code>
+            <div className="rounded-3xl border border-border p-8 bg-card shadow-sm">
+              <h3 className="text-xl font-black mb-6">Raspberry Pi Entegrasyon Kodu</h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                Bu kodu Raspberry Pi cihazınızda çalıştırarak verileri admin panelinize gönderebilirsiniz.
               </p>
-              <pre className="bg-gray-900 text-gray-100 p-4 rounded-xl font-mono text-sm overflow-x-auto">
+              <pre className="bg-foreground text-background p-6 rounded-2xl font-mono text-xs overflow-x-auto">
 {`import requests
 import time
 import uuid
@@ -286,8 +281,8 @@ if __name__ == "__main__":
             <ModerationManager onTopicChange={fetchAllData} />
           </Tabs.Content>
         </Tabs.Root>
-      </main>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }
 

@@ -20,6 +20,12 @@ export const supabase = createSupabaseClient(
 export const isSupabaseConfigured = !!(
   supabaseUrl && 
   supabaseUrl !== PLACEHOLDER_URL && 
+  supabaseUrl !== 'https://placeholder-url.supabase.co' &&
+  supabaseUrl !== 'https://your-project.supabase.co' &&
+  !supabaseUrl.includes('your-project') &&
+  !supabaseUrl.includes('placeholder') &&
   supabaseAnonKey && 
-  supabaseAnonKey !== PLACEHOLDER_KEY
+  supabaseAnonKey !== PLACEHOLDER_KEY &&
+  supabaseAnonKey !== 'your-anon-key' &&
+  supabaseAnonKey !== ''
 );

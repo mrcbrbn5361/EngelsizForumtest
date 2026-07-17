@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Database, Shield, ChevronRight } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useAuth } from '@/components/providers/auth-provider';
-import { NotificationsDropdown } from './notifications-dropdown';
+import { NotificationCenter } from '@/components/ui/notification-center';
 import { cn } from '@/lib/utils';
 
 /**
@@ -56,7 +56,7 @@ export function Navbar() {
             {!loading && (
               user ? (
                 <div className="flex items-center gap-2">
-                  <NotificationsDropdown />
+                  <NotificationCenter />
                   {isStaff && (
                     <Link
                       href="/admin"
@@ -71,10 +71,10 @@ export function Navbar() {
                     className="ml-1 flex items-center gap-3 rounded-xl border border-border bg-card p-1 pr-3 md:pr-4 text-xs md:text-sm font-bold text-foreground transition-all hover:border-primary focus:ring-4 focus:ring-primary/20 shadow-sm group shrink-0"
                     aria-label="Profilim ve Ayarlar"
                   >
-                  {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
+                  {profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
                     <div className="relative h-7 w-7 md:h-8 md:w-8 rounded-lg overflow-hidden border border-border group-hover:border-primary/30">
                       <Image 
-                        src={user.user_metadata.avatar_url || user.user_metadata.picture} 
+                        src={profile?.avatar_url || user.user_metadata.avatar_url || user.user_metadata.picture} 
                         alt="Profil resmim" 
                         fill
                         className="object-cover"
@@ -128,6 +128,7 @@ export function Navbar() {
                 <button
                   className="ml-1 flex md:hidden items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-2 focus:ring-primary"
                   aria-label={isOpen ? "Menüyü Kapat" : "Menüyü Aç"}
+                  suppressHydrationWarning
                 >
                   <Menu size={20} />
                 </button>

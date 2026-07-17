@@ -101,6 +101,17 @@ export type Upload = {
   created_at: string;
 };
 
+export type Notification = {
+  id: string;
+  user_id: string;
+  type: 'reply' | 'like' | 'mention' | 'system' | 'achievement' | string;
+  title: string;
+  body: string;
+  data: any;
+  read_at: string | null;
+  created_at: string;
+};
+
 export type Attachment = {
   id: string;
   topic_id: string | null;

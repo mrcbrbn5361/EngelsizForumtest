@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from './auth-provider';
 import { RouteAnnouncer } from './route-announcer';
 
@@ -58,10 +58,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
 
   // Fetch from Supabase when user logs in
   useEffect(() => {
-    const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-project.supabase.co';
-
     if (user && isSupabaseConfigured) {
       const fetchPrefs = async () => {
         setIsSyncingFromCloud(true);
@@ -102,10 +98,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     root.classList.toggle('focus-mode', settings.focusMode);
 
     localStorage.setItem('accessibility_prefs', JSON.stringify(settings));
-
-    const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-project.supabase.co';
 
     // Sync with Supabase if logged in and settings actually changed
     const currentSettingsStr = JSON.stringify(settings);

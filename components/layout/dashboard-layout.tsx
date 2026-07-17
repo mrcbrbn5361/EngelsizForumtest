@@ -61,7 +61,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
       <div className="flex flex-1 w-full max-w-[1440px] mx-auto px-4 md:px-8">
-        <aside role="complementary" aria-label="Yan Menü" className="hidden lg:flex w-[320px] p-10 flex-col gap-12 sticky top-20 h-[calc(100vh-80px)] overflow-y-auto bg-muted/5 border-r-2 border-border/50 shrink-0">
+        <aside role="complementary" aria-label="Yan Menü" className="hidden lg:flex w-[320px] p-8 flex-col gap-10 sticky top-24 h-[calc(100vh-120px)] overflow-y-auto bg-card border-2 border-border/80 rounded-3xl shadow-sm mr-6 my-6 shrink-0">
             <nav className="flex flex-col gap-2" aria-label="Ana Gezinti">
                 <NavItem href="/" icon={Home} label="ANA SAYFA" />
                 <NavItem href="/discussions" icon={MessageSquare} label="TARTIŞMALAR" />
@@ -69,20 +69,28 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <NavItem href="/about" icon={Info} label="HAKKIMIZDA" />
             </nav>
 
-            <div className="border-t-2 border-border/50"></div>
+            <div className="border-t border-border/80"></div>
 
             <nav className="flex flex-col gap-2" aria-label="Kategori Gezintisi">
               <h4 className="vibe-label ml-4 mb-4">TOPLULUKLAR</h4>
               {sidebarCategories.map((cat) => {
                 const IconComponent = cat.icon === 'Database' || cat.slug === 'isitme-engelli' ? Database : AlertCircle;
+                const catHref = `/communities/${cat.slug || cat.id}`;
+                const isCatActive = pathname === catHref;
                 return (
                   <Link 
                     key={cat.id || cat.slug}
-                    href={`/communities/${cat.slug || cat.id}`} 
-                    className="flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent hover:border-border transition-all" 
+                    href={catHref} 
+                    aria-current={isCatActive ? 'page' : undefined}
+                    className={cn(
+                      "flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all",
+                      isCatActive
+                        ? "bg-primary text-primary-foreground shadow-2xl shadow-primary/20 scale-[1.02]"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent hover:border-border"
+                    )}
                     aria-label={`${cat.name} topluluğu`}
                   >
-                    <IconComponent size={20} className="text-primary" /> {cat.name.split(' ')[0].toUpperCase()}
+                    <IconComponent size={20} className={isCatActive ? "text-primary-foreground" : "text-primary"} /> {cat.name.split(' ')[0].toUpperCase()}
                   </Link>
                 );
               })}
