@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { expandSearchQuery } from '@/lib/search-dictionary';
 
 // Empty fallback for clean database-only mode
 const FALLBACK_TOPICS: Topic[] = [];
@@ -21,6 +22,7 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [expandedTermsUsed, setExpandedTermsUsed] = useState<string[]>([]);
 
   // Load Categories on mount
   useEffect(() => {
@@ -48,6 +50,7 @@ export default function SearchPage() {
   const performSearch = useCallback(async (searchQuery: string, catId: string) => {
     if (!searchQuery.trim() && !catId) {
       setResults([]);
+      setExpandedTermsUsed([]);
       return;
     }
     setLoading(true);
@@ -67,7 +70,18 @@ export default function SearchPage() {
         .limit(25);
 
       if (searchQuery.trim()) {
-        queryBuilder = queryBuilder.or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`);
+        // Gelişmiş Türkçe Arama Sözlüğü ile sorguyu eş anlamlılar ve eşdeş kelimelerle genişlet
+        const terms = expandSearchQuery(searchQuery).slice(0, 8);
+        setExpandedTermsUsed(terms);
+        
+        // Supabase için .or formatında koşul zinciri oluştur (title veya content alanında terimlerden biri geçmeli)
+        const orConditions = terms
+          .map(term => `title.ilike.%${term}%,content.ilike.%${term}%`)
+          .join(',');
+        
+        queryBuilder = queryBuilder.or(orConditions);
+      } else {
+        setExpandedTermsUsed([]);
       }
       
       if (catId) {
@@ -214,10 +228,17 @@ export default function SearchPage() {
         </header>
 
         <section>
-          <div className="flex items-center justify-between mb-8 border-b border-border pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-border pb-4">
             <h2 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
               {loading ? 'ARANIYOR...' : `${results.length} SONUÇ BULUNDU`}
             </h2>
+            {!loading && expandedTermsUsed.length > 1 && (
+              <div className="flex flex-wrap items-center gap-2 text-xs text-primary bg-primary/5 px-3 py-1.5 rounded-xl border border-primary/10">
+                <Sparkles className="size-3.5 shrink-0 text-primary" />
+                <span className="font-bold">Arama Kelimeleri Genişletildi:</span>
+                <span className="font-medium text-muted-foreground">{expandedTermsUsed.join(", ")}</span>
+              </div>
+            )}
           </div>
 
           <div className="grid gap-6">

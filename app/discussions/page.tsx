@@ -16,6 +16,7 @@ import { DiscussionCard } from '@/components/forum/discussion-card';
 import { Topic } from '@/types/database';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
+import { expandSearchQuery, matchQueryWithText } from '@/lib/search-dictionary';
 
 const getCategoryIcon = (iconName: string) => {
   switch (iconName) {
@@ -205,10 +206,13 @@ function DiscussionsContent() {
   };
 
   // Filtering Logic
+  const expandedTermsUsed = searchQuery ? expandSearchQuery(searchQuery) : [];
+
   const filteredTopics = topics.filter(topic => {
-    const matchesSearch = 
-      topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      topic.content.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = !searchQuery ? true : (
+      matchQueryWithText(topic.title, expandedTermsUsed) ||
+      matchQueryWithText(topic.content, expandedTermsUsed)
+    );
     
     const matchesCategory = 
       !selectedCategory || 
@@ -388,6 +392,15 @@ function DiscussionsContent() {
                   </select>
                 </div>
               </div>
+
+              {/* Smart Search Synonyms/Homonyms Expansion indicator */}
+              {searchQuery.trim() && expandedTermsUsed.length > 1 && (
+                <div className="flex flex-wrap items-center gap-2 text-xs text-primary bg-primary/5 px-3 py-1.5 rounded-xl border border-primary/10">
+                  <Sparkles className="size-3.5 shrink-0 text-primary" />
+                  <span className="font-bold">Arama Kelimeleri Genişletildi:</span>
+                  <span className="font-medium text-muted-foreground">{expandedTermsUsed.join(", ")}</span>
+                </div>
+              )}
 
               {/* Status tabs */}
               <div className="flex flex-wrap gap-2 border-t border-border/50 pt-4">
