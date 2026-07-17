@@ -1,16 +1,5 @@
-import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
-
-const ai = process.env.GEMINI_API_KEY
-  ? new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY,
-      httpOptions: {
-        headers: {
-          'User-Agent': 'aistudio-build',
-        }
-      }
-    })
-  : null;
+import { generateContentWithRetry } from "@/lib/gemini";
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,7 +9,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Image data is required" }, { status: 400 });
     }
 
-    if (!ai) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
       console.warn("[Gemini AI Alt Text] GEMINI_API_KEY is not configured. Returning fallback alt text.");
       return NextResponse.json({ 
         altText: "Yüklenen görsel (AI betimleme anahtarı eksik)" 
@@ -38,8 +28,7 @@ export async function POST(req: NextRequest) {
       text: "Bu görseli engelli bireyler için (ekran okuyuculara uygun) detaylı ve betimleyici bir alt-metin (alt text) olarak açıkla. Sadece betimlemeyi döndür.",
     };
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+    const response = await generateContentWithRetry({
       contents: { parts: [imagePart, textPart] },
     });
 

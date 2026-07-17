@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenAI } from "@google/genai";
+import { generateContentWithRetry } from "@/lib/gemini";
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,24 +19,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const ai = new GoogleGenAI({
-      apiKey: apiKey,
-      httpOptions: {
-        headers: {
-          'User-Agent': 'aistudio-build',
-        }
-      }
-    });
-
     // Format history according to @google/genai format
     const formattedHistory = (history || []).map((h: any) => ({
       role: h.role === 'ai' || h.role === 'model' ? 'model' : 'user',
       parts: [{ text: h.text || h.content || '' }]
     }));
 
-    const chat = ai.chats.create({
-      model: "gemini-3.5-flash",
-      history: formattedHistory,
+    const contents = [
+      ...formattedHistory,
+      { role: "user", parts: [{ text: message }] }
+    ];
+
+    const response = await generateContentWithRetry({
+      contents: contents,
       config: {
         systemInstruction: `Sen EngelsizForum yapay zeka asistanı ve erişilebilirlik rehberisin.
 Görevin, engelli hakları, erişilebilirlik standartları (WCAG 2.1), yardımcı teknolojiler (NVDA, JAWS, ekran okuyucular, braille ekranlar), bilişsel kısıtlılıklar (disleksi, DEHB, otizm) ve dijital engelsiz yaşam hakkında kullanıcılara nazik, empati dolu ve bilgilendirici yanıtlar vermektir.
@@ -45,7 +40,6 @@ EngelsizForum topluluğunu destekleyici ve kapsayıcı bir dille konuş.`
       }
     });
 
-    const response = await chat.sendMessage({ message: message });
     return NextResponse.json({ text: response.text });
 
   } catch (error: any) {

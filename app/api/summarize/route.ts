@@ -1,16 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenAI } from "@google/genai";
-
-const ai = process.env.GEMINI_API_KEY
-  ? new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY,
-      httpOptions: {
-        headers: {
-          'User-Agent': 'aistudio-build',
-        }
-      }
-    })
-  : null;
+import { generateContentWithRetry } from "@/lib/gemini";
 
 function cleanText(text: string): string {
   if (!text) return "";
@@ -110,20 +99,17 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Try Gemini API as a secondary fallback if Yeterly failed or is not configured
-    if (ai) {
-      try {
-        console.log("[Gemini AI Summarize Fallback] Generating summary using gemini-3.5-flash as fallback...");
-        const response = await ai.models.generateContent({
-          model: 'gemini-3.5-flash',
-          contents: `Aşağıdaki forum tartışmasını Türkçe olarak özetle. Özet kısa (en fazla 2-3 cümle), net, anlaşılır ve özellikle ekran okuyucu kullanan engelli bireyler için seslendirildiğinde rahat anlaşılacak akıcı bir dilde olmalıdır. Sadece özet metnini döndür, ek açıklama ekleme.\n\n${textToSummarize}`,
-        });
-        
-        if (response.text) {
-          return NextResponse.json({ text: response.text.trim() });
-        }
-      } catch (geminiError: any) {
-        console.error("[Gemini AI Summarize Error] Falling back to local methods...", geminiError);
+    try {
+      console.log("[Gemini AI Summarize Fallback] Generating summary using fallback with retry...");
+      const response = await generateContentWithRetry({
+        contents: `Aşağıdaki forum tartışmasını Türkçe olarak özetle. Özet kısa (en fazla 2-3 cümle), net, anlaşılır ve özellikle ekran okuyucu kullanan engelli bireyler için seslendirildiğinde rahat anlaşılacak akıcı bir dilde olmalıdır. Sadece özet metnini döndür, ek açıklama ekleme.\n\n${textToSummarize}`,
+      });
+      
+      if (response && response.text) {
+        return NextResponse.json({ text: response.text.trim() });
       }
+    } catch (geminiError: any) {
+      console.error("[Gemini AI Summarize Error] Falling back to local methods...", geminiError);
     }
 
     // 3. Fallback to local smart summary
