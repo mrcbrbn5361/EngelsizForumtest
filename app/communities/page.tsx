@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface Community {
@@ -329,10 +329,6 @@ export default function CommunitiesPage() {
   }, []);
 
   const fetchCommunities = React.useCallback(async () => {
-    const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
-
     if (!isSupabaseConfigured) {
       setCommunities([]);
       setLoading(false);

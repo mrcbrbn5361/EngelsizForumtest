@@ -3,7 +3,7 @@ import { SiteLayout } from '@/components/layout/site-layout';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Sparkles, Plus, MessageSquare } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { ForumIndexClient } from '@/components/forum/forum-index-client';
 
 export default async function Home() {
@@ -12,10 +12,13 @@ export default async function Home() {
   let featuredCommunities: any[] = [];
   let isDbConnected = false;
 
-  const isSupabaseConfigured = 
-    process.env.NEXT_PUBLIC_SUPABASE_URL && 
-    process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co' &&
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  let totalTopics = 0;
+  let totalComments = 0;
+  let totalMembers = 0;
+  let newestMember = '';
+  let todayTopics = 0;
+  let todayComments = 0;
+  let activeMembers: any[] = [];
 
   if (isSupabaseConfigured) {
     try {
@@ -24,7 +27,7 @@ export default async function Home() {
         .from('topics')
         .select(`
           *,
-          author:profiles(username, avatar_url, full_name),
+          author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
           category:categories(name, slug, description, icon, color),
           comments(count)
         `)
@@ -39,18 +42,67 @@ export default async function Home() {
         .limit(50);
 
       if (!topicsError && topicsData) {
-        latestTopics = topicsData;
+        latestTopics = topicsData.filter(t => t.author);
         isDbConnected = true;
       }
       if (!catsError && catsData) {
         featuredCommunities = catsData;
       }
+
+      // Fetch dynamic stats
+      const { count: topicsCount } = await supabase
+        .from('topics')
+        .select('*', { count: 'exact', head: true });
+      if (topicsCount !== null) totalTopics = topicsCount;
+
+      const { count: commentsCount } = await supabase
+        .from('comments')
+        .select('*', { count: 'exact', head: true });
+      if (commentsCount !== null) totalComments = commentsCount;
+
+      const { count: membersCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+      if (membersCount !== null) totalMembers = membersCount;
+
+      const { data: newestMemData } = await supabase
+        .from('profiles')
+        .select('username')
+        .order('created_at', { ascending: false })
+        .limit(1);
+      if (newestMemData && newestMemData.length > 0) {
+        newestMember = newestMemData[0].username;
+      }
+
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+
+      const { count: todayTCount } = await supabase
+        .from('topics')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', todayStart.toISOString());
+      if (todayTCount !== null) todayTopics = todayTCount;
+
+      const { count: todayCCount } = await supabase
+        .from('comments')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', todayStart.toISOString());
+      if (todayCCount !== null) todayComments = todayCCount;
+
+      const { data: membersData } = await supabase
+        .from('profiles')
+        .select('id, username, full_name, avatar_url, role')
+        .order('updated_at', { ascending: false })
+        .limit(12);
+      if (membersData) {
+        activeMembers = membersData;
+      }
     } catch (e) {
-      console.warn("Home server side fetch failed, falling back to mock:", e);
+      console.warn("Home server side fetch failed:", e);
     }
   }
 
-  // No fallback mock data allowed. Real data must be fetched dynamically from the database.
+  // Only real dynamic data is allowed from the database.
   function formatTRDate(dateStr: string) {
     const date = new Date(dateStr);
     const now = new Date();
@@ -309,7 +361,19 @@ export default async function Home() {
           })
         }}
       />
-      <ForumIndexClient initialTopics={latestTopics} initialCategories={featuredCommunities} />
+      <ForumIndexClient 
+        initialTopics={latestTopics} 
+        initialCategories={featuredCommunities} 
+        stats={{
+          totalTopics,
+          totalComments,
+          totalMembers,
+          newestMember,
+          todayTopics,
+          todayComments,
+          activeMembers
+        }}
+      />
 
       {/* Detailed Explanation / Guide Section */}
       <section className="max-w-[1280px] mx-auto px-4 py-16 md:py-24 bg-card border border-border rounded-3xl my-16 shadow-sm">

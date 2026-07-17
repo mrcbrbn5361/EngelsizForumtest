@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DiscussionCard } from '@/components/forum/discussion-card';
@@ -84,9 +84,6 @@ function DiscussionsContent() {
 
   const fetchInitialData = useCallback(async () => {
     setLoading(true);
-    const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
 
     if (!isSupabaseConfigured) {
       setTopics([]);
@@ -113,7 +110,7 @@ function DiscussionsContent() {
         .from('topics')
         .select(`
           *,
-          author:profiles(username, avatar_url, full_name),
+          author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
           category:categories(name, slug),
           comments(count)
         `)
@@ -121,7 +118,7 @@ function DiscussionsContent() {
         .order('created_at', { ascending: false });
 
       if (topicsData && topicsData.length > 0) {
-        setTopics(topicsData);
+        setTopics(topicsData.filter(t => t.author));
       } else {
         setTopics([]);
       }

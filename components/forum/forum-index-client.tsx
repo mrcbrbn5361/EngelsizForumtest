@@ -20,9 +20,18 @@ import { toast } from 'sonner';
 interface ForumIndexClientProps {
   initialTopics: Topic[];
   initialCategories: Category[];
+  stats?: {
+    totalTopics: number;
+    totalComments: number;
+    totalMembers: number;
+    newestMember: string;
+    todayTopics: number;
+    todayComments: number;
+    activeMembers: any[];
+  };
 }
 
-export function ForumIndexClient({ initialTopics, initialCategories }: ForumIndexClientProps) {
+export function ForumIndexClient({ initialTopics, initialCategories, stats }: ForumIndexClientProps) {
   const { user, profile } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'solved' | 'popular' | 'pinned'>('all');
@@ -38,9 +47,18 @@ export function ForumIndexClient({ initialTopics, initialCategories }: ForumInde
   const [onlineMembers, setOnlineMembers] = useState<{ id: string; username: string; name: string; avatar: string; isOnline: boolean; role: string; }[]>([]);
 
   useEffect(() => {
-    // Gerçek çevrimiçi üyeleri veritabanından çek (şimdilik boş bırakıp veya gerçek veriye bağla)
-    // Gerçek veri varsa buradan fetch edilecek
-  }, []);
+    if (stats?.activeMembers) {
+      const formatted = stats.activeMembers.map((m: any) => ({
+        id: m.id,
+        username: m.username,
+        name: m.full_name || m.username,
+        avatar: m.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${m.username}`,
+        isOnline: true,
+        role: m.role || 'user'
+      }));
+      setOnlineMembers(formatted);
+    }
+  }, [stats]);
 
   const toggleCategory = (catId: string) => {
     setCollapsedCategories(prev => ({ ...prev, [catId]: !prev[catId] }));
@@ -144,9 +162,6 @@ export function ForumIndexClient({ initialTopics, initialCategories }: ForumInde
 
   const forumSections = getDynamicForumSections();
   const filteredTopics = initialTopics.filter(topic => {
-    const isMock = topic.author?.username?.startsWith('mock_') || topic.author?.full_name?.startsWith('Mock');
-    if (isMock) return false;
-
     const matchesSearch = topic.title.toLowerCase().includes(searchQuery.toLowerCase()) || topic.content.toLowerCase().includes(searchQuery.toLowerCase());
     if (!matchesSearch) return false;
     switch (activeTab) {
@@ -250,10 +265,10 @@ export function ForumIndexClient({ initialTopics, initialCategories }: ForumInde
               className="lg:col-span-5 grid grid-cols-2 gap-5"
             >
               {[
-                { label: 'TOPLAM BAŞLIK', val: '1.248', sub: '+12 Bugün', color: 'primary' },
-                { label: 'TOPLAM CEVAP', val: '8.492', sub: '+45 Bugün', color: 'foreground' },
-                { label: 'TOPLAM ÜYE', val: '412', sub: 'Son üye: @ayse', color: 'foreground' },
-                { label: 'ÇEVRİMİÇİ ÜYE', val: '24', sub: 'Lively / Canlı', color: 'primary', live: true }
+                { label: 'TOPLAM BAŞLIK', val: stats?.totalTopics !== undefined ? stats.totalTopics.toLocaleString('tr-TR') : '0', sub: `+${stats?.todayTopics || 0} Bugün`, color: 'primary' },
+                { label: 'TOPLAM CEVAP', val: stats?.totalComments !== undefined ? stats.totalComments.toLocaleString('tr-TR') : '0', sub: `+${stats?.todayComments || 0} Bugün`, color: 'foreground' },
+                { label: 'TOPLAM ÜYE', val: stats?.totalMembers !== undefined ? stats.totalMembers.toLocaleString('tr-TR') : '0', sub: stats?.newestMember ? `Son üye: @${stats.newestMember}` : 'Son üye bulunamadı', color: 'foreground' },
+                { label: 'ÇEVRİMİÇİ ÜYE', val: stats?.activeMembers ? stats.activeMembers.length.toString() : '0', sub: 'Lively / Canlı', color: 'primary', live: true }
               ].map((stat, i) => (
                 <div key={i} className={cn(
                   "bg-card border border-border rounded-3xl p-7 shadow-sm transition-all hover:shadow-md hover:border-primary/20 relative overflow-hidden group",
@@ -435,11 +450,18 @@ export function ForumIndexClient({ initialTopics, initialCategories }: ForumInde
                       <div className="flex items-center justify-between gap-6 text-[11px] text-muted-foreground pointer-events-none border-t border-border/50 pt-6">
                         <div className="flex items-center gap-3.5 min-w-0">
                           <div className="w-9 h-9 rounded-2xl bg-muted flex items-center justify-center overflow-hidden border border-border relative shadow-sm group-hover:border-primary/30 transition-all">
-                            {topic.author?.avatar_url ? <img src={topic.author.avatar_url} alt="" className="object-cover h-full w-full" referrerPolicy="no-referrer" /> : <User size={16} />}
+                            <img 
+                              src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`} 
+                              alt="" 
+                              className="object-cover h-full w-full" 
+                              referrerPolicy="no-referrer" 
+                            />
                           </div>
                           <div className="flex flex-col">
                             <span className="font-black text-foreground text-xs uppercase tracking-tight">{topic.author?.full_name || topic.author?.username || 'Kullanıcı'}</span>
-                            <span className="text-[9px] font-bold text-primary uppercase tracking-widest opacity-70">TOPLULUK YAZARI</span>
+                            <span className="text-[9px] font-bold text-primary uppercase tracking-widest opacity-70">
+                              {topic.author?.role === 'admin' ? 'YÖNETİCİ' : topic.author?.role === 'moderator' ? 'MODERATÖR' : 'TOPLULUK ÜYESİ'}
+                            </span>
                           </div>
                         </div>
                         <div className="flex items-center gap-6 text-xs font-mono font-bold">
@@ -487,18 +509,24 @@ export function ForumIndexClient({ initialTopics, initialCategories }: ForumInde
             <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-card border border-border rounded-[2rem] p-8 sm:p-10 shadow-sm">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-3"><Users className="text-primary w-5 h-5" /> AKTİF ÜYELER</h3>
-                <span className="flex items-center gap-2 text-[10px] font-mono font-black text-primary uppercase bg-primary/10 px-3 py-1 rounded-full border border-primary/20">24 AKTİF</span>
+                <span className="flex items-center gap-2 text-[10px] font-mono font-black text-primary uppercase bg-primary/10 px-3 py-1 rounded-full border border-primary/20">{onlineMembers.length} AKTİF</span>
               </div>
-              <div className="grid grid-cols-4 gap-5">
-                {onlineMembers.map(member => (
-                  <div key={member.id} className="relative flex flex-col items-center group">
-                    <div className="w-12 h-12 rounded-2xl border border-border overflow-hidden bg-muted relative cursor-pointer hover:border-primary/50 transition-all">
-                      <img src={member.avatar} alt={member.name} className="object-cover h-full w-full" referrerPolicy="no-referrer" />
+              {onlineMembers.length > 0 ? (
+                <div className="grid grid-cols-4 gap-5">
+                  {onlineMembers.map(member => (
+                    <div key={member.id} className="relative flex flex-col items-center group">
+                      <div className="w-12 h-12 rounded-2xl border border-border overflow-hidden bg-muted relative cursor-pointer hover:border-primary/50 transition-all">
+                        <img src={member.avatar} alt={member.name} className="object-cover h-full w-full" referrerPolicy="no-referrer" />
+                      </div>
+                      <span className="text-[8px] font-black text-muted-foreground truncate w-full text-center mt-2 uppercase tracking-tighter">@{member.username}</span>
                     </div>
-                    <span className="text-[8px] font-black text-muted-foreground truncate w-full text-center mt-2 uppercase tracking-tighter">@{member.username}</span>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-6 text-xs text-muted-foreground font-semibold uppercase tracking-wider">
+                  Henüz diğer üye bulunmuyor
+                </div>
+              )}
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-gradient-to-br from-primary to-primary-foreground text-primary-foreground rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden group">

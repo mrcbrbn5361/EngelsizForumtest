@@ -57,14 +57,14 @@ export default function ProfilePage() {
       setLoading(false);
       initialLoadDone.current = true;
     } else if (!globalProfile && initialLoadDone.current === false) {
-      // Setup mock profile when not loaded/auth placeholder is active
+      // Set default empty profile values if not loaded from the database yet
       setProfile({
         username: user?.email?.split('@')[0] || 'engelsiz_uye',
         full_name: 'Engelsiz Kullanıcı',
         avatar_url: null,
         role: 'user',
-        level: 2,
-        xp: 340
+        level: 1,
+        xp: 0
       });
       setLoading(false);
       initialLoadDone.current = true;

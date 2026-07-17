@@ -758,7 +758,7 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
   );
 }
 
-// Minimal Dropdown for the demo
+// Minimal Dropdown Component
 function DropdownMenu({ trigger, items }: { trigger: React.ReactNode, items: { label: string, onClick?: () => void, isExternal?: boolean, hide?: boolean }[] }) {
   const [open, setOpen] = useState(false);
 

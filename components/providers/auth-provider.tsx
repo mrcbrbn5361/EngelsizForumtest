@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { User } from '@supabase/supabase-js';
 import { Profile } from '@/types/database';
 
@@ -20,14 +20,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchProfile = useCallback(async (userId: string) => {
     let lastError = null;
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const isSupabaseConfigured = 
-      supabaseUrl && 
-      !supabaseUrl.includes('placeholder') &&
-      supabaseUrl !== '';
 
     if (!isSupabaseConfigured) {
-      console.warn('Supabase URL is not configured or is a placeholder.');
+      console.warn('Supabase URL is not configured.');
       return;
     }
 
@@ -69,12 +64,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const isSupabaseConfigured = 
-      supabaseUrl && 
-      !supabaseUrl.includes('placeholder') &&
-      supabaseUrl !== '';
-
     const checkSession = async () => {
       if (!isSupabaseConfigured) {
         setLoading(false);

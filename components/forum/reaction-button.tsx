@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
 
 export function ReactionButton({ topicId, initialCount }: { topicId: string, initialCount: number }) {
@@ -10,10 +10,6 @@ export function ReactionButton({ topicId, initialCount }: { topicId: string, ini
   const [hasLiked, setHasLiked] = useState(false);
 
   useEffect(() => {
-    const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
-
     if (!isSupabaseConfigured) return;
 
     const fetchReactions = async () => {

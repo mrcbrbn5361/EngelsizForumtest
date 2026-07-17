@@ -6,109 +6,12 @@ import { Search, Filter, ArrowRight, Loader2, Mic, Sparkles } from 'lucide-react
 import { Topic } from '@/types/database';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-const SEEDED_CATEGORIES = [
-  { id: '1', name: 'SGK', slug: 'sgk', description: 'Sosyal Güvenlik Kurumu ile ilgili tüm konular, emeklilik ve haklar.', icon: 'HeartPulse' },
-  { id: '2', name: 'EKPSS', slug: 'ekpss', description: 'Engelli Kamu Personeli Seçme Sınavı hazırlık, duyuru ve sonuçlar.', icon: 'GraduationCap' },
-  { id: '3', name: 'ÖTV', slug: 'otv', description: 'Özel Tüketim Vergisi muafiyeti, araç alımı ve mevzuat.', icon: 'Car' },
-  { id: '4', name: 'Sağlık', slug: 'saglik', description: 'Sağlık raporları, tedavi süreçleri ve medikal destek.', icon: 'Stethoscope' },
-  { id: '5', name: 'Eğitim', slug: 'egitim', description: 'Özel eğitim, kapsayıcı eğitim ve akademik fırsatlar.', icon: 'BookOpen' },
-  { id: '6', name: 'İstihdam', slug: 'istihdam', description: 'İş ilanları, engelli istihdamı ve kariyer danışmanlığı.', icon: 'Briefcase' },
-  { id: '7', name: 'Teknoloji', slug: 'teknoloji', description: 'Erişilebilir teknolojiler, donanım ve yazılım haberleri.', icon: 'Cpu' },
-  { id: '8', name: 'Yazılım', slug: 'yazilim', description: 'Programlama, erişilebilir kodlama ve geliştirme.', icon: 'Code' },
-  { id: '9', name: 'Yapay Zeka', slug: 'yapay-zeka', description: 'Yapay zeka araçları ve engelliler için sağladığı kolaylıklar.', icon: 'Sparkles' },
-  { id: '10', name: 'Günlük Yaşam', slug: 'gunluk-yasam', description: 'Yaşamdan kesitler, hobi ve sosyal aktiviteler.', icon: 'Smile' },
-  { id: '11', name: 'Sosyal Haklar', slug: 'sosyal-haklar', description: 'Tüm yasal haklar, ödenekler ve sosyal yardımlar.', icon: 'Scale' },
-  { id: '12', name: 'Engelli Hakları', slug: 'engelli-haklari', description: 'Engelli hakları savunuculuğu ve hukuki süreçler.', icon: 'Shield' },
-  { id: '13', name: 'Araçlar', slug: 'araclar', description: 'Engelli araçları, yardımcı ekipmanlar ve rehabilitasyon.', icon: 'Settings' },
-  { id: '14', name: 'Kamu Duyuruları', slug: 'kamu-duyurulari', description: 'Resmi gazete ilanları ve bakanlık duyuruları.', icon: 'Megaphone' }
-];
-
-const FALLBACK_TOPICS: Topic[] = [
-  {
-    id: "mock-1",
-    category_id: "4",
-    author_id: "user-1",
-    title: "Baltalimanı Hastanesi Rapor Süreci ve Oranlar",
-    content: "Ortopedik engelli arkadaşlar için Baltalimanı Kemik Hastalıkları hastanesinde engelli sağlık kurulu raporu alma aşamalarını ve heyet süreçlerini detaylıca anlattım. Hangi polikliniklerin sıra durumları daha rahat, heyet hangi günlerde toplanıyor ve süreç kaç gün sürüyor?",
-    created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
-    likes_count: 14,
-    comments_count: 5,
-    views_count: 120,
-    is_pinned: true,
-    is_locked: false,
-    is_solved: true,
-    category: { id: "4", name: "Sağlık", slug: "saglik", description: "Sağlık raporları, tedavi süreçleri ve medikal destek.", icon: "Stethoscope", color: null, sort_order: 4, created_at: "" },
-    author: { id: "user-1", username: "hakan_ses", avatar_url: null, full_name: "Hakan Sesli", role: "user", level: 1, xp: 0, bio: null, is_verified: false, accessibility_prefs: null, updated_at: "" }
-  },
-  {
-    id: "mock-2",
-    category_id: "7",
-    author_id: "user-2",
-    title: "NVDA 2026.1 Türkçe Konuşma Sentezleyicisi Ayarları",
-    content: "Yeni yayınlanan NVDA sürümünde Türkçe dil paketi için en optimize ekran okuyucu ses sentezleyici ayarlarını derledim. Özellikle e-ticaret sitelerinde ve bankacılık uygulamalarında gezinirken okuma hızını artıran kısayollar ve eklentileri paylaşıyorum.",
-    created_at: new Date(Date.now() - 3600000 * 8).toISOString(),
-    likes_count: 24,
-    comments_count: 12,
-    views_count: 240,
-    is_pinned: false,
-    is_locked: false,
-    is_solved: false,
-    category: { id: "7", name: "Teknoloji", slug: "teknoloji", description: "Erişilebilir teknolojiler, donanım ve yazılım haberleri.", icon: "Cpu", color: null, sort_order: 7, created_at: "" },
-    author: { id: "user-2", username: "mirac", avatar_url: null, full_name: "Miraç Engin", role: "user", level: 2, xp: 120, bio: null, is_verified: false, accessibility_prefs: null, updated_at: "" }
-  },
-  {
-    id: "mock-3",
-    category_id: "2",
-    author_id: "user-3",
-    title: "2026 EKPSS Tercih Kılavuzu Yayınlandı! Kadrolar",
-    content: "ÖSYM tarafından bugün yayımlanan 2026/1 EKPSS tercih kılavuzundaki memur ve hizmetli kadrolarını analiz ettim. Hangi öğrenim düzeyinde ne kadar atama var, branş dağılımları ve puan tahminleri hakkında sorularınızı bu başlık altından yanıtlıyorum.",
-    created_at: new Date(Date.now() - 3600000 * 18).toISOString(),
-    likes_count: 42,
-    comments_count: 38,
-    views_count: 850,
-    is_pinned: false,
-    is_locked: false,
-    is_solved: true,
-    category: { id: "2", name: "EKPSS", slug: "ekpss", description: "Engelli Kamu Personeli Seçme Sınavı hazırlık, duyuru ve sonuçlar.", icon: "GraduationCap", color: null, sort_order: 2, created_at: "" },
-    author: { id: "user-3", username: "elif_disleksi", avatar_url: null, full_name: "Elif Demir", role: "user", level: 5, xp: 500, bio: null, is_verified: true, accessibility_prefs: null, updated_at: "" }
-  },
-  {
-    id: "mock-4",
-    category_id: "5",
-    author_id: "user-4",
-    title: "Disleksi Dostu Yazı Tiplerinin Okuma Hızına Etkisi: Bilimsel Araştırma",
-    content: "Atkinson Hyperlegible ve OpenDyslexic yazı tiplerinin okuma doğruluğunu %15 oranında artırdığı saptandı. Forumumuzda bu fontları aktif ederek deneyimlerinizi paylaşabilirsiniz.",
-    created_at: new Date(Date.now() - 3600000 * 24).toISOString(),
-    likes_count: 18,
-    comments_count: 5,
-    views_count: 190,
-    is_pinned: false,
-    is_locked: false,
-    is_solved: false,
-    category: { id: "5", name: "Eğitim", slug: "egitim", description: "Özel eğitim, kapsayıcı eğitim ve akademik fırsatlar.", icon: "BookOpen", color: null, sort_order: 5, created_at: "" },
-    author: { id: "user-4", username: "aria", avatar_url: null, full_name: "Aria Geliştirici", role: "moderator", level: 10, xp: 1500, bio: null, is_verified: true, accessibility_prefs: null, updated_at: "" }
-  },
-  {
-    id: "mock-5",
-    category_id: "3",
-    author_id: "user-5",
-    title: "ÖTV Muafiyetli Araç Alımında Yeni Limitler ve Mevzuat",
-    content: "2026 yılı için belirlenen ÖTV muafiyet üst sınırı ve engelli raporuyla araç alım süreçlerindeki güncel değişiklikler hakkında geniş bir rehber hazırladım.",
-    created_at: new Date(Date.now() - 3600000 * 36).toISOString(),
-    likes_count: 35,
-    comments_count: 16,
-    views_count: 940,
-    is_pinned: false,
-    is_locked: false,
-    is_solved: true,
-    category: { id: "3", name: "ÖTV", slug: "otv", description: "Özel Tüketim Vergisi muafiyeti, araç alımı ve mevzuat.", icon: "Car", color: null, sort_order: 3, created_at: "" },
-    author: { id: "user-5", username: "felix", avatar_url: null, full_name: "Felix Moderatör", role: "moderator", level: 12, xp: 2400, bio: null, is_verified: true, accessibility_prefs: null, updated_at: "" }
-  }
-];
+// Empty fallback for clean database-only mode
+const FALLBACK_TOPICS: Topic[] = [];
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
@@ -122,12 +25,8 @@ export default function SearchPage() {
   // Load Categories on mount
   useEffect(() => {
     const fetchCategories = async () => {
-      const isSupabaseConfigured = 
-        process.env.NEXT_PUBLIC_SUPABASE_URL && 
-        process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
-
       if (!isSupabaseConfigured) {
-        setCategories(SEEDED_CATEGORIES);
+        setCategories([]);
         return;
       }
 
@@ -136,11 +35,11 @@ export default function SearchPage() {
         if (data && data.length > 0) {
           setCategories(data);
         } else {
-          setCategories(SEEDED_CATEGORIES);
+          setCategories([]);
         }
       } catch (err) {
         console.error('Error fetching search categories:', err);
-        setCategories(SEEDED_CATEGORIES);
+        setCategories([]);
       }
     };
     fetchCategories();
@@ -153,27 +52,9 @@ export default function SearchPage() {
     }
     setLoading(true);
 
-    const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
-
-    // Client-side fallback search
     if (!isSupabaseConfigured) {
       setTimeout(() => {
-        const queryLower = searchQuery.toLowerCase().trim();
-        const filtered = FALLBACK_TOPICS.filter(topic => {
-          const matchesQuery = !queryLower || 
-            topic.title.toLowerCase().includes(queryLower) || 
-            topic.content.toLowerCase().includes(queryLower);
-          
-          const matchesCategory = !catId || 
-            topic.category_id === catId || 
-            topic.category?.slug === catId ||
-            topic.category?.name === catId;
-
-          return matchesQuery && matchesCategory;
-        });
-        setResults(filtered);
+        setResults([]);
         setLoading(false);
       }, 400);
       return;
@@ -205,18 +86,10 @@ export default function SearchPage() {
             
       const { data, error } = await queryBuilder;
       if (error) throw error;
-      setResults(data || []);
+      setResults((data || []).filter(t => t.author));
     } catch (err) {
       console.error('Search error:', err);
-      // Fallback to local on error
-      const queryLower = searchQuery.toLowerCase().trim();
-      const filtered = FALLBACK_TOPICS.filter(topic => {
-        const matchesQuery = !queryLower || 
-          topic.title.toLowerCase().includes(queryLower) || 
-          topic.content.toLowerCase().includes(queryLower);
-        return matchesQuery;
-      });
-      setResults(filtered);
+      setResults([]);
     } finally {
       setLoading(false);
     }

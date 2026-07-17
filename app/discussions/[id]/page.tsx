@@ -10,7 +10,7 @@ import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import dynamic from 'next/dynamic';
 import { BionicMarkdown } from '@/components/ui/bionic-markdown';
 const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: true });
@@ -25,89 +25,8 @@ const VoiceInput = dynamic(
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { cn } from '@/lib/utils';
 
-const FALLBACK_TOPICS_DETAILED: { [key: string]: { topic: any; comments: any[] } } = {
-  "mock-1": {
-    topic: {
-      id: "mock-1",
-      title: "Baltalimanı Hastanesi Rapor Süreci ve Oranlar",
-      content: "Ortopedik engelli arkadaşlar için Baltalimanı Kemik Hastalıkları hastanesinde engelli sağlık kurulu raporu alma aşamalarını ve heyet süreçlerini detaylıca anlattım. Hangi polikliniklerin sıra durumları daha rahat, heyet hangi günlerde toplanıyor ve süreç kaç gün sürüyor?",
-      created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
-      likes_count: 14,
-      comments_count: 5,
-      is_pinned: true,
-      category: { name: "Sağlık", slug: "saglik" },
-      author: { username: "hakan_ses", avatar_url: null, full_name: "Hakan Sesli" }
-    },
-    comments: [
-      {
-        id: "comment-1-1",
-        topic_id: "mock-1",
-        author_id: "user-1",
-        content: "Ben geçen ay oradan %45 rapor aldım. Salı ve Perşembe günleri heyet günü olduğu için poliklinikler aşırı yoğun oluyor. Pazartesi sabah erkenden gitmenizi öneririm.",
-        created_at: new Date(Date.now() - 3600000 * 1.5).toISOString(),
-        is_solution: true,
-        author: { username: "ahmet_fizik", full_name: "Ahmet Yılmaz", avatar_url: null, role: "user" }
-      },
-      {
-        id: "comment-1-2",
-        topic_id: "mock-1",
-        author_id: "user-2",
-        content: "Harika paylaşımlar için teşekkürler. Sürecin ne kadar sürdüğünü tam olarak yazabilir misiniz? İş yerimden izin alacağım da.",
-        created_at: new Date(Date.now() - 3600000 * 1).toISOString(),
-        is_solution: false,
-        author: { username: "sibel_is", full_name: "Sibel Kaya", avatar_url: null, role: "user" }
-      }
-    ]
-  },
-  "mock-2": {
-    topic: {
-      id: "mock-2",
-      title: "NVDA 2026.1 Türkçe Konuşma Sentezleyicisi Ayarları",
-      content: "Yeni yayınlanan NVDA sürümünde Türkçe dil paketi için en optimize ekran okuyucu ses sentezleyici ayarlarını derledim. Özellikle e-ticaret sitelerinde ve bankacılık uygulamalarında gezinirken okuma hızını artıran kısayollar ve eklentileri paylaşıyorum.",
-      created_at: new Date(Date.now() - 3600000 * 8).toISOString(),
-      likes_count: 24,
-      comments_count: 12,
-      is_pinned: false,
-      category: { name: "Teknoloji", slug: "teknoloji" },
-      author: { username: "mirac", avatar_url: null, full_name: "Miraç Engin" }
-    },
-    comments: [
-      {
-        id: "comment-2-1",
-        topic_id: "mock-2",
-        author_id: "user-3",
-        content: "NVDA'nın yeni sürümü gerçekten harika olmuş. Özellikle tablo okuma kısayolları çok hızlanmış. Ayarlar için teşekkürler!",
-        created_at: new Date(Date.now() - 3600000 * 6).toISOString(),
-        is_solution: true,
-        author: { username: "can_gorme", full_name: "Can Tekin", avatar_url: null, role: "user" }
-      }
-    ]
-  },
-  "mock-3": {
-    topic: {
-      id: "mock-3",
-      title: "2026 EKPSS Tercih Kılavuzu Yayınlandı! Kadrolar",
-      content: "ÖSYM tarafından bugün yayımlanan 2026/1 EKPSS tercih kılavuzundaki memur ve hizmetli kadrolarını analiz ettim. Hangi öğrenim düzeyinde ne kadar atama var, branş dağılımları ve puan tahminleri hakkında sorularınızı bu başlık altından yanıtlıyorum.",
-      created_at: new Date(Date.now() - 3600000 * 18).toISOString(),
-      likes_count: 42,
-      comments_count: 38,
-      is_pinned: false,
-      category: { name: "EKPSS", slug: "ekpss" },
-      author: { username: "elif_disleksi", avatar_url: null, full_name: "Elif Demir" }
-    },
-    comments: [
-      {
-        id: "comment-3-1",
-        topic_id: "mock-3",
-        author_id: "user-4",
-        content: "Lise düzeyinde hizmetli kadroları için taban puanların kaç civarına düşeceğini öngörüyorsunuz? Teşekkürler.",
-        created_at: new Date(Date.now() - 3600000 * 16).toISOString(),
-        is_solution: false,
-        author: { username: "kemal_hiz", full_name: "Kemal Koç", avatar_url: null, role: "user" }
-      }
-    ]
-  }
-};
+// Empty fallbacks for clean database-only mode
+const FALLBACK_TOPICS_DETAILED: { [key: string]: { topic: any; comments: any[] } } = {};
 
 function CommentItem({ 
   comment, 
@@ -154,16 +73,12 @@ function CommentItem({
             "rounded-[1.5rem] bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-all overflow-hidden border-2 border-transparent group-hover:border-primary/20 relative",
             depth > 0 ? "w-10 h-10 md:w-14 md:h-14" : "w-14 h-14 md:w-20 md:h-20"
           )}>
-            {comment.author?.avatar_url ? (
-              <img 
-                src={comment.author.avatar_url} 
-                alt="Profil" 
-                className="object-cover"
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <User size={depth > 0 ? 18 : 32} />
-            )}
+            <img 
+              src={comment.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${comment.author?.username || 'user'}`} 
+              alt="Profil" 
+              className="object-cover h-full w-full"
+              referrerPolicy="no-referrer"
+            />
           </div>
         </div>
 
@@ -388,14 +303,8 @@ export default function DiscussionDetailPage() {
   };
 
   const fetchTopic = useCallback(async () => {
-    const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
-
-    const mockId = String(id);
-    if (!isSupabaseConfigured || mockId.startsWith('mock-') || !id) {
-      const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
-      setTopic(fallback.topic);
+    if (!isSupabaseConfigured || !id) {
+      setTopic(null);
       setLoading(false);
       return;
     }
@@ -407,28 +316,20 @@ export default function DiscussionDetailPage() {
         .eq('id', id)
         .single();
       
-      if (error) {
-        const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
-        setTopic(fallback.topic);
+      if (error || !data) {
+        setTopic(null);
       } else {
         setTopic(data);
       }
     } catch (err) {
       console.error('Error fetching topic:', err);
-      const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
-      setTopic(fallback.topic);
+      setTopic(null);
     }
   }, [id]);
 
   const fetchComments = useCallback(async () => {
-    const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder-url.supabase.co';
-
-    const mockId = String(id);
-    if (!isSupabaseConfigured || mockId.startsWith('mock-') || !id) {
-      const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
-      setComments(fallback.comments);
+    if (!isSupabaseConfigured || !id) {
+      setComments([]);
       setLoading(false);
       return;
     }
@@ -450,15 +351,13 @@ export default function DiscussionDetailPage() {
         .order('created_at', { ascending: true });
       
       if (error) {
-        const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
-        setComments(fallback.comments);
+        setComments([]);
       } else {
-        setComments(data || []);
+        setComments((data || []).filter(c => c.author));
       }
     } catch (err) {
       console.error('Error fetching comments:', err);
-      const fallback = FALLBACK_TOPICS_DETAILED[mockId] || FALLBACK_TOPICS_DETAILED["mock-1"];
-      setComments(fallback.comments);
+      setComments([]);
     } finally {
       setLoading(false);
     }
@@ -648,18 +547,19 @@ export default function DiscussionDetailPage() {
                     </div>
                     <div className="flex items-center gap-3 text-[10px] font-black text-foreground uppercase tracking-[0.2em]">
                       <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border relative">
-                        {topic.author?.avatar_url ? (
-                          <img 
-                            src={topic.author.avatar_url} 
-                            alt="Profil" 
-                            className="object-cover"
-                            referrerPolicy="no-referrer"
-                          />
-                        ) : (
-                          <User size={14} className="text-muted-foreground" />
-                        )}
+                        <img 
+                          src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`} 
+                          alt="Profil" 
+                          className="object-cover h-full w-full"
+                          referrerPolicy="no-referrer"
+                        />
                       </div>
-                      {topic.author?.full_name?.toUpperCase() || topic.author?.username?.toUpperCase() || 'KULLANICI'}
+                      <div className="flex flex-col">
+                        <span>{topic.author?.full_name || topic.author?.username || 'KULLANICI'}</span>
+                        <span className="text-[8px] font-bold text-primary tracking-widest opacity-80 mt-0.5">
+                          {topic.author?.role === 'admin' ? 'YÖNETİCİ' : topic.author?.role === 'moderator' ? 'MODERATÖR' : 'TOPLULUK ÜYESİ'}
+                        </span>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
                       <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
