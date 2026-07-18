@@ -48,14 +48,16 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
 
   useEffect(() => {
     if (stats?.activeMembers) {
-      const formatted = stats.activeMembers.map((m: any) => ({
-        id: m.id,
-        username: m.username,
-        name: m.full_name || m.username,
-        avatar: m.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${m.username}`,
-        isOnline: true,
-        role: m.role || 'user'
-      }));
+      const formatted = stats.activeMembers
+        .filter((m: any) => m && m.id)
+        .map((m: any) => ({
+          id: m.id,
+          username: m.username,
+          name: m.full_name || m.username,
+          avatar: m.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${m.username}`,
+          isOnline: true,
+          role: m.role || 'user'
+        }));
       setOnlineMembers(formatted);
     }
   }, [stats]);
