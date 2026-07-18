@@ -575,8 +575,8 @@ export default function CommunityDetailPage() {
           <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" /> TOPLULUKLAR
         </button>
 
-        <div className="grid grid-cols-1 2xl:grid-cols-[1fr_320px] gap-6 2xl:gap-8">
-          <div className="space-y-12">
+        <div className="grid grid-cols-1 xl:grid-cols-1 2xl:grid-cols-[1fr_320px] gap-4 sm:gap-6 w-full">
+          <div className="space-y-8 sm:space-y-12 min-w-0">
             
             {/* Header / Banner Card */}
             <header className="vibe-card p-6 sm:p-8 md:p-12 relative overflow-hidden shadow-2xl border-2 border-border">
@@ -735,7 +735,7 @@ export default function CommunityDetailPage() {
           <aside className="space-y-10">
             
             {/* Rules of Community Card */}
-            <section className="vibe-card p-8 md:p-12 border border-border">
+            <section className="vibe-card p-5 sm:p-6 border border-border w-full max-w-full">
               <h2 className="text-2xl font-black mb-10 flex items-center gap-4 tracking-tighter text-foreground">
                 <Shield size={32} className="text-primary" /> KURALLAR
               </h2>
@@ -754,7 +754,7 @@ export default function CommunityDetailPage() {
             </section>
 
             {/* Statistics */}
-            <div className="vibe-card p-8 md:p-12 border border-border">
+            <div className="vibe-card p-5 sm:p-6 border border-border w-full max-w-full">
               <h3 className="vibe-label ml-0 mb-10">İSTATİSTİKLER</h3>
               <div className="space-y-8">
                 <div className="flex items-center justify-between border-b border-border pb-6">
@@ -779,7 +779,7 @@ export default function CommunityDetailPage() {
             </div>
 
             {/* Quick Help */}
-            <div className="bg-primary p-12 rounded-[2.5rem] text-primary-foreground relative overflow-hidden shadow-2xl group">
+            <div className="bg-primary p-6 md:p-8 rounded-[2.5rem] text-primary-foreground relative overflow-hidden shadow-2xl group w-full max-w-full">
               <div className="absolute -right-16 -bottom-16 opacity-10 group-hover:scale-110 transition-transform">
                 <Shield size={220} />
               </div>

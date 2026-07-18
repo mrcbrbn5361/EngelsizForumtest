@@ -157,10 +157,10 @@ export default function ProfilePage() {
         <h1 className="sr-only">Profilim ve Hesap Yönetimi</h1>
 
         {/* Outer Grid Wrapper */}
-        <div className="grid grid-cols-1 2xl:grid-cols-[1fr_340px] gap-6 2xl:gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-1 2xl:grid-cols-[1fr_320px] gap-4 sm:gap-6 w-full">
           
           {/* LEFT PANEL: General Profile & Accessibility settings */}
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8 min-w-0">
             
             {/* Visual Header Banner Card */}
             <header className="vibe-card p-0 relative overflow-hidden shadow-2xl border-2 border-border rounded-[2.5rem]">
@@ -402,7 +402,7 @@ export default function ProfilePage() {
           <aside className="space-y-8">
             
             {/* XP progress circle / card */}
-            <section className="vibe-card p-6 sm:p-8 border-2 border-border text-center relative overflow-hidden" aria-label="XP Durumu">
+            <section className="vibe-card p-4 sm:p-6 border-2 border-border text-center relative overflow-hidden w-full max-w-full" aria-label="XP Durumu">
               <h3 className="vibe-label ml-0 mb-6">SEVİYE VE TECRÜBE</h3>
               
               <div className="relative size-36 mx-auto mb-6 flex items-center justify-center">
@@ -452,7 +452,7 @@ export default function ProfilePage() {
             </section>
 
             {/* Badges Bento Card */}
-            <section className="vibe-card p-6 sm:p-8 border-2 border-border" aria-label="Rozetlerim">
+            <section className="vibe-card p-4 sm:p-6 border-2 border-border w-full max-w-full" aria-label="Rozetlerim">
               <h3 className="vibe-label ml-0 mb-6 flex items-center gap-3">
                 <Award size={20} className="text-primary" /> KAZANILAN ROZETLER
               </h3>
@@ -502,7 +502,7 @@ export default function ProfilePage() {
             </section>
 
             {/* Recent Activity */}
-            <section className="vibe-card p-6 sm:p-8 border-2 border-border" aria-label="Geçmiş Aktiviteler">
+            <section className="vibe-card p-4 sm:p-6 border-2 border-border w-full max-w-full" aria-label="Geçmiş Aktiviteler">
               <h3 className="vibe-label ml-0 mb-6 flex items-center gap-3">
                 <MessageSquare size={18} className="text-primary" /> AKTİVİTE GEÇMİŞİ
               </h3>

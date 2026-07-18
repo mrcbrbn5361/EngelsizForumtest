@@ -33,12 +33,30 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   level INTEGER DEFAULT 1,
   xp INTEGER DEFAULT 0,
   bio TEXT,
+  header_url TEXT,
+  is_locked BOOLEAN DEFAULT false,
+  is_bot BOOLEAN DEFAULT false,
+  is_discoverable BOOLEAN DEFAULT true,
   is_verified BOOLEAN DEFAULT false,
   accessibility_prefs JSONB DEFAULT '{"fontSize": 100, "highContrast": false, "dyslexicFont": false, "reducedMotion": false, "bionicReading": false, "focusMode": false, "voiceMode": false}'::jsonb,
+  followers_count INTEGER DEFAULT 0,
+  following_count INTEGER DEFAULT 0,
+  statuses_count INTEGER DEFAULT 0,
+  last_status_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now(),
   CONSTRAINT username_length CHECK (char_length(username) >= 3)
 );
+
+-- Ensure columns exist if table was already created
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS header_url TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_locked BOOLEAN DEFAULT false;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_bot BOOLEAN DEFAULT false;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_discoverable BOOLEAN DEFAULT true;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS last_status_at TIMESTAMPTZ;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS followers_count INTEGER DEFAULT 0;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS following_count INTEGER DEFAULT 0;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS statuses_count INTEGER DEFAULT 0;
 
 -- CATEGORIES
 CREATE TABLE IF NOT EXISTS public.categories (
@@ -67,10 +85,18 @@ CREATE TABLE IF NOT EXISTS public.topics (
   is_pinned BOOLEAN DEFAULT false,
   is_locked BOOLEAN DEFAULT false,
   is_solved BOOLEAN DEFAULT false,
+  visibility TEXT DEFAULT 'public',
+  is_sensitive BOOLEAN DEFAULT false,
+  spoiler_text TEXT,
   search_vector TSVECTOR GENERATED ALWAYS AS (to_tsvector('turkish', coalesce(title,'') || ' ' || coalesce(content,''))) STORED,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- Ensure columns exist if table was already created
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS visibility TEXT DEFAULT 'public';
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS is_sensitive BOOLEAN DEFAULT false;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS spoiler_text TEXT;
 
 -- COMMENTS
 CREATE TABLE IF NOT EXISTS public.comments (
@@ -81,9 +107,17 @@ CREATE TABLE IF NOT EXISTS public.comments (
   content TEXT NOT NULL,
   likes_count INTEGER DEFAULT 0,
   is_solution BOOLEAN DEFAULT false,
+  visibility TEXT DEFAULT 'public',
+  is_sensitive BOOLEAN DEFAULT false,
+  spoiler_text TEXT,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- Ensure columns exist if table was already created
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS visibility TEXT DEFAULT 'public';
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS is_sensitive BOOLEAN DEFAULT false;
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS spoiler_text TEXT;
 
 -- REACTIONS
 CREATE TABLE IF NOT EXISTS public.reactions (
@@ -218,6 +252,15 @@ CREATE TABLE IF NOT EXISTS public.topic_tags (
   PRIMARY KEY (topic_id, tag_id)
 );
 
+-- FOLLOWS (Mastodon Relationship tracking)
+CREATE TABLE IF NOT EXISTS public.follows (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  follower_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  following_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(follower_id, following_id)
+);
+
 -- ==========================================
 -- 3. FUNCTIONS & TRIGGERS
 -- ==========================================
@@ -306,6 +349,93 @@ $$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS on_comment_added ON public.comments;
 CREATE TRIGGER on_comment_added AFTER INSERT ON public.comments FOR EACH ROW EXECUTE FUNCTION public.increment_comment_count();
+
+-- ==========================================
+-- MASTODON COMPATIBILITY TRIGGERS & HELPERS
+-- ==========================================
+
+-- 1. Handle follows updates (followers_count and following_count)
+CREATE OR REPLACE FUNCTION public.handle_follows_change()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+    UPDATE public.profiles SET following_count = following_count + 1 WHERE id = NEW.follower_id;
+    UPDATE public.profiles SET followers_count = followers_count + 1 WHERE id = NEW.following_id;
+    RETURN NEW;
+  ELSIF (TG_OP = 'DELETE') THEN
+    UPDATE public.profiles SET following_count = GREATEST(0, following_count - 1) WHERE id = OLD.follower_id;
+    UPDATE public.profiles SET followers_count = GREATEST(0, followers_count - 1) WHERE id = OLD.following_id;
+    RETURN OLD;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_follows_changed ON public.follows;
+CREATE TRIGGER on_follows_changed
+  AFTER INSERT OR DELETE ON public.follows
+  FOR EACH ROW EXECUTE FUNCTION public.handle_follows_change();
+
+-- 2. Handle statuses count (for topics and comments)
+CREATE OR REPLACE FUNCTION public.handle_statuses_count_change()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+    UPDATE public.profiles SET statuses_count = statuses_count + 1 WHERE id = NEW.author_id;
+    RETURN NEW;
+  ELSIF (TG_OP = 'DELETE') THEN
+    UPDATE public.profiles SET statuses_count = GREATEST(0, statuses_count - 1) WHERE id = OLD.author_id;
+    RETURN OLD;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_topic_added_status ON public.topics;
+CREATE TRIGGER on_topic_added_status
+  AFTER INSERT OR DELETE ON public.topics
+  FOR EACH ROW EXECUTE FUNCTION public.handle_statuses_count_change();
+
+DROP TRIGGER IF EXISTS on_comment_added_status ON public.comments;
+CREATE TRIGGER on_comment_added_status
+  AFTER INSERT OR DELETE ON public.comments
+  FOR EACH ROW EXECUTE FUNCTION public.handle_statuses_count_change();
+
+-- 3. Increment User XP & level up
+CREATE OR REPLACE FUNCTION public.increment_user_xp(user_id uuid, xp_amount integer)
+RETURNS void AS $$
+DECLARE
+    current_xp integer;
+    new_xp integer;
+    new_level integer;
+BEGIN
+    SELECT COALESCE(xp, 0) INTO current_xp FROM public.profiles WHERE id = user_id;
+    new_xp := current_xp + xp_amount;
+    new_level := 1 + (new_xp / 200);
+    UPDATE public.profiles
+    SET xp = new_xp,
+        level = new_level,
+        updated_at = now()
+    WHERE id = user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+GRANT EXECUTE ON FUNCTION public.increment_user_xp(uuid, integer) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.increment_user_xp(uuid, integer) TO service_role;
+
+-- 4. Increment comments count on topics
+CREATE OR REPLACE FUNCTION public.increment_comments_count(topic_id uuid)
+RETURNS void AS $$
+BEGIN
+    UPDATE public.topics
+    SET comments_count = COALESCE(comments_count, 0) + 1,
+        updated_at = now()
+    WHERE id = topic_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+GRANT EXECUTE ON FUNCTION public.increment_comments_count(uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.increment_comments_count(uuid) TO service_role;
 
 -- ==========================================
 -- 4. INDEXES
@@ -454,6 +584,18 @@ DROP POLICY IF EXISTS "Topic authors can manage tags" ON public.topic_tags;
 CREATE POLICY "Topic authors can manage tags" ON public.topic_tags FOR ALL USING (
   EXISTS (SELECT 1 FROM public.topics WHERE id = topic_id AND (author_id = auth.uid() OR public.is_staff()))
 );
+
+-- Follows (Mastodon relationships)
+ALTER TABLE public.follows ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Everyone can view follows" ON public.follows;
+CREATE POLICY "Everyone can view follows" ON public.follows FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Authenticated users can follow" ON public.follows;
+CREATE POLICY "Authenticated users can follow" ON public.follows FOR INSERT WITH CHECK (auth.uid() = follower_id);
+
+DROP POLICY IF EXISTS "Users can unfollow" ON public.follows;
+CREATE POLICY "Users can unfollow" ON public.follows FOR DELETE USING (auth.uid() = follower_id);
 
 -- Conversations
 ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
