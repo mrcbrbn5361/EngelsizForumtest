@@ -102,6 +102,16 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
     }
   };
 
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "";
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+  };
+
   const getDynamicForumSections = () => {
     const sections = [
       {
@@ -151,7 +161,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           lastPost = {
             title: latestTopic.title,
             author: latestTopic.author?.username || latestTopic.author?.full_name || "Kullanıcı",
-            date: new Date(latestTopic.created_at).toLocaleDateString('tr-TR')
+            date: formatDate(latestTopic.created_at)
           };
         }
         return { id: cat.id, name: cat.name, slug: cat.slug, desc: cat.description || `${cat.name} yardımlaşma konusu.`, icon: cat.icon || "FolderTree", topics: topicsCount, replies: repliesCount, lastPost };
@@ -265,9 +275,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5"
             >
               {[
-                { label: 'TOPLAM BAŞLIK', val: stats?.totalTopics !== undefined ? stats.totalTopics.toLocaleString('tr-TR') : '0', sub: `+${stats?.todayTopics || 0} Bugün`, color: 'primary' },
-                { label: 'TOPLAM CEVAP', val: stats?.totalComments !== undefined ? stats.totalComments.toLocaleString('tr-TR') : '0', sub: `+${stats?.todayComments || 0} Bugün`, color: 'foreground' },
-                { label: 'TOPLAM ÜYE', val: stats?.totalMembers !== undefined ? stats.totalMembers.toLocaleString('tr-TR') : '0', sub: stats?.newestMember ? `Son üye: @${stats.newestMember}` : 'Son üye bulunamadı', color: 'foreground' },
+                { label: 'TOPLAM BAŞLIK', val: stats?.totalTopics !== undefined ? stats.totalTopics.toString() : '0', sub: `+${stats?.todayTopics || 0} Bugün`, color: 'primary' },
+                { label: 'TOPLAM CEVAP', val: stats?.totalComments !== undefined ? stats.totalComments.toString() : '0', sub: `+${stats?.todayComments || 0} Bugün`, color: 'foreground' },
+                { label: 'TOPLAM ÜYE', val: stats?.totalMembers !== undefined ? stats.totalMembers.toString() : '0', sub: stats?.newestMember ? `Son üye: @${stats.newestMember}` : 'Son üye bulunamadı', color: 'foreground' },
                 { label: 'ÇEVRİMİÇİ ÜYE', val: stats?.activeMembers ? stats.activeMembers.length.toString() : '0', sub: 'Lively / Canlı', color: 'primary', live: true }
               ].map((stat, i) => (
                 <div key={i} className={cn(
@@ -466,7 +476,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                         </div>
                         <div className="flex items-center gap-6 text-xs font-mono font-bold">
                           <span className="hidden sm:inline-flex items-center gap-1.5"><HeartPulse size={14} className="text-rose-500" /> {topic.likes_count || 0} BEĞENİ</span>
-                          <time className="font-black uppercase tracking-widest bg-muted px-3 py-1 rounded-lg border border-border/50">{new Date(topic.created_at).toLocaleDateString('tr-TR')}</time>
+                          <time className="font-black uppercase tracking-widest bg-muted px-3 py-1 rounded-lg border border-border/50">{formatDate(topic.created_at)}</time>
                         </div>
                       </div>
                     </motion.article>

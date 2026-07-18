@@ -157,10 +157,10 @@ export default function ProfilePage() {
         <h1 className="sr-only">Profilim ve Hesap Yönetimi</h1>
 
         {/* Outer Grid Wrapper */}
-        <div className="flex flex-col 2xl:grid 2xl:grid-cols-[1fr_320px] gap-6 w-full min-w-0">
+        <div className="flex flex-col xl:flex-row gap-6 w-full min-w-0">
           
           {/* LEFT PANEL: General Profile & Accessibility settings */}
-          <div className="space-y-6 sm:space-y-8 min-w-0 w-full overflow-hidden">
+          <div className="space-y-6 sm:space-y-8 min-w-0 w-full overflow-hidden flex-1">
             
             {/* Visual Header Banner Card */}
             <header className="vibe-card p-0 relative overflow-hidden shadow-2xl border-2 border-border rounded-[2.5rem]">
@@ -399,7 +399,7 @@ export default function ProfilePage() {
           </div>
 
           {/* RIGHT PANEL: Gamification (XP, Levels, Badges) */}
-          <aside className="space-y-8">
+          <aside className="w-full xl:w-[320px] shrink-0 space-y-8">
             
             {/* XP progress circle / card */}
             <section className="vibe-card p-4 sm:p-6 border-2 border-border text-center relative overflow-hidden w-full max-w-full" aria-label="XP Durumu">
