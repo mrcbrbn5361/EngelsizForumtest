@@ -575,7 +575,7 @@ export default function CommunityDetailPage() {
           <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" /> TOPLULUKLAR
         </button>
 
-        <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] 2xl:grid-cols-[1fr_380px] gap-8 md:gap-12">
+        <div className="grid grid-cols-1 2xl:grid-cols-[1fr_360px] gap-8 md:gap-12">
           <div className="space-y-12">
             
             {/* Header / Banner Card */}
