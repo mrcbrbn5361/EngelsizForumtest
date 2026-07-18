@@ -280,7 +280,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
         </div>
 
         {/* Profile Header Card */}
-        <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] 2xl:grid-cols-[1fr_380px] gap-6 xl:gap-8 2xl:gap-12">
+        <div className="grid grid-cols-1 2xl:grid-cols-[1fr_340px] gap-6 2xl:gap-8">
           
           <div className="space-y-8">
             <header className="vibe-card p-0 relative overflow-hidden shadow-2xl border-2 border-border rounded-[2.5rem]">

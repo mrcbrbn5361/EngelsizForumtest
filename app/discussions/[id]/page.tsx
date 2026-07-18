@@ -538,7 +538,7 @@ export default function DiscussionDetailPage() {
           <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" /> GERİ DÖN
         </button>
 
-        <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] 2xl:grid-cols-[1fr_360px] gap-6 xl:gap-8 2xl:gap-12">
+        <div className="grid grid-cols-1 2xl:grid-cols-[1fr_320px] gap-6 2xl:gap-8">
           {/* Main Content */}
           <div className="space-y-16 min-w-0">
             <article className="vibe-card p-6 sm:p-8 md:p-12 lg:p-16 relative overflow-hidden shadow-2xl">
