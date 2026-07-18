@@ -272,7 +272,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
   return (
     <DashboardLayout>
-      <main className="w-full py-8 md:py-12">
+      <div className="w-full py-6 sm:py-8 md:py-12 min-w-0">
         <div className="mb-6">
           <Link href="/" className="inline-flex items-center gap-2 text-xs font-black text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">
             <ArrowLeft size={14} className="stroke-[3]" /> TARTIŞMALARA GERİ DÖN
@@ -280,9 +280,9 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
         </div>
 
         {/* Profile Header Card */}
-        <div className="grid grid-cols-1 xl:grid-cols-1 2xl:grid-cols-[1fr_320px] gap-4 sm:gap-6 w-full">
+        <div className="flex flex-col 2xl:grid 2xl:grid-cols-[1fr_320px] gap-6 w-full min-w-0">
           
-          <div className="space-y-6 sm:space-y-8 min-w-0">
+          <div className="space-y-6 sm:space-y-8 min-w-0 w-full overflow-hidden">
             <header className="vibe-card p-0 relative overflow-hidden shadow-2xl border-2 border-border rounded-[2.5rem]">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent -z-10" />
               <div className="p-8 sm:p-12 flex flex-col md:flex-row items-center gap-6 sm:gap-8 text-center md:text-left">
@@ -502,7 +502,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             </section>
           </aside>
         </div>
-      </main>
+      </div>
     </DashboardLayout>
   );
 }

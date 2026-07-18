@@ -153,14 +153,14 @@ export default function ProfilePage() {
 
   return (
     <DashboardLayout>
-      <main className="w-full py-8 md:py-12">
+      <div className="w-full py-6 sm:py-8 md:py-12 min-w-0">
         <h1 className="sr-only">Profilim ve Hesap Yönetimi</h1>
 
         {/* Outer Grid Wrapper */}
-        <div className="grid grid-cols-1 xl:grid-cols-1 2xl:grid-cols-[1fr_320px] gap-4 sm:gap-6 w-full">
+        <div className="flex flex-col 2xl:grid 2xl:grid-cols-[1fr_320px] gap-6 w-full min-w-0">
           
           {/* LEFT PANEL: General Profile & Accessibility settings */}
-          <div className="space-y-6 sm:space-y-8 min-w-0">
+          <div className="space-y-6 sm:space-y-8 min-w-0 w-full overflow-hidden">
             
             {/* Visual Header Banner Card */}
             <header className="vibe-card p-0 relative overflow-hidden shadow-2xl border-2 border-border rounded-[2.5rem]">
@@ -536,7 +536,7 @@ export default function ProfilePage() {
           </aside>
 
         </div>
-      </main>
+      </div>
     </DashboardLayout>
   );
 }

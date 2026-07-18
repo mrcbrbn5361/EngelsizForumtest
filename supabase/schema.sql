@@ -350,9 +350,37 @@ $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS on_comment_added ON public.comments;
 CREATE TRIGGER on_comment_added AFTER INSERT ON public.comments FOR EACH ROW EXECUTE FUNCTION public.increment_comment_count();
 
--- ==========================================
 -- MASTODON COMPATIBILITY TRIGGERS & HELPERS
 -- ==========================================
+
+-- MASTODON APPS
+CREATE TABLE IF NOT EXISTS public.mastodon_apps (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  website TEXT,
+  redirect_uri TEXT NOT NULL,
+  client_id TEXT UNIQUE NOT NULL,
+  client_secret TEXT NOT NULL,
+  scopes TEXT DEFAULT 'read write follow',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- OAUTH CODES (Short lived)
+CREATE TABLE IF NOT EXISTS public.oauth_codes (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  code TEXT UNIQUE NOT NULL,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  client_id TEXT NOT NULL,
+  scope TEXT,
+  expires_at TIMESTAMPTZ NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.mastodon_apps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.oauth_codes ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public apps view" ON public.mastodon_apps;
+CREATE POLICY "Public apps view" ON public.mastodon_apps FOR SELECT USING (true);
 
 -- 1. Handle follows updates (followers_count and following_count)
 CREATE OR REPLACE FUNCTION public.handle_follows_change()
