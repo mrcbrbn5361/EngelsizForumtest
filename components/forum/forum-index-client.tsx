@@ -514,12 +514,12 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               {onlineMembers.length > 0 ? (
                 <div className="grid grid-cols-4 gap-5">
                   {onlineMembers.map(member => (
-                    <div key={member.id} className="relative flex flex-col items-center group">
+                    <Link href={`/profile/${member.id}`} key={member.id} className="relative flex flex-col items-center group outline-none">
                       <div className="w-12 h-12 rounded-2xl border border-border overflow-hidden bg-muted relative cursor-pointer hover:border-primary/50 transition-all">
                         <img src={member.avatar} alt={member.name} className="object-cover h-full w-full" referrerPolicy="no-referrer" />
                       </div>
-                      <span className="text-[8px] font-black text-muted-foreground truncate w-full text-center mt-2 uppercase tracking-tighter">@{member.username}</span>
-                    </div>
+                      <span className="text-[8px] font-black text-muted-foreground truncate w-full text-center mt-2 uppercase tracking-tighter hover:text-primary transition-colors">@{member.username}</span>
+                    </Link>
                   ))}
                 </div>
               ) : (

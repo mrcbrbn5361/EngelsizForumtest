@@ -91,11 +91,14 @@ export default async function Home() {
 
       const { data: membersData } = await supabase
         .from('profiles')
-        .select('id, username, full_name, avatar_url, role')
-        .order('updated_at', { ascending: false })
+        .select('id, username, full_name, avatar_url, role, last_seen_at, updated_at')
         .limit(12);
       if (membersData) {
-        activeMembers = membersData;
+        activeMembers = [...membersData].sort((a, b) => {
+          const aTime = new Date(a.last_seen_at || a.updated_at || 0).getTime();
+          const bTime = new Date(b.last_seen_at || b.updated_at || 0).getTime();
+          return bTime - aTime;
+        });
       }
     } catch (e) {
       console.warn("Home server side fetch failed:", e);
@@ -401,7 +404,7 @@ export default async function Home() {
                 </p>
               </div>
 
-              <div className="overflow-x-auto my-12 border border-border rounded-2xl overflow-hidden shadow-sm">
+              <div className="overflow-x-auto overflow-y-hidden my-12 border border-border rounded-2xl shadow-sm">
                 <table className="w-full text-left bg-card min-w-[600px]">
                   <thead className="bg-muted text-foreground font-bold text-xs uppercase tracking-wider">
                     <tr>

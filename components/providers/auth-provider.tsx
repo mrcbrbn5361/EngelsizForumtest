@@ -176,6 +176,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   
 
+  useEffect(() => {
+    if (!user || !isSupabaseConfigured) return;
+
+    const updateLastSeen = async () => {
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ last_seen_at: new Date().toISOString() })
+          .eq('id', user.id);
+        
+        if (error) {
+          // Fallback if column last_seen_at doesn't exist yet
+          await supabase
+            .from('profiles')
+            .update({ updated_at: new Date().toISOString() })
+            .eq('id', user.id);
+        }
+      } catch (err) {
+        console.error('Error updating last seen status:', err);
+      }
+    };
+
+    updateLastSeen();
+    const interval = setInterval(updateLastSeen, 3 * 60 * 1000); // every 3 minutes
+    return () => clearInterval(interval);
+  }, [user]);
+
   return (
     <AuthContext.Provider value={{ user, profile, loading }}>
       {children}

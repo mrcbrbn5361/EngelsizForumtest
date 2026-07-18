@@ -69,24 +69,28 @@ function CommentItem({
         )}
 
         <div className="flex-shrink-0">
-          <div className={cn(
-            "rounded-[1.5rem] bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-all overflow-hidden border-2 border-transparent group-hover:border-primary/20 relative",
-            depth > 0 ? "w-10 h-10 md:w-14 md:h-14" : "w-14 h-14 md:w-20 md:h-20"
-          )}>
-            <img 
-              src={comment.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${comment.author?.username || 'user'}`} 
-              alt="Profil" 
-              className="object-cover h-full w-full"
-              referrerPolicy="no-referrer"
-            />
-          </div>
+          <Link href={`/profile/${comment.author?.id}`} className="block relative z-20">
+            <div className={cn(
+              "rounded-[1.5rem] bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-all overflow-hidden border-2 border-transparent group-hover:border-primary/20 relative",
+              depth > 0 ? "w-10 h-10 md:w-14 md:h-14" : "w-14 h-14 md:w-20 md:h-20"
+            )}>
+              <img 
+                src={comment.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${comment.author?.username || 'user'}`} 
+                alt="Profil" 
+                className="object-cover h-full w-full"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </Link>
         </div>
 
         <div className="flex-1 min-w-0 space-y-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.1em] text-muted-foreground flex-wrap">
-              <span className="text-primary flex items-center gap-2">
-                {comment.author?.full_name?.toUpperCase() || comment.author?.username?.toUpperCase() || 'KULLANICI'}
+              <span className="text-primary flex items-center gap-2 flex-wrap">
+                <Link href={`/profile/${comment.author?.id}`} className="hover:underline font-black relative z-20">
+                  {comment.author?.full_name?.toUpperCase() || comment.author?.username?.toUpperCase() || 'KULLANICI'}
+                </Link>
                 {(comment.author?.role === 'admin' || comment.author?.role === 'moderator') && (
                   <span className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[8px] flex items-center gap-1 leading-none">
                     <Shield size={8} /> {comment.author.role.toUpperCase()}
@@ -545,7 +549,7 @@ export default function DiscussionDetailPage() {
                     <div className="px-5 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
                       {topic.category?.name?.toUpperCase() || 'GENEL'}
                     </div>
-                    <div className="flex items-center gap-3 text-[10px] font-black text-foreground uppercase tracking-[0.2em]">
+                    <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-3 text-[10px] font-black text-foreground uppercase tracking-[0.2em] hover:opacity-80 transition-opacity">
                       <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border relative">
                         <img 
                           src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`} 
@@ -554,13 +558,13 @@ export default function DiscussionDetailPage() {
                           referrerPolicy="no-referrer"
                         />
                       </div>
-                      <div className="flex flex-col">
-                        <span>{topic.author?.full_name || topic.author?.username || 'KULLANICI'}</span>
-                        <span className="text-[8px] font-bold text-primary tracking-widest opacity-80 mt-0.5">
+                      <div className="flex flex-col text-left">
+                        <span className="hover:underline">{topic.author?.full_name || topic.author?.username || 'KULLANICI'}</span>
+                        <span className="text-[8px] font-bold text-primary tracking-widest opacity-80 mt-0.5 text-left">
                           {topic.author?.role === 'admin' ? 'YÖNETİCİ' : topic.author?.role === 'moderator' ? 'MODERATÖR' : 'TOPLULUK ÜYESİ'}
                         </span>
                       </div>
-                    </div>
+                    </Link>
                     <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
                       <Globe size={14} className="text-primary" /> {new Date(topic.created_at).toLocaleDateString('tr-TR')}
                     </div>

@@ -111,8 +111,8 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
         {topic.content}
       </p>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] md:text-xs text-muted-foreground relative z-10 pointer-events-none">
-        <div className="flex items-center gap-2 min-w-0">
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] md:text-xs text-muted-foreground relative z-10">
+        <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-2 min-w-0 relative z-20 pointer-events-auto hover:opacity-80 transition-opacity">
           <div className="h-5 w-5 md:h-7 md:w-7 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border shrink-0">
             <img 
               src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`} 
@@ -124,14 +124,14 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
             />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="font-bold text-foreground truncate max-w-[120px] sm:max-w-none">
+            <span className="font-bold text-foreground truncate max-w-[120px] sm:max-w-none hover:underline text-left">
               {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
             </span>
-            <span className="text-[8px] font-bold text-primary uppercase tracking-widest opacity-80">
+            <span className="text-[8px] font-bold text-primary uppercase tracking-widest opacity-80 text-left">
               {topic.author?.role === 'admin' ? 'YÖNETİCİ' : topic.author?.role === 'moderator' ? 'MODERATÖR' : 'TOPLULUK ÜYESİ'}
             </span>
           </div>
-        </div>
+        </Link>
         <div className="flex items-center gap-1.5 opacity-70 whitespace-nowrap">
           <Calendar size={12} className="md:w-3.5 md:h-3.5" />
           <span className="font-bold tracking-wider uppercase">{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>

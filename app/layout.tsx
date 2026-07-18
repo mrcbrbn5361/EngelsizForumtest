@@ -137,7 +137,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         
       </head>
       <body className="bg-background text-foreground transition-colors duration-300 overflow-x-hidden min-h-screen flex flex-col font-sans">
-        <VisitorTracker />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -146,14 +145,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Ana içeriğe atla
         </a>
         <AuthProvider>
-            <AccessibilityProvider>
-              <main id="main-content" className="flex-1 w-full flex flex-col outline-none" tabIndex={-1}>
-                {children}
-              </main>
-              <AccessibilityToolbar />
-            </AccessibilityProvider>
+          <AccessibilityProvider>
+            <main id="main-content" className="flex-1 w-full flex flex-col outline-none" tabIndex={-1}>
+              {children}
+            </main>
+            <VisitorTracker />
+            <Toaster position="top-right" richColors />
+          </AccessibilityProvider>
         </AuthProvider>
-        <Toaster />
       </body>
     </html>
   );

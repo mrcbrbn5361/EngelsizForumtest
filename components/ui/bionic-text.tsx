@@ -22,17 +22,20 @@ export function BionicText({ text, className = '', as: Component = 'span' }: Bio
 
   const processText = (input: string) => {
     return input.split(' ').map((word, idx) => {
-      if (word.length <= 1) return <span key={idx}>{word} </span>;
+      if (word.length <= 1) return <React.Fragment key={idx}><span>{word}</span>{' '}</React.Fragment>;
       
       const mid = Math.ceil(word.length * 0.4); // İlk %40'ı kalınlaştır
       const start = word.slice(0, mid);
       const end = word.slice(mid);
       
       return (
-        <span key={idx} className="whitespace-nowrap">
-          <strong className="font-extrabold">{start}</strong>
-          {end}{' '}
-        </span>
+        <React.Fragment key={idx}>
+          <span>
+            <strong className="font-extrabold">{start}</strong>
+            {end}
+          </span>
+          {' '}
+        </React.Fragment>
       );
     });
   };
