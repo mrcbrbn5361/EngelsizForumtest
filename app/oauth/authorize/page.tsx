@@ -1,159 +1,171 @@
+// app/oauth/authorize/page.tsx
+import React from 'react';
+import { redirect } from 'next/navigation';
+import { supabaseServer } from '@/lib/supabase-server'; // Prorendeki hazır sunucu istemciniz
+import { Shield, Check, X, Info } from 'lucide-react';
+
 export const dynamic = 'force-dynamic';
 
-import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
-import { Shield, Check, X, Info } from 'lucide-react';
-import { supabaseServer } from '@/lib/supabase-server';
-
 interface PageProps {
-  searchParams: Promise<{
-    client_id?: string;
-    redirect_uri?: string;
-    response_type?: string;
-    scope?: string;
-    state?: string;
-  }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const supabase = await createClient();
+  // 1. URL parametrelerini sunucu tarafında güvenle çözüyoruz
+  const resolvedParams = await searchParams;
+  const clientId = (resolvedParams.client_id as string) || '';
+  const redirectUri = (resolvedParams.redirect_uri as string) || '';
+  const scope = (resolvedParams.scope as string) || 'read';
+  const state = (resolvedParams.state as string) || '';
 
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  // 2. Kullanıcı oturumunu sunucuda kontrol ediyoruz
+  const { data: { user }, error: authError } = await supabaseServer.auth.getUser();
 
   if (authError || !user) {
-    const searchParamsString = new URLSearchParams(params as Record<string, string>).toString();
-    redirect(`/login?returnTo=${encodeURIComponent(`/oauth/authorize?${searchParamsString}`)}`);
+    // Oturum yoksa, parametreleri kaybetmeden login sayfasına yönlendiriyoruz
+    const loginParams = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      scope: scope,
+      state: state
+    });
+    redirect(`/login?returnTo=${encodeURIComponent(`/oauth/authorize?${loginParams.toString()}`)}`);
   }
 
-  if (!params.client_id) {
+  // 3. İstemci (Uygulama) doğrulama
+  let appName = 'Harici Uygulama';
+  if (clientId) {
+    const { data: appData } = await supabaseServer
+      .from('mastodon_apps')
+      .select('name')
+      .eq('client_id', clientId)
+      .maybeSingle();
+    if (appData?.name) appName = appData.name;
+  }
+
+  // 4. Form Onaylandığında Çalışacak Sunucu Aksiyonu (Server Action)
+  async function handleOAuthForm(formData: FormData) {
+    'use server';
+    
+    const action = formData.get('action');
+    const targetRedirect = formData.get('redirect_uri') as string;
+    const currentClientId = formData.get('client_id') as string;
+    const currentScope = formData.get('scope') as string;
+    const currentState = formData.get('state') as string;
+
+    if (action === 'deny') {
+      if (!targetRedirect || targetRedirect.includes('urn:ietf:wg:oauth:2.0:oob')) {
+        redirect('/?error=access_denied');
+      }
+      redirect(`${targetRedirect}${targetRedirect.includes('?') ? '&' : '?'}error=access_denied&state=${currentState}`);
+    }
+
+    // Onaylandı: Rastgele güvenli kod üretimi (Sunucu tarafında crypto güvenlidir)
+    const code = crypto.randomUUID();
+
+    // Kodu veritabanına kaydedelim
+    await supabaseServer
+      .from('oauth_codes')
+      .insert({
+        code,
+        user_id: user?.id,
+        client_id: currentClientId,
+        scope: currentScope,
+        expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+      });
+
+    // Eğer Out-of-Band (OOB) modu ise uygulamaya yönlendirmek yerine kodu ekranda göstermeliyiz!
+    if (!targetRedirect || targetRedirect.includes('urn:ietf:wg:oauth:2.0:oob')) {
+      redirect(`/oauth/authorize?show_oob_code=${code}`);
+    }
+
+    // Normal uygulama veya Deep-link yönlendirmesi (String birleştirme ile çökme riski sıfır)
+    const separator = targetRedirect.includes('?') ? '&' : '?';
+    redirect(`${targetRedirect}${separator}code=${code}&state=${currentState}`);
+  }
+
+  // 5. Eğer Out-of-band kodu üretildiyse kullanıcıya temiz bir kopyalama ekranı sunalım
+  const oobCode = resolvedParams.show_oob_code as string;
+  if (oobCode) {
     return (
-      <main className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="vibe-card p-8 border-destructive max-w-md w-full text-center">
-          <X className="w-16 h-16 text-destructive mx-auto mb-4" />
-          <h1 className="text-xl font-bold mb-2">Hatalı İstek</h1>
-          <p className="text-muted-foreground">client_id bulunamadı.</p>
+      <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4" style={{ fontFamily: 'sans-serif' }}>
+        <div className="bg-white border-2 border-[#bdc9c6] rounded-[2.5rem] p-8 max-w-md w-full text-center shadow-xl">
+          <Check className="w-16 h-16 text-[#005c55] mx-auto mb-4 stroke-[3]" />
+          <h1 className="text-2xl font-black mb-2 text-[#1c1b1d]">Yetkilendirme Başarılı!</h1>
+          <p className="text-sm text-[#3e4947] mb-6 font-semibold uppercase">Lütfen aşağıdaki kodu kopyalayıp uygulamanıza yapıştırın:</p>
+          <div className="bg-[#f0edf0] p-4 rounded-xl font-mono text-xs border border-[#bdc9c6] break-all select-all font-bold text-[#005c55]">
+            {oobCode}
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-4 font-bold">EngelsizForum Güvenli Bağlantı Sistemi</p>
         </div>
-      </main>
+      </div>
     );
   }
 
-  // Fetch app info
-  const { data: appData } = await supabaseServer
-    .from('mastodon_apps')
-    .select('name, website')
-    .eq('client_id', params.client_id)
-    .single();
-
-  const appInfo = appData || { name: 'Harici Uygulama' };
-
-  async function handleAppAction(formData: FormData) {
-    'use server';
-    const action = formData.get('action');
-    const redirect_uri = formData.get('redirect_uri') as string;
-    const client_id = formData.get('client_id') as string;
-    const scope = formData.get('scope') as string;
-    const state = formData.get('state') as string;
-    const userId = formData.get('user_id') as string;
-
-    if (action === 'deny') {
-        const redirectUrl = new URL(redirect_uri);
-        redirectUrl.searchParams.set('error', 'access_denied');
-        if (state) redirectUrl.searchParams.set('state', state);
-        redirect(redirectUrl.toString());
-    } else if (action === 'approve') {
-        const supabase = await createClient();
-        const code = crypto.randomUUID();
-        
-        await supabase
-            .from('oauth_codes')
-            .insert({
-              code,
-              user_id: userId,
-              client_id: client_id,
-              scope: scope,
-              expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
-            });
-
-        const redirectUrl = new URL(redirect_uri);
-        redirectUrl.searchParams.set('code', code);
-        if (state) redirectUrl.searchParams.set('state', state);
-        redirect(redirectUrl.toString());
-    }
-  }
-
+  // 6. Standart Onay Arayüzü (Saf HTML Form elemanları ile çalışır, Client JS gerektirmez)
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="vibe-card p-0 overflow-hidden border-2 border-border max-w-lg w-full shadow-2xl rounded-[2.5rem]">
-        <div className="bg-primary/5 p-8 sm:p-12 text-center border-b border-border">
-          <div className="bg-primary/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Shield className="w-10 h-10 text-primary" />
+    <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4 w-full" style={{ fontFamily: 'sans-serif' }}>
+      <div className="bg-white border-2 border-[#bdc9c6] rounded-[2.5rem] max-w-lg w-full shadow-2xl overflow-hidden">
+        <div className="bg-[#005c55]/5 p-8 text-center border-b border-[#bdc9c6]">
+          <div className="bg-[#005c55]/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-8 h-8 text-[#005c55]" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">Erişim Onayı</h1>
-          <p className="text-muted-foreground font-medium">Uygulama Yetkilendirme İsteği</p>
+          <h1 className="text-2xl font-black text-[#1c1b1d]">Erişim Onayı</h1>
+          <p className="text-xs text-[#3e4947] font-bold uppercase tracking-wider mt-1">Uygulama Yetkilendirme İşlemi</p>
         </div>
 
-        <form action={handleAppAction} className="p-8 sm:p-12 space-y-8">
-          <input type="hidden" name="redirect_uri" value={params.redirect_uri} />
-          <input type="hidden" name="client_id" value={params.client_id} />
-          <input type="hidden" name="scope" value={params.scope || ''} />
-          <input type="hidden" name="state" value={params.state || ''} />
-          <input type="hidden" name="user_id" value={user.id} />
-
-          <section className="text-center">
-            <h2 className="text-lg sm:text-xl font-bold leading-relaxed mb-4">
-              <span className="text-primary">{appInfo.name}</span> uygulaması, 
-              <br />
-              <span className="font-black text-foreground">Engelsiz Forum</span> hesabınıza erişmek istiyor.
+        <div className="p-8 space-y-6">
+          <div className="text-center">
+            <h2 className="text-base sm:text-lg font-bold leading-relaxed text-[#1c1b1d]">
+              <span className="text-[#005c55] font-black">{appName}</span> uygulaması <br />
+              <span className="font-black">EngelsizForum</span> hesabınıza erişmek istiyor.
             </h2>
-            <div className="text-sm text-muted-foreground bg-muted/50 p-4 rounded-2xl flex items-center gap-3 justify-center text-left">
-              <Info size={16} className="text-primary flex-shrink-0" />
-              <span>Bu işlem sonucunda uygulama sizin adınıza işlem yapabilir, gönderilerinizi görebilir.</span>
+          </div>
+
+          <div className="text-xs text-[#3e4947] bg-[#f0edf0] p-4 rounded-2xl flex items-center gap-3 text-left border border-[#bdc9c6]/60 font-semibold">
+            <Info size={18} className="text-[#005c55] shrink-0" />
+            <span>Bu işlem sonucunda uygulama sizin adınıza profilinizi görebilir ve yeni başlıklar açabilir.</span>
+          </div>
+
+          <div className="space-y-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#3e4947] block ml-1">Talep Edilen İzinler</span>
+            <div className="p-3 bg-white border border-[#bdc9c6] rounded-xl text-xs font-bold text-[#005c55] uppercase tracking-wider">
+               🔑 {scope}
             </div>
-          </section>
+          </div>
 
-          <section>
-            <h3 className="vibe-label mb-4">TALEP EDİLEN İZİNLER</h3>
-            <ul className="space-y-3">
-              {(params.scope?.split(' ') || ['read']).map((s) => (
-                <li key={s} className="flex items-center gap-3 text-sm font-medium p-3 bg-card border border-border rounded-xl">
-                  <div className="size-5 bg-primary/20 rounded-full flex items-center justify-center">
-                    <Check size={12} className="text-primary" />
-                  </div>
-                  <span className="uppercase tracking-wider opacity-80">{s}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {/* Form verileri tetiklendiğinde doğrudan sunucu aksiyonu devreye girer */}
+          <form action={handleOAuthForm} className="grid grid-cols-2 gap-4 pt-2">
+            <input type="hidden" name="client_id" value={clientId} />
+            <input type="hidden" name="redirect_uri" value={redirectUri} />
+            <input type="hidden" name="scope" value={scope} />
+            <input type="hidden" name="state" value={state} />
 
-          <div className="grid grid-cols-2 gap-4 pt-4">
             <button
+              type="submit"
               name="action"
               value="deny"
-              type="submit"
-              className="vibe-button-secondary py-4 flex items-center justify-center gap-2 group"
+              className="h-12 bg-[#f0edf0] hover:bg-[#bdc9c6]/40 text-[#1c1b1d] font-black text-xs uppercase tracking-widest rounded-xl border border-[#bdc9c6] transition-all cursor-pointer"
             >
-              <X size={20} />
-              <span className="font-bold">REDDET</span>
+              REDDET
             </button>
             <button
-              name="action"
-              value="approve"
               type="submit"
-              className="vibe-button py-4 flex items-center justify-center gap-2 group"
+              name="action"
+              value="allow"
+              className="h-12 bg-[#005c55] hover:brightness-110 text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all cursor-pointer shadow-md shadow-[#005c55]/10"
             >
-              <Check size={20} />
-              <span className="font-bold">ONAYLA</span>
+              ONAYLA
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
 
-        <footer className="p-6 bg-muted/30 text-center border-t border-border">
-          <p className="text-xs text-muted-foreground">
-            Giriş yapan kullanıcı: <span className="font-bold text-foreground">{user.email}</span>
+        <footer className="p-4 bg-[#f0edf0]/50 text-center border-t border-[#bdc9c6]">
+          <p className="text-[10px] text-[#3e4947] font-bold">
+            Giriş Yapan Hesap: <span className="text-[#1c1b1d]">{user?.email}</span>
           </p>
         </footer>
       </div>
-    </main>
+    </div>
   );
 }
