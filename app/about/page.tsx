@@ -121,7 +121,7 @@ export default function AboutPage() {
               
               <div className="space-y-6">
                 <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">GELİŞTİRME ARAÇLARI</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
                     { name: 'Google AI Studio', desc: 'Yapay Zeka Mimarisi' },
                     { name: 'Vercel', desc: 'Bulut Dağıtım & Hosting' },

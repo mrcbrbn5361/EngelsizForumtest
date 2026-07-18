@@ -103,7 +103,7 @@ export default function AuthPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-lg bg-card border border-border p-10 md:p-12 rounded-3xl shadow-sm"
+          className="w-full max-w-lg bg-card border border-border p-6 sm:p-10 md:p-12 rounded-3xl shadow-sm"
         >
           <div className="text-center mb-10">
             <h1 className="text-3xl md:text-4xl font-extrabold mb-3 tracking-tight">

@@ -402,7 +402,7 @@ export default async function Home() {
               </div>
 
               <div className="overflow-x-auto my-12 border border-border rounded-2xl overflow-hidden shadow-sm">
-                <table className="w-full text-left bg-card">
+                <table className="w-full text-left bg-card min-w-[600px]">
                   <thead className="bg-muted text-foreground font-bold text-xs uppercase tracking-wider">
                     <tr>
                       <th className="p-6 border-b border-border">Özellik</th>
@@ -573,8 +573,8 @@ export default async function Home() {
               <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">Erişilebilirlik Taahhüdü</h2>
               <p className="text-lg text-muted-foreground font-medium max-w-xl leading-relaxed">Bilişimde engel yok, sadece henüz çözülmemiş tasarım sorunları var.</p>
             </div>
-            <div className="flex gap-6">
-              <div className="px-10 py-8 bg-card border border-border rounded-3xl shadow-sm text-center min-w-[160px]">
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-6">
+              <div className="px-10 py-8 bg-card border border-border rounded-3xl shadow-sm text-center w-full sm:w-auto min-w-[160px]">
                 <div className="text-4xl font-black text-primary mb-2">2.1</div>
                 <div className="text-xs uppercase font-bold tracking-widest text-muted-foreground">WCAG UYUMU</div>
               </div>

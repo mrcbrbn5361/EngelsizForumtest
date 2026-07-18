@@ -167,8 +167,8 @@ export default function AccessibilityStatementPage() {
               <p className="text-muted-foreground font-medium">Platformumuz aşağıdaki araçlarla en yüksek performansta çalışacak şekilde kodlanmıştır.</p>
             </div>
 
-            <div className="overflow-hidden border border-border rounded-[2rem] shadow-sm">
-              <table className="w-full text-left border-collapse">
+            <div className="overflow-x-auto border border-border rounded-[2rem] shadow-sm">
+              <table className="w-full text-left border-collapse min-w-[500px]">
                 <thead className="bg-muted/50">
                   <tr>
                     <th className="p-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border">PLATFORM</th>

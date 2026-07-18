@@ -262,7 +262,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="lg:col-span-5 grid grid-cols-2 gap-5"
+              className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5"
             >
               {[
                 { label: 'TOPLAM BAŞLIK', val: stats?.totalTopics !== undefined ? stats.totalTopics.toLocaleString('tr-TR') : '0', sub: `+${stats?.todayTopics || 0} Bugün`, color: 'primary' },
@@ -271,7 +271,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 { label: 'ÇEVRİMİÇİ ÜYE', val: stats?.activeMembers ? stats.activeMembers.length.toString() : '0', sub: 'Lively / Canlı', color: 'primary', live: true }
               ].map((stat, i) => (
                 <div key={i} className={cn(
-                  "bg-card border border-border rounded-3xl p-7 shadow-sm transition-all hover:shadow-md hover:border-primary/20 relative overflow-hidden group",
+                  "bg-card border border-border rounded-3xl p-5 sm:p-7 shadow-sm transition-all hover:shadow-md hover:border-primary/20 relative overflow-hidden group",
                   stat.color === 'primary' && "bg-primary/[0.01] border-primary/10"
                 )}>
                   {stat.live && (
@@ -346,9 +346,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                           className="overflow-hidden divide-y divide-border/50"
                         >
                           {section.subforums.map((subforum) => (
-                            <div key={subforum.id} className="p-7 sm:p-9 flex flex-col xl:flex-row xl:items-center justify-between gap-8 hover:bg-primary/[0.01] transition-colors relative">
-                              <div className="flex items-start gap-5 min-w-0 flex-1">
-                                <div className="w-14 h-14 rounded-3xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
+                            <div key={subforum.id} className="p-5 sm:p-9 flex flex-col xl:flex-row xl:items-center justify-between gap-6 sm:gap-8 hover:bg-primary/[0.01] transition-colors relative">
+                              <div className="flex items-start gap-4 sm:gap-5 min-w-0 flex-1">
+                                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl sm:rounded-3xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
                                   {getSubforumIcon(subforum.icon)}
                                 </div>
                                 <div className="min-w-0">
@@ -428,7 +428,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.05 }}
-                      className={cn("bg-card border border-border p-8 sm:p-10 hover:border-primary/40 hover:shadow-xl transition-all relative rounded-[2rem] group", topic.is_pinned && "border-primary/30 bg-primary/[0.01] ring-1 ring-primary/5 shadow-md")}
+                      className={cn("bg-card border border-border p-5 sm:p-10 hover:border-primary/40 hover:shadow-xl transition-all relative rounded-3xl sm:rounded-[2rem] group", topic.is_pinned && "border-primary/30 bg-primary/[0.01] ring-1 ring-primary/5 shadow-md")}
                     >
                       <div className="flex items-start justify-between gap-6 mb-6">
                         <div className="min-w-0 flex-1">
@@ -483,7 +483,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           </div>
 
           <aside className="lg:col-span-4 space-y-12">
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="bg-card border border-border rounded-[2rem] p-8 sm:p-10 shadow-sm relative overflow-hidden group">
+            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="bg-card border border-border rounded-3xl sm:rounded-[2rem] p-6 sm:p-10 shadow-sm relative overflow-hidden group">
               <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-8 flex items-center gap-3"><Award className="text-primary w-5 h-5" /> PROFİL PANELİ</h3>
               {user ? (
                 <div className="space-y-8">
@@ -506,7 +506,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               )}
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-card border border-border rounded-[2rem] p-8 sm:p-10 shadow-sm">
+            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-card border border-border rounded-3xl sm:rounded-[2rem] p-6 sm:p-10 shadow-sm">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-3"><Users className="text-primary w-5 h-5" /> AKTİF ÜYELER</h3>
                 <span className="flex items-center gap-2 text-[10px] font-mono font-black text-primary uppercase bg-primary/10 px-3 py-1 rounded-full border border-primary/20">{onlineMembers.length} AKTİF</span>
@@ -529,7 +529,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               )}
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-gradient-to-br from-primary to-primary-foreground text-primary-foreground rounded-[2.5rem] p-10 shadow-2xl relative overflow-hidden group">
+            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-gradient-to-br from-primary to-primary-foreground text-primary-foreground rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl relative overflow-hidden group">
               <div className="relative z-10 space-y-8">
                 <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight">AI Copilot</h3>
                 <div className="h-56 bg-white/10 rounded-3xl p-5 overflow-y-auto space-y-4 scrollbar-hide text-xs font-bold border border-white/10 backdrop-blur-sm">
