@@ -1,7 +1,8 @@
 // app/oauth/authorize/page.tsx
 import React from 'react';
 import { redirect } from 'next/navigation';
-import { supabaseServer } from '@/lib/supabase-server'; // Prorendeki hazır sunucu istemciniz
+import { createClient } from '@/lib/supabase/server'; // Use cookie-based client
+import { supabaseServer as adminSupabase } from '@/lib/supabase-server'; // Keep service role for app data
 import { Shield, Check, X, Info } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -18,8 +19,9 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
   const scope = (resolvedParams.scope as string) || 'read';
   const state = (resolvedParams.state as string) || '';
 
-  // 2. Kullanıcı oturumunu sunucuda kontrol ediyoruz
-  const { data: { user }, error: authError } = await supabaseServer.auth.getUser();
+  // 2. Kullanıcı oturumunu sunucuda kontrol ediyoruz (COOKIES!)
+  const supabase = await createClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
 
   if (authError || !user) {
     // Oturum yoksa, parametreleri kaybetmeden login sayfasına yönlendiriyoruz
@@ -35,7 +37,7 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
   // 3. İstemci (Uygulama) doğrulama
   let appName = 'Harici Uygulama';
   if (clientId) {
-    const { data: appData } = await supabaseServer
+    const { data: appData } = await adminSupabase
       .from('mastodon_apps')
       .select('name')
       .eq('client_id', clientId)
@@ -64,11 +66,14 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
     const code = crypto.randomUUID();
 
     // Kodu veritabanına kaydedelim
-    await supabaseServer
+    const supabaseAction = await createClient();
+    const { data: { user: actionUser } } = await supabaseAction.auth.getUser();
+
+    await adminSupabase
       .from('oauth_codes')
       .insert({
         code,
-        user_id: user?.id,
+        user_id: actionUser?.id,
         client_id: currentClientId,
         scope: currentScope,
         expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),

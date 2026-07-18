@@ -33,13 +33,15 @@ export default function LoginPage() {
 
   // Load Remembered Email
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedEmail = localStorage.getItem('ef_remembered_email');
-      if (savedEmail) {
-        setEmail(savedEmail);
-        setRememberMe(true);
+    try {
+      if (typeof window !== 'undefined') {
+        const savedEmail = localStorage.getItem('ef_remembered_email');
+        if (savedEmail) {
+          setEmail(savedEmail);
+          setRememberMe(true);
+        }
       }
-    }
+    } catch (e) {}
   }, []);
 
   // Redirect if logged in
@@ -79,11 +81,13 @@ export default function LoginPage() {
       }
 
       // Handle Remember Me
-      if (rememberMe) {
-        localStorage.setItem('ef_remembered_email', email);
-      } else {
-        localStorage.removeItem('ef_remembered_email');
-      }
+      try {
+        if (rememberMe) {
+          localStorage.setItem('ef_remembered_email', email);
+        } else {
+          localStorage.removeItem('ef_remembered_email');
+        }
+      } catch (e) {}
 
       toast.success('Giriş başarılı! EngelsizForum\'a hoş geldiniz.');
       router.push('/discussions');

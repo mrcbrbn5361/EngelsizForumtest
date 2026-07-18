@@ -7,10 +7,16 @@ export default function VisitorTracker() {
   useEffect(() => {
     const trackVisitor = async () => {
       // Get or create a persistent device ID for this browser
-      let deviceId = localStorage.getItem('visitor_device_id');
-      if (!deviceId) {
-        deviceId = uuidv4();
-        localStorage.setItem('visitor_device_id', deviceId);
+      let deviceId = null;
+      try {
+        deviceId = localStorage.getItem('visitor_device_id');
+        if (!deviceId) {
+          deviceId = uuidv4();
+          localStorage.setItem('visitor_device_id', deviceId);
+        }
+      } catch (e) {
+        console.warn('Visitor tracking storage access failed', e);
+        deviceId = 'anonymous'; // Fallback if storage is blocked
       }
 
       try {

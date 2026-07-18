@@ -47,9 +47,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
   const [onlineMembers, setOnlineMembers] = useState<{ id: string; username: string; name: string; avatar: string; isOnline: boolean; role: string; }[]>([]);
 
   useEffect(() => {
-    if (stats?.activeMembers) {
+    if (stats?.activeMembers && Array.isArray(stats.activeMembers)) {
       const formatted = stats.activeMembers
-        .filter((m: any) => m && m.id)
+        .filter((m: any) => m && typeof m === 'object' && m.id)
         .map((m: any) => ({
           id: m.id,
           username: m.username,

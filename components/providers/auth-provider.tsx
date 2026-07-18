@@ -74,25 +74,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
         
-        const isRecoveryActive = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('password_recovery_active') === 'true';
+        let isRecoveryActive = false;
+        try {
+          isRecoveryActive = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('password_recovery_active') === 'true';
+        } catch (e) {
+          console.warn('sessionStorage access failed', e);
+        }
 
         // If we are on the reset-password page or URL has recovery token, do NOT set the user context
         if (typeof window !== 'undefined') {
-          if (window.location.pathname === '/auth/reset-password' || window.location.hash.includes('type=recovery')) {
-            if (window.location.hash.includes('type=recovery')) {
-              sessionStorage.setItem('password_recovery_active', 'true');
+          const path = window.location.pathname;
+          const hash = window.location.hash;
+
+          if (path === '/auth/reset-password' || hash.includes('type=recovery')) {
+            if (hash.includes('type=recovery')) {
+              try {
+                sessionStorage.setItem('password_recovery_active', 'true');
+              } catch (e) {}
             }
             setUser(null);
             setProfile(null);
             setLoading(false);
-            if (window.location.pathname !== '/auth/reset-password') {
-              window.location.href = '/auth/reset-password' + window.location.hash;
+            if (path !== '/auth/reset-password') {
+              window.location.href = '/auth/reset-password' + hash;
             }
             return;
           }
 
-          if (isRecoveryActive && window.location.pathname !== '/auth/reset-password') {
-            sessionStorage.removeItem('password_recovery_active');
+          if (isRecoveryActive && path !== '/auth/reset-password') {
+            try {
+              sessionStorage.removeItem('password_recovery_active');
+            } catch (e) {}
             await supabase.auth.signOut();
             setUser(null);
             setProfile(null);
@@ -118,11 +130,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
         if (typeof window === 'undefined') return;
 
-        const isRecoveryActive = sessionStorage.getItem('password_recovery_active') === 'true';
+        let isRecoveryActive = false;
+        try {
+          isRecoveryActive = sessionStorage.getItem('password_recovery_active') === 'true';
+        } catch (e) {}
+
+        const path = window.location.pathname;
+        const hash = window.location.hash;
 
         if (event === 'PASSWORD_RECOVERY') {
           console.log('Password recovery mode active!');
-          sessionStorage.setItem('password_recovery_active', 'true');
+          try {
+            sessionStorage.setItem('password_recovery_active', 'true');
+          } catch (e) {}
           // We wait a bit to ensure session is stored in localStorage by Supabase
           setTimeout(() => {
              // Only redirect if we are not already on the reset-password page
@@ -140,23 +160,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         // If they are on the reset-password page but the event is not PASSWORD_RECOVERY,
         // and they just landed there with a recovery token, we shouldn't show them as logged in.
-        if (window.location.pathname === '/auth/reset-password' || window.location.hash.includes('type=recovery')) {
-          if (window.location.hash.includes('type=recovery')) {
-            sessionStorage.setItem('password_recovery_active', 'true');
+        if (path === '/auth/reset-password' || hash.includes('type=recovery')) {
+          if (hash.includes('type=recovery')) {
+            try {
+              sessionStorage.setItem('password_recovery_active', 'true');
+            } catch (e) {}
           }
           setUser(null);
           setProfile(null);
           setLoading(false);
-          if (window.location.pathname !== '/auth/reset-password') {
-            window.location.href = '/auth/reset-password' + window.location.hash;
+          if (path !== '/auth/reset-password') {
+            window.location.href = '/auth/reset-password' + hash;
           }
           return;
         }
 
         // If they navigate away from reset-password while recovery is active, sign them out immediately!
         // This prevents the security flaw where clicking the reset link logs them in to the whole app.
-        if (isRecoveryActive && window.location.pathname !== '/auth/reset-password') {
-          sessionStorage.removeItem('password_recovery_active');
+        if (isRecoveryActive && path !== '/auth/reset-password') {
+          try {
+            sessionStorage.removeItem('password_recovery_active');
+          } catch (e) {}
           supabase.auth.signOut();
           setUser(null);
           setProfile(null);

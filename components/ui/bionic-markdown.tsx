@@ -21,16 +21,25 @@ function processString(text: string) {
 }
 
 function renderChildren(children: React.ReactNode): React.ReactNode {
+  if (!children) return children;
   return React.Children.map(children, child => {
+    if (!child) return child;
     if (typeof child === 'string') {
       return processString(child);
     }
     if (React.isValidElement(child)) {
       const props = child.props as Record<string, any>;
-      return React.cloneElement(child, {
-        ...props,
-        children: renderChildren(props.children)
-      } as any);
+      if (props && 'children' in props) {
+        try {
+          return React.cloneElement(child, {
+            ...props,
+            children: renderChildren(props.children)
+          } as any);
+        } catch (e) {
+          console.warn('Bionic reading clone failed', e);
+          return child;
+        }
+      }
     }
     return child;
   });

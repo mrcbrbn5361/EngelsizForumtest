@@ -45,13 +45,13 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
 
   // Initial load from local storage
   useEffect(() => {
-    const saved = localStorage.getItem('accessibility_prefs');
-    if (saved) {
-      try {
+    try {
+      const saved = localStorage.getItem('accessibility_prefs');
+      if (saved) {
         setSettings(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to parse accessibility prefs', e);
       }
+    } catch (e) {
+      console.error('Failed to access or parse accessibility prefs', e);
     }
     setIsInitialLoad(false);
   }, []);
@@ -89,15 +89,19 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     if (isInitialLoad) return;
 
-    const root = document.documentElement;
-    root.setAttribute('data-font-size', settings.fontSize);
-    root.classList.toggle('high-contrast', settings.highContrast);
-    root.classList.toggle('dyslexic-font', settings.dyslexicFont);
-    root.classList.toggle('reduced-motion', settings.reducedMotion);
-    root.classList.toggle('bionic-reading', settings.bionicReading);
-    root.classList.toggle('focus-mode', settings.focusMode);
+    try {
+      const root = document.documentElement;
+      root.setAttribute('data-font-size', settings.fontSize);
+      root.classList.toggle('high-contrast', settings.highContrast);
+      root.classList.toggle('dyslexic-font', settings.dyslexicFont);
+      root.classList.toggle('reduced-motion', settings.reducedMotion);
+      root.classList.toggle('bionic-reading', settings.bionicReading);
+      root.classList.toggle('focus-mode', settings.focusMode);
 
-    localStorage.setItem('accessibility_prefs', JSON.stringify(settings));
+      localStorage.setItem('accessibility_prefs', JSON.stringify(settings));
+    } catch (e) {
+      console.warn('Could not persist accessibility settings to local storage', e);
+    }
 
     // Sync with Supabase if logged in and settings actually changed
     const currentSettingsStr = JSON.stringify(settings);
@@ -127,9 +131,11 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
 
   const resetSettings = () => setSettings(defaultSettings);
 
+  const accessibilityClasses = !isInitialLoad && settings.highContrast ? 'dark contrast-more' : '';
+
   return (
     <AccessibilityContext.Provider value={{ ...settings, updateSettings, resetSettings }}>
-      <div className={`accessibility-wrapper min-h-screen ${settings.highContrast ? 'dark contrast-more' : ''}`}>
+      <div className={`accessibility-wrapper min-h-screen ${accessibilityClasses}`}>
         <RouteAnnouncer />
         {children}
       </div>
