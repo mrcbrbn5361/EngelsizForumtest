@@ -157,7 +157,7 @@ export default function ProfilePage() {
         <h1 className="sr-only">Profilim ve Hesap Yönetimi</h1>
 
         {/* Outer Grid Wrapper */}
-        <div className="grid grid-cols-1 2xl:grid-cols-[1fr_380px] gap-8 md:gap-12">
+        <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] 2xl:grid-cols-[1fr_380px] gap-6 xl:gap-8 2xl:gap-12">
           
           {/* LEFT PANEL: General Profile & Accessibility settings */}
           <div className="space-y-8">
