@@ -17,17 +17,21 @@
 }
 
 :root {
-  --background: #fcf8fb;
-  --foreground: #1c1b1d;
+  --background: #f8fafc;
+  --foreground: #0f172a;
   --card: #ffffff;
-  --card-foreground: #1c1b1d;
-  --primary: #005c55;
+  --card-foreground: #0f172a;
+  --primary: #10b981;
   --primary-foreground: #ffffff;
-  --muted: #f0edf0;
-  --muted-foreground: #3e4947;
-  --border: #bdc9c6;
-  --ring: #2563EB;
-  --radius: 0.25rem;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;
+  --ring: #10b981;
+  --radius: 0.75rem;
+  
+  --success: #10b981;
+  --error: #ef4444;
+  --info: #3b82f6;
 }
 
 html, body {

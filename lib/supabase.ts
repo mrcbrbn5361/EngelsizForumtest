@@ -18,3 +18,7 @@ export const isSupabaseConfigured = !!(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
+if (!isSupabaseConfigured && typeof window !== 'undefined') {
+  console.warn("Supabase environment variables are missing. Please check your .env file or project settings.");
+}
+

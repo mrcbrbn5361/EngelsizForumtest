@@ -35,6 +35,7 @@ export type Topic = {
   is_pinned: boolean;
   is_locked: boolean;
   is_solved?: boolean;
+  updated_at?: string;
   created_at: string;
   author?: Profile;
   category?: Category;
@@ -48,6 +49,7 @@ export type Comment = {
   parent_id: string | null;
   content: string;
   is_solution: boolean;
+  updated_at?: string;
   created_at: string;
   author?: Profile;
 };

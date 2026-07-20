@@ -118,9 +118,10 @@ export function NotificationCenter() {
     }
   };
 
-  const getIcon = (type: Notification['type']) => {
+  const getIcon = (type: string) => {
     switch (type) {
-      case 'reply': return <MessageSquare className="text-primary" size={16} />;
+      case 'reply':
+      case 'comment': return <MessageSquare className="text-primary" size={16} />;
       case 'like': return <Heart className="text-red-500" size={16} />;
       case 'achievement': return <Trophy className="text-amber-500" size={16} />;
       default: return <Info className="text-blue-500" size={16} />;
@@ -199,7 +200,7 @@ export function NotificationCenter() {
                       >
                         <div className="shrink-0 mt-1">
                           <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center border border-border">
-                            {getIcon(n.type as Notification['type'])}
+                            {getIcon(n.type)}
                           </div>
                         </div>
                         <div className="flex-1 min-w-0">
@@ -212,11 +213,11 @@ export function NotificationCenter() {
                             </span>
                           </div>
                           <p className="text-xs font-bold text-foreground/80 leading-relaxed line-clamp-2">
-                            {n.body}
+                            {n.body || (n as any).content}
                           </p>
-                          {n.data?.link && (
+                          {(n.data as any)?.link || (n as any).link ? (
                             <Link 
-                              href={n.data.link}
+                              href={(n.data as any)?.link || (n as any).link}
                               onClick={() => {
                                 markAsRead(n.id);
                                 setIsOpen(false);
@@ -225,7 +226,7 @@ export function NotificationCenter() {
                             >
                               Detayları Gör
                             </Link>
-                          )}
+                          ) : null}
                         </div>
                         <button 
                           onClick={() => deleteNotification(n.id)}

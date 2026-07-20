@@ -6,7 +6,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Topic, Comment } from '@/types/database';
-import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, User, ChevronRight, Plus, Lock, Trash2, Pin } from 'lucide-react';
+import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, User, ChevronRight, Plus, Lock, Trash2, Pin, Bookmark, Check, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
@@ -37,7 +37,8 @@ function CommentItem({
   onDelete, 
   onMarkSolution,
   currentUserId,
-  depth = 0
+  depth = 0,
+  onUpdate
 }: { 
   comment: Comment; 
   allComments: Comment[]; 
@@ -48,8 +49,28 @@ function CommentItem({
   onMarkSolution: (id: string) => void;
   currentUserId?: string;
   depth?: number;
+  onUpdate: (id: string, content: string) => Promise<void>;
 }) {
   const replies = allComments.filter(c => c.parent_id === comment.id);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(comment.content);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleUpdate = async () => {
+    if (!editContent.trim() || editContent === comment.content) {
+      setIsEditing(false);
+      return;
+    }
+    setIsUpdating(true);
+    try {
+      await onUpdate(comment.id, editContent.trim());
+      setIsEditing(false);
+    } catch (err) {
+      // toast is handled in parent
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -104,37 +125,81 @@ function CommentItem({
               </span>
               <span>•</span>
               <span>{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
+              {comment.updated_at !== comment.created_at && (
+                <span className="text-muted-foreground italic">(GÜNCELLENDİ)</span>
+              )}
             </div>
           </div>
 
-          <div className="text-sm md:text-base font-medium leading-relaxed break-words text-foreground/90">
-            <BionicMarkdown content={comment.content} />
-          </div>
+          {isEditing ? (
+            <div className="space-y-4">
+              <textarea 
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                className="vibe-input min-h-[120px] p-4 text-base"
+                autoFocus
+              />
+              <div className="flex gap-2">
+                <button 
+                  onClick={handleUpdate}
+                  disabled={isUpdating}
+                  className="px-4 py-2 bg-primary text-white rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2"
+                >
+                  {isUpdating ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />} KAYDET
+                </button>
+                <button 
+                  onClick={() => {
+                    setIsEditing(false);
+                    setEditContent(comment.content);
+                  }}
+                  className="px-4 py-2 bg-muted text-muted-foreground rounded-xl font-black text-[10px] uppercase tracking-widest"
+                >
+                  İPTAL
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm md:text-base font-medium leading-relaxed break-words text-foreground/90">
+              <BionicMarkdown content={comment.content} />
+            </div>
+          )}
 
           <div className="flex items-center gap-4 pt-2">
-            {currentUserId && (
-              <button 
-                onClick={() => onReply(comment.id)}
-                className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline flex items-center gap-1.5"
-              >
-                <Plus size={14} /> Yanıtla
-              </button>
-            )}
-            {currentUserId === topicAuthorId && !comment.is_solution && (
-              <button 
-                onClick={() => onMarkSolution(comment.id)}
-                className="text-[10px] font-black text-emerald-500 uppercase tracking-widest hover:underline flex items-center gap-1.5"
-              >
-                <Sparkles size={14} /> Çözüm Olarak İşaretle
-              </button>
-            )}
-            {(isStaff || currentUserId === comment.author_id) && (
-              <button 
-                onClick={() => onDelete(comment.id)}
-                className="text-[10px] font-black text-red-500 uppercase tracking-widest hover:underline flex items-center gap-1.5"
-              >
-                <Trash2 size={14} /> Sil
-              </button>
+            {!isEditing && (
+              <>
+                {currentUserId && (
+                  <button 
+                    onClick={() => onReply(comment.id)}
+                    className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline flex items-center gap-1.5"
+                  >
+                    <Plus size={14} /> Yanıtla
+                  </button>
+                )}
+                {(isStaff || currentUserId === comment.author_id) && (
+                  <button 
+                    onClick={() => setIsEditing(true)}
+                    className="text-[10px] font-black text-muted-foreground uppercase tracking-widest hover:underline flex items-center gap-1.5"
+                  >
+                    <Settings size={14} /> Düzenle
+                  </button>
+                )}
+                {currentUserId === topicAuthorId && !comment.is_solution && (
+                  <button 
+                    onClick={() => onMarkSolution(comment.id)}
+                    className="text-[10px] font-black text-emerald-500 uppercase tracking-widest hover:underline flex items-center gap-1.5"
+                  >
+                    <Sparkles size={14} /> Çözüm Olarak İşaretle
+                  </button>
+                )}
+                {(isStaff || currentUserId === comment.author_id) && (
+                  <button 
+                    onClick={() => onDelete(comment.id)}
+                    className="text-[10px] font-black text-red-500 uppercase tracking-widest hover:underline flex items-center gap-1.5"
+                  >
+                    <Trash2 size={14} /> Sil
+                  </button>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -154,6 +219,7 @@ function CommentItem({
               onMarkSolution={onMarkSolution}
               currentUserId={currentUserId}
               depth={depth + 1}
+              onUpdate={onUpdate}
             />
           ))}
         </div>
@@ -179,6 +245,67 @@ export default function DiscussionDetailPage() {
   const [likesCount, setLikesCount] = useState(0);
   const [replyToId, setReplyToId] = useState<string | null>(null);
   const [supportsParentId, setSupportsParentId] = useState<boolean>(true);
+  const [similarTopics, setSimilarTopics] = useState<Topic[]>([]);
+
+  const [isEditingTopic, setIsEditingTopic] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
+  const [isUpdatingTopic, setIsUpdatingTopic] = useState(false);
+
+  const startEditingTopic = () => {
+    if (!topic) return;
+    setEditTitle(topic.title);
+    setEditContent(topic.content);
+    setIsEditingTopic(true);
+  };
+
+  const handleUpdateTopic = async () => {
+    if (!user || !topic || !editTitle.trim() || !editContent.trim()) return;
+    setIsUpdatingTopic(true);
+    try {
+      const { error } = await supabase
+        .from('topics')
+        .update({
+          title: editTitle.trim(),
+          content: editContent.trim(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id);
+
+      if (error) throw error;
+      setTopic({
+        ...topic,
+        title: editTitle.trim(),
+        content: editContent.trim()
+      });
+      setIsEditingTopic(false);
+      toast.success('Tartışma güncellendi.');
+    } catch (err: any) {
+      toast.error('Güncelleme başarısız: ' + err.message);
+    } finally {
+      setIsUpdatingTopic(false);
+    }
+  };
+
+  const handleUpdateComment = async (commentId: string, content: string) => {
+    if (!user || !content.trim()) return;
+    try {
+      const { error } = await supabase
+        .from('comments')
+        .update({
+          content: content.trim(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', commentId);
+
+      if (error) throw error;
+      setComments(comments.map(c => c.id === commentId ? { ...c, content, updated_at: new Date().toISOString() } : c));
+      toast.success('Yorum güncellendi.');
+    } catch (err: any) {
+      toast.error('Güncelleme başarısız: ' + err.message);
+      throw err;
+    }
+  };
 
   const fetchLikeStatus = useCallback(async () => {
     if (!user || !id) return;
@@ -306,6 +433,70 @@ export default function DiscussionDetailPage() {
     }
   };
 
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isBookmarking, setIsBookmarking] = useState(false);
+
+  const checkIfBookmarked = useCallback(async () => {
+    if (!user || !id) return;
+    try {
+      const { data, error } = await supabase
+        .from('bookmarks')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('topic_id', id)
+        .maybeSingle();
+      
+      if (data) setIsBookmarked(true);
+    } catch (err) {
+      console.error('Error checking bookmark:', err);
+    }
+  }, [user, id]);
+
+  const toggleBookmark = async () => {
+    if (!user) {
+      toast.error('Lütfen önce giriş yapın.');
+      return;
+    }
+    setIsBookmarking(true);
+    try {
+      if (isBookmarked) {
+        await supabase
+          .from('bookmarks')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('topic_id', id);
+        setIsBookmarked(false);
+        toast.success('Yer işareti kaldırıldı.');
+      } else {
+        await supabase
+          .from('bookmarks')
+          .insert([{ user_id: user.id, topic_id: id }]);
+        setIsBookmarked(true);
+        toast.success('Tartışma kaydedildi.');
+      }
+    } catch (err) {
+      console.error('Error toggling bookmark:', err);
+      toast.error('İşlem başarısız oldu.');
+    } finally {
+      setIsBookmarking(false);
+    }
+  };
+
+  const fetchSimilarTopics = useCallback(async (categoryId: string) => {
+    if (!isSupabaseConfigured || !categoryId) return;
+    try {
+      const { data } = await supabase
+        .from('topics')
+        .select('*, author:profiles(username)')
+        .eq('category_id', categoryId)
+        .neq('id', id)
+        .limit(3);
+      if (data) setSimilarTopics(data);
+    } catch (err) {
+      console.error('Error fetching similar topics:', err);
+    }
+  }, [id]);
+
   const fetchTopic = useCallback(async () => {
     if (!isSupabaseConfigured || !id) {
       setTopic(null);
@@ -324,12 +515,15 @@ export default function DiscussionDetailPage() {
         setTopic(null);
       } else {
         setTopic(data);
+        if (data.category_id) {
+          fetchSimilarTopics(data.category_id);
+        }
       }
     } catch (err) {
       console.error('Error fetching topic:', err);
       setTopic(null);
     }
-  }, [id]);
+  }, [id, fetchSimilarTopics]);
 
   const fetchComments = useCallback(async () => {
     if (!isSupabaseConfigured || !id) {
@@ -373,6 +567,7 @@ export default function DiscussionDetailPage() {
       if (id && isMounted) {
         await fetchTopic();
         await fetchComments();
+        await checkIfBookmarked();
       }
     };
     init();
@@ -402,6 +597,42 @@ export default function DiscussionDetailPage() {
         .single();
 
       if (error) throw error;
+
+      // Increase User XP (+10 for comment) and check Level
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('xp, level')
+          .eq('id', user.id)
+          .single();
+        
+        if (profile) {
+          const newXp = (profile.xp || 0) + 10;
+          const newLevel = Math.floor(newXp / 200) + 1;
+          
+          await supabase
+            .from('profiles')
+            .update({ 
+              xp: newXp,
+              level: newLevel 
+            })
+            .eq('id', user.id);
+        }
+      }
+
+      // Create Notification for Topic Author (if not self)
+      if (topic && topic.author_id !== user.id) {
+        await supabase
+          .from('notifications')
+          .insert([{
+            user_id: topic.author_id,
+            type: 'comment',
+            title: 'Yeni Yorum',
+            body: `${user.email?.split('@')[0]} başlığınıza yorum yaptı.`,
+            data: { link: `/discussions/${id}` }
+          }]);
+      }
+
       setComments([...comments, data]);
       setNewComment('');
       setReplyToId(null);
@@ -546,8 +777,23 @@ export default function DiscussionDetailPage() {
               <header className="mb-12 space-y-8">
                 <div className="flex flex-wrap items-center justify-between gap-6">
                   <div className="flex flex-wrap items-center gap-6">
-                    <div className="px-5 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
-                      {topic.category?.name?.toUpperCase() || 'GENEL'}
+                    <div className="flex items-center gap-3">
+                      <div className="px-5 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
+                        {topic.category?.name?.toUpperCase() || 'GENEL'}
+                      </div>
+                      <button
+                        onClick={toggleBookmark}
+                        disabled={isBookmarking}
+                        className={cn(
+                          "flex items-center gap-2 px-4 py-2 rounded-full border text-[10px] font-black uppercase tracking-widest transition-all active:scale-95",
+                          isBookmarked 
+                            ? "bg-primary border-primary text-primary-foreground shadow-lg shadow-indigo-100" 
+                            : "bg-background border-border text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                        )}
+                      >
+                        {isBookmarking ? <Loader2 size={12} className="animate-spin" /> : <Bookmark size={12} fill={isBookmarked ? "currentColor" : "none"} />}
+                        {isBookmarked ? 'KAYDEDİLDİ' : 'KAYDET'}
+                      </button>
                     </div>
                     <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-3 text-[10px] font-black text-foreground uppercase tracking-[0.2em] hover:opacity-80 transition-opacity">
                       <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border relative">
@@ -571,6 +817,15 @@ export default function DiscussionDetailPage() {
                   </div>
                   {isStaff && (
                     <div className="flex items-center gap-2">
+                       {(isStaff || user?.id === topic.author_id) && !isEditingTopic && (
+                         <button 
+                          onClick={startEditingTopic} 
+                          className="p-2 rounded-xl text-muted-foreground hover:bg-muted transition-all"
+                          title="Düzenle"
+                        >
+                          <Settings size={18} />
+                        </button>
+                       )}
                        <button 
                         onClick={togglePin} 
                         className={`p-2 rounded-xl transition-all ${topic.is_pinned ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:bg-muted'}`}
@@ -594,11 +849,51 @@ export default function DiscussionDetailPage() {
                 <h1 className="text-4xl md:text-6xl font-black text-foreground tracking-tighter leading-tight break-words uppercase">{topic.title}</h1>
               </header>
 
-              <TextToSpeechControls text={topic.content} title={topic.title} className="mb-10" />
+              {isEditingTopic ? (
+                <div className="space-y-6 mb-12">
+                  <div className="space-y-2">
+                    <label className="vibe-label ml-0">BAŞLIK</label>
+                    <input 
+                      type="text" 
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      className="vibe-input h-14 text-xl"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="vibe-label ml-0">İÇERİK (MARKDOWN DESTEKLENİR)</label>
+                    <textarea 
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      className="vibe-input min-h-[300px] p-6 text-lg"
+                    />
+                  </div>
+                  <div className="flex gap-4">
+                    <button 
+                      onClick={handleUpdateTopic}
+                      disabled={isUpdatingTopic}
+                      className="vibe-button-primary h-14 px-8"
+                    >
+                      {isUpdatingTopic ? <Loader2 className="animate-spin mr-2" size={18} /> : <Check size={18} className="mr-2" />}
+                      KAYDET
+                    </button>
+                    <button 
+                      onClick={() => setIsEditingTopic(false)}
+                      className="px-8 h-14 bg-muted text-muted-foreground rounded-2xl font-black text-xs uppercase tracking-widest"
+                    >
+                      İPTAL
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <TextToSpeechControls text={topic.content} title={topic.title} className="mb-10" />
 
-              <div className="vibe-markdown-body prose prose-lg dark:prose-invert max-w-none font-medium leading-relaxed text-muted-foreground">
-                <BionicMarkdown content={topic.content} />
-              </div>
+                  <div className="vibe-markdown-body prose prose-lg dark:prose-invert max-w-none font-medium leading-relaxed text-muted-foreground">
+                    <BionicMarkdown content={topic.content} />
+                  </div>
+                </>
+              )}
 
               <div className="mt-12 pt-8 border-t border-border/50 flex flex-wrap items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
@@ -670,6 +965,7 @@ export default function DiscussionDetailPage() {
                       onDelete={deleteComment}
                       onMarkSolution={handleMarkSolution}
                       currentUserId={user?.id}
+                      onUpdate={handleUpdateComment}
                     />
                   ))
                 ) : (
@@ -786,14 +1082,20 @@ export default function DiscussionDetailPage() {
             <section className="vibe-card p-10">
               <h3 className="vibe-label ml-0 mb-8">BENZER BAŞLIKLAR</h3>
               <div className="space-y-6">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="group p-6 rounded-2xl hover:bg-muted/50 transition-all border border-transparent hover:border-border">
-                    <p className="text-base font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-3 tracking-tight">Erişilebilirlik hakkında genel sorular ve cevaplar...</p>
-                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
-                      KEŞFET <ChevronRight size={16} />
-                    </div>
-                  </div>
-                ))}
+                {similarTopics.length > 0 ? (
+                  similarTopics.map(t => (
+                    <Link key={t.id} href={`/discussions/${t.id}`} className="block group p-6 rounded-2xl hover:bg-muted/50 transition-all border border-transparent hover:border-border">
+                      <p className="text-base font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-3 tracking-tight">
+                        {t.title}
+                      </p>
+                      <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
+                        KEŞFET <ChevronRight size={16} />
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest px-4">Benzer başlık bulunamadı.</p>
+                )}
               </div>
             </section>
           </aside>

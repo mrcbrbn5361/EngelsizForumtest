@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, Suspense, useRef } from 'react';
 import { 
-  Search, Plus, Sparkles, MessageSquare, Mic, Loader2, ArrowLeft,
+  Search, Plus, Sparkles, MessageSquare, Mic, Loader2, ArrowLeft, X, Send,
   Calendar, User, HeartPulse, GraduationCap, Car, Stethoscope, 
   BookOpen, Briefcase, Cpu, Code, Smile, Shield, Settings, Megaphone, FolderTree,
   Scale, Type, Eye, CheckCircle2, Pin, AlertCircle, Volume2
@@ -57,6 +57,23 @@ function DiscussionsContent() {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('kategori') || '');
   const [activeTab, setActiveTab] = useState<'all' | 'solved' | 'popular' | 'pinned'>('all');
   
+  const [user, setUser] = useState<any>(null);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(15);
+  const [hasMore, setHasMore] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const [isListening, setIsListening] = useState(false);
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaryResult, setSummaryResult] = useState<{ id: string; text: string } | null>(null);
@@ -83,8 +100,61 @@ function DiscussionsContent() {
     }
   };
 
-  const fetchInitialData = useCallback(async () => {
-    setLoading(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [newTopic, setNewTopic] = useState({ title: '', content: '', category_id: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleCreateTopic = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    setIsSubmitting(true);
+    try {
+      const { data, error } = await supabase
+        .from('topics')
+        .insert([{
+          title: newTopic.title,
+          content: newTopic.content,
+          category_id: newTopic.category_id,
+          author_id: user.id
+        }])
+        .select();
+
+      if (error) throw error;
+      
+      // Increase User XP (+20 for new topic) and check Level
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('xp, level')
+          .eq('id', user.id)
+          .single();
+        
+        if (profile) {
+          const newXp = (profile.xp || 0) + 20;
+          const newLevel = Math.floor(newXp / 200) + 1;
+
+          await supabase
+            .from('profiles')
+            .update({ 
+              xp: newXp,
+              level: newLevel
+            })
+            .eq('id', user.id);
+        }
+      }
+
+      setIsCreateModalOpen(false);
+      setNewTopic({ title: '', content: '', category_id: '' });
+      fetchInitialData(); // Refresh list
+    } catch (err) {
+      console.error('Error creating topic:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const fetchInitialData = useCallback(async (isLoadMore = false) => {
+    if (!isLoadMore) setLoading(true);
 
     if (!isSupabaseConfigured) {
       setTopics([]);
@@ -94,47 +164,94 @@ function DiscussionsContent() {
     }
 
     try {
-      // Fetch Categories
-      const { data: cats, error: catErr } = await supabase
-        .from('categories')
-        .select('*')
-        .order('name');
-      
-      if (cats && cats.length > 0) {
-        setCategories(cats);
-      } else {
-        setCategories([]);
+      // Fetch Categories (only once)
+      if (!isLoadMore) {
+        const { data: cats, error: catErr } = await supabase
+          .from('categories')
+          .select('*')
+          .order('name');
+        
+        if (cats && cats.length > 0) {
+          setCategories(cats);
+        } else {
+          setCategories([]);
+        }
       }
 
-      // Fetch Topics
-      const { data: topicsData, error: topicsErr } = await supabase
+      const currentPage = isLoadMore ? page + 1 : 1;
+      const from = (currentPage - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      // Fetch Topics with Pagination and Filters
+      let query = supabase
         .from('topics')
         .select(`
           *,
           author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
-          category:categories(name, slug),
+          category:categories(name, slug, id),
           comments(count)
-        `)
-        .order('is_pinned', { ascending: false })
-        .order('created_at', { ascending: false });
+        `);
 
-      if (topicsData && topicsData.length > 0) {
-        setTopics(topicsData.filter(t => t.author));
+      if (searchQuery) {
+        // Use the generated search_vector for advanced Turkish full-text search
+        query = query.textSearch('search_vector', searchQuery, { 
+          config: 'turkish', 
+          type: 'websearch' 
+        });
+      }
+
+      if (selectedCategory) {
+        // If it's a UUID, search by category_id, otherwise by category slug
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(selectedCategory);
+        if (isUUID) {
+          query = query.eq('category_id', selectedCategory);
+        } else {
+          // Use the joined relation name to filter
+          query = query.eq('category.slug', selectedCategory);
+        }
+      }
+
+      const { data: topicsData, error: topicsErr } = await query
+        .order('is_pinned', { ascending: false })
+        .order('created_at', { ascending: false })
+        .range(from, to);
+
+      if (topicsData) {
+        const validTopics = topicsData.filter(t => t.author);
+        if (isLoadMore) {
+          setTopics(prev => [...prev, ...validTopics]);
+          setPage(currentPage);
+        } else {
+          setTopics(validTopics);
+          setPage(1);
+        }
+        setHasMore(topicsData.length === pageSize);
       } else {
-        setTopics([]);
+        if (!isLoadMore) setTopics([]);
+        setHasMore(false);
       }
     } catch (err) {
       console.error('Error fetching discussions data:', err);
-      setTopics([]);
-      setCategories([]);
+      if (!isLoadMore) {
+        setTopics([]);
+        setCategories([]);
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page, pageSize, searchQuery, selectedCategory, isSupabaseConfigured]);
 
   useEffect(() => {
-    fetchInitialData();
-  }, [fetchInitialData]);
+    // Reset page when filters change
+    setPage(1);
+    fetchInitialData(false);
+  }, [searchQuery, selectedCategory]);
+
+  useEffect(() => {
+    if (page > 1) {
+      // fetchInitialData(true) is handled by the "Load More" button
+    }
+  }, [page]);
 
   // Sync category state with search query param
   useEffect(() => {
@@ -293,16 +410,96 @@ function DiscussionsContent() {
                   Yardımlaşmak, deneyim ve çözümleri paylaşmak, engelsiz teknolojileri keşfetmek için buradayız.
                 </p>
               </div>
-              <Link 
-                href="/discussions/new"
+              <button 
+                onClick={() => user ? setIsCreateModalOpen(true) : window.location.href = '/login'}
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition-all duration-200 hover:bg-primary/90 hover:scale-[1.02] shadow-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                 aria-label="Yeni tartışma başlığı oluştur"
               >
                 <Plus size={20} /> YENİ BAŞLIK AÇ
-              </Link>
+              </button>
             </div>
           </div>
         </header>
+
+        {/* Create Topic Modal */}
+        {isCreateModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="bg-card w-full max-w-2xl rounded-3xl shadow-[0_0_50px_-12px_rgba(79,70,229,0.25)] border border-border overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="p-8 border-b border-border flex justify-between items-center bg-muted/30">
+                <div className="space-y-1">
+                  <h2 className="text-xl font-extrabold tracking-tight">YENİ TARTIŞMA OLUŞTUR</h2>
+                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Topluluğa Katkıda Bulunun</p>
+                </div>
+                <button onClick={() => setIsCreateModalOpen(false)} className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
+                  <X size={24} />
+                </button>
+              </div>
+              <form onSubmit={handleCreateTopic} className="p-8 space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">TARTIŞMA BAŞLIĞI</label>
+                  <input 
+                    required
+                    type="text" 
+                    placeholder="Etkileyici ve açıklayıcı bir başlık yazın..." 
+                    className="w-full h-14 px-5 rounded-2xl border border-border bg-background text-sm font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                    value={newTopic.title}
+                    onChange={e => setNewTopic({...newTopic, title: e.target.value})}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">KATEGORİ SEÇİMİ</label>
+                    <select 
+                      required
+                      className="w-full h-14 px-5 rounded-2xl border border-border bg-background text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all cursor-pointer appearance-none"
+                      value={newTopic.category_id}
+                      onChange={e => setNewTopic({...newTopic, category_id: e.target.value})}
+                    >
+                      <option value="">LÜTFEN BİR KATEGORİ SEÇİN</option>
+                      {categories.map(cat => (
+                        <option key={cat.id} value={cat.id}>{cat.name.toUpperCase()}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">ERİŞİLEBİLİRLİK ETİKETİ</label>
+                    <div className="h-14 px-5 rounded-2xl border border-border bg-muted/20 flex items-center text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                      <Sparkles size={14} className="mr-2 text-primary" /> OTOMATİK ANALİZ AKTİF
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">DETAYLI AÇIKLAMA</label>
+                  <textarea 
+                    required
+                    rows={6}
+                    placeholder="Sorunuzu, önerinizi veya paylaşmak istediğiniz deneyimi buraya yazın..." 
+                    className="w-full p-5 rounded-2xl border border-border bg-background text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
+                    value={newTopic.content}
+                    onChange={e => setNewTopic({...newTopic, content: e.target.value})}
+                  />
+                </div>
+                <div className="flex gap-4 pt-2">
+                  <button 
+                    type="button"
+                    onClick={() => setIsCreateModalOpen(false)}
+                    className="flex-1 h-14 rounded-2xl bg-muted text-xs font-bold hover:bg-muted/80 transition-all uppercase tracking-widest"
+                  >
+                    VAZGEÇ
+                  </button>
+                  <button 
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex-[2] h-14 rounded-2xl bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-all shadow-lg shadow-indigo-200 uppercase tracking-widest flex items-center justify-center gap-3 disabled:opacity-50"
+                  >
+                    {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+                    ŞİMDİ YAYINLA
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Categories Rail Filter Section */}
         <section aria-labelledby="categories-heading" className="mb-8">
@@ -540,6 +737,19 @@ function DiscussionsContent() {
                   >
                     İlk Konuyu Sen Başlat
                   </Link>
+                </div>
+              )}
+
+              {hasMore && filteredTopics.length > 0 && !searchQuery && (
+                <div className="pt-8 flex justify-center">
+                  <button
+                    onClick={() => fetchInitialData(true)}
+                    disabled={loading}
+                    className="vibe-button-primary h-14 px-10 text-xs flex items-center gap-3"
+                  >
+                    {loading ? <Loader2 size={18} className="animate-spin" /> : <Plus size={18} />}
+                    DAHA FAZLA YÜKLE
+                  </button>
                 </div>
               )}
             </div>

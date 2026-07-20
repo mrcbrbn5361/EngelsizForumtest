@@ -6,10 +6,12 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
 import { 
   User, Mail, Shield, Award, Sparkles, Zap, Flame, Star, 
-  MessageSquare, BookOpen, Heart, Calendar, Loader2, ArrowLeft, Clock
+  MessageSquare, BookOpen, Heart, Calendar, Loader2, ArrowLeft, Clock,
+  Plus
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 interface Badge {
   id: string;
@@ -27,6 +29,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   const { user: currentUser } = useAuth();
 
   const [loading, setLoading] = useState(true);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
   const [profile, setProfile] = useState<{
     id: string;
     username: string | null;
@@ -39,7 +43,73 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
     last_seen_at?: string | null;
     updated_at: string;
     created_at: string;
+    followers_count: number;
+    following_count: number;
   } | null>(null);
+
+  useEffect(() => {
+    async function checkFollowStatus() {
+      if (!currentUser || !userId || currentUser.id === userId) return;
+      try {
+        const { data } = await supabase
+          .from('follows')
+          .select('id')
+          .eq('follower_id', currentUser.id)
+          .eq('following_id', userId)
+          .maybeSingle();
+        
+        if (data) setIsFollowing(true);
+      } catch (err) {
+        console.error('Error checking follow status:', err);
+      }
+    }
+    
+    if (userId) {
+      checkFollowStatus();
+    }
+  }, [userId, currentUser]);
+
+  const handleFollowToggle = async () => {
+    if (!currentUser || !userId || followLoading) return;
+    setFollowLoading(true);
+    try {
+      if (isFollowing) {
+        const { error } = await supabase
+          .from('follows')
+          .delete()
+          .eq('follower_id', currentUser.id)
+          .eq('following_id', userId);
+        
+        if (error) throw error;
+        setIsFollowing(false);
+        setProfile(prev => prev ? { ...prev, followers_count: Math.max(0, prev.followers_count - 1) } : null);
+      } else {
+        const { error } = await supabase
+          .from('follows')
+          .insert({
+            follower_id: currentUser.id,
+            following_id: userId
+          });
+        
+        if (error) throw error;
+        setIsFollowing(true);
+        setProfile(prev => prev ? { ...prev, followers_count: prev.followers_count + 1 } : null);
+
+        // Send notification
+        await supabase.from('notifications').insert({
+          user_id: userId,
+          type: 'follow',
+          title: 'Yeni Takipçi',
+          body: `${currentUser.email?.split('@')[0]} sizi takip etmeye başladı.`,
+          data: { link: `/profile/${currentUser.id}` }
+        });
+      }
+    } catch (err) {
+      console.error('Error toggling follow:', err);
+    } finally {
+      setFollowLoading(false);
+    }
+  };
 
   // Tabs state
   const [activeTab, setActiveTab] = useState<'opened' | 'replied' | 'liked'>('opened');
@@ -326,9 +396,38 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                   <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-foreground truncate max-w-full">
                     {profile.full_name || profile.username || 'Engelsiz Kullanıcı'}
                   </h2>
-                  <p className="text-sm font-black text-muted-foreground uppercase tracking-widest">
-                    @{profile.username || 'isimsiz'}
-                  </p>
+                  <div className="flex items-center gap-4 text-sm font-black text-muted-foreground uppercase tracking-widest">
+                    <span>@{profile.username || 'isimsiz'}</span>
+                    <span>•</span>
+                    <span className="text-foreground">{profile.followers_count || 0} TAKİPÇİ</span>
+                    <span>•</span>
+                    <span className="text-foreground">{profile.following_count || 0} TAKİP</span>
+                  </div>
+
+                  {currentUser && currentUser.id !== userId && (
+                    <div className="pt-2">
+                      <button
+                        onClick={handleFollowToggle}
+                        disabled={followLoading}
+                        className={cn(
+                          "h-10 px-6 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2",
+                          isFollowing 
+                            ? "bg-muted text-muted-foreground hover:bg-red-500/10 hover:text-red-500 border border-border" 
+                            : "vibe-button-primary"
+                        )}
+                      >
+                        {followLoading ? (
+                          <Loader2 size={14} className="animate-spin" />
+                        ) : isFollowing ? (
+                          "TAKİBİ BIRAK"
+                        ) : (
+                          <>
+                            <Plus size={14} /> TAKİP ET
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
 

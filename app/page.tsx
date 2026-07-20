@@ -19,10 +19,12 @@ export default async function Home() {
   let todayTopics = 0;
   let todayComments = 0;
   let activeMembers: any[] = [];
+  let topContributors: any[] = [];
+  let trendingTags: any[] = [];
 
   if (isSupabaseConfigured) {
     try {
-      // Fetch latest topics
+      // Fetch latest topics (increased limit for better initial view)
       const { data: topicsData, error: topicsError } = await supabase
         .from('topics')
         .select(`
@@ -31,14 +33,15 @@ export default async function Home() {
           category:categories(name, slug, description, icon, color),
           comments(count)
         `)
+        .order('is_pinned', { ascending: false })
         .order('created_at', { ascending: false })
-        .limit(100);
+        .limit(20);
 
       // Fetch featured categories (communities)
       const { data: catsData, error: catsError } = await supabase
         .from('categories')
         .select('*')
-        .order('name')
+        .order('sort_order')
         .limit(50);
 
       if (!topicsError && topicsData) {
@@ -89,17 +92,43 @@ export default async function Home() {
         .gte('created_at', todayStart.toISOString());
       if (todayCCount !== null) todayComments = todayCCount;
 
+      // Active Members (seen in last 10 minutes)
+      const tenMinutesAgo = new Date();
+      tenMinutesAgo.setMinutes(tenMinutesAgo.getMinutes() - 10);
+
       const { data: membersData } = await supabase
         .from('profiles')
         .select('id, username, full_name, avatar_url, role, last_seen_at, updated_at')
+        .gte('last_seen_at', tenMinutesAgo.toISOString())
         .limit(12);
-      if (membersData) {
-        activeMembers = [...membersData].sort((a, b) => {
-          const aTime = new Date(a.last_seen_at || a.updated_at || 0).getTime();
-          const bTime = new Date(b.last_seen_at || b.updated_at || 0).getTime();
-          return bTime - aTime;
-        });
+      
+      if (membersData && membersData.length > 0) {
+        activeMembers = membersData;
+      } else {
+        // Fallback to most recently updated if no one is "online"
+        const { data: recentMembers } = await supabase
+          .from('profiles')
+          .select('id, username, full_name, avatar_url, role, last_seen_at, updated_at')
+          .order('updated_at', { ascending: false })
+          .limit(12);
+        activeMembers = recentMembers || [];
       }
+
+      // Top Contributors (Highest XP)
+      const { data: topData } = await supabase
+        .from('profiles')
+        .select('id, username, full_name, avatar_url, role, level, xp')
+        .order('xp', { ascending: false })
+        .limit(5);
+      topContributors = topData || [];
+
+      // Trending Tags
+      const { data: tagData } = await supabase
+        .from('tags')
+        .select('name, slug')
+        .limit(10);
+      trendingTags = tagData || [];
+
     } catch (e) {
       console.warn("Home server side fetch failed:", e);
     }
@@ -374,7 +403,9 @@ export default async function Home() {
           newestMember,
           todayTopics,
           todayComments,
-          activeMembers
+          activeMembers,
+          topContributors,
+          trendingTags
         }}
       />
 

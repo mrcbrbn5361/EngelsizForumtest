@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   following_count INTEGER DEFAULT 0,
   statuses_count INTEGER DEFAULT 0,
   last_status_at TIMESTAMPTZ,
+  last_seen_at TIMESTAMPTZ DEFAULT now(),
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now(),
   CONSTRAINT username_length CHECK (char_length(username) >= 3)
@@ -57,6 +58,7 @@ ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS last_status_at TIMESTAMPTZ;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS followers_count INTEGER DEFAULT 0;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS following_count INTEGER DEFAULT 0;
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS statuses_count INTEGER DEFAULT 0;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS last_seen_at TIMESTAMPTZ DEFAULT now();
 
 -- CATEGORIES
 CREATE TABLE IF NOT EXISTS public.categories (

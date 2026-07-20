@@ -28,6 +28,8 @@ interface ForumIndexClientProps {
     todayTopics: number;
     todayComments: number;
     activeMembers: any[];
+    topContributors: any[];
+    trendingTags: any[];
   };
 }
 
@@ -262,7 +264,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                   <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={22} />
                   <input 
                     type="text" 
-                    placeholder="TARTIŞMALARDA VE KONULARDA ARA..." 
+                    placeholder={typeof window !== 'undefined' && window.innerWidth < 768 ? "ARA..." : "TARTIŞMALARDA VE KONULARDA ARA..."} 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="vibe-input vibe-input-pl-16 pr-4 h-16 text-sm uppercase rounded-2xl border border-border bg-card w-full shadow-lg focus:border-primary/80 transition-all font-bold tracking-wider placeholder:text-muted-foreground/40"
@@ -540,6 +542,54 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 </div>
               )}
             </motion.div>
+
+            {stats?.topContributors && stats.topContributors.length > 0 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.15 }} className="bg-card border border-border rounded-3xl sm:rounded-[2rem] p-6 sm:p-10 shadow-sm">
+                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-8 flex items-center gap-3"><Sparkles className="text-primary w-5 h-5" /> EN AKTİF ÜYELER</h3>
+                <div className="space-y-6">
+                  {stats.topContributors.map((contributor, i) => (
+                    <Link key={contributor.id} href={`/profile/${contributor.id}`} className="flex items-center gap-4 group">
+                      <div className="relative">
+                        <div className="w-10 h-10 rounded-xl border border-border overflow-hidden bg-muted">
+                          <img 
+                            src={contributor.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${contributor.username}`} 
+                            alt="" 
+                            className="object-cover h-full w-full" 
+                          />
+                        </div>
+                        <div className="absolute -top-2 -left-2 w-5 h-5 rounded-full bg-primary text-[10px] font-black text-white flex items-center justify-center shadow-lg border-2 border-card">
+                          {i + 1}
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-black text-sm text-foreground truncate group-hover:text-primary transition-colors">@{contributor.username}</div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">SEVİYE {contributor.level}</span>
+                          <span className="text-[9px] font-black text-primary uppercase tracking-widest">{contributor.xp} XP</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {stats?.trendingTags && stats.trendingTags.length > 0 && (
+              <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-card border border-border rounded-3xl sm:rounded-[2rem] p-6 sm:p-10 shadow-sm">
+                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-8 flex items-center gap-3"><Megaphone className="text-primary w-5 h-5" /> POPÜLER ETİKETLER</h3>
+                <div className="flex flex-wrap gap-2">
+                  {stats.trendingTags.map((tag) => (
+                    <Link 
+                      key={tag.slug} 
+                      href={`/discussions?etiket=${tag.slug}`}
+                      className="px-4 py-2 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-all text-[10px] font-black uppercase tracking-widest border border-border"
+                    >
+                      #{tag.name}
+                    </Link>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
             <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-gradient-to-br from-primary to-primary-foreground text-primary-foreground rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl relative overflow-hidden group">
               <div className="relative z-10 space-y-8">

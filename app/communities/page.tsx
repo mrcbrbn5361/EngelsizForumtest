@@ -23,6 +23,7 @@ interface Community {
   icon?: string;
   member_count?: number;
   parent_id?: string | null;
+  topic_count?: number;
 }
 
 // Rich aesthetic data mapped to community slugs
@@ -336,15 +337,19 @@ export default function CommunitiesPage() {
     }
 
     try {
+      // Fetch categories with topic counts
       const { data, error } = await supabase
         .from('categories')
-        .select('*')
+        .select('*, topics:topics(count)')
         .order('name');
       
       if (error) throw error;
       if (data && data.length > 0) {
-        // Normalize names for UI consistency or use fetched ones
-        setCommunities(data);
+        const formatted = data.map(cat => ({
+          ...cat,
+          topic_count: cat.topics?.[0]?.count || 0
+        }));
+        setCommunities(formatted);
       } else {
         setCommunities([]);
       }
@@ -784,6 +789,16 @@ export default function CommunitiesPage() {
                                 {tag}
                               </span>
                             ))}
+                          </div>
+                          <div className="flex items-center gap-3 mt-4 mb-1">
+                            <div className="flex items-center gap-1.5">
+                              <MessageSquare size={12} className="text-muted-foreground" />
+                              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{(community as any).topic_count || 0} TARTIŞMA</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <Users size={12} className="text-muted-foreground" />
+                              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{meta.memberCount} ÜYE</span>
+                            </div>
                           </div>
                         </div>
 
