@@ -15,7 +15,7 @@ DECLARE
     new_level integer;
 BEGIN
     -- 1. Get the current XP from the profiles table
-    SELECT COALESCE(xp, 0) INTO current_xp FROM public.profiles WHERE id = user_id;
+    SELECT COALESCE(xp, 0) INTO current_xp FROM public.profiles WHERE id::text = user_id::text;
     
     -- 2. Calculate the new total XP
     new_xp := current_xp + xp_amount;
@@ -28,7 +28,7 @@ BEGIN
     SET xp = new_xp,
         level = new_level,
         updated_at = now()
-    WHERE id = user_id;
+    WHERE id::text = user_id::text;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
@@ -49,7 +49,7 @@ BEGIN
     UPDATE public.topics
     SET comments_count = COALESCE(comments_count, 0) + 1,
         updated_at = now()
-    WHERE id = topic_id;
+    WHERE id::text = topic_id::text;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 

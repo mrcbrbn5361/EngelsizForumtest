@@ -338,7 +338,7 @@ CREATE OR REPLACE FUNCTION public.increment_topic_likes()
 RETURNS TRIGGER AS $$
 BEGIN
   IF NEW.topic_id IS NOT NULL THEN
-    UPDATE public.topics SET likes_count = likes_count + 1 WHERE id = NEW.topic_id;
+    UPDATE public.topics SET likes_count = likes_count + 1 WHERE id::text = NEW.topic_id::text;
   END IF;
   RETURN NEW;
 END;
@@ -348,7 +348,7 @@ CREATE OR REPLACE FUNCTION public.decrement_topic_likes()
 RETURNS TRIGGER AS $$
 BEGIN
   IF OLD.topic_id IS NOT NULL THEN
-    UPDATE public.topics SET likes_count = likes_count - 1 WHERE id = OLD.topic_id;
+    UPDATE public.topics SET likes_count = likes_count - 1 WHERE id::text = OLD.topic_id::text;
   END IF;
   RETURN OLD;
 END;
@@ -364,7 +364,7 @@ CREATE TRIGGER on_reaction_removed_topic AFTER DELETE ON public.reactions FOR EA
 CREATE OR REPLACE FUNCTION public.increment_comment_count()
 RETURNS TRIGGER AS $$
 BEGIN
-  UPDATE public.topics SET comments_count = comments_count + 1, updated_at = now() WHERE id = NEW.topic_id;
+  UPDATE public.topics SET comments_count = comments_count + 1, updated_at = now() WHERE id::text = NEW.topic_id::text;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -409,12 +409,12 @@ CREATE OR REPLACE FUNCTION public.handle_follows_change()
 RETURNS TRIGGER AS $$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
-    UPDATE public.profiles SET following_count = following_count + 1 WHERE id = NEW.follower_id;
-    UPDATE public.profiles SET followers_count = followers_count + 1 WHERE id = NEW.following_id;
+    UPDATE public.profiles SET following_count = following_count + 1 WHERE id::text = NEW.follower_id::text;
+    UPDATE public.profiles SET followers_count = followers_count + 1 WHERE id::text = NEW.following_id::text;
     RETURN NEW;
   ELSIF (TG_OP = 'DELETE') THEN
-    UPDATE public.profiles SET following_count = GREATEST(0, following_count - 1) WHERE id = OLD.follower_id;
-    UPDATE public.profiles SET followers_count = GREATEST(0, followers_count - 1) WHERE id = OLD.following_id;
+    UPDATE public.profiles SET following_count = GREATEST(0, following_count - 1) WHERE id::text = OLD.follower_id::text;
+    UPDATE public.profiles SET followers_count = GREATEST(0, followers_count - 1) WHERE id::text = OLD.following_id::text;
     RETURN OLD;
   END IF;
   RETURN NULL;
@@ -431,10 +431,10 @@ CREATE OR REPLACE FUNCTION public.handle_statuses_count_change()
 RETURNS TRIGGER AS $$
 BEGIN
   IF (TG_OP = 'INSERT') THEN
-    UPDATE public.profiles SET statuses_count = statuses_count + 1 WHERE id = NEW.author_id;
+    UPDATE public.profiles SET statuses_count = statuses_count + 1 WHERE id::text = NEW.author_id::text;
     RETURN NEW;
   ELSIF (TG_OP = 'DELETE') THEN
-    UPDATE public.profiles SET statuses_count = GREATEST(0, statuses_count - 1) WHERE id = OLD.author_id;
+    UPDATE public.profiles SET statuses_count = GREATEST(0, statuses_count - 1) WHERE id::text = OLD.author_id::text;
     RETURN OLD;
   END IF;
   RETURN NULL;
@@ -459,14 +459,14 @@ DECLARE
     new_xp integer;
     new_level integer;
 BEGIN
-    SELECT COALESCE(xp, 0) INTO current_xp FROM public.profiles WHERE id = user_id;
+    SELECT COALESCE(xp, 0) INTO current_xp FROM public.profiles WHERE id::text = user_id::text;
     new_xp := current_xp + xp_amount;
     new_level := 1 + (new_xp / 200);
     UPDATE public.profiles
     SET xp = new_xp,
         level = new_level,
         updated_at = now()
-    WHERE id = user_id;
+    WHERE id::text = user_id::text;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
@@ -480,7 +480,7 @@ BEGIN
     UPDATE public.topics
     SET comments_count = COALESCE(comments_count, 0) + 1,
         updated_at = now()
-    WHERE id = topic_id;
+    WHERE id::text = topic_id::text;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
@@ -530,10 +530,10 @@ DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profi
 CREATE POLICY "Public profiles are viewable by everyone" ON public.profiles FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
-CREATE POLICY "Users can insert their own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "Users can insert their own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid()::text = id::text);
 
 DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
-CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id OR public.is_staff());
+CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid()::text = id::text OR public.is_staff());
 
 -- Categories
 DROP POLICY IF EXISTS "Categories are viewable by everyone" ON public.categories;
@@ -547,43 +547,43 @@ DROP POLICY IF EXISTS "Topics are viewable by everyone" ON public.topics;
 CREATE POLICY "Topics are viewable by everyone" ON public.topics FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Authenticated users can insert topics" ON public.topics;
-CREATE POLICY "Authenticated users can insert topics" ON public.topics FOR INSERT WITH CHECK (auth.uid() = author_id);
+CREATE POLICY "Authenticated users can insert topics" ON public.topics FOR INSERT WITH CHECK (auth.uid()::text = author_id::text);
 
 DROP POLICY IF EXISTS "Users can update own topics or staff" ON public.topics;
-CREATE POLICY "Users can update own topics or staff" ON public.topics FOR UPDATE USING (auth.uid() = author_id OR public.is_staff());
+CREATE POLICY "Users can update own topics or staff" ON public.topics FOR UPDATE USING (auth.uid()::text = author_id::text OR public.is_staff());
 
 DROP POLICY IF EXISTS "Users can delete own topics or staff" ON public.topics;
-CREATE POLICY "Users can delete own topics or staff" ON public.topics FOR DELETE USING (auth.uid() = author_id OR public.is_staff());
+CREATE POLICY "Users can delete own topics or staff" ON public.topics FOR DELETE USING (auth.uid()::text = author_id::text OR public.is_staff());
 
 -- Comments
 DROP POLICY IF EXISTS "Comments are viewable by everyone" ON public.comments;
 CREATE POLICY "Comments are viewable by everyone" ON public.comments FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Authenticated users can insert comments" ON public.comments;
-CREATE POLICY "Authenticated users can insert comments" ON public.comments FOR INSERT WITH CHECK (auth.uid() = author_id);
+CREATE POLICY "Authenticated users can insert comments" ON public.comments FOR INSERT WITH CHECK (auth.uid()::text = author_id::text);
 
 DROP POLICY IF EXISTS "Users can update own comments or staff" ON public.comments;
-CREATE POLICY "Users can update own comments or staff" ON public.comments FOR UPDATE USING (auth.uid() = author_id OR public.is_staff());
+CREATE POLICY "Users can update own comments or staff" ON public.comments FOR UPDATE USING (auth.uid()::text = author_id::text OR public.is_staff());
 
 DROP POLICY IF EXISTS "Users can delete own comments or staff" ON public.comments;
-CREATE POLICY "Users can delete own comments or staff" ON public.comments FOR DELETE USING (auth.uid() = author_id OR public.is_staff());
+CREATE POLICY "Users can delete own comments or staff" ON public.comments FOR DELETE USING (auth.uid()::text = author_id::text OR public.is_staff());
 
 -- Reactions
 DROP POLICY IF EXISTS "Reactions are viewable by everyone" ON public.reactions;
 CREATE POLICY "Reactions are viewable by everyone" ON public.reactions FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Authenticated users can insert reactions" ON public.reactions;
-CREATE POLICY "Authenticated users can insert reactions" ON public.reactions FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Authenticated users can insert reactions" ON public.reactions FOR INSERT WITH CHECK (auth.uid()::text = user_id::text);
 
 DROP POLICY IF EXISTS "Users can delete own reactions" ON public.reactions;
-CREATE POLICY "Users can delete own reactions" ON public.reactions FOR DELETE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete own reactions" ON public.reactions FOR DELETE USING (auth.uid()::text = user_id::text);
 
 -- Reports
 DROP POLICY IF EXISTS "Staff can view reports" ON public.reports;
 CREATE POLICY "Staff can view reports" ON public.reports FOR SELECT USING (public.is_staff());
 
 DROP POLICY IF EXISTS "Authenticated users can insert reports" ON public.reports;
-CREATE POLICY "Authenticated users can insert reports" ON public.reports FOR INSERT WITH CHECK (auth.uid() = reporter_id);
+CREATE POLICY "Authenticated users can insert reports" ON public.reports FOR INSERT WITH CHECK (auth.uid()::text = reporter_id::text);
 
 DROP POLICY IF EXISTS "Staff can update reports" ON public.reports;
 CREATE POLICY "Staff can update reports" ON public.reports FOR UPDATE USING (public.is_staff());
@@ -604,23 +604,23 @@ CREATE POLICY "Staff can manage user badges" ON public.user_badges FOR ALL USING
 
 -- Notifications
 DROP POLICY IF EXISTS "Users can view own notifications" ON public.notifications;
-CREATE POLICY "Users can view own notifications" ON public.notifications FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can view own notifications" ON public.notifications FOR SELECT USING (auth.uid()::text = user_id::text);
 
 DROP POLICY IF EXISTS "Users can update own notifications" ON public.notifications;
-CREATE POLICY "Users can update own notifications" ON public.notifications FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can update own notifications" ON public.notifications FOR UPDATE USING (auth.uid()::text = user_id::text);
 
 DROP POLICY IF EXISTS "Users can delete own notifications" ON public.notifications;
-CREATE POLICY "Users can delete own notifications" ON public.notifications FOR DELETE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete own notifications" ON public.notifications FOR DELETE USING (auth.uid()::text = user_id::text);
 
 -- Bookmarks
 DROP POLICY IF EXISTS "Users can view own bookmarks" ON public.bookmarks;
-CREATE POLICY "Users can view own bookmarks" ON public.bookmarks FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can view own bookmarks" ON public.bookmarks FOR SELECT USING (auth.uid()::text = user_id::text);
 
 DROP POLICY IF EXISTS "Users can insert own bookmarks" ON public.bookmarks;
-CREATE POLICY "Users can insert own bookmarks" ON public.bookmarks FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can insert own bookmarks" ON public.bookmarks FOR INSERT WITH CHECK (auth.uid()::text = user_id::text);
 
 DROP POLICY IF EXISTS "Users can delete own bookmarks" ON public.bookmarks;
-CREATE POLICY "Users can delete own bookmarks" ON public.bookmarks FOR DELETE USING (auth.uid() = user_id);
+CREATE POLICY "Users can delete own bookmarks" ON public.bookmarks FOR DELETE USING (auth.uid()::text = user_id::text);
 
 -- Tags
 DROP POLICY IF EXISTS "Tags are viewable by everyone" ON public.tags;
@@ -635,7 +635,7 @@ CREATE POLICY "Topic tags are viewable by everyone" ON public.topic_tags FOR SEL
 
 DROP POLICY IF EXISTS "Topic authors can manage tags" ON public.topic_tags;
 CREATE POLICY "Topic authors can manage tags" ON public.topic_tags FOR ALL USING (
-  EXISTS (SELECT 1 FROM public.topics WHERE id = topic_id AND (author_id = auth.uid() OR public.is_staff()))
+  EXISTS (SELECT 1 FROM public.topics WHERE id::text = topic_id::text AND (author_id::text = auth.uid()::text OR public.is_staff()))
 );
 
 -- Follows (Mastodon relationships)
@@ -645,45 +645,45 @@ DROP POLICY IF EXISTS "Everyone can view follows" ON public.follows;
 CREATE POLICY "Everyone can view follows" ON public.follows FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Authenticated users can follow" ON public.follows;
-CREATE POLICY "Authenticated users can follow" ON public.follows FOR INSERT WITH CHECK (auth.uid() = follower_id);
+CREATE POLICY "Authenticated users can follow" ON public.follows FOR INSERT WITH CHECK (auth.uid()::text = follower_id::text);
 
 DROP POLICY IF EXISTS "Users can unfollow" ON public.follows;
-CREATE POLICY "Users can unfollow" ON public.follows FOR DELETE USING (auth.uid() = follower_id);
+CREATE POLICY "Users can unfollow" ON public.follows FOR DELETE USING (auth.uid()::text = follower_id::text);
 
 -- Conversations
 ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view their own conversations" ON public.conversations;
 CREATE POLICY "Users can view their own conversations" ON public.conversations FOR SELECT USING (
-  EXISTS (SELECT 1 FROM public.conversation_members WHERE conversation_id = id AND user_id = auth.uid())
+  EXISTS (SELECT 1 FROM public.conversation_members WHERE conversation_id::text = id::text AND user_id::text = auth.uid()::text)
 );
 
 -- Conversation Members
 ALTER TABLE public.conversation_members ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view members of their own conversations" ON public.conversation_members;
 CREATE POLICY "Users can view members of their own conversations" ON public.conversation_members FOR SELECT USING (
-  EXISTS (SELECT 1 FROM public.conversation_members cm WHERE cm.conversation_id = conversation_id AND cm.user_id = auth.uid())
+  EXISTS (SELECT 1 FROM public.conversation_members cm WHERE cm.conversation_id::text = conversation_id::text AND cm.user_id::text = auth.uid()::text)
 );
 
 -- Messages
 ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view messages in their own conversations" ON public.messages;
 CREATE POLICY "Users can view messages in their own conversations" ON public.messages FOR SELECT USING (
-  EXISTS (SELECT 1 FROM public.conversation_members WHERE conversation_id = messages.conversation_id AND user_id = auth.uid())
+  EXISTS (SELECT 1 FROM public.conversation_members WHERE conversation_id::text = messages.conversation_id::text AND user_id::text = auth.uid()::text)
 );
 
 DROP POLICY IF EXISTS "Users can insert messages in their own conversations" ON public.messages;
 CREATE POLICY "Users can insert messages in their own conversations" ON public.messages FOR INSERT WITH CHECK (
-  EXISTS (SELECT 1 FROM public.conversation_members WHERE conversation_id = messages.conversation_id AND user_id = auth.uid())
-  AND auth.uid() = sender_id
+  EXISTS (SELECT 1 FROM public.conversation_members WHERE conversation_id::text = messages.conversation_id::text AND user_id::text = auth.uid()::text)
+  AND auth.uid()::text = sender_id::text
 );
 
 -- Uploads
 ALTER TABLE public.uploads ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Users can view their own uploads" ON public.uploads;
-CREATE POLICY "Users can view their own uploads" ON public.uploads FOR SELECT USING (auth.uid() = user_id OR public.is_staff());
+CREATE POLICY "Users can view their own uploads" ON public.uploads FOR SELECT USING (auth.uid()::text = user_id::text OR public.is_staff());
 
 DROP POLICY IF EXISTS "Users can insert their own uploads" ON public.uploads;
-CREATE POLICY "Users can insert their own uploads" ON public.uploads FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can insert their own uploads" ON public.uploads FOR INSERT WITH CHECK (auth.uid()::text = user_id::text);
 
 -- Attachments
 ALTER TABLE public.attachments ENABLE ROW LEVEL SECURITY;
