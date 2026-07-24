@@ -56,7 +56,7 @@ function DiscussionsContent() {
   const [topContributors, setTopContributors] = useState<any[]>([]);
   const [popularTags, setPopularTags] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('kategori') || '');
+  const [selectedCategory, setSelectedCategory] = useState(searchParams?.get('kategori') || '');
   const [activeTab, setActiveTab] = useState<'all' | 'solved' | 'popular' | 'pinned'>('all');
   
   const [user, setUser] = useState<any>(null);
@@ -280,8 +280,8 @@ function DiscussionsContent() {
 
   // Sync category state with search query param
   useEffect(() => {
-    const catParam = searchParams.get('kategori');
-    if (catParam !== null) {
+    const catParam = searchParams?.get('kategori');
+    if (catParam !== undefined && catParam !== null) {
       setSelectedCategory(catParam);
     }
   }, [searchParams]);
