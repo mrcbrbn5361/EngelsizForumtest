@@ -292,7 +292,8 @@ const COLOR_SCHEMES: Record<string, {
 };
 
 export default function CommunityDetailPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = typeof params?.id === 'string' ? params.id : Array.isArray(params?.id) ? params.id[0] : '';
   const router = useRouter();
   const [community, setCommunity] = useState<Community | null>(null);
   const [topics, setTopics] = useState<Topic[]>([]);

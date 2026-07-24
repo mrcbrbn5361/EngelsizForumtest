@@ -229,7 +229,8 @@ function CommentItem({
 }
 
 export default function DiscussionDetailPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = typeof params?.id === 'string' ? params.id : Array.isArray(params?.id) ? params.id[0] : '';
   const router = useRouter();
   const { user } = useAuth();
   const { isStaff } = useRole();
