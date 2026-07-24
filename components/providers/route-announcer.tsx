@@ -11,6 +11,8 @@ export function RouteAnnouncer() {
   const [announcement, setAnnouncement] = useState('');
 
   useEffect(() => {
+    if (!pathname) return;
+
     const pageName = pathname === '/' 
       ? 'Anasayfa' 
       : pathname.split('/').filter(Boolean).pop()?.replace(/-/g, ' ') || 'Sayfa';
