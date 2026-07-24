@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS public.categories (
 ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS slug TEXT;
 ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT now();
 ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
+ALTER TABLE public.categories ALTER COLUMN id SET DEFAULT gen_random_uuid();
 
 -- TOPICS
 CREATE TABLE IF NOT EXISTS public.topics (
@@ -105,6 +106,7 @@ ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAUL
 ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS visibility TEXT DEFAULT 'public';
 ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS is_sensitive BOOLEAN DEFAULT false;
 ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS spoiler_text TEXT;
+ALTER TABLE public.topics ALTER COLUMN id SET DEFAULT gen_random_uuid();
 
 DO $$ 
 BEGIN
@@ -136,6 +138,7 @@ CREATE TABLE IF NOT EXISTS public.comments (
 ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS visibility TEXT DEFAULT 'public';
 ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS is_sensitive BOOLEAN DEFAULT false;
 ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS spoiler_text TEXT;
+ALTER TABLE public.comments ALTER COLUMN id SET DEFAULT gen_random_uuid();
 
 -- REACTIONS
 CREATE TABLE IF NOT EXISTS public.reactions (
@@ -176,6 +179,7 @@ CREATE TABLE IF NOT EXISTS public.badges (
 );
 
 ALTER TABLE public.badges ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE public.badges ALTER COLUMN id SET DEFAULT gen_random_uuid();
 
 -- USER_BADGES
 CREATE TABLE IF NOT EXISTS public.user_badges (
@@ -266,6 +270,7 @@ CREATE TABLE IF NOT EXISTS public.tags (
 );
 
 ALTER TABLE public.tags ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE public.tags ALTER COLUMN id SET DEFAULT gen_random_uuid();
 
 -- TOPIC_TAGS
 CREATE TABLE IF NOT EXISTS public.topic_tags (
@@ -755,7 +760,7 @@ BEGIN
         IF EXISTS (SELECT 1 FROM public.categories WHERE slug = cat.slug) THEN
             UPDATE public.categories SET description = cat.description WHERE slug = cat.slug;
         ELSE
-            INSERT INTO public.categories (name, slug, description) VALUES (cat.name, cat.slug, cat.description);
+            INSERT INTO public.categories (id, name, slug, description) VALUES (gen_random_uuid(), cat.name, cat.slug, cat.description);
         END IF;
     END LOOP;
 END $$;
@@ -771,8 +776,9 @@ BEGIN
         FOR i IN 1..5 LOOP
             sub_slug := cat_rec.slug || '-alt-' || i;
             IF NOT EXISTS (SELECT 1 FROM public.categories WHERE slug = sub_slug) THEN
-                INSERT INTO public.categories (name, slug, description, parent_id)
+                INSERT INTO public.categories (id, name, slug, description, parent_id)
                 VALUES (
+                    gen_random_uuid(),
                     sub_names[i],
                     sub_slug,
                     sub_names[i] || ' - ' || cat_rec.name,
