@@ -521,7 +521,7 @@ CREATE OR REPLACE FUNCTION public.is_staff()
 RETURNS BOOLEAN AS $$
   SELECT EXISTS (
     SELECT 1 FROM public.profiles
-    WHERE id = auth.uid() AND role IN ('admin', 'moderator')
+    WHERE id::text = auth.uid()::text AND role IN ('admin', 'moderator')
   );
 $$ LANGUAGE sql STABLE SECURITY DEFINER;
 
