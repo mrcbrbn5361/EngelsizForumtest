@@ -11,6 +11,12 @@ const supabase = (supabaseUrl && supabaseAnonKey)
 
 const BASE_URL = process.env.APP_URL || 'https://engelsizforum.com';
 
+function parseSafeDate(dateVal: any, fallbackDate: Date): Date {
+  if (!dateVal) return fallbackDate;
+  const parsed = new Date(dateVal);
+  return isNaN(parsed.getTime()) ? fallbackDate : parsed;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const currentDate = new Date();
 
@@ -53,17 +59,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 2. Fetch all Communities/Categories dynamically
     const { data: categories, error: catError } = await supabase
       .from('categories')
-      .select('id, slug, created_at');
+      .select('*');
 
     if (catError) {
       console.error('[Sitemap Generator] Error fetching categories:', catError);
-    } else if (categories) {
-      categories.forEach((cat) => {
+    } else if (categories && Array.isArray(categories)) {
+      categories.forEach((cat: any) => {
         const identifier = cat.slug || cat.id;
         if (identifier) {
           sitemapEntries.push({
             url: `${BASE_URL}/communities/${identifier}`,
-            lastModified: cat.created_at ? new Date(cat.created_at) : currentDate,
+            lastModified: parseSafeDate(cat.updated_at || cat.created_at, currentDate),
             changeFrequency: 'weekly',
             priority: 0.7,
           });
@@ -72,20 +78,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
 
     // 3. Fetch recent Discussion Topics dynamically
-    const { data: topics, error: topicError } = await supabase
+    let { data: topics, error: topicError } = await supabase
       .from('topics')
-      .select('id, created_at')
+      .select('*')
       .order('created_at', { ascending: false })
-      .limit(1000); // Limit to top 1000 topics for performance and sitemap limits
+      .limit(1000);
+
+    if (topicError) {
+      // Fallback if created_at column ordering fails
+      const retry = await supabase.from('topics').select('*').limit(1000);
+      topics = retry.data;
+      topicError = retry.error;
+    }
 
     if (topicError) {
       console.error('[Sitemap Generator] Error fetching topics:', topicError);
-    } else if (topics) {
-      topics.forEach((topic) => {
+    } else if (topics && Array.isArray(topics)) {
+      topics.forEach((topic: any) => {
         if (topic.id) {
           sitemapEntries.push({
             url: `${BASE_URL}/discussions/${topic.id}`,
-            lastModified: topic.created_at ? new Date(topic.created_at) : currentDate,
+            lastModified: parseSafeDate(topic.updated_at || topic.created_at, currentDate),
             changeFrequency: 'daily',
             priority: 0.8,
           });

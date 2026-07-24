@@ -18,6 +18,12 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='sort_order') THEN
     ALTER TABLE public.categories ADD COLUMN sort_order INTEGER DEFAULT 0;
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='created_at') THEN
+    ALTER TABLE public.categories ADD COLUMN created_at TIMESTAMPTZ DEFAULT now();
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='updated_at') THEN
+    ALTER TABLE public.categories ADD COLUMN updated_at TIMESTAMPTZ DEFAULT now();
+  END IF;
 
   -- TOPICS
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='likes_count') THEN
@@ -28,6 +34,12 @@ BEGIN
   END IF;
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='views_count') THEN
     ALTER TABLE public.topics ADD COLUMN views_count INTEGER DEFAULT 0;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='created_at') THEN
+    ALTER TABLE public.topics ADD COLUMN created_at TIMESTAMPTZ DEFAULT now();
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='updated_at') THEN
+    ALTER TABLE public.topics ADD COLUMN updated_at TIMESTAMPTZ DEFAULT now();
   END IF;
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='search_vector') THEN
     ALTER TABLE public.topics ADD COLUMN search_vector TSVECTOR GENERATED ALWAYS AS (to_tsvector('turkish', coalesce(title,'') || ' ' || coalesce(content,''))) STORED;
