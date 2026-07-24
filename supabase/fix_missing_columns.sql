@@ -12,6 +12,9 @@ BEGIN
   END IF;
 
   -- CATEGORIES
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='slug') THEN
+    ALTER TABLE public.categories ADD COLUMN slug TEXT;
+  END IF;
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='color') THEN
     ALTER TABLE public.categories ADD COLUMN color TEXT;
   END IF;

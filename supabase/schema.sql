@@ -74,6 +74,10 @@ CREATE TABLE IF NOT EXISTS public.categories (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT now();
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
+
 -- TOPICS
 CREATE TABLE IF NOT EXISTS public.topics (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -96,6 +100,8 @@ CREATE TABLE IF NOT EXISTS public.topics (
 );
 
 -- Ensure columns exist if table was already created
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT now();
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
 ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS visibility TEXT DEFAULT 'public';
 ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS is_sensitive BOOLEAN DEFAULT false;
 ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS spoiler_text TEXT;
@@ -168,6 +174,8 @@ CREATE TABLE IF NOT EXISTS public.badges (
   requirement JSONB NOT NULL,
   created_at TIMESTAMPTZ DEFAULT now()
 );
+
+ALTER TABLE public.badges ADD COLUMN IF NOT EXISTS slug TEXT;
 
 -- USER_BADGES
 CREATE TABLE IF NOT EXISTS public.user_badges (
@@ -256,6 +264,8 @@ CREATE TABLE IF NOT EXISTS public.tags (
   slug TEXT UNIQUE NOT NULL,
   created_at TIMESTAMPTZ DEFAULT now()
 );
+
+ALTER TABLE public.tags ADD COLUMN IF NOT EXISTS slug TEXT;
 
 -- TOPIC_TAGS
 CREATE TABLE IF NOT EXISTS public.topic_tags (
