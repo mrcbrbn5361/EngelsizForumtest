@@ -53,6 +53,8 @@ function DiscussionsContent() {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [topContributors, setTopContributors] = useState<any[]>([]);
+  const [popularTags, setPopularTags] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('kategori') || '');
   const [activeTab, setActiveTab] = useState<'all' | 'solved' | 'popular' | 'pinned'>('all');
@@ -240,6 +242,29 @@ function DiscussionsContent() {
       setLoading(false);
     }
   }, [page, pageSize, searchQuery, selectedCategory, isSupabaseConfigured]);
+
+  const fetchStats = useCallback(async () => {
+    try {
+      const { data: topData } = await supabase
+        .from('profiles')
+        .select('id, username, avatar_url, role, level, xp')
+        .order('xp', { ascending: false })
+        .limit(5);
+      if (topData) setTopContributors(topData);
+
+      const { data: tagData } = await supabase
+        .from('tags')
+        .select('name, slug')
+        .limit(8);
+      if (tagData) setPopularTags(tagData);
+    } catch (err) {
+      console.error('Error fetching forum stats:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
 
   useEffect(() => {
     // Reset page when filters change
@@ -759,6 +784,68 @@ function DiscussionsContent() {
           {/* Right Column: Premium Sidebar Widget Panels (Span 4) */}
           <aside className="lg:col-span-4 space-y-6">
             
+            {/* Top Contributors Widget */}
+            {topContributors.length > 0 && (
+              <section className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm">
+                <div className="flex items-center gap-2 mb-6 pb-4 border-b border-border/50">
+                  <Sparkles className="text-primary size-5 shrink-0" />
+                  <h2 className="text-sm font-black tracking-wider text-foreground uppercase">
+                    Aktif Katılımcılar
+                  </h2>
+                </div>
+                <div className="space-y-4">
+                  {topContributors.map((user, i) => (
+                    <Link key={user.id} href={`/profile/${user.id}`} className="flex items-center gap-3 group">
+                      <div className="relative">
+                        <div className="w-8 h-8 rounded-lg border border-border bg-muted overflow-hidden">
+                          <img 
+                            src={user.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} 
+                            alt="" 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-primary text-[8px] font-black text-white flex items-center justify-center border border-card">
+                          {i + 1}
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-black text-foreground truncate group-hover:text-primary transition-colors">
+                          @{user.username}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">LVL {user.level}</span>
+                          <span className="text-[9px] font-black text-primary uppercase tracking-widest">{user.xp} XP</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Popular Tags Widget */}
+            {popularTags.length > 0 && (
+              <section className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm">
+                <div className="flex items-center gap-2 mb-6 pb-4 border-b border-border/50">
+                  <Megaphone className="text-primary size-5 shrink-0" />
+                  <h2 className="text-sm font-black tracking-wider text-foreground uppercase">
+                    Popüler Etiketler
+                  </h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {popularTags.map((tag) => (
+                    <Link 
+                      key={tag.slug} 
+                      href={`/discussions?etiket=${tag.slug}`}
+                      className="px-3 py-1.5 rounded-xl bg-muted/50 border border-border hover:border-primary hover:bg-primary/5 transition-all text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary"
+                    >
+                      #{tag.name}
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {/* Sidebar Widget 1: Premium Accessibility Settings Panel */}
             <section 
               aria-labelledby="accessibility-widget-heading"

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * NodeInfo 2.0 schema endpoint.
  * Provides statistics and metadata about the instance.

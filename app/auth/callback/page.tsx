@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-
 import { SiteLayout } from '@/components/layout/site-layout';
 
 export default function AuthCallbackPage() {
@@ -13,46 +12,59 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     let mounted = true;
 
-    const handleAuth = async () => {
+    const processAuthCallback = async () => {
+      try {
+        // Active check for session from PKCE code or URL hash
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Auth callback getSession error:", error);
+        }
+
+        if (session && mounted) {
+          setMessage('Giriş başarılı! Topluluğa yönlendiriliyorsunuz...');
+          const hash = window.location.hash || '';
+          if (hash.includes('type=recovery') || hash.includes('type=password_recovery')) {
+            router.replace('/auth/reset-password');
+          } else {
+            router.replace('/discussions');
+          }
+          return;
+        }
+      } catch (err) {
+        console.error("Auth callback processing exception:", err);
+      }
     };
 
-    handleAuth();
+    processAuthCallback();
 
-    let redirectTimeout: NodeJS.Timeout;
-
+    // Listen to onAuthStateChange for SIGNED_IN event
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return;
       
-      console.log('Auth callback event:', event);
+      console.log('Auth callback event:', event, !!session);
 
       if (event === 'PASSWORD_RECOVERY') {
-        clearTimeout(redirectTimeout);
         setMessage('Şifre sıfırlama sayfasına yönlendiriliyorsunuz...');
-        router.push('/auth/reset-password');
-      } else if (event === 'SIGNED_IN' && session) {
-        redirectTimeout = setTimeout(() => {
-          if (mounted) {
-            router.push('/');
-          }
-        }, 500);
-      } else if (event === 'SIGNED_OUT') {
-        router.push('/auth');
+        router.replace('/auth/reset-password');
+      } else if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') && session) {
+        setMessage('Giriş başarılı! Topluluğa yönlendiriliyorsunuz...');
+        router.replace('/discussions');
       }
     });
 
+    // Fallback timer: only redirect to login if session couldn't be obtained after 3.5s
     const fallbackTimeout = setTimeout(async () => {
       if (!mounted) return;
-      const { data } = await supabase.auth.getSession();
-      if (data?.session && window.location.pathname === '/auth/callback') {
-          if (window.location.hash.includes('type=recovery') || window.location.hash.includes('type=password_recovery')) {
-              router.push('/auth/reset-password');
-          } else {
-              router.push('/');
-          }
-      } else if (!data?.session) {
-          router.push('/auth');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setMessage('Giriş başarılı! Topluluğa yönlendiriliyorsunuz...');
+        router.replace('/discussions');
+      } else {
+        console.warn("No active session found during auth callback. Redirecting to login page.");
+        router.replace('/login');
       }
-    }, 2000);
+    }, 3500);
 
     return () => {
       mounted = false;

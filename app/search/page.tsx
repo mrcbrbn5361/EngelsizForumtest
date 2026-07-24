@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
-import { Search, Filter, ArrowRight, Loader2, Mic, Sparkles } from 'lucide-react';
+import { Search, Filter, ArrowRight, Loader2, Mic, Sparkles, ChevronRight } from 'lucide-react';
 import { Topic } from '@/types/database';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
@@ -137,12 +137,11 @@ export default function SearchPage() {
   return (
     <DashboardLayout>
       <main className="vibe-container py-8 md:py-12">
-        <nav className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mb-12 text-xs font-bold uppercase tracking-wider text-primary">
-          <Link href="/" className="hover:underline">ANA SAYFA</Link>
-          <Link href="/discussions" className="hover:underline">TARTIŞMALAR</Link>
-          <Link href="/communities" className="hover:underline">TOPLULUKLAR</Link>
-          <Link href="/about" className="hover:underline">HAKKIMIZDA</Link>
-        </nav>
+        <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest mb-8">
+          <Link href="/" className="hover:text-primary transition-colors">ANA SAYFA</Link>
+          <ChevronRight size={14} />
+          <span className="text-foreground font-black">FORUM İÇİNDE ARAMA & FİLTRELEME</span>
+        </div>
 
         <header className="mb-12">
           <p className="vibe-label ml-0">GELİŞMİŞ ARAMA</p>

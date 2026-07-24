@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * WebFinger endpoint (RFC 7033) for Mastodon and ActivityPub discovery.
  * Resolves user handles like acct:username@domain to their profile resource.

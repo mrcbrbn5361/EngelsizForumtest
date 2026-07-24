@@ -100,6 +100,16 @@ ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS visibility TEXT DEFAULT 'publ
 ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS is_sensitive BOOLEAN DEFAULT false;
 ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS spoiler_text TEXT;
 
+DO $$ 
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_schema='public' AND table_name='topics' AND column_name='search_vector'
+    ) THEN
+        ALTER TABLE public.topics ADD COLUMN search_vector TSVECTOR GENERATED ALWAYS AS (to_tsvector('turkish', coalesce(title,'') || ' ' || coalesce(content,''))) STORED;
+    END IF;
+END $$;
+
 -- COMMENTS
 CREATE TABLE IF NOT EXISTS public.comments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -476,6 +486,9 @@ CREATE INDEX IF NOT EXISTS idx_topics_author ON public.topics(author_id);
 CREATE INDEX IF NOT EXISTS idx_topics_created ON public.topics(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_comments_topic ON public.comments(topic_id);
 CREATE INDEX IF NOT EXISTS idx_comments_author ON public.comments(author_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_slug ON public.categories(slug);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_badges_slug ON public.badges(slug);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tags_slug ON public.tags(slug);
 
 -- ==========================================
 -- 5. ROW LEVEL SECURITY (RLS)
@@ -675,9 +688,15 @@ CREATE POLICY "Attachments are viewable by everyone" ON public.attachments FOR S
 -- 6. STORAGE BUCKETS
 -- ==========================================
 -- Note: Requires storage extension enabled
-INSERT INTO storage.buckets (id, name, public) 
-VALUES ('uploads', 'uploads', true)
-ON CONFLICT (id) DO NOTHING;
+DO $$ 
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'storage' AND table_name = 'buckets') THEN
+    INSERT INTO storage.buckets (id, name, public)
+    SELECT 'uploads', 'uploads', true
+    WHERE NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'uploads');
+  END IF;
+EXCEPTION WHEN OTHERS THEN NULL;
+END $$;
 
 DROP POLICY IF EXISTS "Public Access" ON storage.objects;
 CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = 'uploads');
@@ -690,50 +709,66 @@ CREATE POLICY "Authenticated Upload" ON storage.objects FOR INSERT WITH CHECK (b
 -- ==========================================
 
 -- 1. MOCK DATA VE EŞLEŞMEYEN VERİ TEMİZLEME
-DELETE FROM public.topics WHERE author_id IN (
-    SELECT p.id FROM public.profiles p
-    LEFT JOIN auth.users u ON p.id = u.id
+DELETE FROM public.topics WHERE author_id::text IN (
+    SELECT p.id::text FROM public.profiles p
+    LEFT JOIN auth.users u ON p.id::text = u.id::text
     WHERE u.id IS NULL OR p.username LIKE 'mock_%' OR p.full_name LIKE 'Mock%'
 );
 
 DELETE FROM public.profiles
-WHERE id NOT IN (SELECT id FROM auth.users)
+WHERE id::text NOT IN (SELECT id::text FROM auth.users)
 OR username LIKE 'mock_%' OR full_name LIKE 'Mock%';
 
 -- 2. KATEGORİLER (Ana)
-INSERT INTO public.categories (name, slug, description) VALUES
-('Engelli Hakları', 'engelli-haklari', 'Engelli hakları savunuculuğu.'),
-('İstihdam', 'istihdam', 'İş ilanları ve kariyer.'),
-('ÖTV', 'otv', 'Araç alımı ve mevzuat.'),
-('SGK', 'sgk', 'Emeklilik ve prim.'),
-('Sosyal Haklar', 'sosyal-haklar', 'Yardımlar.'),
-('Araçlar', 'araclar', 'Yardımcı ekipmanlar.'),
-('Eğitim', 'egitim', 'Özel eğitim.'),
-('Sağlık', 'saglik', 'Raporlar ve tedavi.'),
-('Teknoloji', 'teknoloji', 'Erişilebilir teknoloji.'),
-('Yapay Zeka', 'yapay-zeka', 'Yapay zeka araçları.'),
-('Yazılım', 'yazilim', 'Erişilebilir yazılım.'),
-('EKPSS', 'ekpss', 'Sınav hazırlık.'),
-('Günlük Yaşam', 'gunluk-yasam', 'Hobi ve sosyal.'),
-('Kamu Duyuruları', 'kamu-duyurulari', 'Resmi ilanlar.')
-ON CONFLICT (slug) DO UPDATE SET description = EXCLUDED.description;
+DO $$
+DECLARE
+    cat RECORD;
+    categories_list CURSOR FOR 
+        SELECT * FROM (VALUES
+            ('Engelli Hakları', 'engelli-haklari', 'Engelli hakları savunuculuğu.'),
+            ('İstihdam', 'istihdam', 'İş ilanları ve kariyer.'),
+            ('ÖTV', 'otv', 'Araç alımı ve mevzuat.'),
+            ('SGK', 'sgk', 'Emeklilik ve prim.'),
+            ('Sosyal Haklar', 'sosyal-haklar', 'Yardımlar.'),
+            ('Araçlar', 'araclar', 'Yardımcı ekipmanlar.'),
+            ('Eğitim', 'egitim', 'Özel eğitim.'),
+            ('Sağlık', 'saglik', 'Raporlar ve tedavi.'),
+            ('Teknoloji', 'teknoloji', 'Erişilebilir teknoloji.'),
+            ('Yapay Zeka', 'yapay-zeka', 'Yapay zeka araçları.'),
+            ('Yazılım', 'yazilim', 'Erişilebilir yazılım.'),
+            ('EKPSS', 'ekpss', 'Sınav hazırlık.'),
+            ('Günlük Yaşam', 'gunluk-yasam', 'Hobi ve sosyal.'),
+            ('Kamu Duyuruları', 'kamu-duyurulari', 'Resmi ilanlar.')
+        ) AS t(name, slug, description);
+BEGIN
+    FOR cat IN categories_list LOOP
+        IF EXISTS (SELECT 1 FROM public.categories WHERE slug = cat.slug) THEN
+            UPDATE public.categories SET description = cat.description WHERE slug = cat.slug;
+        ELSE
+            INSERT INTO public.categories (name, slug, description) VALUES (cat.name, cat.slug, cat.description);
+        END IF;
+    END LOOP;
+END $$;
 
 -- 3. ALT KATEGORİLERİ ZORLA OLUŞTURMA
 DO $$
 DECLARE
     cat_rec RECORD;
     sub_names TEXT[] := ARRAY['Genel', 'Mevzuat', 'Destek', 'Sıkça Sorulanlar', 'Gelişmeler'];
+    sub_slug TEXT;
 BEGIN
     FOR cat_rec IN SELECT id, slug, name FROM public.categories WHERE parent_id IS NULL LOOP
         FOR i IN 1..5 LOOP
-            INSERT INTO public.categories (name, slug, description, parent_id)
-            VALUES (
-                sub_names[i],
-                cat_rec.slug || '-alt-' || i,
-                sub_names[i] || ' - ' || cat_rec.name,
-                cat_rec.id
-            )
-            ON CONFLICT (slug) DO NOTHING;
+            sub_slug := cat_rec.slug || '-alt-' || i;
+            IF NOT EXISTS (SELECT 1 FROM public.categories WHERE slug = sub_slug) THEN
+                INSERT INTO public.categories (name, slug, description, parent_id)
+                VALUES (
+                    sub_names[i],
+                    sub_slug,
+                    sub_names[i] || ' - ' || cat_rec.name,
+                    cat_rec.id
+                );
+            END IF;
         END LOOP;
     END LOOP;
 END $$;

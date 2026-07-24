@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { SiteLayout } from '@/components/layout/site-layout';
 import { useAuth } from '@/components/providers/auth-provider';
+import { formatAuthError } from '@/lib/auth-utils';
 import { 
   LogIn, Mail, Lock, AlertCircle, Loader2, Sparkles, 
   HelpCircle, Eye, EyeOff, Check, UserPlus
@@ -71,12 +72,6 @@ export default function LoginPage() {
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       
       if (signInError) {
-        if (signInError.message?.includes('Invalid login credentials')) {
-          throw new Error('E-posta adresi veya şifre hatalı. Lütfen bilgilerinizi kontrol edin.');
-        }
-        if (signInError.message?.includes('Email not confirmed')) {
-          throw new Error('Lütfen e-posta adresinize gönderilen onaylama linkini tıklayarak hesabınızı doğrulayın.');
-        }
         throw signInError;
       }
 
@@ -93,7 +88,7 @@ export default function LoginPage() {
       router.push('/discussions');
     } catch (err: any) {
       console.error("Login Catch Error:", err);
-      setError(err.message || 'Giriş yapılamadı. İnternet bağlantınızı kontrol edip tekrar deneyin.');
+      setError(formatAuthError(err, 'Giriş yapılamadı. E-posta adresi veya şifrenizi kontrol edin.'));
     } finally {
       setLoading(false);
     }
@@ -103,9 +98,7 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      const redirectTo = window.location.origin.includes('run.app') 
-        ? `${window.location.origin}/auth/callback` 
-        : 'https://engelsizforum.com/auth/callback';
+      const redirectTo = `${window.location.origin}/auth/callback`;
         
       const { error: oAuthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -116,7 +109,7 @@ export default function LoginPage() {
       if (oAuthError) throw oAuthError;
     } catch (err: any) {
       console.error("Google Login Error:", err);
-      setError(err.message || 'Google ile giriş yaparken teknik bir sorun oluştu.');
+      setError(formatAuthError(err, 'Google ile giriş yapılırken bir sorun oluştu.'));
       setLoading(false);
     }
   };

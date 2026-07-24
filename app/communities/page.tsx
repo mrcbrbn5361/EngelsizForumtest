@@ -538,6 +538,13 @@ export default function CommunitiesPage() {
           )}
         </AnimatePresence>
 
+        {/* Forum Breadcrumb */}
+        <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest mb-6">
+          <Link href="/" className="hover:text-primary transition-colors">ANA SAYFA</Link>
+          <ChevronRight size={14} />
+          <span className="text-foreground font-black">FORUM KATEGORİLERİ & TOPLULUKLAR</span>
+        </div>
+
         <header className="mb-12">
           <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 md:p-14 shadow-sm relative overflow-hidden">
             <div className="absolute top-0 right-0 size-80 bg-primary/[0.02] rounded-full translate-x-1/3 -translate-y-1/3 blur-3xl -z-10" />

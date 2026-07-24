@@ -403,6 +403,20 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                     <span>•</span>
                     <span className="text-foreground">{profile.following_count || 0} TAKİP</span>
                   </div>
+                  <div className="flex flex-wrap gap-4 pt-2">
+                    <div className="px-4 py-2 bg-muted/50 border border-border rounded-xl">
+                      <div className="text-lg font-black text-foreground leading-none">{openedTopics.length}</div>
+                      <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">KONU</div>
+                    </div>
+                    <div className="px-4 py-2 bg-muted/50 border border-border rounded-xl">
+                      <div className="text-lg font-black text-foreground leading-none">{repliedTopics.length}</div>
+                      <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">YANIT</div>
+                    </div>
+                    <div className="px-4 py-2 bg-muted/50 border border-border rounded-xl">
+                      <div className="text-lg font-black text-foreground leading-none">{likedTopics.length}</div>
+                      <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">BEĞENİ</div>
+                    </div>
+                  </div>
 
                   {currentUser && currentUser.id !== userId && (
                     <div className="pt-2">

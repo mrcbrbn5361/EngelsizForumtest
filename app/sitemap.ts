@@ -53,7 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 2. Fetch all Communities/Categories dynamically
     const { data: categories, error: catError } = await supabase
       .from('categories')
-      .select('id, slug, updated_at');
+      .select('id, slug, created_at');
 
     if (catError) {
       console.error('[Sitemap Generator] Error fetching categories:', catError);
@@ -63,7 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         if (identifier) {
           sitemapEntries.push({
             url: `${BASE_URL}/communities/${identifier}`,
-            lastModified: cat.updated_at ? new Date(cat.updated_at) : currentDate,
+            lastModified: cat.created_at ? new Date(cat.created_at) : currentDate,
             changeFrequency: 'weekly',
             priority: 0.7,
           });
@@ -74,7 +74,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 3. Fetch recent Discussion Topics dynamically
     const { data: topics, error: topicError } = await supabase
       .from('topics')
-      .select('id, updated_at')
+      .select('id, created_at')
       .order('created_at', { ascending: false })
       .limit(1000); // Limit to top 1000 topics for performance and sitemap limits
 
@@ -85,7 +85,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         if (topic.id) {
           sitemapEntries.push({
             url: `${BASE_URL}/discussions/${topic.id}`,
-            lastModified: topic.updated_at ? new Date(topic.updated_at) : currentDate,
+            lastModified: topic.created_at ? new Date(topic.created_at) : currentDate,
             changeFrequency: 'daily',
             priority: 0.8,
           });

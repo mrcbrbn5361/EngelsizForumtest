@@ -5,7 +5,7 @@ import { SiteLayout } from '@/components/layout/site-layout';
 import { 
   Shield, Heart, Globe, Target, Sparkles, Eye, 
   Handshake, Zap, Award, Users, ArrowRight,
-  MessageSquare, Layout, Scale, Rocket
+  MessageSquare, Layout, Scale, Rocket, ChevronRight
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
@@ -20,6 +20,11 @@ export default function AboutPage() {
         <section className="relative py-24 md:py-32 overflow-hidden border-b border-border/50 bg-gradient-to-br from-primary/[0.04] via-transparent to-primary/[0.02]">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none" />
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest mb-10">
+              <Link href="/" className="hover:text-primary transition-colors">ANA SAYFA</Link>
+              <ChevronRight size={14} />
+              <span className="text-foreground font-black">HAKKIMIZDA & ENGELSİZFORUM VİZYONU</span>
+            </div>
             <div className="max-w-4xl mx-auto text-center space-y-8">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}

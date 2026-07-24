@@ -66,8 +66,10 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
             <span className="truncate">
               {topic.category?.name || 'GENEL'}
             </span>
+            <span className="hidden sm:inline">•</span>
+            <span className="hidden sm:inline">{topic.views_count || 0} GÖRÜNTÜLENME</span>
           </div>
-          <h2 className="text-lg md:text-2xl font-bold leading-tight group-hover:text-primary transition-colors tracking-tight [overflow-wrap:anywhere] [hyphens:auto]" lang="tr">
+          <h2 className="text-lg md:text-2xl font-black leading-tight group-hover:text-primary transition-colors tracking-tight [overflow-wrap:anywhere] [hyphens:auto]" lang="tr">
             <Link href={`/discussions/${topic.id}`} className="outline-none after:absolute after:inset-0 after:content-[''] after:z-0">
               {topic.title}
             </Link>

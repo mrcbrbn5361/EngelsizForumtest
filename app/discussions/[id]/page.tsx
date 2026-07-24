@@ -6,7 +6,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Topic, Comment } from '@/types/database';
-import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, User, ChevronRight, Plus, Lock, Trash2, Pin, Bookmark, Check, Settings } from 'lucide-react';
+import { ArrowLeft, Send, MessageSquare, Sparkles, Loader2, Heart, Shield, Globe, Users, User, ChevronRight, Plus, Lock, Trash2, Pin, Bookmark, Check, Settings, Eye, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
@@ -762,6 +762,15 @@ export default function DiscussionDetailPage() {
         />
       )}
       <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12">
+        {/* Forum Breadcrumb Navigation */}
+        <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest mb-6">
+          <Link href="/" className="hover:text-primary transition-colors">ANA SAYFA</Link>
+          <ChevronRight size={14} />
+          <Link href="/communities" className="hover:text-primary transition-colors">TOPLULUKLAR & FORUM</Link>
+          <ChevronRight size={14} />
+          <span className="text-foreground font-black truncate max-w-xs">{topic.title}</span>
+        </div>
+
         <button 
           onClick={() => router.back()}
           className="mb-8 flex items-center gap-3 text-sm font-black text-muted-foreground hover:text-primary transition-all group uppercase tracking-[0.2em] px-2"
@@ -778,6 +787,9 @@ export default function DiscussionDetailPage() {
                 <div className="flex flex-wrap items-center justify-between gap-6">
                   <div className="flex flex-wrap items-center gap-6">
                     <div className="flex items-center gap-3">
+                      <span className="px-3 py-1 bg-primary text-primary-foreground font-black text-[10px] rounded-lg tracking-widest">
+                        KONU #1
+                      </span>
                       <div className="px-5 py-2 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
                         {topic.category?.name?.toUpperCase() || 'GENEL'}
                       </div>
@@ -1038,31 +1050,98 @@ export default function DiscussionDetailPage() {
           </div>
 
           {/* Sidebar */}
-          <aside className="space-y-10">
-            <section className="vibe-card p-8 md:p-10">
-              <h3 className="vibe-label ml-0 mb-10">KATEGORİ DETAYLARI</h3>
-              <div className="space-y-8">
-                <div className="flex items-center gap-6 p-6 bg-primary/5 rounded-[2rem] border border-primary/10">
-                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                    <MessageSquare size={32} />
+          <aside className="space-y-10 lg:sticky lg:top-8">
+            {/* Author Profile Card */}
+            <section className="vibe-card p-10 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <h3 className="vibe-label ml-0 mb-10">YAZAR PROFİLİ</h3>
+              <div className="flex flex-col items-center text-center space-y-6 relative z-10">
+                <div className="relative group">
+                  <div className="w-24 h-24 rounded-[2rem] border-4 border-card shadow-2xl overflow-hidden bg-muted group-hover:scale-105 transition-transform duration-500">
+                    <img 
+                      src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username}`} 
+                      alt="" 
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div className="min-w-0">
-                    <p className="vibe-label ml-0 mb-1">GRUP</p>
-                    <p className="text-xl md:text-2xl font-black truncate text-foreground">{topic.category?.name?.toUpperCase() || 'GENEL'}</p>
+                  {topic.author?.is_verified && (
+                    <div className="absolute -bottom-2 -right-2 bg-primary text-white p-2 rounded-xl shadow-lg border-2 border-card">
+                      <Shield size={16} />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <Link href={`/profile/${topic.author?.id}`} className="text-2xl font-black text-foreground hover:text-primary transition-colors block mb-1">
+                    @{topic.author?.username || 'isimsiz'}
+                  </Link>
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
+                    {topic.author?.role === 'admin' ? 'SİTE YÖNETİCİSİ' : topic.author?.role === 'moderator' ? 'MODERATÖR' : 'TOPLULUK ÜYESİ'}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-4 w-full pt-4 border-t border-border/50">
+                  <div className="text-center">
+                    <div className="text-lg font-black text-foreground">{topic.author?.level || 1}</div>
+                    <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">SEVİYE</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-lg font-black text-primary">{topic.author?.xp || 0}</div>
+                    <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">TOPLAM XP</div>
                   </div>
                 </div>
-                <div className="flex items-center justify-between px-4 pt-4 border-t border-border">
-                  <span className="vibe-label ml-0">DURUM</span>
-                  <span className="text-[10px] font-black text-green-500 uppercase tracking-[0.2em] flex items-center gap-2"><Shield size={16} /> AKTİF</span>
+                <Link 
+                  href={`/profile/${topic.author?.id}`}
+                  className="w-full h-12 flex items-center justify-center rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-all text-[10px] font-black uppercase tracking-widest"
+                >
+                  PROFİLİ GÖR
+                </Link>
+              </div>
+            </section>
+
+            {/* Topic Stats Card */}
+            <section className="vibe-card p-10">
+              <h3 className="vibe-label ml-0 mb-10">KONU İSTATİSTİKLERİ</h3>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between py-4 border-b border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <MessageSquare size={18} />
+                    </div>
+                    <span className="text-xs font-black text-muted-foreground uppercase tracking-widest">YANITLAR</span>
+                  </div>
+                  <span className="text-lg font-black text-foreground">{comments.length}</span>
                 </div>
-                <div className="flex items-center justify-between px-4">
-                  <span className="vibe-label ml-0">GÖRÜNÜRLÜK</span>
-                  <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em] flex items-center gap-2"><Globe size={16} /> HERKESE AÇIK</span>
+                <div className="flex items-center justify-between py-4 border-b border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Eye size={18} />
+                    </div>
+                    <span className="text-xs font-black text-muted-foreground uppercase tracking-widest">GÖRÜNTÜLENME</span>
+                  </div>
+                  <span className="text-lg font-black text-foreground">{topic.views_count || 0}</span>
+                </div>
+                <div className="flex items-center justify-between py-4 border-b border-border/50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Heart size={18} />
+                    </div>
+                    <span className="text-xs font-black text-muted-foreground uppercase tracking-widest">BEĞENİLER</span>
+                  </div>
+                  <span className="text-lg font-black text-foreground">{likesCount}</span>
+                </div>
+                <div className="flex items-center justify-between py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Calendar size={18} />
+                    </div>
+                    <span className="text-xs font-black text-muted-foreground uppercase tracking-widest">OLUŞTURULDU</span>
+                  </div>
+                  <span className="text-[10px] font-black text-foreground">{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
                 </div>
               </div>
             </section>
 
-            <div className="bg-primary p-10 rounded-[2.5rem] text-primary-foreground shadow-2xl relative overflow-hidden group">
+            {/* AI Assistant Banner */}
+            <div className="bg-primary p-12 rounded-[2.5rem] text-primary-foreground shadow-2xl relative overflow-hidden group">
               <div className="absolute -right-12 -bottom-12 opacity-10 group-hover:scale-110 transition-transform">
                 <Sparkles size={200} />
               </div>

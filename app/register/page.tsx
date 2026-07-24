@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { SiteLayout } from '@/components/layout/site-layout';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
+import { formatAuthError } from '@/lib/auth-utils';
 import { 
   LogIn, Mail, Lock, AlertCircle, Loader2, Sparkles, 
   HelpCircle, Eye, EyeOff, Check, UserPlus, User,
@@ -132,9 +133,6 @@ export default function RegisterPage() {
       });
 
       if (signUpError) {
-        if (signUpError.message?.includes('User already registered')) {
-          throw new Error('Bu e-posta adresiyle zaten bir hesap açılmış. Lütfen giriş yapmayı deneyin.');
-        }
         throw signUpError;
       }
 
@@ -146,7 +144,7 @@ export default function RegisterPage() {
       router.push('/login');
     } catch (err: any) {
       console.error("Register Catch Error:", err);
-      setError(err.message || 'Kayıt sırasında teknik bir hata oluştu. Lütfen bilgilerinizi kontrol edip tekrar deneyin.');
+      setError(formatAuthError(err, 'Kayıt sırasında teknik bir hata oluştu. Lütfen bilgilerinizi kontrol edip tekrar deneyin.'));
     } finally {
       setLoading(false);
     }

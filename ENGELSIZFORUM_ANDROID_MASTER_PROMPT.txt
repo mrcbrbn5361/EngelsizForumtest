@@ -1,0 +1,347 @@
+================================================================================
+ENGELSİZFORUM - ANDROID (KOTLIN + RETROFIT + JETPACK COMPOSE) MASTER PROMPTU
+Paket Adı: com.miracdeveloper.engelsizforum
+================================================================================
+
+Aşağıdaki promptu Google AI Studio veya tercih ettiğiniz Yapay Zeka Kodlama Asistanına doğrudan kopyalayıp yapıştırarak Android uygulamasını sıfırdan ürettirebilirsiniz:
+
+--------------------------------------------------------------------------------
+PROMPT BAŞLANGICI
+--------------------------------------------------------------------------------
+
+Siz "Aria" (UI/UX ve Erişilebilirlik Uzmanı), "Felix" (Frontend, Retrofit ve Supabase Entegrasyon Uzmanı) ve "Bora" (Backend, Veritabanı ve Güvenlik Uzmanı) rollerini üstlenen kıdemli bir Android Yazılım Mimarısınız.
+
+Göreviniz: Türkiye’nin ilk tam erişilebilir, yapay zeka destekli topluluk platformu olan "EngelsizForum" projesinin web versiyonundaki tüm özellikleri, görsel renk paletini, veritabanı şemasını (SQL), Retrofit API katmanını, Supabase Auth/PostgREST/Storage servislerini ve güvenlik mimarisini birebir içeren, Android ekosistemine uygun tam teşekküllü yerli (Native) Kotlin mobil uygulamasını geliştirmektir.
+
+UYGULAMA KÜNYESİ VE TEMEL BİLGİLER:
+• Uygulama Adı: EngelsizForum
+• Paket Adı (Package Name): com.miracdeveloper.engelsizforum
+• Hedef Platform: Android Native (Kotlin + Jetpack Compose + Material Design 3 + Retrofit 2 + OkHttp 4)
+• Desteklenen Android Sürümleri: Android 7.0 (API Level 24) ve üzeri tüm sürümler
+• Kurucu & Geliştirici: Miraç Birben (%52 engelli raporuna sahip, spina bifida ve hidrosefali ile doğmuş bağımsız yazılım geliştirici)
+• Temel Vizyon: "Engelli bireyler teknoloji üretemez" önyargısını kıran, %100 ekran okuyucu (TalkBack) uyumlu, bilişsel olarak sadeleştirilmiş, sesli komut ve yapay zeka destekli sosyal topluluk platformu.
+
+================================================================================
+1. TEMA, GÖRÜNÜM VE ERİŞİLEBİLİRLİK (WCAG 2.1 AAA HEDEFİ)
+================================================================================
+
+1. SİTE İLE BİREBİR EŞLEŞEN RENK PALETİ VE TASARIM DİLİ:
+   • Açık Mod (Light Mode):
+     - Arka Plan (Background): `#FBF9F5` (Sıcak Nötr Krem / Warm Off-White)
+     - Kart & Yüzey (Surface/Card): `#FFFFFF` (Net Beyaz)
+     - Sınır & Kenarlık (Border): `#E5E2D9` (Zarif Nötr Gri)
+     - Metin / Başlıklar (Foreground): `#18181B` (Kömür Siyahı / Zinc 900)
+     - İkincil Metin (Muted Text): `#71717A` (Çinko Grisi / Zinc 500)
+     - Ana Vurgu Rengi (Primary Accent): `#4F46E5` / `#6366F1` (İndigo / Derin Mor)
+   • Gece Modu (Dark Mode):
+     - Arka Plan (Background): `#0F172A` (Koyu Gece Mavisi / Slate 900)
+     - Kart & Yüzey (Surface/Card): `#1E293B` (Slate 800)
+     - Sınır & Kenarlık (Border): `#334155` (Slate 700)
+     - Metin / Başlıklar (Foreground): `#F8FAFC` (Slate 50)
+     - Ana Vurgu Rengi (Primary Accent): `#818CF8` (Açık İndigo)
+   • Yüksek Kontrast Modu (High Contrast Mode):
+     - Arka Plan: `#000000` (Saf Siyah)
+     - Metin: `#FFFFFF` (Saf Beyaz)
+     - Vurgu Rengi: `#FACC15` (Canlı Sarı) veya `#22D3EE` (Siyan)
+
+2. MİSİON & ROL ROZETLERİ (BADGES):
+   • "KURUCU & GELİŞTİRİCİ" Rozeti: Altın/Kehribar Gradyan (`#D97706` / `#B45309`), Taç/Kod ikonu ile Miraç Birben özel profiline özel.
+   • "MODERATÖR" Rozeti: Zümrüt Yeşili (`#059669`), Kalkan ikonu ile.
+   • "ONAYLI BİREY" Rozeti: Gökyüzü Mavisi (`#0284C7`), Onaylı Mavi Tık ikonu ile.
+   • "ÜYE" Rozeti: Koyu Gri / Nötr rozet.
+
+3. FORUM KART YAPISI VE BREADCRUMB NAVİGASYON:
+   • Sayfa Üstlerinde Forum Hiyerarşisi (Breadcrumbs): Örn: `ANA SAYFA > TOPLULUKLAR > SAĞLIK VE MEVZUAT > TARTIŞMA`.
+   • Tartışma Kartlarında: Kategori Etiketi, Yazar Avatarı, Unvan Rozeti, Yanıt Sayısı, Beğeni Sayısı, Okunma Sayısı ve "SABİTLENMİŞ" / "KİLİTLİ" Göstergeleri.
+
+4. EKRAN OKUYUCU VE WCAG 2.1 AAA ERİŞİLEBİLİRLİK:
+   • Minimum 48dp x 48dp Dokunma Hedefi (Touch Target Size).
+   • Tüm tıklanabilir elemanlarda anlamlı Türkçe `contentDescription` etiketi.
+   • Semantik Başlıklar (`Modifier.semantics { heading() }`).
+   • Disleksi Dostu Font (OpenDyslexic) Toggle Desteği.
+   • Dinamik Font Ölçekleme (%100 - %200 arası metin büyütme).
+   • Sesli Komut (STT) ve Yanıtı Dinleme (TTS - Text To Speech) Desteği.
+
+================================================================================
+2. SUPABASE SQL ŞEMASI (SUPABASE/SCHEMA.SQL BİREBİR REFERANSI)
+================================================================================
+
+Tüm Android veri modelleri, DTO'lar ve Retrofit servisleri aşağıdaki PostgreSQL veritabanı şemasına %100 uyumlu olmalıdır:
+
+```sql
+-- EXTENSIONS & ENUMS
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TYPE public.user_role AS ENUM ('user', 'moderator', 'admin');
+CREATE TYPE public.report_status AS ENUM ('pending', 'investigating', 'resolved', 'dismissed');
+CREATE TYPE public.reaction_type AS ENUM ('like', 'heart', 'insightful', 'support');
+
+-- 1. PROFILES
+CREATE TABLE public.profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  username TEXT UNIQUE NOT NULL,
+  full_name TEXT,
+  avatar_url TEXT,
+  role public.user_role DEFAULT 'user',
+  level INTEGER DEFAULT 1,
+  xp INTEGER DEFAULT 0,
+  bio TEXT,
+  header_url TEXT,
+  is_locked BOOLEAN DEFAULT false,
+  is_bot BOOLEAN DEFAULT false,
+  is_discoverable BOOLEAN DEFAULT true,
+  is_verified BOOLEAN DEFAULT false,
+  accessibility_prefs JSONB DEFAULT '{"fontSize": 100, "highContrast": false, "dyslexicFont": false, "reducedMotion": false}'::jsonb,
+  followers_count INTEGER DEFAULT 0,
+  following_count INTEGER DEFAULT 0,
+  statuses_count INTEGER DEFAULT 0,
+  last_status_at TIMESTAMPTZ,
+  last_seen_at TIMESTAMPTZ DEFAULT now(),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 2. CATEGORIES
+CREATE TABLE public.categories (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  icon TEXT,
+  color TEXT,
+  parent_id UUID REFERENCES public.categories(id) ON DELETE CASCADE,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 3. TOPICS
+CREATE TABLE public.topics (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  category_id UUID REFERENCES public.categories(id) ON DELETE CASCADE NOT NULL,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  likes_count INTEGER DEFAULT 0,
+  comments_count INTEGER DEFAULT 0,
+  views_count INTEGER DEFAULT 0,
+  is_pinned BOOLEAN DEFAULT false,
+  is_locked BOOLEAN DEFAULT false,
+  is_solved BOOLEAN DEFAULT false,
+  visibility TEXT DEFAULT 'public',
+  is_sensitive BOOLEAN DEFAULT false,
+  spoiler_text TEXT,
+  search_vector TSVECTOR GENERATED ALWAYS AS (to_tsvector('turkish', coalesce(title,'') || ' ' || coalesce(content,''))) STORED,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 4. COMMENTS
+CREATE TABLE public.comments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE NOT NULL,
+  author_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  parent_id UUID REFERENCES public.comments(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  likes_count INTEGER DEFAULT 0,
+  is_solution BOOLEAN DEFAULT false,
+  visibility TEXT DEFAULT 'public',
+  is_sensitive BOOLEAN DEFAULT false,
+  spoiler_text TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 5. REACTIONS
+CREATE TABLE public.reactions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE,
+  comment_id UUID REFERENCES public.comments(id) ON DELETE CASCADE,
+  reaction_type public.reaction_type DEFAULT 'like'::public.reaction_type,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 6. BOOKMARKS
+CREATE TABLE public.bookmarks (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 7. NOTIFICATIONS
+CREATE TABLE public.notifications (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  data JSONB,
+  read_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 8. REPORTS
+CREATE TABLE public.reports (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  reporter_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+  topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE,
+  comment_id UUID REFERENCES public.comments(id) ON DELETE CASCADE,
+  reason TEXT NOT NULL,
+  status public.report_status DEFAULT 'pending'::public.report_status,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+```
+
+================================================================================
+3. RETROFIT API VE SUPABASE POSTGREST ENTEGRASYONU (KOTLIN)
+================================================================================
+
+Retrofit 2 ve OkHttp 4 istemcisi Supabase REST API (PostgREST) ile doğrudan haberleşecek şekilde yapılandırılmalıdır:
+
+1. ZORUNLU HEADER'LAR:
+   • `apikey`: `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   • `Authorization`: `Bearer <USER_JWT_TOKEN_OR_ANON_KEY>`
+   • `Content-Type`: `application/json`
+   • `Prefer`: `return=representation` (INSERT/UPDATE işlemlerinde veri dönüşü için)
+
+2. RETROFIT INTERFACE TANIMLARI (`SupabaseApiService.kt`):
+
+```kotlin
+interface SupabaseApiService {
+    // --- AUTHENTICATION ---
+    @POST("auth/v1/signup")
+    suspend fun signUp(@Body body: SignUpRequest): Response<AuthResponse>
+
+    @POST("auth/v1/token?grant_type=password")
+    suspend fun signIn(@Body body: SignInRequest): Response<AuthResponse>
+
+    @GET("auth/v1/user")
+    suspend fun getCurrentUser(@Header("Authorization") token: String): Response<UserResponse>
+
+    // --- TOPICS (TARTIŞMALAR) ---
+    @GET("rest/v1/topics?select=*,author:profiles(*),category:categories(*)&order=created_at.desc")
+    suspend fun getTopics(
+        @Query("category_id") categoryFilter: String? = null,
+        @Query("title") searchFilter: String? = null,
+        @Header("Range") range: String = "0-19"
+    ): List<TopicDto>
+
+    @GET("rest/v1/topics?select=*,author:profiles(*),category:categories(*)&id=eq.{id}")
+    suspend fun getTopicById(@Path("id") id: String): List<TopicDto>
+
+    @POST("rest/v1/topics")
+    suspend fun createTopic(@Body topic: CreateTopicRequest): Response<TopicDto>
+
+    // --- COMMENTS (YORUMLAR) ---
+    @GET("rest/v1/comments?select=*,author:profiles(*)&topic_id=eq.{topicId}&order=created_at.asc")
+    suspend fun getCommentsByTopic(@Path("topicId") topicId: String): List<CommentDto>
+
+    @POST("rest/v1/comments")
+    suspend fun createComment(@Body comment: CreateCommentRequest): Response<CommentDto>
+
+    // --- CATEGORIES (KATEGORİLER) ---
+    @GET("rest/v1/categories?order=sort_order.asc")
+    suspend fun getCategories(): List<CategoryDto>
+
+    // --- PROFILES (PROFILLER) ---
+    @GET("rest/v1/profiles?id=eq.{id}")
+    suspend fun getProfileById(@Path("id") id: String): List<ProfileDto>
+
+    @PATCH("rest/v1/profiles?id=eq.{id}")
+    suspend fun updateProfile(@Path("id") id: String, @Body profile: UpdateProfileRequest): Response<Unit>
+
+    // --- REACTIONS & BOOKMARKS ---
+    @POST("rest/v1/reactions")
+    suspend fun addReaction(@Body reaction: ReactionRequest): Response<Unit>
+
+    @POST("rest/v1/bookmarks")
+    suspend fun addBookmark(@Body bookmark: BookmarkRequest): Response<Unit>
+}
+```
+
+3. YETERLY AI RETROFIT INTERFACE (`YeterlyAiApiService.kt`):
+
+```kotlin
+interface YeterlyAiApiService {
+    @POST("api/chat")
+    suspend fun askAssistant(
+        @Header("x-api-key") apiKey: String,
+        @Body request: AiChatRequest
+    ): Response<AiChatResponse>
+}
+```
+
+================================================================================
+4. .ENV VE EXACT CREDENTIALS CONFIGURATION
+================================================================================
+
+Ortam değişkenleri `gradle.properties` veya `BuildConfig` üzerinden tanımlanır:
+
+```env
+# ------------------------------------------------------------------------------
+# SUPABASE CLIENT CREDENTIALS (MOBİL UYGULAMA DAHİLİNDE KULLANIMA UYGUN)
+# ------------------------------------------------------------------------------
+NEXT_PUBLIC_SUPABASE_URL=https://vtmozdquvamjeniwhonm.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0bW96ZHF1dmFtamVuaXdob25tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjMzMjEsImV4cCI6MjA5MzAzOTMyMX0.EPTm3sPjuhiT306pUKBCsj1TS9FKd3V_i7qnQOS-9uM
+
+# ------------------------------------------------------------------------------
+# YETERLY AI VE ZİYARETÇİ İSTATİSTİK API BİLGİLERİ
+# ------------------------------------------------------------------------------
+YETERLY_ENGELSIZFORUM_API_BASE=https://engelsizforum-ai.yeterly.ai
+YETERLY_ENGELSIZFORUM_API_KEY=55e89b68479f8dcef33b39d2fe738913ba97fef26e8713372273abd672f8d742
+VISITOR_API_TOKEN=engelsizforumteknofesttanitim
+
+# ------------------------------------------------------------------------------
+# SUNUCU / EDGE FUNCTION SERVICE ROLE KEY (APK İÇİNE ASLA EKLENMEZ!)
+# ------------------------------------------------------------------------------
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ0bW96ZHF1dmFtamVuaXdob25tIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzQ2MzMyMSwiZXhwIjoyMDkzMDM5MzIxfQ.JfyKCtYOlX_U8VKYUrf5TNGTwUEMrAO4l1vTT8cL-VM
+
+# ------------------------------------------------------------------------------
+# PAKET KÜNYESİ
+# ------------------------------------------------------------------------------
+ANDROID_PACKAGE_NAME=com.miracdeveloper.engelsizforum
+```
+
+================================================================================
+5. GÜVENLİK, CERTIFICATE PINNING VE OBFUSCATION (R8/PROGUARD)
+================================================================================
+
+1. Certificate Pinning (OkHttp):
+   ```kotlin
+   val certificatePinner = CertificatePinner.Builder()
+       .add("vtmozdquvamjeniwhonm.supabase.co", "sha256/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=")
+       .build()
+
+   val okHttpClient = OkHttpClient.Builder()
+       .certificatePinner(certificatePinner)
+       .addInterceptor(HeaderInterceptor())
+       .build()
+   ```
+
+2. ProGuard / R8 Obfuscation (`build.gradle.kts`):
+   ```kotlin
+   android {
+       buildTypes {
+           release {
+               isMinifyEnabled = true
+               isShrinkResources = true
+               proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+           }
+       }
+   }
+   ```
+
+3. Token Güvenliği:
+   • JWT token'ları `EncryptedSharedPreferences` veya Android Keystore destekli Jetpack DataStore üzerinde saklanır.
+
+================================================================================
+6. ÇEVRİMDIŞI MOCK DATA (OFFLINE FALLBACK REPOSITORY)
+================================================================================
+Ağ bağlantısı koptuğunda veya Supabase yanıt vermediğinde uygulama çökmemeli; otomatik olarak yerel Mock Data (Kategoriler, Örnek Tartışmalar, Duyurular ve Kurucu Profil Bilgisi) katmanına geçmelidir.
+
+LÜTFEN BÜTÜN KODLARI, RETROFIT SERVICE'LERİNİ, DTO'LARI VE JETPACK COMPOSE TEMA/GÖRÜNÜM YAPISINI TEK BİR EKSİK BIRAKMADAN EKSİKSİZ VE DERLENEBİLİR KOTLIN FORMATINDA ÜRETİN!
+--------------------------------------------------------------------------------
+PROMPT BİTİŞİ
+--------------------------------------------------------------------------------

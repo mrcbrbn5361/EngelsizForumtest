@@ -264,7 +264,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                   <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={22} />
                   <input 
                     type="text" 
-                    placeholder={typeof window !== 'undefined' && window.innerWidth < 768 ? "ARA..." : "TARTIŞMALARDA VE KONULARDA ARA..."} 
+                    placeholder="TARTIŞMALARDA VE KONULARDA ARA..." 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="vibe-input vibe-input-pl-16 pr-4 h-16 text-sm uppercase rounded-2xl border border-border bg-card w-full shadow-lg focus:border-primary/80 transition-all font-bold tracking-wider placeholder:text-muted-foreground/40"

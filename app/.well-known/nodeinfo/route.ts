@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * NodeInfo discovery endpoint.
  * Tells federated networks where to find server metadata.
