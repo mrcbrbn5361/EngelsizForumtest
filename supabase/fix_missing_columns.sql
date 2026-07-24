@@ -12,6 +12,13 @@ BEGIN
   END IF;
 
   -- CATEGORIES
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='parent_id') THEN
+    IF (SELECT data_type FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='id') = 'text' THEN
+      ALTER TABLE public.categories ADD COLUMN parent_id TEXT REFERENCES public.categories(id) ON DELETE CASCADE;
+    ELSE
+      ALTER TABLE public.categories ADD COLUMN parent_id UUID REFERENCES public.categories(id) ON DELETE CASCADE;
+    END IF;
+  END IF;
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='categories' AND column_name='slug') THEN
     ALTER TABLE public.categories ADD COLUMN slug TEXT;
   END IF;

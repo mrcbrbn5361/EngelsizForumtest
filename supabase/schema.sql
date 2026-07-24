@@ -74,6 +74,38 @@ CREATE TABLE IF NOT EXISTS public.categories (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
+DO $$
+DECLARE
+    cat_id_type text;
+BEGIN
+    SELECT data_type INTO cat_id_type
+    FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'categories' AND column_name = 'id';
+
+    IF cat_id_type = 'text' THEN
+        BEGIN
+            ALTER TABLE public.categories ALTER COLUMN id TYPE UUID USING id::uuid;
+            cat_id_type := 'uuid';
+        EXCEPTION WHEN OTHERS THEN
+            NULL;
+        END;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_schema = 'public' AND table_name = 'categories' AND column_name = 'parent_id'
+    ) THEN
+        IF cat_id_type = 'text' THEN
+            ALTER TABLE public.categories ADD COLUMN parent_id TEXT REFERENCES public.categories(id) ON DELETE CASCADE;
+        ELSE
+            ALTER TABLE public.categories ADD COLUMN parent_id UUID REFERENCES public.categories(id) ON DELETE CASCADE;
+        END IF;
+    END IF;
+END $$;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS icon TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS color TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
 ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS slug TEXT;
 ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT now();
 ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
