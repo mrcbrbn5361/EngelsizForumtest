@@ -36,8 +36,6 @@ jobs:
           COMMIT_MESSAGE: ${{ env.commit_msg }}
         run: |
           node -e '
-          const https = require("https");
-          
           function parseFacets(text) {
             const facets = [];
             const encoder = new TextEncoder();
@@ -76,8 +74,9 @@ jobs:
             const password = process.env.BSKY_PASSWORD;
             
             if (!password) {
-              console.log("BSKY_PASSWORD secret not found. Skipping auto-post.");
-              return;
+              console.error("❌ HATA: GitHub Secrets içinde 'BSKY_PASSWORD' tanımlı değil!");
+              console.error("Lütfen GitHub Deponuz -> Settings -> Secrets and variables -> Actions sayfasından BSKY_PASSWORD ekleyin.");
+              process.exit(1);
             }
 
             // Format date and time (TR / Europe/Istanbul)
@@ -100,69 +99,53 @@ jobs:
             const facets = parseFacets(text);
 
             console.log("Authenticating with Bluesky as:", handle);
-            
-            const sessionData = JSON.stringify({ identifier: handle, password: password });
-            
-            const reqSession = https.request({
-              hostname: "bsky.social",
-              path: "/xrpc/com.atproto.server.createSession",
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Content-Length": Buffer.byteLength(sessionData)
-              }
-            }, (res) => {
-              let data = "";
-              res.on("data", chunk => data += chunk);
-              res.on("end", async () => {
-                if (res.statusCode !== 200) {
-                  console.error("Auth failed:", data);
-                  process.exit(1);
-                }
-                const session = JSON.parse(data);
-                const accessJwt = session.accessJwt;
-                const repo = session.did;
 
-                const postRecord = {
-                  repo: repo,
+            try {
+              const sessionRes = await fetch("https://bsky.social/xrpc/com.atproto.server.createSession", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ identifier: handle, password: password })
+              });
+
+              if (!sessionRes.ok) {
+                const errText = await sessionRes.text();
+                console.error("❌ Bluesky Giriş Hatası:", errText);
+                process.exit(1);
+              }
+
+              const session = await sessionRes.json();
+              console.log("✅ Bluesky Oturumu Açıldı. DID:", session.did);
+
+              const postRes = await fetch("https://bsky.social/xrpc/com.atproto.repo.createRecord", {
+                method: "POST",
+                headers: {
+                  "Authorization": "Bearer " + session.accessJwt,
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  repo: session.did,
                   collection: "app.bsky.feed.post",
                   record: {
                     text: text,
                     facets: facets,
                     createdAt: new Date().toISOString()
                   }
-                };
-
-                const postData = JSON.stringify(postRecord);
-                const reqPost = https.request({
-                  hostname: "bsky.social",
-                  path: "/xrpc/com.atproto.repo.createRecord",
-                  method: "POST",
-                  headers: {
-                    "Authorization": "Bearer " + accessJwt,
-                    "Content-Type": "application/json",
-                    "Content-Length": Buffer.byteLength(postData)
-                  }
-                }, (resPost) => {
-                  let postResData = "";
-                  resPost.on("data", chunk => postResData += chunk);
-                  resPost.on("end", () => {
-                    if (resPost.statusCode === 200) {
-                      console.log("Successfully posted to Bluesky!");
-                    } else {
-                      console.error("Failed to post:", postResData);
-                      process.exit(1);
-                    }
-                  });
-                });
-                reqPost.on("error", e => { console.error(e); process.exit(1); });
-                reqPost.write(postData);
-                reqPost.end();
+                })
               });
-            });
-            reqSession.on("error", e => { console.error(e); process.exit(1); });
-            reqSession.write(sessionData);
-            reqSession.end();
+
+              if (!postRes.ok) {
+                const postErr = await postRes.text();
+                console.error("❌ Bluesky Gönderi Paylaşma Hatası:", postErr);
+                process.exit(1);
+              }
+
+              const postData = await postRes.json();
+              console.log("🎉 TEBRİKLER! Bluesky Gönderisi Başarıyla Paylaşıldı!");
+              console.log("Gönderi URI:", postData.uri);
+            } catch (err) {
+              console.error("❌ Beklenmeyen Hata:", err);
+              process.exit(1);
+            }
           }
           
           postToBluesky();
