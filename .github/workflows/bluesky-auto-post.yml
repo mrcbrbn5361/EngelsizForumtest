@@ -85,15 +85,21 @@ jobs:
             const timeStr = now.toLocaleTimeString("tr-TR", { timeZone: "Europe/Istanbul", hour: "2-digit", minute: "2-digit" });
             const dateTime = `${dateStr} ${timeStr}`;
 
-            let rawCommit = (process.env.COMMIT_MESSAGE || "Kategori yapısı ve otomatik paylaşım entegrasyonu güncellendi.").trim();
+            let cleanCommit = (process.env.COMMIT_MESSAGE || "Platform güncellemeleri ve erişilebilirlik iyileştirmeleri yayınlandı.").trim();
             // Remove code blocks and SQL statements if present
-            rawCommit = rawCommit.replace(/```[\s\S]*?```/g, "").replace(/ALTER TABLE[\s\S]*/gi, "Veritabanı esnekliği ve kategori yönetimi güçlendirildi.").trim();
+            cleanCommit = cleanCommit.replace(/```[\s\S]*?```/g, "").replace(/ALTER TABLE[\s\S]*/gi, "Veritabanı esnekliği ve kategori yönetimi güçlendirildi.").trim();
 
-            let text = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${rawCommit}\n🇬🇧 New platform updates & accessibility improvements deployed!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #WebDev #A11y`;
+            let text = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${cleanCommit}\n🇬🇧 New platform updates & accessibility features deployed!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y #WebDev`;
 
-            if (text.length > 290) {
-              const truncatedCommit = rawCommit.substring(0, 75) + "...";
-              text = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${truncatedCommit}\n🇬🇧 New updates live!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #WebDev #A11y`;
+            if (text.length > 295) {
+              const extraChars = text.length - 292;
+              const maxCommitLen = Math.max(20, cleanCommit.length - extraChars);
+              cleanCommit = cleanCommit.substring(0, maxCommitLen) + "...";
+              text = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${cleanCommit}\n🇬🇧 New platform updates & accessibility features deployed!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y #WebDev`;
+              
+              if (text.length > 295) {
+                text = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${cleanCommit}\n🇬🇧 New platform updates live!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y #WebDev`;
+              }
             }
 
             const facets = parseFacets(text);

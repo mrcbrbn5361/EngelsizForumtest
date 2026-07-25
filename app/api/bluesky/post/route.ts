@@ -53,14 +53,20 @@ export async function POST(req: NextRequest) {
     const timeStr = now.toLocaleTimeString('tr-TR', { timeZone: 'Europe/Istanbul', hour: '2-digit', minute: '2-digit' });
     const dateTime = `${dateStr} ${timeStr}`;
 
-    let trCommit = (text || 'Kategori yapısı ve otomatik paylaşım altyapısı geliştirildi!').trim();
-    trCommit = trCommit.replace(/```[\s\S]*?```/g, '').replace(/ALTER TABLE[\s\S]*/gi, 'Veritabanı esnekliği ve kategori yönetimi güçlendirildi.').trim();
+    let cleanCommit = (text || 'Platform güncellemeleri ve erişilebilirlik iyileştirmeleri yayınlandı!').trim();
+    cleanCommit = cleanCommit.replace(/```[\s\S]*?```/g, '').replace(/ALTER TABLE[\s\S]*/gi, 'Veritabanı esnekliği ve kategori yönetimi güçlendirildi.').trim();
 
-    let postText = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${trCommit}\n🇬🇧 New platform updates & accessibility features deployed!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #WebDev #A11y`;
+    let postText = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${cleanCommit}\n🇬🇧 New platform updates & accessibility features deployed!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y #WebDev`;
 
-    if (postText.length > 290) {
-      const truncated = trCommit.substring(0, 75) + '...';
-      postText = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${truncated}\n🇬🇧 New updates deployed!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #WebDev #A11y`;
+    if (postText.length > 295) {
+      const extraChars = postText.length - 292;
+      const maxLen = Math.max(20, cleanCommit.length - extraChars);
+      cleanCommit = cleanCommit.substring(0, maxLen) + '...';
+      postText = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${cleanCommit}\n🇬🇧 New platform updates & accessibility features deployed!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y #WebDev`;
+
+      if (postText.length > 295) {
+        postText = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${cleanCommit}\n🇬🇧 New platform updates live!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y #WebDev`;
+      }
     }
 
     const facets = parseFacets(postText);
