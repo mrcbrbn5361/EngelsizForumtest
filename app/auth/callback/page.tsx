@@ -41,8 +41,6 @@ export default function AuthCallbackPage() {
     // Listen to onAuthStateChange for SIGNED_IN event
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return;
-      
-      console.log('Auth callback event:', event, !!session);
 
       if (event === 'PASSWORD_RECOVERY') {
         setMessage('Şifre sıfırlama sayfasına yönlendiriliyorsunuz...');

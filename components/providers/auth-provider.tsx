@@ -41,8 +41,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else if (data) {
           setProfile(data);
           return;
-        } else {
-          console.log(`Attempt ${i + 1}: Profile not found yet (waiting for trigger)...`);
         }
       } catch (err: any) {
         lastError = err;
@@ -139,7 +137,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const hash = window.location.hash;
 
         if (event === 'PASSWORD_RECOVERY') {
-          console.log('Password recovery mode active!');
           try {
             sessionStorage.setItem('password_recovery_active', 'true');
           } catch (e) {}

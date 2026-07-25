@@ -30,7 +30,6 @@ export default function VisitorTracker() {
         });
       } catch (error) {
         // Silently fail to not interrupt user experience
-        console.debug('Tracking skipped');
       }
     };
 

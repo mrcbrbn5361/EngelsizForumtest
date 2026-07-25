@@ -57,7 +57,6 @@ export async function POST(req: NextRequest) {
     // Smart limit check: if content is already short, return dynamic friendly overview directly
     if (cleanedText.length < 150) {
       const shortSummary = fallbackSummary(text);
-      console.log(`[Yeterly API Smart Bypass] Content is too short (${cleanedText.length} chars). Returned dynamic overview.`);
       return NextResponse.json({ project_id: 'engelsizforum', summary: shortSummary, model: 'local-extractor' });
     }
 

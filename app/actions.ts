@@ -4,9 +4,12 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { supabaseServer } from '@/lib/supabase-server';
 
+/**
+ * Fetches total and active visitor statistics.
+ * @returns {Promise<{ total_visitors: number; active_visitors: number }>}
+ */
 export async function getVisitorStats() {
   const cookieStore = await cookies();
-  console.log('getVisitorStats: cookies available:', cookieStore.getAll().length);
   
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,21 +27,6 @@ export async function getVisitorStats() {
       },
     }
   );
-
-  // const { data: { user }, error: userError } = await supabase.auth.getUser();
-  // if (userError) {
-  //   console.error('getVisitorStats: getUser error:', userError);
-  // }
-  // if (!user) {
-  //   console.error('getVisitorStats: No user found');
-  //   throw new Error('Unauthorized');
-  // }
-
-  // const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-  // if (profile?.role !== 'admin') {
-  //   console.error('getVisitorStats: User is not admin', profile);
-  //   throw new Error('Unauthorized');
-  // }
 
   const { count: totalCount, error: totalError } = await supabaseServer
     .from('visitors')
@@ -64,6 +52,10 @@ export async function getVisitorStats() {
   };
 }
 
+/**
+ * Records or updates a visitor activity heartbeat using a device ID.
+ * @param {string} deviceId 
+ */
 export async function recordVisitor(deviceId: string) {
   if (!deviceId) return;
 
@@ -80,3 +72,4 @@ export async function recordVisitor(deviceId: string) {
   }
   return { success: true };
 }
+

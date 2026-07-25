@@ -52,7 +52,6 @@ export async function POST(req: NextRequest) {
     // Smart limit check: if content is already short, return dynamic friendly overview directly
     if (cleanedText.length < 150) {
       const shortSummary = fallbackSummary(content, title);
-      console.log(`[AI Smart Bypass] Content is too short (${cleanedText.length} chars). Returned dynamic overview.`);
       return NextResponse.json({ text: shortSummary });
     }
 
@@ -61,7 +60,6 @@ export async function POST(req: NextRequest) {
     if (yeterlyKey) {
       const apiBase = process.env.YETERLY_ENGELSIZFORUM_API_BASE || 'https://engelsizforum-ai.yeterly.ai';
       try {
-        console.log("[Yeterly AI Summarize] Generating summary using Yeterly AI...");
         const upstream = await fetch(
           `${apiBase}/v1/projects/engelsizforum/summarize`,
           {
@@ -88,7 +86,6 @@ export async function POST(req: NextRequest) {
         }
 
         if (upstream.ok && data && data.summary) {
-          console.log(`[Yeterly AI Audit] Summarized using Yeterly. Characters: ${textToSummarize?.length || 0}`);
           return NextResponse.json({ text: data.summary });
         } else {
           console.warn(`[Yeterly AI Warning] Upstream summary failed. HTTP: ${upstream.status}`);
@@ -100,7 +97,6 @@ export async function POST(req: NextRequest) {
 
     // 2. Try Gemini API as a secondary fallback if Yeterly failed or is not configured
     try {
-      console.log("[Gemini AI Summarize Fallback] Generating summary using fallback with retry...");
       const response = await generateContentWithRetry({
         contents: `Aşağıdaki forum tartışmasını Türkçe olarak özetle. Özet kısa (en fazla 2-3 cümle), net, anlaşılır ve özellikle ekran okuyucu kullanan engelli bireyler için seslendirildiğinde rahat anlaşılacak akıcı bir dilde olmalıdır. Sadece özet metnini döndür, ek açıklama ekleme.\n\n${textToSummarize}`,
       });
