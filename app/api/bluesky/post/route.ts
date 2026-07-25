@@ -56,17 +56,13 @@ export async function POST(req: NextRequest) {
     let cleanCommit = (text || 'Platform güncellemeleri ve erişilebilirlik iyileştirmeleri yayınlandı!').trim();
     cleanCommit = cleanCommit.replace(/```[\s\S]*?```/g, '').replace(/ALTER TABLE[\s\S]*/gi, 'Veritabanı esnekliği ve kategori yönetimi güçlendirildi.').trim();
 
-    let postText = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${cleanCommit}\n🇬🇧 New platform updates & accessibility features deployed!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y #WebDev`;
+    let postText = `🚀 EngelsizForum Güncellendi!\n📅 ${dateTime}\n\n📝 ${cleanCommit}\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y #WebDev`;
 
     if (postText.length > 295) {
       const extraChars = postText.length - 292;
-      const maxLen = Math.max(20, cleanCommit.length - extraChars);
+      const maxLen = Math.max(30, cleanCommit.length - extraChars);
       cleanCommit = cleanCommit.substring(0, maxLen) + '...';
-      postText = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${cleanCommit}\n🇬🇧 New platform updates & accessibility features deployed!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y #WebDev`;
-
-      if (postText.length > 295) {
-        postText = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${cleanCommit}\n🇬🇧 New platform updates live!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y #WebDev`;
-      }
+      postText = `🚀 EngelsizForum Güncellendi!\n📅 ${dateTime}\n\n📝 ${cleanCommit}\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y #WebDev`;
     }
 
     const facets = parseFacets(postText);
