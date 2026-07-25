@@ -23,9 +23,11 @@ jobs:
       - name: Get latest commit message
         id: commit
         run: |
-          COMMIT_MSG=$(git log -1 --pretty=%B)
-          echo "commit_msg<<EOF" >> $GITHUB_ENV
-          echo "$COMMIT_MSG" >> $GITHUB_ENV
+          DELIMITER="EOF_$(date +%s)"
+          echo "commit_msg<<$DELIMITER" >> $GITHUB_ENV
+          git log -1 --pretty=%B >> $GITHUB_ENV
+          echo "" >> $GITHUB_ENV
+          echo "$DELIMITER" >> $GITHUB_ENV
 
       - name: Post to Bluesky via AT Protocol
         env:
@@ -72,22 +74,21 @@ jobs:
           async function postToBluesky() {
             const handle = process.env.BSKY_HANDLE || "miracbirben.bsky.social";
             const password = process.env.BSKY_PASSWORD;
-            const rawCommit = (process.env.COMMIT_MESSAGE || "Yeni güncellemeler yayınlandı!").trim();
             
             if (!password) {
               console.log("BSKY_PASSWORD secret not found. Skipping auto-post.");
               return;
             }
 
-            // Format date and time
+            // Format date and time (TR / Europe/Istanbul)
             const now = new Date();
             const dateStr = now.toLocaleDateString("tr-TR", { timeZone: "Europe/Istanbul", day: "2-digit", month: "2-digit", year: "numeric" });
             const timeStr = now.toLocaleTimeString("tr-TR", { timeZone: "Europe/Istanbul", hour: "2-digit", minute: "2-digit" });
             const dateTime = `${dateStr} ${timeStr}`;
 
             let rawCommit = (process.env.COMMIT_MESSAGE || "Kategori yapısı ve otomatik paylaşım entegrasyonu güncellendi.").trim();
-            // Remove any code blocks or raw SQL if present
-            rawCommit = rawCommit.replace(/```[\s\S]*?```/g, "").replace(/ALTER TABLE[\s\S]*/gi, "Veritabanı ve kategori esnekliği artırıldı.").trim();
+            // Remove code blocks and SQL statements if present
+            rawCommit = rawCommit.replace(/```[\s\S]*?```/g, "").replace(/ALTER TABLE[\s\S]*/gi, "Veritabanı esnekliği ve kategori yönetimi güçlendirildi.").trim();
 
             let text = `🚀 EngelsizForum Güncellendi! / Updated!\n📅 ${dateTime}\n\n🇹🇷 ${rawCommit}\n🇬🇧 New platform updates & accessibility improvements deployed!\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #WebDev #A11y`;
 
