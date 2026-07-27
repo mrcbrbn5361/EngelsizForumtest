@@ -1,0 +1,27 @@
+name: EngelsizForum Auto Social Poster (Gemini AI)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  auto-post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositoriyi Klonla (Fetch Depth 2)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Node.js Kurulumu
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Otomatik Paylaşım Betiğini Çalıştır
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NSOSYAL_API_URL: ${{ secrets.NSOSYAL_API_URL }}
+          NSOSYAL_BEARER_TOKEN: ${{ secrets.NSOSYAL_BEARER_TOKEN }}
+        run: node scripts/auto-social-poster.js

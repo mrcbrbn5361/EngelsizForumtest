@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   try {
     const { text, handle, password } = await req.json();
 
-    const bskyHandle = handle || process.env.BSKY_HANDLE || 'miracbirben.bsky.social';
+    const bskyHandle = handle || process.env.BSKY_HANDLE || 'engelsizforum.com';
     const bskyPassword = password || process.env.BSKY_PASSWORD;
 
     if (!bskyPassword) {
