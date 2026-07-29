@@ -230,13 +230,10 @@ async function main() {
   const nsosyalBearerToken = process.env.NSOSYAL_BEARER_TOKEN;
 
   if (!geminiApiKey) {
-    process.stderr.write('HATA: GEMINI_API_KEY ortam değişkeni bulunamadı. Otomasyon sonlandırılıyor.\n');
-    process.exit(1);
-  }
-
-  if (!nsosyalApiUrl || !nsosyalBearerToken) {
-    process.stderr.write('HATA: NSOSYAL_API_URL veya NSOSYAL_BEARER_TOKEN ortam değişkenleri eksik.\n');
-    process.exit(1);
+    process.stdout.write('⚠️ UYARI: GEMINI_API_KEY ortam değişkeni (GitHub Secret) bulunamadı.\n');
+    process.stdout.write('Otomatik paylaşımın çalışması için GitHub Reposundaki Settings -> Secrets and variables -> Actions bölümüne GEMINI_API_KEY ekleyin.\n');
+    process.stdout.write('Adım atlanıyor...\n');
+    process.exit(0);
   }
 
   try {
@@ -244,8 +241,17 @@ async function main() {
     const rawNote = await generateUpdateNote(commitMessage, diffContent, geminiApiKey);
     const finalNote = sanitizeAndTruncateText(rawNote, 9900);
 
-    await sendToNsosyal(finalNote, nsosyalApiUrl, nsosyalBearerToken);
-    process.stdout.write('BAŞARILI: EngelsizForum güncelleme notu NSosyal platformunda başarıyla yayınlandı.\n');
+    // Save generated update text to .tiktok_update.txt
+    const fs = require('fs');
+    fs.writeFileSync('.tiktok_update.txt', finalNote, 'utf8');
+    process.stdout.write('✅ Güncelleme notu üretildi ve .tiktok_update.txt dosyasına yazıldı.\n');
+
+    if (nsosyalApiUrl && nsosyalBearerToken) {
+      await sendToNsosyal(finalNote, nsosyalApiUrl, nsosyalBearerToken);
+      process.stdout.write('BAŞARILI: EngelsizForum güncelleme notu NSosyal platformunda başarıyla yayınlandı.\n');
+    } else {
+      process.stdout.write('ℹ️ NSOSYAL_API_URL veya NSOSYAL_BEARER_TOKEN tanımlanmadığı için NSosyal paylaşım adımı atlandı.\n');
+    }
   } catch (error) {
     process.stderr.write(`HATA: Otomasyon çalışırken bir sorun oluştu:\n${error.message}\n`);
     process.exit(1);
