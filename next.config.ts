@@ -26,6 +26,18 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'www.engelsizforum.com' },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/.well-known/webfinger',
+        destination: '/api/well-known/webfinger',
+      },
+      {
+        source: '/.well-known/nodeinfo',
+        destination: '/api/well-known/nodeinfo',
+      },
+    ];
+  },
   async headers() {
     return [
       {

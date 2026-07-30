@@ -72,12 +72,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .vibe-input {
-  @apply w-full px-6 py-4 rounded-2xl border-2 border-border/80 bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-semibold text-sm outline-none h-14;
+  @apply w-full rounded-2xl border-2 border-border/80 bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-semibold text-sm outline-none h-14;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 .vibe-input-pl-12 {
-  padding-left: 3.25rem !important;
-  padding-inline-start: 3.25rem !important;
+  padding-left: 3.5rem !important;
+  padding-inline-start: 3.5rem !important;
 }
 
 .vibe-input-pl-16 {

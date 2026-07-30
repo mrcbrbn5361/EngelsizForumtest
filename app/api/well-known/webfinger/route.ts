@@ -41,37 +41,36 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const protocol = req.headers.get('x-forwarded-proto') || 'https';
-    const baseUrl = `${protocol}://${host}`;
+    const domain = host;
+    const profileUrl = `https://${domain}/profile/${profile.username}`;
+    const actorUrl = `https://${domain}/api/users/${profile.username}`;
 
-    const webfingerResponse = {
-      subject: `acct:${profile.username}@${host}`,
-      aliases: [
-        `${baseUrl}/profile/${profile.id}`,
-        `${baseUrl}/@${profile.username}`
-      ],
-      links: [
-        {
-          rel: 'http://webfinger.net/rel/profile-page',
-          type: 'text/html',
-          href: `${baseUrl}/profile/${profile.id}`
+    return NextResponse.json(
+      {
+        subject: `acct:${profile.username}@${domain}`,
+        aliases: [profileUrl, actorUrl],
+        links: [
+          {
+            rel: 'http://webfinger.net/rel/profile-page',
+            type: 'text/html',
+            href: profileUrl,
+          },
+          {
+            rel: 'self',
+            type: 'application/activity+json',
+            href: actorUrl,
+          },
+        ],
+      },
+      {
+        headers: {
+          'Content-Type': 'application/jrd+json; charset=utf-8',
+          'Access-Control-Allow-Origin': '*',
         },
-        {
-          rel: 'self',
-          type: 'application/activity+json',
-          href: `${baseUrl}/api/v1/accounts/${profile.id}`
-        }
-      ]
-    };
-
-    return new NextResponse(JSON.stringify(webfingerResponse), {
-      headers: {
-        'Content-Type': 'application/jrd+json',
-        'Access-Control-Allow-Origin': '*',
       }
-    });
+    );
   } catch (err: any) {
-    console.error('WebFinger error:', err);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('WebFinger Error:', err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

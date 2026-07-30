@@ -195,6 +195,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="vibe-input vibe-input-pl-12 pr-4 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
+                    style={{ paddingLeft: '3.5rem' }}
                     placeholder="ornek@adresiniz.com"
                     autoComplete="email"
                   />
@@ -223,6 +224,7 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="vibe-input vibe-input-pl-12 vibe-input-pr-20 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
+                    style={{ paddingLeft: '3.5rem', paddingRight: '3.5rem' }}
                     placeholder="••••••••"
                     autoComplete="current-password"
                   />
