@@ -32,7 +32,7 @@ export default function LoginPage() {
   const passwordId = useId();
   const rememberMeId = useId();
 
-  // Load Remembered Email
+  // Load Remembered Email and URL Error parameters
   useEffect(() => {
     try {
       if (typeof window !== 'undefined') {
@@ -40,6 +40,13 @@ export default function LoginPage() {
         if (savedEmail) {
           setEmail(savedEmail);
           setRememberMe(true);
+        }
+
+        // Check if there is an error parameter in the URL (e.g. redirected from OAuth callback)
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlError = urlParams.get('error');
+        if (urlError) {
+          setError(decodeURIComponent(urlError));
         }
       }
     } catch (e) {}
@@ -104,12 +111,15 @@ export default function LoginPage() {
         provider: 'google',
         options: {
           redirectTo,
+          queryParams: {
+            prompt: 'select_account',
+          }
         },
       });
       if (oAuthError) throw oAuthError;
     } catch (err: any) {
       console.error("Google Login Error:", err);
-      setError(formatAuthError(err, 'Google ile giriş yapılırken bir sorun oluştu.'));
+      setError(formatAuthError(err, 'Google ile giriş yapma işlemi tamamlanamadı. Supabase üzerinde Google OAuth yapılandırmasını kontrol edin veya e-posta ile giriş yapın.'));
       setLoading(false);
     }
   };

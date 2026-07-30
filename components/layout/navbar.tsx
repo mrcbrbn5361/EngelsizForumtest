@@ -108,7 +108,7 @@ export function Navbar() {
               </div>
               ) : (
                 <Link
-                  href="/auth"
+                  href="/login"
                   className="vibe-button-primary h-12 px-6 text-xs"
                   aria-label="Giriş yap veya Kayıt ol"
                 >
@@ -241,7 +241,7 @@ export function Navbar() {
                       ) : (
                         <div className="px-2 pt-2">
                           <Link
-                            href="/auth"
+                            href="/login"
                             onClick={() => setIsOpen(false)}
                             className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-4 text-sm font-black text-primary-foreground shadow-lg shadow-primary/20 active:scale-95 transition-all"
                           >
