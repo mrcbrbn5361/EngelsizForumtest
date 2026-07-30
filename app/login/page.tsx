@@ -32,7 +32,7 @@ export default function LoginPage() {
   const passwordId = useId();
   const rememberMeId = useId();
 
-  // Load Remembered Email and URL Error parameters
+  // Load Remembered Email
   useEffect(() => {
     try {
       if (typeof window !== 'undefined') {
@@ -40,13 +40,6 @@ export default function LoginPage() {
         if (savedEmail) {
           setEmail(savedEmail);
           setRememberMe(true);
-        }
-
-        // Check if there is an error parameter in the URL (e.g. redirected from OAuth callback)
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlError = urlParams.get('error');
-        if (urlError) {
-          setError(decodeURIComponent(urlError));
         }
       }
     } catch (e) {}
@@ -111,15 +104,12 @@ export default function LoginPage() {
         provider: 'google',
         options: {
           redirectTo,
-          queryParams: {
-            prompt: 'select_account',
-          }
         },
       });
       if (oAuthError) throw oAuthError;
     } catch (err: any) {
       console.error("Google Login Error:", err);
-      setError(formatAuthError(err, 'Google ile giriş yapma işlemi tamamlanamadı. Supabase üzerinde Google OAuth yapılandırmasını kontrol edin veya e-posta ile giriş yapın.'));
+      setError(formatAuthError(err, 'Google ile giriş yapılırken bir sorun oluştu.'));
       setLoading(false);
     }
   };
@@ -197,14 +187,14 @@ export default function LoginPage() {
                   E-posta Adresi <span className="text-destructive" aria-hidden="true">*</span>
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={18} />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60 pointer-events-none z-10" size={18} />
                   <input
                     id={emailId}
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="vibe-input pl-12 pr-4 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
+                    className="vibe-input vibe-input-pl-12 pr-4 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
                     placeholder="ornek@adresiniz.com"
                     autoComplete="email"
                   />
@@ -225,14 +215,14 @@ export default function LoginPage() {
                   </Link>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={18} />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60 pointer-events-none z-10" size={18} />
                   <input
                     id={passwordId}
                     type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="vibe-input pl-12 pr-12 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
+                    className="vibe-input vibe-input-pl-12 vibe-input-pr-20 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
                     placeholder="••••••••"
                     autoComplete="current-password"
                   />
