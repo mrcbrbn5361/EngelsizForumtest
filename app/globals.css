@@ -38,6 +38,26 @@ html, body {
   overflow-x: hidden;
   max-width: 100vw;
   width: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Prevent horizontal overflow on long text, titles, code, and links */
+p, h1, h2, h3, h4, h5, h6, span, a, li, blockquote, td, th {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Ensure media elements respect parent bounds */
+img, video, canvas, svg, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Make raw tables scrollable on small screens */
+table {
+  max-width: 100%;
+  display: block;
+  overflow-x: auto;
 }
 
 html {
@@ -52,11 +72,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Vibe System Utilities */
 .vibe-container {
-  @apply w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8;
+  @apply w-full max-w-[1280px] mx-auto px-3 sm:px-6 lg:px-8;
 }
 
 .vibe-card {
-  @apply bg-card border-2 border-border/80 rounded-3xl shadow-sm overflow-hidden transition-all duration-300 p-4 sm:p-6 md:p-8;
+  @apply bg-card border-2 border-border/80 rounded-2xl sm:rounded-3xl shadow-sm overflow-hidden transition-all duration-300 p-4 sm:p-6 md:p-8;
 }
 
 .vibe-card-hover {
@@ -64,37 +84,44 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .vibe-section-title {
-  @apply text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-foreground leading-tight uppercase;
+  @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-foreground leading-tight uppercase;
 }
 
 .vibe-badge {
-  @apply px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest bg-muted text-foreground border border-border;
+  @apply px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-widest bg-muted text-foreground border border-border;
 }
 
 .vibe-input {
-  @apply w-full rounded-2xl border-2 border-border/80 bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-semibold text-sm outline-none h-14;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  @apply w-full rounded-2xl border-2 border-border/80 bg-background focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all font-semibold text-xs sm:text-sm outline-none h-12 sm:h-14;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .vibe-input {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 }
 
 .vibe-input-pl-12 {
-  padding-left: 3.5rem !important;
-  padding-inline-start: 3.5rem !important;
+  padding-left: 2.75rem !important;
+  padding-inline-start: 2.75rem !important;
 }
 
 .vibe-input-pl-16 {
-  padding-left: 4rem !important;
-  padding-inline-start: 4rem !important;
+  padding-left: 3.25rem !important;
+  padding-inline-start: 3.25rem !important;
 }
 
 .vibe-input-pl-20 {
-  padding-left: 5rem !important;
-  padding-inline-start: 5rem !important;
+  padding-left: 4rem !important;
+  padding-inline-start: 4rem !important;
 }
 
 .vibe-input-search {
-  padding-left: 4rem !important;
-  padding-inline-start: 4rem !important;
+  padding-left: 3rem !important;
+  padding-inline-start: 3rem !important;
 }
 
 @media (min-width: 768px) {
@@ -105,10 +132,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .vibe-input-search-full {
-  padding-left: 4rem !important;
-  padding-inline-start: 4rem !important;
-  padding-right: 5rem !important;
-  padding-inline-end: 5rem !important;
+  padding-left: 3rem !important;
+  padding-inline-start: 3rem !important;
+  padding-right: 3rem !important;
+  padding-inline-end: 3rem !important;
 }
 
 @media (min-width: 768px) {
@@ -121,13 +148,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .vibe-input-pr-20 {
-  padding-right: 5rem !important;
-  padding-inline-end: 5rem !important;
+  padding-right: 3.5rem !important;
+  padding-inline-end: 3.5rem !important;
 }
 
 .vibe-input-pr-56 {
-  padding-right: 14rem !important;
-  padding-inline-end: 14rem !important;
+  padding-right: 3.5rem !important;
+  padding-inline-end: 3.5rem !important;
+}
+
+@media (min-width: 768px) {
+  .vibe-input-pr-56 {
+    padding-right: 14rem !important;
+    padding-inline-end: 14rem !important;
+  }
 }
 
 .vibe-label {

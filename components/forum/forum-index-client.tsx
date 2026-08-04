@@ -248,26 +248,26 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               >
                 <Sparkles size={14} className="animate-pulse" /> %100 ERİŞİLEBİLİR DİJİTAL EKOSİSTEM
               </motion.div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.1] uppercase text-foreground">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.1] uppercase text-foreground">
                 {profile ? (
                   <>Hoş Geldin, <br /><span className="text-primary">{profile.full_name || profile.username}</span>!</>
                 ) : (
                   <>Bariyersiz Bilgi, <br /><span className="text-primary">Eşit Topluluk</span></>
                 )}
               </h1>
-              <p className="text-muted-foreground text-base sm:text-lg md:text-xl font-medium leading-relaxed max-w-2xl">
+              <p className="text-muted-foreground text-sm sm:text-lg md:text-xl font-medium leading-relaxed max-w-2xl">
                 EngelsizForum, internette bariyersiz bilgi paylaşımı arayan herkes için tasarlanmış Türkiye&apos;nin ilk tam erişilebilir forumudur.
               </p>
               <div className="relative max-w-xl w-full group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/5 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
                 <div className="relative">
-                  <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={22} />
+                  <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={20} />
                   <input 
                     type="text" 
                     placeholder="TARTIŞMALARDA VE KONULARDA ARA..." 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="vibe-input vibe-input-pl-16 pr-4 h-16 text-sm uppercase rounded-2xl border border-border bg-card w-full shadow-lg focus:border-primary/80 transition-all font-bold tracking-wider placeholder:text-muted-foreground/40"
+                    className="vibe-input vibe-input-search-full h-12 sm:h-16 text-xs sm:text-sm uppercase rounded-2xl border border-border bg-card w-full shadow-lg focus:border-primary/80 transition-all font-bold tracking-wider placeholder:text-muted-foreground/40"
                   />
                 </div>
               </div>
@@ -276,7 +276,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5"
+              className="lg:col-span-5 grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-5"
             >
               {[
                 { label: 'TOPLAM BAŞLIK', val: stats?.totalTopics !== undefined ? stats.totalTopics.toString() : '0', sub: `+${stats?.todayTopics || 0} Bugün`, color: 'primary' },
@@ -360,47 +360,47 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                           className="overflow-hidden divide-y divide-border/50"
                         >
                           {section.subforums.map((subforum) => (
-                            <div key={subforum.id} className="p-5 sm:p-9 flex flex-col xl:flex-row xl:items-center justify-between gap-6 sm:gap-8 hover:bg-primary/[0.01] transition-colors relative">
-                              <div className="flex items-start gap-4 sm:gap-5 min-w-0 flex-1">
-                                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl sm:rounded-3xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
+                            <div key={subforum.id} className="p-4 sm:p-7 md:p-9 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-8 hover:bg-primary/[0.01] transition-colors relative">
+                              <div className="flex items-start gap-3 sm:gap-5 min-w-0 flex-1">
+                                <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-3xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
                                   {getSubforumIcon(subforum.icon)}
                                 </div>
-                                <div className="min-w-0">
-                                  <div className="flex flex-wrap items-center gap-3 mb-2">
-                                    <Link href={`/discussions?kategori=${subforum.slug}`} className="font-black text-lg sm:text-xl text-foreground hover:text-primary transition-colors block leading-tight uppercase tracking-tight">
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+                                    <Link href={`/discussions?kategori=${subforum.slug}`} className="font-black text-base sm:text-xl text-foreground hover:text-primary transition-colors block leading-tight uppercase tracking-tight">
                                       {subforum.name}
                                     </Link>
                                     <Link 
                                       href={`/discussions/new?kategori=${subforum.slug}`} 
-                                      className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-primary bg-primary/5 hover:bg-primary/10 px-2.5 py-1.5 rounded-xl border border-primary/10 transition-all shrink-0"
+                                      className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-primary bg-primary/5 hover:bg-primary/10 px-2 py-1 rounded-lg border border-primary/10 transition-all shrink-0"
                                       title={`${subforum.name} kategorisinde yeni bir konu aç`}
                                     >
                                       <Plus size={10} className="stroke-[3]" /> Yeni Konu
                                     </Link>
                                   </div>
-                                  <p className="text-sm text-muted-foreground leading-relaxed font-semibold max-w-xl opacity-90">{subforum.desc}</p>
+                                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-semibold max-w-xl opacity-90 line-clamp-2">{subforum.desc}</p>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-8 sm:gap-12 shrink-0 xl:w-[400px] justify-between border-t border-border/40 pt-6 xl:border-t-0 xl:pt-0">
-                                <div className="flex gap-6 sm:gap-8 font-mono text-[11px] font-bold text-muted-foreground">
+                              <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-8 shrink-0 xl:w-[400px] justify-between border-t border-border/40 pt-4 xl:border-t-0 xl:pt-0">
+                                <div className="flex gap-4 sm:gap-8 font-mono text-[11px] font-bold text-muted-foreground">
                                   <div className="text-center">
-                                    <span className="block text-base font-black text-foreground">{subforum.topics}</span>
-                                    <span className="opacity-60">KONU</span>
+                                    <span className="block text-sm sm:text-base font-black text-foreground">{subforum.topics}</span>
+                                    <span className="opacity-60 text-[9px] sm:text-[10px]">KONU</span>
                                   </div>
                                   <div className="text-center">
-                                    <span className="block text-base font-black text-foreground">{subforum.replies}</span>
-                                    <span className="opacity-60">CEVAP</span>
+                                    <span className="block text-sm sm:text-base font-black text-foreground">{subforum.replies}</span>
+                                    <span className="opacity-60 text-[9px] sm:text-[10px]">CEVAP</span>
                                   </div>
                                 </div>
-                                <div className="text-right text-[11px] min-w-0 max-w-[200px] sm:max-w-[240px]">
-                                  <div className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1 opacity-70">SON PAYLAŞIM</div>
-                                  <Link href={`/discussions`} className="font-bold text-sm text-foreground hover:text-primary transition-colors block truncate hover:underline" title={subforum.lastPost.title}>
+                                <div className="text-left sm:text-right text-[11px] min-w-0 max-w-[180px] sm:max-w-[240px]">
+                                  <div className="text-[9px] sm:text-[10px] font-bold text-primary uppercase tracking-widest mb-0.5 sm:mb-1 opacity-70">SON PAYLAŞIM</div>
+                                  <Link href={`/discussions`} className="font-bold text-xs sm:text-sm text-foreground hover:text-primary transition-colors block truncate hover:underline" title={subforum.lastPost.title}>
                                     {subforum.lastPost.title}
                                   </Link>
-                                  <div className="text-muted-foreground font-bold flex items-center justify-end gap-2 mt-1.5 uppercase tracking-tighter">
-                                    <span className="text-foreground/80 underline decoration-primary/30 decoration-2 underline-offset-4">@{subforum.lastPost.author}</span>
+                                  <div className="text-muted-foreground font-bold flex items-center justify-start sm:justify-end gap-1.5 sm:gap-2 mt-1 uppercase tracking-tighter text-[10px]">
+                                    <span className="text-foreground/80 underline decoration-primary/30 decoration-2 underline-offset-4 truncate max-w-[100px] sm:max-w-none">@{subforum.lastPost.author}</span>
                                     <span>•</span>
-                                    <time className="whitespace-nowrap font-mono text-[10px]">{subforum.lastPost.date}</time>
+                                    <time className="whitespace-nowrap font-mono text-[9px] sm:text-[10px]">{subforum.lastPost.date}</time>
                                   </div>
                                 </div>
                               </div>
@@ -414,21 +414,21 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               })}
             </div>
 
-            <div className="space-y-10 pt-10">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-border/80 pb-6">
-                <div className="space-y-2">
-                  <h2 className="text-xl md:text-2xl font-black text-foreground uppercase tracking-widest flex items-center gap-4">
-                    <TrendingUp className="text-primary w-6 h-6" /> TARTIŞMA AKIŞI
+            <div className="space-y-8 sm:space-y-10 pt-6 sm:pt-10">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 border-b border-border/80 pb-6">
+                <div className="space-y-1.5">
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-black text-foreground uppercase tracking-widest flex items-center gap-3 sm:gap-4">
+                    <TrendingUp className="text-primary w-5 h-5 sm:w-6 sm:h-6" /> TARTIŞMA AKIŞI
                   </h2>
-                  <p className="text-sm text-muted-foreground font-medium">Topluluğumuzda öne çıkan en yeni başlıklar ve popüler konular.</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground font-medium">Topluluğumuzda öne çıkan en yeni başlıklar ve popüler konular.</p>
                 </div>
-                <Link href="/discussions/new" className="inline-flex items-center justify-center gap-2.5 rounded-2xl bg-primary px-7 py-3.5 text-xs font-black text-primary-foreground shadow-lg shadow-primary/20 transition hover:bg-primary/90 active:scale-95 uppercase tracking-widest">
-                  <Plus size={18} /> YENİ KONU BAŞLAT
+                <Link href="/discussions/new" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 sm:px-7 py-3 sm:py-3.5 text-xs font-black text-primary-foreground shadow-lg shadow-primary/20 transition hover:bg-primary/90 active:scale-95 uppercase tracking-widest w-full sm:w-auto">
+                  <Plus size={16} /> YENİ KONU BAŞLAT
                 </Link>
               </div>
-              <div className="flex border border-border bg-muted/30 p-2 rounded-2xl w-fit flex-wrap gap-1.5 shadow-sm">
+              <div className="flex border border-border bg-muted/30 p-1.5 sm:p-2 rounded-2xl w-full sm:w-fit overflow-x-auto no-scrollbar gap-1.5 shadow-sm">
                 {[{ id: 'all', label: 'TÜMÜ' }, { id: 'pinned', label: 'SABİTLENENLER' }, { id: 'solved', label: 'ÇÖZÜLENLER' }, { id: 'popular', label: 'POPÜLER' }].map((tab) => (
-                  <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={cn("px-5 py-3 rounded-xl text-xs font-black transition-all uppercase tracking-widest", activeTab === tab.id ? "bg-card text-primary shadow-sm border border-border" : "text-muted-foreground hover:text-foreground hover:bg-muted/50")}>
+                  <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={cn("px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-xl text-[10px] sm:text-xs font-black transition-all uppercase tracking-widest whitespace-nowrap shrink-0", activeTab === tab.id ? "bg-card text-primary shadow-sm border border-border" : "text-muted-foreground hover:text-foreground hover:bg-muted/50")}>
                     {tab.label}
                   </button>
                 ))}

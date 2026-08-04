@@ -20,7 +20,7 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-muted-foreground text-base font-medium leading-relaxed max-w-xs mx-auto md:mx-0">
-              Türkiye&apos;nin ilk tam erişilebilir, yapay zeka destekli topluluk platformu. Engelleri tasarım ve teknoloji ile aşıyoruz.
+              Türkiye&apos;nin ilk tam erişilebilir, yapay zeka destekli topluluk platformunun <span className="text-primary font-bold">Prototip ve Demo Sürümü</span>. Tüm özellikler tam işlevseldir.
             </p>
           </div>
 
@@ -64,11 +64,11 @@ export function Footer() {
 
         <div className="pt-10 border-t border-border flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="text-[10px] md:text-xs font-black text-muted-foreground uppercase tracking-[0.3em] text-center">
-            © {currentYear} ENGELSİZFORUM • TÜM HAKLARI SAKLIDIR
+            © {currentYear} ENGELSİZFORUM • PROTOTİP & DEMO SÜRÜMÜ
           </div>
           <div className="flex items-center gap-6 text-[8px] md:text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
-            <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> YAPAY ZEKA DESTEKLİ</span>
-            <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> ERİŞİLEBİLİR ALTYAPI</span>
+            <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> PROTOTİP & DEMO</span>
+            <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> TAM İŞLEVSEL</span>
           </div>
         </div>
       </div>

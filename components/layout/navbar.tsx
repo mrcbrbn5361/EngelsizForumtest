@@ -22,6 +22,10 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md high-contrast:bg-background high-contrast:opacity-100" role="navigation" aria-label="Ana Navigasyon">
+      <div className="bg-primary/10 border-b border-primary/20 px-3 py-1.5 text-center text-[11px] sm:text-xs font-black uppercase tracking-wider text-foreground flex items-center justify-center gap-2">
+        <span className="inline-flex items-center justify-center bg-primary text-primary-foreground px-2 py-0.5 rounded-md text-[10px] animate-pulse">PROTOTİP & DEMO</span>
+        <span>Bu site EngelsizForum un prototip ve demo sürümüdür. Tüm modüller aktif ve çalışır durumdadır.</span>
+      </div>
       <div className="w-full max-w-7xl mx-auto flex min-h-16 items-center justify-between px-4 sm:px-6 py-2">
         <Link 
           href="/" 

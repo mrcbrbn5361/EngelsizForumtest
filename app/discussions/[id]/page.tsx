@@ -78,9 +78,9 @@ function CommentItem({
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         className={cn(
-          "vibe-card p-6 md:p-8 flex gap-4 md:gap-8 hover:border-primary/30 transition-all group relative",
+          "vibe-card p-4 sm:p-6 md:p-8 flex gap-3 sm:gap-6 md:gap-8 hover:border-primary/30 transition-all group relative",
           comment.is_solution && "border-2 border-emerald-500 shadow-lg shadow-emerald-500/10",
-          depth > 0 && "ml-8 md:ml-16"
+          depth > 0 && "ml-3 sm:ml-6 md:ml-12 border-l-2 border-primary/20"
         )}
       >
         {comment.is_solution && (
