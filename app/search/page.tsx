@@ -66,7 +66,11 @@ export default function SearchPage() {
     try {
       let queryBuilder = supabase
         .from('topics')
-        .select('*, category:categories(*), author:profiles(*)')
+        .select(`
+          id, title, content, author_id, category_id, views_count, likes_count, comments_count, created_at, updated_at, slug,
+          category:categories(id, name, slug, color, icon),
+          author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified)
+        `)
         .limit(25);
 
       if (searchQuery.trim()) {
@@ -100,7 +104,7 @@ export default function SearchPage() {
             
       const { data, error } = await queryBuilder;
       if (error) throw error;
-      setResults((data || []).filter(t => t.author));
+      setResults((data as any || []).filter((t: any) => t.author));
     } catch (err) {
       console.error('Search error:', err);
       setResults([]);

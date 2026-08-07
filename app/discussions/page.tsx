@@ -166,15 +166,17 @@ function DiscussionsContent() {
     }
 
     try {
+      let loadedCats = categories;
       // Fetch Categories (only once)
       if (!isLoadMore) {
-        const { data: cats, error: catErr } = await supabase
+        const { data: cats } = await supabase
           .from('categories')
           .select('*')
           .order('name');
         
         if (cats && cats.length > 0) {
           setCategories(cats);
+          loadedCats = cats;
         } else {
           setCategories([]);
         }
@@ -188,28 +190,39 @@ function DiscussionsContent() {
       let query = supabase
         .from('topics')
         .select(`
-          *,
-          author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
-          category:categories(name, slug, id),
-          comments(count)
+          id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
+          author:profiles(*),
+          category:categories(name, slug, id)
         `);
 
       if (searchQuery) {
-        // Use the generated search_vector for advanced Turkish full-text search
-        query = query.textSearch('search_vector', searchQuery, { 
-          config: 'turkish', 
-          type: 'websearch' 
-        });
+        const terms = expandSearchQuery(searchQuery).slice(0, 5).filter(t => t.length > 1);
+        if (terms.length > 0) {
+          // Format OR conditions correctly for PostgREST
+          const orConditions = terms
+            .map(term => `title.ilike.%${term}%,content.ilike.%${term}%`)
+            .join(',');
+          query = query.or(orConditions);
+        }
       }
 
       if (selectedCategory) {
-        // If it's a UUID, search by category_id, otherwise by category slug
         const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(selectedCategory);
         if (isUUID) {
           query = query.eq('category_id', selectedCategory);
         } else {
-          // Use the joined relation name to filter
-          query = query.eq('category.slug', selectedCategory);
+          let matchedCat = loadedCats.find((c: any) => c.slug === selectedCategory);
+          if (!matchedCat) {
+            const { data: catData } = await supabase
+              .from('categories')
+              .select('id')
+              .eq('slug', selectedCategory)
+              .maybeSingle();
+            if (catData) matchedCat = catData;
+          }
+          if (matchedCat) {
+            query = query.eq('category_id', matchedCat.id);
+          }
         }
       }
 
@@ -218,8 +231,13 @@ function DiscussionsContent() {
         .order('created_at', { ascending: false })
         .range(from, to);
 
+      if (topicsErr) {
+        console.error('Supabase Query Error:', topicsErr);
+        throw topicsErr;
+      }
+
       if (topicsData) {
-        const validTopics = topicsData.filter(t => t.author);
+        const validTopics = (topicsData as any[]).filter(t => t.author);
         if (isLoadMore) {
           setTopics(prev => [...prev, ...validTopics]);
           setPage(currentPage);

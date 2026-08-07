@@ -401,16 +401,15 @@ export default function CommunityDetailPage() {
         const { data: topicsData, error: topicsError } = await supabase
           .from('topics')
           .select(`
-            *,
-            author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
-            category:categories(name),
-            comments(count)
+            id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
+            author:profiles(*),
+            category:categories(name)
           `)
           .eq('category_id', data.id)
           .order('created_at', { ascending: false });
 
         if (topicsError) throw topicsError;
-        setTopics((topicsData || []).filter(t => t.author));
+        setTopics((topicsData as any || []).filter((t: any) => t.author));
       }
 
       const { count: totalProfiles } = await supabase

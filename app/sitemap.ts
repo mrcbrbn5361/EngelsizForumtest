@@ -59,7 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 2. Fetch all Communities/Categories dynamically
     const { data: categories, error: catError } = await supabase
       .from('categories')
-      .select('*');
+      .select('id, slug, updated_at, created_at');
 
     if (catError) {
       console.error('[Sitemap Generator] Error fetching categories:', catError);
@@ -80,13 +80,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 3. Fetch recent Discussion Topics dynamically
     let { data: topics, error: topicError } = await supabase
       .from('topics')
-      .select('*')
+      .select('id, updated_at, created_at')
       .order('created_at', { ascending: false })
       .limit(1000);
 
     if (topicError) {
       // Fallback if created_at column ordering fails
-      const retry = await supabase.from('topics').select('*').limit(1000);
+      const retry = await supabase.from('topics').select('id, updated_at, created_at').limit(1000);
       topics = retry.data;
       topicError = retry.error;
     }

@@ -508,17 +508,32 @@ export default function DiscussionDetailPage() {
     try {
       const { data, error } = await supabase
         .from('topics')
-        .select('*, author:profiles(*), category:categories(*)')
+        .select(`
+          id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
+          author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified, bio),
+          category:categories(id, name, slug, color, icon)
+        `)
         .eq('id', id)
         .single();
       
       if (error || !data) {
         setTopic(null);
       } else {
-        setTopic(data);
-        if (data.category_id) {
-          fetchSimilarTopics(data.category_id);
+        setTopic(data as any);
+        if ((data as any).category_id) {
+          fetchSimilarTopics((data as any).category_id);
         }
+        // Increment views count
+        supabase.rpc('increment_views', { topic_id: id }).then(({ error: viewError }) => {
+          if (viewError) {
+            // Fallback if RPC doesn't exist
+            supabase
+              .from('topics')
+              .update({ views_count: (data.views_count || 0) + 1 })
+              .eq('id', id)
+              .then(() => {});
+          }
+        });
       }
     } catch (err) {
       console.error('Error fetching topic:', err);
@@ -545,14 +560,17 @@ export default function DiscussionDetailPage() {
 
       const { data, error } = await supabase
         .from('comments')
-        .select('*, author:profiles(*)')
+        .select(`
+          id, content, topic_id, author_id, parent_id, likes_count, is_solution, created_at, updated_at,
+          author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified)
+        `)
         .eq('topic_id', id)
         .order('created_at', { ascending: true });
       
       if (error) {
         setComments([]);
       } else {
-        setComments((data || []).filter(c => c.author));
+        setComments((data as any || []).filter((c: any) => c.author));
       }
     } catch (err) {
       console.error('Error fetching comments:', err);
