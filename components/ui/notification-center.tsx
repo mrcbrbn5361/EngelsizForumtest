@@ -156,7 +156,7 @@ export function NotificationCenter() {
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="absolute right-0 mt-4 w-[85vw] sm:w-96 bg-card border-4 border-border rounded-[2.5rem] shadow-2xl z-50 overflow-hidden"
+              className="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 mt-3 sm:mt-4 w-auto sm:w-96 bg-card border-4 border-border rounded-[2.5rem] shadow-2xl z-50 overflow-hidden max-w-[calc(100vw-2rem)] sm:max-w-none"
             >
               <div className="p-6 border-b border-border flex items-center justify-between bg-muted/30">
                 <h3 className="font-black uppercase tracking-tighter text-lg">Bildirimler</h3>
