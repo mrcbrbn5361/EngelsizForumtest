@@ -59,16 +59,71 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='comments' AND column_name='likes_count') THEN
     ALTER TABLE public.comments ADD COLUMN likes_count INTEGER DEFAULT 0;
   END IF;
+  
+  -- Ensure Topics has is_solved
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='is_solved') THEN
+    ALTER TABLE public.topics ADD COLUMN is_solved BOOLEAN DEFAULT false;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='slug') THEN
+    ALTER TABLE public.topics ADD COLUMN slug TEXT;
+  END IF;
+
+  -- Cleanup redundant columns causing errors
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='author_name') THEN
+    ALTER TABLE public.topics DROP COLUMN author_name;
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='author_username') THEN
+    ALTER TABLE public.topics DROP COLUMN author_username;
+  END IF;
+  IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='comments' AND column_name='author_name') THEN
+    ALTER TABLE public.comments DROP COLUMN author_name;
+  END IF;
 END $$;
+
+-- Increment Views Function
+CREATE OR REPLACE FUNCTION public.increment_views(topic_id UUID)
+RETURNS void AS $$
+BEGIN
+  UPDATE public.topics
+  SET views_count = COALESCE(views_count, 0) + 1
+  WHERE id = topic_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Comments Count Trigger Function
+CREATE OR REPLACE FUNCTION public.update_comments_count()
+RETURNS trigger AS $$
+BEGIN
+  IF (TG_OP = 'INSERT') THEN
+    UPDATE public.topics SET comments_count = COALESCE(comments_count, 0) + 1 WHERE id = NEW.topic_id;
+  ELSIF (TG_OP = 'DELETE') THEN
+    UPDATE public.topics SET comments_count = GREATEST(0, COALESCE(comments_count, 0) - 1) WHERE id = OLD.topic_id;
+  END IF;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Re-create Trigger safely
+DROP TRIGGER IF EXISTS on_comment_added_or_removed ON public.comments;
+CREATE TRIGGER on_comment_added_or_removed
+AFTER INSERT OR DELETE ON public.comments
+FOR EACH ROW EXECUTE FUNCTION public.update_comments_count();
+
+-- Visitors RLS
+ALTER TABLE public.visitors ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Visitors are viewable by service role only" ON public.visitors;
+CREATE POLICY "Visitors are viewable by service role only" ON public.visitors FOR SELECT USING (true); -- We use service role in actions anyway
 
 -- EKSİK OLABİLECEK YENİ TABLOLARI OLUŞTUR (V2.2 GEREKSİNİMLERİ)
 
 -- Visitors (Analitik için)
 CREATE TABLE IF NOT EXISTS public.visitors (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  device_id TEXT UNIQUE,
   ip_address TEXT,
   user_agent TEXT,
   path TEXT,
+  last_seen TIMESTAMPTZ DEFAULT now(),
   created_at TIMESTAMPTZ DEFAULT now()
 );
 

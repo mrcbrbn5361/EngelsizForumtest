@@ -103,6 +103,10 @@ function NewTopicForm() {
     setLoading(true);
     try {
       const topicId = generateUUID();
+      const slug = title.trim().toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+      
       const { data, error } = await supabase
         .from('topics')
         .insert({
@@ -112,7 +116,8 @@ function NewTopicForm() {
           content: content.trim(),
           author_id: user.id,
           is_pinned: isPinned,
-          is_locked: isLocked
+          is_locked: isLocked,
+          slug: slug
         })
         .select()
         .single();

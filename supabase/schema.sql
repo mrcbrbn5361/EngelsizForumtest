@@ -138,10 +138,25 @@ ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAUL
 ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS visibility TEXT DEFAULT 'public';
 ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS is_sensitive BOOLEAN DEFAULT false;
 ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS spoiler_text TEXT;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS slug TEXT;
 ALTER TABLE public.topics ALTER COLUMN id SET DEFAULT gen_random_uuid();
 
+-- CLEANUP REDUNDANT COLUMNS THAT CAUSE NOT-NULL ERRORS
 DO $$ 
 BEGIN
+    -- Remove author_name from topics if it exists (it violates NOT NULL and is redundant)
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='author_name') THEN
+        ALTER TABLE public.topics DROP COLUMN author_name;
+    END IF;
+    -- Remove author_username from topics if it exists
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='author_username') THEN
+        ALTER TABLE public.topics DROP COLUMN author_username;
+    END IF;
+    -- Remove author_name from comments if it exists
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='comments' AND column_name='author_name') THEN
+        ALTER TABLE public.comments DROP COLUMN author_name;
+    END IF;
+    -- Ensure search_vector exists
     IF NOT EXISTS (
         SELECT 1 FROM information_schema.columns 
         WHERE table_schema='public' AND table_name='topics' AND column_name='search_vector'
