@@ -134,12 +134,12 @@ export function NotificationCenter() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-xl hover:bg-muted transition-colors group"
+        className="relative p-2.5 sm:p-2 rounded-xl hover:bg-muted transition-colors group min-h-[44px] min-w-[44px] flex items-center justify-center"
         aria-label="Bildirimler"
       >
-        <Bell size={24} className={cn(unreadCount > 0 && "animate-tada")} />
+        <Bell size={26} className={cn(unreadCount > 0 && "animate-tada", "w-6 h-6 sm:w-6 sm:h-6")} />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[8px] font-black text-primary-foreground border-2 border-background">
+          <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground border-2 border-background shadow-md">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
