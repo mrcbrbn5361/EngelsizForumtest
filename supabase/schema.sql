@@ -287,10 +287,15 @@ CREATE TABLE IF NOT EXISTS public.attachments (
   CHECK (num_nonnulls(topic_id, comment_id) = 1)
 );
 
--- VISITORS (Raspberry Pi Data)
+-- VISITORS (Analytics)
 CREATE TABLE IF NOT EXISTS public.visitors (
-  mac_address TEXT PRIMARY KEY,
-  last_seen TIMESTAMPTZ DEFAULT now()
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  device_id TEXT UNIQUE,
+  ip_address TEXT,
+  user_agent TEXT,
+  path TEXT,
+  last_seen TIMESTAMPTZ DEFAULT now(),
+  created_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- TAGS
@@ -398,16 +403,22 @@ DROP TRIGGER IF EXISTS on_reaction_removed_topic ON public.reactions;
 CREATE TRIGGER on_reaction_removed_topic AFTER DELETE ON public.reactions FOR EACH ROW EXECUTE FUNCTION public.decrement_topic_likes();
 
 -- Comment count
-CREATE OR REPLACE FUNCTION public.increment_comment_count()
-RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION public.update_comments_count()
+RETURNS trigger AS $$
 BEGIN
-  UPDATE public.topics SET comments_count = comments_count + 1, updated_at = now() WHERE id::text = NEW.topic_id::text;
-  RETURN NEW;
+  IF (TG_OP = 'INSERT') THEN
+    UPDATE public.topics SET comments_count = COALESCE(comments_count, 0) + 1 WHERE id = NEW.topic_id;
+  ELSIF (TG_OP = 'DELETE') THEN
+    UPDATE public.topics SET comments_count = GREATEST(0, COALESCE(comments_count, 0) - 1) WHERE id = OLD.topic_id;
+  END IF;
+  RETURN NULL;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
-DROP TRIGGER IF EXISTS on_comment_added ON public.comments;
-CREATE TRIGGER on_comment_added AFTER INSERT ON public.comments FOR EACH ROW EXECUTE FUNCTION public.increment_comment_count();
+DROP TRIGGER IF EXISTS on_comment_added_or_removed ON public.comments;
+CREATE TRIGGER on_comment_added_or_removed
+AFTER INSERT OR DELETE ON public.comments
+FOR EACH ROW EXECUTE FUNCTION public.update_comments_count();
 
 -- MASTODON COMPATIBILITY TRIGGERS & HELPERS
 -- ==========================================
@@ -552,6 +563,7 @@ ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.bookmarks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.topic_tags ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.visitors ENABLE ROW LEVEL SECURITY;
 
 -- Helper function for staff check (admin/moderator)
 CREATE OR REPLACE FUNCTION public.is_staff()
@@ -674,6 +686,10 @@ DROP POLICY IF EXISTS "Topic authors can manage tags" ON public.topic_tags;
 CREATE POLICY "Topic authors can manage tags" ON public.topic_tags FOR ALL USING (
   EXISTS (SELECT 1 FROM public.topics WHERE id::text = topic_id::text AND (author_id::text = auth.uid()::text OR public.is_staff()))
 );
+
+-- Visitors
+DROP POLICY IF EXISTS "Visitors are viewable by service role only" ON public.visitors;
+CREATE POLICY "Visitors are viewable by service role only" ON public.visitors FOR SELECT USING (true);
 
 -- Follows (Mastodon relationships)
 ALTER TABLE public.follows ENABLE ROW LEVEL SECURITY;
@@ -820,3 +836,13 @@ BEGIN
         END LOOP;
     END LOOP;
 END $$;
+
+-- Increment Views Function
+CREATE OR REPLACE FUNCTION public.increment_views(topic_id UUID)
+RETURNS void AS $$
+BEGIN
+  UPDATE public.topics
+  SET views_count = COALESCE(views_count, 0) + 1
+  WHERE id = topic_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
