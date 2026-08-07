@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { generateUUID } from '@/lib/utils';
 
 interface ChatBoxProps {
   conversationId: string;
@@ -79,6 +80,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
       const { error } = await supabase
         .from('messages')
         .insert({
+          id: generateUUID(),
           conversation_id: conversationId,
           sender_id: currentUserProfile.id,
           content: newMessage.trim(),

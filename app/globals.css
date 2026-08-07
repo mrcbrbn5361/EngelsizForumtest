@@ -169,7 +169,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .vibe-button-primary {
-  @apply inline-flex items-center justify-center rounded-2xl bg-primary px-8 py-4 text-xs font-black uppercase tracking-widest text-primary-foreground transition-all duration-300 hover:brightness-110 hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary/20 min-h-[48px];
+  @apply inline-flex items-center justify-center rounded-2xl bg-primary px-4 sm:px-8 py-3 sm:py-4 text-xs font-black uppercase tracking-widest text-primary-foreground transition-all duration-300 hover:brightness-110 hover:scale-[1.02] active:scale-95 shadow-lg shadow-primary/20 min-h-[48px] text-center max-w-full;
 }
 
 /* Accessibility Overrides */

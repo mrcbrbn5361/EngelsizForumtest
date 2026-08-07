@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
+import { generateUUID } from '@/lib/utils';
 
 export function ReactionButton({ topicId, initialCount }: { topicId: string, initialCount: number }) {
   const { user } = useAuth();
@@ -47,7 +48,7 @@ export function ReactionButton({ topicId, initialCount }: { topicId: string, ini
         setHasLiked(false);
       } else {
         // Like
-        await supabase.from('reactions').insert({ topic_id: topicId, user_id: user.id, reaction_type: 'like' });
+        await supabase.from('reactions').insert({ id: generateUUID(), topic_id: topicId, user_id: user.id, reaction_type: 'like' });
         setCount(prev => prev + 1);
         setHasLiked(true);
       }

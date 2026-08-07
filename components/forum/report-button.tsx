@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { Flag } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
+import { generateUUID } from '@/lib/utils';
 
 export function ReportButton({ topicId }: { topicId: string }) {
   const { user } = useAuth();
@@ -12,7 +13,7 @@ export function ReportButton({ topicId }: { topicId: string }) {
     const reason = prompt('Neden bildirmek istiyorsunuz?');
     if (!reason) return;
     try {
-      await supabase.from('reports').insert({ topic_id: topicId, reporter_id: user.id, reason });
+      await supabase.from('reports').insert({ id: generateUUID(), topic_id: topicId, reporter_id: user.id, reason });
       toast.success('Rapor başarıyla gönderildi.');
     } catch (err) {
       console.error(err);

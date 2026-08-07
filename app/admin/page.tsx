@@ -30,7 +30,7 @@ import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
 import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
+import { cn, generateUUID } from '@/lib/utils';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 
 export default function AdminDashboard() {
@@ -429,6 +429,7 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
       .replace(/ /g, '-').replace(/[^\w-]+/g, '');
     
     const insertData: any = {
+      id: generateUUID(),
       name: formData.name,
       description: formData.description,
       icon: formData.icon,
@@ -466,9 +467,10 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
       const insertedParents: any[] = [];
 
       for (const parent of parents) {
+        const parentId = generateUUID();
         const { data, error } = await supabase
           .from('categories')
-          .insert([parent])
+          .insert([{ id: parentId, ...parent }])
           .select()
           .single();
         
@@ -513,6 +515,7 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
           await supabase
             .from('categories')
             .insert([{
+              id: generateUUID(),
               name: sub.name,
               slug: sub.slug,
               icon: sub.icon,

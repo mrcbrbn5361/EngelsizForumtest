@@ -10,6 +10,7 @@ import { TopicEditor } from '@/components/forum/topic-editor';
 import { ArrowLeft, Save, Loader2, Plus } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { generateUUID } from '@/lib/utils';
 
 function NewTopicForm() {
   const router = useRouter();
@@ -101,9 +102,11 @@ function NewTopicForm() {
 
     setLoading(true);
     try {
+      const topicId = generateUUID();
       const { data, error } = await supabase
         .from('topics')
         .insert({
+          id: topicId,
           title: title.trim(),
           category_id: categoryId,
           content: content.trim(),
@@ -119,7 +122,7 @@ function NewTopicForm() {
         throw error;
       }
       
-      router.push(`/discussions/${data.id}`);
+      router.push(`/discussions/${data?.id || topicId}`);
     } catch (err: any) {
       toast.error('Tartışma yayınlanırken hata oluştu: ' + (err.message || 'Bilinmeyen hata'));
     } finally {

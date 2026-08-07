@@ -26,7 +26,7 @@ export function AccessibilityToolbar() {
     <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
         {isOpen && (
             <div
-            className="mb-4 w-[85vw] sm:w-96 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-[2.5rem] border-4 border-border p-5 sm:p-8 bg-card shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] z-[60] animate-in slide-in-from-bottom-4 fade-in duration-300"
+            className="mb-4 w-[calc(100vw-2rem)] sm:w-96 max-w-sm max-h-[calc(100vh-8rem)] overflow-y-auto rounded-3xl sm:rounded-[2.5rem] border-2 sm:border-4 border-border p-4 sm:p-8 bg-card shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] z-[60] animate-in slide-in-from-bottom-4 fade-in duration-300"
             role="dialog"
             aria-label="Erişilebilirlik Ayarları"
           >

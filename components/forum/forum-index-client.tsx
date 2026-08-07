@@ -285,7 +285,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 { label: 'ÇEVRİMİÇİ ÜYE', val: stats?.activeMembers ? stats.activeMembers.length.toString() : '0', sub: 'Lively / Canlı', color: 'primary', live: true }
               ].map((stat, i) => (
                 <div key={i} className={cn(
-                  "bg-card border border-border rounded-3xl p-5 sm:p-7 shadow-sm transition-all hover:shadow-md hover:border-primary/20 relative overflow-hidden group",
+                  "bg-card border border-border rounded-2xl sm:rounded-3xl p-3.5 sm:p-7 shadow-sm transition-all hover:shadow-md hover:border-primary/20 relative overflow-hidden group min-w-0",
                   stat.color === 'primary' && "bg-primary/[0.01] border-primary/10"
                 )}>
                   {stat.live && (
