@@ -155,8 +155,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
           .from('topics')
           .select(`
             *,
-            author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
-            category:categories(name, slug, description, icon, color),
+            author:profiles!topics_author_id_fkey(username, avatar_url, full_name, role, level, xp, is_verified),
+            category:categories!topics_category_id_fkey(name, slug, description, icon, color),
             comments(count)
           `)
           .eq('author_id', userId)
@@ -173,8 +173,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             topic_id,
             topic:topics(
               *,
-              author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
-              category:categories(name, slug, description, icon, color),
+              author:profiles!topics_author_id_fkey(username, avatar_url, full_name, role, level, xp, is_verified),
+              category:categories!topics_category_id_fkey(name, slug, description, icon, color),
               comments(count)
             )
           `)
@@ -197,8 +197,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             topic_id,
             topic:topics(
               *,
-              author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
-              category:categories(name, slug, description, icon, color),
+              author:profiles!topics_author_id_fkey(username, avatar_url, full_name, role, level, xp, is_verified),
+              category:categories!topics_category_id_fkey(name, slug, description, icon, color),
               comments(count)
             )
           `)

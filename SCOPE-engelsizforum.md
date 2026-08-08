@@ -19,6 +19,7 @@ Engelli bireylerin hiçbir bariyerle karşılaşmadan bilgi paylaşabildiği, ta
 2. **Kategorik Tartışmalar:** Temel forum mimarisi.
 3. **Smart Accessibility Toolbar:** Kullanıcının engel türüne göre arayüzü anında maskeleyen bir araç çubuğu.
 4. **AI Destekli İçerik:** Uzun yazıları tek tıkla özetleyen asistan.
+5. **Veritabanı Stabilitesi:** Supabase üzerinde net ilişki tanımları ve explicit FK kullanımı ile hata payının minimize edilmesi.
 
 ---
 

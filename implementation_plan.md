@@ -98,6 +98,13 @@ Bu plan, EngelsizForum platformundaki her bir sayfayı sırayla ele alarak "prem
 
 ---
 
+### [x] ADIM 15: Hata Giderme ve Stabilizasyon (Bug Fixing)
+- **İlişki Hataları:** Supabase üzerinde 'topics' ve 'profiles' tabloları arasındaki ilişki belirsizliklerini `!topics_author_id_fkey` gibi açık anahtar referansları ile giderildi.
+- **Veritabanı Kısıtlamaları:** Eksik olan Foreign Key (Yabancı Anahtar) kısıtlamalarını ekleyen `fix_discussions.sql` betiği hazırlandı.
+- **Derleme Hataları:** Eksik ikon importları ve tip hataları düzeltildi.
+
+---
+
 ## 🚦 Çalışma Kuralları
 1. **Her adımda yalnızca tek bir sayfa üzerinde çalışılacaktır.**
 2. **Asla adımlar atlanmayacak veya otomatik devam edilmeyecektir.**
