@@ -500,70 +500,7 @@ export default function DiscussionDetailPage() {
     }
   }, []);
 
-  const fetchTopic = useCallback(async () => {
-    if (!isSupabaseConfigured || !id) {
-      setTopic(null);
-      setLoading(false);
-      return null;
-    }
-
-    try {
-      // UUID olup olmadığını basitçe kontrol et
-      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
-      
-      let query = supabase
-        .from('topics')
-        .select(`
-          id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
-          author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified),
-          category:categories(id, name, slug, color, icon)
-        `);
-
-      if (isUUID) {
-        // Önce id ile ara
-        const { data, error } = await query.eq('id', id).maybeSingle();
-        
-        if (!error && data) {
-          return handleTopicData(data);
-        }
-        
-        // Eğer id ile bulunamadıysa (nadiren slug bir UUID olabilir), slug ile dene
-        const { data: slugData, error: slugError } = await supabase
-          .from('topics')
-          .select(`
-            id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
-            author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified),
-            category:categories(id, name, slug, color, icon)
-          `)
-          .eq('slug', id)
-          .maybeSingle();
-
-        if (slugError || !slugData) {
-          if (slugError) console.error('UUID sonrası slug arama hatası:', slugError.message);
-          setTopic(null);
-          return null;
-        }
-        return handleTopicData(slugData);
-      } else {
-        // UUID değilse direkt slug ile ara
-        const { data, error } = await query.eq('slug', id).maybeSingle();
-        
-        if (error || !data) {
-          if (error) console.error('Slug ile arama hatası:', error.message);
-          setTopic(null);
-          return null;
-        }
-        return handleTopicData(data);
-      }
-    } catch (err) {
-      console.error('Tartışma getirme sistem hatası:', err);
-      setTopic(null);
-      return null;
-    }
-  }, [id, fetchSimilarTopics]);
-
-  // Topic verisini işleyen yardımcı fonksiyon
-  const handleTopicData = (topicData: any) => {
+  const handleTopicData = useCallback((topicData: any) => {
     setTopic(topicData);
     if (topicData.category_id) {
       fetchSimilarTopics(topicData.category_id, topicData.id);
@@ -580,7 +517,57 @@ export default function DiscussionDetailPage() {
       }
     });
     return topicData;
-  };
+  }, [fetchSimilarTopics]);
+
+  const fetchTopic = useCallback(async () => {
+    if (!isSupabaseConfigured || !id) {
+      setTopic(null);
+      setLoading(false);
+      return null;
+    }
+
+    try {
+      // UUID olup olmadığını kontrol et
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+      
+      const selectFields = `
+        id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
+        author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified),
+        category:categories(id, name, slug, color, icon)
+      `;
+
+      if (isUUID) {
+        // Önce id ile ara
+        const { data, error } = await supabase
+          .from('topics')
+          .select(selectFields)
+          .eq('id', id)
+          .maybeSingle();
+        
+        if (!error && data) {
+          return handleTopicData(data);
+        }
+      }
+      
+      // UUID değilse veya ID ile bulunamadıysa slug ile dene
+      const { data: slugData, error: slugError } = await supabase
+        .from('topics')
+        .select(selectFields)
+        .eq('slug', id)
+        .maybeSingle();
+
+      if (slugError || !slugData) {
+        if (slugError) console.error('Tartışma bulunamadı veya hata:', slugError.message);
+        setTopic(null);
+        return null;
+      }
+      return handleTopicData(slugData);
+    } catch (err) {
+      console.error('Tartışma getirme sistem hatası:', err);
+      setTopic(null);
+      return null;
+    }
+  }, [id, handleTopicData]);
 
   const fetchComments = useCallback(async (topicUuid?: string) => {
     const targetId = topicUuid || id;
