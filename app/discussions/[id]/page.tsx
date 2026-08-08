@@ -508,18 +508,27 @@ export default function DiscussionDetailPage() {
     }
 
     try {
-      const { data, error } = await supabase
+      // UUID format kontrolü
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+      
+      let query = supabase
         .from('topics')
         .select(`
           id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
           author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified, bio),
           category:categories(id, name, slug, color, icon)
-        `)
-        .or(`id.eq.${id},slug.eq.${id}`)
-        .maybeSingle();
+        `);
+
+      if (isUUID) {
+        query = query.or(`id.eq.${id},slug.eq.${id}`);
+      } else {
+        query = query.eq('slug', id);
+      }
+
+      const { data, error } = await query.maybeSingle();
       
       if (error || !data) {
-        console.error('Topic fetch error or no data:', error);
+        if (error) console.error('Tartışma getirme hatası:', error.message);
         setTopic(null);
         return null;
       } else {
@@ -727,8 +736,29 @@ export default function DiscussionDetailPage() {
     return (
       <DashboardLayout>
         <div className="flex-1 flex flex-col items-center justify-center py-32 text-center px-6">
-          <h1 className="text-3xl md:text-5xl font-black mb-6 tracking-tighter">Tartışma Bulunamadı</h1>
-          <button onClick={() => router.push('/discussions')} className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-black text-lg">Geri Dön</button>
+          <div className="bg-muted/30 p-12 rounded-[4rem] border-4 border-border shadow-2xl max-w-2xl w-full animate-in fade-in zoom-in duration-500">
+            <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-8">
+              <Search className="w-12 h-12 text-primary" />
+            </div>
+            <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter uppercase">Tartışma Bulunamadı</h1>
+            <p className="text-muted-foreground text-lg font-medium mb-10 max-w-lg mx-auto">
+              Aradığınız tartışma silinmiş olabilir veya yanlış bir bağlantı kullanıyor olabilirsiniz. Lütfen bağlantıyı kontrol edin veya tartışmalar listesine geri dönün.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <button 
+                onClick={() => router.push('/discussions')} 
+                className="px-10 py-4 bg-primary text-primary-foreground rounded-[2rem] font-black text-xl hover:scale-105 transition-transform active:scale-95 shadow-lg shadow-primary/20"
+              >
+                Tartışmalara Dön
+              </button>
+              <button 
+                onClick={() => router.push('/')} 
+                className="px-10 py-4 bg-background border-4 border-border text-foreground rounded-[2rem] font-black text-xl hover:bg-muted transition-colors"
+              >
+                Ana Sayfa
+              </button>
+            </div>
+          </div>
         </div>
       </DashboardLayout>
     );
