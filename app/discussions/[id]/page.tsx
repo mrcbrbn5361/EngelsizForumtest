@@ -490,7 +490,7 @@ export default function DiscussionDetailPage() {
     try {
       const { data } = await supabase
         .from('topics')
-        .select('*, author:profiles(username)')
+        .select('*, author:profiles!topics_author_id_fkey(username)')
         .eq('category_id', categoryId)
         .neq('id', excludeId)
         .limit(3);
@@ -532,8 +532,8 @@ export default function DiscussionDetailPage() {
       
       const selectFields = `
         id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
-        author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified),
-        category:categories(id, name, slug, color, icon)
+        author:profiles!topics_author_id_fkey(id, username, avatar_url, full_name, role, level, xp, is_verified),
+        category:categories!topics_category_id_fkey(id, name, slug, color, icon)
       `;
 
       if (isUUID) {
@@ -597,7 +597,7 @@ export default function DiscussionDetailPage() {
         .from('comments')
         .select(`
           id, content, topic_id, author_id, parent_id, likes_count, is_solution, created_at, updated_at,
-          author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified)
+          author:profiles!comments_author_id_fkey(id, username, avatar_url, full_name, role, level, xp, is_verified)
         `)
         .eq('topic_id', targetId)
         .order('created_at', { ascending: true });
@@ -652,7 +652,7 @@ export default function DiscussionDetailPage() {
       const { data, error } = await supabase
         .from('comments')
         .insert(insertData)
-        .select('*, author:profiles(*)')
+        .select('*, author:profiles!comments_author_id_fkey(*)')
         .single();
 
       if (error) throw error;

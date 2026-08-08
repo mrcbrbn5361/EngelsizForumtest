@@ -29,8 +29,8 @@ export default async function Home() {
         .from('topics')
         .select(`
           *,
-          author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
-          category:categories(name, slug, description, icon, color),
+          author:profiles!topics_author_id_fkey(id, username, avatar_url, full_name, role, level, xp, is_verified),
+          category:categories!topics_category_id_fkey(name, slug, description, icon, color),
           comments(count)
         `)
         .order('is_pinned', { ascending: false })

@@ -19,7 +19,30 @@ WHERE slug IS NULL OR slug = '';
 DROP INDEX IF EXISTS topics_slug_idx;
 CREATE UNIQUE INDEX topics_slug_idx ON public.topics (slug);
 
--- 4. RLS (Satır Bazlı Güvenlik) Politikalarını Güncelle
+-- 4. İlişkileri Zorla (Foreign Keys)
+-- Eğer daha önce tanımlanmadıysa veya silindiyse tekrar ekle
+DO $$ 
+BEGIN 
+    -- Author FK
+    IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'topics_author_id_fkey') THEN
+        ALTER TABLE public.topics ADD CONSTRAINT topics_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
+    END IF;
+    -- Category FK
+    IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'topics_category_id_fkey') THEN
+        ALTER TABLE public.topics ADD CONSTRAINT topics_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(id) ON DELETE CASCADE;
+    END IF;
+
+    -- Comment Author FK
+    IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'comments_author_id_fkey') THEN
+        ALTER TABLE public.comments ADD CONSTRAINT comments_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
+    END IF;
+    -- Comment Topic FK
+    IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'comments_topic_id_fkey') THEN
+        ALTER TABLE public.comments ADD CONSTRAINT comments_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES public.topics(id) ON DELETE CASCADE;
+    END IF;
+END $$;
+
+-- 5. RLS (Satır Bazlı Güvenlik) Politikalarını Güncelle
 -- UUID hatalarını önlemek için açıkça cast (::uuid) kullanıyoruz.
 ALTER TABLE public.topics ENABLE ROW LEVEL SECURITY;
 
