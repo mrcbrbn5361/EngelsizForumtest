@@ -309,12 +309,12 @@ export default function DiscussionDetailPage() {
   };
 
   const fetchLikeStatus = useCallback(async () => {
-    if (!user || !id) return;
+    if (!user || !topic?.id) return;
     try {
       const { data, error } = await supabase
         .from('reactions')
         .select('id')
-        .eq('topic_id', id)
+        .eq('topic_id', topic.id)
         .eq('user_id', user.id)
         .maybeSingle(); // maybeSingle results in null if not found, instead of error
       
@@ -323,7 +323,7 @@ export default function DiscussionDetailPage() {
     } catch (err) {
       console.error('Error fetching like status:', err);
     }
-  }, [id, user]);
+  }, [topic?.id, user]);
 
   useEffect(() => {
     if (topic) {
@@ -333,7 +333,7 @@ export default function DiscussionDetailPage() {
   }, [topic, fetchLikeStatus]);
 
   const handleToggleLike = async () => {
-    if (!user) {
+    if (!user || !topic?.id) {
       toast('Beğenmek için giriş yapmalısınız.');
       return;
     }
@@ -343,7 +343,7 @@ export default function DiscussionDetailPage() {
         const { error } = await supabase
           .from('reactions')
           .delete()
-          .eq('topic_id', id)
+          .eq('topic_id', topic.id)
           .eq('user_id', user.id);
         
         if (error) throw error;
@@ -353,7 +353,7 @@ export default function DiscussionDetailPage() {
         const { error } = await supabase
           .from('reactions')
           .insert({
-            topic_id: id,
+            topic_id: topic.id,
             user_id: user.id,
             reaction_type: 'like'
           });
@@ -368,28 +368,28 @@ export default function DiscussionDetailPage() {
   };
 
   const deleteTopic = async () => {
-    if (!confirm('Bu tartışmayı silmek istediğinize emin misiniz?')) return;
-    const { error } = await supabase.from('topics').delete().eq('id', id);
+    if (!confirm('Bu tartışmayı silmek istediğinize emin misiniz?') || !topic?.id) return;
+    const { error } = await supabase.from('topics').delete().eq('id', topic.id);
     if (error) toast('Silme işlemi başarısız: ' + error.message);
     else router.push('/discussions');
   };
 
   const togglePin = async () => {
-    if (!topic) return;
+    if (!topic?.id) return;
     const { error } = await supabase
       .from('topics')
       .update({ is_pinned: !topic.is_pinned })
-      .eq('id', id);
+      .eq('id', topic.id);
     if (error) toast('Hata: ' + error.message);
     else setTopic({ ...topic, is_pinned: !topic.is_pinned });
   };
 
   const toggleLock = async () => {
-    if (!topic) return;
+    if (!topic?.id) return;
     const { error } = await supabase
       .from('topics')
       .update({ is_locked: !topic.is_locked })
-      .eq('id', id);
+      .eq('id', topic.id);
     if (error) toast('Hata: ' + error.message);
     else setTopic({ ...topic, is_locked: !topic.is_locked });
   };
@@ -402,14 +402,14 @@ export default function DiscussionDetailPage() {
   };
 
   const handleMarkSolution = async (commentId: string) => {
-    if (!topic || topic.author_id !== user?.id) return;
+    if (!topic?.id || topic.author_id !== user?.id) return;
 
     try {
       // Unmark any previous solution
       await supabase
         .from('comments')
         .update({ is_solution: false })
-        .eq('topic_id', id);
+        .eq('topic_id', topic.id);
 
       const { error } = await supabase
         .from('comments')
@@ -421,7 +421,7 @@ export default function DiscussionDetailPage() {
       await supabase
         .from('topics')
         .update({ is_solved: true })
-        .eq('id', id);
+        .eq('id', topic.id);
 
       setComments(comments.map(c => ({
         ...c,
@@ -437,24 +437,26 @@ export default function DiscussionDetailPage() {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isBookmarking, setIsBookmarking] = useState(false);
 
-  const checkIfBookmarked = useCallback(async () => {
-    if (!user || !id) return;
+  const checkIfBookmarked = useCallback(async (topicUuid?: string) => {
+    const targetId = topicUuid || topic?.id;
+    if (!user || !targetId) return;
     try {
       const { data, error } = await supabase
         .from('bookmarks')
         .select('id')
         .eq('user_id', user.id)
-        .eq('topic_id', id)
+        .eq('topic_id', targetId)
         .maybeSingle();
       
       if (data) setIsBookmarked(true);
+      else setIsBookmarked(false);
     } catch (err) {
       console.error('Error checking bookmark:', err);
     }
-  }, [user, id]);
+  }, [user, topic?.id]);
 
   const toggleBookmark = async () => {
-    if (!user) {
+    if (!user || !topic?.id) {
       toast.error('Lütfen önce giriş yapın.');
       return;
     }
@@ -465,13 +467,13 @@ export default function DiscussionDetailPage() {
           .from('bookmarks')
           .delete()
           .eq('user_id', user.id)
-          .eq('topic_id', id);
+          .eq('topic_id', topic.id);
         setIsBookmarked(false);
         toast.success('Yer işareti kaldırıldı.');
       } else {
         await supabase
           .from('bookmarks')
-          .insert([{ user_id: user.id, topic_id: id }]);
+          .insert([{ user_id: user.id, topic_id: topic.id }]);
         setIsBookmarked(true);
         toast.success('Tartışma kaydedildi.');
       }
@@ -483,68 +485,92 @@ export default function DiscussionDetailPage() {
     }
   };
 
-  const fetchSimilarTopics = useCallback(async (categoryId: string) => {
-    if (!isSupabaseConfigured || !categoryId) return;
+  const fetchSimilarTopics = useCallback(async (categoryId: string, excludeId: string) => {
+    if (!isSupabaseConfigured || !categoryId || !excludeId) return;
     try {
       const { data } = await supabase
         .from('topics')
         .select('*, author:profiles(username)')
         .eq('category_id', categoryId)
-        .neq('id', id)
+        .neq('id', excludeId)
         .limit(3);
       if (data) setSimilarTopics(data);
     } catch (err) {
       console.error('Error fetching similar topics:', err);
     }
-  }, [id]);
+  }, []);
 
   const fetchTopic = useCallback(async () => {
     if (!isSupabaseConfigured || !id) {
       setTopic(null);
       setLoading(false);
-      return;
+      return null;
     }
 
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('topics')
         .select(`
           id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
           author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified, bio),
           category:categories(id, name, slug, color, icon)
-        `)
-        .eq('id', id)
-        .single();
+        `);
+      
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+      
+      if (isUUID) {
+        query = query.eq('id', id);
+      } else {
+        query = query.eq('slug', id);
+      }
+
+      const { data, error } = await query.maybeSingle();
       
       if (error || !data) {
+        console.error('Topic fetch error or no data:', error);
         setTopic(null);
+        return null;
       } else {
-        setTopic(data as any);
-        if ((data as any).category_id) {
-          fetchSimilarTopics((data as any).category_id);
+        const topicData = data as any;
+        setTopic(topicData);
+        if (topicData.category_id) {
+          fetchSimilarTopics(topicData.category_id, topicData.id);
         }
+        
+        // Use the actual UUID from database for other operations
+        const actualId = topicData.id;
+
         // Increment views count
-        supabase.rpc('increment_views', { topic_id: id }).then(({ error: viewError }) => {
+        supabase.rpc('increment_views', { topic_id: actualId }).then(({ error: viewError }) => {
           if (viewError) {
             // Fallback if RPC doesn't exist
             supabase
               .from('topics')
-              .update({ views_count: (data.views_count || 0) + 1 })
-              .eq('id', id)
+              .update({ views_count: (topicData.views_count || 0) + 1 })
+              .eq('id', actualId)
               .then(() => {});
           }
         });
+        return topicData;
       }
     } catch (err) {
       console.error('Error fetching topic:', err);
       setTopic(null);
+      return null;
     }
   }, [id, fetchSimilarTopics]);
 
-  const fetchComments = useCallback(async () => {
-    if (!isSupabaseConfigured || !id) {
+  const fetchComments = useCallback(async (topicUuid?: string) => {
+    const targetId = topicUuid || id;
+    if (!isSupabaseConfigured || !targetId) {
       setComments([]);
       setLoading(false);
+      return;
+    }
+
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(targetId);
+    if (!isUUID && !topicUuid) {
+      // If we don't have a UUID yet and the URL param is a slug, wait for fetchTopic
       return;
     }
 
@@ -564,7 +590,7 @@ export default function DiscussionDetailPage() {
           id, content, topic_id, author_id, parent_id, likes_count, is_solution, created_at, updated_at,
           author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified)
         `)
-        .eq('topic_id', id)
+        .eq('topic_id', targetId)
         .order('created_at', { ascending: true });
       
       if (error) {
@@ -584,23 +610,28 @@ export default function DiscussionDetailPage() {
     let isMounted = true;
     const init = async () => {
       if (id && isMounted) {
-        await fetchTopic();
-        await fetchComments();
-        await checkIfBookmarked();
+        setLoading(true);
+        const fetchedTopic = await fetchTopic();
+        if (fetchedTopic && isMounted) {
+          await fetchComments(fetchedTopic.id);
+          await checkIfBookmarked(fetchedTopic.id);
+        } else {
+          setLoading(false);
+        }
       }
     };
     init();
     return () => { isMounted = false; };
-  }, [id, fetchTopic, fetchComments]);
+  }, [id, fetchTopic, fetchComments, checkIfBookmarked]);
 
   const handlePostComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !newComment.trim() || sending) return;
+    if (!user || !topic?.id || !newComment.trim() || sending) return;
 
     setSending(true);
     try {
       const insertData: any = {
-        topic_id: id,
+        topic_id: topic.id,
         author_id: user.id,
         content: newComment.trim(),
       };
