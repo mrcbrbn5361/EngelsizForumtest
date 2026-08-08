@@ -508,55 +508,79 @@ export default function DiscussionDetailPage() {
     }
 
     try {
-      // UUID format kontrolü
-      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+      // UUID olup olmadığını basitçe kontrol et
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
       
       let query = supabase
         .from('topics')
         .select(`
           id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
-          author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified, bio),
+          author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified),
           category:categories(id, name, slug, color, icon)
         `);
 
       if (isUUID) {
-        query = query.or(`id.eq.${id},slug.eq.${id}`);
-      } else {
-        query = query.eq('slug', id);
-      }
-
-      const { data, error } = await query.maybeSingle();
-      
-      if (error || !data) {
-        if (error) console.error('Tartışma getirme hatası:', error.message);
-        setTopic(null);
-        return null;
-      } else {
-        const topicData = data as any;
-        setTopic(topicData);
-        if (topicData.category_id) {
-          fetchSimilarTopics(topicData.category_id, topicData.id);
+        // Önce id ile ara
+        const { data, error } = await query.eq('id', id).maybeSingle();
+        
+        if (!error && data) {
+          return handleTopicData(data);
         }
         
-        // Görüntülenme sayısını artır
-        const actualId = topicData.id;
-        supabase.rpc('increment_views', { topic_id: actualId }).then(({ error: viewError }) => {
-          if (viewError) {
-            supabase
-              .from('topics')
-              .update({ views_count: (topicData.views_count || 0) + 1 })
-              .eq('id', actualId)
-              .then(() => {});
-          }
-        });
-        return topicData;
+        // Eğer id ile bulunamadıysa (nadiren slug bir UUID olabilir), slug ile dene
+        const { data: slugData, error: slugError } = await supabase
+          .from('topics')
+          .select(`
+            id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
+            author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified),
+            category:categories(id, name, slug, color, icon)
+          `)
+          .eq('slug', id)
+          .maybeSingle();
+
+        if (slugError || !slugData) {
+          if (slugError) console.error('UUID sonrası slug arama hatası:', slugError.message);
+          setTopic(null);
+          return null;
+        }
+        return handleTopicData(slugData);
+      } else {
+        // UUID değilse direkt slug ile ara
+        const { data, error } = await query.eq('slug', id).maybeSingle();
+        
+        if (error || !data) {
+          if (error) console.error('Slug ile arama hatası:', error.message);
+          setTopic(null);
+          return null;
+        }
+        return handleTopicData(data);
       }
     } catch (err) {
-      console.error('Error fetching topic:', err);
+      console.error('Tartışma getirme sistem hatası:', err);
       setTopic(null);
       return null;
     }
   }, [id, fetchSimilarTopics]);
+
+  // Topic verisini işleyen yardımcı fonksiyon
+  const handleTopicData = (topicData: any) => {
+    setTopic(topicData);
+    if (topicData.category_id) {
+      fetchSimilarTopics(topicData.category_id, topicData.id);
+    }
+    
+    const actualId = topicData.id;
+    supabase.rpc('increment_views', { topic_id: actualId }).then(({ error: viewError }) => {
+      if (viewError) {
+        supabase
+          .from('topics')
+          .update({ views_count: (topicData.views_count || 0) + 1 })
+          .eq('id', actualId)
+          .then(() => {});
+      }
+    });
+    return topicData;
+  };
 
   const fetchComments = useCallback(async (topicUuid?: string) => {
     const targetId = topicUuid || id;

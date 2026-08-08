@@ -103,9 +103,24 @@ function NewTopicForm() {
     setLoading(true);
     try {
       const topicId = generateUUID();
-      const slug = title.trim().toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '');
+      
+      // Türkçe karakterleri destekleyen slug oluşturma
+      const slugify = (text: string) => {
+        const trMap: { [key: string]: string } = {
+          'ç': 'c', 'Ç': 'c', 'ğ': 'g', 'Ğ': 'g', 'ı': 'i', 'İ': 'i', 'ö': 'o', 'Ö': 'o', 'ş': 's', 'Ş': 's', 'ü': 'u', 'Ü': 'u'
+        };
+        for (const key in trMap) {
+          text = text.replace(new RegExp(key, 'g'), trMap[key]);
+        }
+        return text.toLowerCase()
+          .replace(/[^-a-zA-Z0-9\s]+/g, '') // Özel karakterleri kaldır
+          .replace(/\s+/g, '-') // Boşlukları tire yap
+          .replace(/-+/g, '-') // Birden fazla tireyi teke indir
+          .trim();
+      };
+
+      let slug = slugify(title);
+      if (!slug) slug = topicId.substring(0, 8); // Eğer başlık boş kalırsa ID'den parça al
       
       const { data, error } = await supabase
         .from('topics')
