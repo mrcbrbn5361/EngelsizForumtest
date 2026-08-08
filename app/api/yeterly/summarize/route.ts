@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { summarizeWithYeterly } from '@/lib/yeterly';
 
 function cleanText(text: string): string {
   if (!text) return "";
@@ -44,14 +45,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'text alanı zorunludur' }, { status: 400 });
     }
 
-    const apiKey = process.env.YETERLY_ENGELSIZFORUM_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: 'Yeterly API anahtarı (YETERLY_ENGELSIZFORUM_API_KEY) sunucuda tanımlanmamış.' },
-        { status: 500 }
-      );
-    }
-
     const cleanedText = cleanText(text);
 
     // Smart limit check: if content is already short, return dynamic friendly overview directly
@@ -60,50 +53,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ project_id: 'engelsizforum', summary: shortSummary, model: 'local-extractor' });
     }
 
-    const apiBase = process.env.YETERLY_ENGELSIZFORUM_API_BASE || 'https://engelsizforum-ai.yeterly.ai';
-
-    let upstreamSuccess = false;
-    let data: any = null;
-    let errorMsg = '';
-
     try {
-      const upstream = await fetch(
-        `${apiBase}/v1/projects/engelsizforum/summarize`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            text,
-            language: 'tr',
-            style: 'short',
-          }),
-          cache: 'no-store',
-        }
-      );
-
-      const responseText = await upstream.text();
-      try {
-        data = JSON.parse(responseText);
-      } catch (e) {
-        // Not a JSON response
-      }
-
-      if (upstream.ok && data && data.summary) {
-        upstreamSuccess = true;
-      } else {
-        errorMsg = `HTTP Durum: ${upstream.status}. Yanıt: ${responseText}`;
-      }
-    } catch (e: any) {
-      errorMsg = e.message || 'Bağlantı hatası';
-    }
-
-    if (upstreamSuccess) {
+      const data = await summarizeWithYeterly({ text });
       return NextResponse.json(data);
-    } else {
-      console.warn(`[Yeterly API Warning] Upstream summary failed (${errorMsg}). Falling back to local smart summary.`);
+    } catch (error: any) {
+      console.warn(`[Yeterly API Warning] Upstream summary failed (${error.message}). Falling back to local smart summary.`);
       const localSummary = fallbackSummary(text);
       return NextResponse.json({
         project_id: 'engelsizforum',

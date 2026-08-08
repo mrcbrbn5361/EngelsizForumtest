@@ -103,6 +103,11 @@ Bu plan, EngelsizForum platformundaki her bir sayfayı sırayla ele alarak "prem
 - **Veritabanı Kısıtlamaları:** Eksik olan Foreign Key (Yabancı Anahtar) kısıtlamalarını ekleyen `fix_discussions.sql` betiği hazırlandı.
 - **Derleme Hataları:** Eksik ikon importları ve tip hataları düzeltildi.
 
+### [x] ADIM 16: Yeterly AI API Entegrasyonu
+- **Utility Katmanı:** `lib/yeterly.ts` oluşturularak özetleme ve seslendirme servisleri merkezi hale getirildi.
+- **Rota Güncellemeleri:** `/api/summarize`, `/api/yeterly/summarize` ve `/api/yeterly/tts` rotaları yeni utility katmanını kullanacak şekilde refaktörize edildi.
+- **Güvenlik:** API anahtarlarının sunucu tarafında kalması ve istemciye sızmaması garanti altına alındı.
+
 ---
 
 ## 🚦 Çalışma Kuralları

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateContentWithRetry } from "@/lib/gemini";
+import { summarizeWithYeterly } from "@/lib/yeterly";
 
 function cleanText(text: string): string {
   if (!text) return "";
@@ -56,43 +57,13 @@ export async function POST(req: NextRequest) {
     }
 
     // 1. Try Yeterly API if key is configured
-    const yeterlyKey = process.env.YETERLY_ENGELSIZFORUM_API_KEY;
-    if (yeterlyKey) {
-      const apiBase = process.env.YETERLY_ENGELSIZFORUM_API_BASE || 'https://engelsizforum-ai.yeterly.ai';
-      try {
-        const upstream = await fetch(
-          `${apiBase}/v1/projects/engelsizforum/summarize`,
-          {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${yeterlyKey}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              text: textToSummarize,
-              language: 'tr',
-              style: 'short',
-            }),
-            cache: 'no-store',
-          }
-        );
-
-        const responseText = await upstream.text();
-        let data: any = null;
-        try {
-          data = JSON.parse(responseText);
-        } catch (e) {
-          // Not a JSON response
-        }
-
-        if (upstream.ok && data && data.summary) {
-          return NextResponse.json({ text: data.summary });
-        } else {
-          console.warn(`[Yeterly AI Warning] Upstream summary failed. HTTP: ${upstream.status}`);
-        }
-      } catch (yeterlyError: any) {
-        console.warn("[Yeterly AI Warning] Connection failed:", yeterlyError.message);
+    try {
+      const data = await summarizeWithYeterly({ text: textToSummarize });
+      if (data && data.summary) {
+        return NextResponse.json({ text: data.summary });
       }
+    } catch (yeterlyError: any) {
+      console.warn("[Yeterly AI Warning] Fallback triggered due to:", yeterlyError.message);
     }
 
     // 2. Try Gemini API as a secondary fallback if Yeterly failed or is not configured

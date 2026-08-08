@@ -20,7 +20,7 @@ Bu belge, EngelsizForum projesinin mimarisini, frontend, backend ve veritabanı 
 
 ## 3. Backend (Next.js API & Server Actions)
 - **API Routes (`app/api/`):** 
-  - `summarize/`, `yeterly/`: AI destekli özetleme ve metin okuma.
+  - `summarize/`, `yeterly/`: AI destekli özetleme ve metin okuma. (Yeterly AI API entegrasyonu tamamlandı, Base URL: https://engelsizforum-ai.yeterly.ai)
   - `visitor-stats/`: Ziyaretçi takibi.
   - `admin/`: Admin operasyonları.
 - **Server Actions (`app/actions.ts`):** Veritabanı ile doğrudan sunucu tarafı etkileşimi (recordVisitor, getVisitorStats).
