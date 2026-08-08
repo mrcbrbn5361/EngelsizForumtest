@@ -652,7 +652,7 @@ export default function DiscussionDetailPage() {
       const { data, error } = await supabase
         .from('comments')
         .insert(insertData)
-        .select('*, author:profiles!comments_author_id_fkey(*)')
+        .select('*, author:profiles(*)')
         .single();
 
       if (error) throw error;
