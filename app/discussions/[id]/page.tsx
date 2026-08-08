@@ -508,23 +508,15 @@ export default function DiscussionDetailPage() {
     }
 
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from('topics')
         .select(`
           id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
           author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified, bio),
           category:categories(id, name, slug, color, icon)
-        `);
-      
-      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
-      
-      if (isUUID) {
-        query = query.eq('id', id);
-      } else {
-        query = query.eq('slug', id);
-      }
-
-      const { data, error } = await query.maybeSingle();
+        `)
+        .or(`id.eq.${id},slug.eq.${id}`)
+        .maybeSingle();
       
       if (error || !data) {
         console.error('Topic fetch error or no data:', error);
@@ -537,13 +529,10 @@ export default function DiscussionDetailPage() {
           fetchSimilarTopics(topicData.category_id, topicData.id);
         }
         
-        // Use the actual UUID from database for other operations
+        // Görüntülenme sayısını artır
         const actualId = topicData.id;
-
-        // Increment views count
         supabase.rpc('increment_views', { topic_id: actualId }).then(({ error: viewError }) => {
           if (viewError) {
-            // Fallback if RPC doesn't exist
             supabase
               .from('topics')
               .update({ views_count: (topicData.views_count || 0) + 1 })
