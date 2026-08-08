@@ -191,8 +191,8 @@ function DiscussionsContent() {
         .from('topics')
         .select(`
           id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
-          author:profiles!topics_author_id_fkey(id, username, avatar_url, full_name, role, level, xp, is_verified),
-          category:categories!topics_category_id_fkey(id, name, slug, color, icon)
+          author:profiles(*),
+          category:categories(name, slug, id)
         `);
 
       if (searchQuery) {

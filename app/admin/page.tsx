@@ -294,7 +294,7 @@ function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
     setLoading(true);
     const { data, error } = await supabase
       .from('topics')
-      .select('*, author:profiles!topics_author_id_fkey(username)')
+      .select('*, author:profiles(username)')
       .order('created_at', { ascending: false })
       .limit(20);
     

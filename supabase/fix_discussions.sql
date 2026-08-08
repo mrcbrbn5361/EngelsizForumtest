@@ -1,70 +1,45 @@
--- EngelsizForum - Tartışma Bulunamadı Sorunu Çözüm SQL Betiği
--- Bu scripti Supabase SQL Editor üzerinden çalıştırarak veritabanı sorunlarını düzeltebilirsiniz.
+-- EngelsizForum Robust Relationship Fix
+-- Run this script in your Supabase SQL Editor to fix connection between topics and profiles.
 
--- 1. Slug sütununu kontrol et ve yoksa ekle
+-- 1. Topics Table Fixes
 DO $$ 
 BEGIN 
-    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'topics' AND column_name = 'slug') THEN
-        ALTER TABLE public.topics ADD COLUMN slug TEXT;
-    END IF;
-END $$;
-
--- 2. Eksik slug'ları başlığa göre otomatik doldur
--- regexp_replace ve lower kullanımı güvenlidir.
-UPDATE public.topics 
-SET slug = lower(regexp_replace(title, '[^a-zA-Z0-9]+', '-', 'g')) 
-WHERE slug IS NULL OR slug = '';
-
--- 3. Slug için benzersiz (unique) indeks oluştur
-DROP INDEX IF EXISTS topics_slug_idx;
-CREATE UNIQUE INDEX topics_slug_idx ON public.topics (slug);
-
--- 4. İlişkileri Zorla (Foreign Keys)
--- Eğer daha önce tanımlanmadıysa veya silindiyse tekrar ekle
-DO $$ 
-BEGIN 
-    -- Author FK
+    -- Check and add author_id foreign key
     IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'topics_author_id_fkey') THEN
         ALTER TABLE public.topics ADD CONSTRAINT topics_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
     END IF;
-    -- Category FK
+
+    -- Check and add category_id foreign key
     IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'topics_category_id_fkey') THEN
         ALTER TABLE public.topics ADD CONSTRAINT topics_category_id_fkey FOREIGN KEY (category_id) REFERENCES public.categories(id) ON DELETE CASCADE;
     END IF;
+END $$;
 
-    -- Comment Author FK
+-- 2. Comments Table Fixes
+DO $$ 
+BEGIN 
+    -- Check and add author_id foreign key
     IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'comments_author_id_fkey') THEN
         ALTER TABLE public.comments ADD CONSTRAINT comments_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
     END IF;
-    -- Comment Topic FK
+
+    -- Check and add topic_id foreign key
     IF NOT EXISTS (SELECT 1 FROM information_schema.table_constraints WHERE constraint_name = 'comments_topic_id_fkey') THEN
         ALTER TABLE public.comments ADD CONSTRAINT comments_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES public.topics(id) ON DELETE CASCADE;
     END IF;
 END $$;
 
--- 5. RLS (Satır Bazlı Güvenlik) Politikalarını Güncelle
--- UUID hatalarını önlemek için açıkça cast (::uuid) kullanıyoruz.
-ALTER TABLE public.topics ENABLE ROW LEVEL SECURITY;
+-- 3. Trigger PostgREST cache reload by touching the table comments
+COMMENT ON TABLE public.topics IS 'EngelsizForum Topics';
+COMMENT ON TABLE public.profiles IS 'EngelsizForum Profiles';
 
-DROP POLICY IF EXISTS "Topics are viewable by everyone" ON public.topics;
-CREATE POLICY "Topics are viewable by everyone" ON topics FOR SELECT USING (true);
+-- 4. Enable RLS and verify policies
+ALTER TABLE public.topics ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view topics" ON public.topics;
+CREATE POLICY "Anyone can view topics" ON public.topics FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Users can create topics" ON public.topics;
-CREATE POLICY "Users can create topics" ON public.topics FOR INSERT WITH CHECK (auth.uid() = author_id::uuid);
+CREATE POLICY "Users can create topics" ON public.topics FOR INSERT WITH CHECK (auth.uid() = author_id);
 
 DROP POLICY IF EXISTS "Authors can update their topics" ON public.topics;
-CREATE POLICY "Authors can update their topics" ON public.topics FOR UPDATE USING (auth.uid() = author_id::uuid);
-
--- 5. Kullanıcının isteği üzerine mevcut "bozuk" konuları temizle
--- Not: Bu işlem TÜM konuları silecektir.
-TRUNCATE public.topics CASCADE;
-
--- 6. Görüntülenme sayacı fonksiyonunu kontrol et
-CREATE OR REPLACE FUNCTION increment_views(topic_id UUID)
-RETURNS void AS $$
-BEGIN
-  UPDATE public.topics
-  SET views_count = coalesce(views_count, 0) + 1
-  WHERE id = topic_id;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+CREATE POLICY "Authors can update their topics" ON public.topics FOR UPDATE USING (auth.uid() = author_id);
