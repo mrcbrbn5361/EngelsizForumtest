@@ -5,10 +5,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Shield, ChevronRight, Accessibility, Eye, Zap, Type } from 'lucide-react';
+import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Shield, ChevronRight, Accessibility, Eye, Zap, Type, Contrast, MoveHorizontal, Target, RotateCcw } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useAuth } from '@/components/providers/auth-provider';
+import { useAccessibility } from '@/components/providers/accessibility-provider';
 import { NotificationCenter } from '@/components/ui/notification-center';
 import { cn } from '@/lib/utils';
 
@@ -17,6 +18,16 @@ import { cn } from '@/lib/utils';
  */
 export function Navbar() {
   const { user, profile, loading } = useAuth();
+  const { 
+    fontSize, 
+    highContrast, 
+    dyslexicFont, 
+    reducedMotion, 
+    bionicReading,
+    focusMode,
+    updateSettings, 
+    resetSettings 
+  } = useAccessibility();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = React.useState(false);
 
@@ -68,49 +79,94 @@ export function Navbar() {
               {mounted && (
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content 
-                    className="z-[100] min-w-[220px] bg-background border border-border p-2 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200"
+                    className="z-[100] min-w-[280px] bg-background border border-border p-3 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200"
                     align="end"
                     sideOffset={8}
                   >
-                  <DropdownMenu.Label className="px-3 py-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                  <DropdownMenu.Label className="px-3 py-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border mb-2">
                     Erişilebilirlik Araçları
                   </DropdownMenu.Label>
                   
-                  <DropdownMenu.Item 
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/10 hover:text-primary outline-none cursor-pointer transition-colors"
-                    onSelect={() => toast.success('Biyonik Okuma Modu Aktifleştirildi')}
-                  >
-                    <Zap size={18} className="text-primary" />
-                    <span>Biyonik Okuma</span>
-                  </DropdownMenu.Item>
+                  {/* Font Size */}
+                  <div className="px-3 py-2 space-y-2">
+                    <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                      <Type size={14} className="text-primary" /> Metin Boyutu
+                    </label>
+                    <div className="flex gap-1.5">
+                      {(['sm', 'md', 'lg', 'xl'] as const).map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => updateSettings({ fontSize: size })}
+                          className={cn(
+                            "flex-1 rounded-lg py-1.5 text-[10px] font-black uppercase transition-all",
+                            fontSize === size 
+                              ? "bg-primary text-primary-foreground shadow-sm" 
+                              : "bg-muted hover:bg-accent text-muted-foreground"
+                          )}
+                          aria-pressed={fontSize === size}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-                  <DropdownMenu.Item 
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/10 hover:text-primary outline-none cursor-pointer transition-colors"
-                    onSelect={() => toast.success('Yüksek Kontrast Modu Aktifleştirildi')}
-                  >
-                    <Eye size={18} className="text-primary" />
-                    <span>Yüksek Kontrast</span>
-                  </DropdownMenu.Item>
+                  <DropdownMenu.Separator className="h-px bg-border my-2" />
 
-                  <DropdownMenu.Item 
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/10 hover:text-primary outline-none cursor-pointer transition-colors"
-                    onSelect={() => toast.success('Okuma Odağı Modu Aktifleştirildi')}
-                  >
-                    <Type size={18} className="text-primary" />
-                    <span>Okuma Odağı</span>
-                  </DropdownMenu.Item>
+                  {/* Toggles */}
+                  <div className="space-y-1">
+                    <AccessibilityToggle 
+                      icon={<Zap size={16} />} 
+                      label="Biyonik Okuma" 
+                      active={bionicReading} 
+                      onClick={() => updateSettings({ bionicReading: !bionicReading })} 
+                    />
+                    <AccessibilityToggle 
+                      icon={<Eye size={16} />} 
+                      label="Yüksek Kontrast" 
+                      active={highContrast} 
+                      onClick={() => updateSettings({ highContrast: !highContrast })} 
+                    />
+                    <AccessibilityToggle 
+                      icon={<Contrast size={16} />} 
+                      label="Disleksi Fontu" 
+                      active={dyslexicFont} 
+                      onClick={() => updateSettings({ dyslexicFont: !dyslexicFont })} 
+                    />
+                    <AccessibilityToggle 
+                      icon={<MoveHorizontal size={16} />} 
+                      label="Hareketi Azalt" 
+                      active={reducedMotion} 
+                      onClick={() => updateSettings({ reducedMotion: !reducedMotion })} 
+                    />
+                    <AccessibilityToggle 
+                      icon={<Target size={16} />} 
+                      label="Odak Modu" 
+                      active={focusMode} 
+                      onClick={() => updateSettings({ focusMode: !focusMode })} 
+                    />
+                  </div>
 
-                  <DropdownMenu.Separator className="h-px bg-border my-1" />
+                  <DropdownMenu.Separator className="h-px bg-border my-2" />
 
-                  <DropdownMenu.Item asChild>
-                    <Link 
-                      href="/accessibility"
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest text-muted-foreground hover:bg-muted hover:text-foreground outline-none cursor-pointer transition-colors"
+                  <div className="px-1 flex flex-col gap-1">
+                    <button
+                      onClick={resetSettings}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl border border-border py-2 text-[10px] font-black uppercase tracking-widest hover:bg-muted transition-colors"
                     >
-                      <Info size={14} />
-                      Erişilebilirlik Raporu
-                    </Link>
-                  </DropdownMenu.Item>
+                      <RotateCcw size={14} /> Varsayılana Dön
+                    </button>
+
+                    <DropdownMenu.Item asChild>
+                      <Link 
+                        href="/accessibility"
+                        className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:bg-muted hover:text-foreground outline-none cursor-pointer transition-colors"
+                      >
+                        <Info size={14} />
+                        Erişilebilirlik Raporu
+                      </Link>
+                    </DropdownMenu.Item>
+                  </div>
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
               )}
@@ -382,5 +438,39 @@ function MobileNavLink({ href, icon, label, onClick }: { href: string; icon: Rea
       </div>
       <span className="uppercase tracking-widest">{label}</span>
     </Link>
+  );
+}
+
+function AccessibilityToggle({ icon, label, active, onClick }: { icon: React.ReactNode; label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={(e) => {
+        e.preventDefault();
+        onClick();
+      }}
+      className={cn(
+        "flex w-full items-center justify-between px-3 py-2 rounded-xl transition-colors outline-none",
+        active ? "bg-primary/10 text-primary" : "hover:bg-muted text-muted-foreground hover:text-foreground"
+      )}
+    >
+      <div className="flex items-center gap-3">
+        <div className={cn(
+          "p-1.5 rounded-lg",
+          active ? "bg-primary text-primary-foreground" : "bg-muted text-primary/60"
+        )}>
+          {icon}
+        </div>
+        <span className="text-xs font-bold">{label}</span>
+      </div>
+      <div className={cn(
+        "h-4 w-8 rounded-full border border-border relative transition-colors",
+        active ? "bg-primary" : "bg-muted"
+      )}>
+        <div className={cn(
+          "absolute top-0.5 left-0.5 h-2.5 w-2.5 rounded-full bg-white transition-transform",
+          active ? "translate-x-4" : "translate-x-0"
+        )} />
+      </div>
+    </button>
   );
 }

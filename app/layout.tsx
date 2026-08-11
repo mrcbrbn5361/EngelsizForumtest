@@ -127,8 +127,6 @@ const jsonLd = {
   ]
 };
 
-import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="tr" className={`${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} h-full`} suppressHydrationWarning>

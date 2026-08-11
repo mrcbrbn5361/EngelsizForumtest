@@ -5,7 +5,6 @@ import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
-import { AccessibilityToolbar } from '@/components/ui/accessibility-toolbar';
 import { TopicEditor } from '@/components/forum/topic-editor';
 import { ArrowLeft, Save, Loader2, Plus } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
@@ -279,7 +278,6 @@ export default function NewTopicPage() {
         <NewTopicForm />
       </Suspense>
       <Footer />
-      <AccessibilityToolbar />
     </div>
   );
 }

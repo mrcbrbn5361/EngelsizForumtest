@@ -3,9 +3,6 @@
 import React from 'react';
 import { Navbar } from './navbar';
 import { Footer } from './footer';
-import dynamic from 'next/dynamic';
-
-const AccessibilityToolbar = dynamic(() => import('@/components/ui/accessibility-toolbar').then((mod) => mod.AccessibilityToolbar), { ssr: false });
 
 export function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,7 +12,6 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <Footer />
-      <AccessibilityToolbar />
     </div>
   );
 }
