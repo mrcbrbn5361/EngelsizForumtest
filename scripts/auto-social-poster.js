@@ -406,11 +406,6 @@ async function main() {
     const rawNote = await generateUpdateNote(commitMessage, diffContent, geminiApiKey);
     const finalNote = sanitizeAndTruncateText(rawNote, 9900);
 
-    // Save generated update text to .tiktok_update.txt
-    const fs = require('fs');
-    fs.writeFileSync('.tiktok_update.txt', finalNote, 'utf8');
-    process.stdout.write('✅ Güncelleme notu üretildi ve .tiktok_update.txt dosyasına yazıldı.\n');
-
     // 1. Post to LinkedIn via Make.com Webhook (Ücretsiz & Kolay Yol)
     if (makeWebhookUrl) {
       try {
