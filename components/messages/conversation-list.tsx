@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
+import Image from 'next/image';
 import { Profile } from '@/types/database';
 import { formatDistanceToNow } from 'date-fns';
 import { tr } from 'date-fns/locale';
@@ -62,15 +63,16 @@ export function ConversationList({ conversations, selectedId, onSelect, loading 
             selectedId === conv.id ? 'bg-primary/5 border-l-4 border-l-primary' : 'border-l-4 border-l-transparent'
           }`}
         >
-          <div className="relative">
-            <img
+          <div className="relative size-12 shrink-0">
+            <Image
               src={conv.other_user.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${conv.other_user.username}`}
-              alt={conv.other_user.full_name || 'Kullanıcı'}
-              className="size-12 rounded-full border bg-muted"
+              alt={`${conv.other_user.full_name || 'Kullanıcı'} profil fotoğrafı`}
+              fill
+              className="rounded-full border bg-muted object-cover"
               referrerPolicy="no-referrer"
             />
             {conv.other_user.is_verified && (
-              <div className="absolute -bottom-1 -right-1 size-5 bg-primary rounded-full border-2 border-background flex items-center justify-center text-[10px] text-white">
+              <div className="absolute -bottom-1 -right-1 size-5 bg-primary rounded-full border-2 border-background flex items-center justify-center text-[10px] text-white z-10">
                 ✓
               </div>
             )}

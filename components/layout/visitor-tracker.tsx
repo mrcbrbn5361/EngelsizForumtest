@@ -6,6 +6,9 @@ import { v4 as uuidv4 } from 'uuid';
 export default function VisitorTracker() {
   useEffect(() => {
     const trackVisitor = async () => {
+      // Small delay to prioritize LCP and critical rendering
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       // Get or create a persistent device ID for this browser
       let deviceId = null;
       try {

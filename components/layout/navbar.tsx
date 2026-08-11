@@ -67,16 +67,16 @@ export function Navbar() {
           
           <div className="flex items-center gap-1 min-w-[32px] sm:min-w-[48px]">
             {/* Accessibility Menu */}
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger asChild>
-                <button
-                  className="flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
-                  aria-label="Erişilebilirlik Araçlarını Aç"
-                >
-                  <Accessibility size={22} aria-hidden="true" />
-                </button>
-              </DropdownMenu.Trigger>
-              {mounted && (
+            {mounted ? (
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger asChild>
+                  <button
+                    className="flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
+                    aria-label="Erişilebilirlik Araçlarını Aç"
+                  >
+                    <Accessibility size={22} aria-hidden="true" />
+                  </button>
+                </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content 
                     className="z-[100] min-w-[280px] bg-background border border-border p-3 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200"
@@ -169,8 +169,15 @@ export function Navbar() {
                   </div>
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
-              )}
             </DropdownMenu.Root>
+            ) : (
+              <button
+                className="flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none"
+                aria-label="Erişilebilirlik Araçlarını Aç"
+              >
+                <Accessibility size={22} aria-hidden="true" />
+              </button>
+            )}
 
             <Link
               href="/search"
@@ -202,7 +209,7 @@ export function Navbar() {
                     <div className="relative h-7 w-7 md:h-8 md:w-8 rounded-lg overflow-hidden border border-border group-hover:border-primary/30">
                       <Image 
                         src={profile?.avatar_url || user.user_metadata.avatar_url || user.user_metadata.picture} 
-                        alt="Profil resmim" 
+                        alt={`${profile?.full_name || user.user_metadata?.full_name || 'Kullanıcı'} profil fotoğrafı`} 
                         fill
                         className="object-cover"
                         referrerPolicy="no-referrer"
@@ -333,7 +340,7 @@ export function Navbar() {
                               {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
                                 <Image 
                                   src={user.user_metadata.avatar_url || user.user_metadata.picture} 
-                                  alt="" 
+                                  alt={`${user.user_metadata?.full_name || 'Kullanıcı'} profil fotoğrafı`} 
                                   width={40} 
                                   height={40} 
                                   className="object-cover"

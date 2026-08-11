@@ -95,10 +95,11 @@ function CommentItem({
               "rounded-[1.5rem] bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-all overflow-hidden border-2 border-transparent group-hover:border-primary/20 relative",
               depth > 0 ? "w-10 h-10 md:w-14 md:h-14" : "w-14 h-14 md:w-20 md:h-20"
             )}>
-              <img 
+              <Image 
                 src={comment.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${comment.author?.username || 'user'}`} 
-                alt="Profil" 
-                className="object-cover h-full w-full"
+                alt={`${comment.author?.username || 'Kullanıcı'} profil fotoğrafı`} 
+                fill
+                className="object-cover"
                 referrerPolicy="no-referrer"
               />
             </div>
@@ -889,10 +890,11 @@ export default function DiscussionDetailPage() {
                     </div>
                     <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-3 text-[10px] font-black text-foreground uppercase tracking-[0.2em] hover:opacity-80 transition-opacity">
                       <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border relative">
-                        <img 
+                        <Image 
                           src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`} 
-                          alt="Profil" 
-                          className="object-cover h-full w-full"
+                          alt={`${topic.author?.username || 'Kullanıcı'} profil fotoğrafı`} 
+                          fill
+                          className="object-cover"
                           referrerPolicy="no-referrer"
                         />
                       </div>
@@ -1137,11 +1139,13 @@ export default function DiscussionDetailPage() {
               <h3 className="vibe-label ml-0 mb-10">YAZAR PROFİLİ</h3>
               <div className="flex flex-col items-center text-center space-y-6 relative z-10">
                 <div className="relative group">
-                  <div className="w-24 h-24 rounded-[2rem] border-4 border-card shadow-2xl overflow-hidden bg-muted group-hover:scale-105 transition-transform duration-500">
-                    <img 
+                  <div className="w-24 h-24 rounded-[2rem] border-4 border-card shadow-2xl overflow-hidden bg-muted group-hover:scale-105 transition-transform duration-500 relative">
+                    <Image 
                       src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username}`} 
-                      alt="" 
-                      className="w-full h-full object-cover"
+                      alt={`${topic.author?.username || 'isimsiz'} profil fotoğrafı`} 
+                      fill
+                      className="object-cover"
+                      referrerPolicy="no-referrer"
                     />
                   </div>
                   {topic.author?.is_verified && (

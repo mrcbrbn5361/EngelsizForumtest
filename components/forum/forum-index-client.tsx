@@ -464,10 +464,11 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                       <div className="flex items-center justify-between gap-6 text-[11px] text-muted-foreground pointer-events-none border-t border-border/50 pt-6">
                         <div className="flex items-center gap-3.5 min-w-0">
                           <div className="w-9 h-9 rounded-2xl bg-muted flex items-center justify-center overflow-hidden border border-border relative shadow-sm group-hover:border-primary/30 transition-all">
-                            <img 
+                            <Image 
                               src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`} 
-                              alt="" 
-                              className="object-cover h-full w-full" 
+                              alt={`${topic.author?.username || 'Kullanıcı'} avatarı`} 
+                              fill
+                              className="object-cover" 
                               referrerPolicy="no-referrer" 
                             />
                           </div>
@@ -503,7 +504,19 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 <div className="space-y-8">
                   <div className="flex items-center gap-5">
                     <div className="w-16 h-16 rounded-[1.5rem] border-2 border-primary/20 overflow-hidden bg-muted relative shadow-md">
-                      {profile?.avatar_url ? <img src={profile.avatar_url} alt="" className="object-cover h-full w-full" referrerPolicy="no-referrer" /> : <div className="w-full h-full flex items-center justify-center text-primary bg-primary/10"><User size={28} /></div>}
+                      {profile?.avatar_url ? (
+                        <Image 
+                          src={profile.avatar_url} 
+                          alt={`${profile.username} profil resmi`} 
+                          fill 
+                          className="object-cover" 
+                          referrerPolicy="no-referrer" 
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-primary bg-primary/10">
+                          <User size={28} />
+                        </div>
+                      )}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="font-black text-lg text-foreground truncate uppercase tracking-tight">{profile?.full_name || profile?.username || user.email}</div>
@@ -530,7 +543,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                   {onlineMembers.map(member => (
                     <Link href={`/profile/${member.id}`} key={member.id} className="relative flex flex-col items-center group outline-none">
                       <div className="w-12 h-12 rounded-2xl border border-border overflow-hidden bg-muted relative cursor-pointer hover:border-primary/50 transition-all">
-                        <img src={member.avatar} alt={member.name} className="object-cover h-full w-full" referrerPolicy="no-referrer" />
+                        <Image src={member.avatar} alt={`${member.name || member.username || 'Kullanıcı'} profil fotoğrafı`} fill className="object-cover" referrerPolicy="no-referrer" />
                       </div>
                       <span className="text-[8px] font-black text-muted-foreground truncate w-full text-center mt-2 uppercase tracking-tighter hover:text-primary transition-colors">@{member.username}</span>
                     </Link>
@@ -550,11 +563,13 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                   {stats.topContributors.map((contributor, i) => (
                     <Link key={contributor.id} href={`/profile/${contributor.id}`} className="flex items-center gap-4 group">
                       <div className="relative">
-                        <div className="w-10 h-10 rounded-xl border border-border overflow-hidden bg-muted">
-                          <img 
+                        <div className="w-10 h-10 rounded-xl border border-border overflow-hidden bg-muted relative">
+                          <Image 
                             src={contributor.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${contributor.username}`} 
-                            alt="" 
-                            className="object-cover h-full w-full" 
+                            alt={`${contributor.username} avatarı`} 
+                            fill
+                            className="object-cover" 
+                            referrerPolicy="no-referrer"
                           />
                         </div>
                         <div className="absolute -top-2 -left-2 w-5 h-5 rounded-full bg-primary text-[10px] font-black text-white flex items-center justify-center shadow-lg border-2 border-card">

@@ -8,6 +8,7 @@ import {
   Scale, Type, Eye, CheckCircle2, Pin, AlertCircle, Volume2
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
@@ -812,14 +813,15 @@ function DiscussionsContent() {
                   </h2>
                 </div>
                 <div className="space-y-4">
-                  {topContributors.map((user, i) => (
-                    <Link key={user.id} href={`/profile/${user.id}`} className="flex items-center gap-3 group">
+                  {topContributors.map((contributor, i) => (
+                    <Link key={contributor.id} href={`/profile/${contributor.id}`} className="flex items-center gap-3 group">
                       <div className="relative">
-                        <div className="w-8 h-8 rounded-lg border border-border bg-muted overflow-hidden">
-                          <img 
-                            src={user.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} 
-                            alt="" 
-                            className="w-full h-full object-cover"
+                        <div className="w-8 h-8 rounded-lg border border-border bg-muted overflow-hidden relative">
+                          <Image 
+                            src={contributor.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${contributor.username}`} 
+                            alt={`${contributor.username} profil fotoğrafı`} 
+                            fill
+                            className="object-cover"
                           />
                         </div>
                         <div className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-primary text-[8px] font-black text-white flex items-center justify-center border border-card">
@@ -828,11 +830,11 @@ function DiscussionsContent() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-black text-foreground truncate group-hover:text-primary transition-colors">
-                          @{user.username}
+                          @{contributor.username}
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">LVL {user.level}</span>
-                          <span className="text-[9px] font-black text-primary uppercase tracking-widest">{user.xp} XP</span>
+                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">LVL {contributor.level}</span>
+                          <span className="text-[9px] font-black text-primary uppercase tracking-widest">{contributor.xp} XP</span>
                         </div>
                       </div>
                     </Link>

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 export default function AboutPage() {
@@ -212,8 +213,8 @@ export default function AboutPage() {
                 transition={{ delay: idx * 0.1 }}
                 className="bg-card border border-border rounded-[2rem] p-10 text-center hover:border-primary/30 transition-all group"
               >
-                <div className="w-24 h-24 mx-auto rounded-full border-4 border-primary/10 overflow-hidden bg-muted mb-6 group-hover:scale-105 transition-transform">
-                  <img src={guide.avatar} alt={guide.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                <div className="w-24 h-24 mx-auto rounded-full border-4 border-primary/10 overflow-hidden bg-muted mb-6 group-hover:scale-105 transition-transform relative">
+                  <Image src={guide.avatar} alt={`${guide.name} profil fotoğrafı`} fill className="object-cover" referrerPolicy="no-referrer" />
                 </div>
                 <h3 className="text-2xl font-black text-foreground uppercase tracking-tight mb-1">{guide.name}</h3>
                 <div className="text-[10px] font-black text-primary uppercase tracking-widest mb-6 px-3 py-1 bg-primary/10 rounded-full inline-block">

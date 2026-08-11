@@ -115,13 +115,12 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] md:text-xs text-muted-foreground relative z-10">
         <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-2 min-w-0 relative z-20 pointer-events-auto hover:opacity-80 transition-opacity">
-          <div className="h-5 w-5 md:h-7 md:w-7 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border shrink-0">
-            <img 
+          <div className="h-5 w-5 md:h-7 md:w-7 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border shrink-0 relative">
+            <Image 
               src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`} 
               alt={`${topic.author?.username || 'Kullanıcı'} profil resmi`} 
-              width={28} 
-              height={28} 
-              className="object-cover h-full w-full" 
+              fill
+              className="object-cover" 
               referrerPolicy="no-referrer" 
             />
           </div>

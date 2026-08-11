@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 interface Badge {
@@ -360,10 +361,11 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                 {/* Avatar */}
                 <div className="size-24 sm:size-32 rounded-[2rem] bg-primary/10 flex items-center justify-center border-4 border-primary/20 shrink-0 relative overflow-hidden shadow-xl">
                   {profile.avatar_url ? (
-                    <img 
+                    <Image 
                       src={profile.avatar_url} 
-                      alt={profile.full_name || profile.username || 'Kullanıcı'} 
-                      className="object-cover w-full h-full" 
+                      alt={`${profile.full_name || profile.username || 'Kullanıcı'} profil fotoğrafı`} 
+                      fill
+                      className="object-cover" 
                       referrerPolicy="no-referrer"
                     />
                   ) : (

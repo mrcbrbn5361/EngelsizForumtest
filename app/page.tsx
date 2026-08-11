@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { SiteLayout } from '@/components/layout/site-layout';
-import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Sparkles, Plus, MessageSquare } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { ForumIndexClient } from '@/components/forum/forum-index-client';
-import { BionicPreview } from '@/components/accessibility/bionic-preview';
+import { BionicPreviewWrapper } from '@/components/accessibility/bionic-preview-wrapper';
 
 export default async function Home() {
   // Resiliently fetch dynamic data on the server side
@@ -25,111 +25,52 @@ export default async function Home() {
 
   if (isSupabaseConfigured) {
     try {
-      // Fetch latest topics (increased limit for better initial view)
-      const { data: topicsData, error: topicsError } = await supabase
-        .from('topics')
-        .select(`
-          *,
-          author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
-          category:categories(name, slug, description, icon, color),
-          comments(count)
-        `)
-        .order('is_pinned', { ascending: false })
-        .order('created_at', { ascending: false })
-        .limit(20);
+      // Parallelize dynamic data fetching for better performance (Speed Optimization)
+      const [
+        topicsRes,
+        catsRes,
+        topicsCountRes,
+        commentsCountRes,
+        membersCountRes,
+        newestMemRes,
+        todayTopicsRes,
+        todayCommentsRes,
+        activeMembersRes,
+        topContributorsRes,
+        tagsRes
+      ] = await Promise.all([
+        supabase.from('topics').select(`*, author:profiles(username, avatar_url, full_name, role, level, xp, is_verified), category:categories(name, slug, description, icon, color), comments(count)`).order('is_pinned', { ascending: false }).order('created_at', { ascending: false }).limit(20),
+        supabase.from('categories').select('*').order('sort_order').limit(50),
+        supabase.from('topics').select('*', { count: 'exact', head: true }),
+        supabase.from('comments').select('*', { count: 'exact', head: true }),
+        supabase.from('profiles').select('*', { count: 'exact', head: true }),
+        supabase.from('profiles').select('username').order('created_at', { ascending: false }).limit(1),
+        supabase.from('topics').select('*', { count: 'exact', head: true }).gte('created_at', new Date(new Date().setHours(0,0,0,0)).toISOString()),
+        supabase.from('comments').select('*', { count: 'exact', head: true }).gte('created_at', new Date(new Date().setHours(0,0,0,0)).toISOString()),
+        supabase.from('profiles').select('id, username, full_name, avatar_url, role, last_seen_at, updated_at').gte('last_seen_at', new Date(Date.now() - 10 * 60 * 1000).toISOString()).limit(12),
+        supabase.from('profiles').select('id, username, full_name, avatar_url, role, level, xp').order('xp', { ascending: false }).limit(5),
+        supabase.from('tags').select('name, slug').limit(10)
+      ]);
 
-      // Fetch featured categories (communities)
-      const { data: catsData, error: catsError } = await supabase
-        .from('categories')
-        .select('*')
-        .order('sort_order')
-        .limit(50);
-
-      if (!topicsError && topicsData) {
-        latestTopics = topicsData.filter(t => t.author);
-        isDbConnected = true;
-      }
-      if (!catsError && catsData) {
-        featuredCommunities = catsData;
-      }
-
-      // Fetch dynamic stats
-      const { count: topicsCount } = await supabase
-        .from('topics')
-        .select('*', { count: 'exact', head: true });
-      if (topicsCount !== null) totalTopics = topicsCount;
-
-      const { count: commentsCount } = await supabase
-        .from('comments')
-        .select('*', { count: 'exact', head: true });
-      if (commentsCount !== null) totalComments = commentsCount;
-
-      const { count: membersCount } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true });
-      if (membersCount !== null) totalMembers = membersCount;
-
-      const { data: newestMemData } = await supabase
-        .from('profiles')
-        .select('username')
-        .order('created_at', { ascending: false })
-        .limit(1);
-      if (newestMemData && newestMemData.length > 0) {
-        newestMember = newestMemData[0].username;
-      }
-
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
-
-      const { count: todayTCount } = await supabase
-        .from('topics')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', todayStart.toISOString());
-      if (todayTCount !== null) todayTopics = todayTCount;
-
-      const { count: todayCCount } = await supabase
-        .from('comments')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', todayStart.toISOString());
-      if (todayCCount !== null) todayComments = todayCCount;
-
-      // Active Members (seen in last 10 minutes)
-      const tenMinutesAgo = new Date();
-      tenMinutesAgo.setMinutes(tenMinutesAgo.getMinutes() - 10);
-
-      const { data: membersData } = await supabase
-        .from('profiles')
-        .select('id, username, full_name, avatar_url, role, last_seen_at, updated_at')
-        .gte('last_seen_at', tenMinutesAgo.toISOString())
-        .limit(12);
+      if (topicsRes.data) latestTopics = topicsRes.data.filter(t => t.author);
+      if (catsRes.data) featuredCommunities = catsRes.data;
+      if (topicsCountRes.count !== null) totalTopics = topicsCountRes.count;
+      if (commentsCountRes.count !== null) totalComments = commentsCountRes.count;
+      if (membersCountRes.count !== null) totalMembers = membersCountRes.count;
+      if (newestMemRes.data?.[0]) newestMember = newestMemRes.data[0].username;
+      if (todayTopicsRes.count !== null) todayTopics = todayTopicsRes.count;
+      if (todayCommentsRes.count !== null) todayComments = todayCommentsRes.count;
       
-      if (membersData && membersData.length > 0) {
-        activeMembers = membersData;
+      if (activeMembersRes.data && activeMembersRes.data.length > 0) {
+        activeMembers = activeMembersRes.data;
       } else {
-        // Fallback to most recently updated if no one is "online"
-        const { data: recentMembers } = await supabase
-          .from('profiles')
-          .select('id, username, full_name, avatar_url, role, last_seen_at, updated_at')
-          .order('updated_at', { ascending: false })
-          .limit(12);
-        activeMembers = recentMembers || [];
+        const { data: fallback } = await supabase.from('profiles').select('id, username, full_name, avatar_url, role, last_seen_at, updated_at').order('updated_at', { ascending: false }).limit(12);
+        activeMembers = fallback || [];
       }
-
-      // Top Contributors (Highest XP)
-      const { data: topData } = await supabase
-        .from('profiles')
-        .select('id, username, full_name, avatar_url, role, level, xp')
-        .order('xp', { ascending: false })
-        .limit(5);
-      topContributors = topData || [];
-
-      // Trending Tags
-      const { data: tagData } = await supabase
-        .from('tags')
-        .select('name, slug')
-        .limit(10);
-      trendingTags = tagData || [];
-
+      
+      topContributors = topContributorsRes.data || [];
+      trendingTags = tagsRes.data || [];
+      isDbConnected = true;
     } catch (e) {
       console.warn("Home server side fetch failed:", e);
     }
@@ -410,7 +351,7 @@ export default async function Home() {
         }}
       />
       
-      <BionicPreview />
+      <BionicPreviewWrapper />
 
       {/* Detailed Explanation / Guide Section */}
       <section className="max-w-[1280px] mx-auto px-4 py-16 md:py-24 bg-card border border-border rounded-3xl my-16 shadow-sm">

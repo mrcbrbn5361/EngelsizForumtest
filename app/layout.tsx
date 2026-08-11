@@ -38,16 +38,22 @@ export const metadata: Metadata = {
     template: '%s | EngelsizForum'
   },
   description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli forum platformu. Engelli bireyler için optimize edilmiş, SEO ve GEO uyumlu topluluk alanı.',
-  keywords: ['engelsiz forum', 'erişilebilirlik', 'accessibility', 'topluluk', 'yardımlaşma', 'bariyersiz iletişim', 'engelli hakları', 'erişilebilir web', 'GEO optimization', 'generative engine optimization'],
+  keywords: ['engelsiz forum', 'erişilebilirlik', 'accessibility', 'topluluk', 'yardımlaşma', 'bariyersiz iletişim', 'engelli hakları', 'erişilebilir web', 'GEO optimization', 'generative engine optimization', 'Türkiye engelli platformu', 'biyonik okuma', 'disleksi dostu'],
   authors: [{ name: 'EngelsizForum Ekibi' }],
   creator: 'EngelsizForum',
   publisher: 'EngelsizForum',
-  robots: 'index, follow',
+  robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   alternates: {
     canonical: 'https://engelsizforum.com',
     languages: {
       'tr-TR': 'https://engelsizforum.com',
     },
+  },
+  other: {
+    'geo.region': 'TR',
+    'geo.placename': 'Istanbul',
+    'geo.position': '41.0082;28.9784',
+    'ICBM': '41.0082, 28.9784',
   },
   openGraph: {
     title: 'EngelsizForum: Erişilebilir Forum',
@@ -132,7 +138,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="tr" className={`${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} h-full`} suppressHydrationWarning>
       <head>
         <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
-        
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://api.dicebear.com" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://api.dicebear.com" />
       </head>
       <body className="bg-background text-foreground transition-colors duration-300 overflow-x-hidden min-h-screen flex flex-col font-sans">
         <script
