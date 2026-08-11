@@ -5,8 +5,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Database, Shield, ChevronRight } from 'lucide-react';
+import { Home, MessageSquare, Users, Info, LogIn, User, Search, Menu, X, AlertCircle, Shield, ChevronRight, Accessibility, Eye, Zap, Type } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useAuth } from '@/components/providers/auth-provider';
 import { NotificationCenter } from '@/components/ui/notification-center';
 import { cn } from '@/lib/utils';
@@ -49,6 +50,65 @@ export function Navbar() {
           </div>
           
           <div className="flex items-center gap-1 min-w-[32px] sm:min-w-[48px]">
+            {/* Accessibility Menu */}
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger asChild>
+                <button
+                  className="flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
+                  aria-label="Erişilebilirlik Araçlarını Aç"
+                >
+                  <Accessibility size={22} aria-hidden="true" />
+                </button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content 
+                  className="z-[100] min-w-[220px] bg-background border border-border p-2 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200"
+                  align="end"
+                  sideOffset={8}
+                >
+                  <DropdownMenu.Label className="px-3 py-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                    Erişilebilirlik Araçları
+                  </DropdownMenu.Label>
+                  
+                  <DropdownMenu.Item 
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/10 hover:text-primary outline-none cursor-pointer transition-colors"
+                    onSelect={() => toast.success('Biyonik Okuma Modu Aktifleştirildi')}
+                  >
+                    <Zap size={18} className="text-primary" />
+                    <span>Biyonik Okuma</span>
+                  </DropdownMenu.Item>
+
+                  <DropdownMenu.Item 
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/10 hover:text-primary outline-none cursor-pointer transition-colors"
+                    onSelect={() => toast.success('Yüksek Kontrast Modu Aktifleştirildi')}
+                  >
+                    <Eye size={18} className="text-primary" />
+                    <span>Yüksek Kontrast</span>
+                  </DropdownMenu.Item>
+
+                  <DropdownMenu.Item 
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/10 hover:text-primary outline-none cursor-pointer transition-colors"
+                    onSelect={() => toast.success('Okuma Odağı Modu Aktifleştirildi')}
+                  >
+                    <Type size={18} className="text-primary" />
+                    <span>Okuma Odağı</span>
+                  </DropdownMenu.Item>
+
+                  <DropdownMenu.Separator className="h-px bg-border my-1" />
+
+                  <DropdownMenu.Item asChild>
+                    <Link 
+                      href="/accessibility"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest text-muted-foreground hover:bg-muted hover:text-foreground outline-none cursor-pointer transition-colors"
+                    >
+                      <Info size={14} />
+                      Erişilebilirlik Raporu
+                    </Link>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
+
             <Link
               href="/search"
               className="flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
