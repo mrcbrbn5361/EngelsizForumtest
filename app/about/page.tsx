@@ -172,61 +172,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* --- MEET THE DIGITAL GUIDES --- */}
-        <section className="py-24 container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-            <h2 className="text-4xl font-black text-foreground uppercase tracking-tight">Dijital Rehberlerimiz</h2>
-            <p className="text-lg text-muted-foreground font-medium leading-relaxed">
-              EngelsizForum sadece bir yazılım değil, Aria, Felix ve Bora gibi dijital rehberlerimizle yaşayan, dinamik bir yardımcıdır.
-            </p>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { 
-                name: 'Aria', 
-                role: 'UI/UX & Erişilebilirlik Uzmanı', 
-                desc: 'Arayüzün her zaman en yüksek erişilebilirlik standartlarında kalmasını sağlar.', 
-                icon: <Layout className="w-6 h-6" />,
-                avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=aria'
-              },
-              { 
-                name: 'Felix', 
-                role: 'Frontend & Entegrasyon', 
-                desc: 'Topluluk özelliklerinin ve forum akışının kesintisiz çalışmasını yönetir.', 
-                icon: <Zap className="w-6 h-6" />,
-                avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=felix'
-              },
-              { 
-                name: 'Bora', 
-                role: 'Backend & Güvenlik', 
-                desc: 'Verilerinizin güvenliğini ve sistemin stabil kalmasını sağlayan dijital kalkanımız.', 
-                icon: <Shield className="w-6 h-6" />,
-                avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=bora'
-              }
-            ].map((guide, idx) => (
-              <motion.div 
-                key={guide.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="bg-card border border-border rounded-[2rem] p-10 text-center hover:border-primary/30 transition-all group"
-              >
-                <div className="w-24 h-24 mx-auto rounded-full border-4 border-primary/10 overflow-hidden bg-muted mb-6 group-hover:scale-105 transition-transform relative">
-                  <Image src={guide.avatar} alt={`${guide.name} profil fotoğrafı`} fill className="object-cover" referrerPolicy="no-referrer" />
-                </div>
-                <h3 className="text-2xl font-black text-foreground uppercase tracking-tight mb-1">{guide.name}</h3>
-                <div className="text-[10px] font-black text-primary uppercase tracking-widest mb-6 px-3 py-1 bg-primary/10 rounded-full inline-block">
-                  {guide.role}
-                </div>
-                <p className="text-sm text-muted-foreground font-medium leading-relaxed opacity-80">
-                  {guide.desc}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
 
         {/* --- VISION & TECHNOLOGY --- */}
         <section className="py-24 border-y border-border/50 bg-muted/20">

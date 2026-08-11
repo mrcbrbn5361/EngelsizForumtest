@@ -163,8 +163,8 @@ export default function AdminDashboard() {
         </header>
 
         <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col gap-8">
-          <div className="overflow-x-auto no-scrollbar pb-2">
-            <Tabs.List className="flex gap-2 p-1.5 bg-muted rounded-2xl w-fit">
+          <div className="overflow-x-auto scrollbar-hide pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+            <Tabs.List className="flex gap-1.5 sm:gap-2 p-1.5 bg-muted rounded-2xl w-max sm:w-fit">
               <TabButton value="overview" icon={<LayoutDashboard size={18} />} label="Özet" />
               <TabButton value="analiz" icon={<TrendingUp size={18} />} label="Analiz" />
               <TabButton value="categories" icon={<FolderTree size={18} />} label="Kategori" />
@@ -379,9 +379,9 @@ function TabButton({ value, icon, label }: { value: string, icon: React.ReactNod
   return (
     <Tabs.Trigger 
       value={value}
-      className="flex items-center gap-2 px-6 py-3 text-sm font-black rounded-xl transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary uppercase tracking-widest"
+      className="flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-black rounded-xl transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary uppercase tracking-wider sm:tracking-widest whitespace-nowrap shrink-0"
     >
-      {icon}
+      <span className="shrink-0">{icon}</span>
       <span>{label}</span>
     </Tabs.Trigger>
   );

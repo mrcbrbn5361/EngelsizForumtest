@@ -522,7 +522,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
           <div className="space-y-6 sm:space-y-8 min-w-0 w-full overflow-hidden">
             <header className="vibe-card p-0 relative overflow-hidden shadow-2xl border-2 border-border rounded-[2.5rem]">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent -z-10" />
-              <div className="p-8 sm:p-12 flex flex-col md:flex-row items-center gap-6 sm:gap-8 text-center md:text-left">
+              <div className="p-5 sm:p-10 md:p-12 flex flex-col md:flex-row items-center gap-5 sm:gap-8 text-center md:text-left">
                 
                 {/* Avatar */}
                 <UserAvatar 
@@ -530,72 +530,73 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                   username={profile.username}
                   name={profile.full_name}
                   size="xl"
-                  className="size-24 sm:size-32 rounded-[2rem] border-4 border-primary/20 shadow-xl"
+                  className="size-20 sm:size-28 md:size-32 rounded-[1.75rem] sm:rounded-[2rem] border-4 border-primary/20 shadow-xl shrink-0"
                   badge={
                     isOnline && (
-                      <span className="absolute bottom-2 right-2 size-4 rounded-full bg-green-500 border-2 border-background animate-pulse" title="Çevrimiçi" />
+                      <span className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 size-3.5 sm:size-4 rounded-full bg-green-500 border-2 border-background animate-pulse" title="Çevrimiçi" />
                     )
                   }
                 />
 
-                <div className="space-y-3 min-w-0 flex-1">
-                  <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                    <span className="px-3 py-1 bg-primary/15 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl">
+                <div className="space-y-3 min-w-0 flex-1 w-full">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center md:justify-start">
+                    <span className="px-2.5 py-1 bg-primary/15 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl">
                       {profile.role.toUpperCase()}
                     </span>
-                    <span className="px-3 py-1 bg-amber-500/15 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center gap-1">
+                    <span className="px-2.5 py-1 bg-amber-500/15 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center gap-1">
                       <Zap size={10} className="fill-current" /> SEVİYE {userLevel}
                     </span>
                     {isOnline ? (
-                      <span className="px-3 py-1 bg-green-500/15 text-green-600 dark:text-green-400 text-[10px] font-black uppercase tracking-widest rounded-xl">
+                      <span className="px-2.5 py-1 bg-green-500/15 text-green-600 dark:text-green-400 text-[10px] font-black uppercase tracking-widest rounded-xl">
                         ÇEVRİMİÇİ
                       </span>
                     ) : (
-                      <span className="px-3 py-1 bg-muted text-muted-foreground text-[10px] font-black uppercase tracking-widest rounded-xl">
+                      <span className="px-2.5 py-1 bg-muted text-muted-foreground text-[10px] font-black uppercase tracking-widest rounded-xl">
                         ÇEVRİMDIŞI
                       </span>
                     )}
                   </div>
 
-                  <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-foreground truncate max-w-full">
+                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground truncate max-w-full">
                     {profile.full_name || profile.username || 'Engelsiz Kullanıcı'}
                   </h2>
                   
                   {profile.bio && (
-                    <p className="text-sm font-semibold text-muted-foreground leading-relaxed max-w-2xl italic">
+                    <p className="text-xs sm:text-sm font-semibold text-muted-foreground leading-relaxed max-w-2xl italic">
                       "{profile.bio}"
                     </p>
                   )}
 
-                  <div className="flex items-center gap-4 text-sm font-black text-muted-foreground uppercase tracking-widest">
-                    <span>@{profile.username || 'isimsiz'}</span>
-                    <span>•</span>
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs font-black text-muted-foreground uppercase tracking-wider">
+                    <span className="truncate max-w-[150px] sm:max-w-none">@{profile.username || 'isimsiz'}</span>
+                    <span className="text-muted-foreground/40">•</span>
                     <span className="text-foreground">{profile.followers_count || 0} TAKİPÇİ</span>
-                    <span>•</span>
+                    <span className="text-muted-foreground/40">•</span>
                     <span className="text-foreground">{profile.following_count || 0} TAKİP</span>
                   </div>
-                  <div className="flex flex-wrap gap-4 pt-2">
-                    <div className="px-4 py-2 bg-muted/50 border border-border rounded-xl">
-                      <div className="text-lg font-black text-foreground leading-none">{openedTopics.length}</div>
-                      <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">KONU</div>
+
+                  <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 sm:gap-4 pt-2 w-full">
+                    <div className="px-3 py-2 bg-muted/50 border border-border rounded-xl text-center md:text-left">
+                      <div className="text-base sm:text-lg font-black text-foreground leading-none">{openedTopics.length}</div>
+                      <div className="text-[8px] sm:text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">KONU</div>
                     </div>
-                    <div className="px-4 py-2 bg-muted/50 border border-border rounded-xl">
-                      <div className="text-lg font-black text-foreground leading-none">{repliedTopics.length}</div>
-                      <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">YANIT</div>
+                    <div className="px-3 py-2 bg-muted/50 border border-border rounded-xl text-center md:text-left">
+                      <div className="text-base sm:text-lg font-black text-foreground leading-none">{repliedTopics.length}</div>
+                      <div className="text-[8px] sm:text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">YANIT</div>
                     </div>
-                    <div className="px-4 py-2 bg-muted/50 border border-border rounded-xl">
-                      <div className="text-lg font-black text-foreground leading-none">{likedTopics.length}</div>
-                      <div className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">BEĞENİ</div>
+                    <div className="px-3 py-2 bg-muted/50 border border-border rounded-xl text-center md:text-left">
+                      <div className="text-base sm:text-lg font-black text-foreground leading-none">{likedTopics.length}</div>
+                      <div className="text-[8px] sm:text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">BEĞENİ</div>
                     </div>
                   </div>
 
                   {currentUser && currentUser.id !== userId && (
-                    <div className="pt-2">
+                    <div className="pt-2 flex justify-center md:justify-start">
                       <button
                         onClick={handleFollowToggle}
                         disabled={followLoading}
                         className={cn(
-                          "h-10 px-6 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2",
+                          "h-10 px-6 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 w-full sm:w-auto",
                           isFollowing 
                             ? "bg-muted text-muted-foreground hover:bg-red-500/10 hover:text-red-500 border border-border" 
                             : "vibe-button-primary"
@@ -615,10 +616,10 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                   )}
 
                   {currentUser && currentUser.id === userId && (
-                    <div className="pt-2">
+                    <div className="pt-2 flex justify-center md:justify-start">
                       <button
                         onClick={() => setIsEditing(true)}
-                        className="h-10 px-6 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 bg-muted text-foreground border border-border hover:bg-primary/10 hover:text-primary"
+                        className="h-10 px-6 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 bg-muted text-foreground border border-border hover:bg-primary/10 hover:text-primary w-full sm:w-auto"
                       >
                         <Edit size={14} /> PROFİLİ DÜZENLE
                       </button>
@@ -628,13 +629,13 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               </div>
 
               {/* Activity Info Footer */}
-              <div className="bg-muted/35 border-t border-border px-8 py-4 flex flex-wrap gap-6 items-center justify-center md:justify-start text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <div className="bg-muted/35 border-t border-border px-4 sm:px-8 py-3.5 flex flex-col sm:flex-row flex-wrap gap-2.5 sm:gap-6 items-center justify-center md:justify-start text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 <div className="flex items-center gap-2">
-                  <Clock size={14} className="text-primary" />
+                  <Clock size={14} className="text-primary shrink-0" />
                   <span>En Son Görülme: <strong className="text-foreground">{formatLastSeen(profile.last_seen_at, profile.updated_at)}</strong></span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Calendar size={14} className="text-primary" />
+                  <Calendar size={14} className="text-primary shrink-0" />
                   <span>Katılım: <strong className="text-foreground">{new Date(profile.created_at).toLocaleDateString('tr-TR')}</strong></span>
                 </div>
               </div>
