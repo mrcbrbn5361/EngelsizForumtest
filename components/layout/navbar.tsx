@@ -18,6 +18,11 @@ import { cn } from '@/lib/utils';
 export function Navbar() {
   const { user, profile, loading } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
 
@@ -60,12 +65,13 @@ export function Navbar() {
                   <Accessibility size={22} aria-hidden="true" />
                 </button>
               </DropdownMenu.Trigger>
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content 
-                  className="z-[100] min-w-[220px] bg-background border border-border p-2 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200"
-                  align="end"
-                  sideOffset={8}
-                >
+              {mounted && (
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Content 
+                    className="z-[100] min-w-[220px] bg-background border border-border p-2 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200"
+                    align="end"
+                    sideOffset={8}
+                  >
                   <DropdownMenu.Label className="px-3 py-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                     Erişilebilirlik Araçları
                   </DropdownMenu.Label>
@@ -107,6 +113,7 @@ export function Navbar() {
                   </DropdownMenu.Item>
                 </DropdownMenu.Content>
               </DropdownMenu.Portal>
+              )}
             </DropdownMenu.Root>
 
             <Link

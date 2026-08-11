@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Sparkles, Plus, MessageSquare } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { ForumIndexClient } from '@/components/forum/forum-index-client';
+import { BionicPreview } from '@/components/accessibility/bionic-preview';
 
 export default async function Home() {
   // Resiliently fetch dynamic data on the server side
@@ -408,6 +409,8 @@ export default async function Home() {
           trendingTags
         }}
       />
+      
+      <BionicPreview />
 
       {/* Detailed Explanation / Guide Section */}
       <section className="max-w-[1280px] mx-auto px-4 py-16 md:py-24 bg-card border border-border rounded-3xl my-16 shadow-sm">
