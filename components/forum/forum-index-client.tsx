@@ -16,6 +16,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { Topic, Category } from '@/types/database';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { UserAvatar } from '@/components/ui/user-avatar';
 
 interface ForumIndexClientProps {
   initialTopics: Topic[];
@@ -463,15 +464,12 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                       <p className="text-sm sm:text-base text-muted-foreground leading-relaxed font-medium line-clamp-2 mb-8 pointer-events-none opacity-90">{topic.content}</p>
                       <div className="flex items-center justify-between gap-6 text-[11px] text-muted-foreground pointer-events-none border-t border-border/50 pt-6">
                         <div className="flex items-center gap-3.5 min-w-0">
-                          <div className="w-9 h-9 rounded-2xl bg-muted flex items-center justify-center overflow-hidden border border-border relative shadow-sm group-hover:border-primary/30 transition-all">
-                            <Image 
-                              src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`} 
-                              alt={`${topic.author?.username || 'Kullanıcı'} avatarı`} 
-                              fill
-                              className="object-cover" 
-                              referrerPolicy="no-referrer" 
-                            />
-                          </div>
+                          <UserAvatar 
+                            src={topic.author?.avatar_url} 
+                            username={topic.author?.username} 
+                            name={topic.author?.full_name}
+                            size="md"
+                          />
                           <div className="flex flex-col">
                             <span className="font-black text-foreground text-xs uppercase tracking-tight">{topic.author?.full_name || topic.author?.username || 'Kullanıcı'}</span>
                             <span className="text-[9px] font-bold text-primary uppercase tracking-widest opacity-70">
@@ -503,21 +501,13 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               {user ? (
                 <div className="space-y-8">
                   <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 rounded-[1.5rem] border-2 border-primary/20 overflow-hidden bg-muted relative shadow-md">
-                      {profile?.avatar_url ? (
-                        <Image 
-                          src={profile.avatar_url} 
-                          alt={`${profile.username} profil resmi`} 
-                          fill 
-                          className="object-cover" 
-                          referrerPolicy="no-referrer" 
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-primary bg-primary/10">
-                          <User size={28} />
-                        </div>
-                      )}
-                    </div>
+                    <UserAvatar 
+                      src={profile?.avatar_url}
+                      username={profile?.username}
+                      name={profile?.full_name}
+                      size="xl"
+                      className="w-16 h-16 border-2 border-primary/20 shadow-md"
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="font-black text-lg text-foreground truncate uppercase tracking-tight">{profile?.full_name || profile?.username || user.email}</div>
                       <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest mt-1">SEVİYE {profile?.level || 1}</div>
@@ -542,9 +532,13 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 <div className="grid grid-cols-4 gap-5">
                   {onlineMembers.map(member => (
                     <Link href={`/profile/${member.id}`} key={member.id} className="relative flex flex-col items-center group outline-none">
-                      <div className="w-12 h-12 rounded-2xl border border-border overflow-hidden bg-muted relative cursor-pointer hover:border-primary/50 transition-all">
-                        <Image src={member.avatar} alt={`${member.name || member.username || 'Kullanıcı'} profil fotoğrafı`} fill className="object-cover" referrerPolicy="no-referrer" />
-                      </div>
+                      <UserAvatar 
+                        src={member.avatar} 
+                        username={member.username} 
+                        name={member.name}
+                        size="lg"
+                        className="hover:border-primary/50 transition-all"
+                      />
                       <span className="text-[8px] font-black text-muted-foreground truncate w-full text-center mt-2 uppercase tracking-tighter hover:text-primary transition-colors">@{member.username}</span>
                     </Link>
                   ))}
@@ -563,15 +557,11 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                   {stats.topContributors.map((contributor, i) => (
                     <Link key={contributor.id} href={`/profile/${contributor.id}`} className="flex items-center gap-4 group">
                       <div className="relative">
-                        <div className="w-10 h-10 rounded-xl border border-border overflow-hidden bg-muted relative">
-                          <Image 
-                            src={contributor.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${contributor.username}`} 
-                            alt={`${contributor.username} avatarı`} 
-                            fill
-                            className="object-cover" 
-                            referrerPolicy="no-referrer"
-                          />
-                        </div>
+                        <UserAvatar 
+                          src={contributor.avatar_url} 
+                          username={contributor.username} 
+                          size="md"
+                        />
                         <div className="absolute -top-2 -left-2 w-5 h-5 rounded-full bg-primary text-[10px] font-black text-white flex items-center justify-center shadow-lg border-2 border-card">
                           {i + 1}
                         </div>

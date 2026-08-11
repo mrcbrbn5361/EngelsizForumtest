@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
+import { UserAvatar } from '@/components/ui/user-avatar';
 import { Message, Profile } from '@/types/database';
 import { Send, Loader2, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -102,15 +102,12 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
       {/* Header */}
       <div className="p-4 border-b bg-card flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="relative size-10 shrink-0">
-            <Image
-              src={otherUser.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${otherUser.username}`}
-              alt={`${otherUser.full_name || 'Kullanıcı'} profil fotoğrafı`}
-              fill
-              className="rounded-full border bg-muted object-cover"
-              referrerPolicy="no-referrer"
-            />
-          </div>
+          <UserAvatar 
+            src={otherUser.avatar_url}
+            username={otherUser.username}
+            name={otherUser.full_name}
+            size="md"
+          />
           <div>
             <h2 className="font-black text-sm uppercase tracking-wider">{otherUser.full_name}</h2>
             <p className="text-[10px] text-muted-foreground font-bold uppercase">@{otherUser.username}</p>

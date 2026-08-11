@@ -13,6 +13,7 @@ import { motion } from 'motion/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { UserAvatar } from '@/components/ui/user-avatar';
 
 interface Badge {
   id: string;
@@ -30,6 +31,11 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   const { user: currentUser } = useAuth();
 
   const [loading, setLoading] = useState(true);
+  const [loadingContent, setLoadingContent] = useState(false);
+  const [activeTab, setActiveTab] = useState<'opened' | 'replied' | 'liked'>('opened');
+  const [openedTopics, setOpenedTopics] = useState<any[]>([]);
+  const [repliedTopics, setRepliedTopics] = useState<any[]>([]);
+  const [likedTopics, setLikedTopics] = useState<any[]>([]);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -519,22 +525,18 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               <div className="p-8 sm:p-12 flex flex-col md:flex-row items-center gap-6 sm:gap-8 text-center md:text-left">
                 
                 {/* Avatar */}
-                <div className="size-24 sm:size-32 rounded-[2rem] bg-primary/10 flex items-center justify-center border-4 border-primary/20 shrink-0 relative overflow-hidden shadow-xl">
-                  {profile.avatar_url ? (
-                    <Image 
-                      src={profile.avatar_url} 
-                      alt={`${profile.full_name || profile.username || 'Kullanıcı'} profil fotoğrafı`} 
-                      fill
-                      className="object-cover" 
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <User className="size-12 text-primary" />
-                  )}
-                  {isOnline && (
-                    <span className="absolute bottom-2 right-2 size-4 rounded-full bg-green-500 border-2 border-background animate-pulse" title="Çevrimiçi" />
-                  )}
-                </div>
+                <UserAvatar 
+                  src={profile.avatar_url}
+                  username={profile.username}
+                  name={profile.full_name}
+                  size="xl"
+                  className="size-24 sm:size-32 rounded-[2rem] border-4 border-primary/20 shadow-xl"
+                  badge={
+                    isOnline && (
+                      <span className="absolute bottom-2 right-2 size-4 rounded-full bg-green-500 border-2 border-background animate-pulse" title="Çevrimiçi" />
+                    )
+                  }
+                />
 
                 <div className="space-y-3 min-w-0 flex-1">
                   <div className="flex flex-wrap gap-2 justify-center md:justify-start">

@@ -23,6 +23,7 @@ const VoiceInput = dynamic(
   { ssr: false }
 );
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { UserAvatar } from '@/components/ui/user-avatar';
 import { cn } from '@/lib/utils';
 
 // Empty fallbacks for clean database-only mode
@@ -91,18 +92,12 @@ function CommentItem({
 
         <div className="flex-shrink-0">
           <Link href={`/profile/${comment.author?.id}`} className="block relative z-20">
-            <div className={cn(
-              "rounded-[1.5rem] bg-muted group-hover:bg-primary/10 flex items-center justify-center text-muted-foreground transition-all overflow-hidden border-2 border-transparent group-hover:border-primary/20 relative",
-              depth > 0 ? "w-10 h-10 md:w-14 md:h-14" : "w-14 h-14 md:w-20 md:h-20"
-            )}>
-              <Image 
-                src={comment.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${comment.author?.username || 'user'}`} 
-                alt={`${comment.author?.username || 'Kullanıcı'} profil fotoğrafı`} 
-                fill
-                className="object-cover"
-                referrerPolicy="no-referrer"
-              />
-            </div>
+            <UserAvatar 
+              src={comment.author?.avatar_url}
+              username={comment.author?.username}
+              name={comment.author?.full_name}
+              size={depth > 0 ? "sm" : "md"}
+            />
           </Link>
         </div>
 
@@ -889,15 +884,12 @@ export default function DiscussionDetailPage() {
                       </button>
                     </div>
                     <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-3 text-[10px] font-black text-foreground uppercase tracking-[0.2em] hover:opacity-80 transition-opacity">
-                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border relative">
-                        <Image 
-                          src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username || 'user'}`} 
-                          alt={`${topic.author?.username || 'Kullanıcı'} profil fotoğrafı`} 
-                          fill
-                          className="object-cover"
-                          referrerPolicy="no-referrer"
-                        />
-                      </div>
+                      <UserAvatar 
+                        src={topic.author?.avatar_url}
+                        username={topic.author?.username}
+                        name={topic.author?.full_name}
+                        size="sm"
+                      />
                       <div className="flex flex-col text-left">
                         <span className="hover:underline">{topic.author?.full_name || topic.author?.username || 'KULLANICI'}</span>
                         <span className="text-[8px] font-bold text-primary tracking-widest opacity-80 mt-0.5 text-left">
@@ -1139,20 +1131,20 @@ export default function DiscussionDetailPage() {
               <h3 className="vibe-label ml-0 mb-10">YAZAR PROFİLİ</h3>
               <div className="flex flex-col items-center text-center space-y-6 relative z-10">
                 <div className="relative group">
-                  <div className="w-24 h-24 rounded-[2rem] border-4 border-card shadow-2xl overflow-hidden bg-muted group-hover:scale-105 transition-transform duration-500 relative">
-                    <Image 
-                      src={topic.author?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${topic.author?.username}`} 
-                      alt={`${topic.author?.username || 'isimsiz'} profil fotoğrafı`} 
-                      fill
-                      className="object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                  {topic.author?.is_verified && (
-                    <div className="absolute -bottom-2 -right-2 bg-primary text-white p-2 rounded-xl shadow-lg border-2 border-card">
-                      <Shield size={16} />
-                    </div>
-                  )}
+                  <UserAvatar 
+                    src={topic.author?.avatar_url}
+                    username={topic.author?.username}
+                    name={topic.author?.full_name}
+                    size="xl"
+                    className="w-24 h-24 group-hover:scale-105 transition-transform duration-500"
+                    badge={
+                      topic.author?.is_verified && (
+                        <div className="absolute -bottom-2 -right-2 bg-primary text-white p-2 rounded-xl shadow-lg border-2 border-card">
+                          <Shield size={16} />
+                        </div>
+                      )
+                    }
+                  />
                 </div>
                 <div>
                   <Link href={`/profile/${topic.author?.id}`} className="text-2xl font-black text-foreground hover:text-primary transition-colors block mb-1">

@@ -11,6 +11,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
 import { NotificationCenter } from '@/components/ui/notification-center';
+import { UserAvatar } from '@/components/ui/user-avatar';
 import { cn } from '@/lib/utils';
 
 /**
@@ -205,21 +206,12 @@ export function Navbar() {
                     className="ml-1 flex items-center gap-3 rounded-xl border border-border bg-card p-1 pr-3 md:pr-4 text-xs md:text-sm font-bold text-foreground transition-all hover:border-primary focus:ring-4 focus:ring-primary/20 shadow-sm group shrink-0"
                     aria-label="Profilim ve Ayarlar"
                   >
-                  {profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
-                    <div className="relative h-7 w-7 md:h-8 md:w-8 rounded-lg overflow-hidden border border-border group-hover:border-primary/30">
-                      <Image 
-                        src={profile?.avatar_url || user.user_metadata.avatar_url || user.user_metadata.picture} 
-                        alt={`${profile?.full_name || user.user_metadata?.full_name || 'Kullanıcı'} profil fotoğrafı`} 
-                        fill
-                        className="object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <User size={16} aria-hidden="true" />
-                    </div>
-                  )}
+                    <UserAvatar 
+                      src={profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture}
+                      username={profile?.username}
+                      name={profile?.full_name || user.user_metadata?.full_name}
+                      size="sm"
+                    />
                   <span className="hidden sm:inline uppercase tracking-widest font-black">PROFİL</span>
                 </Link>
                 <button
@@ -336,21 +328,12 @@ export function Navbar() {
                             onClick={() => setIsOpen(false)}
                             className="flex items-center gap-3 p-3 rounded-xl hover:bg-muted transition-colors mb-2"
                           >
-                            <div className="h-10 w-10 rounded-full border border-border overflow-hidden">
-                              {user.user_metadata?.avatar_url || user.user_metadata?.picture ? (
-                                <Image 
-                                  src={user.user_metadata.avatar_url || user.user_metadata.picture} 
-                                  alt={`${user.user_metadata?.full_name || 'Kullanıcı'} profil fotoğrafı`} 
-                                  width={40} 
-                                  height={40} 
-                                  className="object-cover"
-                                />
-                              ) : (
-                                <div className="h-full w-full bg-primary/10 flex items-center justify-center text-primary">
-                                  <User size={20} />
-                                </div>
-                              )}
-                            </div>
+                            <UserAvatar 
+                              src={profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture}
+                              username={profile?.username}
+                              name={profile?.full_name || user.user_metadata?.full_name}
+                              size="md"
+                            />
                             <div className="flex-1">
                               <p className="text-sm font-bold truncate">{profile?.full_name || user.email}</p>
                               <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">Profilim</p>

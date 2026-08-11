@@ -15,6 +15,7 @@ import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Skeleton } from '@/components/ui/skeleton';
 import { DiscussionCard } from '@/components/forum/discussion-card';
 import { Topic } from '@/types/database';
+import { UserAvatar } from '@/components/ui/user-avatar';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { expandSearchQuery, matchQueryWithText } from '@/lib/search-dictionary';
@@ -815,19 +816,16 @@ function DiscussionsContent() {
                 <div className="space-y-4">
                   {topContributors.map((contributor, i) => (
                     <Link key={contributor.id} href={`/profile/${contributor.id}`} className="flex items-center gap-3 group">
-                      <div className="relative">
-                        <div className="w-8 h-8 rounded-lg border border-border bg-muted overflow-hidden relative">
-                          <Image 
-                            src={contributor.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${contributor.username}`} 
-                            alt={`${contributor.username} profil fotoğrafı`} 
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-primary text-[8px] font-black text-white flex items-center justify-center border border-card">
-                          {i + 1}
-                        </div>
-                      </div>
+                      <UserAvatar 
+                        src={contributor.avatar_url}
+                        username={contributor.username}
+                        size="sm"
+                        badge={
+                          <div className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-primary text-[8px] font-black text-white flex items-center justify-center border border-card">
+                            {i + 1}
+                          </div>
+                        }
+                      />
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-black text-foreground truncate group-hover:text-primary transition-colors">
                           @{contributor.username}
