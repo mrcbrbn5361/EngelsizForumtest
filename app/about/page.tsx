@@ -34,6 +34,16 @@ export default function AboutPage() {
               >
                 <Sparkles size={14} className="animate-pulse" /> ENGELSİZ BİR DİJİTAL DÜNYA İÇİN
               </motion.div>
+
+              {/* TEST UPDATE FOR GITHUB ACTIONS AUTOMATION */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+                className="text-[10px] font-black text-primary/60 uppercase tracking-[0.3em]"
+              >
+                Son Güncelleme: Sosyal Medya Otomasyonu Entegre Edildi
+              </motion.div>
               
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
