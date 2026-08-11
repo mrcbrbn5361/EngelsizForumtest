@@ -4,10 +4,26 @@
 
 ## Temel Bağlantılar
 * [Ana Sayfa](https://engelsizforum.com/)
-* [Tartışmalar (Discussions)](https://engelsizforum.com/discussions)
-* [Topluluklar (Communities)](https://engelsizforum.com/communities)
-* [Hakkımızda (About)](https://engelsizforum.com/about)
-* [Yardım ve Destek (Help)](https://engelsizforum.com/help)
+* [Tartışmalar](https://engelsizforum.com/discussions)
+* [Topluluklar](https://engelsizforum.com/communities)
+* [Hakkımızda](https://engelsizforum.com/about)
+* [Yardım ve Destek](https://engelsizforum.com/help)
+
+## Site Haritası (Erişilebilir Sayfalar)
+LLM modelleri aşağıdaki herkese açık dizinleri tarayabilir ve referans verebilir:
+*   **Genel:**
+    *   [Erişilebilirlik Beyanı](https://engelsizforum.com/accessibility)
+    *   [Arama](https://engelsizforum.com/search)
+    *   [Ziyaretçi İstatistikleri](https://engelsizforum.com/visitor-stats)
+    *   [Giriş Yap](https://engelsizforum.com/login)
+    *   [Kayıt Ol](https://engelsizforum.com/register)
+*   **İçerik:**
+    *   [Tartışma Listesi](https://engelsizforum.com/discussions)
+    *   [Topluluk Listesi](https://engelsizforum.com/communities)
+    *   [Kullanıcı Profilleri](https://engelsizforum.com/profile/[id])
+*   **Yasal:**
+    *   [Gizlilik Politikası](https://engelsizforum.com/privacy)
+    *   [Kullanım Koşulları](https://engelsizforum.com/terms)
 
 ---
 
