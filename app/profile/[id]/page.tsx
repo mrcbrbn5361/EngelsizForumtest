@@ -7,7 +7,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { 
   User, Mail, Shield, Award, Sparkles, Zap, Flame, Star, 
   MessageSquare, BookOpen, Heart, Calendar, Loader2, ArrowLeft, Clock,
-  Plus
+  Plus, Edit, Camera, X, Check
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
@@ -32,11 +32,21 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [editForm, setEditForm] = useState({
+    full_name: '',
+    username: '',
+    bio: '',
+    avatar_url: ''
+  });
+
   const [profile, setProfile] = useState<{
     id: string;
     username: string | null;
     full_name: string | null;
     avatar_url: string | null;
+    bio: string | null;
     role: string;
     level: number;
     xp: number;
@@ -47,6 +57,89 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
     followers_count: number;
     following_count: number;
   } | null>(null);
+
+  useEffect(() => {
+    async function fetchUserProfile() {
+      if (!userId) return;
+      setLoading(true);
+
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .maybeSingle();
+
+        if (error) throw error;
+        if (data) {
+          // Fetch real follow counts if they might be inaccurate in profile row
+          const { count: followers } = await supabase
+            .from('follows')
+            .select('*', { count: 'exact', head: true })
+            .eq('following_id', userId);
+          
+          const { count: following } = await supabase
+            .from('follows')
+            .select('*', { count: 'exact', head: true })
+            .eq('follower_id', userId);
+
+          const profileData = {
+            ...data,
+            followers_count: followers || 0,
+            following_count: following || 0
+          };
+
+          setProfile(profileData);
+          setEditForm({
+            full_name: data.full_name || '',
+            username: data.username || '',
+            bio: data.bio || '',
+            avatar_url: data.avatar_url || ''
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUserProfile();
+  }, [userId]);
+
+  const handleUpdateProfile = async () => {
+    if (!currentUser || !profile || updateLoading) return;
+    setUpdateLoading(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: editForm.full_name,
+          username: editForm.username,
+          bio: editForm.bio,
+          avatar_url: editForm.avatar_url,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', currentUser.id);
+
+      if (error) throw error;
+
+      setProfile(prev => prev ? { 
+        ...prev, 
+        full_name: editForm.full_name,
+        username: editForm.username,
+        bio: editForm.bio,
+        avatar_url: editForm.avatar_url
+      } : null);
+      
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      alert('Profil güncellenirken bir hata oluştu.');
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
 
   useEffect(() => {
     async function checkFollowStatus() {
@@ -111,39 +204,6 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       setFollowLoading(false);
     }
   };
-
-  // Tabs state
-  const [activeTab, setActiveTab] = useState<'opened' | 'replied' | 'liked'>('opened');
-  const [openedTopics, setOpenedTopics] = useState<any[]>([]);
-  const [repliedTopics, setRepliedTopics] = useState<any[]>([]);
-  const [likedTopics, setLikedTopics] = useState<any[]>([]);
-  const [loadingContent, setLoadingContent] = useState(false);
-
-  useEffect(() => {
-    async function fetchUserProfile() {
-      if (!userId) return;
-      setLoading(true);
-
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .maybeSingle();
-
-        if (error) throw error;
-        if (data) {
-          setProfile(data);
-        }
-      } catch (err) {
-        console.error('Error fetching profile:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchUserProfile();
-  }, [userId]);
 
   useEffect(() => {
     async function fetchUserActivity() {
@@ -343,6 +403,106 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
   return (
     <DashboardLayout>
+      {/* Edit Profile Modal */}
+      {isEditing && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsEditing(false)}
+            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="w-full max-w-lg bg-card border-2 border-border rounded-[2.5rem] shadow-2xl overflow-hidden relative z-10"
+          >
+            <div className="p-8 sm:p-10">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-2xl font-black uppercase tracking-tight text-foreground">PROFİLİ DÜZENLE</h2>
+                <button 
+                  onClick={() => setIsEditing(false)}
+                  className="p-2 hover:bg-muted rounded-xl transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">AD SOYAD</label>
+                  <input
+                    type="text"
+                    value={editForm.full_name}
+                    onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
+                    className="w-full h-12 bg-muted/50 border-2 border-border rounded-xl px-4 font-bold focus:border-primary outline-none transition-all"
+                    placeholder="Adınız Soyadınız"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">KULLANICI ADI</label>
+                  <input
+                    type="text"
+                    value={editForm.username}
+                    onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
+                    className="w-full h-12 bg-muted/50 border-2 border-border rounded-xl px-4 font-bold focus:border-primary outline-none transition-all"
+                    placeholder="kullaniciadi"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">BİO (KISA ÖZGEÇMİŞ)</label>
+                  <textarea
+                    value={editForm.bio}
+                    onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                    className="w-full h-32 bg-muted/50 border-2 border-border rounded-xl p-4 font-bold focus:border-primary outline-none transition-all resize-none"
+                    placeholder="Kendinizden bahsedin..."
+                    maxLength={160}
+                  />
+                  <div className="text-[10px] text-right text-muted-foreground font-bold">{editForm.bio.length}/160</div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">AVATAR URL</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={editForm.avatar_url}
+                      onChange={(e) => setEditForm({ ...editForm, avatar_url: e.target.value })}
+                      className="flex-1 h-12 bg-muted/50 border-2 border-border rounded-xl px-4 font-bold focus:border-primary outline-none transition-all"
+                      placeholder="https://..."
+                    />
+                    <div className="size-12 rounded-xl border-2 border-border overflow-hidden shrink-0 bg-muted">
+                      {editForm.avatar_url && (
+                        <img src={editForm.avatar_url} alt="Önizleme" className="w-full h-full object-cover" />
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 pt-4">
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="flex-1 h-12 rounded-2xl font-black text-xs uppercase tracking-widest bg-muted text-foreground hover:bg-muted/80 transition-all"
+                  >
+                    İPTAL
+                  </button>
+                  <button
+                    onClick={handleUpdateProfile}
+                    disabled={updateLoading}
+                    className="flex-1 h-12 rounded-2xl font-black text-xs uppercase tracking-widest vibe-button-primary disabled:opacity-50"
+                  >
+                    {updateLoading ? <Loader2 className="animate-spin mx-auto" /> : "KAYDET"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       <div className="w-full py-6 sm:py-8 md:py-12 min-w-0">
         <div className="mb-6">
           <Link href="/" className="inline-flex items-center gap-2 text-xs font-black text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">
@@ -398,6 +558,13 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                   <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-foreground truncate max-w-full">
                     {profile.full_name || profile.username || 'Engelsiz Kullanıcı'}
                   </h2>
+                  
+                  {profile.bio && (
+                    <p className="text-sm font-semibold text-muted-foreground leading-relaxed max-w-2xl italic">
+                      "{profile.bio}"
+                    </p>
+                  )}
+
                   <div className="flex items-center gap-4 text-sm font-black text-muted-foreground uppercase tracking-widest">
                     <span>@{profile.username || 'isimsiz'}</span>
                     <span>•</span>
@@ -441,6 +608,17 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                             <Plus size={14} /> TAKİP ET
                           </>
                         )}
+                      </button>
+                    </div>
+                  )}
+
+                  {currentUser && currentUser.id === userId && (
+                    <div className="pt-2">
+                      <button
+                        onClick={() => setIsEditing(true)}
+                        className="h-10 px-6 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 bg-muted text-foreground border border-border hover:bg-primary/10 hover:text-primary"
+                      >
+                        <Edit size={14} /> PROFİLİ DÜZENLE
                       </button>
                     </div>
                   )}

@@ -9,7 +9,11 @@ export type Profile = {
   bio: string | null;
   is_verified: boolean;
   accessibility_prefs: any | null;
+  last_seen_at?: string | null;
+  followers_count?: number;
+  following_count?: number;
   updated_at: string;
+  created_at?: string;
 };
 
 export type Category = {
