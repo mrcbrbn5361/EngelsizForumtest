@@ -58,7 +58,7 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Desktop & Header Controls */}
         <div className="flex items-center gap-1 sm:gap-2">
           <div className="hidden md:flex items-center gap-1">
             <NavLink href="/discussions" icon={<MessageSquare size={16} aria-hidden="true" />} label="TARTIŞMALAR" />
@@ -66,13 +66,13 @@ export function Navbar() {
             <NavLink href="/about" icon={<Info size={16} aria-hidden="true" />} label="HAKKIMIZDA" />
           </div>
           
-          <div className="flex items-center gap-1 min-w-[32px] sm:min-w-[48px]">
+          <div className="flex items-center gap-1 sm:gap-2">
             {/* Accessibility Menu */}
             {mounted ? (
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
                   <button
-                    className="flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
+                    className="hidden sm:flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
                     aria-label="Erişilebilirlik Araçlarını Aç"
                   >
                     <Accessibility size={22} aria-hidden="true" />
@@ -173,7 +173,7 @@ export function Navbar() {
             </DropdownMenu.Root>
             ) : (
               <button
-                className="flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none"
+                className="hidden sm:flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none"
                 aria-label="Erişilebilirlik Araçlarını Aç"
               >
                 <Accessibility size={22} aria-hidden="true" />
@@ -182,7 +182,7 @@ export function Navbar() {
 
             <Link
               href="/search"
-              className="flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
+              className="hidden sm:flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
               aria-label="Arama sayfasına git"
             >
               <Search size={22} aria-hidden="true" />
@@ -190,7 +190,7 @@ export function Navbar() {
 
             {!loading && (
               user ? (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                   <NotificationCenter />
                   {isStaff && (
                     <Link
@@ -203,7 +203,7 @@ export function Navbar() {
                   )}
                   <Link
                     href="/profile"
-                    className="ml-1 flex items-center gap-3 rounded-xl border border-border bg-card p-1 pr-3 md:pr-4 text-xs md:text-sm font-bold text-foreground transition-all hover:border-primary focus:ring-4 focus:ring-primary/20 shadow-sm group shrink-0"
+                    className="flex items-center gap-2 rounded-xl border border-border bg-card p-1 pr-1 sm:pr-3 text-xs md:text-sm font-bold text-foreground transition-all hover:border-primary focus:ring-4 focus:ring-primary/20 shadow-sm group shrink-0"
                     aria-label="Profilim ve Ayarlar"
                   >
                     <UserAvatar 
@@ -212,51 +212,51 @@ export function Navbar() {
                       name={profile?.full_name || user.user_metadata?.full_name}
                       size="sm"
                     />
-                  <span className="hidden sm:inline uppercase tracking-widest font-black">PROFİL</span>
-                </Link>
-                <button
-                  onClick={async () => {
-                    try {
-                      const { supabase } = await import('@/lib/supabase');
-                      await supabase.auth.signOut();
-                      window.location.href = '/';
-                    } catch (error) {
-                      console.error('Error signing out:', error);
-                      toast.error('Çıkış yapılırken bir hata oluştu.');
-                    }
-                  }}
-                  className="hidden sm:flex ml-1 items-center justify-center p-2.5 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all"
-                  aria-label="Çıkış Yap"
-                  title="Çıkış Yap"
-                >
-                  <LogIn className="rotate-180" size={20} />
-                </button>
-              </div>
+                    <span className="hidden sm:inline uppercase tracking-widest font-black">PROFİL</span>
+                  </Link>
+                  <button
+                    onClick={async () => {
+                      try {
+                        const { supabase } = await import('@/lib/supabase');
+                        await supabase.auth.signOut();
+                        window.location.href = '/';
+                      } catch (error) {
+                        console.error('Error signing out:', error);
+                        toast.error('Çıkış yapılırken bir hata oluştu.');
+                      }
+                    }}
+                    className="hidden sm:flex items-center justify-center p-2.5 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all"
+                    aria-label="Çıkış Yap"
+                    title="Çıkış Yap"
+                  >
+                    <LogIn className="rotate-180" size={20} />
+                  </button>
+                </div>
               ) : (
                 <Link
                   href="/login"
-                  className="vibe-button-primary h-12 px-6 text-xs"
+                  className="vibe-button-primary h-10 sm:h-12 px-4 sm:px-6 text-xs"
                   aria-label="Giriş yap veya Kayıt ol"
                 >
-                  <LogIn size={18} aria-hidden="true" className="mr-2" />
+                  <LogIn size={18} aria-hidden="true" className="mr-1 sm:mr-2" />
                   GİRİŞ
                 </Link>
               )
             )}
             
             {loading && (
-              <div className="h-8 w-8 animate-pulse bg-muted rounded-full ml-1 md:ml-2" aria-hidden="true"></div>
+              <div className="h-8 w-8 animate-pulse bg-muted rounded-full ml-1" aria-hidden="true"></div>
             )}
 
             {/* Mobile Menu Toggle with Radix Dialog */}
             <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
               <Dialog.Trigger asChild>
                 <button
-                  className="ml-1 flex md:hidden items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-2 focus:ring-primary"
+                  className="flex md:hidden items-center justify-center rounded-xl p-2.5 bg-card hover:bg-primary hover:text-primary-foreground text-foreground border-2 border-border transition-all outline-none focus:ring-2 focus:ring-primary shrink-0 ml-1 shadow-sm active:scale-95"
                   aria-label={isOpen ? "Menüyü Kapat" : "Menüyü Aç"}
                   suppressHydrationWarning
                 >
-                  <Menu size={20} />
+                  <Menu size={22} />
                 </button>
               </Dialog.Trigger>
               <Dialog.Portal>
