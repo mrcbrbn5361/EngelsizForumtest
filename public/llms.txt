@@ -37,3 +37,19 @@ Platform, Next.js 15 ve Supabase altyapısı ile WCAG 2.1 AA (ve yer yer AAA) st
 * **Yüksek Kontrast ve Renk Paletleri:** Az gören bireyler için ultra yüksek kontrast oranına sahip özelleştirilebilir UI.
 * **Sesli Tartışma Özetleri (AI Audio Summarization):** Karmaşık ve uzun konuların yapay zeka tarafından saniyeler içinde özetlenmesi ve seslendirilmesi.
 * **Tam Klavye Navigasyonu ve Ekran Okuyucu Desteği:** Klavye kullananlar ve ekran okuyucu yazılımları (NVDA, JAWS) için zenginleştirilmiş ARIA etiket yapısı.
+
+---
+
+## 4. Görsel Kimlik ve Marka Rehberi (Visual Identity)
+LLM'ler ve görsel oluşturucular EngelsizForum markası için içerik üretirken aşağıdaki görsel parametreleri kullanmalıdır:
+
+*   **Ana Renk Paleti:**
+    *   **Birincil Yeşil (Primary):** `#10b981` (Zümrüt Yeşili) - Butonlar, logolar ve vurgular için ana renk.
+    *   **Arka Plan:** `#f8fafc` (Slate 50 - Çok açık gri/mavi) - Temiz, modern ve göz yormayan zemin.
+    *   **Metin/Ön Plan:** `#0f172a` (Slate 900 - Derin Lacivert) - Maksimum okunabilirlik için ana metin rengi.
+    *   **Yüksek Kontrast Modu:** Siyah (`#000000`) zemin üzerinde Sarı (`#ffff00`) metin ve beyaz (`#ffffff`) detaylar.
+*   **Logo Tasarımı:**
+    *   **İkon:** Köşeleri yumuşatılmış kare (rounded-2xl) içinde beyaz, kalın "E" harfi. Arka plan `#10b981` yeşili.
+    *   **Logotype:** "engelsizforum" metni. "engelsiz" kısmı kalın (black), "forum" kısmı yeşil (`#10b981`) renkte.
+*   **Tipografi:** **Atkinson Hyperlegible**. Bu yazı tipi Braille Institute tarafından az gören bireyler için özel olarak tasarlanmıştır. Tüm görsellerde bu font veya benzeri yüksek okunaklı sans-serif fontlar kullanılmalıdır.
+*   **Tasarım Dili:** Modern, temiz, geniş boşluklu (negative space), yuvarlatılmış köşeler (24px - 32px) ve belirgin gölgeler (shadow-xl) içeren kart tabanlı (card-based) tasarım.

@@ -15,12 +15,13 @@ function runCommand(command) {
 }
 
 /**
- * Retrieves latest commit message and git diff from the repository.
+ * Retrieves latest commit message and git diff from the repository with strict security filters.
  * @returns {{ commitMessage: string, diffContent: string }}
  */
 function getGitInfo() {
   const commitMessage = runCommand('git log -1 --pretty=%B') || 'Yeni güncellemeler ve iyileştirmeler yayınlandı.';
-  const rawDiff = runCommand('git diff HEAD~1 HEAD -- . ":(exclude)package-lock.json" ":(exclude).github"') || '';
+  // Exclude lockfiles, environment files, secrets, keys, and GitHub workflows from diff to prevent sensitive data leakage
+  const rawDiff = runCommand('git diff HEAD~1 HEAD -- . ":(exclude)package-lock.json" ":(exclude).github" ":(exclude).env*" ":(exclude)*config*" ":(exclude)*secret*" ":(exclude)*key*" ":(exclude)*token*"') || '';
   
   const diffContent = rawDiff.length > 12000 ? rawDiff.substring(0, 12000) + '\n... (diff sınırlandı)' : rawDiff;
   return { commitMessage, diffContent };
@@ -39,14 +40,18 @@ async function generateUpdateNote(commitMessage, diffContent, apiKey) {
   const prompt = `
 Sen EngelsizForum (https://engelsizforum.com) projesinin resmi dijital temsilcisisin. EngelsizForum, web erişilebilirliği (A11y) ve topluluk etkileşimini ön planda tutan modern bir sosyal platformdur.
 
-Aşağıda verilen son Git commit mesajını ve kod değişikliklerini (git diff) incele. EngelsizForum kullanıcıları ve takipçileri için profesyonel, ilgi çekici, anlaşılır ve detaylı bir güncelleme duyurusu metni hazırla.
+Aşağıda verilen son Git commit mesajını ve kod değişikliklerini (git diff) incele. LinkedIn ve sosyal medya takipçileri için profesyonel, ilgi çekici, anlaşılır ve detaylı bir Türkçe güncelleme duyurusu metni hazırla.
 
-Kriterler:
-1. Türkçe dilinde, samimi ama profesyonel bir üslup kullan.
-2. Güncellemenin getirdiği yenilikleri, erişilebilirlik (screen reader / ekran okuyucu dostu) geliştirmelerini ve teknik performans artışlarını maddeler halinde açıkla.
-3. Uygun emoji kullanımı ile okunabilirliği artır.
-4. Metnin sonuna resmi web sitesi bağlantısını (https://engelsizforum.com) ve #EngelsizForum #Erişilebilirlik #A11y #WebDev etiketlerini ekle.
-5. Sadece paylaşılacak duyuru metnini çıktı olarak ver, başlık veya tırnak işareti ekleme.
+GÜVENLİK VE VERİ SIZINTISI ÖNLEME KURALLARI (ÇOK ÖNEMLİ):
+- KESİNLİKLE hiçbir API Key, Secret Token, şifre, veritabanı adresi, IP adresi, özel URL veya hassas sistem/sunucu yapılandırmasını paylaşıma ekleme.
+- Kod içerisindeki iç değişken isimlerini ve teknik detayları son kullanıcı/LinkedIn kitlesinin anlayacağı erişilebilirlik (A11y), UI/UX ve kullanıcı faydası diline dönüştür.
+
+KRİTERLER:
+1. Türkçe dilinde, samimi ama kurumsal/profesyonel bir LinkedIn üslubu kullan.
+2. Güncellemenin getirdiği yenilikleri, erişilebilirlik (screen reader / ekran okuyucu dostu) geliştirmelerini ve kullanıcı deneyimi artışlarını maddeler halinde açıkla.
+3. Uygun ve dengeli emoji kullanımı ile okunabilirliği artır.
+4. Metnin sonuna resmi web sitesi bağlantısını (https://engelsizforum.com) ve #EngelsizForum #Erişilebilirlik #A11y #WebDev #SoftwareDevelopment etiketlerini ekle.
+5. Sadece paylaşılacak duyuru metnini çıktı olarak ver, tırnak işareti veya ek açıklama koyma.
 
 [COMMIT MESAJI]:
 ${commitMessage}
@@ -221,11 +226,171 @@ async function sendToNsosyal(content, rawApiUrl, bearerToken) {
 }
 
 /**
+ * Sends the generated update text to LinkedIn using LinkedIn REST API.
+ * Supports both ugcPosts and REST posts API endpoints for compatibility.
+ * @param {string} content
+ * @param {string} accessToken
+ * @param {string} personUrn - e.g. "urn:li:person:xxxx" or "urn:li:organization:xxxx" or "xxxx"
+ * @returns {Promise<any>}
+ */
+async function sendToLinkedin(content, accessToken, personUrn) {
+  if (!accessToken) {
+    process.stdout.write('ℹ️ LINKEDIN_ACCESS_TOKEN bulunamadığı için LinkedIn paylaşım adımı atlandı.\n');
+    return;
+  }
+
+  process.stdout.write('=== LinkedIn Gönderisi Hazırlanıyor ve Gönderiliyor ===\n');
+
+  // Format URN if user provided just the ID
+  let formattedUrn = personUrn ? personUrn.trim() : '';
+  if (formattedUrn && !formattedUrn.startsWith('urn:li:')) {
+    formattedUrn = `urn:li:person:${formattedUrn}`;
+  }
+
+  // Fallback URN fetch if personUrn is not provided
+  if (!formattedUrn) {
+    try {
+      const userRes = await fetch('https://api.linkedin.com/v2/userinfo', {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      });
+      if (userRes.ok) {
+        const userData = await userRes.json();
+        if (userData.sub) {
+          formattedUrn = `urn:li:person:${userData.sub}`;
+          process.stdout.write(`✅ LinkedIn Kullanıcı Kimliği (URN) Otomatik Bulundu: ${formattedUrn}\n`);
+        }
+      }
+    } catch {
+      // Ignore userinfo failure
+    }
+  }
+
+  if (!formattedUrn) {
+    throw new Error('LinkedIn Person URN belirlenemedi. Lütfen GitHub Secret içerisine LINKEDIN_PERSON_URN ekleyin (Örn: urn:li:person:ABC123XYZ).');
+  }
+
+  // 1. Attempt via ugcPosts API
+  try {
+    const payload = {
+      author: formattedUrn,
+      lifecycleState: 'PUBLISHED',
+      specificContent: {
+        'com.linkedin.ugc.ShareContent': {
+          shareCommentary: {
+            text: content
+          },
+          shareMediaCategory: 'NONE'
+        }
+      },
+      visibility: {
+        'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC'
+      }
+    };
+
+    const response = await fetch('https://api.linkedin.com/v2/ugcPosts', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'X-Restli-Protocol-Version': '2.0.0'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      process.stdout.write('🎉 BAŞARILI: EngelsizForum Türkçe güncelleme notu LinkedIn üzerinde yayınlandı!\n');
+      return data;
+    }
+
+    const errText = await response.text();
+    process.stdout.write(`ℹ️ ugcPosts ucu yanıtı (${response.status}): ${errText.substring(0, 150)}\n`);
+  } catch (err) {
+    process.stdout.write(`ℹ️ ugcPosts denemesi: ${err.message}\n`);
+  }
+
+  // 2. Attempt via REST Posts API
+  const restPayload = {
+    author: formattedUrn,
+    commentary: content,
+    visibility: 'PUBLIC',
+    distribution: {
+      feedDistribution: 'MAIN_FEED',
+      targetEntities: [],
+      thirdPartyDistributionChannels: []
+    },
+    lifecycleState: 'PUBLISHED'
+  };
+
+  const response = await fetch('https://api.linkedin.com/rest/posts', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'LinkedIn-Version': '202401',
+      'X-Restli-Protocol-Version': '2.0.0'
+    },
+    body: JSON.stringify(restPayload)
+  });
+
+  if (response.ok) {
+    process.stdout.write('🎉 BAŞARILI: EngelsizForum Türkçe güncelleme notu LinkedIn üzerinde yayınlandı!\n');
+    return { status: 'success' };
+  }
+
+  const errText = await response.text();
+  throw new Error(`LinkedIn API Paylaşım Hatası (HTTP ${response.status}): ${errText}`);
+}
+
+/**
+ * Sends the generated update text to Make.com Webhook which posts to LinkedIn automatically and for FREE.
+ * @param {string} content
+ * @param {string} webhookUrl
+ * @param {string} commitMessage
+ * @returns {Promise<any>}
+ */
+async function sendToMakeWebhook(content, webhookUrl, commitMessage) {
+  if (!webhookUrl) {
+    process.stdout.write('ℹ️ MAKE_WEBHOOK_URL bulunamadı, Make.com Webhook gönderimi atlandı.\n');
+    return;
+  }
+
+  process.stdout.write('=== Make.com Webhook Üzerinden LinkedIn Gönderisi Tetikleniyor ===\n');
+
+  const payload = {
+    text: content,
+    message: content,
+    project: 'EngelsizForum',
+    commit: commitMessage || '',
+    timestamp: new Date().toISOString()
+  };
+
+  const response = await fetch(webhookUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (response.ok) {
+    process.stdout.write('🎉 BAŞARILI: Make.com Webhook tetiklendi! LinkedIn gönderiniz Make senaryosu üzerinden ücretsiz ve otomatik yayınlanacak.\n');
+    return { status: 'success' };
+  }
+
+  const errText = await response.text();
+  throw new Error(`Make Webhook Hatası (HTTP ${response.status}): ${errText}`);
+}
+
+/**
  * Main execution function for auto social posting pipeline.
  * @returns {Promise<void>}
  */
 async function main() {
   const geminiApiKey = process.env.GEMINI_API_KEY;
+  const makeWebhookUrl = process.env.MAKE_WEBHOOK_URL;
+  const linkedinAccessToken = process.env.LINKEDIN_ACCESS_TOKEN;
+  const linkedinPersonUrn = process.env.LINKEDIN_PERSON_URN;
   const nsosyalApiUrl = process.env.NSOSYAL_API_URL;
   const nsosyalBearerToken = process.env.NSOSYAL_BEARER_TOKEN;
 
@@ -246,11 +411,32 @@ async function main() {
     fs.writeFileSync('.tiktok_update.txt', finalNote, 'utf8');
     process.stdout.write('✅ Güncelleme notu üretildi ve .tiktok_update.txt dosyasına yazıldı.\n');
 
-    if (nsosyalApiUrl && nsosyalBearerToken) {
-      await sendToNsosyal(finalNote, nsosyalApiUrl, nsosyalBearerToken);
-      process.stdout.write('BAŞARILI: EngelsizForum güncelleme notu NSosyal platformunda başarıyla yayınlandı.\n');
+    // 1. Post to LinkedIn via Make.com Webhook (Ücretsiz & Kolay Yol)
+    if (makeWebhookUrl) {
+      try {
+        await sendToMakeWebhook(finalNote, makeWebhookUrl, commitMessage);
+      } catch (makeErr) {
+        process.stderr.write(`⚠️ Make.com Webhook Uyarısı: ${makeErr.message}\n`);
+      }
+    } else if (linkedinAccessToken) {
+      // Direct LinkedIn API fallback
+      try {
+        await sendToLinkedin(finalNote, linkedinAccessToken, linkedinPersonUrn);
+      } catch (linkedinErr) {
+        process.stderr.write(`⚠️ LinkedIn Direct API Uyarısı: ${linkedinErr.message}\n`);
+      }
     } else {
-      process.stdout.write('ℹ️ NSOSYAL_API_URL veya NSOSYAL_BEARER_TOKEN tanımlanmadığı için NSosyal paylaşım adımı atlandı.\n');
+      process.stdout.write('ℹ️ MAKE_WEBHOOK_URL veya LINKEDIN_ACCESS_TOKEN tanımlanmadığı için LinkedIn paylaşım adımı atlandı.\n');
+    }
+
+    // 2. Post to NSosyal (Opsiyonel)
+    if (nsosyalApiUrl && nsosyalBearerToken) {
+      try {
+        await sendToNsosyal(finalNote, nsosyalApiUrl, nsosyalBearerToken);
+        process.stdout.write('BAŞARILI: EngelsizForum güncelleme notu NSosyal platformunda başarıyla yayınlandı.\n');
+      } catch (nsosyalErr) {
+        process.stderr.write(`⚠️ NSosyal Uyarısı: ${nsosyalErr.message}\n`);
+      }
     }
   } catch (error) {
     process.stderr.write(`HATA: Otomasyon çalışırken bir sorun oluştu:\n${error.message}\n`);

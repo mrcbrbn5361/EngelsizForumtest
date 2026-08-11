@@ -30,9 +30,12 @@ jobs:
           sudo sed -i 's/domain="coder" rights="none" pattern="LABEL"/domain="coder" rights="read | write" pattern="LABEL"/' /etc/ImageMagick-6/policy.xml || true
           sudo sed -i 's/domain="coder" rights="none" pattern="TEXT"/domain="coder" rights="read | write" pattern="TEXT"/' /etc/ImageMagick-6/policy.xml || true
 
-      - name: 4. Gemini AI İle Metin Üretimi ve .tiktok_update.txt Hazırlama
+      - name: 4. Gemini AI İle Metin Üretimi ve Sosyal Medya Paylaşımı (Make.com LinkedIn & NSosyal)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MAKE_WEBHOOK_URL: ${{ secrets.MAKE_WEBHOOK_URL }}
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_PERSON_URN: ${{ secrets.LINKEDIN_PERSON_URN }}
           NSOSYAL_API_URL: ${{ secrets.NSOSYAL_API_URL }}
           NSOSYAL_BEARER_TOKEN: ${{ secrets.NSOSYAL_BEARER_TOKEN }}
         run: |
