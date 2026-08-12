@@ -36,6 +36,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://engelsizforum.com'),
   title: {
     default: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
     template: '%s | EngelsizForum'
@@ -65,6 +66,22 @@ export const metadata: Metadata = {
     siteName: 'EngelsizForum',
     type: 'website',
     locale: 'tr_TR',
+    images: [
+      {
+        url: 'https://engelsizforum.com/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'EngelsizForum - Tam Erişilebilir Topluluk Platformu',
+        type: 'image/png',
+      },
+      {
+        url: 'https://engelsizforum.com/banner.png',
+        width: 1200,
+        height: 630,
+        alt: 'EngelsizForum Banner',
+        type: 'image/png',
+      }
+    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -72,6 +89,7 @@ export const metadata: Metadata = {
     description: 'Engelli bireyler için %100 erişilebilir, yapay zeka destekli ve kapsayıcı topluluk platformu. Bariyersiz iletişimin yeni adresi EngelsizForum\'a katılın.',
     site: '@engelsizforum',
     creator: '@engelsizforum',
+    images: ['https://engelsizforum.com/twitter-image.png'],
   },
   appleWebApp: {
     capable: true,
@@ -131,6 +149,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://api.dicebear.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://api.dicebear.com" />
+        <meta property="og:image" content="https://engelsizforum.com/og-image.png" />
+        <meta property="og:image:secure_url" content="https://engelsizforum.com/og-image.png" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="EngelsizForum - Tam Erişilebilir Topluluk Platformu" />
+        <meta name="twitter:image" content="https://engelsizforum.com/twitter-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
       </head>
       <body className="bg-background text-foreground transition-colors duration-300 overflow-x-hidden min-h-screen flex flex-col font-sans">
         <script
