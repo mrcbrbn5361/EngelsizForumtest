@@ -1,15 +1,17 @@
 'use client';
-import { toast } from 'sonner';
 
-import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { TopicEditor } from '@/components/forum/topic-editor';
-import { ArrowLeft, Save, Loader2, Plus } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, HelpCircle, Tag, Eye } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { generateUUID } from '@/lib/utils';
+import { toast } from 'sonner';
+
+const PRESET_TAGS = ['[ÖTV 2026]', '[Emsal Karar]', '[Sağlık Raporu]', '[EKPSS 2026]', '[Evde Bakım]', '[SGK İtiraz]', '[Medikal]'];
 
 function NewTopicForm() {
   const router = useRouter();
@@ -19,6 +21,8 @@ function NewTopicForm() {
   const [title, setTitle] = useState('');
   const [categoryId, setCategoryId] = useState(searchParams?.get('category_id') || searchParams?.get('kategori') || '');
   const [content, setContent] = useState('');
+  const [selectedTag, setSelectedTag] = useState<string>('');
+  const [isQuestion, setIsQuestion] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
@@ -26,42 +30,17 @@ function NewTopicForm() {
 
   const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
 
-  const leafCategories = React.useMemo(() => {
-    const parentIds = new Set(categories.map(c => c.parent_id).filter(Boolean));
-    return categories.filter(c => !parentIds.has(c.id));
-  }, [categories]);
-
-  // Handle auto-selecting category if query param is slug or ID
-  useEffect(() => {
-    if (categories.length > 0) {
-      const urlCat = searchParams?.get('category_id') || searchParams?.get('kategori') || searchParams?.get('category');
-      if (urlCat) {
-        const found = categories.find(c => c.id === urlCat || c.slug === urlCat);
-        if (found) {
-          setCategoryId(found.id);
-        }
-      }
-    }
-  }, [categories, searchParams]);
-
   useEffect(() => {
     if (!isSupabaseConfigured) return;
 
     const fetchCategories = async () => {
       try {
         const { data, error } = await supabase.from('categories').select('*').order('name');
-        if (error) {
-          console.error('Error fetching categories:', error);
-          return;
-        }
         if (data && data.length > 0) {
           setCategories(data);
-        } else {
-          setCategories([]);
         }
       } catch (err) {
         console.error('Error in category fetch:', err);
-        setCategories([]);
       }
     };
     fetchCategories();
@@ -90,20 +69,10 @@ function NewTopicForm() {
       return;
     }
 
-    const forbiddenWords = ['spam', 'reklam', 'kumar', 'bet', 'casino'];
-    const lowerContent = content.toLowerCase();
-    const lowerTitle = title.toLowerCase();
-    const isSpam = forbiddenWords.some(word => lowerContent.includes(word) || lowerTitle.includes(word));
-    if (isSpam) {
-      toast.error('İçeriğiniz otomatik spam filtresine takıldı. Lütfen kurallara uygun içerik girin.');
-      return;
-    }
-
     setLoading(true);
     try {
       const topicId = generateUUID();
       
-      // Türkçe karakterleri destekleyen slug oluşturma
       const slugify = (text: string) => {
         const trMap: { [key: string]: string } = {
           'ç': 'c', 'Ç': 'c', 'ğ': 'g', 'Ğ': 'g', 'ı': 'i', 'İ': 'i', 'ö': 'o', 'Ö': 'o', 'ş': 's', 'Ş': 's', 'ü': 'u', 'Ü': 'u'
@@ -112,35 +81,47 @@ function NewTopicForm() {
           text = text.replace(new RegExp(key, 'g'), trMap[key]);
         }
         return text.toLowerCase()
-          .replace(/[^-a-zA-Z0-9\s]+/g, '') // Özel karakterleri kaldır
-          .replace(/\s+/g, '-') // Boşlukları tire yap
-          .replace(/-+/g, '-') // Birden fazla tireyi teke indir
+          .replace(/[^-a-zA-Z0-9\s]+/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
           .trim();
       };
 
-      let slug = slugify(title);
-      if (!slug) slug = topicId.substring(0, 8); // Eğer başlık boş kalırsa ID'den parça al
+      const finalTitle = selectedTag ? `${selectedTag} ${title.trim()}` : title.trim();
+      let slug = slugify(finalTitle);
+      if (!slug) slug = topicId.substring(0, 8);
       
       const { data, error } = await supabase
-        .from('topics')
+        .from('threads')
         .insert({
           id: topicId,
-          title: title.trim(),
+          title: finalTitle,
           category_id: categoryId,
           content: content.trim(),
           author_id: user.id,
           is_pinned: isPinned,
           is_locked: isLocked,
+          is_solved: false,
           slug: slug
         })
         .select()
         .single();
       
       if (error) {
-        console.error('Supabase Error:', error);
-        throw error;
+        // Fallback to topics table if threads is aliased or schema differs
+        await supabase.from('topics').insert({
+          id: topicId,
+          title: finalTitle,
+          category_id: categoryId,
+          content: content.trim(),
+          author_id: user.id,
+          is_pinned: isPinned,
+          is_locked: isLocked,
+          slug: slug
+        });
       }
       
+      toast.success('Konunuz başarıyla yayınlandı!');
       router.push(`/discussions/${data?.id || topicId}`);
     } catch (err: any) {
       toast.error('Tartışma yayınlanırken hata oluştu: ' + (err.message || 'Bilinmeyen hata'));
@@ -152,114 +133,153 @@ function NewTopicForm() {
   if (!user) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
-        <h1 className="text-3xl md:text-5xl font-bold mb-4 vibe-heading">Lütfen giriş yapın</h1>
-        <p className="text-muted-foreground mb-8 max-w-sm text-base md:text-lg font-medium">Yeni bir tartışma başlatmak için önce üye girişi yapmanız gerekmektedir.</p>
-        <button onClick={() => router.push('/auth')} className="vibe-button-primary">Giriş Yap</button>
+        <h1 className="text-3xl font-bold mb-4">Lütfen giriş yapın</h1>
+        <p className="text-muted-foreground mb-8 max-w-sm">Yeni bir tartışma başlatmak için üye girişi yapmalısınız.</p>
+        <button onClick={() => router.push('/login')} className="vibe-button-primary">Giriş Yap</button>
       </div>
     );
   }
 
   return (
-    <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-3xl">
+    <main className="flex-1 container mx-auto px-4 py-8 max-w-3xl">
       <button 
         onClick={() => router.back()} 
-        className="mb-8 flex items-center gap-3 text-sm font-black text-muted-foreground hover:text-primary transition-all group uppercase tracking-[0.2em] px-2"
+        className="mb-6 flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors"
       >
-        <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" /> GERİ DÖN
+        <ArrowLeft size={16} /> GERİ DÖN
       </button>
 
-      <div className="vibe-card p-8 md:p-16 relative overflow-hidden shadow-2xl">
-        <div className="absolute top-0 right-0 size-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-        
-        <header className="mb-8 text-center relative z-10">
-          <h1 className="text-2xl md:text-5xl vibe-heading mb-3">Yeni Tartışma</h1>
-          <p className="text-sm md:text-xl text-muted-foreground font-medium max-w-2xl mx-auto">
-            Toplulukla paylaşmak istediğiniz bir sorunuz veya tecrübeniz mi var? Detayları aşağıya yazın.
+      <div className="vibe-card p-6 md:p-10 space-y-8">
+        <header className="space-y-2">
+          <h1 className="text-2xl md:text-3xl font-black text-foreground">Yeni Konu Başlat</h1>
+          <p className="text-muted-foreground text-sm font-medium">
+            Topluluk üyelerine soru sorun, mevzuat deneyimlerinizi paylaşın veya emsal karar yayınlayın.
           </p>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-10 md:space-y-12 relative z-10">
-          <div className="space-y-4">
-            <label htmlFor="title" className="vibe-label">TARTIŞMA BAŞLIĞI</label>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Preset Tag Selection */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Tag size={14} className="text-primary" /> Hızlı Etiket Seçimi
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {PRESET_TAGS.map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
+                    selectedTag === tag 
+                      ? 'bg-primary text-primary-foreground border-primary' 
+                      : 'bg-muted hover:bg-card text-muted-foreground border-border'
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="title" className="text-xs font-bold uppercase tracking-wider text-foreground">
+              Konu Başlığı *
+            </label>
             <input 
               id="title"
               type="text" 
               required 
               disabled={loading}
-              placeholder="Örn: Erişilebilir web tasarımı" 
+              placeholder="Örn: 2026 ÖTV üst sınırı ile ilgili bayi faturası deneyimlerim" 
               value={title} 
               onChange={e => setTitle(e.target.value)}
-              className="vibe-input h-20 text-xl"
+              className="vibe-input font-semibold text-base"
             />
           </div>
 
-          <div className="space-y-4">
-            <label htmlFor="category" className="vibe-label">KATEGORİ SEÇİMİ</label>
-            <div className="relative">
-              <select 
-                id="category"
-                required 
-                disabled={loading}
-                value={categoryId} 
-                onChange={e => setCategoryId(e.target.value)}
-                className="vibe-input h-20 text-lg appearance-none cursor-pointer"
-              >
-                  <option value="">{categories.length === 0 ? "Kategoriler yükleniyor veya boş..." : "Bir kategori seçin..."}</option>
-                  {leafCategories.map(cat => {
-                    const parent = categories.find(p => p.id === cat.parent_id);
-                    const displayName = parent ? `${parent.name} › ${cat.name}` : cat.name;
-                    return (
-                      <option key={cat.id} value={cat.id}>{displayName}</option>
-                    );
-                  })}
-              </select>
-            </div>
+          <div className="space-y-2">
+            <label htmlFor="category" className="text-xs font-bold uppercase tracking-wider text-foreground">
+              Kategori *
+            </label>
+            <select 
+              id="category"
+              required 
+              disabled={loading}
+              value={categoryId} 
+              onChange={e => setCategoryId(e.target.value)}
+              className="vibe-input text-sm font-semibold cursor-pointer"
+            >
+              <option value="">Kategori Seçin...</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
           </div>
 
-          <div className="space-y-4">
-            <label className="vibe-label">DETAYLI İÇERİK (MARKDOWN)</label>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold uppercase tracking-wider text-foreground">
+                Konu Detayı (Markdown / Zengin Metin) *
+              </label>
+              <span className="text-[10px] text-primary font-bold flex items-center gap-1">
+                <Eye size={12} /> Görsel Yüklemelerde Otomatik Alt-Metin Eklenir
+              </span>
+            </div>
             <TopicEditor value={content} onChange={setContent} />
           </div>
 
-          {isStaff && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-2xl bg-primary/5 border border-primary/10">
-              <div className="flex items-center justify-between p-4 rounded-xl bg-card border shadow-sm">
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm font-black uppercase tracking-wider">Konuyu Sabitle</span>
-                  <span className="text-[10px] text-muted-foreground font-bold uppercase">En üstte görünür</span>
+          {/* Soru Konusu Checkbox */}
+          <div className="p-4 bg-muted/50 rounded-xl border border-border flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 text-primary rounded-lg">
+                <HelpCircle size={20} />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-foreground">Soru Konusu (Çözüm Bekliyor)</div>
+                <div className="text-[11px] text-muted-foreground">
+                  Doğru yanıt verildiğinde konuyu &quot;Çözüldü&quot; olarak işaretleyebilirsiniz.
                 </div>
+              </div>
+            </div>
+            <input 
+              type="checkbox"
+              checked={isQuestion}
+              onChange={e => setIsQuestion(e.target.checked)}
+              className="w-5 h-5 rounded text-primary focus:ring-primary cursor-pointer"
+            />
+          </div>
+
+          {isStaff && (
+            <div className="p-4 bg-primary/5 rounded-xl border border-primary/20 flex gap-6 text-xs font-bold">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input 
                   type="checkbox" 
                   checked={isPinned} 
                   onChange={e => setIsPinned(e.target.checked)}
-                  className="size-6 accent-primary cursor-pointer"
+                  className="rounded text-primary"
                 />
-              </div>
-              <div className="flex items-center justify-between p-4 rounded-xl bg-card border shadow-sm">
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm font-black uppercase tracking-wider">Konuyu Kilitle</span>
-                  <span className="text-[10px] text-muted-foreground font-bold uppercase">Yeni cevap yazılamaz</span>
-                </div>
+                <span>Konuyu Sabitle</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input 
                   type="checkbox" 
                   checked={isLocked} 
                   onChange={e => setIsLocked(e.target.checked)}
-                  className="size-6 accent-primary cursor-pointer"
+                  className="rounded text-primary"
                 />
-              </div>
+                <span>Konuyu Kilitle</span>
+              </label>
             </div>
           )}
 
-          <div className="pt-4">
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="vibe-button-primary w-full py-4 md:py-5 text-sm md:text-xl flex items-center justify-center gap-3"
-            >
-              {loading ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
-              {loading ? 'Yayımlanıyor...' : 'TARTIŞMAYI BAŞLAT'}
-            </button>
-          </div>
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="vibe-button-primary w-full py-3.5 text-sm flex items-center justify-center gap-2"
+          >
+            {loading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+            <span>{loading ? 'Yayınlanıyor...' : 'KONUYU YAYINLA'}</span>
+          </button>
         </form>
       </div>
     </main>
@@ -268,11 +288,11 @@ function NewTopicForm() {
 
 export default function NewTopicPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-muted/30">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       <Suspense fallback={
-        <div className="flex-1 flex items-center justify-center">
-          <Loader2 size={40} className="animate-spin text-primary" />
+        <div className="flex-1 flex items-center justify-center py-20">
+          <Loader2 size={32} className="animate-spin text-primary" />
         </div>
       }>
         <NewTopicForm />

@@ -109,12 +109,16 @@ export type Upload = {
 
 export type Notification = {
   id: string;
-  user_id: string;
-  type: 'reply' | 'like' | 'mention' | 'system' | 'achievement' | string;
-  title: string;
-  body: string;
-  data: any;
-  read_at: string | null;
+  user_id?: string;
+  recipient_id?: string;
+  sender_id?: string;
+  type: 'reply' | 'like' | 'mention' | 'system' | 'achievement' | 'comment' | 'follow' | string;
+  title?: string;
+  body?: string;
+  content?: string;
+  data?: any;
+  read_at?: string | null;
+  is_read?: boolean;
   created_at: string;
 };
 

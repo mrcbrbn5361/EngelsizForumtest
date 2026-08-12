@@ -40,21 +40,21 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-md high-contrast:bg-background high-contrast:opacity-100" role="navigation" aria-label="Ana Navigasyon">
-      <div className="bg-primary/10 border-b border-primary/20 px-2 sm:px-3 py-1.5 text-center text-[10px] sm:text-xs font-black uppercase tracking-wider text-foreground flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-        <span className="inline-flex items-center justify-center bg-primary text-primary-foreground px-2 py-0.5 rounded-md text-[10px] animate-pulse">PROTOTİP & DEMO</span>
-        <span>Bu site EngelsizForum un prototip ve demo sürümüdür. Tüm modüller aktif ve çalışır durumdadır.</span>
+      <div className="bg-slate-900 border-b border-slate-800 px-2 sm:px-3 py-1.5 text-center text-[10px] sm:text-xs font-bold tracking-wider text-slate-200 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+        <span className="inline-flex items-center justify-center bg-blue-600 text-white px-2 py-0.5 rounded-md text-[10px] font-black animate-pulse shadow-sm">PROTOTİP & DEMO</span>
+        <span className="text-slate-300 font-medium">Bu site EngelsizForum&apos;un prototip ve demo sürümüdür. Tüm modüller aktif ve çalışır durumdadır.</span>
       </div>
       <div className="w-full max-w-7xl mx-auto flex min-h-16 items-center justify-between px-4 sm:px-6 py-2">
         <Link 
           href="/" 
-          className="flex items-center gap-2 outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 group shrink-0"
+          className="flex items-center gap-2 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 group shrink-0"
           aria-label="EngelsizForum Ana Sayfa"
         >
-          <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-primary text-primary-foreground rounded-2xl select-none shadow-xl shadow-primary/20 transition-all group-hover:rotate-6 group-hover:scale-105" aria-hidden="true" suppressHydrationWarning>
+          <div className="flex items-center justify-center h-10 w-10 md:h-12 md:w-12 bg-blue-600 text-white font-black rounded-2xl select-none shadow-xl shadow-blue-500/25 transition-all group-hover:rotate-6 group-hover:scale-105" aria-hidden="true" suppressHydrationWarning>
             <span className="text-xl md:text-2xl font-black" suppressHydrationWarning>E</span>
           </div>
           <span className="select-none text-xl md:text-2xl font-black tracking-tighter uppercase leading-none" suppressHydrationWarning>
-            engelsiz<span className="text-primary/80 group-hover:text-primary transition-colors" suppressHydrationWarning>forum</span>
+            engelsiz<span className="text-blue-600 dark:text-blue-400 group-hover:text-blue-700 transition-colors" suppressHydrationWarning>forum</span>
           </span>
         </Link>
 

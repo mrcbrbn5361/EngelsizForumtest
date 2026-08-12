@@ -677,15 +677,21 @@ export default function DiscussionDetailPage() {
 
       // Create Notification for Topic Author (if not self)
       if (topic && topic.author_id !== user.id) {
-        await supabase
-          .from('notifications')
-          .insert([{
-            user_id: topic.author_id,
-            type: 'comment',
-            title: 'Yeni Yorum',
-            body: `${user.email?.split('@')[0]} başlığınıza yorum yaptı.`,
-            data: { link: `/discussions/${id}` }
-          }]);
+        try {
+          await supabase
+            .from('notifications')
+            .insert([{
+              recipient_id: topic.author_id,
+              sender_id: user.id,
+              type: 'comment',
+              title: 'Yeni Yorum',
+              body: `${user.email?.split('@')[0]} başlığınıza yorum yaptı.`,
+              content: `${user.email?.split('@')[0]} başlığınıza yorum yaptı.`,
+              data: { link: `/discussions/${id}` }
+            }]);
+        } catch (notifErr) {
+          console.warn('Could not send comment notification:', notifErr);
+        }
       }
 
       setComments([...comments, data]);

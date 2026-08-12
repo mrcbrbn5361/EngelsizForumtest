@@ -195,14 +195,20 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
         setIsFollowing(true);
         setProfile(prev => prev ? { ...prev, followers_count: prev.followers_count + 1 } : null);
 
-        // Send notification
-        await supabase.from('notifications').insert({
-          user_id: userId,
-          type: 'follow',
-          title: 'Yeni Takipçi',
-          body: `${currentUser.email?.split('@')[0]} sizi takip etmeye başladı.`,
-          data: { link: `/profile/${currentUser.id}` }
-        });
+        // Send notification safely
+        try {
+          await supabase.from('notifications').insert({
+            recipient_id: userId,
+            sender_id: currentUser.id,
+            type: 'follow',
+            title: 'Yeni Takipçi',
+            body: `${currentUser.email?.split('@')[0]} sizi takip etmeye başladı.`,
+            content: `${currentUser.email?.split('@')[0]} sizi takip etmeye başladı.`,
+            data: { link: `/profile/${currentUser.id}` }
+          });
+        } catch (notifErr) {
+          console.warn('Could not send follow notification:', notifErr);
+        }
       }
     } catch (err) {
       console.error('Error toggling follow:', err);

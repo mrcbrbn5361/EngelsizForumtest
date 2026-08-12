@@ -55,9 +55,11 @@ export default function AdminDashboard() {
   const fetchStats = useCallback(async () => {
     setIsDataLoading(true);
     try {
-      const [u, t, c, cat] = await Promise.all([
+      const [u, thr, top, pst, cmt, cat] = await Promise.all([
         supabase.from('profiles').select('id', { count: 'exact', head: true }),
+        supabase.from('threads').select('id', { count: 'exact', head: true }),
         supabase.from('topics').select('id', { count: 'exact', head: true }),
+        supabase.from('posts').select('id', { count: 'exact', head: true }),
         supabase.from('comments').select('id', { count: 'exact', head: true }),
         supabase.from('categories').select('id', { count: 'exact', head: true }),
       ]);
@@ -74,8 +76,8 @@ export default function AdminDashboard() {
 
       setStats({
         users: u.count || 0,
-        topics: t.count || 0,
-        comments: c.count || 0,
+        topics: (thr.count !== null && thr.count !== undefined ? thr.count : top.count) || 0,
+        comments: (pst.count !== null && pst.count !== undefined ? pst.count : cmt.count) || 0,
         categories: cat.count || 0,
         total_visitors: visitors.total_visitors || 0,
         active_visitors: visitors.active_visitors || 0,

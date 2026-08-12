@@ -13,9 +13,9 @@ export function Footer() {
           <div className="space-y-8 text-center md:text-left">
             <Link href="/" className="inline-block group">
               <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center h-10 w-10 bg-primary text-primary-foreground rounded-2xl font-black text-xl shadow-xl shadow-primary/20 group-hover:rotate-6 transition-transform">E</div>
+                <div className="flex items-center justify-center h-10 w-10 bg-blue-600 text-white font-black rounded-2xl text-xl shadow-xl shadow-blue-500/20 group-hover:rotate-6 transition-transform">E</div>
                 <div className="text-2xl font-black tracking-tighter uppercase">
-                  ENGELSİZ<span className="text-primary">FORUM</span>
+                  ENGELSİZ<span className="text-blue-600 dark:text-blue-400">FORUM</span>
                 </div>
               </div>
             </Link>

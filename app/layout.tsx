@@ -32,6 +32,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
+  themeColor: '#2563eb',
 };
 
 export const metadata: Metadata = {
@@ -39,8 +40,8 @@ export const metadata: Metadata = {
     default: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
     template: '%s | EngelsizForum'
   },
-  description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli forum platformu. Engelli bireyler için optimize edilmiş, SEO ve GEO uyumlu topluluk alanı.',
-  keywords: ['engelsiz forum', 'erişilebilirlik', 'accessibility', 'topluluk', 'yardımlaşma', 'bariyersiz iletişim', 'engelli hakları', 'erişilebilir web', 'GEO optimization', 'generative engine optimization', 'Türkiye engelli platformu', 'biyonik okuma', 'disleksi dostu'],
+  description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli forum platformu. Balthazard, ÖTV 2026 ve Erken Emeklilik hesaplama araçları ile engelli bireyler için optimize edilmiş topluluk alanı.',
+  keywords: ['engelsiz forum', 'erişilebilirlik', 'accessibility', 'topluluk', 'yardımlaşma', 'bariyersiz iletişim', 'engelli hakları', 'erişilebilir web', 'GEO optimization', 'generative engine optimization', 'Türkiye engelli platformu', 'biyonik okuma', 'disleksi dostu', 'ÖTV 2026 hesaplama', 'Balthazard hesaplama'],
   authors: [{ name: 'EngelsizForum Ekibi' }],
   creator: 'EngelsizForum',
   publisher: 'EngelsizForum',
@@ -58,18 +59,10 @@ export const metadata: Metadata = {
     'ICBM': '41.0082, 28.9784',
   },
   openGraph: {
-    title: 'EngelsizForum: Erişilebilir Forum',
-    description: 'Engelli bireyler için tam erişilebilir forum platformu.',
+    title: 'EngelsizForum: Tam Erişilebilir Topluluk Platformu',
+    description: 'Engelli bireyler için %100 erişilebilir, yapay zeka destekli topluluk ve mevzuat danışma platformu.',
     url: 'https://engelsizforum.com',
     siteName: 'EngelsizForum',
-    images: [
-      {
-        url: 'https://engelsizforum.com/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'EngelsizForum - Erişilebilir Topluluk Platformu',
-      },
-    ],
     type: 'website',
     locale: 'tr_TR',
   },
@@ -82,20 +75,13 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
+    statusBarStyle: 'black-translucent',
     title: 'EngelsizForum',
   },
   formatDetection: {
     telephone: false,
     address: false,
     email: false,
-  },
-  icons: {
-    icon: [
-      { url: '/favicon.jpg', sizes: 'any' }
-    ],
-    shortcut: '/favicon.jpg',
-    apple: '/favicon.jpg',
   },
   manifest: '/manifest.json',
 };

@@ -14,7 +14,7 @@ Bu plan, EngelsizForum platformundaki her bir sayfayı sırayla ele alarak "prem
 ### [x] ADIM 1: Ana Sayfa (Homepage) - `/app/page.tsx` & `/components/forum/forum-index-client.tsx` (Tamamlandı)
 - **Tasarım & Görsellik:** Kahraman (Hero) bölümünün modern, yüksek kontrastlı ve büyüleyici bir görsel hiyerarşiye kavuşturulması. Akıcı Framer Motion mikro-animasyonları.
 - **İçerik & Derinlik:** WCAG 2.1 AA uyumlu düzen, zengin GEO içeriği, istatistik kartlarının parlatılması.
-- **Gerçek Yapay Zeka Copilot Entegrasyonu:** AI Copilot sohbet kutusunun sadece simülasyon değil, sunucu tarafındaki `/api/copilot` rotası üzerinden gerçek bir **Gemini (gemini-2.5-flash)** API entegrasyonu ile canlandırılması.
+- **Gerçek Yapay Zeka Copilot Entegrasyonu:** AI Copilot sohbet kutusunun sadece simülasyon değil, sunucu tarafındaki `/api/copilot` rotası üzerinden gerçek bir **Gemini (gemini-3.6-flash)** API entegrasyonu ile canlandırılması.
 - **Erişilebilirlik:** Ekran okuyucu testleri, semantik etiketlerin (main, section, h1-h6) doğruluğu, odak yönetimi (focus rings).
 
 ---

@@ -21,19 +21,32 @@ export function NotificationCenter() {
     if (!user) return;
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('notifications')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('recipient_id', user.id)
         .order('created_at', { ascending: false })
         .limit(20);
+
+      // Fallback if schema uses user_id instead of recipient_id
+      if (error && (error.code === '42703' || error.message?.includes('recipient_id'))) {
+        const retry = await supabase
+          .from('notifications')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(20);
+        data = retry.data;
+        error = retry.error;
+      }
 
       if (error) {
         if (error.code === 'PGRST116' || error.code === '42P01') {
           // Table doesn't exist yet, ignore
           setNotifications([]);
         } else {
-          throw error;
+          console.warn('Notifications fetch notice:', error.message);
+          setNotifications([]);
         }
       } else {
         setNotifications(data || []);
@@ -48,18 +61,20 @@ export function NotificationCenter() {
   useEffect(() => {
     fetchNotifications();
     
-    // Subscribe to real-time notifications
+    // Subscribe to real-time notifications safely
     if (user) {
       const channel = supabase
-        .channel('public:notifications')
+        .channel(`public:notifications:${user.id}`)
         .on('postgres_changes', { 
           event: 'INSERT', 
           schema: 'public', 
-          table: 'notifications',
-          filter: `user_id=eq.${user.id}`
+          table: 'notifications'
         }, (payload) => {
-          setNotifications(prev => [payload.new as Notification, ...prev]);
-          toast.info('Yeni bir bildiriminiz var!');
+          const newNotif = payload.new as any;
+          if (newNotif && (newNotif.recipient_id === user.id || newNotif.user_id === user.id)) {
+            setNotifications(prev => [newNotif as Notification, ...prev]);
+            toast.info('Yeni bir bildiriminiz var!');
+          }
         })
         .subscribe();
 
@@ -70,18 +85,23 @@ export function NotificationCenter() {
   }, [user, fetchNotifications]);
 
   useEffect(() => {
-    setUnreadCount(notifications.filter(n => !n.read_at).length);
+    setUnreadCount(notifications.filter(n => !n.is_read && !n.read_at).length);
   }, [notifications]);
 
   const markAsRead = async (id: string) => {
     try {
       const { error } = await supabase
         .from('notifications')
-        .update({ read_at: new Date().toISOString() })
+        .update({ is_read: true, read_at: new Date().toISOString() })
         .eq('id', id);
       
-      if (error) throw error;
-      setNotifications(prev => prev.map(n => n.id === id ? { ...n, read_at: new Date().toISOString() } : n));
+      if (error && error.code === '42703') {
+        await supabase
+          .from('notifications')
+          .update({ is_read: true })
+          .eq('id', id);
+      }
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true, read_at: new Date().toISOString() } : n));
     } catch (err) {
       console.error('Error marking as read:', err);
     }
@@ -90,14 +110,18 @@ export function NotificationCenter() {
   const markAllAsRead = async () => {
     if (!user) return;
     try {
-      const { error } = await supabase
+      let { error } = await supabase
         .from('notifications')
-        .update({ read_at: new Date().toISOString() })
-        .eq('user_id', user.id)
-        .is('read_at', null);
+        .update({ is_read: true, read_at: new Date().toISOString() })
+        .eq('recipient_id', user.id);
       
-      if (error) throw error;
-      setNotifications(prev => prev.map(n => ({ ...n, read_at: new Date().toISOString() })));
+      if (error && (error.code === '42703' || error.message?.includes('recipient_id'))) {
+        await supabase
+          .from('notifications')
+          .update({ is_read: true, read_at: new Date().toISOString() })
+          .eq('user_id', user.id);
+      }
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true, read_at: new Date().toISOString() })));
       toast.success('Tüm bildirimler okundu olarak işaretlendi.');
     } catch (err) {
       console.error('Error marking all as read:', err);
