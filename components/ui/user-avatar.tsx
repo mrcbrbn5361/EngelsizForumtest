@@ -12,6 +12,7 @@ interface UserAvatarProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   badge?: React.ReactNode;
+  isOnline?: boolean;
 }
 
 const sizeMap = {
@@ -22,7 +23,7 @@ const sizeMap = {
   xl: 'w-16 h-16 text-base',
 };
 
-export function UserAvatar({ src, name, username, size = 'md', className, badge }: UserAvatarProps) {
+export function UserAvatar({ src, name, username, size = 'md', className, badge, isOnline }: UserAvatarProps) {
   const [error, setError] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -69,6 +70,12 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge 
           </div>
         )}
       </div>
+      {isOnline && (
+        <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-slate-900 ring-2 ring-slate-900 z-10">
+          <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+        </span>
+      )}
       {badge}
     </div>
   );

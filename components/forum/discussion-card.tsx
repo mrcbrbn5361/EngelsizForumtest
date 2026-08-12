@@ -6,6 +6,7 @@ import { motion } from 'motion/react';
 import { MessageSquare, User, Calendar, Pin, Sparkles, Loader2, Trash2 } from 'lucide-react';
 import { Topic } from '@/types/database';
 import { UserAvatar } from '@/components/ui/user-avatar';
+import { UserRoleBadge } from '@/components/ui/user-badge';
 import { supabase } from '@/lib/supabase';
 import { useRole } from '@/hooks/use-role';
 import Link from 'next/link';
@@ -114,20 +115,19 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] md:text-xs text-muted-foreground relative z-10">
-        <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-2 min-w-0 relative z-20 pointer-events-auto hover:opacity-80 transition-opacity">
+        <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-2.5 min-w-0 relative z-20 pointer-events-auto hover:opacity-80 transition-opacity">
           <UserAvatar 
             src={topic.author?.avatar_url}
             username={topic.author?.username}
             name={topic.author?.full_name}
             size="sm"
+            isOnline={true}
           />
-          <div className="flex flex-col min-w-0">
+          <div className="flex flex-col min-w-0 text-left">
             <span className="font-bold text-foreground truncate max-w-[120px] sm:max-w-none hover:underline text-left">
               {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
             </span>
-            <span className="text-[8px] font-bold text-primary uppercase tracking-widest opacity-80 text-left">
-              {topic.author?.role === 'admin' ? 'YÖNETİCİ' : topic.author?.role === 'moderator' ? 'MODERATÖR' : 'TOPLULUK ÜYESİ'}
-            </span>
+            <UserRoleBadge role={topic.author?.role} size="xs" />
           </div>
         </Link>
         <div className="flex items-center gap-1.5 opacity-70 whitespace-nowrap">

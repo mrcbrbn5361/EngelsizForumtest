@@ -17,6 +17,7 @@ import { Topic, Category } from '@/types/database';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { UserAvatar } from '@/components/ui/user-avatar';
+import { UserRoleBadge, OnlineStatusDot, UserLevelBadge } from '@/components/ui/user-badge';
 
 interface ForumIndexClientProps {
   initialTopics: Topic[];
@@ -469,12 +470,13 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                             username={topic.author?.username} 
                             name={topic.author?.full_name}
                             size="md"
+                            isOnline={true}
                           />
-                          <div className="flex flex-col">
-                            <span className="font-black text-foreground text-xs uppercase tracking-tight">{topic.author?.full_name || topic.author?.username || 'Kullanıcı'}</span>
-                            <span className="text-[9px] font-bold text-primary uppercase tracking-widest opacity-70">
-                              {topic.author?.role === 'admin' ? 'YÖNETİCİ' : topic.author?.role === 'moderator' ? 'MODERATÖR' : 'TOPLULUK ÜYESİ'}
+                          <div className="flex flex-col gap-0.5">
+                            <span className="font-black text-foreground text-xs uppercase tracking-tight flex items-center gap-2">
+                              {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
                             </span>
+                            <UserRoleBadge role={topic.author?.role || 'user'} size="xs" />
                           </div>
                         </div>
                         <div className="flex items-center gap-6 text-xs font-mono font-bold">
@@ -523,29 +525,40 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               )}
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-card border border-border rounded-3xl sm:rounded-[2rem] p-6 sm:p-10 shadow-sm">
-              <div className="flex items-center justify-between mb-8">
-                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-3"><Users className="text-primary w-5 h-5" /> AKTİF ÜYELER</h3>
-                <span className="flex items-center gap-2 text-[10px] font-mono font-black text-primary uppercase bg-primary/10 px-3 py-1 rounded-full border border-primary/20">{onlineMembers.length} AKTİF</span>
+            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-card border border-border rounded-3xl sm:rounded-[2rem] p-6 sm:p-8 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-2.5">
+                  <Users className="text-primary w-4 h-4" /> ÇEVRİMİÇİ ÜYELER
+                </h3>
+                <span className="flex items-center gap-1.5 text-[10px] font-mono font-black text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  {onlineMembers.length} CANLI
+                </span>
               </div>
               {onlineMembers.length > 0 ? (
-                <div className="grid grid-cols-4 gap-5">
+                <div className="space-y-3 max-h-[320px] overflow-y-auto pr-1 no-scrollbar">
                   {onlineMembers.map(member => (
-                    <Link href={`/profile/${member.id}`} key={member.id} className="relative flex flex-col items-center group outline-none">
+                    <Link href={`/profile/${member.id}`} key={member.id} className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-muted/60 transition-all border border-transparent hover:border-border/60 group">
                       <UserAvatar 
                         src={member.avatar} 
                         username={member.username} 
                         name={member.name}
-                        size="lg"
-                        className="hover:border-primary/50 transition-all"
+                        size="md"
+                        isOnline={true}
                       />
-                      <span className="text-[8px] font-black text-muted-foreground truncate w-full text-center mt-2 uppercase tracking-tighter hover:text-primary transition-colors">@{member.username}</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-black text-xs text-foreground truncate group-hover:text-primary transition-colors flex items-center gap-1.5">
+                          @{member.username}
+                        </div>
+                        <UserRoleBadge role={member.role} size="xs" showLabel={true} />
+                      </div>
+                      <ChevronRight size={14} className="text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
                     </Link>
                   ))}
                 </div>
               ) : (
                 <div className="text-center py-6 text-xs text-muted-foreground font-semibold uppercase tracking-wider">
-                  Henüz diğer üye bulunmuyor
+                  Henüz çevrim içi üye yok
                 </div>
               )}
             </motion.div>
