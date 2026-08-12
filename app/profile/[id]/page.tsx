@@ -229,8 +229,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
           .select(`
             *,
             author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
-            category:categories(name, slug, description, icon, color),
-            comments(count)
+            category:categories(name, slug, description, icon, color)
           `)
           .eq('author_id', userId)
           .order('created_at', { ascending: false });
@@ -247,8 +246,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             topic:topics(
               *,
               author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
-              category:categories(name, slug, description, icon, color),
-              comments(count)
+              category:categories(name, slug, description, icon, color)
             )
           `)
           .eq('author_id', userId);
@@ -271,8 +269,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             topic:topics(
               *,
               author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
-              category:categories(name, slug, description, icon, color),
-              comments(count)
+              category:categories(name, slug, description, icon, color)
             )
           `)
           .eq('user_id', userId)

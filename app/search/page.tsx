@@ -67,7 +67,7 @@ export default function SearchPage() {
       let queryBuilder = supabase
         .from('topics')
         .select(`
-          id, title, content, author_id, category_id, views_count, likes_count, comments_count, created_at, updated_at, slug,
+          id, title, content, author_id, category_id, views_count, created_at, updated_at, slug,
           category:categories(id, name, slug, color, icon),
           author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified)
         `)

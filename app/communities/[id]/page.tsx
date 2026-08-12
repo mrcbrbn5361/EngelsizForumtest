@@ -401,7 +401,7 @@ export default function CommunityDetailPage() {
         const { data: topicsData, error: topicsError } = await supabase
           .from('topics')
           .select(`
-            id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
+            id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, created_at, updated_at, slug,
             author:profiles(*),
             category:categories(name)
           `)

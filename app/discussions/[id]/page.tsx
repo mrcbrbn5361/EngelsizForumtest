@@ -527,7 +527,7 @@ export default function DiscussionDetailPage() {
       const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
       
       const selectFields = `
-        id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, likes_count, comments_count, created_at, updated_at, slug,
+        id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, created_at, updated_at, slug,
         author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified),
         category:categories(id, name, slug, color, icon)
       `;
@@ -592,7 +592,7 @@ export default function DiscussionDetailPage() {
       const { data, error } = await supabase
         .from('comments')
         .select(`
-          id, content, topic_id, author_id, parent_id, likes_count, is_solution, created_at, updated_at,
+          id, content, topic_id, author_id, parent_id, is_solution, created_at, updated_at,
           author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified)
         `)
         .eq('topic_id', targetId)
