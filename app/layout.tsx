@@ -6,6 +6,8 @@ import './globals.css';
 import { AccessibilityProvider } from '@/components/providers/accessibility-provider';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/providers/auth-provider';
+import { AccessibilityToolbar } from '@/components/accessibility/accessibility-toolbar';
+import { SkipNav } from '@/components/accessibility/skip-nav';
 
 const headingFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -149,16 +151,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <a href="#main-content" className="skip-link">
-          Ana içeriğe atla
-        </a>
+        <SkipNav />
         <AuthProvider>
           <AccessibilityProvider>
             <main id="main-content" className="flex-1 w-full flex flex-col outline-none" tabIndex={-1}>
               {children}
             </main>
+            <AccessibilityToolbar />
             <VisitorTracker />
-            <Toaster position="top-right" richColors />
+            <Toaster position="top-right" richColors closeButton />
           </AccessibilityProvider>
         </AuthProvider>
       </body>

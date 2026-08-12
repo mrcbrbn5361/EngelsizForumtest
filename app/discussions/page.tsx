@@ -171,16 +171,17 @@ function DiscussionsContent() {
       let loadedCats = categories;
       // Fetch Categories (only once)
       if (!isLoadMore) {
-        const { data: cats } = await supabase
+        const { data: cats, error: catsErr } = await supabase
           .from('categories')
           .select('*')
-          .order('name');
+          .order('name', { ascending: true });
         
-        if (cats && cats.length > 0) {
+        if (catsErr) {
+          console.error('Categories fetch error:', catsErr);
+          toast.error('Kategoriler yüklenemedi.');
+        } else if (cats) {
           setCategories(cats);
           loadedCats = cats;
-        } else {
-          setCategories([]);
         }
       }
 

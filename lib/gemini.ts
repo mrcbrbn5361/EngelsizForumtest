@@ -26,8 +26,8 @@ export async function generateContentWithRetry(params: GeminiGenerateParams) {
     throw new Error("Gemini API anahtarı (GEMINI_API_KEY) tanımlanmamış.");
   }
 
-  // We try gemini-2.5-flash first, then gemini-2.0-flash, and fallback to gemini-1.5-flash
-  const modelsToTry = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+  // We try gemini-2.0-flash-exp first, then gemini-2.0-flash, and fallback to gemini-1.5-flash
+  const modelsToTry = ["gemini-2.0-flash-exp", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"];
   let lastError: any = null;
 
   for (const model of modelsToTry) {
