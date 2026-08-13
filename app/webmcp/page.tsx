@@ -1,11 +1,10 @@
 import React from 'react';
-import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Bot, Sparkles, CheckCircle2, Code2, ArrowLeft, ShieldCheck, Terminal, Layers } from 'lucide-react';
+import { Bot, Sparkles, CheckCircle2, Code2, ArrowLeft, ShieldCheck, Terminal, Layers, Scale, BookOpen, Calculator } from 'lucide-react';
 
 export const metadata = {
-  title: 'Chrome WebMCP Desteği - Türkiye\'de İlk | EngelsizForum',
-  description: 'Google Chrome Web Model Context Protocol (WebMCP) standardını Türkiye\'de ilk uygulayan tam erişilebilir topluluk platformu.',
+  title: 'Chrome WebMCP & Remote MCP Desteği - Türkiye\'de İlk | EngelsizForum',
+  description: 'Google Chrome Web Model Context Protocol (WebMCP) ve Remote MCP Sunucu standardını Türkiye\'de ilk uygulayan tam erişilebilir engelli hakları ve topluluk platformu.',
 };
 
 export default function WebMCPPage() {
@@ -24,19 +23,19 @@ export default function WebMCPPage() {
         <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
             <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
-            W3C Web ML Community Group
+            W3C Web ML Community Group & MCP 2024-11-05
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            Türkiye&apos;de İlk Entegrasyon
+            Türkiye&apos;de İlk Yapay Zeka MCP Hub&apos;ı
           </span>
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-          Google Chrome WebMCP (Web Model Context Protocol) Entegrasyonu
+          Google Chrome WebMCP ve Gemini Web MCP Ajanı
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-          EngelsizForum, Google Chrome ve Microsoft tarafından öncülük edilen <strong className="text-foreground">WebMCP</strong> standardını Türkiye&apos;de entegre eden ilk platformdur. Yapay zeka ajanları artık web sitemizi taramak zorunda kalmadan doğrudan tanımlı API araçlarımız ile etkileşime girebilir.
+          EngelsizForum, Google Chrome ve Microsoft ortaklığındaki <strong className="text-foreground">WebMCP</strong> (İstemci) ve <strong className="text-foreground">Remote MCP</strong> (Gemini / Claude / ChatGPT Ajan) standartlarını Türkiye&apos;de uygulayan ilk erişilebilir platformdur. Yapay zeka ajanları artık tüm engelli yasal haklarını, ÖTV 2026 şartlarını, Balthazard hesaplamasını ve mevzuatı anında sorgulayabilir.
         </p>
       </div>
 
@@ -62,7 +61,7 @@ export default function WebMCPPage() {
             <li><strong>gemini.google.com</strong> adresini açıp ayarlardan veya istem kutusundaki <strong>&quot;Özel bağlı uygulama oluşturun&quot;</strong> seçeneğine tıklayın.</li>
             <li>Bağlantı adresi kutusuna <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground">https://www.engelsizforum.com/api/mcp</code> adresini yapıştırın.</li>
             <li>Gemini sunucumuzdaki <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground">initialize</code> ve <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground">tools/list</code> protokolünü doğrulayarak EngelsizForum araçlarını otomatik tanıyacaktır.</li>
-            <li>Artık Gemini istem penceresinde <em>&quot;EngelsizForum&apos;da ÖTV 2026 şartlarını ara&quot;</em> veya <em>&quot;Balthazard formülü ile %40 ve %20 oranlarını hesapla&quot;</em> diyerek canlı verilere ulaşabilirsiniz!</li>
+            <li>Artık Gemini istem penceresinde <em>&quot;EngelsizForum&apos;da ÖTV 2026 şartlarını ara&quot;</em>, <em>&quot;%40 engelli raporumla hangi hakları alabilirim?&quot;</em> veya <em>&quot;Balthazard formülü ile %40 ve %20 oranlarını hesapla&quot;</em> diyerek canlı verilere ulaşabilirsiniz!</li>
           </ol>
         </div>
       </div>
@@ -73,9 +72,9 @@ export default function WebMCPPage() {
           <div className="p-3 w-fit rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
             <Bot className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-lg text-foreground">Doğrudan Ajan Erişimi</h3>
+          <h3 className="font-bold text-lg text-foreground">Ajan Dostu Mimari</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Ajanlar (Chrome built-in AI, Gemini Ajanları) DOM taraması yapmadan `navigator.modelContext` üzerinden EngelsizForum fonksiyonlarına erişir.
+            Yapay zeka ajanları (Chrome built-in AI, Gemini Ajanları, Claude MCP) DOM taramak yerine doğrudan tanımlı API araçları ile etkileşime girer.
           </p>
         </div>
 
@@ -83,9 +82,9 @@ export default function WebMCPPage() {
           <div className="p-3 w-fit rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
             <ShieldCheck className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-lg text-foreground">WCAG 2.1 AAA & Güvenlik</h3>
+          <h3 className="font-bold text-lg text-foreground">T.C. Resmi Mevzuat Doğruluğu</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Tüm WebMCP çağrıları kullanıcı izni, Origin Isolation ve WCAG erişilebilirlik standartlarına %100 uyumlu olarak gerçekleşir.
+            4760 Sayılı ÖTV Kanunu, 5510 Sayılı SGK Emeklilik Kanunu, ÇÖZGER ve RAM kararlarını anında güncel olarak sorgular.
           </p>
         </div>
 
@@ -93,9 +92,9 @@ export default function WebMCPPage() {
           <div className="p-3 w-fit rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
             <Layers className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-lg text-foreground">Deklaratif & İmperatif Yapı</h3>
+          <h3 className="font-bold text-lg text-foreground">Çift Katmanlı Entegrasyon</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Hem HTML `toolname` nitelikleri hem de JavaScript `registerTool()` fonksiyonları ile tam kapsama sağlanır.
+            Hem tarayıcı içi `document.modelContext` (WebMCP) hem de sunucu ucu `/api/mcp` (JSON-RPC 2.0 / SSE) üzerinden aynı anda çalışır.
           </p>
         </div>
       </div>
@@ -104,7 +103,7 @@ export default function WebMCPPage() {
       <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
         <div className="flex items-center gap-2">
           <Terminal className="w-5 h-5 text-blue-500" />
-          <h2 className="text-xl font-bold text-foreground">EngelsizForum WebMCP Ajan Araçları</h2>
+          <h2 className="text-xl font-bold text-foreground">EngelsizForum MCP Ajan Araçları Listesi</h2>
         </div>
 
         <div className="overflow-x-auto">
@@ -119,13 +118,28 @@ export default function WebMCPPage() {
             <tbody className="divide-y divide-border">
               <tr>
                 <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_search</td>
-                <td className="py-3 px-4 text-muted-foreground">ÖTV 2026, EKPSS, Balthazard ve mevzuat konularını arar.</td>
+                <td className="py-3 px-4 text-muted-foreground">ÖTV 2026, EKPSS, Balthazard ve forum konularını arar.</td>
                 <td className="py-3 px-4 font-mono text-xs text-foreground">query: string</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_balthazard_calc</td>
-                <td className="py-3 px-4 text-muted-foreground">Balthazard formülü ile net engel oranını hesaplar.</td>
+                <td className="py-3 px-4 text-muted-foreground">Birden fazla engel oranını Balthazard formülü ile hesaplar.</td>
                 <td className="py-3 px-4 font-mono text-xs text-foreground">rates: number[]</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_disability_rights_guide</td>
+                <td className="py-3 px-4 text-muted-foreground">Rapor oranına (%40, %70, %90) göre tüm yasal engelli haklarını sorgular.</td>
+                <td className="py-3 px-4 font-mono text-xs text-foreground">reportPercentage: number</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_legislation_lookup</td>
+                <td className="py-3 px-4 text-muted-foreground">ÖTV Kanunu, Emeklilik Cetveli, Evde Bakım ve EKPSS kanun maddelerini sunar.</td>
+                <td className="py-3 px-4 font-mono text-xs text-foreground">category: string</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_ram_special_education_info</td>
+                <td className="py-3 px-4 text-muted-foreground">RAM süreçlerini, ÇÖZGER derecelerini ve özel eğitim ödeneklerini sorgular.</td>
+                <td className="py-3 px-4 font-mono text-xs text-foreground">diagnosis: string</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_accessibility_toggle</td>
@@ -146,20 +160,20 @@ export default function WebMCPPage() {
       <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
         <div className="flex items-center gap-2">
           <Code2 className="w-5 h-5 text-purple-500" />
-          <h2 className="text-xl font-bold text-foreground">Örnek Kod Yapısı (`lib/webmcp.ts`)</h2>
+          <h2 className="text-xl font-bold text-foreground">Örnek JS Kaydı (`document.modelContext`)</h2>
         </div>
 
         <pre className="p-4 rounded-xl bg-muted font-mono text-xs text-foreground overflow-x-auto leading-relaxed border border-border">
-{`if (navigator.modelContext && typeof navigator.modelContext.registerTool === 'function') {
-  navigator.modelContext.registerTool({
-    name: 'engelsizforum_balthazard_calc',
-    description: 'Balthazard engel oranı hesaplama aracı',
+{`if (document.modelContext && typeof document.modelContext.registerTool === 'function') {
+  document.modelContext.registerTool({
+    name: 'engelsizforum_disability_rights_guide',
+    description: 'Engelli yasal hakları rehberi',
     parameters: {
-      rates: { type: 'array', description: 'Engel oranları dizisi', required: true }
+      reportPercentage: { type: 'number', description: 'Engel oranı yüzdesi', required: true }
     },
     execute: (args) => {
-      // Balthazard hesaplama algoritması
-      return { balthazardScore: 76 };
+      // Yasal haklar kılavuzu çıktısı
+      return { reportPercentage: 40, grantedRights: ['Ücretsiz Toplu Taşıma', 'EKPSS', 'Erken Emeklilik'] };
     }
   });
 }`}

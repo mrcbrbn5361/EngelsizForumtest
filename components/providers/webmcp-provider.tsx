@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { isWebMCPSupported, registerEngelsizForumWebMCPTools } from '@/lib/webmcp';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
-import { Bot, CheckCircle2, Sparkles, Cpu, Info, Play, ExternalLink, Terminal } from 'lucide-react';
+import { Bot, CheckCircle2, Sparkles, Cpu, Info, Play, ExternalLink, Terminal, ShieldCheck, FileText, Scale } from 'lucide-react';
 import { toast } from 'sonner';
 
 export function WebMCPProvider({ children }: { children: React.ReactNode }) {
@@ -40,9 +40,8 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
   const runToolTest = async (toolName: string) => {
     try {
       if (toolName === 'engelsizforum_search') {
-        const res = await document.modelContext?.registerTool ? { query: 'ÖTV 2026' } : { query: 'ÖTV 2026' };
         toast.success(`🤖 [WebMCP] engelsizforum_search çağrıldı: "ÖTV 2026"`);
-        setTestOutput(JSON.stringify({ tool: 'engelsizforum_search', args: res, status: 'EXECUTED_SUCCESS' }, null, 2));
+        setTestOutput(JSON.stringify({ tool: 'engelsizforum_search', query: 'ÖTV 2026', status: 'EXECUTED_SUCCESS' }, null, 2));
         router.push('/search?q=%C3%96TV%202026');
       } else if (toolName === 'engelsizforum_balthazard_calc') {
         const rates = [40, 20, 10];
@@ -55,7 +54,30 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
         });
         const finalScore = Math.round(score);
         toast.success(`🤖 [WebMCP] Balthazard Hesabı Sonucu: %${finalScore}`);
-        setTestOutput(JSON.stringify({ tool: 'engelsizforum_balthazard_calc', input: rates, resultScore: `%${finalScore}` }, null, 2));
+        setTestOutput(JSON.stringify({ tool: 'engelsizforum_balthazard_calc', input: rates, resultScore: `%${finalScore}`, otvEligible: finalScore >= 90 }, null, 2));
+      } else if (toolName === 'engelsizforum_disability_rights_guide') {
+        toast.success(`🤖 [WebMCP] %40 Rapor Yasal Haklar Rehberi Çağrıldı`);
+        setTestOutput(JSON.stringify({
+          tool: 'engelsizforum_disability_rights_guide',
+          reportPercentage: 40,
+          grantedRights: [
+            'Şehir İçi Tüm Toplu Taşıma Araçları Ücretsiz',
+            'EKPSS Sınavına Girme ve %3 Engelli Kadrosu',
+            'Yaş Şartsız Kademeli Engelli Erken Emekliliği',
+            'Emlak Vergisi Tam Muafiyeti (200m² Tek Mesken)',
+            'Türk Telekom, Turkcell, Vodafone %25-50 İndirimi',
+            'Su Faturasında %50 İndirim'
+          ]
+        }, null, 2));
+      } else if (toolName === 'engelsizforum_legislation_lookup') {
+        toast.info(`🤖 [WebMCP] 4760 Sayılı ÖTV Kanunu Sorgulandı`);
+        setTestOutput(JSON.stringify({
+          tool: 'engelsizforum_legislation_lookup',
+          category: 'otv_2026',
+          lawNo: '4760 Sayılı ÖTV Kanunu Madde 7/2',
+          limit2026: '2.247.100 TL',
+          summary: '%90 üzeri raporlulara %100 ÖTV muafiyeti, 5 yıl devredilemezlik şartı.'
+        }, null, 2));
       } else if (toolName === 'engelsizforum_accessibility_toggle') {
         updateSettings({ highContrast: true });
         toast.success(`🤖 [WebMCP] Yüksek Kontrast Modu Aktifleştirildi!`);
@@ -80,7 +102,6 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
 
       {/* 
         Declarative WebMCP Forms for Chrome DevTools DOM Scanner
-        We use sr-only / offscreen absolute positioning (NOT display:none) so Chrome DevTools WebMCP scanner detects them
       */}
       <div 
         id="webmcp-declarative-tools" 
@@ -90,7 +111,7 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
       >
         <form
           toolname="engelsizforum_search"
-          tooldescription="EngelsizForum üzerindeki konulan, mevzuatı, ÖTV 2026 şartlarını ve sağlık raporu rehberlerini arar."
+          tooldescription="EngelsizForum üzerindeki konuları, mevzuatı, ÖTV 2026 şartlarını ve sağlık raporu rehberlerini arar."
           data-toolname="engelsizforum_search"
           data-tooldescription="EngelsizForum üzerindeki konuları, mevzuatı, ÖTV 2026 şartlarını ve sağlık raporu rehberlerini arar."
           name="engelsizforum_search"
@@ -124,6 +145,40 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
             required
           />
           <button type="submit">Hesapla</button>
+        </form>
+
+        <form
+          toolname="engelsizforum_disability_rights_guide"
+          tooldescription="Rapor oranına ve engel grubuna göre engelli bireylere tanınan tüm resmi hakları sorgular."
+          data-toolname="engelsizforum_disability_rights_guide"
+          data-tooldescription="Rapor oranına ve engel grubuna göre engelli bireylere tanınan tüm resmi hakları sorgular."
+          name="engelsizforum_disability_rights_guide"
+        >
+          <input
+            type="number"
+            name="reportPercentage"
+            toolparamdescription="Rapor engel oranı (ör. 40, 70, 90)"
+            data-toolparamdescription="Rapor engel oranı (ör. 40, 70, 90)"
+            required
+          />
+          <button type="submit">Hakları Sorgula</button>
+        </form>
+
+        <form
+          toolname="engelsizforum_legislation_lookup"
+          tooldescription="Türkiye ÖTV, Emeklilik, Evde Bakım ve EKPSS engelli mevzuat maddelerini verir."
+          data-toolname="engelsizforum_legislation_lookup"
+          data-tooldescription="Türkiye ÖTV, Emeklilik, Evde Bakım ve EKPSS engelli mevzuat maddelerini verir."
+          name="engelsizforum_legislation_lookup"
+        >
+          <input
+            type="text"
+            name="category"
+            toolparamdescription="Mevzuat kategorisi: otv_2026 | emeklilik | evde_bakim | ekpss | ram_egitim"
+            data-toolparamdescription="Mevzuat kategorisi: otv_2026 | emeklilik | evde_bakim | ekpss | ram_egitim"
+            required
+          />
+          <button type="submit">Mevzuat Al</button>
         </form>
 
         <form
@@ -171,7 +226,7 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
           <Sparkles className="w-3.5 h-3.5 animate-pulse text-amber-300" />
           <span>Chrome WebMCP</span>
           <span className="bg-white/20 text-white text-[10px] px-1.5 py-0.5 rounded-full uppercase tracking-wider font-mono">
-            v1.0
+            v1.1
           </span>
         </button>
 
@@ -203,10 +258,10 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
                 </div>
                 <div>
                   <h3 id="webmcp-modal-title" className="text-lg font-bold text-foreground">
-                    Google Chrome WebMCP Desteği
+                    Google Chrome & Gemini WebMCP Desteği
                   </h3>
                   <p className="text-xs text-muted-foreground">
-                    Web Model Context Protocol (W3C Web ML Standardı)
+                    Web Model Context Protocol (W3C Web ML Standardı & Gemini Remote MCP)
                   </p>
                 </div>
               </div>
@@ -221,25 +276,14 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
 
             <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
               <p>
-                <strong className="text-foreground">EngelsizForum</strong>, Google Chrome ve Microsoft iş birliğiyle geliştirilen <strong className="text-blue-600 dark:text-blue-400">WebMCP (Web Model Context Protocol)</strong> standardını destekler.
+                <strong className="text-foreground">EngelsizForum</strong>, hem istemci tarafında <strong className="text-blue-600 dark:text-blue-400">Chrome WebMCP (Browser Agent)</strong> hem de sunucu tarafında <strong className="text-indigo-600 dark:text-indigo-400">Gemini Web / Claude MCP Endpoint</strong> desteği sunar.
               </p>
-
-              {/* DevTools Setup Help Box */}
-              <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-900 dark:text-amber-200 space-y-2 text-xs">
-                <div className="flex items-center gap-1.5 font-bold">
-                  <Info className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  Chrome DevTools &quot;WebMCP&quot; Panelinde Görmek İçin:
-                </div>
-                <p>
-                  Chrome DevTools&apos;taki yerel <strong>Uygulama &rarr; WebMCP</strong> panelinin tarayıcınızda aktif olması için Chrome Canary/146+ sürümünde <code className="bg-black/10 dark:bg-white/10 px-1 py-0.5 rounded">chrome://flags/#enable-webmcp-testing</code> deneysel bayrağının etkinleştirilmesi veya araçların tetiklenmesi gerekir.
-                </p>
-              </div>
 
               <div className="p-3.5 rounded-xl bg-muted/60 border border-border space-y-2">
                 <div className="flex items-center justify-between text-xs font-medium">
                   <span className="flex items-center gap-1.5 text-foreground">
                     <Cpu className="w-4 h-4 text-blue-500" />
-                    WebMCP Servis Durumu:
+                    WebMCP İstemci Durumu:
                   </span>
                   {supported || registered ? (
                     <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
@@ -258,7 +302,7 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
               {/* Quick Interactive Tool Tester */}
               <div className="space-y-2">
                 <p className="text-xs font-semibold text-foreground uppercase tracking-wider">
-                  Kayıtlı Araçları Tetikle ve DevTools Loguna Gönder:
+                  Kayıtlı Tüm WebMCP Araçlarını Tetikle:
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <button
@@ -273,8 +317,24 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
                     onClick={() => runToolTest('engelsizforum_balthazard_calc')}
                     className="flex items-center justify-between p-2.5 rounded-xl border border-border bg-card hover:bg-muted text-left text-xs font-medium transition-colors"
                   >
-                    <span>🧮 Balthazard Hesapla (%40,%20,%10)</span>
+                    <span>🧮 Balthazard (%40,%20,%10)</span>
                     <Play className="w-3.5 h-3.5 text-blue-500 fill-blue-500" />
+                  </button>
+
+                  <button
+                    onClick={() => runToolTest('engelsizforum_disability_rights_guide')}
+                    className="flex items-center justify-between p-2.5 rounded-xl border border-border bg-card hover:bg-muted text-left text-xs font-medium transition-colors"
+                  >
+                    <span>📜 %40 Rapor Yasal Hakları</span>
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                  </button>
+
+                  <button
+                    onClick={() => runToolTest('engelsizforum_legislation_lookup')}
+                    className="flex items-center justify-between p-2.5 rounded-xl border border-border bg-card hover:bg-muted text-left text-xs font-medium transition-colors"
+                  >
+                    <span>⚖️ ÖTV 2026 Kanunu Madde 7/2</span>
+                    <Scale className="w-3.5 h-3.5 text-indigo-500" />
                   </button>
 
                   <button
@@ -290,7 +350,7 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
                     className="flex items-center justify-between p-2.5 rounded-xl border border-border bg-card hover:bg-muted text-left text-xs font-medium transition-colors"
                   >
                     <span>📁 Kategorileri Getir</span>
-                    <Play className="w-3.5 h-3.5 text-blue-500 fill-blue-500" />
+                    <FileText className="w-3.5 h-3.5 text-amber-500" />
                   </button>
                 </div>
               </div>

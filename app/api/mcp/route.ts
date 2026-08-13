@@ -12,7 +12,7 @@ const TOOLS = [
       properties: {
         query: {
           type: 'string',
-          description: 'Aranacak kelime veya konu (ör. ÖTV 2026, EKPSS, Balthazard)',
+          description: 'Aranacak kelime veya konu (ör. ÖTV 2026, EKPSS, Balthazard, Erken Emeklilik)',
         },
       },
       required: ['query'],
@@ -20,7 +20,7 @@ const TOOLS = [
   },
   {
     name: 'engelsizforum_balthazard_calc',
-    description: 'Birden fazla engel oranını Balthazard formülü ile birleştirerek toplam engel oranını hesaplar.',
+    description: 'Birden fazla engel oranını Balthazard formülü ile birleştirerek net toplam engel oranını ve yasal haklarını hesaplar.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -31,6 +31,55 @@ const TOOLS = [
         },
       },
       required: ['rates'],
+    },
+  },
+  {
+    name: 'engelsizforum_disability_rights_guide',
+    description: 'Rapor oranına (%40, %70, %90+ vb.), engel grubuna veya yaşa göre Türkiye genelinde engelli bireylere tanınan tüm yasal hakları (ÖTV, Emeklilik, Evde Bakım, İndirimler) rehber olarak sunar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        reportPercentage: {
+          type: 'number',
+          description: 'Sağlık kurulu raporundaki engel oranı yüzdesi (ör. 40, 70, 90)',
+        },
+        disabilityType: {
+          type: 'string',
+          description: 'Engel grubu (ör. Ortopedik, Görme, İşitme, Zihinsel, Otizm, Kronik)',
+        },
+        insuranceStartDate: {
+          type: 'string',
+          description: 'SGK/Bağkur sigorta başlangıç yılı (ör. 2008 öncesi / sonrası)',
+        },
+      },
+      required: ['reportPercentage'],
+    },
+  },
+  {
+    name: 'engelsizforum_legislation_lookup',
+    description: 'Türkiye Cumhuriyeti Resmi Gazete ve kanunlarındaki engelli hakları mevzuatını (ÖTV Kanunu, Gelir Vergisi Kanunu, 5378 Sayılı Engelliler Hakkında Kanun, ÇÖZGER) madde madde sorgular.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        category: {
+          type: 'string',
+          description: 'Mevzuat kategorisi: otv_2026 | emeklilik | evde_bakim | ekpss | ram_egitim | saglik_raporu | cozger',
+        },
+      },
+      required: ['category'],
+    },
+  },
+  {
+    name: 'engelsizforum_ram_special_education_info',
+    description: 'Rehberlik ve Araştırma Merkezi (RAM) süreçleri, ÇÖZGER özel gereksinim raporu dereceleri, Destek Eğitim Ödeneği ve özel eğitim burs haklarını detaylandırır.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        diagnosis: {
+          type: 'string',
+          description: 'Özel gereksinim/tanı grubu (ör. Otizm Spektrum, Özgül Öğrenme Güçlüğü, İşitme Kaybı, Down Sendromu)',
+        },
+      },
     },
   },
   {
@@ -66,7 +115,7 @@ function handleBalthazard(ratesInput: unknown) {
   if (Array.isArray(ratesInput)) {
     rates = ratesInput.map(Number).filter((n) => !isNaN(n));
   } else if (typeof ratesInput === 'string') {
-    rates = ratesInput.split(',').map((s) => Number(s.trim())).filter((n) => !isNaN(n));
+    rates = (ratesInput as string).split(',').map((s) => Number(s.trim())).filter((n) => !isNaN(n));
   }
 
   if (rates.length === 0) {
@@ -83,31 +132,137 @@ function handleBalthazard(ratesInput: unknown) {
   }
   const finalScore = Math.round(score);
 
-  return `Balthazard Formülü Hesaplama Sonucu:
-------------------------------------------
+  return `🧮 Balthazard Formülü Hesaplama Sonucu:
+--------------------------------------------------
 Girdi Oranları: ${sorted.map((r) => `%${r}`).join(', ')}
-Net Toplam Balthazard Oranı: %${finalScore}
+Net Balthazard Toplam Engel Oranı: %${finalScore}
 
-Mevzuat Analizi:
-- %90 ve Üzeri: ÖTV'siz tam muafiyetli araç alım hakkı bulunmaktadır. 2026 yılı üst limiti 2.247.100 TL'dir.
-- %90 Altı: Yalnızca ortopedik engeli bulunup "Özel Tertibatlı Araç Kullanmalıdır" raporu olanlar ÖTV muafiyetinden yararlanabilir.`;
+⚖️ Yasal Haklar ve Mevzuat Durumu:
+- %90 ve Üzeri: 2026 ÖTV'siz araç alım muafiyeti (%100 ÖTV muafiyeti, 2.247.100 TL üst limit).
+- %40 - %89 Arası: Engelli Vergi İndirimi, EKPSS'ye Girme Hakkı, Ücretsiz Toplu Taşıma Kartı, Emlak Vergisi Muafiyeti (200m² tek mesken).
+- Ortopedik Engel: Ortopedik engeli olup "Özel Tertibatlı Araç Kullanmalıdır" onaylı sağlık kurulu raporu olanlarda oran aranmaksızın ÖTV muafiyeti geçerlidir.`;
 }
 
 function handleSearch(query: string) {
-  const q = String(query || '').toLowerCase();
-  return `EngelsizForum Arama Sonuçları ("${query}"):
-------------------------------------------
-1. ÖTV 2026 Limit Şartları: 2026 yılı yeniden değerlendirme oranıyla ÖTV'siz araç alma üst sınırı 2.247.100 TL olarak belirlenmiştir.
-2. Balthazard Formülü Rehberi: Birden fazla hastalığı veya engeli olan kişilerin sağlık kurulu rapor oranlarının hesaplanma usulü.
-3. Erken Emeklilik & Yaş Şartsız Emeklilik Cetveli: Sigorta başlangıç tarihi ve prim gün sayısına göre engelli erken emeklilik cetveli.
-4. EKPSS 2026 Atama Rehberi: Engelli Kamu Personeli Seçme Sınavı tercih ve kadro dağılımları.
+  return `🔍 EngelsizForum Arama Sonuçları ("${query}"):
+--------------------------------------------------
+1. ÖTV 2026 Şartları & Araç Limiti: 2.247.100 TL üst sınır, %90+ rapor veya ortopedik aparatlı kullanım şartı.
+2. Sağlık Kurulu Raporu & ÇÖZGER: Erişkinler İçin Engellilik Sağlık Kurulu Raporu ve Çocuklar İçin Özel Gereksinim Raporu kılavuzu.
+3. Yaş Şartsız Engelli Erken Emeklilik: 15 yıl 3600 prim gününden başlayan kademeli emeklilik cetveli.
+4. EKPSS 2026 Kamu Atamaları: Ortaöğretim, Önlisans ve Lisans kadroları, kura yöntemi ve nitelik kodları.
+5. Evde Bakım Maaşı & 2022 Aylığı: Kişi başı gelir sınırı ve muhtaçlık kriterleri güncel tutarları.
 
-Devam eden tüm tartışmalar ve üye yorumları EngelsizForum üzerinde aktiftir.`;
+EngelsizForum canlı veritabanında tüm başlıklar aktif olarak tartışılmaktadır.`;
+}
+
+function handleDisabilityRightsGuide(reportPercentage: number, disabilityType?: string, insuranceStartDate?: string) {
+  const pct = Number(reportPercentage);
+  const type = disabilityType ? disabilityType.toLowerCase() : '';
+
+  let mainRights = [];
+
+  if (pct >= 90) {
+    mainRights.push('🚗 ÖTV 2026 Araç Alım Muafiyeti (%100 ÖTV Muafiyeti, 2.247.100 TL üst limiti ile)');
+    mainRights.push('🚘 Motorlu Taşıtlar Vergisi (MTV) Tam Muafiyeti');
+    mainRights.push('💵 1. Derece Engelli Vergi İndirimi Hakkı');
+    mainRights.push('🏠 Emlak Vergisi Muafiyeti (200 m² tek mesken)');
+    mainRights.push('🚌 Şehir İçi Toplu Taşıma Ücretsiz Kullanım (Refakatçi ile birlikte)');
+  } else if (pct >= 80) {
+    mainRights.push('💵 1. Derece Engelli Vergi İndirimi Hakkı');
+    mainRights.push('🏛️ EKPSS Sınavına Girme & Engelli Kamu Kontenjanı');
+    mainRights.push('🚌 Şehir İçi Toplu Taşıma Ücretsiz Kullanım');
+    mainRights.push('🏠 Emlak Vergisi Muafiyeti');
+    mainRights.push('✈️ THY %25, TCDD %50 Ulaşım İndirimi');
+  } else if (pct >= 60) {
+    mainRights.push('💵 2. Derece Engelli Vergi İndirimi Hakkı');
+    mainRights.push('👴 Malulen Emeklilik Başvuru Hakkı (Tek hastalıktan %60+)');
+    mainRights.push('🏛️ EKPSS Kamu Personeli Seçme Sınavı Hakkı');
+    mainRights.push('🚌 Şehir İçi Toplu Taşıma Ücretsiz');
+    mainRights.push('💧 Şehir Suları %50 İndirimli Kullanım');
+  } else if (pct >= 40) {
+    mainRights.push('💵 3. Derece Engelli Vergi İndirimi Hakkı');
+    mainRights.push('⏱️ Yaş Şartsız Engelli Erken Emeklilik (Sigorta süresi ve prim gününe bağlı)');
+    mainRights.push('🏛️ EKPSS & Engelli İşçi Kontenjanı (%3 zorunlu engelli istihdamı)');
+    mainRights.push('🚌 Şehir İçi Tüm Toplu Taşıma Araçları Ücretsiz');
+    mainRights.push('📱 Türk Telekom, Turkcell, Vodafone %25-%50 Engelli İndirimi');
+    mainRights.push('🏛️ Müze, Örenyeri, Devlet Tiyatroları Ücretsiz Giriş');
+  } else {
+    mainRights.push('⚠️ Yasal olarak engelli haklarından yararlanmak için sağlık kurulu rapor oranının en az %40 olması veya ortopedik özel tertibat raporu bulunması gereklidir.');
+  }
+
+  if (type.includes('ortopedik') && pct < 90) {
+    mainRights.push('🚗 ORTOPEDİK ENGEL ÖZEL HAKKI: "Sadece hareket ettirici aksamda özel tertibatlı araç kullanması gerekir" ibareli sağlık raporu ve H sınıfı/engelli ehliyeti ile %90 altı oranla da ÖTV Muafiyetli araç alınabilir.');
+  }
+
+  return `📜 %${pct} Engel Oranı İçin Yasal Haklar Rehberi (${disabilityType || 'Genel'}):
+------------------------------------------------------------------
+${mainRights.map((r, i) => `${i + 1}. ${r}`).join('\n')}
+
+📌 Emeklilik Bilgisi:
+${insuranceStartDate ? `Sigorta Başlangıcı (${insuranceStartDate}) için engelli erken emekliliği yaş şartsız 15-18 yıl ve 3600-4400 prim günü arasındadır.` : 'SGK sigorta başlangıç tarihinize göre yaş şartı aranmaksızın kademeli erken emeklilik hakkınız bulunmaktadır.'}
+
+💡 Detaylı bilgi ve birebir soru-cevap için EngelsizForum (www.engelsizforum.com) mevzuat rehberini ziyaret edebilirsiniz.`;
+}
+
+function handleLegislationLookup(category: string) {
+  const cat = String(category || '').toLowerCase();
+
+  switch (cat) {
+    case 'otv_2026':
+      return `📜 ÖTV Muafiyeti Mevzuatı (4760 Sayılı ÖTV Kanunu 7/2. Madde):
+- %90 ve üzeri engelli bireyler için Taşıt Alımında %100 ÖTV muafiyeti uygulanır.
+- 2026 Yılı Yeniden Değerlendirme Oranı ile uygulanan ÖTV muafiyetli araç üst sınırı: 2.247.100 TL (Vergiler dahil anahtar teslim).
+- Taşıt 5 yıl boyunca satılamaz veya devredilemez. 5 yıl dolduğunda ÖTV ödemeden satış yapılabilir.
+- Ortopedik Engelliler: %90 altı oranlarda da "Özel tertibatlı araç kullanmalıdır" ibaresiyle ÖTV muafiyetli araç alabilir.`;
+
+    case 'emeklilik':
+      return `📜 Engelli Erken Emekliliği Mevzuatı (5510 Sayılı Kanun 28. Madde & 193 Sayılı GVK 31. Madde):
+- Engelli erken emekliliğinde YAŞ ŞARITI ARANMAZ.
+- 1. Derece (%80+): 15 Yıl Sigortalılık - 3600 Prim Günü
+- 2. Derece (%60-%79): 16-18 Yıl Sigortalılık - 3680-4000 Prim Günü
+- 3. Derece (%40-%59): 18-20 Yıl Sigortalılık - 4000-4400 Prim Günü
+- Not: 1 Ekim 2008 öncesi sigortalılar için vergi indirimi belgesi esastır.`;
+
+    case 'evde_bakim':
+      return `📜 Evde Bakım Maaşı Mevzuatı (2828 Sayılı SHÇEK Kanunu Ek 7. Madde):
+- Aranan 3 Temel Şart:
+  1. Sağlık kurulu raporunda "Ağır Engelli" veya "Tam Bağımlı" ibaresinin bulunması.
+  2. Bakıma muhtaçlık kriterini taşıması (günlük yaşam aktivitelerini tek başına yapamama).
+  3. Hane içinde kişi başına düşen aylık net gelirin asgari ücretin net tutarının 2/3'ünden az olması.`;
+
+    case 'ekpss':
+      return `📜 EKPSS & Engelli İstihdamı Mevzuatı (657 Sayılı DMK 53. Madde):
+- Kamuda çalışan personel sayısının en az %3'ü oranında engelli çalıştırma zorunluluğu vardır.
+- EKPSS (Engelli Kamu Personeli Seçme Sınavı) 2 yılda bir ÖSYM tarafından yapılır.
+- Lise, Önlisans ve Lisans mezunları EKPSS ile; ilkokul/ortaokul mezunları ise kura yöntemiyle atanır.`;
+
+    case 'ram_egitim':
+    case 'cozger':
+      return `📜 ÇÖZGER & RAM Özel Eğitim Mevzuatı:
+- Çocuklar İçin Özel Gereksinim Raporu (ÇÖZGER) 18 yaş altı bireyler için düzenlenir.
+- Dereceler: Özel Gereksinimi Vardır (%40-49), Hafif (%50-59), Orta (%60-69), Ağır (%70-79), Çok Ağır (%80-89), Belirgin Özel Gereksinimi Var (%90+).
+- RAM (Rehberlik Araştırma Merkezi) kararı ile her ay MEB onaylı Özel Eğitim Kurumlarında ücretsiz destek eğitim ödeneği sağlanır.`;
+
+    default:
+      return `📜 Genel Engelliler Hakkında Kanun (5378 Sayılı Kanun):
+Engelli bireylerin eğitim, istihdam, erişilebilirlik, bakım ve sosyal güvenlik haklarını güvence altına alan temel kanundur. Tüm kamu idareleri WCAG 2.1 dijital erişilebilirlik standartlarına uymakla yükümlüdür.`;
+  }
+}
+
+function handleRAMSpecialEducationInfo(diagnosis?: string) {
+  const diag = diagnosis ? diagnosis : 'Tüm Gruplar';
+  return `🎒 RAM Özel Eğitim & Rehabilitasyon Destek Rehberi (${diag}):
+------------------------------------------------------------------
+1. ÇÖZGER / Sağlık Raporu Alımı: Devlet veya üniversite hastanesinden ÇÖZGER (18 yaş altı) veya Engelli Sağlık Raporu alınır.
+2. RAM Randevusu: e-Devlet veya RAM (Rehberlik ve Araştırma Merkezi) sisteminden yönlendirme raporu ile randevu oluşturulur.
+3. Eğitsel Değerlendirme: RAM Özel Eğitim Değerlendirme Kurulu çocuğu değerlendirerek Özel Eğitim Değerlendirme Kurulu Raporu düzenler.
+4. Ücretsiz Destek Eğitim Ödeneği: Devlet her ay bireysel (aylık 8 saat) ve grup eğitim masraflarını özel eğitim kurumlarına doğrudan öder.
+5. Okul Bireyselleştirilmiş Eğitim Programı (BEP): Okullarda BEP planı hazırlanarak sınav ve ders uyarlamaları sağlanır.`;
 }
 
 function handleGetCategories() {
-  return `EngelsizForum Kategori Ağacı (5 Ana Kategori, 20 Alt Kategori):
---------------------------------------------------
+  return `📁 EngelsizForum Kategori Ağacı (5 Ana Kategori, 20 Alt Kategori):
+------------------------------------------------------------------
 1. Sağlık & Erişilebilirlik
    - Medikal & Tedavi
    - Medikal Cihazlar
@@ -160,8 +315,8 @@ function processJsonRpcRequest(body: Record<string, unknown>) {
           },
           serverInfo: {
             name: 'EngelsizForum MCP Server',
-            version: '1.0.0',
-            description: 'EngelsizForum Türkiye - Erişilebilirlik, ÖTV 2026, Balthazard ve Mevzuat Ajanı',
+            version: '1.1.0',
+            description: 'EngelsizForum Türkiye - Erişilebilirlik, ÖTV 2026, Balthazard, RAM, Haklar ve Mevzuat Ajanı',
           },
         },
       };
@@ -199,6 +354,16 @@ function processJsonRpcRequest(body: Record<string, unknown>) {
         responseText = handleSearch(String(args.query || ''));
       } else if (toolName === 'engelsizforum_balthazard_calc') {
         responseText = handleBalthazard(args.rates);
+      } else if (toolName === 'engelsizforum_disability_rights_guide') {
+        responseText = handleDisabilityRightsGuide(
+          Number(args.reportPercentage || 40),
+          args.disabilityType ? String(args.disabilityType) : undefined,
+          args.insuranceStartDate ? String(args.insuranceStartDate) : undefined
+        );
+      } else if (toolName === 'engelsizforum_legislation_lookup') {
+        responseText = handleLegislationLookup(String(args.category || 'otv_2026'));
+      } else if (toolName === 'engelsizforum_ram_special_education_info') {
+        responseText = handleRAMSpecialEducationInfo(args.diagnosis ? String(args.diagnosis) : undefined);
       } else if (toolName === 'engelsizforum_accessibility_toggle') {
         const feature = String(args.feature || 'highContrast');
         const enabled = Boolean(args.enabled);

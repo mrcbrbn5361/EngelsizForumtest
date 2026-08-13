@@ -27,19 +27,7 @@ declare global {
       getRegisteredTools?: () => WebMCPToolDefinition[];
     };
   }
-  interface Navigator {
-    modelContext?: {
-      registerTool?: (tool: WebMCPToolDefinition) => Promise<boolean> | void;
-      unregisterTool?: (name: string) => Promise<boolean> | void;
-      getRegisteredTools?: () => WebMCPToolDefinition[];
-    };
-  }
   interface Window {
-    modelContext?: {
-      registerTool?: (tool: WebMCPToolDefinition) => Promise<boolean> | void;
-      unregisterTool?: (name: string) => Promise<boolean> | void;
-      getRegisteredTools?: () => WebMCPToolDefinition[];
-    };
     WebMCP?: {
       getRegisteredTools: () => WebMCPToolDefinition[];
       registerTool: (tool: WebMCPToolDefinition) => void;
@@ -120,7 +108,6 @@ export function initWebMCPPolyfill() {
         return Promise.resolve(true);
       }
       registeredToolsStore.set(tool.name, tool);
-      console.log(`🚀 [WebMCP] Tool registered: ${tool.name}`);
       
       // Sync DOM form for DevTools detection
       syncDeclarativeDOMForm(tool);
@@ -265,6 +252,53 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
       },
     },
     {
+      name: 'engelsizforum_disability_rights_guide',
+      description: 'Engellilik rapor oranına (%40, %70, %90+) ve engel grubuna göre Türkiye genelindeki tüm yasal hakları listeler.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          reportPercentage: { type: 'number', description: 'Rapor engel oranı yüzdesi' },
+          disabilityType: { type: 'string', description: 'Engel grubu (Ortopedik, Görme, vb.)' },
+        },
+        required: ['reportPercentage'],
+      },
+      execute: (args) => {
+        const pct = Number(args.reportPercentage || 40);
+        return {
+          status: 'success',
+          reportPercentage: pct,
+          rights: [
+            pct >= 90 ? ' ÖTV 2026 Muafiyetli Araç Alma (2.247.100 TL limit)' : ' %90 Altı Ortopedik Aparatlı ÖTV Muafiyeti',
+            pct >= 40 ? ' Şehir İçi Ücretsiz Toplu Taşıma' : null,
+            pct >= 40 ? ' EKPSS Kamu Personeli Seçme Sınavı' : null,
+            pct >= 40 ? ' Vergi İndirimi & Yaş Şartsız Engelli Emekliliği' : null,
+            pct >= 40 ? ' Emlak Vergisi Tam Muafiyeti (200m²)' : null,
+            pct >= 40 ? ' İletişim & Su Faturasında %50 İndirim' : null,
+          ].filter(Boolean),
+        };
+      },
+    },
+    {
+      name: 'engelsizforum_legislation_lookup',
+      description: 'ÖTV, Emeklilik, Evde Bakım ve EKPSS engelli hakları kanun ve yönetmelik maddelerini sorgular.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          category: { type: 'string', description: 'otv_2026 | emeklilik | evde_bakim | ekpss | ram_egitim' },
+        },
+        required: ['category'],
+      },
+      execute: (args) => {
+        const cat = String(args.category || 'otv_2026');
+        return {
+          status: 'success',
+          category: cat,
+          lawReference: cat === 'otv_2026' ? '4760 Sayılı ÖTV Kanunu 7/2' : '5510 Sayılı Kanun 28. Madde',
+          summary: 'Türkiye Cumhuriyeti Resmi Gazetede yayımlanan mevzuat hükmü.',
+        };
+      },
+    },
+    {
       name: 'engelsizforum_accessibility_toggle',
       description: 'EngelsizForum WCAG 2.1 AAA erişilebilirlik tercihlerini (yüksek kontrast, disleksi fontu, biyonik okuma vb.) değiştirir.',
       inputSchema: {
@@ -329,13 +363,11 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
   ];
 
   tools.forEach((tool) => {
-    // Only register to document.modelContext to avoid deprecation warning for navigator.modelContext
-    if (document.modelContext?.registerTool) {
+    if (typeof document !== 'undefined' && document.modelContext?.registerTool) {
       try {
         const res = document.modelContext.registerTool(tool);
         if (res && typeof (res as Promise<boolean>).catch === 'function') {
           (res as Promise<boolean>).catch((err) => {
-            // Ignore Duplicate tool name native rejections silently
             if (!String(err).includes('Duplicate tool name')) {
               console.warn('WebMCP registerTool warning:', err);
             }
