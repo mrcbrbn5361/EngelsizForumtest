@@ -30,7 +30,6 @@ export function Footer() {
             <ul className="space-y-4 text-sm font-black text-muted-foreground uppercase tracking-widest">
               <li><Link href="/discussions" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><MessageSquare size={18} className="text-primary" /> TARTIŞMALAR</Link></li>
               <li><Link href="/communities" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Users size={18} className="text-primary" /> TOPLULUKLAR</Link></li>
-              <li><Link href="/ozbek" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3 text-emerald-600 dark:text-emerald-400 font-black"><span className="text-base">🇺🇿</span> O'ZBEKCHA PORTAL</Link></li>
               <li><Link href="/about" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Info size={18} className="text-primary" /> HAKKIMIZDA</Link></li>
               <li><Link href="/help" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><HelpCircle size={18} className="text-primary" /> YARDIM MERKEZİ</Link></li>
             </ul>
