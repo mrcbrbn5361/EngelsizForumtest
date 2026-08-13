@@ -18,10 +18,9 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
     const isAvailable = isWebMCPSupported();
     setSupported(isAvailable);
 
-    // Register WebMCP tools into Chrome navigator.modelContext
     const success = registerEngelsizForumWebMCPTools({
       onSearch: (query) => {
-        toast.info(`🤖 Chrome WebMCP Yapay Zeka Arama İsteyi: "${query}"`);
+        toast.info(`🤖 Chrome WebMCP Yapay Zeka Arama İsteği: "${query}"`);
         router.push(`/search?q=${encodeURIComponent(query)}`);
       },
       onCalculateBalthazard: (rates) => {
@@ -41,7 +40,68 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
     <>
       {children}
 
-      {/* WebMCP Status Badge & Information Trigger in Footer/Corner */}
+      {/* 
+        Declarative WebMCP Forms for Chrome DevTools / Agent DOM Parser
+        Chrome DevTools inspects form elements with toolname & tooldescription attributes
+      */}
+      <div id="webmcp-declarative-tools" style={{ display: 'none' }} aria-hidden="true" data-webmcp="enabled">
+        <form
+          toolname="engelsizforum_search"
+          tooldescription="EngelsizForum üzerindeki konuları, mevzuatı, ÖTV 2026 şartlarını ve sağlık raporu rehberlerini arar."
+          action="/search"
+          method="GET"
+        >
+          <input
+            type="text"
+            name="query"
+            toolparamdescription="Aranacak kelime veya konu (ör. ÖTV 2026, EKPSS, Balthazard)"
+            required
+          />
+          <button type="submit">Ara</button>
+        </form>
+
+        <form
+          toolname="engelsizforum_balthazard_calc"
+          tooldescription="Birden fazla engel oranını Balthazard formülü ile birleştirerek toplam engel oranını hesaplar."
+          action="/hesaplayicilar/balthazard"
+          method="POST"
+        >
+          <input
+            type="text"
+            name="rates"
+            toolparamdescription="Engel oranları dizisi (ör. 40,20,10)"
+            required
+          />
+          <button type="submit">Hesapla</button>
+        </form>
+
+        <form
+          toolname="engelsizforum_accessibility_toggle"
+          tooldescription="EngelsizForum WCAG 2.1 AAA erişilebilirlik tercihlerini (yüksek kontrast, disleksi fontu, biyonik okuma) değiştirir."
+        >
+          <input
+            type="text"
+            name="feature"
+            toolparamdescription="Değiştirilecek özellik: highContrast | dyslexicFont | bionicReading"
+            required
+          />
+          <input
+            type="checkbox"
+            name="enabled"
+            toolparamdescription="Aktif (true) veya pasif (false) olma durumu"
+          />
+          <button type="submit">Değiştir</button>
+        </form>
+
+        <form
+          toolname="engelsizforum_get_categories"
+          tooldescription="EngelsizForum'daki 5 ana kategori ve 20 alt kategoriyi listeler."
+        >
+          <button type="submit">Kategorileri Getir</button>
+        </form>
+      </div>
+
+      {/* WebMCP Status Badge & Information Trigger */}
       <div className="fixed bottom-4 left-4 z-40 flex items-center gap-2">
         <button
           onClick={() => setShowInfoModal(true)}
@@ -105,12 +165,12 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
                   {supported || registered ? (
                     <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      Aktif & Kayıtlı (`navigator.modelContext`)
+                      Aktif & Kayıtlı (`document.modelContext`)
                     </span>
                   ) : (
                     <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium">
                       <Info className="w-3.5 h-3.5" />
-                      Shim / Polyfill Modu (Chrome 146+ Bekleniyor)
+                      Shim / Polyfill Modu
                     </span>
                   )}
                 </div>
