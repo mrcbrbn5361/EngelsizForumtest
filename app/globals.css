@@ -114,6 +114,18 @@ html {
   @apply w-full rounded-lg border border-border bg-background px-3.5 py-2.5 font-normal text-sm text-foreground focus:border-primary transition-colors outline-none h-11;
 }
 
+.vibe-input-pl-12 {
+  padding-left: 3rem !important;
+}
+
+.vibe-input-pr-20 {
+  padding-right: 5rem !important;
+}
+
+.vibe-input-search-full {
+  padding-left: 3.25rem !important;
+}
+
 /* ACCESSIBILITY MODES */
 
 /* 1. High Contrast Mode (WCAG AAA) */

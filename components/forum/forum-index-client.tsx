@@ -263,13 +263,13 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               <div className="relative max-w-xl w-full group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/5 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
                 <div className="relative">
-                  <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={20} />
+                  <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-muted-foreground/60 z-10 pointer-events-none" size={20} />
                   <input 
                     type="text" 
                     placeholder="TARTIŞMALARDA VE KONULARDA ARA..." 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="vibe-input vibe-input-search-full h-12 sm:h-16 text-xs sm:text-sm uppercase rounded-2xl border border-border bg-card w-full shadow-lg focus:border-primary/80 transition-all font-bold tracking-wider placeholder:text-muted-foreground/40"
+                    className="vibe-input !pl-12 sm:!pl-14 h-12 sm:h-16 text-xs sm:text-sm uppercase rounded-2xl border border-border bg-card w-full shadow-lg focus:border-primary/80 transition-all font-bold tracking-wider placeholder:text-muted-foreground/40"
                   />
                 </div>
               </div>

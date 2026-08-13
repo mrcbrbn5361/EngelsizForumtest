@@ -502,9 +502,19 @@ function DiscussionsContent() {
                       onChange={e => setNewTopic({...newTopic, category_id: e.target.value})}
                     >
                       <option value="">LÜTFEN BİR KATEGORİ SEÇİN</option>
-                      {categories.map(cat => (
-                        <option key={cat.id} value={cat.id}>{cat.name.toUpperCase()}</option>
-                      ))}
+                      {categories.filter(c => c.is_main || !c.parent_id).map(mainCat => {
+                        const subCats = categories.filter(sub => sub.parent_id === mainCat.id);
+                        if (subCats.length > 0) {
+                          return (
+                            <optgroup key={mainCat.id} label={mainCat.name.toUpperCase()} className="font-black text-primary">
+                              {subCats.map(sub => (
+                                <option key={sub.id} value={sub.id} className="text-foreground">-- {sub.name.toUpperCase()}</option>
+                              ))}
+                            </optgroup>
+                          );
+                        }
+                        return <option key={mainCat.id} value={mainCat.id}>{mainCat.name.toUpperCase()}</option>;
+                      })}
                     </select>
                   </div>
                   <div className="space-y-2">
@@ -548,12 +558,24 @@ function DiscussionsContent() {
         )}
 
         {/* Categories Rail Filter Section */}
-        <section aria-labelledby="categories-heading" className="mb-8">
-          <h2 id="categories-heading" className="sr-only">Kategoriler Filtresi</h2>
-          <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
+        <section aria-labelledby="categories-heading" className="mb-8 bg-card/60 border border-border p-4 rounded-3xl backdrop-blur-xs">
+          <div className="flex items-center justify-between mb-3 px-1">
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+              <FolderTree size={14} className="text-primary" /> KATEGORİ SEÇİMİ (5 ANA, 20 ALT KATEGORİ)
+            </span>
+            {selectedCategory && (
+              <button 
+                onClick={() => setSelectedCategory('')}
+                className="text-[10px] font-bold text-primary hover:underline uppercase"
+              >
+                Filtreyi Temizle
+              </button>
+            )}
+          </div>
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
             <button
               onClick={() => setSelectedCategory('')}
-              className={`flex items-center gap-2.5 px-4 py-2.5 rounded-full border text-xs font-bold whitespace-nowrap transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-2xl border text-xs font-bold whitespace-nowrap transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
                 !selectedCategory
                   ? 'bg-primary text-primary-foreground border-primary shadow-sm'
                   : 'bg-card border-border text-muted-foreground hover:border-primary/40 hover:text-foreground'
@@ -563,19 +585,23 @@ function DiscussionsContent() {
             </button>
             {categories.map((cat) => {
               const isSelected = selectedCategory === cat.slug || selectedCategory === cat.id;
+              const isMainCat = cat.is_main || !cat.parent_id;
               return (
                 <button
                   key={cat.id || cat.slug}
                   onClick={() => setSelectedCategory(cat.slug || cat.id)}
-                  className={`flex items-center gap-2.5 px-4 py-2.5 rounded-full border text-xs font-bold whitespace-nowrap transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl border text-xs font-bold whitespace-nowrap transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
                     isSelected
                       ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                      : isMainCat
+                      ? 'bg-primary/5 border-primary/20 text-primary hover:bg-primary/10 font-black'
                       : 'bg-card border-border text-muted-foreground hover:border-primary/40 hover:text-foreground'
                   }`}
                   title={cat.description}
                 >
                   {getCategoryIcon(cat.icon)}
-                  {cat.name.toUpperCase()}
+                  <span>{cat.name.toUpperCase()}</span>
+                  {isMainCat && <span className="text-[9px] bg-primary/20 px-1.5 py-0.5 rounded-md font-extrabold">ANA</span>}
                 </button>
               );
             })}

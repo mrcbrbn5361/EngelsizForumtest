@@ -181,6 +181,15 @@ export function Navbar() {
             )}
 
             <Link
+              href="/ozbek"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-border bg-card text-[11px] font-black uppercase tracking-wider text-foreground hover:text-primary hover:border-primary/50 transition-all shadow-xs group"
+              title="EngelsizForum O'zbekcha versiyasiga o'tish"
+            >
+              <span className="text-sm leading-none">🇺🇿</span>
+              <span className="hidden sm:inline font-bold group-hover:text-primary">O'zbekcha</span>
+            </Link>
+
+            <Link
               href="/search"
               className="hidden sm:flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
               aria-label="Arama sayfasına git"

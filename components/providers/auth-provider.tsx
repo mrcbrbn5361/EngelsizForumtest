@@ -18,47 +18,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = useCallback(async (userId: string) => {
-    let lastError = null;
-
+  const fetchProfile = useCallback(async (authUser: User) => {
     if (!isSupabaseConfigured) {
       console.warn('Supabase URL is not configured.');
       return;
     }
 
-    // Try multiple times with exponential backoff to allow the auth trigger to create the profile
-    for (let i = 0; i < 5; i++) {
+    const fallbackProfile: Profile = {
+      id: authUser.id,
+      username: authUser.user_metadata?.username || authUser.email?.split('@')[0] || 'kullanici',
+      full_name: authUser.user_metadata?.full_name || authUser.user_metadata?.name || null,
+      avatar_url: authUser.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${authUser.id}`,
+      role: (authUser.user_metadata?.role as any) || 'user',
+      level: 1,
+      xp: 0,
+      bio: null,
+      is_verified: false,
+      accessibility_prefs: null,
+      updated_at: new Date().toISOString()
+    };
+
+    const maxAttempts = 3;
+    let lastErr: any = null;
+
+    for (let i = 0; i < maxAttempts; i++) {
       try {
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', userId)
+          .eq('id', authUser.id)
           .maybeSingle();
 
         if (error) {
-          lastError = error;
-          console.error(`Attempt ${i + 1} to fetch profile failed:`, error.message);
+          lastErr = error;
+          const errMsg = error.message || String(error);
+          if (errMsg.includes('Failed to fetch') || errMsg.includes('NetworkError') || errMsg.includes('TypeError')) {
+            console.warn('Network issue fetching profile from Supabase, using fallback profile');
+            setProfile(fallbackProfile);
+            return;
+          }
         } else if (data) {
           setProfile(data);
           return;
         }
       } catch (err: any) {
-        lastError = err;
-        console.error(`Exception during profile fetch attempt ${i + 1}:`, err);
+        lastErr = err;
+        const errMsg = err?.message || String(err);
+        if (errMsg.includes('Failed to fetch') || errMsg.includes('TypeError')) {
+          console.warn('Network exception while fetching profile, using fallback profile');
+          setProfile(fallbackProfile);
+          return;
+        }
       }
-      
-      // Wait before next retry (500ms, 1000ms, 2000ms, 4000ms, 8000ms)
-      await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 500));
+
+      if (i < maxAttempts - 1) {
+        await new Promise(resolve => setTimeout(resolve, (i + 1) * 250));
+      }
     }
-    
-    if (lastError) {
-      console.error('Final error fetching profile from Supabase:', {
-        message: lastError.message || lastError,
-        code: lastError.code,
-        details: lastError.details,
-        hint: lastError.hint
-      });
-    }
+
+    setProfile(fallbackProfile);
   }, []);
 
   useEffect(() => {
@@ -113,7 +131,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         setUser(session?.user ?? null);
         if (session?.user) {
-          await fetchProfile(session.user.id);
+          await fetchProfile(session.user);
         }
       } catch (err) {
         console.error('Session check error:', err);
@@ -187,7 +205,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         setUser(session?.user ?? null);
         if (session?.user) {
-          await fetchProfile(session.user.id);
+          await fetchProfile(session.user);
         } else {
           setProfile(null);
         }

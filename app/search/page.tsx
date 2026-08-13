@@ -155,13 +155,13 @@ export default function SearchPage() {
             {/* Optimized layout for search row preventing any overflow on screens */}
             <div className="flex flex-col sm:flex-row gap-3 items-stretch">
               <div className="relative flex-1 min-w-0">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10" size={20} />
                 <input 
                   type="text" 
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="TARTIŞMA VEYA İÇERİK ARA..." 
-                  className="vibe-input vibe-input-pl-12 h-12 text-sm uppercase rounded border border-border bg-background w-full"
+                  className="vibe-input !pl-12 h-12 text-sm uppercase rounded border border-border bg-background w-full"
                   autoFocus
                 />
               </div>
