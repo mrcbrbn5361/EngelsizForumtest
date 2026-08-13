@@ -72,6 +72,27 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Ensure all columns exist even if profiles table was created previously
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS display_name TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS full_name TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS bio TEXT;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'user';
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS level INTEGER DEFAULT 1;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS xp INTEGER DEFAULT 100;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS reputation_points INTEGER DEFAULT 10;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_verified BOOLEAN DEFAULT false;
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS last_seen TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS accessibility_prefs JSONB DEFAULT '{
+  "fontSize": "md",
+  "highContrast": false,
+  "dyslexicFont": false,
+  "reducedMotion": false,
+  "bionicReading": false,
+  "focusMode": false,
+  "voiceMode": false
+}'::jsonb;
+
 CREATE INDEX IF NOT EXISTS idx_profiles_username ON public.profiles(username);
 CREATE INDEX IF NOT EXISTS idx_profiles_role ON public.profiles(role);
 CREATE INDEX IF NOT EXISTS idx_profiles_last_seen ON public.profiles(last_seen);
@@ -159,6 +180,22 @@ CREATE TABLE IF NOT EXISTS public.categories (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS parent_id UUID REFERENCES public.categories(id) ON DELETE CASCADE DEFAULT NULL;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS title TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS icon TEXT DEFAULT 'FolderTree';
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS icon_name TEXT DEFAULT 'FolderTree';
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS color TEXT DEFAULT '#2563EB';
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS color_code TEXT DEFAULT '#2563EB';
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS is_main BOOLEAN DEFAULT false;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS is_private BOOLEAN DEFAULT false;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS order_index INTEGER DEFAULT 0;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.categories ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
 CREATE INDEX IF NOT EXISTS idx_categories_parent_id ON public.categories(parent_id);
 CREATE INDEX IF NOT EXISTS idx_categories_slug ON public.categories(slug);
 
@@ -168,6 +205,36 @@ CREATE TRIGGER tr_categories_updated_at BEFORE UPDATE ON public.categories FOR E
 -- ==============================================================================
 -- 5. TOPICS / THREADS TABLE
 -- ==============================================================================
+
+-- Safely cleanup 'topics', 'comments', 'threads', 'posts' regardless of whether they exist as TABLES or VIEWS
+DO $$ 
+DECLARE 
+  r RECORD;
+BEGIN
+  -- Drop 'threads' and 'posts' if they exist as either a table or a view so they can be recreated as compatibility views
+  FOR r IN (
+    SELECT c.relname, c.relkind 
+    FROM pg_class c 
+    JOIN pg_namespace n ON n.oid = c.relnamespace 
+    WHERE n.nspname = 'public' AND c.relname IN ('threads', 'posts')
+  ) LOOP
+    IF r.relkind = 'v' THEN
+      EXECUTE 'DROP VIEW IF EXISTS public.' || quote_ident(r.relname) || ' CASCADE';
+    ELSIF r.relkind = 'r' THEN
+      EXECUTE 'DROP TABLE IF EXISTS public.' || quote_ident(r.relname) || ' CASCADE';
+    END IF;
+  END LOOP;
+
+  -- Drop 'topics' or 'comments' ONLY if they were accidentally created as views in a previous run
+  FOR r IN (
+    SELECT c.relname, c.relkind 
+    FROM pg_class c 
+    JOIN pg_namespace n ON n.oid = c.relnamespace 
+    WHERE n.nspname = 'public' AND c.relname IN ('topics', 'comments') AND c.relkind = 'v'
+  ) LOOP
+    EXECUTE 'DROP VIEW IF EXISTS public.' || quote_ident(r.relname) || ' CASCADE';
+  END LOOP;
+END $$;
 
 CREATE TABLE IF NOT EXISTS public.topics (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -188,6 +255,42 @@ CREATE TABLE IF NOT EXISTS public.topics (
   last_activity_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS category_id UUID REFERENCES public.categories(id) ON DELETE CASCADE;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS author_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS title TEXT;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS content TEXT;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS is_pinned BOOLEAN DEFAULT false;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS is_locked BOOLEAN DEFAULT false;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS is_solved BOOLEAN DEFAULT false;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS views_count INTEGER DEFAULT 0;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS comments_count INTEGER DEFAULT 0;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS likes_count INTEGER DEFAULT 0;
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS tags TEXT[] DEFAULT '{}';
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS last_activity_at TIMESTAMPTZ DEFAULT NOW();
+
+CREATE INDEX IF NOT EXISTS idx_topics_category ON public.topics(category_id);
+CREATE INDEX IF NOT EXISTS idx_topics_author ON public.topics(author_id);
+CREATE INDEX IF NOT EXISTS idx_topics_created ON public.topics(created_at DESC);
+
+DO $$ 
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' AND table_name = 'topics' AND column_name = 'search_vector'
+  ) THEN
+    ALTER TABLE public.topics ADD COLUMN search_vector TSVECTOR 
+      GENERATED ALWAYS AS (to_tsvector('turkish', coalesce(title,'') || ' ' || coalesce(content,''))) STORED;
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_topics_search ON public.topics USING gin(search_vector);
+
+DROP TRIGGER IF EXISTS tr_topics_updated_at ON public.topics;
+CREATE TRIGGER tr_topics_updated_at BEFORE UPDATE ON public.topics FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
 -- Alias view for threads compatibility
 CREATE OR REPLACE VIEW public.threads AS 
 SELECT 
@@ -196,18 +299,6 @@ SELECT
   comments_count AS replies_count, likes_count, tags, 
   created_at, updated_at, last_activity_at
 FROM public.topics;
-
-CREATE INDEX IF NOT EXISTS idx_topics_category ON public.topics(category_id);
-CREATE INDEX IF NOT EXISTS idx_topics_author ON public.topics(author_id);
-CREATE INDEX IF NOT EXISTS idx_topics_created ON public.topics(created_at DESC);
-
-ALTER TABLE public.topics ADD COLUMN IF NOT EXISTS search_vector TSVECTOR 
-  GENERATED ALWAYS AS (to_tsvector('turkish', coalesce(title,'') || ' ' || coalesce(content,''))) STORED;
-
-CREATE INDEX IF NOT EXISTS idx_topics_search ON public.topics USING gin(search_vector);
-
-DROP TRIGGER IF EXISTS tr_topics_updated_at ON public.topics;
-CREATE TRIGGER tr_topics_updated_at BEFORE UPDATE ON public.topics FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
 -- ==============================================================================
 -- 6. COMMENTS / POSTS TABLE
@@ -225,6 +316,16 @@ CREATE TABLE IF NOT EXISTS public.comments (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE;
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS author_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS parent_id UUID REFERENCES public.comments(id) ON DELETE CASCADE DEFAULT NULL;
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS parent_comment_id UUID REFERENCES public.comments(id) ON DELETE CASCADE DEFAULT NULL;
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS content TEXT;
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS is_solution BOOLEAN DEFAULT false;
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS likes_count INTEGER DEFAULT 0;
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.comments ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 -- Alias view for posts compatibility
 CREATE OR REPLACE VIEW public.posts AS
@@ -253,6 +354,13 @@ CREATE TABLE IF NOT EXISTS public.reactions (
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   CONSTRAINT one_reaction_per_user_topic UNIQUE(user_id, topic_id, reaction_type)
 );
+
+ALTER TABLE public.reactions ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE;
+ALTER TABLE public.reactions ADD COLUMN IF NOT EXISTS topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE DEFAULT NULL;
+ALTER TABLE public.reactions ADD COLUMN IF NOT EXISTS comment_id UUID REFERENCES public.comments(id) ON DELETE CASCADE DEFAULT NULL;
+ALTER TABLE public.reactions ADD COLUMN IF NOT EXISTS reaction_type TEXT DEFAULT 'like';
+ALTER TABLE public.reactions ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.reactions ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 -- Sync topic likes trigger
 CREATE OR REPLACE FUNCTION public.sync_topic_likes() 
@@ -288,6 +396,10 @@ CREATE TABLE IF NOT EXISTS public.bookmarks (
   UNIQUE(user_id, topic_id)
 );
 
+ALTER TABLE public.bookmarks ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE;
+ALTER TABLE public.bookmarks ADD COLUMN IF NOT EXISTS topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE;
+ALTER TABLE public.bookmarks ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
 -- ==============================================================================
 -- 9. COMMUNITIES & COMMUNITY MEMBERS TABLE
 -- ==============================================================================
@@ -309,6 +421,20 @@ CREATE TABLE IF NOT EXISTS public.communities (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS slug TEXT;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS category_id UUID REFERENCES public.categories(id) ON DELETE SET NULL;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS creator_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS cover_url TEXT;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS members_count INTEGER DEFAULT 1;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS topics_count INTEGER DEFAULT 0;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS is_private BOOLEAN DEFAULT false;
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS tags TEXT[] DEFAULT '{}';
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.communities ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
 CREATE TABLE IF NOT EXISTS public.community_members (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   community_id UUID REFERENCES public.communities(id) ON DELETE CASCADE NOT NULL,
@@ -317,6 +443,11 @@ CREATE TABLE IF NOT EXISTS public.community_members (
   joined_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(community_id, user_id)
 );
+
+ALTER TABLE public.community_members ADD COLUMN IF NOT EXISTS community_id UUID REFERENCES public.communities(id) ON DELETE CASCADE;
+ALTER TABLE public.community_members ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE;
+ALTER TABLE public.community_members ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'member';
+ALTER TABLE public.community_members ADD COLUMN IF NOT EXISTS joined_at TIMESTAMPTZ DEFAULT NOW();
 
 -- ==============================================================================
 -- 10. TAGS & TOPIC TAGS
@@ -328,11 +459,17 @@ CREATE TABLE IF NOT EXISTS public.tags (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE public.tags ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE public.tags ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
 CREATE TABLE IF NOT EXISTS public.topic_tags (
   topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE NOT NULL,
   tag_id UUID REFERENCES public.tags(id) ON DELETE CASCADE NOT NULL,
   PRIMARY KEY (topic_id, tag_id)
 );
+
+ALTER TABLE public.topic_tags ADD COLUMN IF NOT EXISTS topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE;
+ALTER TABLE public.topic_tags ADD COLUMN IF NOT EXISTS tag_id UUID REFERENCES public.tags(id) ON DELETE CASCADE;
 
 -- ==============================================================================
 -- 11. BADGES & GAMIFICATION
@@ -347,6 +484,12 @@ CREATE TABLE IF NOT EXISTS public.badges (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE public.badges ADD COLUMN IF NOT EXISTS name TEXT;
+ALTER TABLE public.badges ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.badges ADD COLUMN IF NOT EXISTS icon TEXT;
+ALTER TABLE public.badges ADD COLUMN IF NOT EXISTS criteria JSONB;
+ALTER TABLE public.badges ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
 CREATE TABLE IF NOT EXISTS public.user_badges (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
@@ -354,6 +497,10 @@ CREATE TABLE IF NOT EXISTS public.user_badges (
   awarded_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(user_id, badge_id)
 );
+
+ALTER TABLE public.user_badges ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE;
+ALTER TABLE public.user_badges ADD COLUMN IF NOT EXISTS badge_id UUID REFERENCES public.badges(id) ON DELETE CASCADE;
+ALTER TABLE public.user_badges ADD COLUMN IF NOT EXISTS awarded_at TIMESTAMPTZ DEFAULT NOW();
 
 -- XP Increment Function
 CREATE OR REPLACE FUNCTION public.increment_user_xp(user_id UUID, xp_amount INTEGER)
@@ -390,11 +537,18 @@ CREATE TABLE IF NOT EXISTS public.follows (
   UNIQUE(follower_id, following_id)
 );
 
+ALTER TABLE public.follows ADD COLUMN IF NOT EXISTS follower_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE;
+ALTER TABLE public.follows ADD COLUMN IF NOT EXISTS following_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE;
+ALTER TABLE public.follows ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
 CREATE TABLE IF NOT EXISTS public.conversations (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE public.conversations ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.conversations ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 CREATE TABLE IF NOT EXISTS public.conversation_members (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -404,6 +558,10 @@ CREATE TABLE IF NOT EXISTS public.conversation_members (
   UNIQUE(conversation_id, user_id)
 );
 
+ALTER TABLE public.conversation_members ADD COLUMN IF NOT EXISTS conversation_id UUID REFERENCES public.conversations(id) ON DELETE CASCADE;
+ALTER TABLE public.conversation_members ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE;
+ALTER TABLE public.conversation_members ADD COLUMN IF NOT EXISTS joined_at TIMESTAMPTZ DEFAULT NOW();
+
 CREATE TABLE IF NOT EXISTS public.messages (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   conversation_id UUID REFERENCES public.conversations(id) ON DELETE CASCADE NOT NULL,
@@ -411,6 +569,11 @@ CREATE TABLE IF NOT EXISTS public.messages (
   content TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS conversation_id UUID REFERENCES public.conversations(id) ON DELETE CASCADE;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS sender_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS content TEXT;
+ALTER TABLE public.messages ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
 
 -- ==============================================================================
 -- 13. VISITORS & ANALYTICS TABLE
@@ -426,6 +589,14 @@ CREATE TABLE IF NOT EXISTS public.visitors (
   last_seen TIMESTAMPTZ DEFAULT NOW(),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE public.visitors ADD COLUMN IF NOT EXISTS device_id TEXT;
+ALTER TABLE public.visitors ADD COLUMN IF NOT EXISTS ip_address TEXT;
+ALTER TABLE public.visitors ADD COLUMN IF NOT EXISTS user_agent TEXT;
+ALTER TABLE public.visitors ADD COLUMN IF NOT EXISTS page_url TEXT;
+ALTER TABLE public.visitors ADD COLUMN IF NOT EXISTS path TEXT;
+ALTER TABLE public.visitors ADD COLUMN IF NOT EXISTS last_seen TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.visitors ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
 
 CREATE INDEX IF NOT EXISTS idx_visitors_last_seen ON public.visitors(last_seen DESC);
 
@@ -444,6 +615,14 @@ CREATE TABLE IF NOT EXISTS public.reports (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE public.reports ADD COLUMN IF NOT EXISTS reporter_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE;
+ALTER TABLE public.reports ADD COLUMN IF NOT EXISTS topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE DEFAULT NULL;
+ALTER TABLE public.reports ADD COLUMN IF NOT EXISTS comment_id UUID REFERENCES public.comments(id) ON DELETE CASCADE DEFAULT NULL;
+ALTER TABLE public.reports ADD COLUMN IF NOT EXISTS reason TEXT;
+ALTER TABLE public.reports ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending';
+ALTER TABLE public.reports ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+ALTER TABLE public.reports ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
 CREATE TABLE IF NOT EXISTS public.notifications (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   recipient_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE DEFAULT NULL,
@@ -459,6 +638,18 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS recipient_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE DEFAULT NULL;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE DEFAULT NULL;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS actor_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS topic_id UUID REFERENCES public.topics(id) ON DELETE CASCADE DEFAULT NULL;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS comment_id UUID REFERENCES public.comments(id) ON DELETE CASCADE DEFAULT NULL;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS type TEXT;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS title TEXT;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS message TEXT;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS link_url TEXT;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS is_read BOOLEAN DEFAULT false;
+ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
 CREATE INDEX IF NOT EXISTS idx_notifications_recipient ON public.notifications(recipient_id, is_read);
 
 CREATE TABLE IF NOT EXISTS public.mastodon_apps (
@@ -472,6 +663,14 @@ CREATE TABLE IF NOT EXISTS public.mastodon_apps (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+ALTER TABLE public.mastodon_apps ADD COLUMN IF NOT EXISTS client_name TEXT;
+ALTER TABLE public.mastodon_apps ADD COLUMN IF NOT EXISTS redirect_uris TEXT;
+ALTER TABLE public.mastodon_apps ADD COLUMN IF NOT EXISTS scopes TEXT DEFAULT 'read write follow';
+ALTER TABLE public.mastodon_apps ADD COLUMN IF NOT EXISTS website TEXT;
+ALTER TABLE public.mastodon_apps ADD COLUMN IF NOT EXISTS client_id TEXT;
+ALTER TABLE public.mastodon_apps ADD COLUMN IF NOT EXISTS client_secret TEXT;
+ALTER TABLE public.mastodon_apps ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
+
 CREATE TABLE IF NOT EXISTS public.oauth_codes (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   code TEXT UNIQUE NOT NULL,
@@ -480,6 +679,12 @@ CREATE TABLE IF NOT EXISTS public.oauth_codes (
   redirect_uri TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS code TEXT;
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS client_id TEXT;
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE;
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS redirect_uri TEXT;
+ALTER TABLE public.oauth_codes ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
 
 CREATE TABLE IF NOT EXISTS public.audit_logs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -490,6 +695,13 @@ CREATE TABLE IF NOT EXISTS public.audit_logs (
   metadata JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE public.audit_logs ADD COLUMN IF NOT EXISTS actor_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL;
+ALTER TABLE public.audit_logs ADD COLUMN IF NOT EXISTS action TEXT;
+ALTER TABLE public.audit_logs ADD COLUMN IF NOT EXISTS target_type TEXT;
+ALTER TABLE public.audit_logs ADD COLUMN IF NOT EXISTS target_id UUID;
+ALTER TABLE public.audit_logs ADD COLUMN IF NOT EXISTS metadata JSONB;
+ALTER TABLE public.audit_logs ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW();
 
 -- ==============================================================================
 -- 15. COUNTERS & RPC PROCEDURES
