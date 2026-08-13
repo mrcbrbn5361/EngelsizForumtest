@@ -6,7 +6,6 @@ import './globals.css';
 import { AccessibilityProvider } from '@/components/providers/accessibility-provider';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/providers/auth-provider';
-import { AccessibilityToolbar } from '@/components/accessibility/accessibility-toolbar';
 import { SkipNav } from '@/components/accessibility/skip-nav';
 
 const headingFont = Plus_Jakarta_Sans({
@@ -59,9 +58,15 @@ export const metadata: Metadata = {
     'geo.position': '41.0082;28.9784',
     'ICBM': '41.0082, 28.9784',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.jpg' },
+      { url: '/icon.png', type: 'image/png', sizes: '192x192' },
+    ],
+  },
   openGraph: {
-    title: 'EngelsizForum: Tam Erişilebilir Topluluk Platformu',
-    description: 'Engelli bireyler için %100 erişilebilir, yapay zeka destekli topluluk ve mevzuat danışma platformu.',
+    title: 'EngelsizForum: Erişilebilir Forum',
+    description: 'Engelli bireyler için tam erişilebilir forum platformu.',
     url: 'https://engelsizforum.com',
     siteName: 'EngelsizForum',
     type: 'website',
@@ -71,7 +76,7 @@ export const metadata: Metadata = {
         url: 'https://engelsizforum.com/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'EngelsizForum - Tam Erişilebilir Topluluk Platformu',
+        alt: 'EngelsizForum - Erişilebilir Forum',
         type: 'image/png',
       },
       {
@@ -82,19 +87,6 @@ export const metadata: Metadata = {
         type: 'image/png',
       }
     ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'EngelsizForum: Tam Erişilebilir Topluluk ve Bilgi Platformu',
-    description: 'Engelli bireyler için %100 erişilebilir, yapay zeka destekli ve kapsayıcı topluluk platformu. Bariyersiz iletişimin yeni adresi EngelsizForum\'a katılın.',
-    site: '@engelsizforum',
-    creator: '@engelsizforum',
-    images: ['https://engelsizforum.com/twitter-image.png'],
-  },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'black-translucent',
-    title: 'EngelsizForum',
   },
   formatDetection: {
     telephone: false,
@@ -115,7 +107,6 @@ const jsonLd = {
       "logo": "https://engelsizforum.com/logo.png",
       "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve forum platformu.",
       "sameAs": [
-        "https://twitter.com/engelsizforum",
         "https://github.com/engelsizforum"
       ],
       "accessibilityControl": ["fullKeyboardControl", "fullMouseControl", "fullVoiceControl"],
@@ -149,14 +140,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://api.dicebear.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://api.dicebear.com" />
+        <link rel="icon" href="/favicon.jpg" type="image/jpeg" />
+        <link rel="icon" href="/icon.png" type="image/png" sizes="192x192" />
         <meta property="og:image" content="https://engelsizforum.com/og-image.png" />
         <meta property="og:image:secure_url" content="https://engelsizforum.com/og-image.png" />
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="EngelsizForum - Tam Erişilebilir Topluluk Platformu" />
-        <meta name="twitter:image" content="https://engelsizforum.com/twitter-image.png" />
-        <meta name="twitter:card" content="summary_large_image" />
       </head>
       <body className="bg-background text-foreground transition-colors duration-300 overflow-x-hidden min-h-screen flex flex-col font-sans">
         <script
@@ -169,7 +160,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main id="main-content" className="flex-1 w-full flex flex-col outline-none" tabIndex={-1}>
               {children}
             </main>
-            <AccessibilityToolbar />
             <VisitorTracker />
             <Toaster position="top-right" richColors closeButton />
           </AccessibilityProvider>
