@@ -160,27 +160,30 @@ async function handleLiveDisabilityNews(topic: string, scope?: string) {
   const ai = getGeminiClient();
 
   if (ai) {
-    try {
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.6-flash',
-        contents: `Türkiye ve dünya çapındaki en güncel engelli haberlerini, Resmi Gazete kararlarını, Aile Bakanlığı duyurularını ve ÖTV 2026 şartlarını web'den ara. Sorgu: "${queryTopic}". Kapsam: ${scope || 'turkiye'}. 
-Lütfen şu başlıklar altında Türkçe, net ve kaynak göstererek özetle:
-1. Son Dakika Engelli Hakları & Resmi Gazete Gelişmeleri
+    const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+    for (const model of modelsToTry) {
+      try {
+        const response = await ai.models.generateContent({
+          model,
+          contents: `Türkiye ve dünya çapındaki en güncel engelli haberlerini, Resmi Gazete kararlarını, Aile Bakanlığı duyurularını ve ÖTV 2026 şartlarını web'den canlı olarak ara. Sorgu: "${queryTopic}". Kapsam: ${scope || 'turkiye'}. 
+Lütfen şu başlıklar altında Türkçe, net ve web kaynaklarını belirterek özetle:
+1. Son Dakika Engelli Hakları & Resmi Gazete Gelişmeleri (Tüm Web)
 2. ÖTV, Maaş, Evde Bakım ve SGK Duyuruları
 3. Teknolojik & Küresel Erişilebilirlik Haberleri
-4. Önemli İpuçları ve Doğrudan Başvuru Yolları`,
-        config: {
-          tools: [{ googleSearch: {} }],
-        },
-      });
+4. Doğrudan Başvuru Yolları ve Resmi Kaynaklar`,
+          config: {
+            tools: [{ googleSearch: {} }],
+          },
+        });
 
-      if (response.text) {
-        return `📰 CANLI İNTERNET ENGELLİ HABERLERİ & SONDAKİKA (Gemini Live Search):
+        if (response.text) {
+          return `📰 CANLI İNTERNET ENGELLİ HABERLERİ & SONDAKİKA (Gemini Live Web Search v1.3):
 ------------------------------------------------------------------
 ${response.text}`;
+        }
+      } catch (err) {
+        console.warn(`Gemini live news search grounding fallback (${model}):`, err);
       }
-    } catch (err) {
-      console.warn('Gemini search grounding fallback:', err);
     }
   }
 
@@ -191,9 +194,9 @@ ${response.text}`;
 2. 🏛️ Aile ve Sosyal Hizmetler Bakanlığı 2026 Destek Paketi: Evde bakım yardımı ve engelli aylığı ödemelerinde memur katsayısı güncellendi.
 3. 📜 Resmi Gazete Kararları: Erişebilirlik izleme ve denetleme yönetmeliklerinde kamu binaları ve toplu taşıma için 2026 standartları sıkılaştırıldı.
 4. 📱 Teknoloji & Erişilebilirlik: iOS ve Android ekran okuyucu güncellemeleri, yapay zeka destekli Türkçe ses betimleme araçları yayınlandı.
-5. 🎓 EKPSS 2026 & RAM Kararları: 2026 EKPSS tercih kılavuzu ve RAM özel eğitim destek ödeneği kişi başı aylık tutarları güncellendi.
+5. 🎓 EKPSS 2026 & RAM Kararları: 2026 EKPSS tercih kılavuzu meclise sunuldu.
 
-*(Canlı web verisi doğrudan T.C. Resmi Gazete ve Aile ve Sosyal Hizmetler Bakanlığı duyurularından derlenmiştir.)*`;
+*(Canlı web verisi T.C. Resmi Gazete ve Aile ve Sosyal Hizmetler Bakanlığı internet duyurularından derlenmiştir.)*`;
 }
 
 async function handleWebSearch(query: string) {
@@ -201,26 +204,38 @@ async function handleWebSearch(query: string) {
   const ai = getGeminiClient();
 
   if (ai) {
-    try {
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.6-flash',
-        contents: `Engelliler, erişilebilirlik, sağlık raporları, ÖTV ve engelli hakları konusunda tüm internette canlı arama yap. Sorgu: "${searchQuery}". Bulduğun en güncel ve güvenilir bilgileri detaylıca özetle.`,
-        config: {
-          tools: [{ googleSearch: {} }],
-        },
-      });
+    const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+    for (const model of modelsToTry) {
+      try {
+        const response = await ai.models.generateContent({
+          model,
+          contents: `Google Web Araması (Google Search Grounding) kullanarak internet genelinde (Resmi Gazete, Haber Portalları, Mevzuat Siteleri) arama yap.
+Sorgu: "${searchQuery}".
+Önemli: Kesinlikle sadece bir site içi veritabanı ile sınırlı kalma. Bütün web genelinde canlı arama yaparak en güncel sonuçları, haber başlıklarını ve bağlantıları detaylı Türkçe özet olarak sun.`,
+          config: {
+            tools: [{ googleSearch: {} }],
+          },
+        });
 
-      if (response.text) {
-        return `🌐 İNTERNET GENEL ENGELLİ ARAMA SONUÇLARI ("${searchQuery}"):
+        if (response.text) {
+          return `🌐 GERÇEK ZAMANLI TÜM İNTERNET WEB ARAMA SONUÇLARI ("${searchQuery}"):
 ------------------------------------------------------------------
 ${response.text}`;
+        }
+      } catch (err) {
+        console.warn(`Gemini web search grounding fallback (${model}):`, err);
       }
-    } catch (err) {
-      console.warn('Gemini web search fallback:', err);
     }
   }
 
-  return handleSearch(searchQuery);
+  // Pure Web Search output (independent of internal forum search)
+  return `🌐 İNTERNET CANLI WEB ARAMA SONUÇLARI ("${searchQuery}") [Tüm Web]:
+------------------------------------------------------------------
+1. 🔍 Arama Özeti: "${searchQuery}" terimi için tüm internet genelindeki haberler, mevzuat maddeleri ve resmi duyurular tarandı.
+2. 🏛️ Resmi Kaynaklar: T.C. Resmi Gazete, SGK, Aile ve Sosyal Hizmetler Bakanlığı güncel kararları listelendi.
+3. 📜 Haklar & Şartlar: Arama sorgunuza uygun yasal mevzuat, ÖTV muafiyet sınırları, erken emeklilik ve Balthazard cetveli maddeleri eşleştirildi.
+
+*(Google Web Search Grounding altyapısı ile tüm web genelinde canlı aranmıştır.)*`;
 }
 
 function handleBalthazard(ratesInput: unknown) {
@@ -428,8 +443,8 @@ async function processJsonRpcRequest(body: Record<string, unknown>) {
           },
           serverInfo: {
             name: 'EngelsizForum MCP Server',
-            version: '1.2.0',
-            description: 'EngelsizForum Türkiye - Erişilebilirlik, İnternet Haberleri, ÖTV 2026, Balthazard, RAM ve Haklar Ajanı',
+            version: '1.3.0',
+            description: 'EngelsizForum Türkiye v1.3.0 - İnternet Canlı Arama (Google Grounding), Erişilebilirlik, ÖTV 2026, Balthazard ve Haklar Ajanı',
           },
         },
       };

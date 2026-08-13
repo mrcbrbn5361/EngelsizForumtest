@@ -915,17 +915,17 @@ function McpAdminManager() {
             <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">İnternet Arama (Grounding)</span>
             <Sparkles size={18} className="text-amber-500" />
           </div>
-          <p className="text-xl font-extrabold text-amber-600 dark:text-amber-400">Gemini 3.6 Flash</p>
-          <p className="text-xs text-muted-foreground">Resmi Gazete &amp; Canlı Haber</p>
+          <p className="text-xl font-extrabold text-amber-600 dark:text-amber-400">Gemini 2.5 Flash Live</p>
+          <p className="text-xs text-muted-foreground">Tüm Web &amp; Resmi Gazete Arama</p>
         </div>
 
         <div className="p-6 rounded-3xl border border-border bg-card shadow-sm space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">Protokol Standardı</span>
+            <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">Protokol &amp; Sürüm</span>
             <Globe size={18} className="text-purple-500" />
           </div>
-          <p className="text-xl font-bold font-mono">2024-11-05</p>
-          <p className="text-xs text-muted-foreground">JSON-RPC 2.0 / W3C</p>
+          <p className="text-xl font-bold font-mono">v1.3.0 (2024-11-05)</p>
+          <p className="text-xs text-muted-foreground">JSON-RPC 2.0 / MCP v1.3.0</p>
         </div>
       </div>
 
