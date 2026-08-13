@@ -3,6 +3,7 @@ import VisitorTracker from '@/components/layout/visitor-tracker';
 import { Plus_Jakarta_Sans, Atkinson_Hyperlegible, JetBrains_Mono } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
+import { WebMCPProvider } from '@/components/providers/webmcp-provider';
 import { AccessibilityProvider } from '@/components/providers/accessibility-provider';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/providers/auth-provider';
@@ -157,11 +158,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SkipNav />
         <AuthProvider>
           <AccessibilityProvider>
-            <main id="main-content" className="flex-1 w-full flex flex-col outline-none" tabIndex={-1}>
-              {children}
-            </main>
-            <VisitorTracker />
-            <Toaster position="top-right" richColors closeButton />
+            <WebMCPProvider>
+              <main id="main-content" className="flex-1 w-full flex flex-col outline-none" tabIndex={-1}>
+                {children}
+              </main>
+              <VisitorTracker />
+              <Toaster position="top-right" richColors closeButton />
+            </WebMCPProvider>
           </AccessibilityProvider>
         </AuthProvider>
       </body>
