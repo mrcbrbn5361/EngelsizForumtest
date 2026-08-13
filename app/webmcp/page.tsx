@@ -40,6 +40,33 @@ export default function WebMCPPage() {
         </p>
       </div>
 
+      {/* Gemini Web MCP Server Guide Box */}
+      <div className="bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-purple-600/10 border border-blue-500/30 rounded-2xl p-6 space-y-4 shadow-md">
+        <div className="flex items-center gap-2">
+          <Bot className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+          <h2 className="text-xl font-bold text-foreground">Gemini Web (gemini.google.com) Özel Bağlı Uygulama Kurulumu</h2>
+        </div>
+
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          Gemini Web&apos;deki <strong className="text-foreground">&quot;Özel bağlı uygulama oluşturun&quot;</strong> (Custom Connected Apps) menüsüne EngelsizForum&apos;u eklemek için sunucu bağlantısı olarak aşağıdaki URL adresini girmelisiniz:
+        </p>
+
+        <div className="p-3.5 rounded-xl bg-background border border-border flex items-center justify-between gap-3 font-mono text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 overflow-x-auto">
+          <span>https://www.engelsizforum.com/api/mcp</span>
+          <span className="text-[11px] font-sans font-normal text-muted-foreground bg-muted px-2 py-1 rounded">Veya /mcp</span>
+        </div>
+
+        <div className="space-y-2 text-xs text-muted-foreground">
+          <p className="font-semibold text-foreground uppercase tracking-wider">Adım Adım Kurulum Rehberi:</p>
+          <ol className="list-decimal pl-5 space-y-1.5 leading-relaxed">
+            <li><strong>gemini.google.com</strong> adresini açıp ayarlardan veya istem kutusundaki <strong>&quot;Özel bağlı uygulama oluşturun&quot;</strong> seçeneğine tıklayın.</li>
+            <li>Bağlantı adresi kutusuna <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground">https://www.engelsizforum.com/api/mcp</code> adresini yapıştırın.</li>
+            <li>Gemini sunucumuzdaki <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground">initialize</code> ve <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground">tools/list</code> protokolünü doğrulayarak EngelsizForum araçlarını otomatik tanıyacaktır.</li>
+            <li>Artık Gemini istem penceresinde <em>&quot;EngelsizForum&apos;da ÖTV 2026 şartlarını ara&quot;</em> veya <em>&quot;Balthazard formülü ile %40 ve %20 oranlarını hesapla&quot;</em> diyerek canlı verilere ulaşabilirsiniz!</li>
+          </ol>
+        </div>
+      </div>
+
       {/* Feature Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-sm">
