@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import { Bot, Sparkles, CheckCircle2, Code2, ArrowLeft, ShieldCheck, Terminal, Layers, Scale, BookOpen, Calculator } from 'lucide-react';
+import { Bot, Sparkles, CheckCircle2, ArrowLeft, ShieldCheck, Terminal, Layers, Globe, Monitor, Newspaper } from 'lucide-react';
 
 export const metadata = {
-  title: 'Chrome WebMCP & Remote MCP Desteği - Türkiye\'de İlk | EngelsizForum',
-  description: 'Google Chrome Web Model Context Protocol (WebMCP) ve Remote MCP Sunucu standardını Türkiye\'de ilk uygulayan tam erişilebilir engelli hakları ve topluluk platformu.',
+  title: 'WebMCP & Remote MCP Ajan Sistemi | EngelsizForum',
+  description: 'Google Chrome Web Model Context Protocol (WebMCP) ve Remote MCP Sunucu standardı ile Web, Masaüstü ve Terminal AI Ajanları için engelli haberleri ve yasal haklar platformu.',
 };
 
 export default function WebMCPPage() {
@@ -14,7 +14,7 @@ export default function WebMCPPage() {
       <div className="space-y-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
           Ana Sayfaya Dön
@@ -23,87 +23,91 @@ export default function WebMCPPage() {
         <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
             <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
-            W3C Web ML Community Group & MCP 2024-11-05
+            W3C Web ML Community Group & MCP Standardı
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            Türkiye&apos;de İlk Yapay Zeka MCP Hub&apos;ı
+            Türkiye&apos;nin İlk Çok Platformlu Engelli AI Ajan Hub&apos;ı
           </span>
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-          Google Chrome WebMCP ve Gemini Web MCP Ajanı
+          Yapay Zeka (AI) Ajanları ve WebMCP Entegrasyonu
         </h1>
         <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-          EngelsizForum, Google Chrome ve Microsoft ortaklığındaki <strong className="text-foreground">WebMCP</strong> (İstemci) ve <strong className="text-foreground">Remote MCP</strong> (Gemini / Claude / ChatGPT Ajan) standartlarını Türkiye&apos;de uygulayan ilk erişilebilir platformdur. Yapay zeka ajanları artık tüm engelli yasal haklarını, ÖTV 2026 şartlarını, Balthazard hesaplamasını ve mevzuatı anında sorgulayabilir.
+          EngelsizForum, hem site içi konuları hem de <strong className="text-foreground">tüm internetteki güncel engelli haberlerini, Resmi Gazete kararlarını ve mevzuatı</strong> Web, Masaüstü ve Terminal tabanlı tüm Yapay Zeka Ajanlarının (Gemini, Claude, Cursor, ChatGPT) kullanımına sunar.
         </p>
       </div>
 
-      {/* Gemini Web MCP Server Guide Box */}
-      <div className="bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-purple-600/10 border border-blue-500/30 rounded-2xl p-6 space-y-4 shadow-md">
+      {/* Platform Multi-Agent Support Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-sm hover:border-blue-500/30 transition-all">
+          <div className="p-3 w-fit rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+            <Globe className="w-6 h-6" />
+          </div>
+          <h3 className="font-bold text-lg text-foreground">Web Tabanlı AI Ajanlar</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Gemini Web (<code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">gemini.google.com</code>) ve Claude Web ajanları <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">/api/mcp</code> adresimizi doğrudan Özel Bağlı Uygulama olarak ekleyebilir.
+          </p>
+        </div>
+
+        <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-sm hover:border-emerald-500/30 transition-all">
+          <div className="p-3 w-fit rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <Monitor className="w-6 h-6" />
+          </div>
+          <h3 className="font-bold text-lg text-foreground">Masaüstü AI Ajanlar</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Cursor IDE, Claude Desktop ve Windsurf gibi masaüstü yapay zeka araçları SSE &amp; HTTP JSON-RPC protokolü üzerinden EngelsizForum araçlarına erişir.
+          </p>
+        </div>
+
+        <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-sm hover:border-purple-500/30 transition-all">
+          <div className="p-3 w-fit rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+            <Terminal className="w-6 h-6" />
+          </div>
+          <h3 className="font-bold text-lg text-foreground">Terminal &amp; CLI Ajanlar</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Claude Code, Aider veya komut satırı yapay zeka araçları tek bir terminal komutuyla EngelsizForum MCP sunucusunu bağlayabilir.
+          </p>
+        </div>
+      </div>
+
+      {/* Real-Time Internet News Grounding Highlight Box */}
+      <div className="bg-gradient-to-r from-emerald-600/10 via-teal-600/10 to-blue-600/10 border border-emerald-500/30 rounded-2xl p-6 space-y-4 shadow-md">
         <div className="flex items-center gap-2">
-          <Bot className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-          <h2 className="text-xl font-bold text-foreground">Gemini Web (gemini.google.com) Özel Bağlı Uygulama Kurulumu</h2>
+          <Newspaper className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+          <h2 className="text-xl font-bold text-foreground">İnternet Genelindeki Tüm Engelli Haberleri &amp; Canlı Mevzuat Arama</h2>
         </div>
 
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Gemini Web&apos;deki <strong className="text-foreground">&quot;Özel bağlı uygulama oluşturun&quot;</strong> (Custom Connected Apps) menüsüne EngelsizForum&apos;u eklemek için sunucu bağlantısı olarak aşağıdaki URL adresini girmelisiniz:
+          EngelsizForum MCP Ajanı sadece sitemizdeki forum konuları ile sınırlı değildir. <strong className="text-foreground">Gemini Google Search Grounding</strong> yapay zeka entegrasyonu sayesinde, internetteki tüm güncel engelli haberlerini, Resmi Gazete ilanlarını, Aile ve Sosyal Hizmetler Bakanlığı duyurularını ve ÖTV 2026 gelişmelerini canlı olarak arar ve ajanınıza aktarır.
         </p>
 
-        <div className="p-3.5 rounded-xl bg-background border border-border flex items-center justify-between gap-3 font-mono text-xs sm:text-sm font-bold text-blue-600 dark:text-blue-400 overflow-x-auto">
-          <span>https://www.engelsizforum.com/api/mcp</span>
-          <span className="text-[11px] font-sans font-normal text-muted-foreground bg-muted px-2 py-1 rounded">Veya /mcp</span>
-        </div>
-
-        <div className="space-y-2 text-xs text-muted-foreground">
-          <p className="font-semibold text-foreground uppercase tracking-wider">Adım Adım Kurulum Rehberi:</p>
-          <ol className="list-decimal pl-5 space-y-1.5 leading-relaxed">
-            <li><strong>gemini.google.com</strong> adresini açıp ayarlardan veya istem kutusundaki <strong>&quot;Özel bağlı uygulama oluşturun&quot;</strong> seçeneğine tıklayın.</li>
-            <li>Bağlantı adresi kutusuna <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground">https://www.engelsizforum.com/api/mcp</code> adresini yapıştırın.</li>
-            <li>Gemini sunucumuzdaki <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground">initialize</code> ve <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-foreground">tools/list</code> protokolünü doğrulayarak EngelsizForum araçlarını otomatik tanıyacaktır.</li>
-            <li>Artık Gemini istem penceresinde <em>&quot;EngelsizForum&apos;da ÖTV 2026 şartlarını ara&quot;</em>, <em>&quot;%40 engelli raporumla hangi hakları alabilirim?&quot;</em> veya <em>&quot;Balthazard formülü ile %40 ve %20 oranlarını hesapla&quot;</em> diyerek canlı verilere ulaşabilirsiniz!</li>
-          </ol>
-        </div>
-      </div>
-
-      {/* Feature Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-sm">
-          <div className="p-3 w-fit rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
-            <Bot className="w-6 h-6" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs font-semibold">
+          <div className="p-3 rounded-xl bg-background/80 border border-border flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>ÖTV 2026 Araç Alım Üst Limiti &amp; Kararları</span>
           </div>
-          <h3 className="font-bold text-lg text-foreground">Ajan Dostu Mimari</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Yapay zeka ajanları (Chrome built-in AI, Gemini Ajanları, Claude MCP) DOM taramak yerine doğrudan tanımlı API araçları ile etkileşime girer.
-          </p>
-        </div>
-
-        <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-sm">
-          <div className="p-3 w-fit rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-            <ShieldCheck className="w-6 h-6" />
+          <div className="p-3 rounded-xl bg-background/80 border border-border flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>T.C. Resmi Gazete Engelli Yönetmelikleri</span>
           </div>
-          <h3 className="font-bold text-lg text-foreground">T.C. Resmi Mevzuat Doğruluğu</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            4760 Sayılı ÖTV Kanunu, 5510 Sayılı SGK Emeklilik Kanunu, ÇÖZGER ve RAM kararlarını anında güncel olarak sorgular.
-          </p>
-        </div>
-
-        <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-sm">
-          <div className="p-3 w-fit rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
-            <Layers className="w-6 h-6" />
+          <div className="p-3 rounded-xl bg-background/80 border border-border flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>SGK Protez, Ortez &amp; Medikal Cihaz Ödemeleri</span>
           </div>
-          <h3 className="font-bold text-lg text-foreground">Çift Katmanlı Entegrasyon</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Hem tarayıcı içi `document.modelContext` (WebMCP) hem de sunucu ucu `/api/mcp` (JSON-RPC 2.0 / SSE) üzerinden aynı anda çalışır.
-          </p>
+          <div className="p-3 rounded-xl bg-background/80 border border-border flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+            <span>EKPSS, RAM &amp; Özel Eğitim Güncel Duyuruları</span>
+          </div>
         </div>
       </div>
 
       {/* Exposed Tools Table */}
       <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
         <div className="flex items-center gap-2">
-          <Terminal className="w-5 h-5 text-blue-500" />
-          <h2 className="text-xl font-bold text-foreground">EngelsizForum MCP Ajan Araçları Listesi</h2>
+          <Bot className="w-5 h-5 text-blue-500" />
+          <h2 className="text-xl font-bold text-foreground">Kullanılabilir MCP Ajan Araçları (Aktif 9 Araç)</h2>
         </div>
 
         <div className="overflow-x-auto">
@@ -111,29 +115,39 @@ export default function WebMCPPage() {
             <thead>
               <tr className="border-b border-border bg-muted/50">
                 <th className="py-3 px-4 font-semibold text-foreground">Araç Adı (Tool Name)</th>
-                <th className="py-3 px-4 font-semibold text-foreground">Açıklama</th>
+                <th className="py-3 px-4 font-semibold text-foreground">İşlev &amp; Kapsam</th>
                 <th className="py-3 px-4 font-semibold text-foreground">Parametreler</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               <tr>
+                <td className="py-3 px-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">engelsizforum_live_disability_news</td>
+                <td className="py-3 px-4 text-muted-foreground">İnternetteki ve Resmi Gazete&apos;deki en güncel engelli haberlerini canlı arar.</td>
+                <td className="py-3 px-4 font-mono text-xs text-foreground">topic: string, scope: string</td>
+              </tr>
+              <tr>
+                <td className="py-3 px-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">engelsizforum_web_search</td>
+                <td className="py-3 px-4 text-muted-foreground">Tüm internetteki engelli hakları ve tıbbi kaynaklarda canlı arama yapar.</td>
+                <td className="py-3 px-4 font-mono text-xs text-foreground">query: string</td>
+              </tr>
+              <tr>
                 <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_search</td>
-                <td className="py-3 px-4 text-muted-foreground">ÖTV 2026, EKPSS, Balthazard ve forum konularını arar.</td>
+                <td className="py-3 px-4 text-muted-foreground">EngelsizForum veritabanındaki konu ve başlıkları arar.</td>
                 <td className="py-3 px-4 font-mono text-xs text-foreground">query: string</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_balthazard_calc</td>
-                <td className="py-3 px-4 text-muted-foreground">Birden fazla engel oranını Balthazard formülü ile hesaplar.</td>
+                <td className="py-3 px-4 text-muted-foreground">Birden fazla engel oranını Balthazard formülü ile net toplama çevirir.</td>
                 <td className="py-3 px-4 font-mono text-xs text-foreground">rates: number[]</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_disability_rights_guide</td>
-                <td className="py-3 px-4 text-muted-foreground">Rapor oranına (%40, %70, %90) göre tüm yasal engelli haklarını sorgular.</td>
+                <td className="py-3 px-4 text-muted-foreground">Rapor oranına (%40, %70, %90) göre yasal engelli haklarını sorgular.</td>
                 <td className="py-3 px-4 font-mono text-xs text-foreground">reportPercentage: number</td>
               </tr>
               <tr>
                 <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_legislation_lookup</td>
-                <td className="py-3 px-4 text-muted-foreground">ÖTV Kanunu, Emeklilik Cetveli, Evde Bakım ve EKPSS kanun maddelerini sunar.</td>
+                <td className="py-3 px-4 text-muted-foreground">ÖTV Kanunu, Emeklilik Cetveli, Evde Bakım ve EKPSS maddelerini getirir.</td>
                 <td className="py-3 px-4 font-mono text-xs text-foreground">category: string</td>
               </tr>
               <tr>
@@ -156,28 +170,20 @@ export default function WebMCPPage() {
         </div>
       </div>
 
-      {/* Code Snippet */}
-      <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
-        <div className="flex items-center gap-2">
-          <Code2 className="w-5 h-5 text-purple-500" />
-          <h2 className="text-xl font-bold text-foreground">Örnek JS Kaydı (`document.modelContext`)</h2>
+      {/* Admin Notice */}
+      <div className="p-5 rounded-2xl bg-muted/60 border border-border flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
+          <p className="text-xs text-muted-foreground font-medium">
+            Geliştirici entegrasyon kodları, API anahtarları, Raspberry Pi donanım betikleri ve canlı test konsolu yetkili personeller için <strong className="text-foreground">Admin Paneli</strong> içerisine taşınmıştır.
+          </p>
         </div>
-
-        <pre className="p-4 rounded-xl bg-muted font-mono text-xs text-foreground overflow-x-auto leading-relaxed border border-border">
-{`if (document.modelContext && typeof document.modelContext.registerTool === 'function') {
-  document.modelContext.registerTool({
-    name: 'engelsizforum_disability_rights_guide',
-    description: 'Engelli yasal hakları rehberi',
-    parameters: {
-      reportPercentage: { type: 'number', description: 'Engel oranı yüzdesi', required: true }
-    },
-    execute: (args) => {
-      // Yasal haklar kılavuzu çıktısı
-      return { reportPercentage: 40, grantedRights: ['Ücretsiz Toplu Taşıma', 'EKPSS', 'Erken Emeklilik'] };
-    }
-  });
-}`}
-        </pre>
+        <Link
+          href="/admin"
+          className="shrink-0 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 transition-opacity"
+        >
+          Admin Paneline Git
+        </Link>
       </div>
     </div>
   );

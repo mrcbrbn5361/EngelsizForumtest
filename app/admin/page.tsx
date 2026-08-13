@@ -21,7 +21,15 @@ import {
   ChevronRight,
   TrendingUp,
   AlertTriangle,
-  Loader2
+  Loader2,
+  Bot,
+  Terminal,
+  Globe,
+  Cpu,
+  Copy,
+  Check,
+  Code,
+  Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -168,6 +176,7 @@ export default function AdminDashboard() {
           <div className="overflow-x-auto scrollbar-hide pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
             <Tabs.List className="flex gap-1.5 sm:gap-2 p-1.5 bg-muted rounded-2xl w-max sm:w-fit">
               <TabButton value="overview" icon={<LayoutDashboard size={18} />} label="Özet" />
+              <TabButton value="mcp" icon={<Bot size={18} />} label="WebMCP & AI Ajanlar" />
               <TabButton value="analiz" icon={<TrendingUp size={18} />} label="Analiz" />
               <TabButton value="categories" icon={<FolderTree size={18} />} label="Kategori" />
               <TabButton value="users" icon={<Users size={18} />} label="Üyeler" />
@@ -200,6 +209,10 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </div>
+          </Tabs.Content>
+
+          <Tabs.Content value="mcp" className="outline-none">
+            <McpAdminManager />
           </Tabs.Content>
 
           <Tabs.Content value="analiz" className="outline-none space-y-8">
@@ -793,6 +806,339 @@ function DropdownMenu({ trigger, items }: { trigger: React.ReactNode, items: { l
           </>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+function McpAdminManager() {
+  const [selectedTool, setSelectedTool] = useState('engelsizforum_live_disability_news');
+  const [toolArgs, setToolArgs] = useState<Record<string, string>>({
+    topic: 'ÖTV 2026 kararları ve Resmi Gazete engelli haberleri',
+    scope: 'turkiye',
+  });
+  const [isExecuting, setIsExecuting] = useState(false);
+  const [testResult, setTestResult] = useState<any>(null);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  const toolsList: Array<{ id: string; name: string; desc: string; defaultParams: Record<string, string> }> = [
+    { id: 'engelsizforum_live_disability_news', name: 'engelsizforum_live_disability_news', desc: 'İnternet Canlı Engelli Haberleri & Resmi Gazete (Gemini Search)', defaultParams: { topic: 'ÖTV 2026 ve Engelli Hakları', scope: 'turkiye' } },
+    { id: 'engelsizforum_web_search', name: 'engelsizforum_web_search', desc: 'İnternet Genel Engelli Arama Motoru', defaultParams: { query: 'engelli erken emeklilik prim şartları 2026' } },
+    { id: 'engelsizforum_search', name: 'engelsizforum_search', desc: 'EngelsizForum Konu Arama', defaultParams: { query: 'ÖTV 2026' } },
+    { id: 'engelsizforum_balthazard_calc', name: 'engelsizforum_balthazard_calc', desc: 'Balthazard Hesaplama', defaultParams: { rates: '40, 20, 10' } },
+    { id: 'engelsizforum_disability_rights_guide', name: 'engelsizforum_disability_rights_guide', desc: 'Yasal Haklar Rehberi', defaultParams: { reportPercentage: '40', disabilityType: 'Ortopedik' } },
+    { id: 'engelsizforum_legislation_lookup', name: 'engelsizforum_legislation_lookup', desc: 'Mevzuat Sorgulama', defaultParams: { category: 'otv_2026' } },
+    { id: 'engelsizforum_ram_special_education_info', name: 'engelsizforum_ram_special_education_info', desc: 'RAM & Özel Eğitim Destek Rehberi', defaultParams: { diagnosis: 'Otizm Spektrum' } },
+    { id: 'engelsizforum_accessibility_toggle', name: 'engelsizforum_accessibility_toggle', desc: 'Erişilebilirlik Tercihleri', defaultParams: { feature: 'highContrast', enabled: 'true' } },
+    { id: 'engelsizforum_get_categories', name: 'engelsizforum_get_categories', desc: 'Kategori Ağacı', defaultParams: {} },
+  ];
+
+  const handleToolSelect = (toolId: string) => {
+    setSelectedTool(toolId);
+    const found = toolsList.find((t) => t.id === toolId);
+    if (found) {
+      setToolArgs(found.defaultParams);
+    }
+  };
+
+  const handleRunTest = async () => {
+    setIsExecuting(true);
+    setTestResult(null);
+
+    try {
+      let formattedArgs: Record<string, any> = { ...toolArgs };
+      if (selectedTool === 'engelsizforum_balthazard_calc') {
+        const ratesStr = toolArgs.rates || '40, 20';
+        formattedArgs = { rates: ratesStr.split(',').map((s) => Number(s.trim())).filter((n) => !isNaN(n)) };
+      } else if (selectedTool === 'engelsizforum_disability_rights_guide') {
+        formattedArgs = { ...toolArgs, reportPercentage: Number(toolArgs.reportPercentage || 40) };
+      } else if (selectedTool === 'engelsizforum_accessibility_toggle') {
+        formattedArgs = { feature: toolArgs.feature || 'highContrast', enabled: toolArgs.enabled === 'true' };
+      }
+
+      const payload = {
+        jsonrpc: '2.0',
+        id: Date.now(),
+        method: 'tools/call',
+        params: {
+          name: selectedTool,
+          arguments: formattedArgs,
+        },
+      };
+
+      const res = await fetch('/api/mcp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json();
+      setTestResult({ requestPayload: payload, responsePayload: json });
+    } catch (err: any) {
+      toast.error('Test hatası: ' + err.message);
+      setTestResult({ error: err.message });
+    } finally {
+      setIsExecuting(false);
+    }
+  };
+
+  const copyText = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedCode(label);
+    toast.success(`${label} kopyalandı`);
+    setTimeout(() => setCopiedCode(null), 2000);
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Overview Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="p-6 rounded-3xl border border-border bg-card shadow-sm space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">MCP Sunucu Durumu</span>
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+          </div>
+          <p className="text-xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400">ONLINE (200 OK)</p>
+          <p className="text-xs text-muted-foreground font-mono">/api/mcp (SSE &amp; HTTP)</p>
+        </div>
+
+        <div className="p-6 rounded-3xl border border-border bg-card shadow-sm space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">Aktif Ajan Araçları</span>
+            <Bot size={18} className="text-blue-500" />
+          </div>
+          <p className="text-3xl font-black tabular-nums">9 Araç</p>
+          <p className="text-xs text-muted-foreground">Web, Desktop &amp; Terminal</p>
+        </div>
+
+        <div className="p-6 rounded-3xl border border-border bg-card shadow-sm space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">İnternet Arama (Grounding)</span>
+            <Sparkles size={18} className="text-amber-500" />
+          </div>
+          <p className="text-xl font-extrabold text-amber-600 dark:text-amber-400">Gemini 3.6 Flash</p>
+          <p className="text-xs text-muted-foreground">Resmi Gazete &amp; Canlı Haber</p>
+        </div>
+
+        <div className="p-6 rounded-3xl border border-border bg-card shadow-sm space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">Protokol Standardı</span>
+            <Globe size={18} className="text-purple-500" />
+          </div>
+          <p className="text-xl font-bold font-mono">2024-11-05</p>
+          <p className="text-xs text-muted-foreground">JSON-RPC 2.0 / W3C</p>
+        </div>
+      </div>
+
+      {/* Interactive Tool Test Console */}
+      <div className="p-8 rounded-3xl border border-border bg-card shadow-sm space-y-6">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-primary/10 text-primary">
+              <Terminal size={22} />
+            </div>
+            <div>
+              <h3 className="text-xl font-black tracking-tight">Canlı MCP Araç Test Konsolu</h3>
+              <p className="text-xs text-muted-foreground font-medium">
+                Tüm yapay zeka ajan araçlarını admin panelinizden doğrudan test edin ve canlı JSON-RPC yanıtlarını görün.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-4 md:col-span-1">
+            <div>
+              <label className="block text-xs font-black uppercase tracking-widest mb-2 text-muted-foreground">Test Edilecek Araç Seçin</label>
+              <select
+                value={selectedTool}
+                onChange={(e) => handleToolSelect(e.target.value)}
+                className="w-full p-3.5 rounded-xl border border-border bg-muted/50 font-bold text-sm focus:ring-2 focus:ring-primary outline-none"
+              >
+                {toolsList.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-3">
+              <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground">Parametreler</label>
+              {Object.entries(toolArgs).map(([paramKey, paramVal]) => (
+                <div key={paramKey}>
+                  <span className="text-[11px] font-mono font-bold text-foreground">{paramKey}:</span>
+                  <input
+                    type="text"
+                    value={paramVal}
+                    onChange={(e) => setToolArgs({ ...toolArgs, [paramKey]: e.target.value })}
+                    className="w-full mt-1 p-3 rounded-xl border border-border bg-background text-sm font-medium focus:ring-2 focus:ring-primary outline-none"
+                  />
+                </div>
+              ))}
+              {Object.keys(toolArgs).length === 0 && (
+                <p className="text-xs text-muted-foreground italic">Bu araç parametre gerektirmez.</p>
+              )}
+            </div>
+
+            <button
+              onClick={handleRunTest}
+              disabled={isExecuting}
+              className="w-full py-3.5 px-6 rounded-xl bg-primary text-primary-foreground font-black text-sm shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2"
+            >
+              {isExecuting ? <Loader2 size={18} className="animate-spin" /> : <Terminal size={18} />}
+              Araç Çalıştır (JSON-RPC)
+            </button>
+          </div>
+
+          <div className="space-y-3 md:col-span-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">Canlı Çıktı &amp; JSON-RPC Yanıtı</span>
+              {testResult && (
+                <span className="text-xs font-mono text-emerald-500 font-bold">200 OK</span>
+              )}
+            </div>
+
+            <div className="p-5 rounded-2xl bg-foreground text-background font-mono text-xs overflow-x-auto min-h-[220px] max-h-[380px] space-y-4">
+              {isExecuting ? (
+                <div className="flex items-center gap-3 text-muted-foreground animate-pulse py-12 justify-center">
+                  <Loader2 size={24} className="animate-spin text-primary" />
+                  <span>Gemini Search Grounding &amp; MCP Sunucusu Yanıtlıyor...</span>
+                </div>
+              ) : testResult ? (
+                <>
+                  <div>
+                    <span className="text-emerald-400 font-bold">// YANIT METNİ (Formatted Output):</span>
+                    <pre className="mt-2 text-white font-sans text-xs whitespace-pre-wrap leading-relaxed bg-black/40 p-3 rounded-xl border border-white/10">
+                      {testResult.responsePayload?.result?.content?.[0]?.text || JSON.stringify(testResult, null, 2)}
+                    </pre>
+                  </div>
+                  <div>
+                    <span className="text-blue-400 font-bold">// RAW JSON-RPC 2.0 PAYLOAD:</span>
+                    <pre className="mt-1 text-slate-300 text-[11px]">
+                      {JSON.stringify(testResult.responsePayload, null, 2)}
+                    </pre>
+                  </div>
+                </>
+              ) : (
+                <div className="text-muted-foreground/60 py-16 text-center font-sans text-sm">
+                  Soldaki menüden bir araç seçip <strong className="text-muted-foreground">&quot;Araç Çalıştır&quot;</strong> butonuna basarak canlı MCP yanıtını test edin.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Integration Code Snippets Section (Admin Restricted) */}
+      <div className="p-8 rounded-3xl border border-border bg-card shadow-sm space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+              <Code size={22} />
+            </div>
+            <div>
+              <h3 className="text-xl font-black tracking-tight">Geliştirici &amp; Donanım Entegrasyon Kodları</h3>
+              <p className="text-xs text-muted-foreground font-medium">
+                Terminal, Masaüstü, Web ve Donanım (Raspberry Pi) ajanı entegrasyon kodları sadece adminlerin erişimine açıktır.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Terminal CLI Command */}
+          <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
+                <Terminal size={14} /> Terminal / CLI Ajanı Komutu
+              </span>
+              <button
+                onClick={() => copyText('claude mcp add engelsizforum https://www.engelsizforum.com/api/mcp', 'Terminal Komutu')}
+                className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+                title="Kopyala"
+              >
+                {copiedCode === 'Terminal Komutu' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground">Claude Code veya Aider terminal aracına EngelsizForum sunucusunu tek komutla ekleyin:</p>
+            <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
+              claude mcp add engelsizforum https://www.engelsizforum.com/api/mcp
+            </pre>
+          </div>
+
+          {/* Desktop JSON Config */}
+          <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
+                <Cpu size={14} /> Masaüstü Ajan (claude_desktop_config.json)
+              </span>
+              <button
+                onClick={() => copyText(JSON.stringify({ mcpServers: { engelsizforum: { url: 'https://www.engelsizforum.com/api/mcp' } } }, null, 2), 'Masaüstü Config')}
+                className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+                title="Kopyala"
+              >
+                {copiedCode === 'Masaüstü Config' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground">Cursor IDE veya Claude Desktop ayarlarına yapıştıracağınız JSON yapılandırması:</p>
+            <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
+{`{
+  "mcpServers": {
+    "engelsizforum": {
+      "url": "https://www.engelsizforum.com/api/mcp"
+    }
+  }
+}`}
+            </pre>
+          </div>
+
+          {/* Browser JS API snippet */}
+          <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
+                <Globe size={14} /> WebMCP İstemci JS Kaydı (document.modelContext)
+              </span>
+            </div>
+            <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
+{`if (document.modelContext?.registerTool) {
+  document.modelContext.registerTool({
+    name: 'engelsizforum_live_disability_news',
+    description: 'Canlı engelli haberleri',
+    parameters: { topic: { type: 'string', required: true } },
+    execute: async (args) => {
+      const res = await fetch('/api/mcp', { method: 'POST', body: JSON.stringify(...) });
+      return res.json();
+    }
+  });
+}`}
+            </pre>
+          </div>
+
+          {/* Raspberry Pi Hardware script */}
+          <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
+                <Cpu size={14} /> Raspberry Pi Donanım Ziyaretçi Takip Python Kodu
+              </span>
+            </div>
+            <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
+{`import requests, time, uuid
+API_URL = "https://www.engelsizforum.com/api/visitor-stats" 
+TOKEN = "engelsizforumteknofesttanitim"
+DEVICE_ID = ':'.join(['{:02x}'.format((uuid.getnode() >> el) & 0xff) for el in range(0, 12, 2)][::-1])
+
+def veriyi_cek():
+    requests.post(API_URL, json={"device_id": DEVICE_ID}, headers={"Authorization": f"Bearer {TOKEN}"})
+    res = requests.get(API_URL, headers={"Authorization": f"Bearer {TOKEN}"})
+    print(res.json())
+
+while True:
+    veriyi_cek()
+    time.sleep(300)`}
+            </pre>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

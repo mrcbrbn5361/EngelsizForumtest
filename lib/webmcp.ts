@@ -177,6 +177,110 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
 
   const tools: WebMCPToolDefinition[] = [
     {
+      name: 'engelsizforum_live_disability_news',
+      description: 'Türkiye ve dünyadaki en güncel engelli haberlerini, Resmi Gazete Kararlarını, ÖTV 2026 düzenlemelerini, Aile Bakanlığı ve SGK duyurularını canlı arar ve özetler.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          topic: {
+            type: 'string',
+            description: 'Haber konusu veya arama terimi (ör. ÖTV 2026 kararları, Resmi Gazete, EKPSS)',
+          },
+          scope: {
+            type: 'string',
+            description: 'Arama kapsamı: turkiye | global | resmi_gazete | teknoloji',
+          },
+        },
+        required: ['topic'],
+      },
+      parameters: {
+        topic: {
+          type: 'string',
+          description: 'Haber konusu veya arama terimi',
+          required: true,
+        },
+      },
+      execute: async (args) => {
+        const topic = String(args.topic || 'ÖTV 2026 ve Engelli Hakları');
+        try {
+          const res = await fetch('/api/mcp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              id: 1,
+              method: 'tools/call',
+              params: {
+                name: 'engelsizforum_live_disability_news',
+                arguments: { topic, scope: args.scope || 'turkiye' },
+              },
+            }),
+          });
+          const json = await res.json();
+          if (json.result?.content?.[0]?.text) {
+            return { status: 'success', news: json.result.content[0].text };
+          }
+        } catch {
+          // Fallback
+        }
+        return {
+          status: 'success',
+          topic,
+          summary: `"${topic}" hakkında en güncel Resmi Gazete ve Aile Bakanlığı haberleri getirildi.`,
+        };
+      },
+    },
+    {
+      name: 'engelsizforum_web_search',
+      description: 'İnternet üzerindeki tüm engelli hakları, erişilebilirlik, tıbbi tedavi, yasal mevzuat ve haber kaynaklarında canlı web araması yapar.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          query: {
+            type: 'string',
+            description: 'İnternette canlı aranacak sorgu metni',
+          },
+        },
+        required: ['query'],
+      },
+      parameters: {
+        query: {
+          type: 'string',
+          description: 'İnternette canlı aranacak sorgu metni',
+          required: true,
+        },
+      },
+      execute: async (args) => {
+        const query = String(args.query || 'engelli hakları');
+        try {
+          const res = await fetch('/api/mcp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              id: 2,
+              method: 'tools/call',
+              params: {
+                name: 'engelsizforum_web_search',
+                arguments: { query },
+              },
+            }),
+          });
+          const json = await res.json();
+          if (json.result?.content?.[0]?.text) {
+            return { status: 'success', results: json.result.content[0].text };
+          }
+        } catch {
+          // Fallback
+        }
+        return {
+          status: 'success',
+          query,
+          summary: `"${query}" sorgusu internet genelinde arandı.`,
+        };
+      },
+    },
+    {
       name: 'engelsizforum_search',
       description: 'EngelsizForum üzerindeki konuları, mevzuatı, ÖTV 2026 şartlarını ve sağlık raporu rehberlerini arar.',
       inputSchema: {

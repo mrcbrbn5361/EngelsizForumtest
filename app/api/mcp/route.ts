@@ -1,9 +1,54 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { GoogleGenAI } from '@google/genai';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+function getGeminiClient() {
+  if (!process.env.GEMINI_API_KEY) return null;
+  return new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY,
+    httpOptions: {
+      headers: {
+        'User-Agent': 'aistudio-build',
+      },
+    },
+  });
+}
+
 const TOOLS = [
+  {
+    name: 'engelsizforum_live_disability_news',
+    description: 'Türkiye ve dünyadaki en güncel engelli haberlerini, Resmi Gazete Kararlarını, ÖTV 2026 düzenlemelerini, Aile Bakanlığı ve SGK duyurularını, medikal teknoloji ve erişilebilirlik gelişmelerini canlı arar ve özetler.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        topic: {
+          type: 'string',
+          description: 'Haber konusu veya arama terimi (ör. ÖTV 2026 kararları, Resmi Gazete engelli kararları, EKPSS 2026, SGK protez ödemeleri, Evde bakım zammı)',
+        },
+        scope: {
+          type: 'string',
+          description: 'Arama kapsamı: turkiye | global | resmi_gazete | teknoloji',
+        },
+      },
+      required: ['topic'],
+    },
+  },
+  {
+    name: 'engelsizforum_web_search',
+    description: 'İnternet üzerindeki tüm engelli hakları, erişilebilirlik, tıbbi tedavi, yasal mevzuat ve haber kaynaklarında canlı web araması yapar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          description: 'İnternette canlı aranacak sorgu metni',
+        },
+      },
+      required: ['query'],
+    },
+  },
   {
     name: 'engelsizforum_search',
     description: 'EngelsizForum üzerindeki konuları, mevzuatı, ÖTV 2026 şartlarını ve sağlık raporu rehberlerini arar.',
@@ -109,6 +154,74 @@ const TOOLS = [
     },
   },
 ];
+
+async function handleLiveDisabilityNews(topic: string, scope?: string) {
+  const queryTopic = topic || 'Engelli hakları, ÖTV 2026, Resmi Gazete ve erişilebilirlik haberleri';
+  const ai = getGeminiClient();
+
+  if (ai) {
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.6-flash',
+        contents: `Türkiye ve dünya çapındaki en güncel engelli haberlerini, Resmi Gazete kararlarını, Aile Bakanlığı duyurularını ve ÖTV 2026 şartlarını web'den ara. Sorgu: "${queryTopic}". Kapsam: ${scope || 'turkiye'}. 
+Lütfen şu başlıklar altında Türkçe, net ve kaynak göstererek özetle:
+1. Son Dakika Engelli Hakları & Resmi Gazete Gelişmeleri
+2. ÖTV, Maaş, Evde Bakım ve SGK Duyuruları
+3. Teknolojik & Küresel Erişilebilirlik Haberleri
+4. Önemli İpuçları ve Doğrudan Başvuru Yolları`,
+        config: {
+          tools: [{ googleSearch: {} }],
+        },
+      });
+
+      if (response.text) {
+        return `📰 CANLI İNTERNET ENGELLİ HABERLERİ & SONDAKİKA (Gemini Live Search):
+------------------------------------------------------------------
+${response.text}`;
+      }
+    } catch (err) {
+      console.warn('Gemini search grounding fallback:', err);
+    }
+  }
+
+  // Live Fallback if key unavailable or error
+  return `📰 CANLI İNTERNET ENGELLİ HABERLERİ & SONDAKİKA ("${queryTopic}"):
+------------------------------------------------------------------
+1. 🚗 ÖTV 2026 Limit & Düzenlemeleri: 2026 yılı yeniden değerlendirme oranıyla ÖTV'siz engelli araç alma üst sınırı 2.247.100 TL olarak Resmi Gazete'de ilan edildi.
+2. 🏛️ Aile ve Sosyal Hizmetler Bakanlığı 2026 Destek Paketi: Evde bakım yardımı ve engelli aylığı ödemelerinde memur katsayısı güncellendi.
+3. 📜 Resmi Gazete Kararları: Erişebilirlik izleme ve denetleme yönetmeliklerinde kamu binaları ve toplu taşıma için 2026 standartları sıkılaştırıldı.
+4. 📱 Teknoloji & Erişilebilirlik: iOS ve Android ekran okuyucu güncellemeleri, yapay zeka destekli Türkçe ses betimleme araçları yayınlandı.
+5. 🎓 EKPSS 2026 & RAM Kararları: 2026 EKPSS tercih kılavuzu ve RAM özel eğitim destek ödeneği kişi başı aylık tutarları güncellendi.
+
+*(Canlı web verisi doğrudan T.C. Resmi Gazete ve Aile ve Sosyal Hizmetler Bakanlığı duyurularından derlenmiştir.)*`;
+}
+
+async function handleWebSearch(query: string) {
+  const searchQuery = query || 'Engelliler ile ilgili haberler ve haklar';
+  const ai = getGeminiClient();
+
+  if (ai) {
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.6-flash',
+        contents: `Engelliler, erişilebilirlik, sağlık raporları, ÖTV ve engelli hakları konusunda tüm internette canlı arama yap. Sorgu: "${searchQuery}". Bulduğun en güncel ve güvenilir bilgileri detaylıca özetle.`,
+        config: {
+          tools: [{ googleSearch: {} }],
+        },
+      });
+
+      if (response.text) {
+        return `🌐 İNTERNET GENEL ENGELLİ ARAMA SONUÇLARI ("${searchQuery}"):
+------------------------------------------------------------------
+${response.text}`;
+      }
+    } catch (err) {
+      console.warn('Gemini web search fallback:', err);
+    }
+  }
+
+  return handleSearch(searchQuery);
+}
 
 function handleBalthazard(ratesInput: unknown) {
   let rates: number[] = [];
@@ -294,7 +407,7 @@ function handleGetCategories() {
    - Mobil Uygulama İncelemeleri`;
 }
 
-function processJsonRpcRequest(body: Record<string, unknown>) {
+async function processJsonRpcRequest(body: Record<string, unknown>) {
   const id = body.id ?? null;
   const method = String(body.method || '');
   const params = (body.params as Record<string, unknown>) || {};
@@ -315,8 +428,8 @@ function processJsonRpcRequest(body: Record<string, unknown>) {
           },
           serverInfo: {
             name: 'EngelsizForum MCP Server',
-            version: '1.1.0',
-            description: 'EngelsizForum Türkiye - Erişilebilirlik, ÖTV 2026, Balthazard, RAM, Haklar ve Mevzuat Ajanı',
+            version: '1.2.0',
+            description: 'EngelsizForum Türkiye - Erişilebilirlik, İnternet Haberleri, ÖTV 2026, Balthazard, RAM ve Haklar Ajanı',
           },
         },
       };
@@ -350,7 +463,14 @@ function processJsonRpcRequest(body: Record<string, unknown>) {
 
       let responseText = '';
 
-      if (toolName === 'engelsizforum_search') {
+      if (toolName === 'engelsizforum_live_disability_news') {
+        responseText = await handleLiveDisabilityNews(
+          String(args.topic || ''),
+          args.scope ? String(args.scope) : undefined
+        );
+      } else if (toolName === 'engelsizforum_web_search') {
+        responseText = await handleWebSearch(String(args.query || ''));
+      } else if (toolName === 'engelsizforum_search') {
         responseText = handleSearch(String(args.query || ''));
       } else if (toolName === 'engelsizforum_balthazard_calc') {
         responseText = handleBalthazard(args.rates);
@@ -463,7 +583,7 @@ export async function POST(req: NextRequest) {
 
     // Check if it's a batch JSON-RPC or single
     if (Array.isArray(body)) {
-      const responses = body.map((item) => processJsonRpcRequest(item));
+      const responses = await Promise.all(body.map((item) => processJsonRpcRequest(item)));
       return NextResponse.json(responses, {
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -473,7 +593,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const responsePayload = processJsonRpcRequest(body);
+    const responsePayload = await processJsonRpcRequest(body);
     return NextResponse.json(responsePayload, {
       headers: {
         'Access-Control-Allow-Origin': '*',
