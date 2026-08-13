@@ -4,7 +4,7 @@
  * WebMCP is the W3C Web Machine Learning Community Group browser standard
  * co-developed by Google & Microsoft for Chrome 146+.
  * Supports Declarative HTML API (toolname, tooldescription) and
- * Imperative JS API (document.modelContext.registerTool / navigator.modelContext.registerTool).
+ * Imperative JS API (document.modelContext.registerTool).
  */
 
 export interface WebMCPToolDefinition {
@@ -49,6 +49,8 @@ declare global {
 
 // In-memory store for registered tools
 const registeredToolsStore = new Map<string, WebMCPToolDefinition>();
+let isPolyfillInitialized = false;
+let isToolsRegistered = false;
 
 /**
  * Ensures declarative DOM forms exist for registered tools so Chrome DevTools WebMCP inspector can detect them
@@ -106,13 +108,17 @@ function syncDeclarativeDOMForm(tool: WebMCPToolDefinition) {
 }
 
 /**
- * Initializes polyfill/store for document.modelContext, navigator.modelContext, and window.modelContext
+ * Initializes polyfill/store for document.modelContext
  */
 export function initWebMCPPolyfill() {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined' || isPolyfillInitialized) return;
 
   const modelContextObj = {
     registerTool: (tool: WebMCPToolDefinition) => {
+      if (registeredToolsStore.has(tool.name)) {
+        registeredToolsStore.set(tool.name, tool);
+        return Promise.resolve(true);
+      }
       registeredToolsStore.set(tool.name, tool);
       console.log(`🚀 [WebMCP] Tool registered: ${tool.name}`);
       
@@ -137,7 +143,7 @@ export function initWebMCPPolyfill() {
     },
   };
 
-  // Polyfill document.modelContext (Chrome 150+ W3C spec)
+  // Only define polyfill if native document.modelContext doesn't exist
   if (!('modelContext' in document) || !document.modelContext) {
     try {
       Object.defineProperty(document, 'modelContext', {
@@ -150,36 +156,22 @@ export function initWebMCPPolyfill() {
     }
   }
 
-  // Polyfill navigator.modelContext (Chrome 146-149 legacy spec)
-  if (!('modelContext' in navigator) || !navigator.modelContext) {
-    try {
-      Object.defineProperty(navigator, 'modelContext', {
-        value: modelContextObj,
-        writable: true,
-        configurable: true,
-      });
-    } catch {
-      (navigator as unknown as { modelContext: unknown }).modelContext = modelContextObj;
-    }
-  }
-
-  // Polyfill window.modelContext & window.WebMCP
-  if (!('modelContext' in window) || !window.modelContext) {
-    try {
-      Object.defineProperty(window, 'modelContext', {
-        value: modelContextObj,
-        writable: true,
-        configurable: true,
-      });
-    } catch {
-      (window as unknown as { modelContext: unknown }).modelContext = modelContextObj;
-    }
-  }
-
   window.WebMCP = {
     getRegisteredTools: () => Array.from(registeredToolsStore.values()),
-    registerTool: (tool: WebMCPToolDefinition) => modelContextObj.registerTool(tool),
+    registerTool: (tool: WebMCPToolDefinition) => {
+      try {
+        if (document.modelContext?.registerTool) {
+          document.modelContext.registerTool(tool);
+        } else {
+          modelContextObj.registerTool(tool);
+        }
+      } catch (err) {
+        console.warn('WebMCP registerTool catch:', err);
+      }
+    },
   };
+
+  isPolyfillInitialized = true;
 }
 
 export function isWebMCPSupported(): boolean {
@@ -192,7 +184,7 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
   onCalculateBalthazard?: (rates: number[]) => number;
   onToggleAccessibility?: (feature: string, enabled: boolean) => void;
 }) {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === 'undefined' || isToolsRegistered) return true;
 
   initWebMCPPolyfill();
 
@@ -337,26 +329,27 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
   ];
 
   tools.forEach((tool) => {
-    try {
-      if (document.modelContext?.registerTool) {
-        document.modelContext.registerTool(tool);
+    // Only register to document.modelContext to avoid deprecation warning for navigator.modelContext
+    if (document.modelContext?.registerTool) {
+      try {
+        const res = document.modelContext.registerTool(tool);
+        if (res && typeof (res as Promise<boolean>).catch === 'function') {
+          (res as Promise<boolean>).catch((err) => {
+            // Ignore Duplicate tool name native rejections silently
+            if (!String(err).includes('Duplicate tool name')) {
+              console.warn('WebMCP registerTool warning:', err);
+            }
+          });
+        }
+      } catch (e) {
+        console.warn('WebMCP tool register error:', e);
       }
-      if (navigator.modelContext?.registerTool) {
-        navigator.modelContext.registerTool(tool);
-      }
-      if (window.modelContext?.registerTool) {
-        window.modelContext.registerTool(tool);
-      }
-    } catch (e) {
-      console.warn('WebMCP tool register notice:', e);
+    } else {
+      syncDeclarativeDOMForm(tool);
+      registeredToolsStore.set(tool.name, tool);
     }
   });
 
+  isToolsRegistered = true;
   return true;
-}
-
-// Auto-initialize when file is imported on client side
-if (typeof window !== 'undefined') {
-  initWebMCPPolyfill();
-  registerEngelsizForumWebMCPTools();
 }
