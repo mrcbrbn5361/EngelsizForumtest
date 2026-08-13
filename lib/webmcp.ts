@@ -40,11 +40,70 @@ declare global {
       unregisterTool?: (name: string) => Promise<boolean> | void;
       getRegisteredTools?: () => WebMCPToolDefinition[];
     };
+    WebMCP?: {
+      getRegisteredTools: () => WebMCPToolDefinition[];
+      registerTool: (tool: WebMCPToolDefinition) => void;
+    };
   }
 }
 
 // In-memory store for registered tools
 const registeredToolsStore = new Map<string, WebMCPToolDefinition>();
+
+/**
+ * Ensures declarative DOM forms exist for registered tools so Chrome DevTools WebMCP inspector can detect them
+ */
+function syncDeclarativeDOMForm(tool: WebMCPToolDefinition) {
+  if (typeof document === 'undefined') return;
+
+  let container = document.getElementById('webmcp-dom-declarative-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'webmcp-dom-declarative-container';
+    container.setAttribute('data-webmcp-active', 'true');
+    // Using visually offscreen styles instead of display:none so DevTools DOM scanners detect them
+    container.style.position = 'absolute';
+    container.style.width = '1px';
+    container.style.height = '1px';
+    container.style.padding = '0';
+    container.style.margin = '-1px';
+    container.style.overflow = 'hidden';
+    container.style.clip = 'rect(0, 0, 0, 0)';
+    container.style.whiteSpace = 'nowrap';
+    container.style.border = '0';
+    document.body.appendChild(container);
+  }
+
+  const existingForm = document.querySelector(`form[toolname="${tool.name}"]`);
+  if (!existingForm) {
+    const form = document.createElement('form');
+    form.setAttribute('toolname', tool.name);
+    form.setAttribute('tooldescription', tool.description);
+    form.setAttribute('data-toolname', tool.name);
+    form.setAttribute('data-tooldescription', tool.description);
+    form.setAttribute('name', tool.name);
+    form.action = '#';
+    form.method = 'GET';
+
+    // Add inputs based on schema
+    const props = tool.inputSchema?.properties || tool.parameters || {};
+    Object.entries(props).forEach(([paramName, paramConfig]) => {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.name = paramName;
+      input.setAttribute('toolparamdescription', paramConfig.description || paramName);
+      input.setAttribute('data-toolparamdescription', paramConfig.description || paramName);
+      form.appendChild(input);
+    });
+
+    const submitBtn = document.createElement('button');
+    submitBtn.type = 'submit';
+    submitBtn.textContent = 'Execute Tool';
+    form.appendChild(submitBtn);
+
+    container.appendChild(form);
+  }
+}
 
 /**
  * Initializes polyfill/store for document.modelContext, navigator.modelContext, and window.modelContext
@@ -56,11 +115,21 @@ export function initWebMCPPolyfill() {
     registerTool: (tool: WebMCPToolDefinition) => {
       registeredToolsStore.set(tool.name, tool);
       console.log(`🚀 [WebMCP] Tool registered: ${tool.name}`);
+      
+      // Sync DOM form for DevTools detection
+      syncDeclarativeDOMForm(tool);
+
+      // Dispatch global events for DevTools extensions / agent listeners
       window.dispatchEvent(new CustomEvent('webmcp:tool-registered', { detail: tool }));
+      window.dispatchEvent(new CustomEvent('webmcp:tools-updated', { detail: Array.from(registeredToolsStore.values()) }));
+      window.dispatchEvent(new CustomEvent('modelcontext:toolregistered', { detail: tool }));
+
       return Promise.resolve(true);
     },
     unregisterTool: (name: string) => {
       registeredToolsStore.delete(name);
+      const form = document.querySelector(`form[toolname="${name}"]`);
+      if (form) form.remove();
       return Promise.resolve(true);
     },
     getRegisteredTools: () => {
@@ -94,7 +163,7 @@ export function initWebMCPPolyfill() {
     }
   }
 
-  // Polyfill window.modelContext
+  // Polyfill window.modelContext & window.WebMCP
   if (!('modelContext' in window) || !window.modelContext) {
     try {
       Object.defineProperty(window, 'modelContext', {
@@ -106,6 +175,11 @@ export function initWebMCPPolyfill() {
       (window as unknown as { modelContext: unknown }).modelContext = modelContextObj;
     }
   }
+
+  window.WebMCP = {
+    getRegisteredTools: () => Array.from(registeredToolsStore.values()),
+    registerTool: (tool: WebMCPToolDefinition) => modelContextObj.registerTool(tool),
+  };
 }
 
 export function isWebMCPSupported(): boolean {
@@ -279,4 +353,10 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
   });
 
   return true;
+}
+
+// Auto-initialize when file is imported on client side
+if (typeof window !== 'undefined') {
+  initWebMCPPolyfill();
+  registerEngelsizForumWebMCPTools();
 }
