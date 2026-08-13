@@ -39,6 +39,44 @@ export default function WebMCPPage() {
         </p>
       </div>
 
+      {/* Gemini Connection URL Guide Alert Box */}
+      <div className="bg-amber-500/10 border-2 border-amber-500/40 rounded-2xl p-6 space-y-4 shadow-sm">
+        <div className="flex items-center gap-2.5">
+          <Bot className="w-6 h-6 text-amber-600 dark:text-amber-400 shrink-0" />
+          <h2 className="text-xl font-black text-foreground">Gemini Web / MCP Ajan Bağlantı Adresi Rehberi</h2>
+        </div>
+
+        <p className="text-sm text-foreground/90 leading-relaxed font-medium">
+          Gemini Web (&quot;Özel bağlı uygulama oluşturun&quot; / Custom Connected Apps) veya Claude Desktop ayarlarında MCP sunucu adresi girerken <strong>bilgi sayfası URL&apos;si olan /webmcp yerine doğrudan API sunucu adresini</strong> kullanmalısınız:
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 space-y-1.5">
+            <span className="text-xs font-black uppercase text-red-600 dark:text-red-400 flex items-center gap-1">
+              ❌ Yanlış URL (Sayfa Adresi):
+            </span>
+            <p className="font-mono text-xs font-bold text-foreground line-through opacity-75">
+              https://www.engelsizforum.com/webmcp
+            </p>
+            <p className="text-[11px] text-muted-foreground">
+              Bu adres web arayüzüdür. Gemini bağlandığında HTML döndüğü için &quot;geçerli MCP sunucusu değil&quot; uyarısı verir.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/40 space-y-1.5">
+            <span className="text-xs font-black uppercase text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+              ✅ Doğru MCP Sunucu Adresi:
+            </span>
+            <p className="font-mono text-xs sm:text-sm font-extrabold text-emerald-600 dark:text-emerald-400 bg-background px-2.5 py-1 rounded border border-emerald-500/30 w-fit">
+              https://www.engelsizforum.com/mcp
+            </p>
+            <p className="text-[11px] text-muted-foreground">
+              Veya <code className="font-mono font-bold text-foreground">https://www.engelsizforum.com/api/mcp</code>. Gemini ve tüm MCP ajanları bu adresten anında araçları tanır.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Platform Multi-Agent Support Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-sm hover:border-blue-500/30 transition-all">
