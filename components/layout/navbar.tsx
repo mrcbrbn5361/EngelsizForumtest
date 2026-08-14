@@ -63,6 +63,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-1">
             <NavLink href="/discussions" icon={<MessageSquare size={16} aria-hidden="true" />} label="TARTIŞMALAR" />
             <NavLink href="/communities" icon={<Users size={16} aria-hidden="true" />} label="TOPLULUKLAR" />
+            <NavLink href="/webmcp" icon={<Zap size={16} aria-hidden="true" />} label="AI AGENTS & MCP" />
             <NavLink href="/about" icon={<Info size={16} aria-hidden="true" />} label="HAKKIMIZDA" />
           </div>
           
@@ -288,6 +289,7 @@ export function Navbar() {
                       <h4 className="vibe-label ml-4 mb-4">PLATFORM</h4>
                       <MobileNavLink href="/discussions" icon={<MessageSquare size={20} />} label="TARTIŞMALAR" onClick={() => setIsOpen(false)} />
                       <MobileNavLink href="/communities" icon={<Users size={20} />} label="TOPLULUKLAR" onClick={() => setIsOpen(false)} />
+                      <MobileNavLink href="/webmcp" icon={<Zap size={20} />} label="AI AGENTS & MCP" onClick={() => setIsOpen(false)} />
                       <MobileNavLink href="/about" icon={<Info size={20} />} label="HAKKIMIZDA" onClick={() => setIsOpen(false)} />
                       <MobileNavLink href="/help" icon={<AlertCircle size={20} />} label="YARDIM MERKEZİ" onClick={() => setIsOpen(false)} />
                     </div>
