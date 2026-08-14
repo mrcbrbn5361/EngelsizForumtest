@@ -57,20 +57,13 @@ export default function WebMCPPage() {
     opencode: {
       fileName: 'opencode.json',
       title: 'OpenCode (SST) & Vibe Coder JSON Konfigürasyonu',
-      description: 'Projenizin kök dizinine opencode.json veya .opencode/mcp.json dosyası olarak kaydedin.',
+      description: 'C:\\Users\\...\\.config\\opencode\\opencode.jsonc veya opencode.json dosyasına ekleyin. Yalnızca "mcp" desteklenir.',
       json: JSON.stringify({
         "$schema": "https://opencode.ai/config.json",
-        "name": "EngelsizForum OpenCode Vibe Coder Setup",
         "mcp": {
           "engelsizforum": {
             "type": "remote",
             "url": "https://www.engelsizforum.com/mcp"
-          }
-        },
-        "mcpServers": {
-          "engelsizforum": {
-            "url": "https://www.engelsizforum.com/mcp",
-            "type": "sse"
           }
         }
       }, null, 2)
@@ -820,6 +813,20 @@ export default function WebMCPPage() {
                   {jsonPresets[selectedJsonFormat].json}
                 </pre>
               </div>
+
+              {/* OpenCode Schema Fix Notification Banner */}
+              {selectedJsonFormat === 'opencode' && (
+                <div className="mt-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs space-y-1.5">
+                  <div className="font-bold flex items-center gap-2 text-amber-300">
+                    <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>&quot;Configuration is invalid ... Unrecognized key: mcpServers&quot; Hatası Çözümü:</span>
+                  </div>
+                  <p className="text-[11px] text-slate-300 leading-relaxed">
+                    OpenCode (SST), varsayılan olarak <code className="text-amber-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded">mcpServers</code> anahtarını kabul etmez ve katı şema doğrulaması yapar.
+                    Bilgisayarınızdaki <code className="text-amber-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded">C:\Users\...\.config\opencode\opencode.jsonc</code> veya projenizdeki <code className="text-amber-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded">opencode.json</code> dosyasındaki <code className="text-amber-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded">&quot;mcpServers&quot;</code> anahtarını silin. Sadece yukarıdaki <code className="text-amber-300 font-mono bg-slate-900 px-1.5 py-0.5 rounded">&quot;mcp&quot;</code> objesini kullanın.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

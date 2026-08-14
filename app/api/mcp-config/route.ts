@@ -16,18 +16,10 @@ export async function GET(req: NextRequest) {
       filename = 'opencode.json';
       configData = {
         $schema: 'https://opencode.ai/config.json',
-        name: 'EngelsizForum OpenCode Vibe Coder Configuration',
-        description: 'EngelsizForum 26 Canlı Ajan Aracı, ÖTV, ÇÖZGER ve WCAG 2.1 Entegrasyon Hub\'ı',
         mcp: {
           engelsizforum: {
             type: 'remote',
             url: mcpUrl,
-          },
-        },
-        mcpServers: {
-          engelsizforum: {
-            url: mcpUrl,
-            type: 'sse',
           },
         },
       };
