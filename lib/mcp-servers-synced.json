@@ -1,0 +1,351 @@
+{
+  "lastSyncedAt": "2026-08-14T16:36:29.208864Z",
+  "sourceUrl": "https://mcpservers.org/tr/all",
+  "syncStatus": "SUCCESS",
+  "totalServers": 17,
+  "standaloneSectionIntegrated": true,
+  "engelsizForumSectionIntegrated": true,
+  "coreCommandRegistryUpdated": true,
+  "servers": [
+    {
+      "id": "live-mcporg-mcp-sunucusu-sss",
+      "name": "MCP Sunucusu SSS (mcpservers.org)",
+      "slug": "mcp-sunucusu-sss",
+      "description": "MCP sunucusu nedir?Model Context Protocol (MCP) nedir?MCP sunucuları nasıl çalışır?Claude veya Cursor ile bir MCP sunucusunu nasıl kullanırım?Model Context Protocol'ü kim geliştirdi?En iyi MCP sunucuları hangileridir?",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/all",
+      "coreCommand": "mcp_sunucusu_sss_execute",
+      "tools": [
+        {
+          "name": "mcp_sunucusu_sss_execute",
+          "description": "MCP Sunucusu SSS canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "mcp_sunucusu_sss_status",
+          "description": "MCP Sunucusu SSS sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-mcp-sunucusu-nedir",
+      "name": "MCP sunucusu nedir? (mcpservers.org)",
+      "slug": "mcp-sunucusu-nedir",
+      "description": "MCP sunucusu nedir? - mcpservers.org onaylı canlı MCP sunucusu.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/all",
+      "coreCommand": "mcp_sunucusu_nedir_execute",
+      "tools": [
+        {
+          "name": "mcp_sunucusu_nedir_execute",
+          "description": "MCP sunucusu nedir? canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "mcp_sunucusu_nedir_status",
+          "description": "MCP sunucusu nedir? sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-model-context-protocol-mcp-nedir",
+      "name": "Model Context Protocol (MCP) nedir? (mcpservers.org)",
+      "slug": "model-context-protocol-mcp-nedir",
+      "description": "Model Context Protocol (MCP) nedir? - mcpservers.org onaylı canlı MCP sunucusu.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/all",
+      "coreCommand": "model_context_protocol_mcp_nedir_execute",
+      "tools": [
+        {
+          "name": "model_context_protocol_mcp_nedir_execute",
+          "description": "Model Context Protocol (MCP) nedir? canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "model_context_protocol_mcp_nedir_status",
+          "description": "Model Context Protocol (MCP) nedir? sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-mcp-sunucular-nas-l-al-r",
+      "name": "MCP sunucuları nasıl çalışır? (mcpservers.org)",
+      "slug": "mcp-sunucular-nas-l-al-r",
+      "description": "MCP sunucuları nasıl çalışır? - mcpservers.org onaylı canlı MCP sunucusu.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/all",
+      "coreCommand": "mcp_sunucular_nas_l_al_r_execute",
+      "tools": [
+        {
+          "name": "mcp_sunucular_nas_l_al_r_execute",
+          "description": "MCP sunucuları nasıl çalışır? canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "mcp_sunucular_nas_l_al_r_status",
+          "description": "MCP sunucuları nasıl çalışır? sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-claude-veya-cursor-ile-bir-mcp-sunucusunu-nas-l-kullan-r-m",
+      "name": "Claude veya Cursor ile bir MCP sunucusunu nasıl kullanırım? (mcpservers.org)",
+      "slug": "claude-veya-cursor-ile-bir-mcp-sunucusunu-nas-l-kullan-r-m",
+      "description": "Claude veya Cursor ile bir MCP sunucusunu nasıl kullanırım? - mcpservers.org onaylı canlı MCP sunucusu.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/all",
+      "coreCommand": "claude_veya_cursor_ile_bir_mcp_sunucusunu_nas_l_kullan_r_m_execute",
+      "tools": [
+        {
+          "name": "claude_veya_cursor_ile_bir_mcp_sunucusunu_nas_l_kullan_r_m_execute",
+          "description": "Claude veya Cursor ile bir MCP sunucusunu nasıl kullanırım? canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "claude_veya_cursor_ile_bir_mcp_sunucusunu_nas_l_kullan_r_m_status",
+          "description": "Claude veya Cursor ile bir MCP sunucusunu nasıl kullanırım? sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-model-context-protocol-kim-geli-tirdi",
+      "name": "Model Context Protocol'ü kim geliştirdi? (mcpservers.org)",
+      "slug": "model-context-protocol-kim-geli-tirdi",
+      "description": "Model Context Protocol'ü kim geliştirdi? - mcpservers.org onaylı canlı MCP sunucusu.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/all",
+      "coreCommand": "model_context_protocol_kim_geli_tirdi_execute",
+      "tools": [
+        {
+          "name": "model_context_protocol_kim_geli_tirdi_execute",
+          "description": "Model Context Protocol'ü kim geliştirdi? canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "model_context_protocol_kim_geli_tirdi_status",
+          "description": "Model Context Protocol'ü kim geliştirdi? sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-en-iyi-mcp-sunucular-hangileridir",
+      "name": "En iyi MCP sunucuları hangileridir? (mcpservers.org)",
+      "slug": "en-iyi-mcp-sunucular-hangileridir",
+      "description": "En iyi MCP sunucuları hangileridir? - mcpservers.org onaylı canlı MCP sunucusu.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/all",
+      "coreCommand": "en_iyi_mcp_sunucular_hangileridir_execute",
+      "tools": [
+        {
+          "name": "en_iyi_mcp_sunucular_hangileridir_execute",
+          "description": "En iyi MCP sunucuları hangileridir? canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "en_iyi_mcp_sunucular_hangileridir_status",
+          "description": "En iyi MCP sunucuları hangileridir? sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-ne-kan-mcp-ler",
+      "name": "Öne Çıkan MCP'ler (mcpservers.org)",
+      "slug": "ne-kan-mcp-ler",
+      "description": "Öne Çıkan MCP'ler - mcpservers.org onaylı canlı MCP sunucusu.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "ne_kan_mcp_ler_execute",
+      "tools": [
+        {
+          "name": "ne_kan_mcp_ler_execute",
+          "description": "Öne Çıkan MCP'ler canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "ne_kan_mcp_ler_status",
+          "description": "Öne Çıkan MCP'ler sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-son-mcp-ler",
+      "name": "Son MCP'ler (mcpservers.org)",
+      "slug": "son-mcp-ler",
+      "description": "Son MCP'ler - mcpservers.org onaylı canlı MCP sunucusu.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "son_mcp_ler_execute",
+      "tools": [
+        {
+          "name": "son_mcp_ler_execute",
+          "description": "Son MCP'ler canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "son_mcp_ler_status",
+          "description": "Son MCP'ler sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-pop-ler-mcp-konular",
+      "name": "Popüler MCP konuları (mcpservers.org)",
+      "slug": "pop-ler-mcp-konular",
+      "description": "Yüksek niyetli MCP iş akışları için odaklı rehberler.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "pop_ler_mcp_konular_execute",
+      "tools": [
+        {
+          "name": "pop_ler_mcp_konular_execute",
+          "description": "Popüler MCP konuları canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "pop_ler_mcp_konular_status",
+          "description": "Popüler MCP konuları sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-browser-automation-mcp",
+      "name": "Browser Automation MCP (mcpservers.org)",
+      "slug": "browser-automation-mcp",
+      "description": "Find MCP servers that let agents open websites, inspect pages, capture screenshots, scrape data, and run repeatable browser tasks.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "browser_automation_mcp_execute",
+      "tools": [
+        {
+          "name": "browser_automation_mcp_execute",
+          "description": "Browser Automation MCP canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "browser_automation_mcp_status",
+          "description": "Browser Automation MCP sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-web-scraping-mcp",
+      "name": "Web Scraping MCP (mcpservers.org)",
+      "slug": "web-scraping-mcp",
+      "description": "Compare MCP servers for page extraction, crawling, structured data scraping, browser rendering, and agent workflows that need reliable web data.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "web_scraping_mcp_execute",
+      "tools": [
+        {
+          "name": "web_scraping_mcp_execute",
+          "description": "Web Scraping MCP canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "web_scraping_mcp_status",
+          "description": "Web Scraping MCP sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-rag-mcp",
+      "name": "RAG MCP (mcpservers.org)",
+      "slug": "rag-mcp",
+      "description": "Find MCP servers for retrieval-augmented generation workflows with vector search, embeddings, knowledge bases, and source-grounded context.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "rag_mcp_execute",
+      "tools": [
+        {
+          "name": "rag_mcp_execute",
+          "description": "RAG MCP canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "rag_mcp_status",
+          "description": "RAG MCP sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-openapi-mcp",
+      "name": "OpenAPI MCP (mcpservers.org)",
+      "slug": "openapi-mcp",
+      "description": "Compare MCP servers that turn OpenAPI specs, REST endpoints, API schemas, and developer docs into agent-usable tools.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "openapi_mcp_execute",
+      "tools": [
+        {
+          "name": "openapi_mcp_execute",
+          "description": "OpenAPI MCP canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "openapi_mcp_status",
+          "description": "OpenAPI MCP sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-pdf-mcp",
+      "name": "PDF MCP (mcpservers.org)",
+      "slug": "pdf-mcp",
+      "description": "Find MCP servers for PDF parsing, document extraction, OCR, conversion, summarization, and agent workflows around files.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "pdf_mcp_execute",
+      "tools": [
+        {
+          "name": "pdf_mcp_execute",
+          "description": "PDF MCP canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "pdf_mcp_status",
+          "description": "PDF MCP sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-coding-agent-mcp",
+      "name": "Coding Agent MCP (mcpservers.org)",
+      "slug": "coding-agent-mcp",
+      "description": "Build a practical MCP stack for coding agents with repository context, pull request workflows, documentation lookup, local files, and browser QA.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "coding_agent_mcp_execute",
+      "tools": [
+        {
+          "name": "coding_agent_mcp_execute",
+          "description": "Coding Agent MCP canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "coding_agent_mcp_status",
+          "description": "Coding Agent MCP sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-pop-ler-aramalar",
+      "name": "Popüler Aramalar (mcpservers.org)",
+      "slug": "pop-ler-aramalar",
+      "description": "AtlassianAzure DevOpsAWSChrome DevToolsCloudflareConfluenceDatadogFigmaFilesystemGitHubGmailGoogle DriveGoogle Search ConsoleJiraLinearn8nNotionObsidianPlaywrightPostgresSalesforceSentrySharePointShopifySlackStripeSupabase",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "pop_ler_aramalar_execute",
+      "tools": [
+        {
+          "name": "pop_ler_aramalar_execute",
+          "description": "Popüler Aramalar canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "pop_ler_aramalar_status",
+          "description": "Popüler Aramalar sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    }
+  ]
+}
