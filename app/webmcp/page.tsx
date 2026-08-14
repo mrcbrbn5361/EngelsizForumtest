@@ -166,7 +166,7 @@ export default function WebMCPPage() {
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  const ALL_TOOLS_LIST = [
+  const BASE_TOOLS_LIST = [
     { id: 'engelsizforum_live_disability_news', name: 'engelsizforum_live_disability_news', desc: 'Resmi Gazete & Bakanlık Canlı Haber Ajanı' },
     { id: 'engelsizforum_web_search', name: 'engelsizforum_web_search', desc: 'Google Grounding Canlı Web Araması' },
     { id: 'engelsizforum_fact_checker_ai', name: 'engelsizforum_fact_checker_ai', desc: 'Haber & İddia Doğrulama (Fact-Checker AI)' },
@@ -193,6 +193,29 @@ export default function WebMCPPage() {
     { id: 'engelsizforum_get_categories', name: 'engelsizforum_get_categories', desc: 'Forum Kategori Ağacı' },
     { id: 'engelsizforum_universal_dictionary_slang', name: 'engelsizforum_universal_dictionary_slang', desc: 'Hukuki & Medikal Terim Sözlüğü' },
   ];
+
+  // Dynamic tools merged from live mcpservers.org/tr/all servers
+  const ALL_TOOLS_LIST = React.useMemo(() => {
+    const list = [...BASE_TOOLS_LIST];
+    const existingIds = new Set(list.map((t) => t.id));
+
+    directoryServers.forEach((server) => {
+      if (server.tools && Array.isArray(server.tools)) {
+        server.tools.forEach((tool) => {
+          if (!existingIds.has(tool.name)) {
+            existingIds.add(tool.name);
+            list.push({
+              id: tool.name,
+              name: tool.name,
+              desc: `${server.name}: ${tool.description}`,
+            });
+          }
+        });
+      }
+    });
+
+    return list;
+  }, [directoryServers]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
@@ -463,6 +486,27 @@ export default function WebMCPPage() {
       {/* TAB 2: DIRECTORY */}
       {activeTab === 'directory' && (
         <div className="space-y-6">
+          {/* Live mcpservers.org/tr/all source banner */}
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+              <span className="font-bold text-emerald-700 dark:text-emerald-400">
+                Canlı Bağlantı Aktif: https://mcpservers.org/tr/all
+              </span>
+              <span className="text-muted-foreground hidden md:inline">
+                ({directoryServers.length} Adet Doğrulanmış Gerçek MCP Sunucusu)
+              </span>
+            </div>
+            <button
+              onClick={() => fetchDirectory(selectedCategory, selectedAgentType, searchQuery)}
+              disabled={loadingDirectory}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingDirectory ? 'animate-spin' : ''}`} />
+              Canlı Yenile
+            </button>
+          </div>
+
           <div className="bg-card border border-border rounded-2xl p-5 space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="relative flex-1">
