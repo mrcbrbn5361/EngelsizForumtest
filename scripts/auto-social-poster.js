@@ -1,4 +1,4 @@
-/* global process, require, fetch, URL */
+/* global process, require, fetch, URL, AbortSignal */
 const { execSync } = require('child_process');
 
 /**
@@ -35,7 +35,7 @@ function getGitInfo() {
  * @returns {Promise<string>}
  */
 async function generateUpdateNote(commitMessage, diffContent, apiKey) {
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
+  const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
 
   const prompt = `
 Sen EngelsizForum (https://engelsizforum.com) projesinin resmi dijital temsilcisisin. EngelsizForum, web erişilebilirliği (A11y) ve topluluk etkileşimini ön planda tutan modern bir sosyal platformdur.
@@ -60,27 +60,38 @@ ${commitMessage}
 ${diffContent || 'Kod güncellemesi mevcut.'}
 `;
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }]
-    })
-  });
+  let lastError = null;
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Gemini API isteği başarısız (${response.status}): ${errorText}`);
+  for (const model of models) {
+    try {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: AbortSignal.timeout(30000),
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        lastError = new Error(`Gemini API (${model}) isteği başarısız (${response.status}): ${errorText}`);
+        continue;
+      }
+
+      const data = await response.json();
+      const generatedText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (generatedText) {
+        return generatedText.trim();
+      }
+    } catch (err) {
+      lastError = err;
+    }
   }
 
-  const data = await response.json();
-  const generatedText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-  if (!generatedText) {
-    throw new Error('Gemini API yanıtı beklenilen formatta metin içermiyor.');
-  }
-
-  return generatedText.trim();
+  throw lastError || new Error('Gemini API yanıt üretemedi.');
 }
 
 /**
@@ -187,6 +198,7 @@ async function sendToNsosyal(content, rawApiUrl, bearerToken) {
       const response = await fetch(candidate.url, {
         method: 'POST',
         headers,
+        signal: AbortSignal.timeout(20000),
         body: JSON.stringify(bodyData),
       });
 
@@ -251,7 +263,8 @@ async function sendToLinkedin(content, accessToken, personUrn) {
   if (!formattedUrn) {
     try {
       const userRes = await fetch('https://api.linkedin.com/v2/userinfo', {
-        headers: { 'Authorization': `Bearer ${accessToken}` }
+        headers: { 'Authorization': `Bearer ${accessToken}` },
+        signal: AbortSignal.timeout(15000)
       });
       if (userRes.ok) {
         const userData = await userRes.json();
@@ -294,6 +307,7 @@ async function sendToLinkedin(content, accessToken, personUrn) {
         'Content-Type': 'application/json',
         'X-Restli-Protocol-Version': '2.0.0'
       },
+      signal: AbortSignal.timeout(20000),
       body: JSON.stringify(payload)
     });
 
@@ -330,6 +344,7 @@ async function sendToLinkedin(content, accessToken, personUrn) {
       'LinkedIn-Version': '202401',
       'X-Restli-Protocol-Version': '2.0.0'
     },
+    signal: AbortSignal.timeout(20000),
     body: JSON.stringify(restPayload)
   });
 
@@ -370,6 +385,7 @@ async function sendToMakeWebhook(content, webhookUrl, commitMessage) {
     headers: {
       'Content-Type': 'application/json'
     },
+    signal: AbortSignal.timeout(20000),
     body: JSON.stringify(payload)
   });
 
