@@ -945,8 +945,8 @@ function McpAdminManager() {
             <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">Protokol &amp; Sürüm</span>
             <Globe size={18} className="text-purple-500" />
           </div>
-          <p className="text-xl font-bold font-mono">v1.3.0 (14.08.2026)</p>
-          <p className="text-xs text-muted-foreground">JSON-RPC 2.0 / MCP v1.3.0</p>
+          <p className="text-xl font-bold font-mono">MCP (2024-11-05)</p>
+          <p className="text-xs text-muted-foreground">JSON-RPC 2.0 / W3C Web ML Standardı</p>
         </div>
       </div>
 

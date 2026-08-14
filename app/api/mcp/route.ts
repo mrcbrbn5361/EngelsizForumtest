@@ -177,7 +177,7 @@ Lütfen şu başlıklar altında Türkçe, net ve web kaynaklarını belirterek 
         });
 
         if (response.text) {
-          return `📰 CANLI İNTERNET ENGELLİ HABERLERİ & SONDAKİKA (Gemini Live Web Search v1.3):
+          return `📰 CANLI İNTERNET ENGELLİ HABERLERİ & SONDAKİKA (Gemini Live Web Search):
 ------------------------------------------------------------------
 ${response.text}`;
         }
@@ -443,8 +443,8 @@ async function processJsonRpcRequest(body: Record<string, unknown>) {
           },
           serverInfo: {
             name: 'EngelsizForum MCP Server',
-            version: '1.3.0',
-            description: 'EngelsizForum Türkiye v1.3.0 - İnternet Canlı Arama (Google Grounding), Erişilebilirlik, ÖTV 2026, Balthazard ve Haklar Ajanı',
+            version: '1.0.0',
+            description: 'EngelsizForum Türkiye - İnternet Canlı Arama (Google Grounding), Erişilebilirlik, ÖTV 2026, Balthazard ve Haklar Ajanı',
           },
         },
       };
