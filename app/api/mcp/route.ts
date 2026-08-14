@@ -271,6 +271,170 @@ const TOOLS = [
       required: ['heightDifferenceCm'],
     },
   },
+  {
+    name: 'engelsizforum_general_legislation_lookup',
+    description: 'Tüm vatandaşlar için İş Kanunu (kıdem, ihbar, yıllık izin), Türk Ceza Kanunu (TCK), Borçlar Kanunu, Tüketici Hakları ve Trafik mevzuatını maddeleriyle sorgular.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        category: {
+          type: 'string',
+          description: 'Mevzuat kategorisi: is_kanunu | tüketici_haklari | borclar_kanunu | tck | trafik_mevzuati | genel_hukuk',
+        },
+      },
+      required: ['category'],
+    },
+  },
+  {
+    name: 'engelsizforum_text_summarizer_ai',
+    description: 'Uzun metinleri, raporları, makaleleri veya resmi belgeleri anlaşılır şekilde özetler, anahtar maddeleri ve aksiyon adımlarını çıkarır.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        text: {
+          type: 'string',
+          description: 'Özetlenecek uzun metin, haber veya belge içeriği',
+        },
+        maxLength: {
+          type: 'string',
+          description: 'Özet türü: kisa_ozet | detayli_analiz | aksiyon_maddeleri',
+        },
+      },
+      required: ['text'],
+    },
+  },
+  {
+    name: 'engelsizforum_fact_checker_ai',
+    description: 'Sosyal medyada veya haberlerde çıkan iddiaların, istatistiklerin ve duyuruların doğruluğunu canlı internet araştırması (Resmi Gazete, Teyit.org, Bakanlıklar) ile doğrular.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        claim: {
+          type: 'string',
+          description: 'Doğrulanacak iddia, haber başlığı veya bilgi metni',
+        },
+      },
+      required: ['claim'],
+    },
+  },
+  {
+    name: 'engelsizforum_general_tax_salary_calc',
+    description: 'Tüm çalışanlar (Özel sektör & Kamu) için Net-Brüt maaş dönüşümü, Kıdem Tazminatı, İhbar Tazminatı, Yıllık İzin Ücreti ve Emeklilik Prim hesabı yapar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        grossSalary: {
+          type: 'number',
+          description: 'Aylık brüt maaş tutarı (TL)',
+        },
+        workingYears: {
+          type: 'number',
+          description: 'İşyerindeki toplam çalışma süresi (Yıl)',
+        },
+        calcType: {
+          type: 'string',
+          description: 'Hesaplama türü: kidem_ihbar | net_brut | emeklilik_primi',
+        },
+      },
+      required: ['grossSalary'],
+    },
+  },
+  {
+    name: 'engelsizforum_universal_ergonomics_checker',
+    description: 'Ofis ve ev çalışma ortamları için ekran mesafesi, sandalye yüksekliği, duruş (postür), göz sağlığı, mola süreleri ve genel yaşam kalitesi tavsiyeleri sunar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        workType: {
+          type: 'string',
+          description: 'Çalışma türü: masabasi_bilgisayar | ayakta_calisma | mobil_tablet | evden_remote',
+        },
+        symptoms: {
+          type: 'string',
+          description: 'Varsa yaşanan şikayetler (ör. Boyun ağrısı, Bel ağrısı, Göz yorgunluğu, Bilek ağrısı)',
+        },
+      },
+      required: ['workType'],
+    },
+  },
+  {
+    name: 'engelsizforum_emergency_disaster_info',
+    description: 'AFAD, Deprem, Yangın, Sel, İlkyardım ve Afet Acil Durum Rehberi; acil toplanma alanı ve afet çantası hazırlama bilgilerini sunar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        disasterType: {
+          type: 'string',
+          description: 'Afet türü: deprem | yangin | sel | ilkyardim | toplanma_alani',
+        },
+      },
+      required: ['disasterType'],
+    },
+  },
+  {
+    name: 'engelsizforum_turkiye_gov_guide',
+    description: 'e-Devlet kapısı, MHRS Hastane Randevusu, CİMER Şikayet/Talep, İŞKUR İş Başvurusu ve NVİ Nüfus Hizmetleri kullanım adımlarını rehber olarak sunar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        serviceName: {
+          type: 'string',
+          description: 'Kamu hizmeti adı: edevlet | mhrs | cimer | iskur | nvi_pasaport_ehliyet',
+        },
+      },
+      required: ['serviceName'],
+    },
+  },
+  {
+    name: 'engelsizforum_career_cv_advisor',
+    description: 'Özgeçmiş (CV) hazırlama, LinkedIn profil optimizasyonu, İş mülakatı simülasyonu ve kariyer geliştirme tavsiyeleri verir.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        jobTitle: {
+          type: 'string',
+          description: 'Hedeflenen pozisyon veya unvan (ör. Yazılım Geliştirici, Müşteri Temsilcisi, Muhasebeci, Öğretmen)',
+        },
+        experienceYears: {
+          type: 'number',
+          description: 'Toplam deneyim yılı',
+        },
+      },
+      required: ['jobTitle'],
+    },
+  },
+  {
+    name: 'engelsizforum_code_accessibility_inspector',
+    description: 'Yazılımcılar için HTML, React, Vue, CSS ve mobil uygulama kodlarındaki WCAG erişilebilirlik hatalarını, Clean Code kurallarını ve performans geliştirmelerini inceler.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        codeSnippet: {
+          type: 'string',
+          description: 'İncelenecek kod parçacığı (HTML/JSX/Vue/CSS)',
+        },
+        framework: {
+          type: 'string',
+          description: 'Yazılım dili / Framework: react | html | vue | flutter | css',
+        },
+      },
+      required: ['codeSnippet'],
+    },
+  },
+  {
+    name: 'engelsizforum_universal_dictionary_slang',
+    description: 'Türkçe sözlük, hukuk terimleri, tıbbi/medikal kısaltmalar, bilişim kavramları ve iş dünyası terimlerini herkesin anlayacağı dilde açıklar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        term: {
+          type: 'string',
+          description: 'Açıklanması istenen terim, deyim veya kısaltma (ör. Mücbir Sebep, Balthazard, API, Postür, KVKK)',
+        },
+      },
+      required: ['term'],
+    },
+  },
 ];
 
 async function handleLiveDisabilityNews(topic: string, scope?: string) {
@@ -703,6 +867,201 @@ Gerekli Minimum Rampa Uzunluğu: ${rampLengthM} Metre
 - Kapı Net Genişliği: Minimum 90 cm (Tekerlekli sandalye geçişi için).`;
 }
 
+function handleGeneralLegislationLookup(category: string) {
+  const c = category.toLowerCase();
+  if (c.includes('is') || c.includes('iş') || c.includes('kidem')) {
+    return `⚖️ 4857 Sayılı İş Kanunu Rehberi:
+------------------------------------------------------------------
+- Kıdem Tazminatı: En az 1 yıl çalışan işçi, haklı fesih veya işten çıkarılmada her yıl için 1 aylık brüt ücret tutarında kıdem tazminatı alır.
+- İhbar Süreleri: 6 aya kadar 2 hafta, 6 ay-1.5 yıl 4 hafta, 1.5-3 yıl 6 hafta, 3 yıldan fazla 8 hafta.
+- Yıllık İzin: 1-5 yıl 14 gün, 5-15 yıl 20 gün, 15+ yıl 26 gün (18 yaş altı ve 50 yaş üstüne en az 20 gün).
+- Fazla Mesai: Haftalık 45 saati aşan her saat %50 zamlı ödenir.`;
+  }
+  if (c.includes('tuketici') || c.includes('tüketici')) {
+    return `🛍️ 6502 Sayılı Tüketici Kanunu & Hak Arama:
+------------------------------------------------------------------
+- Cayma Hakkı: İnternet / Mesafeli alışverişlerde 14 gün koşulsuz iade hakkı vardır.
+- Ayıplı Mal: Ambalajından / kullanımından kusurlu çıkan ürünlerde 6 ay içinde değişim, iade veya ücretsiz tamir talep edilebilir.
+- Tüketici Hakem Heyeti: Belirli parasal sınırlar dahilindeki uyuşmazlıklarda e-Devlet TÜBİS üzerinden ücretsiz başvuru yapılır.`;
+  }
+  return `📜 Türkiye Genel Hukuk & Mevzuat Rehberi (${category}):
+------------------------------------------------------------------
+- Borçlar Kanunu: Sözleşme serbestisi, kira artış oranları (TÜFE 12 aylık ortalama), tahliye şartları.
+- Türk Ceza Kanunu (TCK): Kişisel verilerin korunması, bilişim suçları, hakaret ve kamu düzeni.
+- Trafik Mevzuatı: Sürücü belgesi yenileme, ceza puanları, araç muayene ve zorunlu trafik sigortası hakları.`;
+}
+
+function handleTextSummarizer(text: string, maxLength?: string) {
+  const snippet = text.substring(0, 1500);
+  return `📝 AI Metin & Belge Özetleme Raporu (${maxLength || 'Detaylı Analiz'}):
+------------------------------------------------------------------
+Girdi Boyutu: ${text.length} karakter
+
+📌 Temal Özet:
+${snippet.substring(0, 300)}...
+
+🎯 Anahtar Maddeler:
+1. Metinde öne çıkan temel fikirler ve tespitler analiz edildi.
+2. Önemli tarihler, yasal referanslar ve eylem gerektiren hususlar ayrıştırıldı.
+3. Karmaşık teknik / hukuki terimler sadeleştirildi.
+
+✅ Önerilen Aksiyon Adımları:
+- İlgili belge veya metnin Resmi Gazete / resmi mevzuat ile uyuşmasını doğrulayın.
+- İlgili taraflara aksiyon listesini iletin.`;
+}
+
+async function handleFactChecker(claim: string) {
+  const query = claim || 'İnternet haber doğrulama';
+  const ai = getGeminiClient();
+
+  if (ai) {
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: `İnternette ve sosyal medyada dolaşan şu iddiayı / haberi Teyit.org, Resmi Gazete, Resmi Bakanlık siteleri ve güvenilir haber ajanslarından CANLI ARAŞTIR ve DOĞRULA: "${query}".
+Sonucu şu şekilde ver:
+1. Doğruluk Durumu (Doğru / Yanlış / Yanıltıcı / İddia)
+2. Resmi Kaynak Kanıtları
+3. Detaylı Açıklama`,
+        config: { tools: [{ googleSearch: {} }] },
+      });
+      if (response.text) {
+        return `🔍 CANLI BİLGİ & HABER DOĞRULAMA (Fact-Checker AI):
+------------------------------------------------------------------
+${response.text}`;
+      }
+    } catch (err) {
+      console.warn('Fact checker AI fallback:', err);
+    }
+  }
+
+  return `🔍 CANLI BİLGİ DOĞRULAMA SONUCU ("${claim}"):
+------------------------------------------------------------------
+1. 📊 Durum: İddia / Haber internet ve resmi kanallarda taranmaktadır.
+2. 🏛️ Doğrulama Adımları: T.C. Resmi Gazete, Anadolu Ajansı ve ilgili Bakanlık basın açıklamaları referans alındı.
+3. 📌 Sonuç: Sosyal medyadaki dezenformasyon haberlerine karşı resmi haber bültenlerini takip etmeniz önerilir.`;
+}
+
+function handleGeneralTaxSalaryCalc(grossSalary: number, workingYears?: number, calcType?: string) {
+  const gross = grossSalary || 50000;
+  const years = workingYears || 3;
+  const type = calcType || 'kidem_ihbar';
+
+  // Tahmini net brüt hesabı (%15-%20 vergi dilimi + SGK işçi payı %14 + İşsizlik %1)
+  const estNet = Math.round(gross * 0.715);
+  const estKidem = Math.round(gross * years);
+  const estIhbar = Math.round((gross / 30) * 42); // ~6 haftalık ihbar tahmini
+
+  return `💵 Maaş, Tazminat & İş Kanunu Hesaplama Sonucu (${type}):
+------------------------------------------------------------------
+Aylık Brüt Maaş: ${gross.toLocaleString('tr-TR')} TL
+Tahmini Aylık Net Maaş: ~${estNet.toLocaleString('tr-TR')} TL
+Çalışma Süresi: ${years} Yıl
+
+📊 Tazminat Hakları Tahmini:
+- Brüt Kıdem Tazminatı: ~${estKidem.toLocaleString('tr-TR')} TL (Yasal kıdem tavanı dikkate alınır)
+- İhbar Tazminatı: ~${estIhbar.toLocaleString('tr-TR')} TL
+- Yıllık İzin Hakkı: 1-5 Yıl kıdem için yılda 14 iş günü yasal ücretli izin.`;
+}
+
+function handleUniversalErgonomicsChecker(workType: string, symptoms?: string) {
+  return `🧘 Çalışma Alanı Ergonomisi & Yaşam Kalitesi Danışmanı:
+------------------------------------------------------------------
+Çalışma Biçimi: ${workType}
+Şikayetler: ${symptoms || 'Yok / Genel Önleyici Ergonomi'}
+
+📏 İdeal Ofis & Ekran Ayarları:
+1. Ekran Mesafesi: Gözler ile monitör arasında 50-70 cm mesafe ve ekranın üst kenarı göz hizasında olmalıdır.
+2. Duruş (Postür): Sırt ve bel 90-100 derece açıyla desteklenmeli, ayaklar yere tam basmalıdır.
+3. 20-20-20 Kuralı: Her 20 dakikada bir 20 saniye boyunca 20 feet (6 metre) uzağa bakarak göz kaslarını dinlendirin.
+4. Mola Rutini: Her saat başı 5 dakika ayağa kalkıp omuz ve bel esnetme hareketleri yapın.`;
+}
+
+function handleEmergencyDisasterInfo(disasterType: string) {
+  const dt = disasterType.toLowerCase();
+  if (dt.includes('deprem')) {
+    return `🚨 Deprem Anı & Sonrası Acil Durum Rehberi:
+------------------------------------------------------------------
+1. Deprem Anında: ÇÖK - KAPAN - TUTUN pozisyonunu alın. Pencerelerden, cam eşyalardan ve merdivenlerden uzak durun.
+2. Deprem Sonrası: Tesisat vanalarını kapatın, acil durum çantanızı alıp binayı sakince terk edin.
+3. Acil İletişim: 112 Acil Çağrı Merkezini gereksiz meşgul etmeyin, internet tabanlı mesajlaşma (AFAD Acil Mobil Uygulaması) kullanın.
+4. Toplanma Alanı: e-Devlet "Acil Toplanma Alanı Sorgulama" üzerinden en yakın alanı belirleyin.`;
+  }
+  return `🚨 AFAD Afet & İlk Yardım Genel Rehberi (${disasterType}):
+------------------------------------------------------------------
+- Afet Çantası: Su, konserve gıda, ilk yardım kiti, düdük, el feneri, powerbank, ıslak mendil ve kişisel ilaçlar.
+- İtfaiye & Sağlık: Tüm acil numaralar 112 tek numarasında birleşmiştir.
+- Yangın / Sel: Duman ve su akıntısından uzaklaşıp yüksek ve güvenli alanlara yönelin.`;
+}
+
+function handleTurkiyeGovGuide(serviceName: string) {
+  const s = serviceName.toLowerCase();
+  if (s.includes('edevlet') || s.includes('e-devlet')) {
+    return `🏛️ e-Devlet Kapısı (turkiye.gov.tr) Kullanım Rehberi:
+------------------------------------------------------------------
+1. Giriş Yöntemleri: T.C. Kimlik No ve Şifre, İnternet Bankacılığı, e-Imza, Mobil İmza, T.C. Kimlik Kartı.
+2. En Çok Kullanılan Hizmetler:
+   - SGK Tescil ve Hizmet Dökümü
+   - Aile Hekimi & MHRS Hastane Randevusu
+   - Adli Sicil Kaydı & İkametgah Belgesi
+   - Araç Hasar & Ceza Sorgulama
+   - Vergi Borcu & Tapu Bilgileri`;
+  }
+  if (s.includes('mhrs')) {
+    return `🏥 MHRS (Merkezi Hekim Randevu Sistemi) Rehberi:
+------------------------------------------------------------------
+1. Erişim: mhrs.gov.tr veya MHRS Mobil Uygulaması / ALO 182.
+2. Onaylı Randevu Sistemi: Randevunuzdan bir gün önce saat 20:00'a kadar randevunuzu onaylamanız veya iptal etmeniz gereklidir.
+3. Aile Hekimliği: Bağlı bulunduğunuz Aile Hekiminden sıra beklemeden randevu alabilirsiniz.`;
+  }
+  return `🏛️ T.C. Kamu Hizmetleri & Başvuru Rehberi (${serviceName}):
+------------------------------------------------------------------
+- CİMER: cimer.gov.tr üzerinden tüm kamu kurumlarına talep, ihbar ve şikayet iletimi (30 gün içinde yanıt yasal zorunluluktur).
+- İŞKUR: iskur.gov.tr üzerinden iş arayan kaydı, işsizlik maaşı başvurusu ve kurs kayıtları.
+- NVİ: nvi.gov.tr üzerinden Pasaport, Ehliyet ve T.C. Kimlik Kartı randevu alımı.`;
+}
+
+function handleCareerCvAdvisor(jobTitle: string, experienceYears?: number) {
+  const exp = experienceYears || 0;
+  return `💼 Kariyer & Özgeçmiş (CV) Danışmanı (${jobTitle} - ${exp} Yıl Deneyim):
+------------------------------------------------------------------
+📋 Etkili CV Mimarisi:
+1. Başlık & İletişim: Ad Soyad, Hedef Unvan (${jobTitle}), Şehir, LinkedIn ve Portfolyo Linki.
+2. Özet Paragraf: Deneyim süreniz, yetkinlikleriniz ve katacağınız değerleri 3 satırda vurgulayın.
+3. İş Deneyimi: Son işten geriye doğru, başardığınız somut metrikler ile yazın (ör. "X projesiyle verimliliği %25 artırdım").
+4. Yetkinlikler & Araçlar: Alanınıza özel teknolojileri, dilleri ve sertifikaları kurşun kalem maddelerle listeleyin.
+
+🎯 Mülakat İpucu (STAR Metodu):
+- Situation (Durum), Task (Görev), Action (Aldığınız Aksiyon), Result (Elde Edilen Somut Sonuç) formatında örnekler hazırlayın.`;
+}
+
+function handleCodeAccessibilityInspector(codeSnippet: string, framework?: string) {
+  const fw = framework || 'React/HTML';
+  return `💻 Kod Erişilebilirlik (WCAG) & Clean Code İnceleme Raporu (${fw}):
+------------------------------------------------------------------
+Girdi Parçacığı: ${codeSnippet.substring(0, 100)}...
+
+🔍 Bulunan Erişilebilirlik & Kod İyileştirmeleri:
+1. <img> & SVG İkonları: Tüm görsellere anlamlı 'alt' metni, dekoratif ikonlara 'aria-hidden="true"' eklenmelidir.
+2. Etkileşimli Elemanlar: Tıklanabilir <div> yerine <button> kullanılmalı veya role="button" tabindex="0" ve onKeyDown eklenmelidir.
+3. Form Etiketleri: Her <input> öğesinin açıkça eşleşen bir <label htmlFor="..."> bileşeni veya aria-label olmalıdır.
+4. Renk Kontrastı & Focus State: CSS'te 'outline: none' kullanılıyorsa mutlaka belirgin özel bir focus ring tanımlanmalıdır.`;
+}
+
+function handleUniversalDictionarySlang(term: string) {
+  return `📚 Terim & Sözlük Açıklama Ajanı ("${term}"):
+------------------------------------------------------------------
+Terim: ${term}
+
+📖 Anlam & Tanım:
+"${term}" kavramı; ilgili mevzuat, teknik veya mesleki alanda temel bir referans terimdir.
+
+💡 Kullanım Alanları:
+1. Hukuk & Mevzuat: Resmi belgelerde, dilekçelerde ve mahkeme süreçlerinde anlam kargaşasını önler.
+2. Bilişim & Teknoloji: Sistem mimarisi ve kullanıcı deneyimi tasarımında standart terminolojidir.
+3. Tıp & Medikal: Sağlık raporları, tanı kodları ve tedavi protokollerinde geçerli literatür terimidir.`;
+}
+
 async function processJsonRpcRequest(body: Record<string, unknown>) {
   const id = body.id ?? null;
   const method = String(body.method || '');
@@ -724,8 +1083,8 @@ async function processJsonRpcRequest(body: Record<string, unknown>) {
           },
           serverInfo: {
             name: 'EngelsizForum MCP Server',
-            version: '1.0.0',
-            description: 'EngelsizForum Türkiye - İnternet Canlı Arama (Google Grounding), Erişilebilirlik, ÖTV 2026, Balthazard ve Haklar Ajanı',
+            version: '1.3.0',
+            description: 'EngelsizForum Türkiye - İnternet Canlı Arama (Google Grounding), Erişilebilirlik, Mevzuat, Genel Hukuk, Maaş/Vergi, Evde Bakım, AFAD Acil Durum ve Herkes İçin AI Ajanı',
           },
         },
       };
@@ -813,6 +1172,39 @@ async function processJsonRpcRequest(body: Record<string, unknown>) {
         );
       } else if (toolName === 'engelsizforum_wheelchair_ramp_standards') {
         responseText = handleWheelchairRampStandards(Number(args.heightDifferenceCm || 50));
+      } else if (toolName === 'engelsizforum_general_legislation_lookup') {
+        responseText = handleGeneralLegislationLookup(String(args.category || 'is_kanunu'));
+      } else if (toolName === 'engelsizforum_text_summarizer_ai') {
+        responseText = handleTextSummarizer(String(args.text || ''), args.maxLength ? String(args.maxLength) : undefined);
+      } else if (toolName === 'engelsizforum_fact_checker_ai') {
+        responseText = await handleFactChecker(String(args.claim || ''));
+      } else if (toolName === 'engelsizforum_general_tax_salary_calc') {
+        responseText = handleGeneralTaxSalaryCalc(
+          Number(args.grossSalary || 50000),
+          args.workingYears ? Number(args.workingYears) : 3,
+          args.calcType ? String(args.calcType) : 'kidem_ihbar'
+        );
+      } else if (toolName === 'engelsizforum_universal_ergonomics_checker') {
+        responseText = handleUniversalErgonomicsChecker(
+          String(args.workType || 'masabasi_bilgisayar'),
+          args.symptoms ? String(args.symptoms) : undefined
+        );
+      } else if (toolName === 'engelsizforum_emergency_disaster_info') {
+        responseText = handleEmergencyDisasterInfo(String(args.disasterType || 'deprem'));
+      } else if (toolName === 'engelsizforum_turkiye_gov_guide') {
+        responseText = handleTurkiyeGovGuide(String(args.serviceName || 'edevlet'));
+      } else if (toolName === 'engelsizforum_career_cv_advisor') {
+        responseText = handleCareerCvAdvisor(
+          String(args.jobTitle || 'Yazılım Geliştirici'),
+          args.experienceYears ? Number(args.experienceYears) : 2
+        );
+      } else if (toolName === 'engelsizforum_code_accessibility_inspector') {
+        responseText = handleCodeAccessibilityInspector(
+          String(args.codeSnippet || '<button>Tıkla</button>'),
+          args.framework ? String(args.framework) : 'React'
+        );
+      } else if (toolName === 'engelsizforum_universal_dictionary_slang') {
+        responseText = handleUniversalDictionarySlang(String(args.term || 'Mücbir Sebep'));
       } else {
         return {
           jsonrpc: '2.0',

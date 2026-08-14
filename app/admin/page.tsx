@@ -828,19 +828,39 @@ function McpAdminManager() {
     { id: 'engelsizforum_search', name: 'engelsizforum_search', desc: 'EngelsizForum Konu Arama', defaultParams: { query: 'ÖTV 2026' } },
     { id: 'engelsizforum_balthazard_calc', name: 'engelsizforum_balthazard_calc', desc: 'Balthazard Hesaplama', defaultParams: { rates: '40, 20, 10' } },
     { id: 'engelsizforum_disability_rights_guide', name: 'engelsizforum_disability_rights_guide', desc: 'Yasal Haklar Rehberi', defaultParams: { reportPercentage: '40', disabilityType: 'Ortopedik' } },
-    { id: 'engelsizforum_legislation_lookup', name: 'engelsizforum_legislation_lookup', desc: 'Mevzuat Sorgulama', defaultParams: { category: 'otv_2026' } },
+    { id: 'engelsizforum_legislation_lookup', name: 'engelsizforum_legislation_lookup', desc: 'Mevzuat Sorgulama (ÖTV, Emeklilik)', defaultParams: { category: 'otv_2026' } },
     { id: 'engelsizforum_ram_special_education_info', name: 'engelsizforum_ram_special_education_info', desc: 'RAM & Özel Eğitim Destek Rehberi', defaultParams: { diagnosis: 'Otizm Spektrum' } },
     { id: 'engelsizforum_accessibility_toggle', name: 'engelsizforum_accessibility_toggle', desc: 'Erişilebilirlik Tercihleri', defaultParams: { feature: 'highContrast', enabled: 'true' } },
     { id: 'engelsizforum_get_categories', name: 'engelsizforum_get_categories', desc: 'Kategori Ağacı', defaultParams: {} },
+    { id: 'engelsizforum_cozger_calculator', name: 'engelsizforum_cozger_calculator', desc: 'ÇÖZGER Çocuk Özel Gereksinim Derecesi', defaultParams: { degree: 'belirgin' } },
+    { id: 'engelsizforum_accessibility_checker', name: 'engelsizforum_accessibility_checker', desc: 'WCAG Web Erişilebilirlik Denetçisi', defaultParams: { urlOrContent: 'https://www.engelsizforum.com', targetLevel: 'WCAG_AAA' } },
+    { id: 'engelsizforum_assistive_tech_finder', name: 'engelsizforum_assistive_tech_finder', desc: 'Yardımcı Teknolojiler Bulucu', defaultParams: { disabilityCategory: 'gorme', userGoal: 'Bilgisayarda kod yazmak' } },
+    { id: 'engelsizforum_tax_discount_calc', name: 'engelsizforum_tax_discount_calc', desc: 'Engellilik Gelir Vergisi İndirimi', defaultParams: { degree: '1', grossSalary: '60000' } },
+    { id: 'engelsizforum_sgk_prosthesis_coverage', name: 'engelsizforum_sgk_prosthesis_coverage', desc: 'SGK Medikal Cihaz & Protez Ödeneği', defaultParams: { equipmentType: 'akulu_sandalye' } },
+    { id: 'engelsizforum_home_care_allowance_calc', name: 'engelsizforum_home_care_allowance_calc', desc: 'Evde Bakım Maaşı Gelir Testi', defaultParams: { householdCount: '4', totalHouseholdIncome: '35000', disabilityPercentage: '70' } },
+    { id: 'engelsizforum_wheelchair_ramp_standards', name: 'engelsizforum_wheelchair_ramp_standards', desc: 'TS 9111 Engelli Rampası Hesaplayıcı', defaultParams: { heightDifferenceCm: '60' } },
+    { id: 'engelsizforum_general_legislation_lookup', name: 'engelsizforum_general_legislation_lookup', desc: 'Genel Hukuk & İş Kanunu Rehberi', defaultParams: { category: 'is_kanunu' } },
+    { id: 'engelsizforum_text_summarizer_ai', name: 'engelsizforum_text_summarizer_ai', desc: 'AI Belge & Metin Özetleme', defaultParams: { text: 'Resmi Gazete yayımlanan karar gereğince kıdem tazminatı tavanı güncellendi...', maxLength: 'Ozet' } },
+    { id: 'engelsizforum_fact_checker_ai', name: 'engelsizforum_fact_checker_ai', desc: 'Canlı Bilgi & Haber Doğrulama (Fact-Checker AI)', defaultParams: { claim: '2026 yılında elektrik faturalarında engelli indirimi kaldırıldı mı?' } },
+    { id: 'engelsizforum_general_tax_salary_calc', name: 'engelsizforum_general_tax_salary_calc', desc: 'Genel Maaş, Net-Brüt & Kıdem Hesaplama', defaultParams: { grossSalary: '50000', workingYears: '4', calcType: 'kidem_ihbar' } },
+    { id: 'engelsizforum_universal_ergonomics_checker', name: 'engelsizforum_universal_ergonomics_checker', desc: 'Çalışma Ergonomisi & Postür Rehberi', defaultParams: { workType: 'masabasi_bilgisayar', symptoms: 'Boyun ve sırt ağrısı' } },
+    { id: 'engelsizforum_emergency_disaster_info', name: 'engelsizforum_emergency_disaster_info', desc: 'AFAD Deprem & Acil Durum Rehberi', defaultParams: { disasterType: 'deprem' } },
+    { id: 'engelsizforum_turkiye_gov_guide', name: 'engelsizforum_turkiye_gov_guide', desc: 'e-Devlet & Kamu Hizmetleri Rehberi', defaultParams: { serviceName: 'edevlet' } },
+    { id: 'engelsizforum_career_cv_advisor', name: 'engelsizforum_career_cv_advisor', desc: 'Kariyer & CV Danışmanı', defaultParams: { jobTitle: 'Yazılım Mühendisi', experienceYears: '3' } },
+    { id: 'engelsizforum_code_accessibility_inspector', name: 'engelsizforum_code_accessibility_inspector', desc: 'Kod Erişilebilirlik & WCAG İnceleyici', defaultParams: { codeSnippet: '<button onClick={doSomething}><img src="icon.png" /></button>', framework: 'React' } },
+    { id: 'engelsizforum_universal_dictionary_slang', name: 'engelsizforum_universal_dictionary_slang', desc: 'Terim & Sözlük Açıklama Ajanı', defaultParams: { term: 'Mücbir Sebep' } },
   ];
 
   const presets: Array<{ label: string; tool: string; params: Record<string, string> }> = [
     { label: '🚗 ÖTV 2026 Limiti', tool: 'engelsizforum_live_disability_news', params: { topic: 'ÖTV 2026 limiti ve Resmi Gazete kararları', scope: 'turkiye' } },
-    { label: '📰 İnternet Canlı Haber', tool: 'engelsizforum_web_search', params: { query: 'Resmi Gazete engelli bakıcı maaşı zammı 2026' } },
+    { label: '📰 Canlı Haber Taraması', tool: 'engelsizforum_web_search', params: { query: 'Resmi Gazete engelli bakıcı maaşı zammı 2026' } },
     { label: '📊 Balthazard (%40+%20)', tool: 'engelsizforum_balthazard_calc', params: { rates: '40, 20' } },
-    { label: '♿ Haklar (%40 Rapor)', tool: 'engelsizforum_disability_rights_guide', params: { reportPercentage: '40', disabilityType: 'Genel' } },
-    { label: '🏫 RAM Ödeneği', tool: 'engelsizforum_ram_special_education_info', params: { diagnosis: 'Özel Öğrenme Güçlüğü' } },
-    { label: '📜 Erken Emeklilik SGK', tool: 'engelsizforum_legislation_lookup', params: { category: 'erken_emeklilik' } },
+    { label: '⚖️ 4857 İş Kanunu & Kıdem', tool: 'engelsizforum_general_legislation_lookup', params: { category: 'is_kanunu' } },
+    { label: '🔍 Fact-Checker (Haber Doğrulama)', tool: 'engelsizforum_fact_checker_ai', params: { claim: 'Kıdem tazminatı tavanı 2026 zammı açıklandı mı?' } },
+    { label: '💵 Net-Brüt Maaş & Kıdem', tool: 'engelsizforum_general_tax_salary_calc', params: { grossSalary: '55000', workingYears: '5', calcType: 'kidem_ihbar' } },
+    { label: '🚨 AFAD Deprem Rehberi', tool: 'engelsizforum_emergency_disaster_info', params: { disasterType: 'deprem' } },
+    { label: '🏛️ e-Devlet & MHRS Rehberi', tool: 'engelsizforum_turkiye_gov_guide', params: { serviceName: 'edevlet' } },
+    { label: '💻 Kod WCAG Denetimi', tool: 'engelsizforum_code_accessibility_inspector', params: { codeSnippet: '<button onClick={() => {}}><img src="avatar.jpg" /></button>', framework: 'React' } },
   ];
 
   const handleToolSelect = (toolId: string) => {
@@ -927,8 +947,8 @@ function McpAdminManager() {
             <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">Aktif Ajan Araçları</span>
             <Bot size={18} className="text-blue-500" />
           </div>
-          <p className="text-3xl font-black tabular-nums">9 Araç</p>
-          <p className="text-xs text-muted-foreground">Web, Desktop, Terminal &amp; Donanım</p>
+          <p className="text-3xl font-black tabular-nums">26 Araç</p>
+          <p className="text-xs text-muted-foreground">Herkes İçin Evrensel AI Ajanı</p>
         </div>
 
         <div className="p-6 rounded-3xl border border-border bg-card shadow-sm space-y-2">
