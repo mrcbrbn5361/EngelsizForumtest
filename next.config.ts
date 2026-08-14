@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
+        source: '/.well-known/mcp.json',
+        destination: '/api/well-known/mcp.json',
+      },
+      {
         source: '/.well-known/webfinger',
         destination: '/api/well-known/webfinger',
       },

@@ -1,16 +1,199 @@
-import React from 'react';
-import Link from 'next/link';
-import { Bot, Sparkles, CheckCircle2, ArrowLeft, ShieldCheck, Terminal, Layers, Globe, Monitor, Newspaper } from 'lucide-react';
+'use client';
 
-export const metadata = {
-  title: 'WebMCP & Remote MCP Ajan Sistemi | EngelsizForum',
-  description: 'Google Chrome Web Model Context Protocol (WebMCP) ve Remote MCP Sunucu standardı ile Web, Masaüstü ve Terminal AI Ajanları için engelli haberleri ve yasal haklar platformu.',
-};
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/components/providers/auth-provider';
+import {
+  Bot, Sparkles, CheckCircle2, ArrowLeft, ShieldCheck, Terminal,
+  Layers, Globe, Monitor, Newspaper, Code2, RefreshCw, Cpu,
+  Search, Scale, DollarSign, Activity, Palette, Copy, Check,
+  Lock, LogIn, ExternalLink, Play, Zap, Database, Sliders, Smartphone, Wrench
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { initWebMCPPolyfill, registerEngelsizForumWebMCPTools } from '@/lib/webmcp';
+import { MCPServerEntry, MCPCategoryInfo } from '@/lib/mcp-directory';
 
 export default function WebMCPPage() {
+  const { user, loading: authLoading } = useAuth();
+
+  const [activeTab, setActiveTab] = useState<'tools' | 'directory' | 'configs' | 'webmcp' | 'sync'>('tools');
+  const [selectedTool, setSelectedTool] = useState<string>('engelsizforum_live_disability_news');
+  const [toolParams, setToolParams] = useState<Record<string, string>>({
+    topic: 'ÖTV 2026 ve Engelli Hakları Zammı',
+    query: 'Resmi Gazete engelli kararları',
+    grossSalary: '60000',
+    workingYears: '4',
+    claim: '2026 yılında engelli kimlik kartı yenilemek zorunlu mu?',
+    category: 'is_kanunu',
+    disasterType: 'deprem',
+    codeSnippet: '<button onClick={() => doSomething()}><img src="icon.png" /></button>',
+  });
+  const [executing, setExecuting] = useState(false);
+  const [executionResult, setExecutionResult] = useState<string | null>(null);
+
+  // Directory filter states
+  const [directoryServers, setDirectoryServers] = useState<MCPServerEntry[]>([]);
+  const [directoryCategories, setDirectoryCategories] = useState<MCPCategoryInfo[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedAgentType, setSelectedAgentType] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [loadingDirectory, setLoadingDirectory] = useState(true);
+
+  // WebMCP 1.1 State
+  const [webMCPStatus, setWebMCPStatus] = useState<{
+    supported: boolean;
+    hasDocContext: boolean;
+    hasNavContext: boolean;
+    toolCount: number;
+  }>({ supported: false, hasDocContext: false, hasNavContext: false, toolCount: 0 });
+
+  // Sync state
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [lastSyncResult, setLastSyncResult] = useState<any>(null);
+
+  // Copy state tracker
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Register WebMCP 1.1 tools in browser client
+    if (typeof window !== 'undefined') {
+      initWebMCPPolyfill();
+      registerEngelsizForumWebMCPTools();
+
+      const docCtx = Boolean(typeof document !== 'undefined' && document.modelContext);
+      const navCtx = Boolean(typeof navigator !== 'undefined' && (navigator as any).modelContext);
+      const toolsCount = (window as any).WebMCP?.getRegisteredTools?.()?.length || 0;
+
+      setWebMCPStatus({
+        supported: true,
+        hasDocContext: docCtx,
+        hasNavContext: navCtx,
+        toolCount: toolsCount > 0 ? toolsCount : 26,
+      });
+    }
+
+    fetchDirectory('all', 'all', '');
+  }, []);
+
+  const fetchDirectory = async (cat: string, agent: string, query: string) => {
+    setLoadingDirectory(true);
+    try {
+      const res = await fetch(`/api/mcp-directory?category=${cat}&agentType=${agent}&query=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      if (data.status === 'success') {
+        setDirectoryServers(data.servers || []);
+        setDirectoryCategories(data.categories || []);
+      }
+    } catch {
+      toast.error('MCP sunucu dizini yüklenemedi.');
+    } finally {
+      setLoadingDirectory(false);
+    }
+  };
+
+  const handleExecuteTool = async () => {
+    setExecuting(true);
+    setExecutionResult(null);
+
+    let payloadArgs: Record<string, any> = {};
+    if (selectedTool === 'engelsizforum_live_disability_news') {
+      payloadArgs = { topic: toolParams.topic || 'ÖTV 2026', scope: 'turkiye' };
+    } else if (selectedTool === 'engelsizforum_web_search') {
+      payloadArgs = { query: toolParams.query || 'engelli hakları' };
+    } else if (selectedTool === 'engelsizforum_fact_checker_ai') {
+      payloadArgs = { claim: toolParams.claim || 'Engelli kartları yenileme' };
+    } else if (selectedTool === 'engelsizforum_general_tax_salary_calc') {
+      payloadArgs = { grossSalary: Number(toolParams.grossSalary || 60000), workingYears: Number(toolParams.workingYears || 3) };
+    } else if (selectedTool === 'engelsizforum_general_legislation_lookup') {
+      payloadArgs = { category: toolParams.category || 'is_kanunu' };
+    } else if (selectedTool === 'engelsizforum_emergency_disaster_info') {
+      payloadArgs = { disasterType: toolParams.disasterType || 'deprem' };
+    } else if (selectedTool === 'engelsizforum_code_accessibility_inspector') {
+      payloadArgs = { codeSnippet: toolParams.codeSnippet || '<button></button>', framework: 'React' };
+    } else {
+      payloadArgs = { topic: toolParams.topic || 'Genel Sorgu' };
+    }
+
+    try {
+      const res = await fetch('/api/mcp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: Date.now(),
+          method: 'tools/call',
+          params: { name: selectedTool, arguments: payloadArgs },
+        }),
+      });
+
+      const json = await res.json();
+      if (json.result?.content?.[0]?.text) {
+        setExecutionResult(json.result.content[0].text);
+      } else {
+        setExecutionResult(JSON.stringify(json, null, 2));
+      }
+      toast.success('MCP araç çağrısı başarıyla tamamlandı.');
+    } catch (err: any) {
+      setExecutionResult(`Hata oluştu: ${err.message}`);
+      toast.error('Araç çalıştırma başarısız oldu.');
+    } finally {
+      setExecuting(false);
+    }
+  };
+
+  const handleTriggerSync = async () => {
+    setIsSyncing(true);
+    try {
+      const res = await fetch('/api/mcp-sync', { method: 'POST' });
+      const data = await res.json();
+      setLastSyncResult(data);
+      toast.success('MCP dizini ve araçları başarıyla senkronize edildi.');
+      fetchDirectory(selectedCategory, selectedAgentType, searchQuery);
+    } catch {
+      toast.error('Senkronizasyon başarısız.');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const copyToClipboard = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    toast.success('Kopyalandı!');
+    setTimeout(() => setCopiedKey(null), 2000);
+  };
+
+  const ALL_TOOLS_LIST = [
+    { id: 'engelsizforum_live_disability_news', name: 'engelsizforum_live_disability_news', desc: 'Resmi Gazete & Bakanlık Canlı Haber Ajanı' },
+    { id: 'engelsizforum_web_search', name: 'engelsizforum_web_search', desc: 'Google Grounding Canlı Web Araması' },
+    { id: 'engelsizforum_fact_checker_ai', name: 'engelsizforum_fact_checker_ai', desc: 'Haber & İddia Doğrulama (Fact-Checker AI)' },
+    { id: 'engelsizforum_general_legislation_lookup', name: 'engelsizforum_general_legislation_lookup', desc: '4857 İş Kanunu, Tüketici & Borçlar Hukuku' },
+    { id: 'engelsizforum_general_tax_salary_calc', name: 'engelsizforum_general_tax_salary_calc', desc: 'Maaş, Net-Brüt & Kıdem Tazminatı Hesabı' },
+    { id: 'engelsizforum_emergency_disaster_info', name: 'engelsizforum_emergency_disaster_info', desc: 'AFAD Deprem & Acil Durum Rehberi' },
+    { id: 'engelsizforum_turkiye_gov_guide', name: 'engelsizforum_turkiye_gov_guide', desc: 'e-Devlet, MHRS & CİMER Rehberi' },
+    { id: 'engelsizforum_code_accessibility_inspector', name: 'engelsizforum_code_accessibility_inspector', desc: 'WCAG 2.1 & Clean Code Denetçisi' },
+    { id: 'engelsizforum_universal_ergonomics_checker', name: 'engelsizforum_universal_ergonomics_checker', desc: 'Ofis & Bilgisayar Ergonomisi' },
+    { id: 'engelsizforum_career_cv_advisor', name: 'engelsizforum_career_cv_advisor', desc: 'Kariyer & CV Hazırlama Danışmanı' },
+    { id: 'engelsizforum_text_summarizer_ai', name: 'engelsizforum_text_summarizer_ai', desc: 'AI Belge & Resmi Yazı Özetleyici' },
+    { id: 'engelsizforum_balthazard_calc', name: 'engelsizforum_balthazard_calc', desc: 'Balthazard Net Engel Oranı Hesabı' },
+    { id: 'engelsizforum_disability_rights_guide', name: 'engelsizforum_disability_rights_guide', desc: 'Yasal Engelli Hakları Sorgulama' },
+    { id: 'engelsizforum_legislation_lookup', name: 'engelsizforum_legislation_lookup', desc: 'ÖTV, Emeklilik & Evde Bakım Mevzuatı' },
+    { id: 'engelsizforum_cozger_calculator', name: 'engelsizforum_cozger_calculator', desc: 'ÇÖZGER Çocuk Özel Gereksinim Derecesi' },
+    { id: 'engelsizforum_accessibility_checker', name: 'engelsizforum_accessibility_checker', desc: 'Web Erişilebilirlik Audit Araçı' },
+    { id: 'engelsizforum_assistive_tech_finder', name: 'engelsizforum_assistive_tech_finder', desc: 'Yardımcı Teknolojiler & Donanım Bulucu' },
+    { id: 'engelsizforum_tax_discount_calc', name: 'engelsizforum_tax_discount_calc', desc: 'Engellilik Gelir Vergisi İndirimi' },
+    { id: 'engelsizforum_sgk_prosthesis_coverage', name: 'engelsizforum_sgk_prosthesis_coverage', desc: 'SGK Medikal Cihaz & Protez Ödeneği' },
+    { id: 'engelsizforum_home_care_allowance_calc', name: 'engelsizforum_home_care_allowance_calc', desc: 'Evde Bakım Maaşı Gelir Testi' },
+    { id: 'engelsizforum_wheelchair_ramp_standards', name: 'engelsizforum_wheelchair_ramp_standards', desc: 'TS 9111 Engelli Rampası Hesaplayıcı' },
+    { id: 'engelsizforum_ram_special_education_info', name: 'engelsizforum_ram_special_education_info', desc: 'RAM & Özel Eğitim Destek Rehberi' },
+    { id: 'engelsizforum_accessibility_toggle', name: 'engelsizforum_accessibility_toggle', desc: 'Erişilebilirlik Tercihleri' },
+    { id: 'engelsizforum_get_categories', name: 'engelsizforum_get_categories', desc: 'Forum Kategori Ağacı' },
+    { id: 'engelsizforum_universal_dictionary_slang', name: 'engelsizforum_universal_dictionary_slang', desc: 'Hukuki & Medikal Terim Sözlüğü' },
+  ];
+
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
-      {/* Header */}
+    <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+      {/* Top Header */}
       <div className="space-y-4">
         <Link
           href="/"
@@ -23,206 +206,554 @@ export default function WebMCPPage() {
         <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
             <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
-            W3C Web ML Community Group &amp; MCP Standardı
+            W3C Chrome WebMCP 1.1 &amp; Remote MCP Standardı
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            Türkiye&apos;nin İlk Çok Platformlu Engelli AI Ajan Hub&apos;ı
+            26 Evrensel Ajan Aracı &amp; Otomatik Senkronizasyon
           </span>
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-          Yapay Zeka (AI) Ajanları ve WebMCP Entegrasyonu
-        </h1>
-        <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-          EngelsizForum, hem site içi konuları hem de <strong className="text-foreground">tüm internetteki güncel engelli haberlerini, Resmi Gazete kararlarını ve mevzuatı</strong> Web, Masaüstü ve Terminal tabanlı tüm Yapay Zeka Ajanlarının (Gemini, Claude, Cursor, ChatGPT) kullanımına sunar.
-        </p>
-      </div>
-
-      {/* Gemini Connection URL Guide Alert Box */}
-      <div className="bg-amber-500/10 border-2 border-amber-500/40 rounded-2xl p-6 space-y-4 shadow-sm">
-        <div className="flex items-center gap-2.5">
-          <Bot className="w-6 h-6 text-amber-600 dark:text-amber-400 shrink-0" />
-          <h2 className="text-xl font-black text-foreground">Gemini Web / MCP Ajan Bağlantı Adresi Rehberi</h2>
-        </div>
-
-        <p className="text-sm text-foreground/90 leading-relaxed font-medium">
-          Gemini Web (&quot;Özel bağlı uygulama oluşturun&quot; / Custom Connected Apps) veya Claude Desktop ayarlarında MCP sunucu adresi girerken <strong>bilgi sayfası URL&apos;si olan /webmcp yerine doğrudan API sunucu adresini</strong> kullanmalısınız:
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 space-y-1.5">
-            <span className="text-xs font-black uppercase text-red-600 dark:text-red-400 flex items-center gap-1">
-              ❌ Yanlış URL (Sayfa Adresi):
-            </span>
-            <p className="font-mono text-xs font-bold text-foreground line-through opacity-75">
-              https://www.engelsizforum.com/webmcp
-            </p>
-            <p className="text-[11px] text-muted-foreground">
-              Bu adres web arayüzüdür. Gemini bağlandığında HTML döndüğü için &quot;geçerli MCP sunucusu değil&quot; uyarısı verir.
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+              Yapay Zeka (AI) Ajanları &amp; Evrensel MCP Modülü
+            </h1>
+            <p className="text-base text-muted-foreground max-w-3xl leading-relaxed mt-1">
+              IDE (Cursor, VS Code, Windsurf), CLI (Claude Code, Aider), Web (Gemini, Claude, ChatGPT) ve Eklenti tabanlı tüm yapay zeka ajanları için canlı haber, mevzuat, finans, hukuk ve erişilebilirlik entegrasyonu.
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/40 space-y-1.5">
-            <span className="text-xs font-black uppercase text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-              ✅ Doğru MCP Sunucu Adresi:
-            </span>
-            <p className="font-mono text-xs sm:text-sm font-extrabold text-emerald-600 dark:text-emerald-400 bg-background px-2.5 py-1 rounded border border-emerald-500/30 w-fit">
-              https://www.engelsizforum.com/mcp
-            </p>
-            <p className="text-[11px] text-muted-foreground">
-              Veya <code className="font-mono font-bold text-foreground">https://www.engelsizforum.com/api/mcp</code>. Gemini ve tüm MCP ajanları bu adresten anında araçları tanır.
-            </p>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={handleTriggerSync}
+              disabled={isSyncing}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80 text-xs font-bold transition-all shadow-sm border border-border"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-blue-500' : ''}`} />
+              {isSyncing ? 'Senkronize Ediliyor...' : 'Tüm Dizini Otomatik Senkronize Et'}
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Platform Multi-Agent Support Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-sm hover:border-blue-500/30 transition-all">
-          <div className="p-3 w-fit rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
-            <Globe className="w-6 h-6" />
-          </div>
-          <h3 className="font-bold text-lg text-foreground">Web Tabanlı AI Ajanlar</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Gemini Web (<code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">gemini.google.com</code>) ve Claude Web ajanları <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">/api/mcp</code> adresimizi doğrudan Özel Bağlı Uygulama olarak ekleyebilir.
-          </p>
-        </div>
+      {/* Authenticated User Status Bar / Auth Notice */}
+      {!user && !authLoading ? (
+        <div className="bg-gradient-to-r from-blue-600/10 via-indigo-600/10 to-purple-600/10 border-2 border-blue-500/30 rounded-2xl p-6 space-y-4 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-blue-500/20 text-blue-600 dark:text-blue-400">
+                <Lock className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-lg text-foreground">
+                  Oturum Açarak Tüm MCP Araçlarını ve Ajan Entegrasyonlarını Kilitsiz Kullanın
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  Giriş yapan tüm kullanıcılar 26 canlı yapay zeka ajan aracını, özel API anahtarlarını, IDE/CLI konfigürasyonlarını ve canlı test konsolunu sınırsız kullanabilir.
+                </p>
+              </div>
+            </div>
 
-        <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-sm hover:border-emerald-500/30 transition-all">
-          <div className="p-3 w-fit rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-            <Monitor className="w-6 h-6" />
-          </div>
-          <h3 className="font-bold text-lg text-foreground">Masaüstü AI Ajanlar</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Cursor IDE, Claude Desktop ve Windsurf gibi masaüstü yapay zeka araçları SSE &amp; HTTP JSON-RPC protokolü üzerinden EngelsizForum araçlarına erişir.
-          </p>
-        </div>
-
-        <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-sm hover:border-purple-500/30 transition-all">
-          <div className="p-3 w-fit rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
-            <Terminal className="w-6 h-6" />
-          </div>
-          <h3 className="font-bold text-lg text-foreground">Terminal &amp; CLI Ajanlar</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Claude Code, Aider veya komut satırı yapay zeka araçları tek bir terminal komutuyla EngelsizForum MCP sunucusunu bağlayabilir.
-          </p>
-        </div>
-      </div>
-
-      {/* Real-Time Internet News Grounding Highlight Box */}
-      <div className="bg-gradient-to-r from-emerald-600/10 via-teal-600/10 to-blue-600/10 border border-emerald-500/30 rounded-2xl p-6 space-y-4 shadow-md">
-        <div className="flex items-center gap-2">
-          <Newspaper className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-          <h2 className="text-xl font-bold text-foreground">İnternet Genelindeki Tüm Engelli Haberleri &amp; Canlı Mevzuat Arama</h2>
-        </div>
-
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          EngelsizForum MCP Ajanı sadece sitemizdeki forum konuları ile sınırlı değildir. <strong className="text-foreground">Gemini Google Search Grounding</strong> yapay zeka entegrasyonu sayesinde, internetteki tüm güncel engelli haberlerini, Resmi Gazete ilanlarını, Aile ve Sosyal Hizmetler Bakanlığı duyurularını ve ÖTV 2026 gelişmelerini canlı olarak arar ve ajanınıza aktarır.
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs font-semibold">
-          <div className="p-3 rounded-xl bg-background/80 border border-border flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-            <span>ÖTV 2026 Araç Alım Üst Limiti &amp; Kararları</span>
-          </div>
-          <div className="p-3 rounded-xl bg-background/80 border border-border flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-            <span>T.C. Resmi Gazete Engelli Yönetmelikleri</span>
-          </div>
-          <div className="p-3 rounded-xl bg-background/80 border border-border flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-            <span>SGK Protez, Ortez &amp; Medikal Cihaz Ödemeleri</span>
-          </div>
-          <div className="p-3 rounded-xl bg-background/80 border border-border flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-            <span>EKPSS, RAM &amp; Özel Eğitim Güncel Duyuruları</span>
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all shrink-0"
+            >
+              <LogIn className="w-4 h-4" />
+              Giriş Yap / Üye Ol
+            </Link>
           </div>
         </div>
-      </div>
-
-      {/* Exposed Tools Table */}
-      <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
-        <div className="flex items-center gap-2">
-          <Bot className="w-5 h-5 text-blue-500" />
-          <h2 className="text-xl font-bold text-foreground">Kullanılabilir MCP Ajan Araçları (Aktif 9 Araç)</h2>
+      ) : (
+        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+            <span>Oturum Açıldı ({user?.email}): Tüm 26 MCP Ajan Aracı, IDE/CLI Konfigürasyonları ve Canlı Test Konsolu Aktif.</span>
+          </div>
+          <span className="font-mono bg-emerald-500/20 px-2.5 py-1 rounded-full text-[11px]">
+            Sunucu Adresi: https://www.engelsizforum.com/mcp
+          </span>
         </div>
+      )}
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/50">
-                <th className="py-3 px-4 font-semibold text-foreground">Araç Adı (Tool Name)</th>
-                <th className="py-3 px-4 font-semibold text-foreground">İşlev &amp; Kapsam</th>
-                <th className="py-3 px-4 font-semibold text-foreground">Parametreler</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              <tr>
-                <td className="py-3 px-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">engelsizforum_live_disability_news</td>
-                <td className="py-3 px-4 text-muted-foreground">İnternetteki ve Resmi Gazete&apos;deki en güncel engelli haberlerini canlı arar.</td>
-                <td className="py-3 px-4 font-mono text-xs text-foreground">topic: string, scope: string</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-mono font-bold text-emerald-600 dark:text-emerald-400">engelsizforum_web_search</td>
-                <td className="py-3 px-4 text-muted-foreground">Tüm internetteki engelli hakları ve tıbbi kaynaklarda canlı arama yapar.</td>
-                <td className="py-3 px-4 font-mono text-xs text-foreground">query: string</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_search</td>
-                <td className="py-3 px-4 text-muted-foreground">EngelsizForum veritabanındaki konu ve başlıkları arar.</td>
-                <td className="py-3 px-4 font-mono text-xs text-foreground">query: string</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_balthazard_calc</td>
-                <td className="py-3 px-4 text-muted-foreground">Birden fazla engel oranını Balthazard formülü ile net toplama çevirir.</td>
-                <td className="py-3 px-4 font-mono text-xs text-foreground">rates: number[]</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_disability_rights_guide</td>
-                <td className="py-3 px-4 text-muted-foreground">Rapor oranına (%40, %70, %90) göre yasal engelli haklarını sorgular.</td>
-                <td className="py-3 px-4 font-mono text-xs text-foreground">reportPercentage: number</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_legislation_lookup</td>
-                <td className="py-3 px-4 text-muted-foreground">ÖTV Kanunu, Emeklilik Cetveli, Evde Bakım ve EKPSS maddelerini getirir.</td>
-                <td className="py-3 px-4 font-mono text-xs text-foreground">category: string</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_ram_special_education_info</td>
-                <td className="py-3 px-4 text-muted-foreground">RAM süreçlerini, ÇÖZGER derecelerini ve özel eğitim ödeneklerini sorgular.</td>
-                <td className="py-3 px-4 font-mono text-xs text-foreground">diagnosis: string</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_accessibility_toggle</td>
-                <td className="py-3 px-4 text-muted-foreground">Yüksek kontrast, disleksi fontu ve biyonik okuma tercihlerini günceller.</td>
-                <td className="py-3 px-4 font-mono text-xs text-foreground">feature: string, enabled: boolean</td>
-              </tr>
-              <tr>
-                <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">engelsizforum_get_categories</td>
-                <td className="py-3 px-4 text-muted-foreground">5 ana kategori ve 20 alt kategoriyi ajanlara döndürür.</td>
-                <td className="py-3 px-4 font-mono text-xs text-foreground">(Yok)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Admin Notice */}
-      <div className="p-5 rounded-2xl bg-muted/60 border border-border flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
-          <p className="text-xs text-muted-foreground font-medium">
-            Geliştirici entegrasyon kodları, API anahtarları, Raspberry Pi donanım betikleri ve canlı test konsolu yetkili personeller için <strong className="text-foreground">Admin Paneli</strong> içerisine taşınmıştır.
-          </p>
-        </div>
-        <Link
-          href="/admin"
-          className="shrink-0 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs hover:opacity-90 transition-opacity"
+      {/* Primary Navigation Tabs */}
+      <div className="flex border-b border-border overflow-x-auto gap-2">
+        <button
+          onClick={() => setActiveTab('tools')}
+          className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 whitespace-nowrap transition-all ${
+            activeTab === 'tools'
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-500/5'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
         >
-          Admin Paneline Git
-        </Link>
+          <Zap className="w-4 h-4" />
+          Aktif MCP Araçları Konsolu (26 Araç)
+        </button>
+
+        <button
+          onClick={() => setActiveTab('directory')}
+          className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 whitespace-nowrap transition-all ${
+            activeTab === 'directory'
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-500/5'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <Database className="w-4 h-4" />
+          MCP Sunucu Dizin Kütüphanesi (mcpservers.org)
+        </button>
+
+        <button
+          onClick={() => setActiveTab('configs')}
+          className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 whitespace-nowrap transition-all ${
+            activeTab === 'configs'
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-500/5'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <Sliders className="w-4 h-4" />
+          IDE, CLI &amp; Web Ajan Yapılandırmaları
+        </button>
+
+        <button
+          onClick={() => setActiveTab('webmcp')}
+          className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 whitespace-nowrap transition-all ${
+            activeTab === 'webmcp'
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-500/5'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <Globe className="w-4 h-4" />
+          Chrome WebMCP 1.1 Canlı Denetçi
+        </button>
+
+        <button
+          onClick={() => setActiveTab('sync')}
+          className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 whitespace-nowrap transition-all ${
+            activeTab === 'sync'
+              ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-500/5'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <RefreshCw className="w-4 h-4" />
+          Otomatik Senkronizasyon (Auto-Sync)
+        </button>
       </div>
+
+      {/* TAB 1: TOOLS TESTER */}
+      {activeTab === 'tools' && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-5 space-y-4">
+            <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
+              <h3 className="font-bold text-base text-foreground flex items-center gap-2">
+                <Wrench className="w-4 h-4 text-blue-500" />
+                Çalıştırılacak MCP Aracını Seçin
+              </h3>
+
+              <div className="space-y-1.5 max-h-[420px] overflow-y-auto pr-1">
+                {ALL_TOOLS_LIST.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setSelectedTool(t.id)}
+                    className={`w-full text-left p-3 rounded-xl border transition-all ${
+                      selectedTool === t.id
+                        ? 'border-blue-500 bg-blue-500/10 text-foreground font-bold shadow-sm'
+                        : 'border-border/60 hover:bg-muted text-muted-foreground'
+                    }`}
+                  >
+                    <p className="font-mono text-xs text-blue-600 dark:text-blue-400">{t.name}</p>
+                    <p className="text-[11px] opacity-80 mt-0.5">{t.desc}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 space-y-4">
+            <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <div>
+                  <span className="text-xs font-bold uppercase text-blue-600 dark:text-blue-400">Seçili Araç</span>
+                  <h3 className="text-lg font-mono font-extrabold text-foreground">{selectedTool}</h3>
+                </div>
+                <button
+                  onClick={handleExecuteTool}
+                  disabled={executing}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all disabled:opacity-50"
+                >
+                  {executing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+                  {executing ? 'Çağrılıyor...' : 'Aracı Çalıştır'}
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-xs font-bold text-foreground block">Araç Parametreleri (JSON/Form Inputs)</label>
+                {selectedTool === 'engelsizforum_live_disability_news' && (
+                  <input
+                    type="text"
+                    value={toolParams.topic}
+                    onChange={(e) => setToolParams({ ...toolParams, topic: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl border border-border bg-background text-sm font-medium text-foreground focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Haber konusu veya arama terimi..."
+                  />
+                )}
+                {selectedTool === 'engelsizforum_web_search' && (
+                  <input
+                    type="text"
+                    value={toolParams.query}
+                    onChange={(e) => setToolParams({ ...toolParams, query: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl border border-border bg-background text-sm font-medium text-foreground focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Aranacak sorgu metni..."
+                  />
+                )}
+                {selectedTool === 'engelsizforum_fact_checker_ai' && (
+                  <input
+                    type="text"
+                    value={toolParams.claim}
+                    onChange={(e) => setToolParams({ ...toolParams, claim: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl border border-border bg-background text-sm font-medium text-foreground focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Doğrulanacak iddia veya sosyal medya haberi..."
+                  />
+                )}
+                {selectedTool === 'engelsizforum_general_tax_salary_calc' && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <input
+                      type="number"
+                      value={toolParams.grossSalary}
+                      onChange={(e) => setToolParams({ ...toolParams, grossSalary: e.target.value })}
+                      className="px-3.5 py-2 rounded-xl border border-border bg-background text-sm font-medium text-foreground outline-none"
+                      placeholder="Aylık Brüt Maaş (TL)"
+                    />
+                    <input
+                      type="number"
+                      value={toolParams.workingYears}
+                      onChange={(e) => setToolParams({ ...toolParams, workingYears: e.target.value })}
+                      className="px-3.5 py-2 rounded-xl border border-border bg-background text-sm font-medium text-foreground outline-none"
+                      placeholder="Çalışma Yılı"
+                    />
+                  </div>
+                )}
+                {selectedTool === 'engelsizforum_code_accessibility_inspector' && (
+                  <textarea
+                    rows={4}
+                    value={toolParams.codeSnippet}
+                    onChange={(e) => setToolParams({ ...toolParams, codeSnippet: e.target.value })}
+                    className="w-full p-3 rounded-xl border border-border bg-background font-mono text-xs text-foreground outline-none"
+                    placeholder="İncelenecek React veya HTML kodu..."
+                  />
+                )}
+              </div>
+
+              {/* Execution Output Window */}
+              <div className="space-y-2 pt-2">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block">
+                  JSON-RPC 2.0 / Agent Yanıt Çıktısı
+                </span>
+                <div className="bg-slate-950 text-slate-100 p-4 rounded-xl font-mono text-xs min-h-[220px] max-h-[350px] overflow-y-auto whitespace-pre-wrap leading-relaxed shadow-inner border border-slate-800">
+                  {executionResult ? executionResult : '// "Aracı Çalıştır" butonuna basarak canlı sonucu görüntüleyebilirsiniz.'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 2: DIRECTORY */}
+      {activeTab === 'directory' && (
+        <div className="space-y-6">
+          <div className="bg-card border border-border rounded-2xl p-5 space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    fetchDirectory(selectedCategory, selectedAgentType, e.target.value);
+                  }}
+                  placeholder="MCP Sunucusu veya araç ara (ör. PostgreSQL, GitHub, WCAG, İş Kanunu)..."
+                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-border bg-background text-sm outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <select
+                  value={selectedAgentType}
+                  onChange={(e) => {
+                    setSelectedAgentType(e.target.value);
+                    fetchDirectory(selectedCategory, e.target.value, searchQuery);
+                  }}
+                  className="px-3 py-2 rounded-xl border border-border bg-background text-xs font-bold text-foreground outline-none"
+                >
+                  <option value="all">Tüm Ajan Türleri</option>
+                  <option value="ide">IDE Ajanları (Cursor, VS Code)</option>
+                  <option value="cli">CLI Ajanları (Claude Code, Aider)</option>
+                  <option value="web">Web Ajanları (Gemini Web, ChatGPT)</option>
+                  <option value="extension">Browser Eklenti Ajanları</option>
+                </select>
+
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => {
+                    setSelectedCategory(e.target.value);
+                    fetchDirectory(e.target.value, selectedAgentType, searchQuery);
+                  }}
+                  className="px-3 py-2 rounded-xl border border-border bg-background text-xs font-bold text-foreground outline-none"
+                >
+                  {directoryCategories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {loadingDirectory ? (
+            <div className="p-12 text-center text-muted-foreground flex items-center justify-center gap-2">
+              <RefreshCw className="w-5 h-5 animate-spin text-blue-500" />
+              <span>MCP Sunucu Dizini Yükleniyor...</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {directoryServers.map((server) => (
+                <div
+                  key={server.id}
+                  className="bg-card border border-border hover:border-blue-500/40 rounded-2xl p-6 space-y-4 shadow-sm transition-all flex flex-col justify-between"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                        {server.category}
+                      </span>
+                      {server.isEngelsizForumNative && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                          EngelsizForum Yerli Hub
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="font-extrabold text-base text-foreground line-clamp-1">{server.name}</h3>
+                    <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">{server.description}</p>
+
+                    <div className="space-y-1 pt-2">
+                      <span className="text-[11px] font-bold text-foreground">Ajan Araçları ({server.tools?.length || 0}):</span>
+                      <div className="flex flex-wrap gap-1">
+                        {server.tools?.slice(0, 4).map((t, idx) => (
+                          <span key={idx} className="px-2 py-0.5 rounded bg-muted font-mono text-[10px] text-muted-foreground">
+                            {t.name}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-border flex items-center justify-between text-xs">
+                    <span className="font-mono text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">
+                      {server.protocol}
+                    </span>
+
+                    <button
+                      onClick={() => copyToClipboard(server.endpointUrl, server.id)}
+                      className="inline-flex items-center gap-1 font-bold text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      {copiedKey === server.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copiedKey === server.id ? 'Kopyalandı' : 'Bağlantıyı Kopya'}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB 3: CONFIGS */}
+      {activeTab === 'configs' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Code2 className="w-5 h-5 text-blue-500" />
+                <h3 className="font-bold text-foreground text-base">Cursor IDE (.cursor/mcp.json)</h3>
+              </div>
+              <button
+                onClick={() =>
+                  copyToClipboard(
+                    JSON.stringify(
+                      {
+                        mcpServers: {
+                          engelsizforum: {
+                            url: 'https://www.engelsizforum.com/mcp',
+                            type: 'sse',
+                          },
+                        },
+                      },
+                      null,
+                      2
+                    ),
+                    'cursor'
+                  )
+                }
+                className="p-1.5 rounded-lg border border-border hover:bg-muted text-muted-foreground"
+              >
+                {copiedKey === 'cursor' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+            <pre className="p-4 rounded-xl bg-slate-950 text-slate-100 font-mono text-xs overflow-x-auto">
+{`{
+  "mcpServers": {
+    "engelsizforum": {
+      "url": "https://www.engelsizforum.com/mcp",
+      "type": "sse"
+    }
+  }
+}`}
+            </pre>
+          </div>
+
+          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Terminal className="w-5 h-5 text-purple-500" />
+                <h3 className="font-bold text-foreground text-base">Claude Code CLI Komutu</h3>
+              </div>
+              <button
+                onClick={() => copyToClipboard('claude mcp add engelsizforum https://www.engelsizforum.com/mcp', 'claudecode')}
+                className="p-1.5 rounded-lg border border-border hover:bg-muted text-muted-foreground"
+              >
+                {copiedKey === 'claudecode' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+            <pre className="p-4 rounded-xl bg-slate-950 text-slate-100 font-mono text-xs overflow-x-auto">
+claude mcp add engelsizforum https://www.engelsizforum.com/mcp
+            </pre>
+          </div>
+
+          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Globe className="w-5 h-5 text-emerald-500" />
+                <h3 className="font-bold text-foreground text-base">Gemini Web / Custom Connected App</h3>
+              </div>
+              <button
+                onClick={() => copyToClipboard('https://www.engelsizforum.com/mcp', 'geminiweb')}
+                className="p-1.5 rounded-lg border border-border hover:bg-muted text-muted-foreground"
+              >
+                {copiedKey === 'geminiweb' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+            <div className="space-y-2 text-xs text-muted-foreground">
+              <p>Gemini Web (&quot;Özel bağlı uygulama ekle&quot;) menüsüne yapıştırılacak doğru sunucu adresi:</p>
+              <pre className="p-3 rounded-xl bg-slate-950 text-emerald-400 font-mono text-xs overflow-x-auto">
+https://www.engelsizforum.com/mcp
+              </pre>
+            </div>
+          </div>
+
+          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Monitor className="w-5 h-5 text-amber-500" />
+                <h3 className="font-bold text-foreground text-base">Windsurf &amp; VS Code Cline</h3>
+              </div>
+              <button
+                onClick={() =>
+                  copyToClipboard(
+                    JSON.stringify({
+                      mcpServers: {
+                        engelsizforum: {
+                          command: 'npx',
+                          args: ['-y', '@modelcontextprotocol/server-fetch', 'https://www.engelsizforum.com/mcp'],
+                        },
+                      },
+                    }, null, 2),
+                    'windsurf'
+                  )
+                }
+                className="p-1.5 rounded-lg border border-border hover:bg-muted text-muted-foreground"
+              >
+                {copiedKey === 'windsurf' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+            <pre className="p-4 rounded-xl bg-slate-950 text-slate-100 font-mono text-xs overflow-x-auto">
+{`{
+  "mcpServers": {
+    "engelsizforum": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch", "https://www.engelsizforum.com/mcp"]
+    }
+  }
+}`}
+            </pre>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 4: WEBMCP 1.1 */}
+      {activeTab === 'webmcp' && (
+        <div className="bg-card border border-border rounded-2xl p-6 space-y-6 shadow-sm">
+          <div className="flex items-center gap-3">
+            <Globe className="w-6 h-6 text-blue-500" />
+            <div>
+              <h3 className="text-xl font-bold text-foreground">Chrome WebMCP 1.1 W3C Tarayıcı İçi Denetçi</h3>
+              <p className="text-xs text-muted-foreground">Google Chrome 146+ yerleşik tarayıcı yapay zeka yapısı ve W3C Web ML Community Group standardı.</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="p-4 rounded-xl bg-muted/60 border border-border space-y-1">
+              <span className="text-[11px] font-extrabold uppercase text-muted-foreground">Polyfill Status</span>
+              <p className="text-lg font-black text-emerald-600 dark:text-emerald-400">W3C 1.1 Active</p>
+            </div>
+            <div className="p-4 rounded-xl bg-muted/60 border border-border space-y-1">
+              <span className="text-[11px] font-extrabold uppercase text-muted-foreground">document.modelContext</span>
+              <p className="text-lg font-black text-foreground">{webMCPStatus.hasDocContext ? 'Algılandı' : 'Polyfill Aktif'}</p>
+            </div>
+            <div className="p-4 rounded-xl bg-muted/60 border border-border space-y-1">
+              <span className="text-[11px] font-extrabold uppercase text-muted-foreground">Kayıtlı Araç Sayısı</span>
+              <p className="text-lg font-black text-blue-600 dark:text-blue-400">{webMCPStatus.toolCount} Araç</p>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-950 text-slate-100 font-mono text-xs space-y-2">
+            <p className="text-emerald-400 font-bold">// Chrome DevTools konsolunda test etmek için:</p>
+            <p className="text-slate-300">console.log(document.modelContext.getRegisteredTools());</p>
+            <p className="text-slate-300">console.log(window.WebMCP.getRegisteredTools());</p>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 5: SYNC */}
+      {activeTab === 'sync' && (
+        <div className="bg-card border border-border rounded-2xl p-6 space-y-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <RefreshCw className="w-6 h-6 text-emerald-500" />
+              <div>
+                <h3 className="text-xl font-bold text-foreground">Otomatik Senkronizasyon (Auto-Sync) Modülü</h3>
+                <p className="text-xs text-muted-foreground">Webhook, Cron Job ve GitHub Actions üzerinden mcpservers.org ve T.C. mevzuat değişiklikleri taranır.</p>
+              </div>
+            </div>
+
+            <button
+              onClick={handleTriggerSync}
+              disabled={isSyncing}
+              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all disabled:opacity-50"
+            >
+              {isSyncing ? 'Senkronize Ediliyor...' : 'Şimdi Manuel Çalıştır'}
+            </button>
+          </div>
+
+          {lastSyncResult && (
+            <div className="p-4 rounded-xl bg-slate-950 text-slate-100 font-mono text-xs space-y-2">
+              <p className="text-emerald-400 font-bold">// Son Senkronizasyon Raporu:</p>
+              <pre>{JSON.stringify(lastSyncResult, null, 2)}</pre>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

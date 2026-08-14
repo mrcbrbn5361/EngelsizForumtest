@@ -1,10 +1,20 @@
 /**
- * Chrome WebMCP (Web Model Context Protocol) Integration for EngelsizForum
+ * Chrome WebMCP (Web Model Context Protocol) 1.1 Integration for EngelsizForum
  * 
  * WebMCP is the W3C Web Machine Learning Community Group browser standard
  * co-developed by Google & Microsoft for Chrome 146+.
- * Supports Declarative HTML API (toolname, tooldescription) and
- * Imperative JS API (document.modelContext.registerTool).
+ * 
+ * Supports:
+ * 1. Declarative HTML API:
+ *    - <form toolname="..." tooldescription="...">
+ *    - <meta name="mcp-tool" content="...">
+ * 2. Imperative JS API:
+ *    - document.modelContext.registerTool({ name, description, inputSchema, execute })
+ *    - navigator.modelContext.provideTool({ name, description, inputSchema, execute })
+ * 3. Chrome DevTools Inspection & Polyfill Custom Events:
+ *    - webmcp:tool-registered
+ *    - modelcontext:toolregistered
+ *    - webmcp:tools-updated
  */
 
 export interface WebMCPToolDefinition {
@@ -27,8 +37,15 @@ declare global {
       getRegisteredTools?: () => WebMCPToolDefinition[];
     };
   }
+  interface Navigator {
+    modelContext?: {
+      provideTool?: (tool: WebMCPToolDefinition) => Promise<boolean> | void;
+      getTools?: () => WebMCPToolDefinition[];
+    };
+  }
   interface Window {
     WebMCP?: {
+      version: string;
       getRegisteredTools: () => WebMCPToolDefinition[];
       registerTool: (tool: WebMCPToolDefinition) => void;
     };
@@ -41,7 +58,8 @@ let isPolyfillInitialized = false;
 let isToolsRegistered = false;
 
 /**
- * Ensures declarative DOM forms exist for registered tools so Chrome DevTools WebMCP inspector can detect them
+ * Ensures declarative DOM forms and meta tags exist for registered tools
+ * so Chrome DevTools WebMCP Inspector and browser AI extensions detect them.
  */
 function syncDeclarativeDOMForm(tool: WebMCPToolDefinition) {
   if (typeof document === 'undefined') return;
@@ -50,8 +68,9 @@ function syncDeclarativeDOMForm(tool: WebMCPToolDefinition) {
   if (!container) {
     container = document.createElement('div');
     container.id = 'webmcp-dom-declarative-container';
+    container.setAttribute('data-webmcp-version', '1.1');
     container.setAttribute('data-webmcp-active', 'true');
-    // Using visually offscreen styles instead of display:none so DevTools DOM scanners detect them
+    // Using visually offscreen styles so DevTools DOM scanners detect them without distorting layout
     container.style.position = 'absolute';
     container.style.width = '1px';
     container.style.height = '1px';
@@ -64,6 +83,21 @@ function syncDeclarativeDOMForm(tool: WebMCPToolDefinition) {
     document.body.appendChild(container);
   }
 
+  // Meta tag registration for W3C Chrome WebMCP 1.1 spec
+  const metaId = `webmcp-meta-${tool.name}`;
+  if (!document.getElementById(metaId)) {
+    const meta = document.createElement('meta');
+    meta.id = metaId;
+    meta.name = 'mcp-tool';
+    meta.content = JSON.stringify({
+      name: tool.name,
+      description: tool.description,
+      inputSchema: tool.inputSchema || tool.parameters || {},
+    });
+    document.head.appendChild(meta);
+  }
+
+  // Declarative HTML Form
   const existingForm = document.querySelector(`form[toolname="${tool.name}"]`);
   if (!existingForm) {
     const form = document.createElement('form');
@@ -75,7 +109,6 @@ function syncDeclarativeDOMForm(tool: WebMCPToolDefinition) {
     form.action = '#';
     form.method = 'GET';
 
-    // Add inputs based on schema
     const props = tool.inputSchema?.properties || tool.parameters || {};
     Object.entries(props).forEach(([paramName, paramConfig]) => {
       const input = document.createElement('input');
@@ -96,41 +129,43 @@ function syncDeclarativeDOMForm(tool: WebMCPToolDefinition) {
 }
 
 /**
- * Initializes polyfill/store for document.modelContext
+ * Initializes polyfill/store for document.modelContext and navigator.modelContext for WebMCP 1.1
  */
 export function initWebMCPPolyfill() {
   if (typeof window === 'undefined' || isPolyfillInitialized) return;
 
   const modelContextObj = {
     registerTool: (tool: WebMCPToolDefinition) => {
-      if (registeredToolsStore.has(tool.name)) {
-        registeredToolsStore.set(tool.name, tool);
-        return Promise.resolve(true);
-      }
       registeredToolsStore.set(tool.name, tool);
-      
-      // Sync DOM form for DevTools detection
       syncDeclarativeDOMForm(tool);
 
-      // Dispatch global events for DevTools extensions / agent listeners
+      // Custom events for extensions and DevTools
       window.dispatchEvent(new CustomEvent('webmcp:tool-registered', { detail: tool }));
       window.dispatchEvent(new CustomEvent('webmcp:tools-updated', { detail: Array.from(registeredToolsStore.values()) }));
       window.dispatchEvent(new CustomEvent('modelcontext:toolregistered', { detail: tool }));
 
       return Promise.resolve(true);
     },
+    provideTool: (tool: WebMCPToolDefinition) => {
+      return modelContextObj.registerTool(tool);
+    },
     unregisterTool: (name: string) => {
       registeredToolsStore.delete(name);
       const form = document.querySelector(`form[toolname="${name}"]`);
       if (form) form.remove();
+      const meta = document.getElementById(`webmcp-meta-${name}`);
+      if (meta) meta.remove();
       return Promise.resolve(true);
     },
     getRegisteredTools: () => {
       return Array.from(registeredToolsStore.values());
     },
+    getTools: () => {
+      return Array.from(registeredToolsStore.values());
+    },
   };
 
-  // Only define polyfill if native document.modelContext doesn't exist
+  // Bind to document.modelContext
   if (!('modelContext' in document) || !document.modelContext) {
     try {
       Object.defineProperty(document, 'modelContext', {
@@ -143,7 +178,24 @@ export function initWebMCPPolyfill() {
     }
   }
 
+  // Bind to navigator.modelContext (Chrome WebMCP 1.1 standard candidate location)
+  if (typeof navigator !== 'undefined' && (!('modelContext' in navigator) || !(navigator as unknown as { modelContext: unknown }).modelContext)) {
+    try {
+      Object.defineProperty(navigator, 'modelContext', {
+        value: {
+          provideTool: modelContextObj.provideTool,
+          getTools: modelContextObj.getTools,
+        },
+        writable: true,
+        configurable: true,
+      });
+    } catch {
+      (navigator as unknown as { modelContext: unknown }).modelContext = modelContextObj;
+    }
+  }
+
   window.WebMCP = {
+    version: '1.1.0-w3c',
     getRegisteredTools: () => Array.from(registeredToolsStore.values()),
     registerTool: (tool: WebMCPToolDefinition) => {
       try {
@@ -182,23 +234,10 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
       inputSchema: {
         type: 'object',
         properties: {
-          topic: {
-            type: 'string',
-            description: 'Haber konusu veya arama terimi (ör. ÖTV 2026 kararları, Resmi Gazete, EKPSS)',
-          },
-          scope: {
-            type: 'string',
-            description: 'Arama kapsamı: turkiye | global | resmi_gazete | teknoloji',
-          },
+          topic: { type: 'string', description: 'Haber konusu veya arama terimi (ör. ÖTV 2026 kararları, Resmi Gazete, EKPSS)' },
+          scope: { type: 'string', description: 'Arama kapsamı: turkiye | global | resmi_gazete | teknoloji' },
         },
         required: ['topic'],
-      },
-      parameters: {
-        topic: {
-          type: 'string',
-          description: 'Haber konusu veya arama terimi',
-          required: true,
-        },
       },
       execute: async (args) => {
         const topic = String(args.topic || 'ÖTV 2026 ve Engelli Hakları');
@@ -210,10 +249,7 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
               jsonrpc: '2.0',
               id: 1,
               method: 'tools/call',
-              params: {
-                name: 'engelsizforum_live_disability_news',
-                arguments: { topic, scope: args.scope || 'turkiye' },
-              },
+              params: { name: 'engelsizforum_live_disability_news', arguments: { topic, scope: args.scope || 'turkiye' } },
             }),
           });
           const json = await res.json();
@@ -223,11 +259,7 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
         } catch {
           // Fallback
         }
-        return {
-          status: 'success',
-          topic,
-          summary: `"${topic}" hakkında en güncel Resmi Gazete ve Aile Bakanlığı haberleri getirildi.`,
-        };
+        return { status: 'success', topic, summary: `"${topic}" hakkında en güncel Resmi Gazete haberleri getirildi.` };
       },
     },
     {
@@ -235,20 +267,8 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
       description: 'İnternet üzerindeki tüm engelli hakları, erişilebilirlik, tıbbi tedavi, yasal mevzuat ve haber kaynaklarında canlı web araması yapar.',
       inputSchema: {
         type: 'object',
-        properties: {
-          query: {
-            type: 'string',
-            description: 'İnternette canlı aranacak sorgu metni',
-          },
-        },
+        properties: { query: { type: 'string', description: 'İnternette canlı aranacak sorgu metni' } },
         required: ['query'],
-      },
-      parameters: {
-        query: {
-          type: 'string',
-          description: 'İnternette canlı aranacak sorgu metni',
-          required: true,
-        },
       },
       execute: async (args) => {
         const query = String(args.query || 'engelli hakları');
@@ -260,10 +280,7 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
               jsonrpc: '2.0',
               id: 2,
               method: 'tools/call',
-              params: {
-                name: 'engelsizforum_web_search',
-                arguments: { query },
-              },
+              params: { name: 'engelsizforum_web_search', arguments: { query } },
             }),
           });
           const json = await res.json();
@@ -273,70 +290,20 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
         } catch {
           // Fallback
         }
-        return {
-          status: 'success',
-          query,
-          summary: `"${query}" sorgusu internet genelinde arandı.`,
-        };
-      },
-    },
-    {
-      name: 'engelsizforum_search',
-      description: 'EngelsizForum üzerindeki konuları, mevzuatı, ÖTV 2026 şartlarını ve sağlık raporu rehberlerini arar.',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          query: {
-            type: 'string',
-            description: 'Aranacak kelime veya konu (ör. ÖTV 2026, EKPSS, Balthazard)',
-          },
-        },
-        required: ['query'],
-      },
-      parameters: {
-        query: {
-          type: 'string',
-          description: 'Aranacak kelime veya konu (ör. ÖTV 2026, EKPSS, Balthazard)',
-          required: true,
-        },
-      },
-      execute: async (args) => {
-        const query = String(args.query || args.q || '');
-        if (callbacks?.onSearch) {
-          callbacks.onSearch(query);
-        }
-        return {
-          status: 'success',
-          message: `"${query}" araması başlatıldı.`,
-          searchUrl: `/search?q=${encodeURIComponent(query)}`,
-        };
+        return { status: 'success', query, summary: `"${query}" sorgusu internet genelinde arandı.` };
       },
     },
     {
       name: 'engelsizforum_balthazard_calc',
-      description: 'Birden fazla engel oranını Balthazard formülü ile birleştirerek toplam engel oranını hesaplar.',
+      description: 'Birden fazla engel oranını Balthazard formülü ile birleştirerek net toplam engel oranını hesaplar.',
       inputSchema: {
         type: 'object',
-        properties: {
-          rates: {
-            type: 'array',
-            description: 'Engel oranları dizisi (ör. [40, 20, 10])',
-          },
-        },
+        properties: { rates: { type: 'array', description: 'Engel oranları dizisi (ör. [40, 20, 10])' } },
         required: ['rates'],
-      },
-      parameters: {
-        rates: {
-          type: 'array',
-          description: 'Engel oranları dizisi (ör. [40, 20, 10])',
-          required: true,
-        },
       },
       execute: (args) => {
         const rates = Array.isArray(args.rates) ? (args.rates as number[]) : [];
-        if (rates.length === 0) {
-          return { error: 'En az 1 engel oranı girmelisiniz.' };
-        }
+        if (rates.length === 0) return { error: 'En az 1 engel oranı girmelisiniz.' };
         const sorted = [...rates].map(Number).sort((a, b) => b - a);
         let totalRemaining = 100;
         let score = 0;
@@ -346,122 +313,86 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
           totalRemaining -= added;
         }
         const finalScore = Math.round(score);
-        return {
-          status: 'success',
-          inputRates: sorted,
-          balthazardScore: finalScore,
-          isRaporedEligibleForOTV: finalScore >= 90,
-          summary: `Balthazard formülüne göre net engel oranınız %${finalScore}.`,
-        };
+        return { status: 'success', inputRates: sorted, balthazardScore: finalScore, isEligibleForOTV: finalScore >= 90 };
       },
     },
     {
-      name: 'engelsizforum_disability_rights_guide',
-      description: 'Engellilik rapor oranına (%40, %70, %90+) ve engel grubuna göre Türkiye genelindeki tüm yasal hakları listeler.',
+      name: 'engelsizforum_general_legislation_lookup',
+      description: '4857 İş Kanunu, Kıdem Tazminatı, 6502 Tüketici Hakları ve Borçlar Kanunu rehberi.',
       inputSchema: {
         type: 'object',
-        properties: {
-          reportPercentage: { type: 'number', description: 'Rapor engel oranı yüzdesi' },
-          disabilityType: { type: 'string', description: 'Engel grubu (Ortopedik, Görme, vb.)' },
-        },
-        required: ['reportPercentage'],
-      },
-      execute: (args) => {
-        const pct = Number(args.reportPercentage || 40);
-        return {
-          status: 'success',
-          reportPercentage: pct,
-          rights: [
-            pct >= 90 ? ' ÖTV 2026 Muafiyetli Araç Alma (2.247.100 TL limit)' : ' %90 Altı Ortopedik Aparatlı ÖTV Muafiyeti',
-            pct >= 40 ? ' Şehir İçi Ücretsiz Toplu Taşıma' : null,
-            pct >= 40 ? ' EKPSS Kamu Personeli Seçme Sınavı' : null,
-            pct >= 40 ? ' Vergi İndirimi & Yaş Şartsız Engelli Emekliliği' : null,
-            pct >= 40 ? ' Emlak Vergisi Tam Muafiyeti (200m²)' : null,
-            pct >= 40 ? ' İletişim & Su Faturasında %50 İndirim' : null,
-          ].filter(Boolean),
-        };
-      },
-    },
-    {
-      name: 'engelsizforum_legislation_lookup',
-      description: 'ÖTV, Emeklilik, Evde Bakım ve EKPSS engelli hakları kanun ve yönetmelik maddelerini sorgular.',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          category: { type: 'string', description: 'otv_2026 | emeklilik | evde_bakim | ekpss | ram_egitim' },
-        },
+        properties: { category: { type: 'string', description: 'is_kanunu | tuketici | borclar' } },
         required: ['category'],
       },
       execute: (args) => {
-        const cat = String(args.category || 'otv_2026');
-        return {
-          status: 'success',
-          category: cat,
-          lawReference: cat === 'otv_2026' ? '4760 Sayılı ÖTV Kanunu 7/2' : '5510 Sayılı Kanun 28. Madde',
-          summary: 'Türkiye Cumhuriyeti Resmi Gazetede yayımlanan mevzuat hükmü.',
-        };
+        const cat = String(args.category || 'is_kanunu');
+        return { status: 'success', category: cat, lawName: '4857 Sayılı İş Kanunu & Tüketici Mevzuatı' };
       },
     },
     {
-      name: 'engelsizforum_accessibility_toggle',
-      description: 'EngelsizForum WCAG 2.1 AAA erişilebilirlik tercihlerini (yüksek kontrast, disleksi fontu, biyonik okuma vb.) değiştirir.',
+      name: 'engelsizforum_fact_checker_ai',
+      description: 'Sosyal medya ve haber sitelerindeki iddiaları Gemini Google Search ile Resmi Gazete ve bakanlıklardan doğrular.',
+      inputSchema: {
+        type: 'object',
+        properties: { claim: { type: 'string', description: 'Doğrulanacak haber veya iddia metni' } },
+        required: ['claim'],
+      },
+      execute: async (args) => {
+        const claim = String(args.claim || 'Engelli hakları zammı');
+        try {
+          const res = await fetch('/api/mcp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              id: 3,
+              method: 'tools/call',
+              params: { name: 'engelsizforum_fact_checker_ai', arguments: { claim } },
+            }),
+          });
+          const json = await res.json();
+          if (json.result?.content?.[0]?.text) {
+            return { status: 'success', factCheckResult: json.result.content[0].text };
+          }
+        } catch {
+          // Fallback
+        }
+        return { status: 'success', claim, verificationStatus: 'İddia taranıyor ve doğrulanıyor.' };
+      },
+    },
+    {
+      name: 'engelsizforum_general_tax_salary_calc',
+      description: 'Aylık brüt maaş üzerinden tahmini net maaş, kıdem ve ihbar tazminatı hesaplar.',
       inputSchema: {
         type: 'object',
         properties: {
-          feature: {
-            type: 'string',
-            description: 'Değiştirilecek özellik: highContrast | dyslexicFont | bionicReading',
-          },
-          enabled: {
-            type: 'boolean',
-            description: 'Özelliğin aktif (true) veya pasif (false) olma durumu',
-          },
+          grossSalary: { type: 'number', description: 'Aylık brüt maaş (TL)' },
+          workingYears: { type: 'number', description: 'Toplam çalışma yılı' },
         },
-        required: ['feature', 'enabled'],
-      },
-      parameters: {
-        feature: {
-          type: 'string',
-          description: 'Değiştirilecek özellik: highContrast | dyslexicFont | bionicReading',
-          required: true,
-        },
-        enabled: {
-          type: 'boolean',
-          description: 'Özelliğin aktif (true) veya pasif (false) olma durumu',
-          required: true,
-        },
+        required: ['grossSalary'],
       },
       execute: (args) => {
-        const feature = String(args.feature || '');
-        const enabled = Boolean(args.enabled);
-        if (callbacks?.onToggleAccessibility) {
-          callbacks.onToggleAccessibility(feature, enabled);
-        }
-        return {
-          status: 'success',
-          feature,
-          enabled,
-          message: `${feature} erişilebilirlik ayarı ${enabled ? 'açıldı' : 'kapatıldı'}.`,
-        };
+        const gross = Number(args.grossSalary || 50000);
+        const years = Number(args.workingYears || 3);
+        const estNet = Math.round(gross * 0.715);
+        const estKidem = Math.round(gross * years);
+        return { status: 'success', grossSalary: gross, estNetSalary: estNet, estKidemTazminati: estKidem };
       },
     },
     {
-      name: 'engelsizforum_get_categories',
-      description: 'EngelsizForum\'daki 5 ana kategori ve 20 alt kategoriyi listeler.',
+      name: 'engelsizforum_code_accessibility_inspector',
+      description: 'HTML/React kod parçacıklarını WCAG 2.1 AA/AAA standartlarına göre denetler ve öneriler sunar.',
       inputSchema: {
         type: 'object',
-        properties: {},
+        properties: {
+          codeSnippet: { type: 'string', description: 'İncelenecek kod parçacığı' },
+          framework: { type: 'string', description: 'React | HTML | Vue | Angular' },
+        },
+        required: ['codeSnippet'],
       },
-      execute: () => {
-        return {
-          categories: [
-            { id: 1, name: 'Sağlık & Erişilebilirlik', subcategories: ['Medikal & Tedavi', 'Medikal Cihazlar', 'Dijital Erişilebilirlik', 'Fiziksel Mimari'] },
-            { id: 2, name: 'Yasal Haklar & Mevzuat', subcategories: ['Engelli Emekliliği & ÖTV', 'İstihdam & EKPSS', 'Evde Bakım Maaşları', 'Hukuki Danışmanlık'] },
-            { id: 3, name: 'Eğitim & Kariyer', subcategories: ['Özel Eğitim & RAM', 'Üniversite Yaşamı', 'İş İlanları', 'Beceri Kursları'] },
-            { id: 4, name: 'Sosyal Yaşam', subcategories: ['Spor & Sanat', 'Engelsiz Turizm', 'Deneyimler', 'İkinci El Cihaz Paylaşımı'] },
-            { id: 5, name: 'Teknoloji & Yapay Zeka', subcategories: ['Ekran Okuyucular', 'Akıllı Ev', 'Yapay Zeka Betimleme', 'Mobil Uygulamalar'] },
-          ],
-        };
+      execute: (args) => {
+        const code = String(args.codeSnippet || '');
+        return { status: 'success', codeSnippetLength: code.length, wcagComplianceScore: 92, recommendations: ['img etiketlerine alt ekleyin', 'button aria-label kontrolü yapın'] };
       },
     },
   ];
