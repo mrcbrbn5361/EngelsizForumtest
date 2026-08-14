@@ -152,6 +152,24 @@ export async function POST(req: NextRequest) {
     const title = firstLine.length > 50 ? firstLine.substring(0, 47) + '...' : firstLine || 'Mobil Paylaşım';
     const content = statusText;
 
+    const slugify = (text: string) => {
+      const trMap: Record<string, string> = {
+        'ç': 'c', 'Ç': 'c', 'ğ': 'g', 'Ğ': 'g', 'ı': 'i', 'I': 'i', 'İ': 'i',
+        'ö': 'o', 'Ö': 'o', 'ş': 's', 'Ş': 's', 'ü': 'u', 'Ü': 'u'
+      };
+      let str = text;
+      for (const key in trMap) {
+        str = str.replace(new RegExp(key, 'g'), trMap[key]);
+      }
+      return str.toLowerCase()
+        .replace(/[^-a-zA-Z0-9\s]+/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim() || `status-${Date.now()}`;
+    };
+
+    const topicSlug = slugify(title);
+
     // Create topic
     const { data: newTopic, error: topicErr } = await supabaseServer
       .from('topics')
@@ -159,7 +177,8 @@ export async function POST(req: NextRequest) {
         author_id: profile.id,
         category_id: categoryId,
         title: title,
-        content: content
+        content: content,
+        slug: topicSlug
       })
       .select('*')
       .single();

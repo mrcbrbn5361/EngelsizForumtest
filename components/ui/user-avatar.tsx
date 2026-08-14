@@ -57,6 +57,7 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge,
             src={effectiveSrc}
             alt={name || username || 'Kullanıcı'}
             fill
+            unoptimized={effectiveSrc.includes('/svg') || effectiveSrc.includes('.svg') || effectiveSrc.includes('dicebear')}
             className={cn("object-cover transition-opacity duration-300", error ? "opacity-0" : "opacity-100")}
             onError={() => setError(true)}
             referrerPolicy="no-referrer"

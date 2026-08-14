@@ -113,18 +113,39 @@ function DiscussionsContent() {
     if (!user) return;
     setIsSubmitting(true);
     try {
+      const slugify = (text: string) => {
+        const trMap: Record<string, string> = {
+          'ç': 'c', 'Ç': 'c', 'ğ': 'g', 'Ğ': 'g', 'ı': 'i', 'I': 'i', 'İ': 'i',
+          'ö': 'o', 'Ö': 'o', 'ş': 's', 'Ş': 's', 'ü': 'u', 'Ü': 'u'
+        };
+        let str = text;
+        for (const key in trMap) {
+          str = str.replace(new RegExp(key, 'g'), trMap[key]);
+        }
+        return str.toLowerCase()
+          .replace(/[^-a-zA-Z0-9\s]+/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .trim() || `konu-${Date.now()}`;
+      };
+
+      const topicSlug = slugify(newTopic.title);
+
       const { data, error } = await supabase
         .from('topics')
         .insert([{
           title: newTopic.title,
           content: newTopic.content,
           category_id: newTopic.category_id,
-          author_id: user.id
+          author_id: user.id,
+          slug: topicSlug
         }])
         .select();
 
       if (error) throw error;
       
+      toast.success('Konunuz başarıyla oluşturuldu!');
+
       // Increase User XP (+20 for new topic) and check Level
       if (user) {
         const { data: profile } = await supabase
@@ -150,8 +171,9 @@ function DiscussionsContent() {
       setIsCreateModalOpen(false);
       setNewTopic({ title: '', content: '', category_id: '' });
       fetchInitialData(); // Refresh list
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error creating topic:', err);
+      toast.error('Konu oluşturulurken hata: ' + (err.message || 'Bilinmeyen hata'));
     } finally {
       setIsSubmitting(false);
     }
