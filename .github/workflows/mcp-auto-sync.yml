@@ -29,4 +29,11 @@ jobs:
         run: python scripts/sync-mcpservers.py
 
       - name: 5. Değişiklikleri Otomatik Commit Et ve Pushla
-        run: git config --global user.name 'MCP Auto-Sync Bot' && git config --global user.email 'bot@engelsizforum.com' && git add . && (git diff --staged --quiet || (git commit -m '🤖 Otomatik MCP Güncellemesi: mcpservers.org/tr senkronize edildi' && git push))
+        run: |
+          git config --global user.name "MCP Auto-Sync Bot"
+          git config --global user.email "bot@engelsizforum.com"
+          git add .
+          if ! git diff --staged --quiet; then
+            git commit -m "🤖 Otomatik MCP Güncellemesi: mcpservers.org/tr senkronize edildi"
+            git push
+          fi
