@@ -11,12 +11,15 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { initWebMCPPolyfill, registerEngelsizForumWebMCPTools } from '@/lib/webmcp';
-import { MCPServerEntry, MCPCategoryInfo } from '@/lib/mcp-directory';
+import { MCPServerEntry, MCPCategoryInfo, EXHAUSTIVE_AI_AGENTS_CATALOG, AIAgentEntry } from '@/lib/mcp-directory';
 
 export default function WebMCPPage() {
   const { user, loading: authLoading } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'tools' | 'directory' | 'configs' | 'webmcp' | 'sync'>('tools');
+  const [selectedAgentCategory, setSelectedAgentCategory] = useState<string>('all');
+  const [agentSearchQuery, setAgentSearchQuery] = useState<string>('');
+
   const [selectedTool, setSelectedTool] = useState<string>('engelsizforum_live_disability_news');
   const [toolParams, setToolParams] = useState<Record<string, string>>({
     topic: 'ÖTV 2026 ve Engelli Hakları Zammı',
@@ -569,124 +572,142 @@ export default function WebMCPPage() {
         </div>
       )}
 
-      {/* TAB 3: CONFIGS */}
+      {/* TAB 3: CONFIGS & EXHAUSTIVE AI AGENTS CATALOG */}
       {activeTab === 'configs' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-8">
+          {/* Top Filter & Search Header */}
           <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Code2 className="w-5 h-5 text-blue-500" />
-                <h3 className="font-bold text-foreground text-base">Cursor IDE (.cursor/mcp.json)</h3>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-extrabold text-foreground flex items-center gap-2">
+                  <Bot className="w-6 h-6 text-blue-500" />
+                  Kapsamlı Yapay Zeka Ajanları (AI Agents) &amp; MCP Entegrasyon Kataloğu
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Sistemdeki tüm IDE, CLI, Web, Bulut ve Eklenti tabanlı yapay zeka ajanları. EngelsizForum Universal MCP Hub ile %100 uyumludur.
+                </p>
               </div>
-              <button
-                onClick={() =>
-                  copyToClipboard(
-                    JSON.stringify(
-                      {
-                        mcpServers: {
-                          engelsizforum: {
-                            url: 'https://www.engelsizforum.com/mcp',
-                            type: 'sse',
-                          },
-                        },
-                      },
-                      null,
-                      2
-                    ),
-                    'cursor'
-                  )
-                }
-                className="p-1.5 rounded-lg border border-border hover:bg-muted text-muted-foreground"
-              >
-                {copiedKey === 'cursor' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-              </button>
-            </div>
-            <pre className="p-4 rounded-xl bg-slate-950 text-slate-100 font-mono text-xs overflow-x-auto">
-{`{
-  "mcpServers": {
-    "engelsizforum": {
-      "url": "https://www.engelsizforum.com/mcp",
-      "type": "sse"
-    }
-  }
-}`}
-            </pre>
-          </div>
 
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Terminal className="w-5 h-5 text-purple-500" />
-                <h3 className="font-bold text-foreground text-base">Claude Code CLI Komutu</h3>
+              <div className="relative w-full md:w-80">
+                <Search className="w-4 h-4 text-muted-foreground absolute left-3.5 top-3" />
+                <input
+                  type="text"
+                  value={agentSearchQuery}
+                  onChange={(e) => setAgentSearchQuery(e.target.value)}
+                  placeholder="Ajan adı veya özellik ara (Cursor, Claude Code, Devin, Windsurf)..."
+                  className="w-full pl-10 pr-4 py-2 rounded-xl border border-border bg-background text-xs font-medium outline-none focus:ring-2 focus:ring-blue-500 text-foreground"
+                />
               </div>
-              <button
-                onClick={() => copyToClipboard('claude mcp add engelsizforum https://www.engelsizforum.com/mcp', 'claudecode')}
-                className="p-1.5 rounded-lg border border-border hover:bg-muted text-muted-foreground"
-              >
-                {copiedKey === 'claudecode' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-              </button>
             </div>
-            <pre className="p-4 rounded-xl bg-slate-950 text-slate-100 font-mono text-xs overflow-x-auto">
-claude mcp add engelsizforum https://www.engelsizforum.com/mcp
-            </pre>
-          </div>
 
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Globe className="w-5 h-5 text-emerald-500" />
-                <h3 className="font-bold text-foreground text-base">Gemini Web / Custom Connected App</h3>
-              </div>
-              <button
-                onClick={() => copyToClipboard('https://www.engelsizforum.com/mcp', 'geminiweb')}
-                className="p-1.5 rounded-lg border border-border hover:bg-muted text-muted-foreground"
-              >
-                {copiedKey === 'geminiweb' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-              </button>
-            </div>
-            <div className="space-y-2 text-xs text-muted-foreground">
-              <p>Gemini Web (&quot;Özel bağlı uygulama ekle&quot;) menüsüne yapıştırılacak doğru sunucu adresi:</p>
-              <pre className="p-3 rounded-xl bg-slate-950 text-emerald-400 font-mono text-xs overflow-x-auto">
-https://www.engelsizforum.com/mcp
-              </pre>
+            {/* Category Filter Pills */}
+            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
+              {[
+                { id: 'all', label: `Tüm Ajanlar (${EXHAUSTIVE_AI_AGENTS_CATALOG.length})` },
+                { id: 'ide_tabanli_agentlar', label: 'IDE Tabanlı Ajanlar' },
+                { id: 'cli_tabanli_agentlar', label: 'CLI Tabanlı Ajanlar' },
+                { id: 'web_tabanli_ve_bulut_agentlar', label: 'Web & Bulut Ajanları' },
+                { id: 'eklenti_tabanli_agentlar', label: 'Eklenti Tabanlı Ajanlar' },
+              ].map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedAgentCategory(cat.id)}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                    selectedAgentCategory === cat.id
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                      : 'bg-muted/50 hover:bg-muted text-muted-foreground border-border'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Monitor className="w-5 h-5 text-amber-500" />
-                <h3 className="font-bold text-foreground text-base">Windsurf &amp; VS Code Cline</h3>
-              </div>
-              <button
-                onClick={() =>
-                  copyToClipboard(
-                    JSON.stringify({
-                      mcpServers: {
-                        engelsizforum: {
-                          command: 'npx',
-                          args: ['-y', '@modelcontextprotocol/server-fetch', 'https://www.engelsizforum.com/mcp'],
-                        },
-                      },
-                    }, null, 2),
-                    'windsurf'
-                  )
-                }
-                className="p-1.5 rounded-lg border border-border hover:bg-muted text-muted-foreground"
+          {/* Agents Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {EXHAUSTIVE_AI_AGENTS_CATALOG.filter((agent) => {
+              const matchesCat = selectedAgentCategory === 'all' || agent.category === selectedAgentCategory;
+              const matchesQuery =
+                !agentSearchQuery ||
+                agent.name.toLowerCase().includes(agentSearchQuery.toLowerCase()) ||
+                agent.features.toLowerCase().includes(agentSearchQuery.toLowerCase()) ||
+                agent.typeBadge.toLowerCase().includes(agentSearchQuery.toLowerCase());
+              return matchesCat && matchesQuery;
+            }).map((agent) => (
+              <div
+                key={agent.id}
+                className="bg-card border border-border hover:border-blue-500/50 rounded-2xl p-6 space-y-4 shadow-sm transition-all flex flex-col justify-between"
               >
-                {copiedKey === 'windsurf' ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-              </button>
-            </div>
-            <pre className="p-4 rounded-xl bg-slate-950 text-slate-100 font-mono text-xs overflow-x-auto">
-{`{
-  "mcpServers": {
-    "engelsizforum": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch", "https://www.engelsizforum.com/mcp"]
-    }
-  }
-}`}
-            </pre>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                      {agent.typeBadge}
+                    </span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                      EngelsizForum Hazır
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-lg font-black text-foreground">{agent.name}</h4>
+                    <span className="text-[11px] font-semibold text-muted-foreground">{agent.categoryLabel}</span>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground leading-relaxed font-normal">{agent.features}</p>
+
+                  {/* Setup Command or Config Snippet */}
+                  {agent.setupCommand && (
+                    <div className="space-y-1 pt-2">
+                      <span className="text-[11px] font-bold text-foreground block">Terminal Kurulum Komutu:</span>
+                      <div className="relative">
+                        <pre className="p-3 rounded-xl bg-slate-950 text-slate-100 font-mono text-[11px] overflow-x-auto pr-10">
+                          {agent.setupCommand}
+                        </pre>
+                        <button
+                          onClick={() => copyToClipboard(agent.setupCommand!, agent.id)}
+                          className="absolute right-2 top-2 p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+                        >
+                          {copiedKey === agent.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {agent.configSnippet && (
+                    <div className="space-y-1 pt-2">
+                      <span className="text-[11px] font-bold text-foreground block">MCP Yapılandırma Snippet&apos;ı:</span>
+                      <div className="relative">
+                        <pre className="p-3 rounded-xl bg-slate-950 text-emerald-400 font-mono text-[10px] overflow-x-auto pr-10">
+                          {agent.configSnippet}
+                        </pre>
+                        <button
+                          onClick={() => copyToClipboard(agent.configSnippet!, agent.id)}
+                          className="absolute right-2 top-2 p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+                        >
+                          {copiedKey === agent.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-4 border-t border-border flex items-center justify-between text-xs">
+                  <span className="text-[11px] font-mono text-muted-foreground">https://www.engelsizforum.com/mcp</span>
+                  {agent.websiteUrl && (
+                    <a
+                      href={agent.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 font-bold text-blue-600 dark:text-blue-400 hover:underline"
+                    >
+                      <span>Resmi Site</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

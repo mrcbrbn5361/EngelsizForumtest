@@ -1,0 +1,36 @@
+name: EngelsizForum MCP Auto-Sync (mcpservers.org/tr)
+
+on:
+  schedule:
+    # Her 6 saatte bir periyodik otomatik tarama
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      force_sync:
+        description: 'Zorunlu Yeniden Senkronizasyon (Force Full Sync)'
+        required: false
+        default: 'true'
+
+jobs:
+  mcp-sync:
+    name: mcpservers.org/tr Otonom MCP Sunucu Senkronizasyonu
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Repositoriyi Klonla
+        uses: actions/checkout@v4
+
+      - name: 2. Node.js Kurulumu
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 3. mcpservers.org/tr Taraması ve Otomatik Veritabanı Senkronizasyonu
+        env:
+          SYNC_ENDPOINT: ${{ secrets.MCP_SYNC_ENDPOINT || 'https://www.engelsizforum.com/api/mcp-sync' }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET || 'engelsizforum_mcp_cron_secret_2026' }}
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          echo "=== mcpservers.org/tr ve EngelsizForum MCP Hub Senkronizasyonu Başlatılıyor ==="
+          node scripts/sync-mcp-servers.js

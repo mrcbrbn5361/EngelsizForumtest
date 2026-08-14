@@ -2,12 +2,25 @@
  * EngelsizForum Comprehensive MCP & AI Agent Directory Store
  * 
  * Includes full support for:
- * 1. IDE Agents (Cursor, VS Code / Copilot, Windsurf, JetBrains, Zed, Roo Code / Cline, Continue)
- * 2. CLI Agents (Claude Code, Aider AI, Goose CLI, Fabric AI, OpenInterpreter)
- * 3. Web Agents (Gemini Web, Claude.ai, ChatGPT Custom GPT Actions, Perplexity Pro, Open WebUI, Dify, Poe)
- * 4. Extension & Plugin Agents (Chrome WebMCP 1.1, Firefox WebMCP, Edge AI Sidepanel, Tampermonkey MCP Bridge, Obsidian MCP)
- * 5. Full Migration of mcpservers.org/tr directory across all domains (Engineering, Healthcare, Legal, Finance, Design, Accessibility, etc.)
+ * 1. IDE Agents (Cursor, Windsurf, Google Antigravity, AWS Kiro, Trae, PearAI, Zed, JetBrains Junie)
+ * 2. CLI Agents (Claude Code, Codex CLI, OpenCode (SST), Aider, Goose CLI, Amazon Q Developer CLI, Gemini CLI / Antigravity CLI, Qwen Code CLI, Kimi CLI, Warp, Continue CLI, Kilo Code CLI)
+ * 3. Web & Cloud Agents (Devin / Devin Desktop, Vellum, Chrome WebMCP Protocol v1.1)
+ * 4. Extension Agents (Cline, Roo Code, GitHub Copilot Extensions)
+ * 5. Full Migration of mcpservers.org/tr directory across all professional domains (Engineering, Healthcare, Legal, Finance, Design, Accessibility, Security, Utilities)
  */
+
+export interface AIAgentEntry {
+  id: string;
+  name: string;
+  category: 'ide_tabanli_agentlar' | 'cli_tabanli_agentlar' | 'web_tabanli_ve_bulut_agentlar' | 'eklenti_tabanli_agentlar';
+  categoryLabel: string;
+  typeBadge: string;
+  features: string;
+  setupCommand?: string;
+  configSnippet?: string;
+  websiteUrl?: string;
+  isSupportedByEngelsizForum: boolean;
+}
 
 export interface MCPServerEntry {
   id: string;
@@ -39,6 +52,292 @@ export interface MCPCategoryInfo {
   iconName: string;
   count: number;
 }
+
+export const EXHAUSTIVE_AI_AGENTS_CATALOG: AIAgentEntry[] = [
+  // IDE Tabanlı Ajanlar
+  {
+    id: 'cursor-ide',
+    name: 'Cursor',
+    category: 'ide_tabanli_agentlar',
+    categoryLabel: 'Masaüstü IDE',
+    typeBadge: 'Dedicated IDE',
+    features: 'Multi-repo codebase reasoning, AI-native fork, agent mode, model picker, codebase context indexing.',
+    configSnippet: `{ "mcpServers": { "engelsizforum": { "url": "https://www.engelsizforum.com/mcp", "type": "sse" } } }`,
+    websiteUrl: 'https://cursor.com',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'windsurf-ide',
+    name: 'Windsurf',
+    category: 'ide_tabanli_agentlar',
+    categoryLabel: 'Masaüstü IDE',
+    typeBadge: 'Dedicated IDE',
+    features: 'Cascade auto-context loading, large monorepo management, enterprise workspace integration.',
+    configSnippet: `{ "mcpServers": { "engelsizforum": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-fetch", "https://www.engelsizforum.com/mcp"] } } }`,
+    websiteUrl: 'https://codeium.com/windsurf',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'google-antigravity',
+    name: 'Google Antigravity',
+    category: 'ide_tabanli_agentlar',
+    categoryLabel: 'Google AI Studio Workspaces',
+    typeBadge: 'Dedicated IDE',
+    features: 'Multi-agent parallel workspaces, multi-agent collaboration across different project directories.',
+    websiteUrl: 'https://ai.google.dev',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'aws-kiro',
+    name: 'AWS Kiro',
+    category: 'ide_tabanli_agentlar',
+    categoryLabel: 'Bulut & Serverless IDE',
+    typeBadge: 'Dedicated IDE',
+    features: 'Spec-driven and hook-driven deterministic development workflows, reproducible cloud architecture.',
+    websiteUrl: 'https://aws.amazon.com',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'trae-ide',
+    name: 'Trae',
+    category: 'ide_tabanli_agentlar',
+    categoryLabel: 'Hafif AI Editörü',
+    typeBadge: 'Dedicated IDE',
+    features: 'Budget-conscious native IDE, automatic environment setup, embedded agent workflows.',
+    websiteUrl: 'https://trae.ai',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'pearai-ide',
+    name: 'PearAI',
+    category: 'ide_tabanli_agentlar',
+    categoryLabel: 'Açık Kaynak IDE',
+    typeBadge: 'Dedicated IDE',
+    features: 'Open-source Cursor alternative, standalone BYOK architecture, community-driven ecosystem.',
+    websiteUrl: 'https://trypear.ai',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'zed-editor',
+    name: 'Zed',
+    category: 'ide_tabanli_agentlar',
+    categoryLabel: 'Yüksek Performanslı Editör',
+    typeBadge: 'Dedicated IDE',
+    features: 'Rust-based ultra-high performance editor, native multi-model AI assistant integration.',
+    websiteUrl: 'https://zed.dev',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'jetbrains-junie',
+    name: 'JetBrains Junie',
+    category: 'ide_tabanli_agentlar',
+    categoryLabel: 'JetBrains Ekosistemi',
+    typeBadge: 'Native Ecosystem',
+    features: 'Deep integration within the JetBrains IDE suite, project-wide intelligent indexing and agentic execution.',
+    websiteUrl: 'https://jetbrains.com',
+    isSupportedByEngelsizForum: true,
+  },
+
+  // CLI Tabanlı Ajanlar
+  {
+    id: 'claude-code',
+    name: 'Claude Code',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'Terminal Ajanı',
+    typeBadge: 'Terminal-First',
+    features: 'Terminal-native autonomous work, 1M+ context handling, sub-agents, hooks, skills, CLAUDE.md memory.',
+    setupCommand: 'claude mcp add engelsizforum https://www.engelsizforum.com/mcp',
+    websiteUrl: 'https://anthropic.com',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'codex-cli',
+    name: 'Codex CLI',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'Terminal Ajanı',
+    typeBadge: 'Terminal-First',
+    features: 'OpenAI model family integration (GPT-5 series), top-tier benchmark capability, OS-level sandboxing.',
+    setupCommand: 'codex mcp register engelsizforum --sse https://www.engelsizforum.com/mcp',
+    websiteUrl: 'https://openai.com',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'opencode-sst',
+    name: 'OpenCode (SST)',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'Açık Kaynak Terminal',
+    typeBadge: 'Terminal-First',
+    features: 'Open-source, MIT licensed, model-agnostic terminal agent supporting 75+ providers, LSP and MCP servers.',
+    setupCommand: 'npx opencode mcp add https://www.engelsizforum.com/mcp',
+    websiteUrl: 'https://opencode.ai',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'aider-cli',
+    name: 'Aider',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'Git Terminal Asistanı',
+    typeBadge: 'Terminal-First',
+    features: 'Git-native terminal coding assistant, automated commits, multi-file editing across 100+ models.',
+    setupCommand: 'python -m aider --mcp https://www.engelsizforum.com/mcp',
+    websiteUrl: 'https://aider.chat',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'goose-cli',
+    name: 'Goose (Linux Foundation)',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'Terminal & Masaüstü',
+    typeBadge: 'Terminal-First & Desktop',
+    features: '70+ MCP extensions, multi-interface (CLI/Desktop/REST API via "goose serve"), YAML recipes.',
+    setupCommand: 'goose configure extension add engelsizforum --type sse --url https://www.engelsizforum.com/mcp',
+    websiteUrl: 'https://block.github.io/goose',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'amazon-q-cli',
+    name: 'Amazon Q Developer CLI',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'AWS Terminal Ajanı',
+    typeBadge: 'Terminal-First',
+    features: 'Deep AWS API awareness, shell autocompletion, natural-language-to-bash translation, IAM policy auditing.',
+    setupCommand: 'q mcp add https://www.engelsizforum.com/mcp',
+    websiteUrl: 'https://aws.amazon.com/q',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'gemini-cli',
+    name: 'Gemini CLI / Antigravity CLI',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'Google Multimodal CLI',
+    typeBadge: 'Terminal-First',
+    features: 'Multimodal capability (audio, video, PDF processing), 1M token context window, Google ecosystem synergy.',
+    setupCommand: 'gemini mcp connect https://www.engelsizforum.com/mcp',
+    websiteUrl: 'https://ai.google.dev',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'qwen-code-cli',
+    name: 'Qwen Code CLI',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'Açık Ağırlıklı CLI',
+    typeBadge: 'Terminal-First',
+    features: 'Optimized for open-weights large models (Qwen3-Coder MoE architectures), Apache 2.0 open distribution.',
+    setupCommand: 'qwen-code --mcp https://www.engelsizforum.com/mcp',
+    websiteUrl: 'https://github.com/QwenLM',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'kimi-cli',
+    name: 'Kimi CLI',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'Uzun Bağlam CLI',
+    typeBadge: 'Terminal-First',
+    features: 'Moonshot AI engine, ultra-long context windows, high-speed output and multi-agent swarming support.',
+    setupCommand: 'kimi --mcp-server https://www.engelsizforum.com/mcp',
+    websiteUrl: 'https://moonshot.cn',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'warp-terminal',
+    name: 'Warp',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'Akıllı Terminal',
+    typeBadge: 'Terminal-First',
+    features: 'Rust-based smart terminal, team collaboration features, multi-threaded agent workflows and built-in AI blocks.',
+    websiteUrl: 'https://warp.dev',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'continue-cli',
+    name: 'Continue CLI (cn)',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'CI/CD Otomasyonu',
+    typeBadge: 'Terminal-First & CI',
+    features: '"Continuous AI" paradigm running automated agents on every pull request as enforceable CI status checks.',
+    setupCommand: 'cn mcp add https://www.engelsizforum.com/mcp',
+    websiteUrl: 'https://continue.dev',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'kilo-code-cli',
+    name: 'Kilo Code CLI',
+    category: 'cli_tabanli_agentlar',
+    categoryLabel: 'Açık Kaynak Terminal',
+    typeBadge: 'Terminal-First',
+    features: 'Fork of Roo Code / Cline architecture, model-agnostic free tier tool integration via npm.',
+    setupCommand: 'npx kilo-code-cli --mcp https://www.engelsizforum.com/mcp',
+    websiteUrl: 'https://github.com/kilo-code',
+    isSupportedByEngelsizForum: true,
+  },
+
+  // Web Tabanlı ve Bulut Ajanlar
+  {
+    id: 'devin-cloud',
+    name: 'Devin / Devin Desktop',
+    category: 'web_tabanli_ve_bulut_agentlar',
+    categoryLabel: 'Otonom Bulut Mühendisi',
+    typeBadge: 'Cloud Autonomous Agent',
+    features: 'End-to-end multi-file software engineering, parallel cloud execution loops, self-debugging capabilities.',
+    websiteUrl: 'https://cognition.ai',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'vellum-workflow',
+    name: 'Vellum',
+    category: 'web_tabanli_ve_bulut_agentlar',
+    categoryLabel: 'İş Akışı Ajanı',
+    typeBadge: 'Web & Desktop Workflow Agent',
+    features: 'Cross-surface persistence (tickets, communications, codebase), full application generation and deployment.',
+    websiteUrl: 'https://vellum.ai',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'chrome-webmcp-v11',
+    name: 'Chrome WebMCP Protocol (v1.1)',
+    category: 'web_tabanli_ve_bulut_agentlar',
+    categoryLabel: 'Tarayıcı Yerleşik Standardı',
+    typeBadge: 'Browser Native Standard',
+    features: 'Official Google standardized browser-level Model Context Protocol runtime version 1.1, enabling direct web page tool use without middleware layer conflicts.',
+    configSnippet: 'document.modelContext.registerTool({ name: "engelsizforum_live_disability_news", ... })',
+    websiteUrl: 'https://www.engelsizforum.com/webmcp',
+    isSupportedByEngelsizForum: true,
+  },
+
+  // Eklenti Tabanlı Ajanlar
+  {
+    id: 'cline-extension',
+    name: 'Cline',
+    category: 'eklenti_tabanli_agentlar',
+    categoryLabel: 'VS Code Eklentisi',
+    typeBadge: 'IDE Extension (VS Code)',
+    features: 'Model-agnostic autonomous coding agent with explicit Plan and Act approval stages and rich tool usage.',
+    configSnippet: `{ "mcpServers": { "engelsizforum": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-fetch", "https://www.engelsizforum.com/mcp"] } } }`,
+    websiteUrl: 'https://github.com/cline/cline',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'roo-code-extension',
+    name: 'Roo Code',
+    category: 'eklenti_tabanli_agentlar',
+    categoryLabel: 'VS Code Eklentisi',
+    typeBadge: 'IDE Extension (VS Code)',
+    features: 'Multi-persona custom agent configurations, advanced prompt switching, granular file permission rules.',
+    configSnippet: `{ "mcpServers": { "engelsizforum": { "url": "https://www.engelsizforum.com/mcp", "type": "sse" } } }`,
+    websiteUrl: 'https://github.com/RooVetGit/Roo-Code',
+    isSupportedByEngelsizForum: true,
+  },
+  {
+    id: 'github-copilot-extensions',
+    name: 'GitHub Copilot Extensions',
+    category: 'eklenti_tabanli_agentlar',
+    categoryLabel: 'Ekosistem Eklentisi',
+    typeBadge: 'Ecosystem Plugin',
+    features: 'Copilot Workspaces, native enterprise hooks, PR-level automated code reviews and inline chat refactoring.',
+    websiteUrl: 'https://github.com/features/copilot',
+    isSupportedByEngelsizForum: true,
+  },
+];
 
 export const MCP_CATEGORIES: MCPCategoryInfo[] = [
   { id: 'all', name: 'Tüm Sunucu & Ajanlar', description: 'Sistemdeki tüm IDE, CLI, Web ve Eklenti MCP sunucuları', iconName: 'Layers', count: 32 },
