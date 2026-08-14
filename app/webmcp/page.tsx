@@ -7,7 +7,7 @@ import {
   Bot, Sparkles, CheckCircle2, ArrowLeft, ShieldCheck, Terminal,
   Layers, Globe, Monitor, Newspaper, Code2, RefreshCw, Cpu,
   Search, Scale, DollarSign, Activity, Palette, Copy, Check,
-  Lock, LogIn, ExternalLink, Play, Zap, Database, Sliders, Smartphone, Wrench
+  Lock, LogIn, ExternalLink, Play, Zap, Database, Sliders, Smartphone, Wrench, FileCode, Download
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { initWebMCPPolyfill, registerEngelsizForumWebMCPTools } from '@/lib/webmcp';
@@ -906,35 +906,66 @@ export default function WebMCPPage() {
 
                   {/* Setup Command or Config Snippet */}
                   {agent.setupCommand && (
-                    <div className="space-y-1 pt-2">
-                      <span className="text-[11px] font-bold text-foreground block">Terminal Kurulum Komutu:</span>
+                    <div className="space-y-1.5 pt-2">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-foreground">
+                        <span className="flex items-center gap-1.5">
+                          <Terminal className="w-3.5 h-3.5 text-blue-500" />
+                          Yöntem 1: Terminal Kurulum Komutu
+                        </span>
+                      </div>
                       <div className="relative">
-                        <pre className="p-3 rounded-xl bg-slate-950 text-slate-100 font-mono text-[11px] overflow-x-auto pr-10">
+                        <pre className="p-3 rounded-xl bg-slate-950 text-slate-100 font-mono text-[11px] overflow-x-auto pr-10 border border-slate-800">
                           {agent.setupCommand}
                         </pre>
                         <button
-                          onClick={() => copyToClipboard(agent.setupCommand!, agent.id)}
+                          onClick={() => copyToClipboard(agent.setupCommand!, `cmd-${agent.id}`)}
                           className="absolute right-2 top-2 p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+                          title="Komutu Kopyala"
                         >
-                          {copiedKey === agent.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          {copiedKey === `cmd-${agent.id}` ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                         </button>
                       </div>
+
+                      {agent.npmFixGuide && (
+                        <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-600 dark:text-amber-300 space-y-1">
+                          <div className="font-bold flex items-center gap-1.5">
+                            <Sparkles className="w-3 h-3 text-amber-500 shrink-0" />
+                            <span>npm 404 Hatası Çözümü</span>
+                          </div>
+                          <p className="leading-snug">{agent.npmFixGuide}</p>
+                        </div>
+                      )}
                     </div>
                   )}
 
                   {agent.configSnippet && (
-                    <div className="space-y-1 pt-2">
-                      <span className="text-[11px] font-bold text-foreground block">MCP Yapılandırma Snippet&apos;ı:</span>
+                    <div className="space-y-1.5 pt-2">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-foreground">
+                        <span className="flex items-center gap-1.5">
+                          <FileCode className="w-3.5 h-3.5 text-emerald-500" />
+                          Yöntem 2: Garantili JSON Konfigürasyonu ({agent.configPath || 'config.json'})
+                        </span>
+                      </div>
                       <div className="relative">
-                        <pre className="p-3 rounded-xl bg-slate-950 text-emerald-400 font-mono text-[10px] overflow-x-auto pr-10">
+                        <pre className="p-3 rounded-xl bg-slate-950 text-emerald-400 font-mono text-[10px] overflow-x-auto pr-20 max-h-40 border border-slate-800">
                           {agent.configSnippet}
                         </pre>
-                        <button
-                          onClick={() => copyToClipboard(agent.configSnippet!, agent.id)}
-                          className="absolute right-2 top-2 p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
-                        >
-                          {copiedKey === agent.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                        </button>
+                        <div className="absolute right-2 top-2 flex items-center gap-1">
+                          <button
+                            onClick={() => copyToClipboard(agent.configSnippet!, `json-${agent.id}`)}
+                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+                            title="JSON Kopyala"
+                          >
+                            {copiedKey === `json-${agent.id}` ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          </button>
+                          <button
+                            onClick={() => handleDownloadJson(agent.configPath || `${agent.id}-config.json`, agent.configSnippet!)}
+                            className="p-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
+                            title="Dosya Olarak İndir"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
