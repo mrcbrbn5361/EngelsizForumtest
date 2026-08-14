@@ -16,9 +16,20 @@ import { MCPServerEntry, MCPCategoryInfo, EXHAUSTIVE_AI_AGENTS_CATALOG, AIAgentE
 export default function WebMCPPage() {
   const { user, loading: authLoading } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'tools' | 'directory' | 'configs' | 'webmcp' | 'sync'>('tools');
+  const [activeTab, setActiveTab] = useState<'tools' | 'directory' | 'configs' | 'webmcp' | 'sync' | 'guides'>('tools');
   const [selectedAgentCategory, setSelectedAgentCategory] = useState<string>('all');
+  const [guideCategoryFilter, setGuideCategoryFilter] = useState<string>('all');
+  const [guideSearchQuery, setGuideSearchQuery] = useState<string>('');
   const [agentSearchQuery, setAgentSearchQuery] = useState<string>('');
+
+  const handleQuickLaunchTool = (toolId: string, presetParams?: Record<string, string>) => {
+    setSelectedTool(toolId);
+    if (presetParams) {
+      setToolParams((prev) => ({ ...prev, ...presetParams }));
+    }
+    setActiveTab('tools');
+    toast.success(`"${toolId}" aracı test konsolunda yüklendi!`);
+  };
 
   const [selectedTool, setSelectedTool] = useState<string>('engelsizforum_live_disability_news');
   const [toolParams, setToolParams] = useState<Record<string, string>>({
@@ -439,6 +450,18 @@ export default function WebMCPPage() {
         >
           <Database className="w-4 h-4" />
           MCP Sunucu Dizin Kütüphanesi (mcpservers.org)
+        </button>
+
+        <button
+          onClick={() => setActiveTab('guides')}
+          className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 whitespace-nowrap transition-all ${
+            activeTab === 'guides'
+              ? 'border-purple-500 text-purple-600 dark:text-purple-400 bg-purple-500/5'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <FileCode className="w-4 h-4 text-purple-500" />
+          Eğitim Kılavuzları &amp; Örnek Promptlar
         </button>
 
         <button
@@ -998,7 +1021,313 @@ export default function WebMCPPage() {
         </div>
       )}
 
-      {/* TAB 4: WEBMCP 1.1 */}
+      {/* TAB 4: GUIDES & PROMPT CHEAT-SHEET */}
+      {activeTab === 'guides' && (
+        <div className="space-y-8">
+          {/* Header Banner */}
+          <div className="bg-gradient-to-r from-purple-600/10 via-indigo-600/10 to-blue-600/10 border border-purple-500/30 rounded-2xl p-6 space-y-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-purple-500/20 text-purple-600 dark:text-purple-400">
+                <FileCode className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-extrabold text-foreground">
+                  MCP Araçları &amp; Ajan Kullanım Rehberi (Eğitim Kılavuzu)
+                </h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  EngelsizForum ve mcpservers.org üzerindeki 25+ doğrulanmış MCP aracını yapay zeka ajanlarınızda (OpenCode, Cursor, Windsurf, Claude Code, Roo Code, VS Code vb.) en verimli şekilde nasıl kullanacağınızı öğrenin.
+                </p>
+              </div>
+            </div>
+
+            {/* Quick 3-Step Walkthrough */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+              <div className="p-4 rounded-xl bg-card border border-border/80 space-y-2">
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white font-black text-xs">1</span>
+                <h4 className="font-bold text-sm text-foreground">Konfigürasyonu İndirin</h4>
+                <p className="text-xs text-muted-foreground">
+                  "IDE &amp; CLI Yapılandırmaları" sekmesinden kullandığınız ajan için tek tıkla hazır JSON dosyasını indirin veya kopyalayın.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-card border border-border/80 space-y-2">
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-indigo-500 text-white font-black text-xs">2</span>
+                <h4 className="font-bold text-sm text-foreground">Ajanınıza Bağlayın</h4>
+                <p className="text-xs text-muted-foreground">
+                  JSON dosyasını ilgili ajanın ayarlar klasörüne (`.cursor/mcp.json`, `opencode.json` vb.) ekleyerek remote SSE sunucumuzu tanımlayın.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-card border border-border/80 space-y-2">
+                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 text-white font-black text-xs">3</span>
+                <h4 className="font-bold text-sm text-foreground">Doğal Dille Sorgulayın</h4>
+                <p className="text-xs text-muted-foreground">
+                  Ajanınıza "ÖTV 2026 kararlarını sorgula" veya "PostgreSQL veritabanı şemasını getir" dediğinizde ajan otonom olarak aracı çağırır!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Search & Category Filter for Guides */}
+          <div className="bg-card border border-border rounded-2xl p-5 space-y-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+              <div>
+                <h4 className="font-black text-base text-foreground flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-purple-500" />
+                  Örnek Prompt &amp; Araç Kullanım Kütüphanesi (Cheat-Sheet)
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  İhtiyacınız olan aracı seçin, hazır örnek promptu kopyalayın veya doğrudan canlı konsolda test edin.
+                </p>
+              </div>
+
+              <div className="relative w-full sm:w-72">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={guideSearchQuery}
+                  onChange={(e) => setGuideSearchQuery(e.target.value)}
+                  placeholder="Araç veya komut ara (ÖTV, Postgres, Git, WCAG)..."
+                  className="w-full pl-9 pr-4 py-2 rounded-xl border border-border bg-background text-xs font-medium outline-none focus:ring-2 focus:ring-purple-500 text-foreground"
+                />
+              </div>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
+              {[
+                { id: 'all', label: 'Tüm Kılavuzlar (26 Araç)' },
+                { id: 'accessibility', label: '♿ Erişilebilirlik & Haklar' },
+                { id: 'engineering', label: '🗄️ Veritabanları & Mühendislik' },
+                { id: 'dev', label: '💻 Git & Kodlama' },
+                { id: 'web', label: '🌐 Web Otomasyon & Arama' },
+                { id: 'utilities', label: '📝 İş Birliği & Verimlilik' },
+              ].map((pill) => (
+                <button
+                  key={pill.id}
+                  onClick={() => setGuideCategoryFilter(pill.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                    guideCategoryFilter === pill.id
+                      ? 'bg-purple-600 text-white border-purple-600 shadow-sm'
+                      : 'bg-muted/50 hover:bg-muted text-muted-foreground border-border'
+                  }`}
+                >
+                  {pill.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Cheat-Sheet Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {([
+              {
+                id: 'engelsizforum_live_disability_news',
+                category: 'accessibility',
+                name: 'Resmi Gazete & Bakanlık Canlı Haber Ajanı',
+                desc: 'Resmi Gazete, Aile ve Sosyal Hizmetler Bakanlığı ve T.C. mevzuat duyurularından anlık veri çeker.',
+                recommendedPrompt: '2026 yılı ÖTV muafiyetli engelli araç üst limiti ve engelli aylığı zam oranları Resmi Gazete kararları nelerdir?',
+                presetParams: { topic: 'ÖTV 2026 ve Engelli Hakları Zammı' },
+                tips: 'Özellikle mevzuat, kararname ve güncel hak sorgulamalarında en yüksek doğrulukta yanıt üretir.',
+              },
+              {
+                id: 'engelsizforum_fact_checker_ai',
+                category: 'accessibility',
+                name: 'Haber & İddia Doğrulama Ajanı (Fact-Checker AI)',
+                desc: 'Sosyal medyada dolaşan engelli hakları ve sosyal yardım iddialarını resmi kaynaklardan teyit eder.',
+                recommendedPrompt: '2026 yılında engelli kimlik kartlarının yenilenmesi zorunlu mu? İddiayı doğrula.',
+                presetParams: { claim: '2026 engelli kimlik kartı yenileme zorunluluğu' },
+                tips: 'Ajanınıza bir iddianın doğruluk derecesini sormak istediğinizde mükemmel sonuç verir.',
+              },
+              {
+                id: 'engelsizforum_balthazard_calc',
+                category: 'accessibility',
+                name: 'Balthazard Net Engel Oranı Hesaplayıcı',
+                desc: 'T.C. Balthazard formülü ile birden fazla engel oranını matematiksel olarak birleştirir.',
+                recommendedPrompt: '%40 Ortopedik ve %30 Görme engel oranlarının Balthazard formülü ile toplam net engel oranını hesapla.',
+                presetParams: { topic: '%40 Ortopedik ve %30 Görme engel oranı Balthazard hesabı' },
+                tips: 'Balthazard formülü (A + B*(100-A)/100) kurallarını harfiyen uygular.',
+              },
+              {
+                id: 'postgres_query',
+                category: 'engineering',
+                name: 'PostgreSQL Database MCP Server',
+                desc: 'Canlı PostgreSQL veritabanında salt okunur SQL çalıştırır ve tablo şemalarını sorgular.',
+                recommendedPrompt: 'PostgreSQL veritabanındaki tüm tabloları ve son eklenen 5 kullanıcı kaydını SQL ile sorgula.',
+                presetParams: { topic: 'SELECT * FROM users ORDER BY created_at DESC LIMIT 5;' },
+                tips: 'Veritabanı analitiği, raporlama ve şema tespiti için idealdir.',
+              },
+              {
+                id: 'github_search_repositories',
+                category: 'dev',
+                name: 'GitHub API MCP Server',
+                desc: 'GitHub depolarında arama yapar, Issue oluşturur ve PR diff detaylarını getirir.',
+                recommendedPrompt: 'GitHub üzerinde en çok yıldıza sahip Next.js WCAG erişilebilirlik kütüphanelerini ara.',
+                presetParams: { topic: 'Next.js WCAG accessibility libraries' },
+                tips: 'Ajanınızın harici açık kaynak kütüphaneleri taramasına imkan tanır.',
+              },
+              {
+                id: 'filesystem_read_file',
+                category: 'dev',
+                name: 'Secure FileSystem MCP Server',
+                desc: 'Güvenli yerel dosya sisteminde dosya okuma, yazma ve proje dizini tarama.',
+                recommendedPrompt: 'Proje dizinindeki package.json dosyasının içeriğini oku ve bağımlılıkları analiz et.',
+                presetParams: { topic: 'package.json file analysis' },
+                tips: 'IDE içi kod düzenleme ve refactoring süreçlerinde ajana bağlam sağlar.',
+              },
+              {
+                id: 'brave_web_search',
+                category: 'web',
+                name: 'Brave Web Search MCP Server',
+                desc: 'Brave Search API ile canlı web araması ve güncel haber indeksleme.',
+                recommendedPrompt: 'Türkiye 2026 engelli kpss (EKPSS) başvuru tarihleri ve kontenjan duyurularını ara.',
+                presetParams: { query: '2026 EKPSS başvuru tarihleri' },
+                tips: 'Ajanınızın eğitim verisi dışındaki anlık dünya olaylarını öğrenmesini sağlar.',
+              },
+              {
+                id: 'puppeteer_navigate',
+                category: 'web',
+                name: 'Puppeteer Web Automation MCP',
+                desc: 'Headless Chrome ile web sitelerini otomatik gezer, ekran görüntüsü alır ve DOM analizi yapar.',
+                recommendedPrompt: 'https://www.engelsizforum.com adresine git ve sayfanın erişilebilirlik ekran görüntüsünü al.',
+                presetParams: { topic: 'https://www.engelsizforum.com ekran görüntüsü' },
+                tips: 'E-2-E testler ve sayfa kazıma işlemleri için son derece güçlüdür.',
+              },
+              {
+                id: 'slack_post_message',
+                category: 'utilities',
+                name: 'Slack Workplace Communication MCP',
+                desc: 'Slack kanallarına mesaj gönderir ve ekip içi bildirimleri otomatikleştirir.',
+                recommendedPrompt: '#genel kanalına "2026 EngelsizForum MCP Güncellemesi Başarıyla Tamamlandı" mesajı gönder.',
+                presetParams: { topic: '#genel kanalına bildirim gönderimi' },
+                tips: 'CI/CD süreçleri ve canlı sistem uyarıları için kullanılır.',
+              },
+              {
+                id: 'wcag_audit_contrast',
+                category: 'accessibility',
+                name: 'WCAG Accessibility Validator MCP',
+                desc: 'Web sitelerindeki metin/arka plan renk kontrastını AA ve AAA standartlarında kontrol eder.',
+                recommendedPrompt: 'Arka plan #ffffff ve metin rengi #737373 olan bir düğmenin WCAG AA kontrast uyumluluğunu denetle.',
+                presetParams: { codeSnippet: '<button style="background:#ffffff; color:#737373">Tıkla</button>' },
+                tips: 'Görme engelli ve az gören kullanıcılar için renk zıtlığı denetimi yapar.',
+              },
+            ] as Array<{
+              id: string;
+              category: string;
+              name: string;
+              desc: string;
+              recommendedPrompt: string;
+              presetParams: Record<string, string>;
+              tips: string;
+            }>).filter((card) => {
+              const matchesCat = guideCategoryFilter === 'all' || card.category === guideCategoryFilter;
+              const matchesQuery =
+                !guideSearchQuery ||
+                card.name.toLowerCase().includes(guideSearchQuery.toLowerCase()) ||
+                card.id.toLowerCase().includes(guideSearchQuery.toLowerCase()) ||
+                card.desc.toLowerCase().includes(guideSearchQuery.toLowerCase()) ||
+                card.recommendedPrompt.toLowerCase().includes(guideSearchQuery.toLowerCase());
+              return matchesCat && matchesQuery;
+            }).map((card) => (
+              <div
+                key={card.id}
+                className="bg-card border border-border hover:border-purple-500/50 rounded-2xl p-6 space-y-4 shadow-sm transition-all flex flex-col justify-between"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-[11px] font-bold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                      {card.id}
+                    </span>
+                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                      Canlı Aktif
+                    </span>
+                  </div>
+
+                  <h4 className="text-lg font-black text-foreground">{card.name}</h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{card.desc}</p>
+
+                  {/* Recommended Prompt Box */}
+                  <div className="p-3.5 rounded-xl bg-slate-950 text-slate-100 font-sans text-xs space-y-2 border border-slate-800">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-purple-400">
+                      <span className="flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                        Tavsiye Edilen Örnek Prompt
+                      </span>
+                    </div>
+                    <p className="text-slate-200 text-xs italic font-medium leading-relaxed">
+                      "{card.recommendedPrompt}"
+                    </p>
+                  </div>
+
+                  {/* Useful Tips */}
+                  <div className="p-2.5 rounded-xl bg-blue-500/10 text-[11px] text-blue-700 dark:text-blue-300 font-medium">
+                    💡 <span className="font-bold">İpucu:</span> {card.tips}
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="pt-4 border-t border-border flex items-center justify-between gap-2">
+                  <button
+                    onClick={() => copyToClipboard(card.recommendedPrompt, `prompt-${card.id}`)}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-muted hover:bg-muted/80 text-foreground text-xs font-bold transition-all"
+                  >
+                    {copiedKey === `prompt-${card.id}` ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>Promptu Kopyala</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleQuickLaunchTool(card.id, card.presetParams)}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-md transition-all shrink-0"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>Konsolda Çalıştır</span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* FAQ & Troubleshooting Guide */}
+          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
+            <h4 className="font-extrabold text-lg text-foreground flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-emerald-500" />
+              Sık Sorulan Sorular &amp; Problem Çözüm Rehberi (Troubleshooting)
+            </h4>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div className="p-4 rounded-xl bg-muted/40 border border-border space-y-1.5">
+                <h5 className="font-bold text-foreground text-sm">❓ OpenCode 'Unrecognized key: mcpServers' hatası veriyor?</h5>
+                <p className="text-muted-foreground leading-relaxed">
+                  OpenCode (SST) standartında <code className="bg-muted px-1 rounded font-mono text-[11px]">mcpServers</code> anahtarı geçerli değildir. Yalnızca <code className="bg-muted px-1 rounded font-mono text-[11px]">mcp</code> kullanılmalıdır. Yapılandırma sekmesindeki hazır <code className="bg-muted px-1 rounded font-mono text-[11px]">opencode.json</code> şablonunu kullanın.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-muted/40 border border-border space-y-1.5">
+                <h5 className="font-bold text-foreground text-sm">❓ Cursor veya Claude SSE bağlantı hatası veriyor?</h5>
+                <p className="text-muted-foreground leading-relaxed">
+                  Sunucu adresimizin <code className="bg-muted px-1 rounded font-mono text-[11px]">https://www.engelsizforum.com/mcp</code> tam URL olduğunu ve protokolden <code className="bg-muted px-1 rounded font-mono text-[11px]">sse</code> seçildiğini doğrulayın.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-muted/40 border border-border space-y-1.5">
+                <h5 className="font-bold text-foreground text-sm">❓ Ajan aracı çalıştırıyor fakat yanıt Türkçe gelmiyor?</h5>
+                <p className="text-muted-foreground leading-relaxed">
+                  Ajanınıza verdiğiniz promptun sonuna "Lütfen yanıtı Türkçe, maddeler halinde detaylıca sun" ifadesini ekleyin.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-muted/40 border border-border space-y-1.5">
+                <h5 className="font-bold text-foreground text-sm">❓ WebMCP 1.1 ile W3C tarayıcı entegrasyonu nasıl kullanılır?</h5>
+                <p className="text-muted-foreground leading-relaxed">
+                  Google Chrome 146+ veya destekleyen tarayıcılarda <code className="bg-muted px-1 rounded font-mono text-[11px]">document.modelContext</code> yerleşiktir. Sitemizdeki Polyfill ile tüm tarayıcılarda aktif çalışır.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 5: WEBMCP 1.1 */}
       {activeTab === 'webmcp' && (
         <div className="bg-card border border-border rounded-2xl p-6 space-y-6 shadow-sm">
           <div className="flex items-center gap-3">
