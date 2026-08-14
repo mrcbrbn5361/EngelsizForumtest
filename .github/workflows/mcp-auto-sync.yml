@@ -10,10 +10,14 @@ permissions:
 
 jobs:
   sync_mcpservers:
+    name: mcpservers.org/tr Otonom MCP Sunucu Senkronizasyonu
     runs-on: ubuntu-latest
+
     steps:
       - name: 1. Depoyu Klonla
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: 2. Python Ortamını Kur
         uses: actions/setup-python@v5
@@ -21,7 +25,9 @@ jobs:
           python-version: '3.11'
 
       - name: 3. Gerekli Kütüphaneleri Yükle
-        run: pip install requests beautifulsoup4
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
 
       - name: 4. MCP Senkronizasyon Betiğini Çalıştır
         env:
@@ -29,11 +35,17 @@ jobs:
         run: python scripts/sync-mcpservers.py
 
       - name: 5. Değişiklikleri Otomatik Commit Et ve Pushla
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --global user.name "MCP Auto-Sync Bot"
-          git config --global user.email "bot@engelsizforum.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           if ! git diff --staged --quiet; then
-            git commit -m "🤖 Otomatik MCP Güncellemesi: mcpservers.org/tr senkronize edildi"
-            git push
+            echo "Yeni MCP güncellemesi algılandı, repoya kaydediliyor..."
+            git commit -m "🤖 Otomatik MCP Güncellemesi: mcpservers.org/tr senkronize edildi [skip ci]"
+            git push origin HEAD:${{ github.ref_name }} || git push origin main
+          else
+            echo "Herhangi bir değişiklik tespit edilmedi, sistem güncel."
           fi
+
