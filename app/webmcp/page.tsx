@@ -50,6 +50,126 @@ export default function WebMCPPage() {
     toolCount: number;
   }>({ supported: false, hasDocContext: false, hasNavContext: false, toolCount: 0 });
 
+  // State for JSON Export Builder
+  const [selectedJsonFormat, setSelectedJsonFormat] = useState<'opencode' | 'cursor' | 'windsurf' | 'claude' | 'cline' | 'vscode' | 'generic'>('opencode');
+
+  const jsonPresets = {
+    opencode: {
+      fileName: 'opencode.json',
+      title: 'OpenCode (SST) & Vibe Coder JSON Konfigürasyonu',
+      description: 'Projenizin kök dizinine opencode.json veya .opencode/mcp.json dosyası olarak kaydedin.',
+      json: JSON.stringify({
+        "$schema": "https://opencode.ai/config.json",
+        "name": "EngelsizForum OpenCode Vibe Coder Setup",
+        "mcp": {
+          "engelsizforum": {
+            "type": "remote",
+            "url": "https://www.engelsizforum.com/mcp"
+          }
+        },
+        "mcpServers": {
+          "engelsizforum": {
+            "url": "https://www.engelsizforum.com/mcp",
+            "type": "sse"
+          }
+        }
+      }, null, 2)
+    },
+    cursor: {
+      fileName: '.cursor/mcp.json',
+      title: 'Cursor IDE JSON Konfigürasyonu',
+      description: 'Projenizdeki .cursor/mcp.json dosyasına yapıştırın.',
+      json: JSON.stringify({
+        "mcpServers": {
+          "engelsizforum": {
+            "url": "https://www.engelsizforum.com/mcp",
+            "type": "sse"
+          }
+        }
+      }, null, 2)
+    },
+    windsurf: {
+      fileName: 'mcp_config.json',
+      title: 'Windsurf Cascade JSON Konfigürasyonu',
+      description: '~/.codeium/windsurf/mcp_config.json dosyasına ekleyin.',
+      json: JSON.stringify({
+        "mcpServers": {
+          "engelsizforum": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-fetch", "https://www.engelsizforum.com/mcp"]
+          }
+        }
+      }, null, 2)
+    },
+    claude: {
+      fileName: 'claude_desktop_config.json',
+      title: 'Claude Code & Desktop JSON Konfigürasyonu',
+      description: 'Claude Desktop veya CLI yapılandırmasına ekleyin.',
+      json: JSON.stringify({
+        "mcpServers": {
+          "engelsizforum": {
+            "url": "https://www.engelsizforum.com/mcp",
+            "type": "sse"
+          }
+        }
+      }, null, 2)
+    },
+    cline: {
+      fileName: 'cline_mcp_settings.json',
+      title: 'Cline & Roo Code JSON Konfigürasyonu',
+      description: 'VS Code Cline veya Roo Code ayarlar dosyasına ekleyin.',
+      json: JSON.stringify({
+        "mcpServers": {
+          "engelsizforum": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-fetch", "https://www.engelsizforum.com/mcp"]
+          }
+        }
+      }, null, 2)
+    },
+    vscode: {
+      fileName: '.vscode/mcp.json',
+      title: 'VS Code Native MCP JSON Konfigürasyonu',
+      description: '.vscode/mcp.json dosyasında kullanın.',
+      json: JSON.stringify({
+        "mcpServers": {
+          "engelsizforum": {
+            "url": "https://www.engelsizforum.com/mcp",
+            "type": "sse"
+          }
+        }
+      }, null, 2)
+    },
+    generic: {
+      fileName: 'mcp-servers.json',
+      title: 'Evrensel Remote MCP JSON Yapılandırması',
+      description: 'Tüm özel AI ajanları ve HTTP/SSE istemcileri için standart format.',
+      json: JSON.stringify({
+        "servers": [
+          {
+            "name": "engelsizforum",
+            "endpoint": "https://www.engelsizforum.com/mcp",
+            "transport": "sse",
+            "description": "EngelsizForum 26 Yerli Ajan Aracı, ÖTV 2026, ÇÖZGER ve WCAG 2.1 Entegrasyon Hub'ı"
+          }
+        ]
+      }, null, 2)
+    }
+  };
+
+  const handleDownloadJson = (filename: string, content: string) => {
+    const blob = new Blob([content], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success(`${filename} başarıyla indirildi!`);
+  };
+
   // Sync state
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncResult, setLastSyncResult] = useState<any>(null);
@@ -619,6 +739,90 @@ export default function WebMCPPage() {
       {/* TAB 3: CONFIGS & EXHAUSTIVE AI AGENTS CATALOG */}
       {activeTab === 'configs' && (
         <div className="space-y-8">
+          {/* Dedicated OpenCode & Universal JSON Exporter Banner */}
+          <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl border border-indigo-500/30">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="space-y-2 max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>OpenCode (SST), Cursor, Windsurf &amp; Claude Code Hazır JSON Dosyaları</span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  OpenCode &amp; Yapay Zeka Ajanları için Doğrudan JSON Konfigüratörü
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Projenize direkt kopyalayabileceğiniz veya indirip <code className="text-amber-300 font-mono bg-slate-800 px-1.5 py-0.5 rounded">opencode.json</code> / <code className="text-amber-300 font-mono bg-slate-800 px-1.5 py-0.5 rounded">.cursor/mcp.json</code> olarak kullanabileceğiniz %100 geçerli JSON şablonları.
+                </p>
+              </div>
+
+              {/* Download / Copy Global Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3 shrink-0">
+                <button
+                  onClick={() => copyToClipboard(jsonPresets[selectedJsonFormat].json, `preset-${selectedJsonFormat}`)}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-all shadow-lg hover:scale-105 active:scale-95"
+                >
+                  {copiedKey === `preset-${selectedJsonFormat}` ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  <span>{copiedKey === `preset-${selectedJsonFormat}` ? 'JSON Kopyalandı!' : 'Seçili JSON\'ı Kopyala'}</span>
+                </button>
+
+                <button
+                  onClick={() => handleDownloadJson(jsonPresets[selectedJsonFormat].fileName, jsonPresets[selectedJsonFormat].json)}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition-all shadow-lg border border-indigo-400/30 hover:scale-105 active:scale-95"
+                >
+                  <Database className="w-4 h-4" />
+                  <span>JSON Olarak İndir ({jsonPresets[selectedJsonFormat].fileName})</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Presets Navigation Tabs */}
+            <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-slate-800">
+              {[
+                { id: 'opencode', label: '🚀 OpenCode (SST)', badge: 'opencode.json' },
+                { id: 'cursor', label: '🎯 Cursor IDE', badge: '.cursor/mcp.json' },
+                { id: 'windsurf', label: '🌊 Windsurf Cascade', badge: 'mcp_config.json' },
+                { id: 'claude', label: '💻 Claude Code & Desktop', badge: 'claude_desktop_config.json' },
+                { id: 'cline', label: '🧩 Cline & Roo Code', badge: 'cline_mcp_settings.json' },
+                { id: 'vscode', label: '🛠️ VS Code Native', badge: '.vscode/mcp.json' },
+                { id: 'generic', label: '🌐 Evrensel Remote MCP', badge: 'mcp-servers.json' },
+              ].map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => setSelectedJsonFormat(p.id as any)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
+                    selectedJsonFormat === p.id
+                      ? 'bg-amber-400 text-slate-950 border-amber-400 shadow-md font-extrabold'
+                      : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border-slate-700/60'
+                  }`}
+                >
+                  <span>{p.label}</span>
+                  <span className="text-[10px] opacity-80 font-mono font-normal bg-slate-900/60 px-1.5 py-0.5 rounded">
+                    {p.badge}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            {/* Active Preset Preview Box */}
+            <div className="space-y-2 bg-slate-950 rounded-2xl p-4 sm:p-5 border border-slate-800">
+              <div className="flex items-center justify-between text-xs font-semibold text-slate-400">
+                <span className="text-amber-300 font-extrabold flex items-center gap-2">
+                  <Terminal className="w-4 h-4" />
+                  {jsonPresets[selectedJsonFormat].title}
+                </span>
+                <span className="font-mono text-[11px] text-slate-400">
+                  {jsonPresets[selectedJsonFormat].description}
+                </span>
+              </div>
+
+              <div className="relative pt-2">
+                <pre className="p-4 rounded-xl bg-slate-900/90 text-emerald-400 font-mono text-xs overflow-x-auto leading-relaxed border border-slate-800 max-h-72">
+                  {jsonPresets[selectedJsonFormat].json}
+                </pre>
+              </div>
+            </div>
+          </div>
+
           {/* Top Filter & Search Header */}
           <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-sm">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
