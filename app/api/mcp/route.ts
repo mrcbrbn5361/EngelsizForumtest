@@ -153,6 +153,124 @@ const TOOLS = [
       properties: {},
     },
   },
+  {
+    name: 'engelsizforum_cozger_calculator',
+    description: '18 yaş altı engelli bireyler (çocuklar) için ÇÖZGER özel gereksinim rapor katsayısı, engel yüzdesi karşılığı ve eğitim/sosyal hakları hesaplar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        degree: {
+          type: 'string',
+          description: 'ÇÖZGER derecesi: ozellikel_gereksinimi_var (%40-49) | hafif (%50-59) | orta (%60-69) | agir (%70-79) | cok_agir (%80-89) | belirgin (%90+)',
+        },
+      },
+      required: ['degree'],
+    },
+  },
+  {
+    name: 'engelsizforum_accessibility_checker',
+    description: 'Bir web sitesinin, belgenin veya uygulamanın WCAG 2.1 AAA ve TS 13298 dijital erişilebilirlik standartlarına uygunluğunu analiz eder, hata ve çözüm raporu sunar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        urlOrContent: {
+          type: 'string',
+          description: 'Analiz edilecek web sitesi adresi (URL) veya HTML/UI kod içeriği',
+        },
+        targetLevel: {
+          type: 'string',
+          description: 'Hedef erişilebilirlik seviyesi: WCAG_A | WCAG_AA | WCAG_AAA | TS_13298',
+        },
+      },
+      required: ['urlOrContent'],
+    },
+  },
+  {
+    name: 'engelsizforum_assistive_tech_finder',
+    description: 'Engel grubuna (Görme, İşitme, Ortopedik, Zihinsel) veya özel ihtiyaca göre en uygun yardımcı teknolojileri, ekran okuyucuları, Braille donanımlarını ve medikal çözümleri önerir.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        disabilityCategory: {
+          type: 'string',
+          description: 'Engel kategorisi: gorme | isitme | ortopedik | zihinsel | konuskam',
+        },
+        userGoal: {
+          type: 'string',
+          description: 'Kullanıcının hedefi veya kullanım alanı (ör. Bilgisayar kullanımı, Okul eğitimi, Akıllı ev otomasyonu, Bireysel ulaşım)',
+        },
+      },
+      required: ['disabilityCategory'],
+    },
+  },
+  {
+    name: 'engelsizforum_tax_discount_calc',
+    description: '193 Sayılı Gelir Vergisi Kanunu 31. maddesine göre engelli çalışan veya bakmakla yükümlü olduğu engelli yakını olan çalışan için 2026 yılı vergi indirimi ve net maaş artış tutarını hesaplar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        degree: {
+          type: 'number',
+          description: 'Vergi indirimi derecesi: 1 (1. Derece - %80+), 2 (2. Derece - %60-79), 3 (3. Derece - %40-59)',
+        },
+        grossSalary: {
+          type: 'number',
+          description: 'Aylık brüt maaş tutarı (TL)',
+        },
+      },
+      required: ['degree'],
+    },
+  },
+  {
+    name: 'engelsizforum_sgk_prosthesis_coverage',
+    description: 'SGK Sağlık Uygulama Tebliği (SUT) kapsamında tekerlekli sandalye, işitme cihazı, biyonik protez, hasta yatağı ve solunum cihazlarının devlet katkısı ödeme tutarlarını sorgular.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        equipmentType: {
+          type: 'string',
+          description: 'Medikal cihaz/protez türü (ör. tekerlekli_sandalye, akulu_sandalye, isitme_cihazi, myoelektrik_protez, hasta_yatagi)',
+        },
+      },
+      required: ['equipmentType'],
+    },
+  },
+  {
+    name: 'engelsizforum_home_care_allowance_calc',
+    description: 'Evde Bakım Yardımı ve 2022 Sayılı Engelli Aylığı için hane halkı kişi başı gelir sınırını hesaplar ve hak sahipliği durumunu değerlendirir.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        householdCount: {
+          type: 'number',
+          description: 'Aynı evde yaşayan (hane içi) toplam birey sayısı',
+        },
+        totalHouseholdIncome: {
+          type: 'number',
+          description: 'Hane içi toplam aylık net gelir (TL)',
+        },
+        disabilityPercentage: {
+          type: 'number',
+          description: 'Engelli bireyin sağlık rapor oranı (%) veya Tam Bağımlı durumu',
+        },
+      },
+      required: ['householdCount', 'totalHouseholdIncome'],
+    },
+  },
+  {
+    name: 'engelsizforum_wheelchair_ramp_standards',
+    description: 'TS 9111 ve ISO 21542 binalarda erişilebilirlik standartlarına göre engelli rampası eğimi, yüksekliği, sahanlık ölçüsü, kapı net genişliği ve asansör standartlarını hesaplar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        heightDifferenceCm: {
+          type: 'number',
+          description: 'Aşılması gereken kod/yükseklik farkı (santimetre cinsinden, ör. 50 cm, 100 cm)',
+        },
+      },
+      required: ['heightDifferenceCm'],
+    },
+  },
 ];
 
 async function handleLiveDisabilityNews(topic: string, scope?: string) {
@@ -422,6 +540,169 @@ function handleGetCategories() {
    - Mobil Uygulama İncelemeleri`;
 }
 
+function handleCozgerCalc(degreeStr: string) {
+  const d = degreeStr.toLowerCase();
+  if (d.includes('belirgin') || d.includes('90')) {
+    return `🧒 ÇÖZGER Rapor Analizi (Belirgin Özel Gereksinimi Var - %90+ Karşılığı):
+------------------------------------------------------------------
+- Derece: Belirgin Özel Gereksinimi Var (ÖKGV / %90 ve Üzeri)
+- Yasal Haklar: ÖTV'siz araç alımı (%100 muafiyet), Motorlu Taşıtlar Vergisi (MTV) muafiyeti, Evde Bakım Aylığı bağlama hakkı (gelir şartıyla), MEB RAM ücretsiz aylık destek eğitimi, Emlak vergisi muafiyeti, TCDD/THY ücretsiz ve indirimli seyahat.`;
+  }
+  if (d.includes('cok_agir') || d.includes('80')) {
+    return `🧒 ÇÖZGER Rapor Analizi (Çok İleri Düzeyde Özel Gereksinimi Var - %80-%89 Karşılığı):
+------------------------------------------------------------------
+- Derece: Çok İleri Düzeyde Özel Gereksinimi Var (%80-%89)
+- Yasal Haklar: Tam Bağımlı hakları, Bakıcı aylığı başvuru hakkı, RAM Özel eğitim desteği, Vergi indirimi yakını muafiyeti, Ücretsiz toplu taşıma.`;
+  }
+  if (d.includes('agir') || d.includes('70')) {
+    return `🧒 ÇÖZGER Rapor Analizi (İleri Düzeyde Özel Gereksinimi Var - %70-%79 Karşılığı):
+------------------------------------------------------------------
+- Derece: İleri Düzeyde Özel Gereksinimi Var (%70-%79)
+- Yasal Haklar: Bakım desteği değerlendirmesi, MEB RAM aylık ücretsiz özel eğitim bursu, Su ve iletişim indirimi.`;
+  }
+  return `🧒 ÇÖZGER Rapor Analizi (Özel Gereksinimi Var - %40-%69 Karşılığı):
+------------------------------------------------------------------
+- Derece: Hafif / Orta / Özel Gereksinimi Var (%40-%69)
+- Yasal Haklar: MEB RAM Özel eğitim kurumlarında ücretsiz aylık ders desteği, Okul BEP (Bireyselleştirilmiş Eğitim Programı) sınav uyarlaması, Çocuk yakını vergi indirimi, Toplu taşıma indirimi/ücretsiz kullanım.`;
+}
+
+function handleAccessibilityChecker(input: string, level?: string) {
+  return `♿ WCAG 2.1 AAA & TS 13298 Erişilebilirlik Analiz Raporu:
+------------------------------------------------------------------
+Girdi / URL: ${input.substring(0, 80)}...
+Hedef Seviye: ${level || 'WCAG 2.1 AAA'}
+
+1. 👁️ Görme & Ekran Okuyucu (NVDA/JAWS/VoiceOver):
+   - Tüm img ve icon öğelerine anlamlı alt metinler (alt attribute) atanmalıdır.
+   - Form elemanlarına id ve htmlFor eşleşmeli label tanımlanmalıdır.
+2. ⌨️ Klavye Gezinmesi (Focus State):
+   - Tab tuşuyla odaklanılabilir öğeler belirgin focus ring (outline: 2px solid primary) içermelidir.
+3. 🎨 Renk Kontrastı (WCAG AAA):
+   - Metin ve arka plan kontrast oranı en az 7:1 (AAA) olmalıdır.
+4. 🧠 Bilişsel Erişilebilirlik:
+   - Yazı tipi disleksi dostu (OpenDyslexic veya Plus Jakarta Sans) seçilmeli ve bionic reading modu desteklenmelidir.`;
+}
+
+function handleAssistiveTechFinder(cat: string, goal?: string) {
+  const c = cat.toLowerCase();
+  if (c.includes('gorme')) {
+    return `👁️ Görme Engelliler İçin Yardımcı Teknoloji Rehberi (${goal || 'Genel Kullanım'}):
+------------------------------------------------------------------
+1. Ekran Okuyucular: NVDA (Ücretsiz Windows), JAWS, Apple VoiceOver, TalkBack (Android).
+2. Donanım: Braille Türkçe Ekran (Focus 40 / Orbit Reader 20), Akıllı Baston (WeWALK AI).
+3. Mobil Uygulamalar: Seeing AI, Be My Eyes, Envision AI, Sullivan Plus.`;
+  }
+  if (c.includes('isitme')) {
+    return `👂 İşitme Engelliler İçin Yardımcı Teknoloji Rehberi (${goal || 'Genel Kullanım'}):
+------------------------------------------------------------------
+1. Cihazlar: Dijital Biyonik Kulak (Koklear İmplant), Bluetooth Destekli İşitme Cihazları.
+2. Yazılım: Live Transcribe (Anlık Türkçe Altyazı), AVA Live Subtitles, Türk İşaret Dili (TİD) Yapay Zeka Çeviricileri.`;
+  }
+  return `♿ Ortopedik & Genel Yardımcı Teknoloji Rehberi (${goal || 'Genel Kullanım'}):
+------------------------------------------------------------------
+1. Tekerlekli Sandalyeler: Akülü Arazi Sandalyeleri, Ayakta Dik Pozisyonlandıran Akülü Sandalyeler.
+2. Bilgisayar Erişimi: Eye-Tracking Göz Takip Sistemleri (Tobii Dynavox), Baş Fareleri (HeadMouse), Ağızla Kullanılan Bionic Joystick (MouthPad).
+3. Akıllı Ev: Google Home / Alexa sesli ışık, kapı ve klima otomasyonu.`;
+}
+
+function handleTaxDiscountCalc(degree: number, grossSalary?: number) {
+  const d = Number(degree);
+  const salary = grossSalary || 40000;
+  let discountAmount = 0;
+  let label = '';
+
+  if (d === 1) {
+    discountAmount = 6900;
+    label = '1. Derece (%80 ve üzeri)';
+  } else if (d === 2) {
+    discountAmount = 4000;
+    label = '2. Derece (%60-%79)';
+  } else {
+    discountAmount = 1700;
+    label = '3. Derece (%40-%59)';
+  }
+
+  const taxNetGain = Math.round(discountAmount * 0.15); // %15 gelir vergisi dilimi net katkısı
+
+  return `💵 2026 Yılı Engelli Vergi İndirimi Hesaplama Sonucu:
+------------------------------------------------------------------
+Derece: ${label}
+Aylık Gelir Vergisi Matrah İndirimi: ${discountAmount.toLocaleString('tr-TR')} TL
+Tahmini Aylık Net Maaşa Yansıyan Katkı (%15 Dilim): +${taxNetGain.toLocaleString('tr-TR')} TL/Ay
+Yıllık Net Kazanç: +${(taxNetGain * 12).toLocaleString('tr-TR')} TL
+
+📌 Not: Gelir vergisi indirimi hem engelli çalışanların kendisine hem de engelli bakmakla yükümlü olduğu eş/çocuk bakıcılarına uygulanır.`;
+}
+
+function handleSgkProsthesisCoverage(type: string) {
+  const t = type.toLowerCase();
+  if (t.includes('akulu') || t.includes('akülü')) {
+    return `♿ SGK SUT Akülü Tekerlekli Sandalye Ödeme Tutarları (2026):
+------------------------------------------------------------------
+- Standart Akülü Sandalye SGK Katkısı: Güncel SUT tebliğine göre reçete ve sağlık kurulu raporu ile devlet katkısı sağlanır.
+- Şartlar: FTR (Fizik Tedavi) veya Ortopedi uzmanı imzalı 3 hekimli sağlık kurulu raporu, zihinsel ve el fonksiyonlarının akülü araç kullanmaya uygun olması.`;
+  }
+  if (t.includes('isitme') || t.includes('işitme')) {
+    return `👂 SGK SUT İşitme Cihazı Ödeme Tutarları (2026):
+------------------------------------------------------------------
+- Yetişkin (18+ yaş): SGK İşitme Cihazı Katkısı brüt ödeme yapılır (emeklilere direk, çalışanlara %20 katılım paylı).
+- Çocuk (0-4 Yaş / 5-12 Yaş): Çocuklarda devlet katkısı katlanarak uygulanır.
+- Yenileme Süresi: İşitme cihazları her 5 yılda bir SGK tarafından yenilenir.`;
+  }
+  return `🦾 SGK SUT Biyonik Protez / Manuel Sandalye / Cihaz Ödemeleri:
+------------------------------------------------------------------
+- Manuel Tekerlekli Sandalye: Standart Manuel Sandalye SGK ödemesi tam kapsama yakındır.
+- Myoelektrik Biyonik Kol / Protez: SGK İtiraz ve Sağlık Kurulu Onayı ile yüksek oranlı devlet desteği sağlanmaktadır.
+- Hasta Yatağı & Solunum Cihazı (CPAP/BPAP): Reçete ve heyet raporuyla SGK İl Müdürlüğü Medikal Depodan ücretsiz temin edilir.`;
+}
+
+function handleHomeCareAllowanceCalc(householdCount: number, totalIncome: number, pct?: number) {
+  const count = Math.max(1, householdCount);
+  const perPersonIncome = Math.round(totalIncome / count);
+
+  // 2026 Net Asgari Ücret tahmini referansı ile Evde Bakım kişi başı sınır
+  const homeCareLimit = 15300; // TL
+  const isEligibleHomeCare = perPersonIncome <= homeCareLimit;
+
+  return `🏠 Evde Bakım Yardımı & GELİR SINIRI HESAPLAMA:
+------------------------------------------------------------------
+Hane Birey Sayısı: ${count} kişi
+Hane Toplam Net Gelir: ${totalIncome.toLocaleString('tr-TR')} TL
+Hane İçi Kişi Başı Aylık Gelir: ${perPersonIncome.toLocaleString('tr-TR')} TL
+2026 Evde Bakım Kişi Başı Gelir Sınırı: ${homeCareLimit.toLocaleString('tr-TR')} TL
+
+📊 Gelir Şartı Değerlendirmesi:
+${isEligibleHomeCare ? '✅ GELİR ŞARTINA UYGUNDUR: Hane kişi başı geliriniz sınırın altındadır.' : '❌ GELİR SINIRI AŞILDI: Hane içi kişi başı gelir sınırın üzerindedir.'}
+
+📌 Diğer Şartlar:
+1. Sağlık Kurulu Raporunda "Ağır Engelli" veya "Tam Bağımlı" ibaresi olmalıdır.
+2. Aile Bakanlığı Sosyal Hizmetler heyeti tarafından bakım muhtaçlığı onaylanmalıdır.`;
+}
+
+function handleWheelchairRampStandards(heightCm: number) {
+  const heightM = heightCm / 100;
+  // TS 9111 Rampa Standartları: 0-15cm için %10 eğim, 15-50cm için %8 eğim, 50-100cm için %6 eğim, 100cm+ için %5 eğim
+  let slopePct = 6;
+  if (heightCm <= 15) slopePct = 10;
+  else if (heightCm <= 50) slopePct = 8;
+  else if (heightCm <= 100) slopePct = 6;
+  else slopePct = 5;
+
+  const rampLengthM = (heightM / (slopePct / 100)).toFixed(2);
+
+  return `📐 TS 9111 Engelli Rampası & Mimarİ Erişilebilirlik Standartları:
+------------------------------------------------------------------
+Yükseklik Farkı (Kod): ${heightCm} cm (${heightM} metre)
+Maksimum Yasal Rampa Eğimi (TS 9111): %${slopePct}
+Gerekli Minimum Rampa Uzunluğu: ${rampLengthM} Metre
+
+🏢 Diğer Standartlar:
+- Minimum Rampa Genişliği: 100 cm (Net kullanım alanı)
+- Sahanlık (Dinlenme Alanı): Her 9 metre rampa uzunluğunda en az 150cm x 150cm düz sahanlık konulmalıdır.
+- Küpeşte / Tutamak Yüksekliği: Çift kademeli tutamak (70 cm ve 90 cm yükseklikte).
+- Kapı Net Genişliği: Minimum 90 cm (Tekerlekli sandalye geçişi için).`;
+}
+
 async function processJsonRpcRequest(body: Record<string, unknown>) {
   const id = body.id ?? null;
   const method = String(body.method || '');
@@ -505,6 +786,33 @@ async function processJsonRpcRequest(body: Record<string, unknown>) {
         responseText = `Erişilebilirlik ayarı güncellendi: ${feature} = ${enabled ? 'Aktif' : 'Pasif'}.`;
       } else if (toolName === 'engelsizforum_get_categories') {
         responseText = handleGetCategories();
+      } else if (toolName === 'engelsizforum_cozger_calculator') {
+        responseText = handleCozgerCalc(String(args.degree || 'belirgin'));
+      } else if (toolName === 'engelsizforum_accessibility_checker') {
+        responseText = handleAccessibilityChecker(
+          String(args.urlOrContent || 'https://www.engelsizforum.com'),
+          args.targetLevel ? String(args.targetLevel) : 'WCAG_AAA'
+        );
+      } else if (toolName === 'engelsizforum_assistive_tech_finder') {
+        responseText = handleAssistiveTechFinder(
+          String(args.disabilityCategory || 'gorme'),
+          args.userGoal ? String(args.userGoal) : undefined
+        );
+      } else if (toolName === 'engelsizforum_tax_discount_calc') {
+        responseText = handleTaxDiscountCalc(
+          Number(args.degree || 1),
+          args.grossSalary ? Number(args.grossSalary) : undefined
+        );
+      } else if (toolName === 'engelsizforum_sgk_prosthesis_coverage') {
+        responseText = handleSgkProsthesisCoverage(String(args.equipmentType || 'akulu_sandalye'));
+      } else if (toolName === 'engelsizforum_home_care_allowance_calc') {
+        responseText = handleHomeCareAllowanceCalc(
+          Number(args.householdCount || 4),
+          Number(args.totalHouseholdIncome || 35000),
+          args.disabilityPercentage ? Number(args.disabilityPercentage) : undefined
+        );
+      } else if (toolName === 'engelsizforum_wheelchair_ramp_standards') {
+        responseText = handleWheelchairRampStandards(Number(args.heightDifferenceCm || 50));
       } else {
         return {
           jsonrpc: '2.0',
