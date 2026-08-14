@@ -23,7 +23,7 @@ export default function WebMCPPage() {
         <div className="flex flex-wrap items-center gap-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
             <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
-            W3C Web ML Community Group & MCP Standardı
+            W3C Web ML &amp; Remote MCP v1.3.0 Standardı (14.08.2026)
           </span>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
             <CheckCircle2 className="w-3.5 h-3.5" />
