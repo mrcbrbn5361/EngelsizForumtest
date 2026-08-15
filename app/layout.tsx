@@ -133,7 +133,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className={`${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} h-full`} suppressHydrationWarning>
+    <html lang="tr" className={`dark ${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} h-full`} suppressHydrationWarning>
       <head>
         <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />

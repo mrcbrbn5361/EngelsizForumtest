@@ -733,31 +733,31 @@ function DiscussionsContent() {
               }`}
             >
               {loading ? (
-                <div className="grid gap-6">
+                <div className="grid gap-4 sm:gap-5">
                   {[...Array(4)].map((_, i) => (
-                    <div key={i} className="bg-card border border-border rounded-3xl p-6 md:p-8 space-y-4 shadow-sm animate-pulse">
+                    <div key={i} className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs animate-pulse">
                       <div className="flex items-center gap-2">
-                        <Skeleton className="h-4 w-24 bg-primary/10" />
-                        <Skeleton className="h-4 w-16 bg-primary/5" />
+                        <Skeleton className="h-4 w-24 bg-muted" />
+                        <Skeleton className="h-4 w-16 bg-muted/60" />
                       </div>
-                      <Skeleton className="h-7 w-3/4 bg-primary/10" />
-                      <Skeleton className="h-4 w-full bg-primary/5" />
-                      <Skeleton className="h-4 w-5/6 bg-primary/5" />
+                      <Skeleton className="h-6 w-3/4 bg-muted" />
+                      <Skeleton className="h-3.5 w-full bg-muted/50" />
+                      <Skeleton className="h-3.5 w-5/6 bg-muted/50" />
                       <div className="flex items-center gap-3 pt-2">
-                        <Skeleton className="h-6 w-6 rounded-full bg-primary/5" />
-                        <Skeleton className="h-4 w-32 bg-primary/5" />
+                        <Skeleton className="h-7 w-7 rounded-full bg-muted" />
+                        <Skeleton className="h-3.5 w-32 bg-muted/60" />
                       </div>
                     </div>
                   ))}
                 </div>
               ) : filteredTopics.length > 0 ? (
-                <div className="grid gap-6">
+                <div className="grid gap-4 sm:gap-5">
                   {filteredTopics.map((topic, index) => (
                     <motion.div
                       key={topic.id}
-                      initial={{ opacity: 0, y: 15 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: Math.min(index * 0.05, 0.4) }}
+                      transition={{ delay: Math.min(index * 0.04, 0.3) }}
                       className="group"
                     >
                       <DiscussionCard 
@@ -772,11 +772,11 @@ function DiscussionsContent() {
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.98 }}
-                            className="mt-3 p-6 md:p-8 bg-primary/[0.03] border border-primary/20 rounded-3xl relative overflow-hidden ring-1 ring-primary/20 shadow-inner"
+                            className="mt-3 p-5 sm:p-6 bg-sky-950/20 border border-sky-500/30 rounded-2xl relative overflow-hidden backdrop-blur-md shadow-inner"
                           >
-                            <div className="flex items-center justify-between mb-4">
-                              <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-widest">
-                                <Sparkles size={16} /> AI SESLİ ÖZET
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center gap-2 text-sky-400 font-bold text-xs uppercase tracking-wider">
+                                <Sparkles size={15} /> AI SESLİ ÖZETİ
                               </div>
                               <button 
                                 onClick={() => {
@@ -791,22 +791,22 @@ function DiscussionsContent() {
                                     toast.error("Tarayıcınız ses sentezleyiciyi desteklemiyor.");
                                   }
                                 }}
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 text-primary text-xs font-bold hover:bg-primary hover:text-primary-foreground transition-all"
+                                className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-sky-500/10 text-sky-400 text-xs font-bold hover:bg-sky-500 hover:text-white transition-all cursor-pointer border border-sky-500/20"
                                 aria-label="Özeti sesli oku"
                               >
-                                <Volume2 size={14} /> Dinle
+                                <Volume2 size={13} /> Dinle
                               </button>
                             </div>
-                            <blockquote className="text-base md:text-lg leading-relaxed font-semibold text-foreground italic border-l-4 border-primary/40 pl-4 py-1">
+                            <blockquote className="text-sm sm:text-base leading-relaxed font-medium text-foreground italic border-l-3 border-sky-500/50 pl-3.5 py-1">
                               &ldquo;{summaryResult.text}&rdquo;
                             </blockquote>
-                            <div className="mt-6 flex gap-4">
+                            <div className="mt-4 flex gap-4">
                               <button 
                                 onClick={() => {
                                   if (window.speechSynthesis) window.speechSynthesis.cancel();
                                   setSummaryResult(null);
                                 }}
-                                className="text-xs font-black text-muted-foreground hover:text-primary transition-colors underline uppercase tracking-widest"
+                                className="text-xs font-bold text-muted-foreground hover:text-sky-400 transition-colors underline uppercase tracking-wider cursor-pointer"
                               >
                                 Özeti Kapat
                               </button>
@@ -818,17 +818,17 @@ function DiscussionsContent() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-24 bg-card rounded-3xl border-2 border-dashed border-border px-8">
-                  <MessageSquare size={80} className="mx-auto text-muted-foreground/10 mb-6" />
-                  <h3 className="text-xl md:text-2xl font-bold mb-3 tracking-tight text-foreground">Arama Sonucu Temiz</h3>
-                  <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed mb-6">
-                    Seçili filtrelerde veya arama kriterinde hiçbir tartışma bulunmamaktadır. Yeni bir konu başlatarak tartışmayı canlandırın.
+                <div className="text-center py-20 bg-card rounded-2xl border border-border/80 px-6 sm:px-8 shadow-xs">
+                  <MessageSquare size={64} className="mx-auto text-muted-foreground/30 mb-4" />
+                  <h3 className="text-lg sm:text-xl font-bold mb-2 tracking-tight text-foreground">Tartışma Bulunamadı</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto leading-relaxed mb-6 font-normal">
+                    Seçili arama veya kategori filtrelerine uygun başlık bulunamadı. Yeni bir konu başlatarak ilk soruyu sorabilirsiniz.
                   </p>
                   <Link 
                     href="/discussions/new"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 shadow-sm"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 hover:bg-sky-400 px-5 py-2.5 text-xs font-bold text-white transition-all shadow-xs uppercase tracking-wider"
                   >
-                    İlk Konuyu Sen Başlat
+                    <Plus size={15} /> Yeni Konu Başlat
                   </Link>
                 </div>
               )}
@@ -999,32 +999,30 @@ function DiscussionsContent() {
             {/* Sidebar Widget 2: Weekly Accessibility Tip Box */}
             <section 
               aria-labelledby="tips-widget-heading"
-              className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm relative overflow-hidden"
+              className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 size-24 bg-primary/[0.01] rounded-full pointer-events-none" />
-              
-              <div className="flex items-center gap-2 mb-4 pb-4 border-b border-border/50">
-                <AlertCircle className="text-primary size-5 shrink-0" />
-                <h2 id="tips-widget-heading" className="text-sm font-black tracking-wider text-foreground uppercase">
+              <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-border/60">
+                <AlertCircle className="text-sky-400 size-4 shrink-0" />
+                <h2 id="tips-widget-heading" className="text-xs font-bold tracking-wider text-foreground uppercase">
                   Engelsiz Yaşam İpucu
                 </h2>
               </div>
 
-              <div className="bg-primary/[0.02] border border-primary/10 rounded-2xl p-4 min-h-[110px] flex flex-col justify-between">
+              <div className="bg-muted/30 border border-border/60 rounded-xl p-3.5 min-h-[100px] flex flex-col justify-between">
                 <AnimatePresence mode="wait">
                   <motion.p 
                     key={activeTipIndex}
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -5 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-xs text-muted-foreground font-semibold leading-relaxed"
+                    transition={{ duration: 0.2 }}
+                    className="text-xs text-muted-foreground font-medium leading-relaxed"
                   >
                     &ldquo;{ACCESSIBILITY_TIPS[activeTipIndex]}&rdquo;
                   </motion.p>
                 </AnimatePresence>
                 
-                <div className="flex justify-end gap-1 mt-4">
+                <div className="flex justify-end gap-1.5 mt-3">
                   {ACCESSIBILITY_TIPS.map((_, i) => (
                     <button
                       key={i}
@@ -1032,8 +1030,8 @@ function DiscussionsContent() {
                         setActiveTipIndex(i);
                         announceToScreenReader(`İpucu ${i + 1} gösteriliyor.`);
                       }}
-                      className={`size-2 rounded-full transition-all ${
-                        i === activeTipIndex ? 'bg-primary w-4' : 'bg-muted-foreground/30 hover:bg-primary/50'
+                      className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                        i === activeTipIndex ? 'bg-sky-400 w-4' : 'bg-muted-foreground/30 hover:bg-sky-400/50 w-1.5'
                       }`}
                       aria-label={`İpucu ${i + 1}`}
                     />
@@ -1045,22 +1043,22 @@ function DiscussionsContent() {
             {/* Sidebar Widget 3: Forum Guidelines & Verification */}
             <section 
               aria-labelledby="guidelines-widget-heading"
-              className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm"
+              className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs"
             >
-              <div className="flex items-center gap-2 mb-4 pb-4 border-b border-border/50">
-                <CheckCircle2 className="text-primary size-5 shrink-0" />
-                <h2 id="guidelines-widget-heading" className="text-sm font-black tracking-wider text-foreground uppercase">
+              <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-border/60">
+                <CheckCircle2 className="text-emerald-400 size-4 shrink-0" />
+                <h2 id="guidelines-widget-heading" className="text-xs font-bold tracking-wider text-foreground uppercase">
                   Güvenli Topluluk
                 </h2>
               </div>
-              <ul className="space-y-3.5">
+              <ul className="space-y-2.5">
                 {[
                   "Saygılı ve kapsayıcı dil kullanımı önceliğimizdir.",
                   "Konulara verdiğiniz doğru çözümler uzmanlık puanınızı (XP) artırır.",
                   "Hassas veya kişisel verilerinizi başlıkta açık paylaşmayınız."
                 ].map((rule, idx) => (
-                  <li key={idx} className="flex gap-2.5 items-start text-xs text-muted-foreground leading-relaxed">
-                    <span className="text-emerald-500 font-bold shrink-0 mt-0.5">✓</span>
+                  <li key={idx} className="flex gap-2 items-start text-xs text-muted-foreground leading-relaxed">
+                    <span className="text-emerald-400 font-bold shrink-0 mt-0.5">✓</span>
                     <span>{rule}</span>
                   </li>
                 ))}

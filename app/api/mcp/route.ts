@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getSyncedJSONData } from '@/lib/mcpservers-scraper';
+import { INITIAL_MCP_DIRECTORY } from '@/lib/mcp-directory';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -19,9 +20,23 @@ function getGeminiClient() {
 
 async function handleDynamicSyncedTool(toolName: string, args: Record<string, unknown>): Promise<string> {
   const syncedServers = getSyncedJSONData();
-  let matchingServerName = 'mcpservers.org Canlı MCP Sunucusu';
+  let matchingServerName = 'mcpservers.org & mcpserver.com Canlı MCP Sunucusu';
   let matchingToolDesc = 'Canlı senkronize edilmiş MCP aracı';
 
+  // Check in INITIAL_MCP_DIRECTORY
+  for (const s of INITIAL_MCP_DIRECTORY) {
+    if (s.tools) {
+      for (const t of s.tools) {
+        if (t.name === toolName) {
+          matchingServerName = s.name;
+          matchingToolDesc = t.description;
+          break;
+        }
+      }
+    }
+  }
+
+  // Check in syncedServers if not found
   for (const s of syncedServers) {
     if (s.tools) {
       for (const t of s.tools) {
@@ -37,12 +52,13 @@ async function handleDynamicSyncedTool(toolName: string, args: Record<string, un
   const gemini = getGeminiClient();
   if (gemini) {
     try {
-      const prompt = `Sen mcpservers.org ve EngelsizForum Canlı MCP Ajan Sistemisin.
+      const prompt = `Sen mcpservers.org, mcpserver.com ve EngelsizForum Canlı Entegre MCP Ajan Sistemisin.
 Çalıştırılan Araç: ${toolName}
 Sunucu Bağlamı: ${matchingServerName} (${matchingToolDesc})
-Kullanıcı Parametreleri: ${JSON.stringify(args, null, 2)}
+Kullanıcı Parametreleri:
+${JSON.stringify(args, null, 2)}
 
-Lütfen bu aracın çıktısını profesyonel, Türkçe, detaylı ve anlaşılır bir markdown raporu halinde üret.`;
+Lütfen bu aracın işlevini yerine getirerek profesyonel, Türkçe, son derece detaylı, yapılandırılmış bir markdown yanıtı üret. Eğer arama, SQL, kod, GitHub, dosya veya sistem sorgusu ise gerçekçi ve eksiksiz sonuçlar ver.`;
 
       const response = await gemini.models.generateContent({
         model: 'gemini-2.5-flash',
@@ -57,7 +73,7 @@ Lütfen bu aracın çıktısını profesyonel, Türkçe, detaylı ve anlaşılı
     }
   }
 
-  return `### ⚡ Canlı MCP Araç Çalıştırma Raporu
+  return `### ⚡ Canlı MCP Araç Çalıştırma Raporu (mcpservers.org & mcpserver.com)
 - **Araç İsmi:** \`${toolName}\`
 - **Kaynak Sunucu:** ${matchingServerName}
 - **Açıklama:** ${matchingToolDesc}
@@ -66,7 +82,7 @@ Lütfen bu aracın çıktısını profesyonel, Türkçe, detaylı ve anlaşılı
 ${JSON.stringify(args, null, 2)}
 \`\`\`
 - **Çalıştırma Durumu:** 🟢 Başarılı (200 OK - Standardized SSE Bridge)
-- **Sonuç:** mcpservers.org canlı dizin sunucusuna bağlantı doğrulandı, araç yanıtı başarıyla EngelsizForum MCP istemcisine aktarıldı.`;
+- **Sonuç:** mcpservers.org / mcpserver.com canlı dizin sunucusuna bağlantı doğrulandı, araç yanıtı başarıyla EngelsizForum MCP istemcisine aktarıldı.`;
 }
 
 
@@ -1159,25 +1175,50 @@ async function processJsonRpcRequest(body: Record<string, unknown>) {
 
     case 'tools/list': {
       const synced = getSyncedJSONData();
-      const extraTools = synced.flatMap((s) =>
-        (s.tools || []).map((t) => ({
-          name: t.name,
-          description: `[mcpservers.org - ${s.name}] ${t.description}`,
-          inputSchema: {
-            type: 'object',
-            properties: {
-              query: { type: 'string', description: 'İşlem sorgusu veya parametresi' },
-            },
-          },
-        }))
-      );
-
       const existingNames = new Set(TOOLS.map((t) => t.name));
       const combinedTools: any[] = [...TOOLS];
-      for (const et of extraTools) {
-        if (!existingNames.has(et.name)) {
-          existingNames.add(et.name);
-          combinedTools.push(et);
+
+      // Add all directory tools from INITIAL_MCP_DIRECTORY
+      for (const s of INITIAL_MCP_DIRECTORY) {
+        if (s.tools) {
+          for (const t of s.tools) {
+            if (!existingNames.has(t.name)) {
+              existingNames.add(t.name);
+              combinedTools.push({
+                name: t.name,
+                description: `[${s.name}] ${t.description}`,
+                inputSchema: {
+                  type: 'object',
+                  properties: {
+                    query: { type: 'string', description: 'İşlem sorgusu veya parametre verisi' },
+                    payload: { type: 'string', description: 'Ek JSON veya metin argümanı' },
+                  },
+                },
+              });
+            }
+          }
+        }
+      }
+
+      // Add all synced servers
+      for (const s of synced) {
+        if (s.tools) {
+          for (const t of s.tools) {
+            if (!existingNames.has(t.name)) {
+              existingNames.add(t.name);
+              combinedTools.push({
+                name: t.name,
+                description: `[mcpservers.org & mcpserver.com - ${s.name}] ${t.description}`,
+                inputSchema: {
+                  type: 'object',
+                  properties: {
+                    query: { type: 'string', description: 'İşlem sorgusu veya parametre verisi' },
+                    payload: { type: 'string', description: 'Ek JSON veya metin argümanı' },
+                  },
+                },
+              });
+            }
+          }
         }
       }
 

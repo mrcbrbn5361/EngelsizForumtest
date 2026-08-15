@@ -125,7 +125,7 @@ export default function AdminDashboard() {
 
   if (loading || !isStaff) {
     return (
-      <div className="flex min-h-screen bg-[#090A0F] p-6 sm:p-8">
+      <div className="flex min-h-screen bg-background p-6 sm:p-8">
         <div className="max-w-7xl mx-auto w-full space-y-6">
           <div className="flex items-center gap-4">
             <Skeleton className="h-12 w-12 rounded-xl" />
@@ -148,28 +148,28 @@ export default function AdminDashboard() {
 
   return (
     <DashboardLayout>
-      <div className="container mx-auto px-4 py-6 md:py-10 space-y-8 max-w-7xl">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 space-y-8">
         {/* Header */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/80 pb-6">
           <div className="flex items-center gap-3.5">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400">
               <Shield size={24} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Yönetim & Yetkili Paneli</h1>
-                <span className="px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-medium">
-                  {profile?.role === 'admin' ? 'Admin' : 'Moderatör'}
+                <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">Yönetim ve Moderasyon Paneli</h1>
+                <span className="px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-semibold">
+                  {profile?.role === 'admin' ? 'Yönetici' : 'Moderatör'}
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-slate-400 font-normal mt-0.5">
-                Hoş geldin, <span className="text-slate-200 font-semibold">{profile?.username}</span> • Sistem ve topluluk yönetimi
+              <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-0.5">
+                Hoş geldiniz, <span className="text-foreground font-semibold">{profile?.username}</span> • Sistem ve topluluk yönetimi
               </p>
             </div>
           </div>
           <button 
             onClick={() => router.push('/')}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#111726]/80 hover:bg-[#161F33] px-4 py-2 text-xs font-semibold text-slate-200 border border-white/[0.08] transition whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-card hover:bg-muted px-4 py-2 text-xs font-semibold text-foreground border border-border/80 transition-colors whitespace-nowrap cursor-pointer"
           >
             Foruma Dön
           </button>
@@ -178,10 +178,10 @@ export default function AdminDashboard() {
         {/* Tabs Navigation */}
         <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col gap-6">
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-            <Tabs.List className="flex gap-1.5 p-1 bg-[#111726]/90 border border-white/[0.08] rounded-xl w-max sm:w-fit">
+            <Tabs.List className="flex gap-1.5 p-1 bg-card/85 border border-border/80 rounded-xl w-max sm:w-fit backdrop-blur-md">
               <TabButton value="overview" icon={<TrendingUp size={16} />} label="Genel Bakış" />
-              <TabButton value="mcp" icon={<Bot size={16} />} label="WebMCP & AI Ajanlar" />
-              <TabButton value="analiz" icon={<Radio size={16} />} label="Trafik & IoT" />
+              <TabButton value="mcp" icon={<Bot size={16} />} label="WebMCP & Yapay Zeka" />
+              <TabButton value="analiz" icon={<Radio size={16} />} label="Trafik ve IoT" />
               <TabButton value="categories" icon={<FolderTree size={16} />} label="Kategoriler" />
               <TabButton value="users" icon={<Users size={16} />} label="Üyeler" />
               <TabButton value="moderation" icon={<MessageSquare size={16} />} label="Moderasyon" />
@@ -193,35 +193,35 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <StatCard label="Toplam Üye" value={stats.users} icon={<Users size={18} />} />
               <StatCard label="Toplam Konu" value={stats.topics} icon={<MessageSquare size={18} />} />
-              <StatCard label="Yanıt & Yorum" value={stats.comments} icon={<Sparkles size={18} />} />
+              <StatCard label="Yanıt ve Yorum" value={stats.comments} icon={<Sparkles size={18} />} />
               <StatCard label="Aktif Ziyaretçi" value={stats.active_visitors} icon={<Radio size={18} />} live />
             </div>
 
             <div className="grid lg:grid-cols-2 gap-6">
-              <div className="rounded-2xl border border-white/[0.08] p-6 bg-[#111726]/80 backdrop-blur-md shadow-sm">
+              <div className="rounded-2xl border border-border/80 p-6 bg-card/85 backdrop-blur-md shadow-xs">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h3 className="text-base font-bold text-slate-100">Son Kayıt Olan Üyeler</h3>
-                    <p className="text-xs text-slate-400">Platforma katılan en yeni 5 üye</p>
+                    <h3 className="text-base font-bold text-foreground">Son Kayıt Olan Üyeler</h3>
+                    <p className="text-xs text-muted-foreground font-normal">Platforma katılan en yeni 5 üye</p>
                   </div>
-                  <button onClick={() => setActiveTab('users')} className="text-xs font-medium text-sky-400 hover:text-sky-300 transition">Tümünü İncele</button>
+                  <button onClick={() => setActiveTab('users')} className="text-xs font-semibold text-sky-400 hover:text-sky-300 transition-colors cursor-pointer">Tümünü İncele</button>
                 </div>
                 <div className="space-y-2.5">
                   {usersList.slice(0, 5).map((u) => (
-                    <div key={u.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-900/40 border border-white/[0.04] hover:border-sky-500/30 transition-all">
+                    <div key={u.id} className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-border/60 hover:border-sky-500/40 transition-colors">
                       <div className="flex items-center gap-3">
                         <div className="h-9 w-9 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center font-bold text-sky-400 text-xs">
                           {(u.username || '?')[0].toUpperCase()}
                         </div>
                         <div>
-                          <p className="text-xs font-semibold text-slate-200">@{u.username || 'isimsiz'}</p>
-                          <p className="text-[11px] text-slate-400">{u.full_name || 'Üye'}</p>
+                          <p className="text-xs font-semibold text-foreground">@{u.username || 'isimsiz'}</p>
+                          <p className="text-[11px] text-muted-foreground">{u.full_name || 'Üye'}</p>
                         </div>
                       </div>
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
                         u.role === 'admin' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
                         u.role === 'moderator' ? 'bg-sky-500/10 text-sky-400 border-sky-500/20' :
-                        'bg-slate-800/60 text-slate-400 border-slate-700/60'
+                        'bg-muted text-muted-foreground border-border'
                       }`}>
                         {u.role || 'user'}
                       </span>
@@ -230,29 +230,29 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/[0.08] p-6 bg-[#111726]/80 backdrop-blur-md shadow-sm flex flex-col justify-between">
+              <div className="rounded-2xl border border-border/80 p-6 bg-card/85 backdrop-blur-md shadow-xs flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-2 text-sky-400 text-xs font-semibold mb-2">
                     <Sparkles size={14} /> WebMCP Model Context Protocol
                   </div>
-                  <h3 className="text-base font-bold text-slate-100">Yapay Zeka Ajan Entegrasyonları</h3>
-                  <p className="text-xs text-slate-400 leading-relaxed mt-1">
-                    EngelsizForum, 26 adet canlı MCP aracıyla Claude, Cursor, ChatGPT, Gemini ve özel IoT donanımlarına erişilebilirlik ve mevzuat verisi sağlar.
+                  <h3 className="text-base font-bold text-foreground">Yapay Zeka Ajan Entegrasyonları</h3>
+                  <p className="text-xs text-muted-foreground font-normal leading-relaxed mt-1">
+                    EngelsizForum, 26 adet canlı MCP aracıyla Claude, Cursor, ChatGPT, Gemini ve özel donanım istemcilerine erişilebilirlik ve mevzuat verisi sağlar.
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-3 my-4">
-                  <div className="p-3 rounded-xl bg-slate-900/60 border border-white/[0.06]">
-                    <span className="text-[10px] font-medium text-slate-400">Protokol</span>
-                    <p className="text-xs font-mono font-semibold text-slate-200 mt-0.5">MCP 2024-11-05</p>
+                  <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
+                    <span className="text-[10px] font-medium text-muted-foreground">Protokol</span>
+                    <p className="text-xs font-mono font-semibold text-foreground mt-0.5">MCP 2024-11-05</p>
                   </div>
-                  <div className="p-3 rounded-xl bg-slate-900/60 border border-white/[0.06]">
-                    <span className="text-[10px] font-medium text-slate-400">Durum</span>
+                  <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
+                    <span className="text-[10px] font-medium text-muted-foreground">Durum</span>
                     <p className="text-xs font-mono font-semibold text-emerald-400 mt-0.5">200 OK / Aktif</p>
                   </div>
                 </div>
                 <button 
                   onClick={() => setActiveTab('mcp')}
-                  className="w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition flex items-center justify-center gap-2"
+                  className="w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
                   <Bot size={15} /> WebMCP Konsolunu Aç
                 </button>
@@ -274,14 +274,14 @@ export default function AdminDashboard() {
               <StatCard label="Açılan Konular" value={stats.topics} icon={<MessageSquare size={18} />} />
             </div>
 
-            <div className="rounded-2xl border border-white/[0.08] p-6 bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-4">
+            <div className="rounded-2xl border border-border/80 p-6 bg-card/85 backdrop-blur-md shadow-xs space-y-4">
               <div>
-                <h3 className="text-base font-bold text-slate-100">Raspberry Pi / Donanım İstemci Kodu</h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <h3 className="text-base font-bold text-foreground">Raspberry Pi ve Donanım İstemci Kodu</h3>
+                <p className="text-xs text-muted-foreground font-normal mt-0.5">
                   Bu Python betiğini Raspberry Pi veya IoT cihazınızda çalıştırarak anlık ziyaretçi sayısını forum API&apos;sine iletebilirsiniz.
                 </p>
               </div>
-              <pre className="bg-[#090A0F] text-slate-300 p-4 rounded-xl border border-white/[0.06] font-mono text-xs overflow-x-auto leading-relaxed">
+              <pre className="bg-background text-foreground p-4 rounded-xl border border-border/60 font-mono text-xs overflow-x-auto leading-relaxed">
 {`import requests, time, uuid
 
 API_URL = "https://www.engelsizforum.com/api/visitor-stats" 
@@ -332,7 +332,7 @@ function TabButton({ value, icon, label }: { value: string, icon: React.ReactNod
   return (
     <Tabs.Trigger 
       value={value}
-      className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition-all data-[state=active]:bg-sky-500/10 data-[state=active]:text-sky-400 data-[state=active]:border data-[state=active]:border-sky-500/20 outline-none whitespace-nowrap shrink-0"
+      className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg text-muted-foreground hover:text-foreground transition-colors data-[state=active]:bg-sky-500/10 data-[state=active]:text-sky-400 data-[state=active]:border data-[state=active]:border-sky-500/20 outline-none whitespace-nowrap shrink-0 cursor-pointer"
     >
       <span className="shrink-0">{icon}</span>
       <span>{label}</span>
@@ -342,15 +342,15 @@ function TabButton({ value, icon, label }: { value: string, icon: React.ReactNod
 
 function StatCard({ label, value, icon, live }: { label: string, value: number, icon: React.ReactNode, live?: boolean }) {
   return (
-    <div className="p-4 sm:p-5 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm hover:border-sky-500/30 transition-colors">
+    <div className="p-4 sm:p-5 rounded-2xl border border-border/80 bg-card/85 backdrop-blur-md shadow-xs hover:border-sky-500/40 transition-colors">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium text-slate-400">{label}</span>
+        <span className="text-xs font-medium text-muted-foreground">{label}</span>
         <div className="flex items-center gap-1.5">
           {live && <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />}
-          <div className="p-1.5 bg-slate-800/80 rounded-lg text-sky-400">{icon}</div>
+          <div className="p-1.5 bg-muted rounded-lg text-sky-400">{icon}</div>
         </div>
       </div>
-      <p className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100 tabular-nums">{value}</p>
+      <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground tabular-nums">{value}</p>
     </div>
   );
 }
@@ -490,21 +490,21 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-slate-100">Kategori & Forum Hiyerarşisi</h2>
-          <p className="text-xs text-slate-400">Ana bölümleri ve alt forum dallarını yönetin.</p>
+          <h2 className="text-lg font-bold text-foreground">Kategori ve Forum Hiyerarşisi</h2>
+          <p className="text-xs text-muted-foreground">Ana bölümleri ve alt forum dallarını yönetin.</p>
         </div>
         <div className="flex items-center gap-2.5">
           <button 
             onClick={handleSeedDefaultCategories}
             disabled={seeding}
-            className="flex items-center gap-2 bg-[#111726] hover:bg-[#161F33] text-slate-200 border border-white/[0.08] px-3.5 py-2 rounded-xl text-xs font-semibold transition disabled:opacity-50"
+            className="flex items-center gap-2 bg-card hover:bg-muted text-foreground border border-border/80 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
           >
             {seeding ? <Loader2 size={15} className="animate-spin" /> : <FolderTree size={15} />}
             Varsayılan Ağacı Yükle
           </button>
           <button 
             onClick={() => setIsAdding(true)}
-            className="flex items-center gap-1.5 bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition"
+            className="flex items-center gap-1.5 bg-sky-500 hover:bg-sky-400 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-xs"
           >
             <Plus size={15} /> Yeni Kategori Ekle
           </button>
@@ -518,34 +518,34 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
             : null;
 
           return (
-            <div key={cat.id} className="p-5 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm hover:border-sky-500/30 transition-all group flex flex-col justify-between">
+            <div key={cat.id} className="p-5 rounded-2xl border border-border/80 bg-card/85 backdrop-blur-md shadow-xs hover:border-sky-500/40 transition-colors group flex flex-col justify-between">
               <div>
                 <div className="flex items-start justify-between">
                   <div className="h-8 w-8 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 mb-3 font-semibold text-xs">
                     {cat.parent_id ? '↳' : '⊞'}
                   </div>
-                  <button onClick={() => handleDelete(cat.id)} className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition" title="Sil">
+                  <button onClick={() => handleDelete(cat.id)} className="p-1.5 rounded-lg text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer" title="Sil">
                     <Trash2 size={14}/>
                   </button>
                 </div>
                 <div className="mb-2">
                   {parentName && (
-                    <span className="inline-block text-[10px] font-medium text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-md mb-1">
+                    <span className="inline-block text-[10px] font-semibold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-md mb-1">
                       Alt Forum / {parentName}
                     </span>
                   )}
                   {!cat.parent_id && (
-                    <span className="inline-block text-[10px] font-medium text-slate-400 bg-slate-800/80 border border-slate-700/60 px-2 py-0.5 rounded-md mb-1">
+                    <span className="inline-block text-[10px] font-medium text-muted-foreground bg-muted border border-border px-2 py-0.5 rounded-md mb-1">
                       Ana Forum Bölümü
                     </span>
                   )}
-                  <h4 className="font-bold text-sm text-slate-100 mt-1">{cat.name}</h4>
+                  <h4 className="font-bold text-sm text-foreground mt-1">{cat.name}</h4>
                 </div>
-                <p className="text-xs text-slate-400 font-normal leading-relaxed mb-4 line-clamp-2">{cat.description || 'Açıklama belirtilmemiş.'}</p>
+                <p className="text-xs text-muted-foreground font-normal leading-relaxed mb-4 line-clamp-2">{cat.description || 'Açıklama belirtilmemiş.'}</p>
               </div>
-              <div className="flex items-center gap-1.5 py-1 px-2.5 bg-slate-900/60 border border-white/[0.04] rounded-lg w-fit">
-                <span className="text-[10px] font-mono text-slate-400">slug:</span>
-                <span className="text-[10px] font-mono font-medium text-slate-300">{cat.slug}</span>
+              <div className="flex items-center gap-1.5 py-1 px-2.5 bg-muted/40 border border-border/60 rounded-lg w-fit">
+                <span className="text-[10px] font-mono text-muted-foreground">slug:</span>
+                <span className="text-[10px] font-mono font-medium text-foreground">{cat.slug}</span>
               </div>
             </div>
           );
@@ -555,28 +555,28 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
       <Dialog.Root open={isAdding} onOpenChange={setIsAdding}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md bg-[#111726] border border-white/[0.1] p-6 rounded-2xl shadow-2xl focus:outline-none">
-            <Dialog.Title className="text-lg font-bold text-slate-100 mb-1">Yeni Kategori Ekle</Dialog.Title>
-            <Dialog.Description className="text-xs text-slate-400 mb-4">Bu kategori forum ana dizininde ve filtrelerde görünecektir.</Dialog.Description>
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md bg-card border border-border p-6 rounded-2xl shadow-2xl focus:outline-none">
+            <Dialog.Title className="text-lg font-bold text-foreground mb-1">Yeni Kategori Ekle</Dialog.Title>
+            <Dialog.Description className="text-xs text-muted-foreground mb-4">Bu kategori forum ana dizininde ve filtrelerde görünecektir.</Dialog.Description>
             
             <form onSubmit={handleAdd} className="space-y-3.5">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Kategori / Alt Forum Adı</label>
+                <label className="block text-xs font-semibold text-foreground mb-1">Kategori / Alt Forum Adı</label>
                 <input 
                   required
                   type="text" 
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none" 
+                  className="w-full p-2.5 rounded-xl border border-border bg-background text-foreground text-xs focus:ring-2 focus:ring-sky-500 outline-none" 
                   placeholder="Örn: Erişilebilirlik Donanımları"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Üst Kategori (Opsiyonel)</label>
+                <label className="block text-xs font-semibold text-foreground mb-1">Üst Kategori (Opsiyonel)</label>
                 <select 
                   value={formData.parent_id}
                   onChange={(e) => setFormData({...formData, parent_id: e.target.value})}
-                  className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none cursor-pointer"
+                  className="w-full p-2.5 rounded-xl border border-border bg-background text-foreground text-xs focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer"
                 >
                   <option value="">-- Ana Forum Bölümü Yap --</option>
                   {parentCategoriesList.map(parent => (
@@ -585,19 +585,19 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Açıklama</label>
+                <label className="block text-xs font-semibold text-foreground mb-1">Açıklama</label>
                 <textarea 
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none min-h-[80px]" 
+                  className="w-full p-2.5 rounded-xl border border-border bg-background text-foreground text-xs focus:ring-2 focus:ring-sky-500 outline-none min-h-[80px]" 
                   placeholder="Bu kategori altında paylaşılabilecek konular hakkında kısa bilgi..."
                 />
               </div>
               <div className="flex gap-2.5 pt-2">
                 <Dialog.Close asChild>
-                  <button type="button" className="flex-1 p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition">İptal</button>
+                  <button type="button" className="flex-1 p-2.5 rounded-xl bg-muted hover:bg-muted/80 text-xs font-semibold text-muted-foreground transition-colors cursor-pointer">İptal</button>
                 </Dialog.Close>
-                <button type="submit" className="flex-1 p-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition">Oluştur</button>
+                <button type="submit" className="flex-1 p-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition-colors cursor-pointer shadow-xs">Oluştur</button>
               </div>
             </form>
           </Dialog.Content>
@@ -612,7 +612,7 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
 
   const handleRoleChange = async (userId: string, newRole: string) => {
     if (!isAdmin) {
-      toast.error('Bu işlem için admin yetkisi gereklidir');
+      toast.error('Bu işlem için yönetici yetkisi gereklidir');
       return;
     }
 
@@ -632,50 +632,50 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-slate-100">Kullanıcı & Rol Yönetimi</h2>
-          <p className="text-xs text-slate-400">Üye rolleri ve erişim yetkilerini düzenleyin.</p>
+          <h2 className="text-lg font-bold text-foreground">Kullanıcı ve Rol Yönetimi</h2>
+          <p className="text-xs text-muted-foreground">Üye rolleri ve erişim yetkilerini düzenleyin.</p>
         </div>
         <div className="relative w-full md:w-72">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={15} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={15} />
           <input 
             type="text" 
             placeholder="Kullanıcı adı ara..."
             aria-label="Kullanıcı listesinde ara"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-3.5 py-2 rounded-xl border border-white/[0.08] bg-[#111726]/80 text-xs text-slate-200 focus:ring-1 focus:ring-sky-500 outline-none"
+            className="w-full pl-10 pr-3.5 py-2 rounded-xl border border-border/80 bg-card text-xs text-foreground focus:ring-2 focus:ring-sky-500 outline-none"
           />
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm">
+      <div className="overflow-x-auto rounded-2xl border border-border/80 bg-card/85 backdrop-blur-md shadow-xs">
         <table className="w-full text-left border-collapse min-w-[500px]">
-          <thead className="bg-slate-900/60 border-b border-white/[0.06]">
+          <thead className="bg-muted/40 border-b border-border/80">
             <tr>
-              <th className="px-5 py-3 text-[11px] font-semibold text-slate-400">Kullanıcı</th>
-              <th className="px-5 py-3 text-[11px] font-semibold text-slate-400">Rol / Yetki</th>
-              <th className="px-5 py-3 text-[11px] font-semibold text-slate-400 text-right">İşlem</th>
+              <th className="px-5 py-3 text-[11px] font-semibold text-muted-foreground">Kullanıcı</th>
+              <th className="px-5 py-3 text-[11px] font-semibold text-muted-foreground">Rol / Yetki</th>
+              <th className="px-5 py-3 text-[11px] font-semibold text-muted-foreground text-right">İşlem</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/[0.04]">
+          <tbody className="divide-y divide-border/60">
             {filteredUsers.map((u) => (
-              <tr key={u.id} className="hover:bg-slate-900/40 transition-colors">
+              <tr key={u.id} className="hover:bg-muted/20 transition-colors">
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center font-bold text-sky-400 text-xs shrink-0">
                       {(u.username || '?')[0].toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-xs font-semibold text-slate-200">@{u.username || 'isimsiz'}</p>
-                      <p className="text-[11px] text-slate-400">{u.full_name || 'İsimsiz Üye'}</p>
+                      <p className="text-xs font-semibold text-foreground">@{u.username || 'isimsiz'}</p>
+                      <p className="text-[11px] text-muted-foreground">{u.full_name || 'İsimsiz Üye'}</p>
                     </div>
                   </div>
                 </td>
                 <td className="px-5 py-3">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border ${
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold border ${
                     u.role === 'admin' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 
                     u.role === 'moderator' ? 'bg-sky-500/10 text-sky-400 border-sky-500/20' : 
-                    'bg-slate-800/60 text-slate-400 border-slate-700/60'
+                    'bg-muted text-muted-foreground border-border'
                   }`}>
                     {u.role || 'user'}
                   </span>
@@ -687,15 +687,15 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
                         {u.role !== 'admin' && (
                           <button 
                             onClick={() => handleRoleChange(u.id, 'admin')} 
-                            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition"
+                            className="px-2.5 py-1 rounded-lg bg-muted hover:bg-muted/80 text-foreground text-[11px] font-semibold transition-colors cursor-pointer border border-border"
                           >
-                            Admin Yap
+                            Yönetici Yap
                           </button>
                         )}
                         {u.role !== 'moderator' && (
                           <button 
                             onClick={() => handleRoleChange(u.id, 'moderator')} 
-                            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition"
+                            className="px-2.5 py-1 rounded-lg bg-muted hover:bg-muted/80 text-foreground text-[11px] font-semibold transition-colors cursor-pointer border border-border"
                           >
                             Moderatör Yap
                           </button>
@@ -703,7 +703,7 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
                         {u.role !== 'user' && (
                           <button 
                             onClick={() => handleRoleChange(u.id, 'user')} 
-                            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition"
+                            className="px-2.5 py-1 rounded-lg bg-muted hover:bg-muted/80 text-foreground text-[11px] font-semibold transition-colors cursor-pointer border border-border"
                           >
                             Üye Yap
                           </button>
@@ -766,45 +766,45 @@ function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-bold text-slate-100">Topluluk Moderasyonu</h2>
-        <p className="text-xs text-slate-400">Konu kilitleme, denetim ve silme işlemleri</p>
+        <h2 className="text-lg font-bold text-foreground">Topluluk Moderasyonu</h2>
+        <p className="text-xs text-muted-foreground">Konu kilitleme, denetim ve silme işlemleri</p>
       </div>
       
       <div className="space-y-3">
         {loading ? (
-          <div className="h-32 animate-pulse bg-slate-900/60 rounded-2xl"></div>
+          <div className="h-32 animate-pulse bg-muted rounded-2xl"></div>
         ) : topics.length === 0 ? (
-          <div className="p-8 text-center border border-dashed border-white/[0.08] rounded-2xl text-slate-400 text-xs">
+          <div className="p-8 text-center border border-dashed border-border rounded-2xl text-muted-foreground text-xs">
             İncelenecek konu bulunmuyor.
           </div>
         ) : (
           topics.map((topic) => (
-            <div key={topic.id} className="p-4 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm flex items-center justify-between gap-4">
+            <div key={topic.id} className="p-4 rounded-2xl border border-border/80 bg-card/85 backdrop-blur-md shadow-xs flex items-center justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-medium text-sky-400">@{topic.author?.username || 'isimsiz'}</span>
-                  <span className="text-[10px] text-slate-500">• {new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
+                  <span className="text-[10px] font-semibold text-sky-400">@{topic.author?.username || 'isimsiz'}</span>
+                  <span className="text-[10px] text-muted-foreground">• {new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
                   {topic.is_locked && (
-                    <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[9px] font-medium">
+                    <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[9px] font-semibold">
                       Kilitli
                     </span>
                   )}
                 </div>
-                <h4 className="font-semibold text-xs sm:text-sm text-slate-200 truncate">{topic.title}</h4>
-                <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">{topic.content}</p>
+                <h4 className="font-semibold text-xs sm:text-sm text-foreground truncate">{topic.title}</h4>
+                <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">{topic.content}</p>
               </div>
               
               <div className="flex items-center gap-1.5 shrink-0">
                 <button 
                   onClick={() => handleToggleLock(topic.id, topic.is_locked)}
-                  className={`p-2 rounded-xl transition ${topic.is_locked ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-slate-800 text-slate-400 hover:text-amber-400'}`}
+                  className={`p-2 rounded-xl transition-colors cursor-pointer ${topic.is_locked ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-muted text-muted-foreground hover:text-amber-400'}`}
                   title={topic.is_locked ? 'Kilidi Aç' : 'Kilitle'}
                 >
                   {topic.is_locked ? <Unlock size={15} /> : <Lock size={15} />}
                 </button>
                 <button 
                   onClick={() => handleDeleteTopic(topic.id)}
-                  className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition"
+                  className="p-2 rounded-xl bg-muted text-muted-foreground hover:bg-red-500/10 hover:text-red-400 transition-colors cursor-pointer"
                   title="Sil"
                 >
                   <Trash2 size={15} />
@@ -922,72 +922,72 @@ function McpAdminManager() {
     <div className="space-y-6">
       {/* Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-1.5">
+        <div className="p-4 rounded-2xl border border-border/80 bg-card/85 backdrop-blur-md shadow-xs space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-slate-400">MCP Sunucu Durumu</span>
+            <span className="text-[11px] font-medium text-muted-foreground">MCP Sunucu Durumu</span>
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
           </div>
           <p className="text-base font-bold font-mono text-emerald-400">ONLINE (200 OK)</p>
-          <p className="text-[11px] text-slate-500 font-mono">/api/mcp (SSE & JSON-RPC)</p>
+          <p className="text-[11px] text-muted-foreground font-mono">/api/mcp (SSE & JSON-RPC)</p>
         </div>
 
-        <div className="p-4 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-1.5">
+        <div className="p-4 rounded-2xl border border-border/80 bg-card/85 backdrop-blur-md shadow-xs space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-slate-400">Aktif Ajan Araçları</span>
+            <span className="text-[11px] font-medium text-muted-foreground">Aktif Ajan Araçları</span>
             <Bot size={16} className="text-sky-400" />
           </div>
-          <p className="text-xl font-bold text-slate-100 tabular-nums">26 Araç</p>
-          <p className="text-[11px] text-slate-500">Mevzuat & Erişilebilirlik Motoru</p>
+          <p className="text-xl font-extrabold text-foreground tabular-nums">26 Araç</p>
+          <p className="text-[11px] text-muted-foreground">Mevzuat ve Erişilebilirlik Motoru</p>
         </div>
 
-        <div className="p-4 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-1.5">
+        <div className="p-4 rounded-2xl border border-border/80 bg-card/85 backdrop-blur-md shadow-xs space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-slate-400">Canlı Arama (Grounding)</span>
+            <span className="text-[11px] font-medium text-muted-foreground">Canlı Arama (Grounding)</span>
             <Sparkles size={16} className="text-sky-400" />
           </div>
-          <p className="text-base font-bold text-slate-100">Gemini 2.5 Flash</p>
-          <p className="text-[11px] text-slate-500">Resmi Gazete & Web Doğrulama</p>
+          <p className="text-base font-bold text-foreground">Gemini 2.5 Flash</p>
+          <p className="text-[11px] text-muted-foreground">Resmi Gazete ve Web Doğrulama</p>
         </div>
 
-        <div className="p-4 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-1.5">
+        <div className="p-4 rounded-2xl border border-border/80 bg-card/85 backdrop-blur-md shadow-xs space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-slate-400">Protokol Standardı</span>
+            <span className="text-[11px] font-medium text-muted-foreground">Protokol Standardı</span>
             <Globe size={16} className="text-sky-400" />
           </div>
-          <p className="text-base font-bold font-mono text-slate-100">MCP (2024-11-05)</p>
-          <p className="text-[11px] text-slate-500">JSON-RPC 2.0 / W3C WebML</p>
+          <p className="text-base font-bold font-mono text-foreground">MCP (2024-11-05)</p>
+          <p className="text-[11px] text-muted-foreground">JSON-RPC 2.0 / W3C WebML</p>
         </div>
       </div>
 
       {/* Interactive Tool Test Console */}
-      <div className="p-6 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-5">
+      <div className="p-6 rounded-2xl border border-border/80 bg-card/85 backdrop-blur-md shadow-xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400">
               <Terminal size={18} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-100">Canlı MCP Araç Test Konsolu</h3>
-              <p className="text-xs text-slate-400">WebMCP ve JSON-RPC araçlarını doğrudan test edin.</p>
+              <h3 className="text-base font-bold text-foreground">Canlı MCP Araç Test Konsolu</h3>
+              <p className="text-xs text-muted-foreground font-normal">WebMCP ve JSON-RPC araçlarını doğrudan test edin.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-white/[0.06]">
+          <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-xl border border-border/80">
             <button
               onClick={() => setTestMode('remote')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${testMode === 'remote' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${testMode === 'remote' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-muted-foreground hover:text-foreground'}`}
             >
               Remote MCP
             </button>
             <button
               onClick={() => setTestMode('webmcp')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${testMode === 'webmcp' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${testMode === 'webmcp' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-muted-foreground hover:text-foreground'}`}
             >
               WebMCP Client
             </button>
             <button
               onClick={() => setTestMode('simulation')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${testMode === 'simulation' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${testMode === 'simulation' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-muted-foreground hover:text-foreground'}`}
             >
               Ajan Simülasyonu
             </button>
@@ -996,13 +996,13 @@ function McpAdminManager() {
 
         {/* Quick Presets */}
         <div className="space-y-1.5">
-          <span className="text-[11px] font-medium text-slate-400">Hızlı Test Önayarları:</span>
+          <span className="text-[11px] font-medium text-muted-foreground">Hızlı test önayarları:</span>
           <div className="flex flex-wrap gap-1.5">
             {presets.map((preset, idx) => (
               <button
                 key={idx}
                 onClick={() => applyPreset(preset)}
-                className="px-2.5 py-1 rounded-lg border border-white/[0.06] bg-slate-900/60 hover:bg-slate-800 text-slate-300 font-medium text-xs transition"
+                className="px-2.5 py-1 rounded-lg border border-border/80 bg-card hover:bg-muted text-foreground font-medium text-xs transition-colors cursor-pointer"
               >
                 {preset.label}
               </button>
@@ -1013,11 +1013,11 @@ function McpAdminManager() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div className="space-y-3 md:col-span-1">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Araç Seçimi</label>
+              <label className="block text-xs font-semibold text-foreground mb-1">Araç Seçimi</label>
               <select
                 value={selectedTool}
                 onChange={(e) => handleToolSelect(e.target.value)}
-                className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 font-medium text-xs focus:ring-1 focus:ring-sky-500 outline-none"
+                className="w-full p-2.5 rounded-xl border border-border bg-background text-foreground font-medium text-xs focus:ring-2 focus:ring-sky-500 outline-none cursor-pointer"
               >
                 {toolsList.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -1028,15 +1028,15 @@ function McpAdminManager() {
             </div>
 
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-slate-300">Parametreler</label>
+              <label className="block text-xs font-semibold text-foreground">Parametreler</label>
               {Object.entries(toolArgs).map(([paramKey, paramVal]) => (
                 <div key={paramKey}>
-                  <span className="text-[11px] font-mono text-slate-400">{paramKey}:</span>
+                  <span className="text-[11px] font-mono text-muted-foreground">{paramKey}:</span>
                   <input
                     type="text"
                     value={paramVal}
                     onChange={(e) => setToolArgs({ ...toolArgs, [paramKey]: e.target.value })}
-                    className="w-full mt-0.5 p-2 rounded-xl border border-white/[0.08] bg-slate-900/80 text-xs text-slate-200 focus:ring-1 focus:ring-sky-500 outline-none"
+                    className="w-full mt-0.5 p-2 rounded-xl border border-border bg-background text-xs text-foreground focus:ring-2 focus:ring-sky-500 outline-none"
                   />
                 </div>
               ))}
@@ -1045,7 +1045,7 @@ function McpAdminManager() {
             <button
               onClick={handleRunTest}
               disabled={isExecuting}
-              className="w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition flex items-center justify-center gap-2 shadow-sm"
+              className="w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer disabled:opacity-50"
             >
               {isExecuting ? <Loader2 size={15} className="animate-spin" /> : <Terminal size={15} />}
               {testMode === 'webmcp' ? 'WebMCP Çalıştır' : 'Aracı Çalıştır'}
@@ -1054,17 +1054,17 @@ function McpAdminManager() {
 
           <div className="space-y-2 md:col-span-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-300">
+              <span className="text-xs font-semibold text-foreground">
                 Konsol Çıktısı ({testMode.toUpperCase()})
               </span>
               {testResult && (
-                <span className="text-xs font-mono text-emerald-400">200 OK • {testResult.timestamp}</span>
+                <span className="text-xs font-mono text-emerald-400 font-semibold">200 OK • {testResult.timestamp}</span>
               )}
             </div>
 
-            <div className="p-4 rounded-xl bg-[#090A0F] border border-white/[0.06] font-mono text-xs overflow-x-auto min-h-[220px] max-h-[360px] space-y-3">
+            <div className="p-4 rounded-xl bg-background border border-border/80 font-mono text-xs overflow-x-auto min-h-[220px] max-h-[360px] space-y-3">
               {isExecuting ? (
-                <div className="flex items-center gap-2.5 text-slate-400 py-16 justify-center">
+                <div className="flex items-center gap-2.5 text-muted-foreground py-16 justify-center">
                   <Loader2 size={18} className="animate-spin text-sky-400" />
                   <span className="text-xs">MCP ve Gemini Grounding taranıyor...</span>
                 </div>
@@ -1072,19 +1072,19 @@ function McpAdminManager() {
                 <>
                   <div>
                     <span className="text-emerald-400 font-semibold">// Formatlanmış Yanıt:</span>
-                    <pre className="mt-1.5 text-slate-200 font-sans text-xs whitespace-pre-wrap leading-relaxed bg-black/40 p-3 rounded-lg border border-white/[0.06]">
+                    <pre className="mt-1.5 text-foreground font-sans text-xs whitespace-pre-wrap leading-relaxed bg-muted/40 p-3 rounded-lg border border-border/60">
                       {testResult.responsePayload?.result?.content?.[0]?.text || JSON.stringify(testResult, null, 2)}
                     </pre>
                   </div>
                   <div>
                     <span className="text-sky-400 font-semibold">// JSON-RPC Yanıtı:</span>
-                    <pre className="mt-1 text-slate-400 text-[11px] overflow-x-auto">
+                    <pre className="mt-1 text-muted-foreground text-[11px] overflow-x-auto">
                       {JSON.stringify(testResult.responsePayload, null, 2)}
                     </pre>
                   </div>
                 </>
               ) : (
-                <div className="text-slate-500 py-16 text-center font-sans text-xs">
+                <div className="text-muted-foreground py-16 text-center font-sans text-xs">
                   Soldaki araç menüsünden seçim yapıp &quot;Aracı Çalıştır&quot; butonuna basarak canlı MCP yanıtını test edin.
                 </div>
               )}
@@ -1094,42 +1094,42 @@ function McpAdminManager() {
       </div>
 
       {/* Integration Snippets */}
-      <div className="p-6 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-5">
+      <div className="p-6 rounded-2xl border border-border/80 bg-card/85 backdrop-blur-md shadow-xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400">
               <Code size={18} />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-100">Geliştirici &amp; Ajan Entegrasyon Rehberi</h3>
-              <p className="text-xs text-slate-400">Cursor, Claude, Windsurf, Python ve IoT entegrasyon kodları.</p>
+              <h3 className="text-base font-bold text-foreground">Geliştirici ve Ajan Entegrasyon Rehberi</h3>
+              <p className="text-xs text-muted-foreground font-normal">Cursor, Claude, Windsurf, Python ve IoT entegrasyon kodları.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-white/[0.06] flex-wrap">
+          <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-xl border border-border/80 flex-wrap">
             <button
               onClick={() => setActiveTab('web')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${activeTab === 'web' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${activeTab === 'web' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-muted-foreground hover:text-foreground'}`}
             >
               Web AI
             </button>
             <button
               onClick={() => setActiveTab('desktop')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${activeTab === 'desktop' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${activeTab === 'desktop' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-muted-foreground hover:text-foreground'}`}
             >
               Masaüstü IDE
             </button>
             <button
               onClick={() => setActiveTab('terminal')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${activeTab === 'terminal' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${activeTab === 'terminal' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-muted-foreground hover:text-foreground'}`}
             >
               Terminal / CLI
             </button>
             <button
               onClick={() => setActiveTab('hardware')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${activeTab === 'hardware' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${activeTab === 'hardware' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-muted-foreground hover:text-foreground'}`}
             >
-              Donanım &amp; IoT
+              Donanım ve IoT
             </button>
           </div>
         </div>
@@ -1137,36 +1137,36 @@ function McpAdminManager() {
         {/* Tab 1: Web AI */}
         {activeTab === 'web' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
+            <div className="p-4 rounded-xl bg-card border border-border/80 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-sky-400">Google Gemini &amp; Claude Web Remote MCP</span>
+                <span className="text-xs font-semibold text-sky-400">Google Gemini ve Claude Web Remote MCP</span>
                 <button
                   onClick={() => copyText('https://www.engelsizforum.com/mcp', 'Remote MCP URL')}
-                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
+                  className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                   title="Kopyala"
                 >
                   {copiedCode === 'Remote MCP URL' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <p className="text-xs text-slate-400">Custom Connected Apps veya Remote MCP sunucu adresi:</p>
-              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
+              <p className="text-xs text-muted-foreground font-normal">Custom Connected Apps veya Remote MCP sunucu adresi:</p>
+              <pre className="p-2.5 rounded-lg bg-background text-foreground font-mono text-xs overflow-x-auto border border-border/60">
                 https://www.engelsizforum.com/mcp
               </pre>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
+            <div className="p-4 rounded-xl bg-card border border-border/80 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-sky-400">ChatGPT / Custom GPT OpenAPI Endpoint</span>
                 <button
                   onClick={() => copyText('https://www.engelsizforum.com/api/mcp', 'OpenAPI URL')}
-                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
+                  className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                   title="Kopyala"
                 >
                   {copiedCode === 'OpenAPI URL' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <p className="text-xs text-slate-400">GPTs Actions sekmesinde kullanılacak Endpoint:</p>
-              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
+              <p className="text-xs text-muted-foreground font-normal">GPTs Actions sekmesinde kullanılacak Endpoint:</p>
+              <pre className="p-2.5 rounded-lg bg-background text-foreground font-mono text-xs overflow-x-auto border border-border/60">
                 https://www.engelsizforum.com/api/mcp
               </pre>
             </div>
@@ -1176,18 +1176,18 @@ function McpAdminManager() {
         {/* Tab 2: Desktop */}
         {activeTab === 'desktop' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
+            <div className="p-4 rounded-xl bg-card border border-border/80 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-sky-400">Cursor IDE (.cursor/mcp.json)</span>
                 <button
                   onClick={() => copyText(JSON.stringify({ mcpServers: { engelsizforum: { url: 'https://www.engelsizforum.com/mcp' } } }, null, 2), 'Cursor Config')}
-                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
+                  className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                   title="Kopyala"
                 >
                   {copiedCode === 'Cursor Config' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
+              <pre className="p-2.5 rounded-lg bg-background text-foreground font-mono text-xs overflow-x-auto border border-border/60">
 {`{
   "mcpServers": {
     "engelsizforum": {
@@ -1198,18 +1198,18 @@ function McpAdminManager() {
               </pre>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
+            <div className="p-4 rounded-xl bg-card border border-border/80 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-sky-400">Windsurf &amp; Claude Desktop</span>
+                <span className="text-xs font-semibold text-sky-400">Windsurf ve Claude Desktop</span>
                 <button
                   onClick={() => copyText(JSON.stringify({ mcpServers: { engelsizforum: { url: 'https://www.engelsizforum.com/mcp' } } }, null, 2), 'Desktop Config')}
-                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
+                  className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                   title="Kopyala"
                 >
                   {copiedCode === 'Desktop Config' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
+              <pre className="p-2.5 rounded-lg bg-background text-foreground font-mono text-xs overflow-x-auto border border-border/60">
 {`{
   "mcpServers": {
     "engelsizforum": {
@@ -1225,32 +1225,32 @@ function McpAdminManager() {
         {/* Tab 3: Terminal */}
         {activeTab === 'terminal' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
+            <div className="p-4 rounded-xl bg-card border border-border/80 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-sky-400">Claude Code CLI</span>
                 <button
                   onClick={() => copyText('claude mcp add engelsizforum https://www.engelsizforum.com/mcp', 'Claude CLI')}
-                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
+                  className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 >
                   {copiedCode === 'Claude CLI' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
+              <pre className="p-2.5 rounded-lg bg-background text-foreground font-mono text-xs overflow-x-auto border border-border/60">
                 claude mcp add engelsizforum https://www.engelsizforum.com/mcp
               </pre>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
+            <div className="p-4 rounded-xl bg-card border border-border/80 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-sky-400">Aider CLI</span>
                 <button
                   onClick={() => copyText('aider --mcp-server https://www.engelsizforum.com/mcp', 'Aider CLI')}
-                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
+                  className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 >
                   {copiedCode === 'Aider CLI' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
+              <pre className="p-2.5 rounded-lg bg-background text-foreground font-mono text-xs overflow-x-auto border border-border/60">
                 aider --mcp-server https://www.engelsizforum.com/mcp
               </pre>
             </div>
@@ -1260,7 +1260,7 @@ function McpAdminManager() {
         {/* Tab 4: Hardware */}
         {activeTab === 'hardware' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
+            <div className="p-4 rounded-xl bg-card border border-border/80 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-sky-400">Raspberry Pi (Python Asistan)</span>
                 <button
@@ -1270,12 +1270,12 @@ res = requests.post("https://www.engelsizforum.com/api/mcp", json={
     "params": {"name": "engelsizforum_live_disability_news", "arguments": {"topic": "ÖTV 2026"}}
 })
 print(res.json()["result"]["content"][0]["text"])`, 'Python Script')}
-                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
+                  className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 >
                   {copiedCode === 'Python Script' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
+              <pre className="p-2.5 rounded-lg bg-background text-foreground font-mono text-xs overflow-x-auto border border-border/60">
 {`import requests
 res = requests.post("https://www.engelsizforum.com/api/mcp", json={
     "jsonrpc": "2.0", "id": 1, "method": "tools/call",
@@ -1285,11 +1285,11 @@ print(res.json()["result"]["content"][0]["text"])`}
               </pre>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
+            <div className="p-4 rounded-xl bg-card border border-border/80 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-sky-400">ESP32 (MicroPython)</span>
               </div>
-              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
+              <pre className="p-2.5 rounded-lg bg-background text-foreground font-mono text-xs overflow-x-auto border border-border/60">
 {`import urequests, ujson
 res = urequests.post("https://www.engelsizforum.com/api/mcp", 
     headers={"Content-Type": "application/json"},

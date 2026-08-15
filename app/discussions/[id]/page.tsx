@@ -76,14 +76,14 @@ function CommentItem({
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`p-4 sm:p-5 rounded-xl bg-[#111726]/80 border transition-all ${
+        className={`p-4 sm:p-5 rounded-2xl bg-card/80 backdrop-blur-md border transition-all ${
           comment.is_solution 
             ? 'border-emerald-500/40 bg-emerald-950/20 shadow-xs' 
-            : 'border-white/[0.08]'
+            : 'border-border/80'
         } ${depth > 0 ? 'ml-3 sm:ml-6 md:ml-8 border-l-2 border-l-sky-500/40' : ''}`}
       >
         {comment.is_solution && (
-          <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold">
+          <div className="mb-3 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold">
             <CheckCircle2 size={12} /> Çözüm Olarak Onaylandı
           </div>
         )}
@@ -102,24 +102,24 @@ function CommentItem({
 
           <div className="flex-1 min-w-0 space-y-2">
             <div className="flex items-center justify-between gap-3 flex-wrap">
-              <div className="flex items-center gap-2 text-xs text-slate-400 flex-wrap">
-                <Link href={`/profile/${comment.author?.id}`} className="font-semibold text-slate-200 hover:text-sky-400 transition-colors">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+                <Link href={`/profile/${comment.author?.id}`} className="font-semibold text-foreground hover:text-sky-400 transition-colors">
                   {comment.author?.full_name || comment.author?.username || 'Kullanıcı'}
                 </Link>
                 {(comment.author?.role === 'admin' || comment.author?.role === 'moderator') && (
-                  <span className="px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[9px] font-semibold">
+                  <span className="px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[9px] font-bold">
                     {comment.author.role === 'admin' ? 'Yönetici' : 'Moderatör'}
                   </span>
                 )}
                 {comment.author?.id === topicAuthorId && (
-                  <span className="px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 text-[9px] font-semibold border border-white/[0.06]">
+                  <span className="px-1.5 py-0.2 rounded bg-muted text-foreground text-[9px] font-bold border border-border">
                     Yazar
                   </span>
                 )}
-                <span className="text-slate-600">•</span>
-                <span className="text-[11px] text-slate-500">{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
+                <span className="text-muted-foreground/40">•</span>
+                <span className="text-[11px] text-muted-foreground font-medium">{new Date(comment.created_at!).toLocaleDateString('tr-TR')}</span>
                 {comment.updated_at !== comment.created_at && (
-                  <span className="text-[10px] text-slate-500 italic">(düzenlendi)</span>
+                  <span className="text-[10px] text-muted-foreground/60 italic">(düzenlendi)</span>
                 )}
               </div>
             </div>
@@ -129,14 +129,14 @@ function CommentItem({
                 <textarea 
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full min-h-[90px] p-3 rounded-xl border border-white/[0.08] bg-slate-900/90 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
+                  className="w-full min-h-[90px] p-3 rounded-xl border border-border bg-background text-foreground text-xs focus:border-sky-500 outline-none"
                   autoFocus
                 />
                 <div className="flex gap-2">
                   <button 
                     onClick={handleUpdate}
                     disabled={isUpdating}
-                    className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg font-semibold text-xs flex items-center gap-1.5 cursor-pointer"
+                    className="px-3 py-1.5 bg-sky-500 hover:bg-sky-400 text-white rounded-lg font-bold text-xs flex items-center gap-1.5 cursor-pointer"
                   >
                     {isUpdating ? <Loader2 size={12} className="animate-spin" /> : <Check size={12} />} Kaydet
                   </button>
@@ -145,14 +145,14 @@ function CommentItem({
                       setIsEditing(false);
                       setEditContent(comment.content);
                     }}
-                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg font-semibold text-xs cursor-pointer"
+                    className="px-3 py-1.5 bg-muted hover:bg-muted/80 text-foreground rounded-lg font-semibold text-xs cursor-pointer"
                   >
                     İptal
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="text-xs sm:text-sm font-normal leading-relaxed break-words text-slate-200">
+              <div className="text-xs sm:text-sm font-normal leading-relaxed break-words text-foreground/90">
                 <BionicMarkdown content={comment.content} />
               </div>
             )}
@@ -766,41 +766,41 @@ export default function DiscussionDetailPage() {
       <div className="w-full max-w-7xl mx-auto px-4 py-6 md:py-10 space-y-6">
         
         {/* Breadcrumb Navigation */}
-        <nav aria-label="Erişim yolu" className="flex items-center gap-2 text-xs text-slate-400">
+        <nav aria-label="Erişim yolu" className="flex items-center gap-2 text-xs text-muted-foreground">
           <Link href="/" className="hover:text-sky-400 transition-colors">Ana Sayfa</Link>
-          <ChevronRight size={13} className="text-slate-600" />
+          <ChevronRight size={13} className="text-muted-foreground/40" />
           <Link href="/discussions" className="hover:text-sky-400 transition-colors">Tartışmalar</Link>
-          <ChevronRight size={13} className="text-slate-600" />
-          <span className="text-slate-200 font-medium truncate max-w-[200px] sm:max-w-xs">{topic.title}</span>
+          <ChevronRight size={13} className="text-muted-foreground/40" />
+          <span className="text-foreground font-medium truncate max-w-[200px] sm:max-w-xs">{topic.title}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* Main Content (8 cols) */}
           <div className="lg:col-span-8 space-y-6 min-w-0">
-            <article className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-6 sm:p-8 backdrop-blur-md space-y-6">
+            <article className="bg-card/80 border border-border/80 rounded-2xl p-6 sm:p-8 backdrop-blur-md space-y-6 shadow-xs">
               
               <header className="space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="px-2 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 font-semibold text-[10px] rounded-md">
+                    <span className="px-2.5 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 font-bold text-[10px] rounded-md">
                       #{topic.id.substring(0, 6)}
                     </span>
-                    <div className="px-2.5 py-0.5 rounded-md bg-slate-800 text-slate-300 text-[10px] font-medium border border-white/[0.06]">
-                      {topic.category?.name || 'Genel'}
+                    <div className="px-2.5 py-0.5 rounded-md bg-muted text-foreground text-[10px] font-bold border border-border">
+                      {topic.category?.name || 'Genel Danışma'}
                     </div>
                     {topic.is_solved && (
-                      <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold flex items-center gap-1">
+                      <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold flex items-center gap-1">
                         <CheckCircle2 size={11} /> Çözüldü
                       </span>
                     )}
                     <button
                       onClick={toggleBookmark}
                       disabled={isBookmarking}
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md border text-[10px] font-medium transition-all cursor-pointer ${
+                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md border text-[10px] font-bold transition-all cursor-pointer ${
                         isBookmarked 
-                          ? 'bg-sky-600 border-sky-500 text-white shadow-xs' 
-                          : 'bg-slate-900/60 border-white/[0.08] text-slate-400 hover:text-slate-200'
+                          ? 'bg-sky-500 border-sky-500 text-white shadow-xs' 
+                          : 'bg-muted/40 border-border text-muted-foreground hover:text-foreground'
                       }`}
                     >
                       {isBookmarking ? <Loader2 size={10} className="animate-spin" /> : <Bookmark size={10} fill={isBookmarked ? "currentColor" : "none"} />}
@@ -813,7 +813,7 @@ export default function DiscussionDetailPage() {
                       {(isStaff || user?.id === topic.author_id) && !isEditingTopic && (
                         <button 
                           onClick={startEditingTopic} 
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+                          className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
                           title="Düzenle"
                         >
                           <Settings size={14} />
@@ -821,30 +821,30 @@ export default function DiscussionDetailPage() {
                       )}
                       <button 
                         onClick={togglePin} 
-                        className={`p-1.5 rounded-lg transition-colors ${topic.is_pinned ? 'text-sky-400 bg-sky-500/10' : 'text-slate-400 hover:bg-slate-800'}`}
+                        className={`p-1.5 rounded-lg transition-colors cursor-pointer ${topic.is_pinned ? 'text-sky-400 bg-sky-500/10' : 'text-muted-foreground hover:bg-muted'}`}
                         title={topic.is_pinned ? "İğnelemeyi Kaldır" : "İğnele"}
                       >
                         <Pin size={14} />
                       </button>
                       <button 
                         onClick={toggleLock} 
-                        className={`p-1.5 rounded-lg transition-colors ${topic.is_locked ? 'text-amber-400 bg-amber-500/10' : 'text-slate-400 hover:bg-slate-800'}`}
+                        className={`p-1.5 rounded-lg transition-colors cursor-pointer ${topic.is_locked ? 'text-amber-400 bg-amber-500/10' : 'text-muted-foreground hover:bg-muted'}`}
                         title={topic.is_locked ? "Kilidi Aç" : "Kilitle"}
                       >
                         <Lock size={14} />
                       </button>
-                      <button onClick={deleteTopic} className="text-rose-400 hover:text-rose-300 p-1.5 hover:bg-rose-500/10 rounded-lg transition-colors" title="Sil">
+                      <button onClick={deleteTopic} className="text-rose-400 hover:text-rose-300 p-1.5 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer" title="Sil">
                         <Trash2 size={14} />
                       </button>
                     </div>
                   )}
                 </div>
 
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-100 tracking-tight leading-snug break-words">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-foreground tracking-tight leading-snug break-words">
                   {topic.title}
                 </h1>
 
-                <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-white/[0.06] text-xs text-slate-400">
+                <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-border/60 text-xs text-muted-foreground">
                   <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
                     <UserAvatar 
                       src={topic.author?.avatar_url}
@@ -853,15 +853,15 @@ export default function DiscussionDetailPage() {
                       size="sm"
                     />
                     <div className="flex flex-col text-left">
-                      <span className="font-semibold text-slate-200 hover:text-sky-400 transition-colors">
+                      <span className="font-semibold text-foreground hover:text-sky-400 transition-colors">
                         {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
                       </span>
-                      <span className="text-[10px] text-sky-400 font-medium">
+                      <span className="text-[10px] text-sky-400 font-bold">
                         {topic.author?.role === 'admin' ? 'Yönetici' : topic.author?.role === 'moderator' ? 'Moderatör' : 'Topluluk Üyesi'}
                       </span>
                     </div>
                   </Link>
-                  <div className="flex items-center gap-3 text-slate-500 text-xs">
+                  <div className="flex items-center gap-3 text-muted-foreground text-xs font-medium">
                     <div className="flex items-center gap-1">
                       <Calendar size={13} className="text-sky-400" />
                       <span>{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
@@ -877,34 +877,34 @@ export default function DiscussionDetailPage() {
               {isEditingTopic ? (
                 <div className="space-y-3 pt-2">
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-slate-300">Başlık</label>
+                    <label className="text-xs font-bold text-muted-foreground">Başlık</label>
                     <input 
                       type="text" 
                       value={editTitle}
                       onChange={(e) => setEditTitle(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 text-slate-200 text-xs font-semibold focus:ring-1 focus:ring-sky-500 outline-none"
+                      className="w-full p-2.5 rounded-xl border border-border bg-background text-foreground text-xs font-semibold focus:border-sky-500 outline-none"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-semibold text-slate-300">İçerik</label>
+                    <label className="text-xs font-bold text-muted-foreground">İçerik</label>
                     <textarea 
                       value={editContent}
                       onChange={(e) => setEditContent(e.target.value)}
-                      className="w-full min-h-[160px] p-3 rounded-xl border border-white/[0.08] bg-slate-900/90 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none resize-y"
+                      className="w-full min-h-[160px] p-3 rounded-xl border border-border bg-background text-foreground text-xs focus:border-sky-500 outline-none resize-y"
                     />
                   </div>
                   <div className="flex gap-2">
                     <button 
                       onClick={handleUpdateTopic}
                       disabled={isUpdatingTopic}
-                      className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-semibold text-xs flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-2 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer"
                     >
                       {isUpdatingTopic ? <Loader2 className="animate-spin" size={13} /> : <Check size={13} />}
                       Kaydet
                     </button>
                     <button 
                       onClick={() => setIsEditingTopic(false)}
-                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-semibold text-xs cursor-pointer"
+                      className="px-4 py-2 bg-muted hover:bg-muted/80 text-foreground rounded-xl font-semibold text-xs cursor-pointer"
                     >
                       İptal
                     </button>
@@ -914,21 +914,21 @@ export default function DiscussionDetailPage() {
                 <>
                   <TextToSpeechControls text={topic.content} title={topic.title} className="mb-4" />
 
-                  <div className="prose prose-invert max-w-none font-normal text-slate-200 text-xs sm:text-sm leading-relaxed break-words">
+                  <div className="prose dark:prose-invert max-w-none font-normal text-foreground text-xs sm:text-sm leading-relaxed break-words">
                     <BionicMarkdown content={topic.content} />
                   </div>
                 </>
               )}
 
               {/* Action Bar */}
-              <div className="pt-4 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-3">
+              <div className="pt-4 border-t border-border/60 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={handleToggleLike}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all text-xs font-semibold cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all text-xs font-bold cursor-pointer ${
                       isLiked 
-                        ? 'bg-rose-500 text-white' 
-                        : 'bg-slate-900/80 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-white/[0.06]'
+                        ? 'bg-rose-500 text-white shadow-xs' 
+                        : 'bg-muted/40 text-muted-foreground hover:text-rose-400 hover:bg-rose-500/10 border border-border'
                     }`}
                   >
                     <Heart size={14} fill={isLiked ? "currentColor" : "none"} />
@@ -939,7 +939,7 @@ export default function DiscussionDetailPage() {
                   <button 
                     onClick={handleSummarize}
                     disabled={isSummarizing}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 hover:bg-sky-500 hover:text-white rounded-lg transition-all text-xs font-semibold disabled:opacity-50 cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 hover:bg-sky-500 hover:text-white rounded-xl transition-all text-xs font-bold disabled:opacity-50 cursor-pointer"
                   >
                     {isSummarizing ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} />}
                     <span>AI Özeti</span>
@@ -954,17 +954,17 @@ export default function DiscussionDetailPage() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="p-4 bg-sky-950/30 border border-sky-500/20 rounded-xl space-y-2 relative overflow-hidden"
+                    className="p-4 bg-sky-950/20 border border-sky-500/30 rounded-xl space-y-2 relative overflow-hidden backdrop-blur-md"
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-sky-400 font-semibold text-xs">
+                      <div className="flex items-center gap-1.5 text-sky-400 font-bold text-xs uppercase tracking-wider">
                         <Sparkles size={14} /> Yapay Zeka Özeti
                       </div>
-                      <button onClick={() => setSummary(null)} className="text-slate-400 hover:text-slate-200 p-1">
+                      <button onClick={() => setSummary(null)} className="text-muted-foreground hover:text-foreground p-1 cursor-pointer">
                         <X size={15} />
                       </button>
                     </div>
-                    <p className="text-xs text-slate-300 italic leading-relaxed">&ldquo;{summary}&rdquo;</p>
+                    <p className="text-xs text-foreground/90 italic leading-relaxed">&ldquo;{summary}&rdquo;</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -973,10 +973,10 @@ export default function DiscussionDetailPage() {
             {/* Comments Stream */}
             <section className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
+                <h2 className="text-base font-bold text-foreground flex items-center gap-2">
                   <MessageSquare size={18} className="text-sky-400" />
                   <span>Yanıtlar</span>
-                  <span className="text-xs font-semibold px-2 py-0.2 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                  <span className="text-xs font-bold px-2 py-0.2 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
                     {comments.length}
                   </span>
                 </h2>
@@ -1002,9 +1002,9 @@ export default function DiscussionDetailPage() {
                     />
                   ))
                 ) : (
-                  <div className="text-center py-12 bg-[#111726]/60 rounded-xl border border-dashed border-white/[0.08] px-6 space-y-2">
-                    <MessageSquare size={32} className="mx-auto text-slate-600" />
-                    <p className="text-xs text-slate-400 font-normal">Bu tartışmaya henüz yanıt verilmemiş. İlk yanıtı siz ekleyin.</p>
+                  <div className="text-center py-12 bg-card rounded-2xl border border-dashed border-border px-6 space-y-2">
+                    <MessageSquare size={32} className="mx-auto text-muted-foreground/30" />
+                    <p className="text-xs text-muted-foreground font-medium">Bu tartışmaya henüz yanıt verilmemiş. İlk yanıtı siz ekleyin.</p>
                   </div>
                 )}
               </div>
@@ -1012,18 +1012,18 @@ export default function DiscussionDetailPage() {
               {/* Reply Form */}
               {user ? (
                 topic.is_locked && !isStaff ? (
-                  <div className="p-6 bg-amber-500/5 border border-amber-500/20 rounded-xl text-center space-y-1">
-                    <Lock size={24} className="mx-auto text-amber-400/80 mb-2" />
-                    <p className="text-xs font-semibold text-amber-400">Bu Tartışma Kilitlendi</p>
-                    <p className="text-[11px] text-slate-400">Yönetim tarafından yeni yanıtlara kapatılmıştır.</p>
+                  <div className="p-6 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-center space-y-1">
+                    <Lock size={24} className="mx-auto text-amber-400 mb-2" />
+                    <p className="text-xs font-bold text-amber-400">Bu Tartışma Kilitlendi</p>
+                    <p className="text-[11px] text-muted-foreground">Yönetim tarafından yeni yanıtlara kapatılmıştır.</p>
                   </div>
                 ) : (
                   <form 
                     onSubmit={handlePostComment}
-                    className="bg-[#111726]/80 border border-white/[0.08] rounded-xl p-4 sm:p-5 space-y-3 shadow-sm relative backdrop-blur-md"
+                    className="bg-card/80 border border-border/80 rounded-2xl p-4 sm:p-5 space-y-3 shadow-xs relative backdrop-blur-md"
                   >
                     <div className="flex items-center justify-between">
-                      <label htmlFor="reply-textarea" className="text-xs font-semibold text-slate-300">
+                      <label htmlFor="reply-textarea" className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                         {replyToId 
                           ? `${comments.find(c => c.id === replyToId)?.author?.username} adlı kullanıcıya yanıt` 
                           : (topic.is_locked ? 'Yönetici Yanıtı' : 'Yanıtınız')}
@@ -1032,7 +1032,7 @@ export default function DiscussionDetailPage() {
                         <button 
                           type="button" 
                           onClick={() => setReplyToId(null)}
-                          className="text-[11px] font-semibold text-rose-400 hover:underline cursor-pointer"
+                          className="text-[11px] font-bold text-rose-400 hover:underline cursor-pointer"
                         >
                           İptal Et
                         </button>
@@ -1044,14 +1044,14 @@ export default function DiscussionDetailPage() {
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       placeholder={replyToId ? "Yanıtınızı buraya yazın..." : "Topluluğa faydalı bir yanıt yazın..."}
-                      className="w-full min-h-[100px] p-3 rounded-xl border border-white/[0.08] bg-slate-900/90 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none resize-y placeholder:text-slate-500"
+                      className="w-full min-h-[100px] p-3.5 rounded-xl border border-border bg-background text-foreground text-xs focus:border-sky-500 outline-none resize-y placeholder:text-muted-foreground/60"
                       required
                     />
                     <div className="flex justify-end">
                       <button
                         type="submit"
                         disabled={sending}
-                        className="px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-semibold text-xs transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        className="px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-bold text-xs transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50 uppercase tracking-wider"
                       >
                         {sending ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
                         <span>{sending ? 'Gönderiliyor...' : (replyToId ? 'Yanıtla' : 'Yanıt Gönder')}</span>
@@ -1060,11 +1060,11 @@ export default function DiscussionDetailPage() {
                   </form>
                 )
               ) : (
-                <div className="p-6 bg-[#111726]/60 border border-white/[0.08] rounded-xl text-center space-y-3">
-                  <p className="text-xs text-slate-400">Tartışmaya yanıt yazmak için giriş yapmanız gerekmektedir.</p>
+                <div className="p-6 bg-card/60 border border-border/80 rounded-2xl text-center space-y-3">
+                  <p className="text-xs text-muted-foreground font-medium">Tartışmaya yanıt yazmak için giriş yapmanız gerekmektedir.</p>
                   <Link 
                     href="/login"
-                    className="inline-flex items-center justify-center px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl font-semibold text-xs transition-colors"
+                    className="inline-flex items-center justify-center px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl font-bold text-xs transition-colors uppercase tracking-wider"
                   >
                     Giriş Yap
                   </Link>
@@ -1077,8 +1077,8 @@ export default function DiscussionDetailPage() {
           <aside className="lg:col-span-4 space-y-4 lg:sticky lg:top-8">
             
             {/* Author Profile Card */}
-            <section className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md space-y-4">
-              <h3 className="text-xs font-bold text-slate-300 pb-2 border-b border-white/[0.06]">
+            <section className="bg-card border border-border/80 rounded-2xl p-5 backdrop-blur-md space-y-4 shadow-xs">
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider pb-2 border-b border-border/60">
                 Yazar Bilgisi
               </h3>
               <div className="flex flex-col items-center text-center space-y-3">
@@ -1089,26 +1089,26 @@ export default function DiscussionDetailPage() {
                   size="lg"
                 />
                 <div>
-                  <Link href={`/profile/${topic.author?.id}`} className="text-sm font-bold text-slate-100 hover:text-sky-400 transition-colors block">
+                  <Link href={`/profile/${topic.author?.id}`} className="text-sm font-bold text-foreground hover:text-sky-400 transition-colors block">
                     @{topic.author?.username || 'isimsiz'}
                   </Link>
-                  <p className="text-[10px] font-semibold text-sky-400 mt-0.5">
+                  <p className="text-[10px] font-bold text-sky-400 mt-0.5">
                     {topic.author?.role === 'admin' ? 'Site Yöneticisi' : topic.author?.role === 'moderator' ? 'Moderatör' : 'Topluluk Üyesi'}
                   </p>
                 </div>
-                <div className="grid grid-cols-2 gap-2.5 w-full pt-2 border-t border-white/[0.06]">
-                  <div className="text-center p-2 bg-slate-900/60 rounded-xl border border-white/[0.04]">
-                    <div className="text-sm font-bold text-slate-200">{topic.author?.level || 1}</div>
-                    <div className="text-[9px] font-medium text-slate-500">Seviye</div>
+                <div className="grid grid-cols-2 gap-2.5 w-full pt-2 border-t border-border/60">
+                  <div className="text-center p-2 bg-muted/40 rounded-xl border border-border/60">
+                    <div className="text-sm font-bold text-foreground">{topic.author?.level || 1}</div>
+                    <div className="text-[9px] font-bold text-muted-foreground uppercase">Seviye</div>
                   </div>
-                  <div className="text-center p-2 bg-slate-900/60 rounded-xl border border-white/[0.04]">
+                  <div className="text-center p-2 bg-muted/40 rounded-xl border border-border/60">
                     <div className="text-sm font-bold text-sky-400">{topic.author?.xp || 0}</div>
-                    <div className="text-[9px] font-medium text-slate-500">XP Puanı</div>
+                    <div className="text-[9px] font-bold text-muted-foreground uppercase">XP Puanı</div>
                   </div>
                 </div>
                 <Link 
                   href={`/profile/${topic.author?.id}`}
-                  className="w-full py-2 flex items-center justify-center rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/[0.06] transition-colors text-xs font-semibold"
+                  className="w-full py-2 flex items-center justify-center rounded-xl bg-muted hover:bg-muted/80 text-foreground border border-border transition-colors text-xs font-bold uppercase tracking-wider"
                 >
                   Profili Görüntüle
                 </Link>
@@ -1116,46 +1116,46 @@ export default function DiscussionDetailPage() {
             </section>
 
             {/* Topic Stats Card */}
-            <section className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md space-y-3">
-              <h3 className="text-xs font-bold text-slate-300 pb-2 border-b border-white/[0.06]">
+            <section className="bg-card border border-border/80 rounded-2xl p-5 backdrop-blur-md space-y-3 shadow-xs">
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider pb-2 border-b border-border/60">
                 Başlık İstatistikleri
               </h3>
               <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between py-1 border-b border-white/[0.04]">
-                  <span className="text-slate-400 flex items-center gap-1.5"><MessageSquare size={13} className="text-sky-400" /> Yanıtlar</span>
-                  <span className="font-semibold text-slate-200">{comments.length}</span>
+                <div className="flex items-center justify-between py-1 border-b border-border/40">
+                  <span className="text-muted-foreground flex items-center gap-1.5"><MessageSquare size={13} className="text-sky-400" /> Yanıtlar</span>
+                  <span className="font-bold text-foreground">{comments.length}</span>
                 </div>
-                <div className="flex items-center justify-between py-1 border-b border-white/[0.04]">
-                  <span className="text-slate-400 flex items-center gap-1.5"><Eye size={13} className="text-sky-400" /> Görüntülenme</span>
-                  <span className="font-semibold text-slate-200">{topic.views_count || 0}</span>
+                <div className="flex items-center justify-between py-1 border-b border-border/40">
+                  <span className="text-muted-foreground flex items-center gap-1.5"><Eye size={13} className="text-sky-400" /> Görüntülenme</span>
+                  <span className="font-bold text-foreground">{topic.views_count || 0}</span>
                 </div>
-                <div className="flex items-center justify-between py-1 border-b border-white/[0.04]">
-                  <span className="text-slate-400 flex items-center gap-1.5"><Heart size={13} className="text-rose-400" /> Beğeni</span>
-                  <span className="font-semibold text-slate-200">{likesCount}</span>
+                <div className="flex items-center justify-between py-1 border-b border-border/40">
+                  <span className="text-muted-foreground flex items-center gap-1.5"><Heart size={13} className="text-rose-400" /> Beğeni</span>
+                  <span className="font-bold text-foreground">{likesCount}</span>
                 </div>
                 <div className="flex items-center justify-between pt-1">
-                  <span className="text-slate-400 flex items-center gap-1.5"><Calendar size={13} className="text-sky-400" /> Tarih</span>
-                  <span className="font-medium text-slate-200">{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
+                  <span className="text-muted-foreground flex items-center gap-1.5"><Calendar size={13} className="text-sky-400" /> Tarih</span>
+                  <span className="font-semibold text-foreground">{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
                 </div>
               </div>
             </section>
 
             {/* Similar Topics */}
-            <section className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md space-y-3">
-              <h3 className="text-xs font-bold text-slate-300 pb-2 border-b border-white/[0.06]">
+            <section className="bg-card border border-border/80 rounded-2xl p-5 backdrop-blur-md space-y-3 shadow-xs">
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider pb-2 border-b border-border/60">
                 Benzer Başlıklar
               </h3>
               <div className="space-y-2">
                 {similarTopics.length > 0 ? (
                   similarTopics.map(t => (
-                    <Link key={t.id} href={`/discussions/${t.id}`} className="block p-2.5 rounded-xl hover:bg-slate-900/80 transition-colors border border-transparent hover:border-white/[0.06]">
-                      <p className="text-xs font-medium text-slate-200 hover:text-sky-400 transition-colors line-clamp-2 leading-relaxed">
+                    <Link key={t.id} href={`/discussions/${t.id}`} className="block p-2.5 rounded-xl hover:bg-muted/40 transition-colors border border-transparent hover:border-border">
+                      <p className="text-xs font-medium text-foreground hover:text-sky-400 transition-colors line-clamp-2 leading-relaxed">
                         {t.title}
                       </p>
                     </Link>
                   ))
                 ) : (
-                  <p className="text-xs text-slate-500">Benzer başlık bulunamadı.</p>
+                  <p className="text-xs text-muted-foreground">Benzer başlık bulunamadı.</p>
                 )}
               </div>
             </section>
