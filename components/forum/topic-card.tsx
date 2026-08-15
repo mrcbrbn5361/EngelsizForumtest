@@ -66,13 +66,13 @@ export function TopicCard({ topic }: { topic: Topic }) {
         <div className="flex items-center gap-2 flex-wrap">
           <Link 
             href={`/category/${topic.category?.slug}`}
-            className="text-[10px] font-black uppercase tracking-wider text-sky-400 hover:underline"
+            className="text-xs font-semibold text-sky-400 hover:underline"
           >
             {topic.category?.name}
           </Link>
           <span className="text-muted-foreground/30">•</span>
-          <span className="text-[10px] font-medium text-muted-foreground uppercase flex items-center gap-1">
-            <Clock size={10} className="text-muted-foreground/60" />
+          <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+            <Clock size={11} className="text-muted-foreground/60" />
             {formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}
           </span>
         </div>

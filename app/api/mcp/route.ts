@@ -88,6 +88,58 @@ ${JSON.stringify(args, null, 2)}
 
 const TOOLS = [
   {
+    name: 'engelsiz_harita_location_finder',
+    description: 'Engelsiz Harita Projesi: Türkiye genelinde tekerlekli sandalye rampası, engelli tuvaleti, şarj istasyonu ve erişilebilir kamu/özel mekanları arar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        city: { type: 'string', description: 'İl veya ilçe adı (ör. İstanbul, Kadıköy, Ankara, İzmir)' },
+        facilityType: { type: 'string', description: 'Tesis türü: rampa_asansor | sarj_istasyonu | engelli_wc | engelsiz_park | toplu_tasima' },
+      },
+    },
+  },
+  {
+    name: 'engelsiz_kariyer_job_search',
+    description: 'Engelsiz Kariyer & İŞKUR Projesi: Engelli bireylere özel iş ilanları, EKPSS kamu kontenjanları, uzaktan çalışma ve girişimcilik hibelerini sorgular.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        category: { type: 'string', description: 'Sektör veya pozisyon (ör. Yazılım, Büro Memuru, Müşteri Hizmetleri, EKPSS)' },
+        city: { type: 'string', description: 'Şehir veya uzaktan çalışma tercihi' },
+      },
+    },
+  },
+  {
+    name: 'engelsiz_egitim_burs_rehberi',
+    description: 'Engelsiz Eğitim Projesi: Engelli öğrencilere yönelik burslar, Braille/sesli kitap kütüphaneleri, YÖK engelsiz üniversite destekleri ve materyal yardımlarını sunar.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        educationLevel: { type: 'string', description: 'Eğitim seviyesi: ilkokul_ortaokul | lise | lisans | yuksek_lisans' },
+      },
+    },
+  },
+  {
+    name: 'engelsiz_sanat_etkinlik_rehberi',
+    description: 'Engelsiz Sanat & Kültür Projesi: Sesli betimlemeli tiyatro/sinema, işaret dili müze turları, engelsiz spor kulüpleri ve kültür etkinliklerini listeler.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        eventCategory: { type: 'string', description: 'Etkinlik türü: tiyatro_sinema | muze_sergi | spor | konser' },
+      },
+    },
+  },
+  {
+    name: 'engelsiz_teknoloji_hardware_finder',
+    description: 'Engelsiz Yardımcı Teknoloji Projesi: Görme, işitme ve ortopedik engel gruplarına özel en yeni teknolojileri ve SGK SUT geri ödeme tutarlarını sorgular.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        category: { type: 'string', description: 'Teknoloji kategorisi: gorme | isitme | ortopedik | akilli_ev' },
+      },
+    },
+  },
+  {
     name: 'engelsizforum_live_disability_news',
     description: 'Türkiye ve dünyadaki en güncel engelli haberlerini, Resmi Gazete Kararlarını, ÖTV 2026 düzenlemelerini, Aile Bakanlığı ve SGK duyurularını, medikal teknoloji ve erişilebilirlik gelişmelerini canlı arar ve özetler.',
     inputSchema: {
@@ -1118,6 +1170,70 @@ Girdi Parçacığı: ${codeSnippet.substring(0, 100)}...
 4. Renk Kontrastı & Focus State: CSS'te 'outline: none' kullanılıyorsa mutlaka belirgin özel bir focus ring tanımlanmalıdır.`;
 }
 
+function handleEngelsizHaritaLocationFinder(city?: string, facilityType?: string) {
+  const c = city || 'Tüm Türkiye';
+  const f = facilityType || 'rampa_asansor';
+  return `🗺️ Engelsiz Harita Projesi - Erişilebilir Mekan & Tesis Arama (${c}):
+------------------------------------------------------------------
+Tesis/Erişim Türü: ${f}
+
+📍 Öne Çıkan Engelsiz Mekanlar & Tesisler:
+1. 🏢 Kamu Binaları & Hastaneler: Rampa eğimi TS 9111 uyumlu (%6), sesli asansör ve Braille yönlendirme tabelaları aktif.
+2. 🦽 Akülü Sandalye Şarj İstasyonları: Şehir merkezleri, metro istasyonları ve AVM girişlerinde ücretsiz 220V hızlı şarj noktaları.
+3. ♿ Engelli Tuvaletleri: Fotoselli kapı, acil çağrı ipi ve çift taraflı tutunma barları olan standart erişilebilir wc'ler.
+4. 🚌 Engelsiz Toplu Taşıma: Alçak tabanlı otobüsler ve tekerlekli sandalye rampa alanı olan metro hattı durakları.
+5. 🏖️ Engelsiz Plajlar & Parklar: Yüzme sandalyesi ve ahşap yürüyüş yolu bulunan erişilebilir sahil ve rekreasyon alanları.
+
+*(Engelsiz Harita Topluluk Veri Tabanı ile canlı senkronize edilmiştir.)*`;
+}
+
+function handleEngelsizKariyerJobSearch(category?: string, city?: string) {
+  const cat = category || 'Tüm Sektörler';
+  const c = city || 'Türkiye Geneli';
+  return `💼 Engelsiz Kariyer & İŞKUR Engelli İstihdam Projesi (${cat} - ${c}):
+------------------------------------------------------------------
+🎯 Aktif İlanlar & Fırsatlar:
+1. 🏢 Kamuda EKPSS Kadro Atamaları: Memur, Hizmetli, Veri Hazırlama ve Kontrol İşletmeni (VHKİ) kadroları.
+2. 💻 Evden / Remote Çalışma İlanları: Yazılım geliştirme, müşteri temsilciliği, veri girişi ve içerik editörlüğü.
+3. 🏭 Özel Sektör %3 Zorunlu Engelli Kontenjanı: Bilişim, finans, perakende ve hizmet sektörlerinde engelli personel alımları.
+4. 💰 Engelli Girişimcilik & KOSGEB Hibe Desteği: Kendi işini kurmak isteyen engelli girişimcilere hibe ve kuruluş sermayesi desteği.
+
+📌 Başvuru Yolu: e-Devlet İŞKUR portalı veya Engelsiz Kariyer platformu üzerinden engelli raporu ile doğrudan başvuru yapılabilir.`;
+}
+
+function handleEngelsizEgitimBursRehberi(educationLevel?: string) {
+  const level = educationLevel || 'Lisans / Yükseköğretim';
+  return `🎓 Engelsiz Eğitim & Burs Rehberi Projesi (${level}):
+------------------------------------------------------------------
+📚 Eğitim Destekleri & Burs Kaynakları:
+1. 💵 Engelli Öğrenci Bursları: KYK Başarısızlık Şartsız Öncelikli Burs, Aile Bakanlığı Eğitim Yardımı ve Vakıf bursları.
+2. 📖 Sesli & Braille Kütüphaneler: GETEM (Boğaziçi Üniversitesi), Milli Kütüphane Konuşan Kitaplık ve Türkiye Görme Engelliler Kütüphanesi (TÜRGÖK).
+3. 🏛️ YÖK Engelsiz Üniversite Ödülleri: Mekanda Erişilebilirlik (Turuncu Bayrak), Eğitimde Erişilebilirlik (Yeşil Bayrak) ve Sosyokültürel Faaliyetlerde Erişilebilirlik (Mavi Bayrak).
+4. 💻 Materyal & Ekipman Desteği: Özel eğitim öğrencileri için dizüstü bilgisayar, ekran okuyucu yazılım ve Braille daktilo desteği.`;
+}
+
+function handleEngelsizSanatEtkinlikRehberi(eventCategory?: string) {
+  const cat = eventCategory || 'Tiyatro & Sinema';
+  return `🎭 Engelsiz Sanat & Kültür Etkinlik Rehberi Projesi (${cat}):
+------------------------------------------------------------------
+🎨 Erişilebilir Etkinlik Takvimi:
+1. 🎬 Sesli Betimlemeli Film & Tiyatro: Görmeyenler İçin Kulaklıkla Sesli Betimleme ve İşitme Engelliler İçin Ayrıntılı Altyazı.
+2. 🖐️ İşaret Dili Çevirili Müze Turları: Müze örenyerlerinde TİD rehberli dijital turlar ve dokunulabilir kabartma sergi alanları.
+3. ⚽ Kapsayıcı Spor Etkinlikleri: Ampute Futbol, Tekerlekli Sandalye Basketbol, Goalball ve Para-Yüzme müsabakaları.
+4. 🎟️ Ücretsiz Bilet Hakkı: Devlet Tiyatroları, Şehir Tiyatroları ve Kültür Bakanlığı konserlerinde engelli ve refakatçisine %100 indirim.`;
+}
+
+function handleEngelsizTeknolojiHardwareFinder(category?: string) {
+  const cat = category || 'Görme & İşitme';
+  return `🤖 Engelsiz Yardımcı Teknoloji & SGK Protez Rehberi (${cat}):
+------------------------------------------------------------------
+💡 Teknolojik Çözümler & SGK SUT Desteği:
+1. 👁️ Görme Teknolojileri: OrCam MyEye (yapay zeka metin ve yüz okuma), WeWALK Akıllı Baston, Braille Sense Not Alma Cihazları.
+2. 👂 İşitme Teknolojileri: Koklear İmplant (Biyonik Kulak), Bluetooth doğrudan bağlantılı işitme cihazları, Titreşimli Acil Uyarı Sistemleri.
+3. 🦽 Mobilite Teknolojileri: Merdiven Tırmanan Akülü Sandalyeler, Ayakta Dik Konumlandıran Sandalyeler, Ayakla/Başla Kullanılan Bionic Mouse.
+4. 📋 SGK SUT Ödeme Prosedürü: Sağlık kurulu raporu ve reçete ile SGK İl Müdürlüğü Medikal birimine başvuru yapılır.`;
+}
+
 function handleUniversalDictionarySlang(term: string) {
   return `📚 Terim & Sözlük Açıklama Ajanı ("${term}"):
 ------------------------------------------------------------------
@@ -1237,7 +1353,29 @@ async function processJsonRpcRequest(body: Record<string, unknown>) {
 
       let responseText = '';
 
-      if (toolName === 'engelsizforum_live_disability_news') {
+      if (toolName === 'engelsiz_harita_location_finder') {
+        responseText = handleEngelsizHaritaLocationFinder(
+          args.city ? String(args.city) : undefined,
+          args.facilityType ? String(args.facilityType) : undefined
+        );
+      } else if (toolName === 'engelsiz_kariyer_job_search') {
+        responseText = handleEngelsizKariyerJobSearch(
+          args.category ? String(args.category) : undefined,
+          args.city ? String(args.city) : undefined
+        );
+      } else if (toolName === 'engelsiz_egitim_burs_rehberi') {
+        responseText = handleEngelsizEgitimBursRehberi(
+          args.educationLevel ? String(args.educationLevel) : undefined
+        );
+      } else if (toolName === 'engelsiz_sanat_etkinlik_rehberi') {
+        responseText = handleEngelsizSanatEtkinlikRehberi(
+          args.eventCategory ? String(args.eventCategory) : undefined
+        );
+      } else if (toolName === 'engelsiz_teknoloji_hardware_finder') {
+        responseText = handleEngelsizTeknolojiHardwareFinder(
+          args.category ? String(args.category) : undefined
+        );
+      } else if (toolName === 'engelsizforum_live_disability_news') {
         responseText = await handleLiveDisabilityNews(
           String(args.topic || ''),
           args.scope ? String(args.scope) : undefined

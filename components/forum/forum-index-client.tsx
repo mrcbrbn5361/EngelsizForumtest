@@ -229,15 +229,15 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
   return (
     <div className="flex-1 w-full min-w-0" role="main">
       {/* Hero Header */}
-      <section className="bg-slate-900 border-b border-slate-800 py-8 sm:py-12 relative overflow-hidden">
+      <section className="bg-[#0b0f19] border-b border-white/[0.08] py-8 sm:py-12 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 relative z-10 min-w-0">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
             <div className="lg:col-span-7 space-y-4">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-sky-950/80 border border-sky-800 text-sky-400 text-[10px] sm:text-xs font-bold tracking-wide">
-                <Sparkles size={13} className="shrink-0 text-sky-400" />
-                <span>ENGELSİZ BİLGİ &amp; DAYANIŞMA PLATFORMU</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold">
+                <Sparkles size={14} className="shrink-0 text-sky-400" />
+                <span>Engelsiz Bilgi ve Dayanışma Platformu</span>
               </div>
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-100 leading-tight">
                 {profile ? (
                   <>Hoş Geldiniz, <span className="text-sky-400">{profile.full_name || profile.username}</span></>
                 ) : (
@@ -301,58 +301,58 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
               <Link 
                 href="/hesaplama"
-                className="p-3 sm:p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-sky-500/40 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 transition-all flex items-center gap-2.5 group min-w-0"
+                className="p-3 sm:p-3.5 rounded-lg border border-white/[0.08] bg-[#111726] hover:border-sky-500/40 hover:bg-[#161f33] transition-all flex items-center gap-2.5 group min-w-0"
               >
-                <div className="h-8 w-8 rounded-md bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                <div className="h-8 w-8 rounded-md bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
                   <Scale size={16} />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors truncate">
+                  <div className="text-xs font-bold text-slate-100 group-hover:text-sky-400 transition-colors truncate">
                     Balthazard Hesapla
                   </div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">Rapor oranı formülü</div>
+                  <div className="text-[10px] text-slate-400 truncate">Rapor oranı formülü</div>
                 </div>
               </Link>
 
               <Link 
                 href="/hesaplama"
-                className="p-3 sm:p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-emerald-500/40 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all flex items-center gap-2.5 group min-w-0"
+                className="p-3 sm:p-3.5 rounded-lg border border-white/[0.08] bg-[#111726] hover:border-emerald-500/40 hover:bg-[#161f33] transition-all flex items-center gap-2.5 group min-w-0"
               >
-                <div className="h-8 w-8 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <div className="h-8 w-8 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
                   <Car size={16} />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">
+                  <div className="text-xs font-bold text-slate-100 group-hover:text-emerald-400 transition-colors truncate">
                     ÖTV 2026 Limiti
                   </div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">Muafiyetli araç rehberi</div>
+                  <div className="text-[10px] text-slate-400 truncate">Muafiyetli araç rehberi</div>
                 </div>
               </Link>
 
               <Link 
                 href="/communities"
-                className="col-span-2 sm:col-span-1 p-3 sm:p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-indigo-500/40 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all flex items-center gap-2.5 group min-w-0"
+                className="col-span-2 sm:col-span-1 p-3 sm:p-3.5 rounded-lg border border-white/[0.08] bg-[#111726] hover:border-sky-500/40 hover:bg-[#161f33] transition-all flex items-center gap-2.5 group min-w-0"
               >
-                <div className="h-8 w-8 rounded-md bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                <div className="h-8 w-8 rounded-md bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
                   <Users size={16} />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">
+                  <div className="text-xs font-bold text-slate-100 group-hover:text-sky-400 transition-colors truncate">
                     Tanı Toplulukları
                   </div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">Özel ilgi grupları</div>
+                  <div className="text-[10px] text-slate-400 truncate">Özel ilgi grupları</div>
                 </div>
               </Link>
             </div>
 
             {/* Forum Directory Sections */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
-                <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
-                  <FolderTree className="text-sky-600 dark:text-sky-400 w-4 h-4" /> 
+              <div className="flex items-center justify-between border-b border-white/[0.08] pb-2.5">
+                <h2 className="text-sm sm:text-base font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                  <FolderTree className="text-sky-400 w-4 h-4" /> 
                   <span>Forum Kategorileri</span>
                 </h2>
-                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                <span className="text-[11px] font-semibold text-slate-400">
                   {forumSections.length} Ana Kategori
                 </span>
               </div>
@@ -362,24 +362,24 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 return (
                   <div 
                     key={section.id}
-                    className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden shadow-xs"
+                    className="bg-[#111726] border border-white/[0.08] rounded-lg overflow-hidden shadow-xs"
                   >
                     {/* Category Header */}
                     <div 
                       onClick={() => toggleCategory(section.id)}
-                      className="bg-slate-50 dark:bg-slate-800/60 px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                      className="bg-[#161f33]/80 px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-white/[0.08] flex items-center justify-between cursor-pointer select-none hover:bg-[#161f33] transition-colors"
                     >
                       <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-sky-100 dark:bg-sky-950/80 border border-sky-200 dark:border-sky-800/80 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 shrink-0">
                           {getSubforumIcon(section.icon)}
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 truncate">{section.name}</h3>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate hidden sm:block">{section.description}</p>
+                          <h3 className="font-bold text-xs sm:text-sm text-slate-100 truncate">{section.name}</h3>
+                          <p className="text-[11px] text-slate-400 truncate hidden sm:block">{section.description}</p>
                         </div>
                       </div>
                       <button 
-                        className="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-transform"
+                        className="p-1 rounded-md text-slate-400 hover:text-slate-200 transition-transform"
                         aria-label={isCollapsed ? "Kategoriyi genişlet" : "Kategoriyi daralt"}
                       >
                         <ChevronRight className={cn("w-4 h-4 transition-transform duration-200", !isCollapsed && "rotate-90")} />
@@ -394,51 +394,51 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                           animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.2 }}
-                          className="overflow-hidden divide-y divide-slate-100 dark:divide-slate-800/70"
+                          className="overflow-hidden divide-y divide-white/[0.05]"
                         >
                           {section.subforums.map((subforum) => (
                             <div 
                               key={subforum.id} 
-                              className="p-3 sm:p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-4 hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-colors"
+                              className="p-3 sm:p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-4 hover:bg-[#161f33]/40 transition-colors"
                             >
                               <div className="flex items-start gap-2.5 sm:gap-3 min-w-0 flex-1">
-                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 mt-0.5">
+                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-[#0b0f19] text-slate-300 flex items-center justify-center shrink-0 mt-0.5 border border-white/[0.05]">
                                   {getSubforumIcon(subforum.icon)}
                                 </div>
                                 <div className="min-w-0 flex-1">
                                   <div className="flex items-center gap-2 mb-0.5">
                                     <Link 
                                       href={`/discussions?kategori=${subforum.slug}`} 
-                                      className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 hover:text-sky-600 dark:hover:text-sky-400 transition-colors truncate"
+                                      className="font-bold text-xs sm:text-sm text-slate-100 hover:text-sky-400 transition-colors truncate"
                                     >
                                       {subforum.name}
                                     </Link>
                                     <Link 
                                       href={`/discussions/new?kategori=${subforum.slug}`} 
-                                      className="text-[10px] font-bold text-sky-600 dark:text-sky-400 hover:underline shrink-0"
+                                      className="text-[10px] font-bold text-sky-400 hover:underline shrink-0"
                                       title="Konu aç"
                                     >
                                       + Konu Aç
                                     </Link>
                                   </div>
-                                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 leading-normal line-clamp-1">{subforum.desc}</p>
+                                  <p className="text-[11px] sm:text-xs text-slate-400 leading-normal line-clamp-1">{subforum.desc}</p>
                                 </div>
                               </div>
 
-                              <div className="flex items-center gap-3 sm:gap-6 shrink-0 justify-between md:justify-end border-t md:border-t-0 border-slate-100 dark:border-slate-800/60 pt-2 md:pt-0 pl-9 md:pl-0">
-                                <div className="flex gap-3 text-[11px] font-medium text-slate-500 dark:text-slate-400 shrink-0">
-                                  <span><strong className="text-slate-800 dark:text-slate-200">{subforum.topics}</strong> k</span>
-                                  <span><strong className="text-slate-800 dark:text-slate-200">{subforum.replies}</strong> c</span>
+                              <div className="flex items-center gap-3 sm:gap-6 shrink-0 justify-between md:justify-end border-t md:border-t-0 border-white/[0.05] pt-2 md:pt-0 pl-9 md:pl-0">
+                                <div className="flex gap-3 text-[11px] font-medium text-slate-400 shrink-0">
+                                  <span><strong className="text-slate-200">{subforum.topics}</strong> k</span>
+                                  <span><strong className="text-slate-200">{subforum.replies}</strong> c</span>
                                 </div>
                                 <div className="text-right text-[11px] min-w-0 max-w-[160px] sm:max-w-[200px]">
                                   <Link 
                                     href={`/discussions`} 
-                                    className="font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors truncate block text-xs" 
+                                    className="font-medium text-slate-300 hover:text-sky-400 transition-colors truncate block text-xs" 
                                     title={subforum.lastPost.title}
                                   >
                                     {subforum.lastPost.title}
                                   </Link>
-                                  <div className="text-[10px] text-slate-400 truncate">
+                                  <div className="text-[10px] text-slate-500 truncate">
                                     @{subforum.lastPost.author} {subforum.lastPost.date && `• ${subforum.lastPost.date}`}
                                   </div>
                                 </div>
@@ -455,24 +455,24 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
 
             {/* Discussion Feed */}
             <div className="space-y-4 pt-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-3">
                 <div className="space-y-0.5">
-                  <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
-                    <TrendingUp className="text-sky-600 dark:text-sky-400 w-4 h-4" /> 
+                  <h2 className="text-sm sm:text-base font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                    <TrendingUp className="text-sky-400 w-4 h-4" /> 
                     <span>Son Tartışmalar</span>
                   </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Toplulukta en son güncellenen konular ve soru-cevaplar.</p>
+                  <p className="text-xs text-slate-400">Toplulukta en son güncellenen konular ve soru-cevaplar.</p>
                 </div>
                 <Link 
                   href="/discussions/new" 
-                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-400 px-3.5 py-2 text-xs font-bold text-white dark:text-slate-950 shadow-xs transition-all whitespace-nowrap self-start sm:self-auto"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 px-3.5 py-2 text-xs font-bold text-slate-950 shadow-xs transition-all whitespace-nowrap self-start sm:self-auto"
                 >
                   <Plus size={14} /> Yeni Konu Başlat
                 </Link>
               </div>
 
               {/* Tabs */}
-              <div className="flex border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800/60 p-1 rounded-lg w-full sm:w-fit overflow-x-auto no-scrollbar gap-1">
+              <div className="flex border border-white/[0.08] bg-[#0b0f19] p-1 rounded-lg w-full sm:w-fit overflow-x-auto no-scrollbar gap-1">
                 {[
                   { id: 'all', label: 'Tümü' }, 
                   { id: 'pinned', label: 'Sabitlenenler' }, 
@@ -485,8 +485,8 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     className={cn(
                       "px-3 py-1.5 rounded-md text-xs font-bold transition-all whitespace-nowrap shrink-0",
                       activeTab === tab.id 
-                        ? "bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-xs border border-slate-200 dark:border-slate-700" 
-                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                        ? "bg-sky-500/10 text-sky-400 shadow-xs border border-sky-500/30" 
+                        : "text-slate-400 hover:text-slate-200"
                     )}
                   >
                     {tab.label}
@@ -501,44 +501,44 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     <article 
                       key={topic.id}
                       className={cn(
-                        "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3.5 sm:p-4 hover:border-sky-400/50 dark:hover:border-sky-600/50 transition-all rounded-lg group",
-                        topic.is_pinned && "border-sky-200 dark:border-sky-900/60 bg-sky-50/20 dark:bg-sky-950/10"
+                        "bg-[#111726] border border-white/[0.08] p-3.5 sm:p-4 hover:border-sky-500/40 transition-all rounded-lg group",
+                        topic.is_pinned && "border-sky-500/30 bg-sky-500/5"
                       )}
                     >
                       <div className="flex items-start justify-between gap-3 mb-2">
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider mb-1.5">
                             {topic.is_pinned && (
-                              <span className="inline-flex items-center gap-1 bg-sky-600 text-white px-2 py-0.5 rounded text-[9px]">
+                              <span className="inline-flex items-center gap-1 bg-sky-500 text-slate-950 font-bold px-2 py-0.5 rounded text-[9px]">
                                 <Pin size={9} className="fill-current" /> SABİT
                               </span>
                             )}
                             {topic.is_solved && (
-                              <span className="inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded text-[9px]">
+                              <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[9px]">
                                 <CheckCircle2 size={10} /> ÇÖZÜLDÜ
                               </span>
                             )}
-                            <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded text-[10px]">
+                            <span className="bg-[#161f33] text-slate-300 px-2 py-0.5 rounded text-[10px] border border-white/[0.08]">
                               {topic.category?.name || 'GENEL'}
                             </span>
                           </div>
-                          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors tracking-tight line-clamp-2">
+                          <h3 className="text-sm sm:text-base font-bold text-slate-100 group-hover:text-sky-400 transition-colors tracking-tight line-clamp-2">
                             <Link href={`/discussions/${topic.id}`}>{topic.title}</Link>
                           </h3>
                         </div>
-                        <div className="h-11 w-11 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center shrink-0 font-mono">
-                          <span className="text-xs font-black text-slate-800 dark:text-slate-200">
+                        <div className="h-11 w-11 rounded-lg bg-[#0b0f19] border border-white/[0.08] flex flex-col items-center justify-center shrink-0 font-mono">
+                          <span className="text-xs font-black text-slate-200">
                             {(topic.comments as any)?.[0]?.count || topic.comments_count || 0}
                           </span>
                           <span className="text-[8px] font-semibold text-slate-400 uppercase">Cevap</span>
                         </div>
                       </div>
 
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-3 leading-relaxed">
+                      <p className="text-xs text-slate-400 line-clamp-2 mb-3 leading-relaxed">
                         {topic.content}
                       </p>
 
-                      <div className="flex items-center justify-between gap-3 text-xs text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
+                      <div className="flex items-center justify-between gap-3 text-xs text-slate-400 border-t border-white/[0.05] pt-2.5">
                         <div className="flex items-center gap-2 min-w-0">
                           <UserAvatar 
                             src={topic.author?.avatar_url} 
@@ -547,13 +547,13 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                             size="sm"
                             isOnline={true}
                           />
-                          <span className="font-semibold text-slate-700 dark:text-slate-300 text-xs truncate">
+                          <span className="font-semibold text-slate-300 text-xs truncate">
                             {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
                           </span>
                           <UserRoleBadge role={topic.author?.role || 'user'} size="xs" />
                         </div>
                         <div className="flex items-center gap-3 text-[11px] font-medium shrink-0">
-                          <span className="hidden sm:inline text-rose-500 font-semibold">
+                          <span className="hidden sm:inline text-rose-400 font-semibold">
                             ♥ {topic.likes_count || 0}
                           </span>
                           <time className="font-mono text-slate-400">
@@ -564,10 +564,10 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     </article>
                   ))
                 ) : (
-                  <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-6">
-                    <MessageSquare size={32} className="mx-auto text-slate-300 dark:text-slate-600 mb-2" />
-                    <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">Henüz Tartışma Bulunamadı</h3>
-                    <p className="text-xs text-slate-500">İlk konuyu siz başlatarak toplulukla etkileşime geçebilirsiniz.</p>
+                  <div className="text-center py-12 bg-[#111726] rounded-lg border border-white/[0.08] p-6">
+                    <MessageSquare size={32} className="mx-auto text-slate-500 mb-2" />
+                    <h3 className="text-sm font-bold text-slate-200 mb-1">Henüz Tartışma Bulunamadı</h3>
+                    <p className="text-xs text-slate-400">İlk konuyu siz başlatarak toplulukla etkileşime geçebilirsiniz.</p>
                   </div>
                 )}
               </div>
@@ -577,9 +577,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-4 min-w-0">
             {/* User Profile Summary */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-xs">
-              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                <Award className="text-sky-600 dark:text-sky-400 w-4 h-4" /> Profil Durumu
+            <div className="bg-[#111726] border border-white/[0.08] rounded-lg p-4 shadow-xs">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <Award className="text-sky-400 w-4 h-4" /> Profil Durumu
               </h3>
               {user ? (
                 <div className="space-y-3">
@@ -591,29 +591,29 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                       size="lg"
                     />
                     <div className="min-w-0 flex-1">
-                      <div className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">
+                      <div className="font-bold text-sm text-slate-100 truncate">
                         {profile?.full_name || profile?.username || user.email}
                       </div>
-                      <div className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-600 dark:text-sky-400 mt-0.5">
+                      <div className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-400 mt-0.5">
                         Seviye {profile?.level || 1} • {profile?.xp || 0} XP
                       </div>
                     </div>
                   </div>
                   <Link 
                     href="/profile" 
-                    className="w-full h-9 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white text-xs font-bold rounded-lg transition-all text-center flex items-center justify-center"
+                    className="w-full h-9 bg-sky-500 text-slate-950 hover:bg-sky-400 text-xs font-bold rounded-lg transition-all text-center flex items-center justify-center"
                   >
                     Profilimi Yönet
                   </Link>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  <p className="text-xs text-slate-400 leading-relaxed">
                     Soru sormak, deneyim paylaşmak ve topluluk araçlarını kullanmak için giriş yapın.
                   </p>
                   <Link 
                     href="/login" 
-                    className="inline-flex items-center justify-center w-full h-9 bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-400 text-white dark:text-slate-950 text-xs font-bold rounded-lg shadow-xs transition-all"
+                    className="inline-flex items-center justify-center w-full h-9 bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold rounded-lg shadow-xs transition-all"
                   >
                     Giriş Yap / Kayıt Ol
                   </Link>
@@ -622,12 +622,12 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             </div>
 
             {/* Online Members */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-xs">
+            <div className="bg-[#111726] border border-white/[0.08] rounded-lg p-4 shadow-xs">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                  <Users className="text-sky-600 dark:text-sky-400 w-4 h-4" /> Çevrimiçi Üyeler
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                  <Users className="text-sky-400 w-4 h-4" /> Çevrimiçi Üyeler
                 </h3>
-                <span className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded">
+                <span className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   {onlineMembers.length} Canlı
                 </span>
@@ -638,7 +638,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     <Link 
                       href={`/profile`} 
                       key={member.id} 
-                      className="flex items-center gap-2.5 p-1.5 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
+                      className="flex items-center gap-2.5 p-1.5 rounded-md hover:bg-[#161f33] transition-colors group"
                     >
                       <UserAvatar 
                         src={member.avatar} 
@@ -648,7 +648,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                         isOnline={true}
                       />
                       <div className="min-w-0 flex-1">
-                        <div className="font-bold text-xs text-slate-800 dark:text-slate-200 truncate group-hover:text-sky-600 dark:group-hover:text-sky-400">
+                        <div className="font-bold text-xs text-slate-200 truncate group-hover:text-sky-400">
                           @{member.username}
                         </div>
                       </div>
@@ -665,16 +665,16 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
 
             {/* Trending Tags */}
             {stats?.trendingTags && stats.trendingTags.length > 0 && (
-              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-xs">
-                <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Megaphone className="text-sky-600 dark:text-sky-400 w-4 h-4" /> Popüler Etiketler
+              <div className="bg-[#111726] border border-white/[0.08] rounded-lg p-4 shadow-xs">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <Megaphone className="text-sky-400 w-4 h-4" /> Popüler Etiketler
                 </h3>
                 <div className="flex flex-wrap gap-1.5">
                   {stats.trendingTags.map((tag) => (
                     <Link 
                       key={tag.slug} 
                       href={`/discussions?etiket=${tag.slug}`}
-                      className="px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-950/50 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-[11px] font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                      className="px-2.5 py-1 rounded-md bg-[#161f33] hover:bg-sky-500/10 hover:text-sky-400 transition-colors text-[11px] font-semibold text-slate-300 border border-white/[0.08]"
                     >
                       #{tag.name}
                     </Link>
@@ -684,14 +684,14 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             )}
 
             {/* AI Copilot Assistant Box */}
-            <div className="bg-slate-900 text-white rounded-lg p-4 shadow-sm border border-slate-800 space-y-3">
+            <div className="bg-[#111726] text-white rounded-lg p-4 shadow-sm border border-white/[0.08] space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
                   <Sparkles size={14} /> Asistan Copilot
                 </h3>
                 <span className="text-[10px] text-slate-400 font-mono">Yapay Zeka Destekli</span>
               </div>
-              <div className="h-44 bg-slate-950/80 rounded-lg p-3 overflow-y-auto space-y-2.5 text-xs font-medium border border-slate-800">
+              <div className="h-44 bg-[#0b0f19] rounded-lg p-3 overflow-y-auto space-y-2.5 text-xs font-medium border border-white/[0.08]">
                 {aiAnswers.map((msg, i) => (
                   <div 
                     key={i} 

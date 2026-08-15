@@ -57,27 +57,27 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
         <div className="flex-1 min-w-0">
           
           {/* Metadata badges row */}
-          <div className="mb-2.5 flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+          <div className="mb-2.5 flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] font-medium text-muted-foreground">
             {topic.is_pinned && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-sky-500/10 px-2 py-0.5 text-[10px] font-black text-sky-400 border border-sky-500/30 shrink-0">
+              <span className="inline-flex items-center gap-1 rounded-md bg-sky-500/10 px-2 py-0.5 text-[10px] font-semibold text-sky-400 border border-sky-500/30 shrink-0">
                 <Pin size={11} aria-hidden="true" />
-                <span>SABİT</span>
+                <span>Sabit</span>
               </span>
             )}
             {topic.is_solved && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-black text-emerald-400 border border-emerald-500/30 shrink-0">
+              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 border border-emerald-500/30 shrink-0">
                 <CheckCircle2 size={11} aria-hidden="true" />
-                <span>ÇÖZÜLDÜ</span>
+                <span>Çözüldü</span>
               </span>
             )}
             {topic.is_locked && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-rose-500/10 px-2 py-0.5 text-[10px] font-black text-rose-400 border border-rose-500/30 shrink-0">
+              <span className="inline-flex items-center gap-1 rounded-md bg-rose-500/10 px-2 py-0.5 text-[10px] font-semibold text-rose-400 border border-rose-500/30 shrink-0">
                 <Lock size={11} aria-hidden="true" />
-                <span>KİLİTLİ</span>
+                <span>Kilitli</span>
               </span>
             )}
-            <span className="px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 font-bold truncate max-w-[160px] sm:max-w-[220px]">
-              {topic.category?.name || 'GENEL DANIŞMA'}
+            <span className="px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 font-semibold truncate max-w-[160px] sm:max-w-[220px]">
+              {topic.category?.name || 'Genel Danışma'}
             </span>
             <span className="text-muted-foreground/40 hidden sm:inline">•</span>
             <span className="text-muted-foreground text-[11px] font-medium hidden sm:inline-flex items-center gap-1">

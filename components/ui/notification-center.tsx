@@ -158,12 +158,12 @@ export function NotificationCenter() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2.5 sm:p-2 rounded-xl hover:bg-muted transition-colors group min-h-[44px] min-w-[44px] flex items-center justify-center"
+        className="relative p-2 sm:p-2 rounded-lg hover:bg-[#161f33] text-slate-300 hover:text-sky-400 transition-colors group h-8.5 w-8.5 sm:h-9 sm:w-9 flex items-center justify-center shrink-0"
         aria-label="Bildirimler"
       >
-        <Bell size={26} className={cn(unreadCount > 0 && "animate-tada", "w-6 h-6 sm:w-6 sm:h-6")} />
+        <Bell size={18} className={cn(unreadCount > 0 && "animate-tada text-sky-400", "w-4.5 h-4.5 sm:w-5 sm:h-5")} />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground border-2 border-background shadow-md">
+          <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[9px] font-bold text-slate-950 border border-[#090a0f]">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -180,63 +180,63 @@ export function NotificationCenter() {
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 mt-3 sm:mt-4 w-auto sm:w-96 bg-card border-4 border-border rounded-[2.5rem] shadow-2xl z-50 overflow-hidden max-w-[calc(100vw-2rem)] sm:max-w-none"
+              className="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 mt-3 sm:mt-2 w-auto sm:w-80 bg-[#111726] border border-white/[0.08] rounded-xl shadow-2xl z-50 overflow-hidden max-w-[calc(100vw-2rem)] sm:max-w-none text-slate-100"
             >
-              <div className="p-6 border-b border-border flex items-center justify-between bg-muted/30">
-                <h3 className="font-black uppercase tracking-tighter text-lg">Bildirimler</h3>
-                <div className="flex items-center gap-2">
+              <div className="p-3.5 border-b border-white/[0.08] flex items-center justify-between bg-[#0b0f19]/60">
+                <h3 className="font-bold text-xs uppercase tracking-wider text-slate-300">Bildirimler</h3>
+                <div className="flex items-center gap-1">
                   <button 
                     onClick={markAllAsRead}
-                    className="p-2 hover:bg-background rounded-full transition-colors text-muted-foreground hover:text-primary"
+                    className="p-1.5 hover:bg-[#161f33] rounded-lg transition-colors text-slate-400 hover:text-sky-400"
                     title="Tümünü Okundu İşaretle"
                   >
-                    <Check size={18} />
+                    <Check size={16} />
                   </button>
                   <button 
                     onClick={() => setIsOpen(false)}
-                    className="p-2 hover:bg-background rounded-full transition-colors text-muted-foreground"
+                    className="p-1.5 hover:bg-[#161f33] rounded-lg transition-colors text-slate-400 hover:text-slate-200"
                   >
-                    <BellOff size={18} />
+                    <BellOff size={16} />
                   </button>
                 </div>
               </div>
 
-              <div className="max-h-[400px] overflow-y-auto no-scrollbar">
+              <div className="max-h-[350px] overflow-y-auto no-scrollbar">
                 {loading ? (
-                  <div className="p-12 flex flex-col items-center justify-center gap-4">
-                    <Loader2 className="animate-spin text-primary" size={32} />
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Yükleniyor...</p>
+                  <div className="p-8 flex flex-col items-center justify-center gap-3">
+                    <Loader2 className="animate-spin text-sky-400" size={24} />
+                    <p className="text-[10px] font-medium uppercase tracking-widest text-slate-400">Yükleniyor...</p>
                   </div>
                 ) : notifications.length === 0 ? (
-                  <div className="p-12 text-center">
-                    <BellOff size={48} className="mx-auto text-muted-foreground/10 mb-4" />
-                    <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Henüz bildiriminiz yok.</p>
+                  <div className="p-8 text-center">
+                    <BellOff size={36} className="mx-auto text-slate-600 mb-2" />
+                    <p className="text-xs font-semibold text-slate-400">Henüz bildiriminiz yok.</p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-border">
+                  <div className="divide-y divide-white/[0.06]">
                     {notifications.map((n) => (
                       <div 
                         key={n.id}
                         className={cn(
-                          "p-5 hover:bg-muted/50 transition-colors flex gap-4 relative group",
-                          !n.read_at && "bg-primary/[0.03]"
+                          "p-3.5 hover:bg-[#161f33]/60 transition-colors flex gap-3 relative group",
+                          !n.read_at && "bg-sky-500/[0.04]"
                         )}
                       >
-                        <div className="shrink-0 mt-1">
-                          <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center border border-border">
+                        <div className="shrink-0 mt-0.5">
+                          <div className="w-8 h-8 rounded-lg bg-[#0b0f19] flex items-center justify-center border border-white/[0.08]">
                             {getIcon(n.type)}
                           </div>
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-primary truncate max-w-[150px]">
+                            <span className="text-xs font-bold text-sky-400 truncate max-w-[150px]">
                               {n.title}
                             </span>
-                            <span className="text-[8px] font-bold text-muted-foreground shrink-0 ml-2">
+                            <span className="text-[10px] text-slate-400 shrink-0 ml-2">
                               {new Date(n.created_at).toLocaleDateString('tr-TR')}
                             </span>
                           </div>
-                          <p className="text-xs font-bold text-foreground/80 leading-relaxed line-clamp-2">
+                          <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">
                             {n.body || (n as any).content}
                           </p>
                           {(n.data as any)?.link || (n as any).link ? (
@@ -246,20 +246,20 @@ export function NotificationCenter() {
                                 markAsRead(n.id);
                                 setIsOpen(false);
                               }}
-                              className="inline-block mt-2 text-[10px] font-black text-primary hover:underline uppercase tracking-wider"
+                              className="inline-block mt-1.5 text-[11px] font-semibold text-sky-400 hover:text-sky-300 hover:underline"
                             >
-                              Detayları Gör
+                              Detayları Gör →
                             </Link>
                           ) : null}
                         </div>
                         <button 
                           onClick={() => deleteNotification(n.id)}
-                          className="absolute top-2 right-2 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 text-red-500 rounded-lg"
+                          className="absolute top-2 right-2 p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-500/20 text-rose-400 rounded-md"
                         >
                           <Trash2 size={12} />
                         </button>
                         {!n.read_at && (
-                          <div className="absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-primary" />
+                          <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-sky-400" />
                         )}
                       </div>
                     ))}
@@ -268,8 +268,8 @@ export function NotificationCenter() {
               </div>
 
               {notifications.length > 0 && (
-                <div className="p-4 bg-muted/30 border-t border-border text-center">
-                   <p className="text-[8px] font-black uppercase tracking-[0.3em] text-muted-foreground">EngelsizForum Akıllı Bildirim Sistemi</p>
+                <div className="p-2.5 bg-[#0b0f19]/80 border-t border-white/[0.08] text-center">
+                   <p className="text-[10px] font-medium text-slate-400">EngelsizForum Bildirim Sistemi</p>
                 </div>
               )}
             </motion.div>

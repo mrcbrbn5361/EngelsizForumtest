@@ -6,17 +6,17 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer id="main-footer" className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 w-full mt-auto" role="contentinfo">
+    <footer id="main-footer" className="border-t border-white/[0.08] bg-[#090a0f] text-slate-200 w-full mt-auto" role="contentinfo">
       <div className="vibe-container py-12 md:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
           {/* Brand Column */}
           <div className="space-y-4 text-left">
             <Link href="/" className="inline-flex items-center gap-2.5 group">
-              <div className="flex items-center justify-center h-8 w-8 bg-sky-600 text-white font-black rounded-lg text-base shadow-xs group-hover:scale-105 transition-transform">
+              <div className="flex items-center justify-center h-8 w-8 bg-sky-500 text-slate-950 font-bold rounded-xl text-base shadow-xs group-hover:scale-105 transition-transform">
                 E
               </div>
-              <div className="text-xl font-black tracking-tight text-slate-900 dark:text-slate-100 uppercase">
-                ENGELSİZ<span className="text-sky-600 dark:text-sky-400">FORUM</span>
+              <div className="text-xl font-bold tracking-tight text-slate-100">
+                Engelsiz<span className="text-sky-400">Forum</span>
               </div>
             </Link>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed max-w-sm">

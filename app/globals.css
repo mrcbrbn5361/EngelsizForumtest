@@ -16,7 +16,7 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  --color-accent-focus: #0284c7;
+  --color-accent-focus: #38bdf8;
 }
 
 :root {
@@ -60,6 +60,8 @@ html, body {
   width: 100%;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
+  background-color: #090a0f;
+  color: #f1f5f9;
 }
 
 /* Prevent text overflow and word breaks */
@@ -81,38 +83,38 @@ html {
 
 /* HIGH VISIBILITY ACCESSIBLE FOCUS RING (WCAG AAA) */
 *:focus-visible {
-  outline: 2px solid #0284c7 !important;
+  outline: 2px solid #38bdf8 !important;
   outline-offset: 2px !important;
   border-radius: 4px;
 }
 
-/* Professional Modern Forum Layout Utilities */
+/* Professional Corporate Forum Layout Utilities */
 .vibe-container {
   @apply w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8;
 }
 
 .forum-card {
-  @apply bg-card border border-border rounded-xl shadow-xs transition-all duration-150;
+  @apply bg-[#111726] border border-white/[0.08] rounded-xl shadow-xs transition-all duration-150;
 }
 
 .forum-card-hover {
-  @apply hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md transition-all duration-150;
+  @apply hover:border-sky-500/40 hover:shadow-md transition-all duration-150;
 }
 
 .vibe-badge {
-  @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-muted text-foreground border border-border;
+  @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-[#161f33] text-slate-200 border border-white/[0.08];
 }
 
 .vibe-button-primary {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-sky-600 dark:bg-sky-500 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white dark:text-slate-950 transition-all hover:bg-sky-700 dark:hover:bg-sky-400 active:scale-[0.98] shadow-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap;
+  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-sky-500 px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-950 transition-all hover:bg-sky-400 active:scale-[0.98] shadow-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap;
 }
 
 .vibe-button-secondary {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-white dark:bg-slate-800 px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-all hover:bg-slate-50 dark:hover:bg-slate-700/80 active:scale-[0.98] cursor-pointer whitespace-nowrap;
+  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-[#161f33] px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-200 border border-white/[0.08] transition-all hover:bg-[#1a253d] hover:border-slate-700 active:scale-[0.98] cursor-pointer whitespace-nowrap;
 }
 
 .vibe-input {
-  @apply w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground focus:border-sky-500 transition-colors outline-none h-10;
+  @apply w-full rounded-lg border border-white/[0.08] bg-[#0b0f19] px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-colors outline-none h-10;
 }
 
 .vibe-input-pl-12 {

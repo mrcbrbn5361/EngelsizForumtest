@@ -28,8 +28,8 @@ export function UserRoleBadge({ role, size = 'sm', showLabel = true, className }
     icon = <Shield className="w-3 h-3 text-rose-400" />;
     label = 'YÖNETİCİ';
   } else if (normalizedRole === 'moderator' || normalizedRole === 'moderatör') {
-    bgClass = 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30 font-black';
-    icon = <Zap className="w-3 h-3 text-indigo-400" />;
+    bgClass = 'bg-sky-500/15 text-sky-400 border-sky-500/30 font-black';
+    icon = <Zap className="w-3 h-3 text-sky-400" />;
     label = 'MODERATÖR';
   } else if (normalizedRole === 'leader' || normalizedRole === 'topluluk lideri') {
     bgClass = 'bg-amber-500/15 text-amber-400 border-amber-500/30 font-black';

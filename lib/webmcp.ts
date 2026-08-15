@@ -229,6 +229,128 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
 
   const tools: WebMCPToolDefinition[] = [
     {
+      name: 'engelsiz_harita_location_finder',
+      description: 'Engelsiz Harita Projesi: Türkiye genelinde tekerlekli sandalye rampası, engelli tuvaleti, şarj istasyonu ve erişilebilir mekanları arar.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          city: { type: 'string', description: 'İl/ilçe adı' },
+          facilityType: { type: 'string', description: 'Tesis türü: rampa_asansor | sarj_istasyonu | engelli_wc' },
+        },
+      },
+      execute: async (args) => {
+        const res = await fetch('/api/mcp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 101,
+            method: 'tools/call',
+            params: { name: 'engelsiz_harita_location_finder', arguments: args },
+          }),
+        });
+        const json = await res.json();
+        return json.result?.content?.[0]?.text || { status: 'success' };
+      },
+    },
+    {
+      name: 'engelsiz_kariyer_job_search',
+      description: 'Engelsiz Kariyer & İŞKUR Projesi: Engelli bireylere özel iş ilanları, EKPSS kamu kontenjanları ve uzaktan çalışma imkanlarını sunar.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          category: { type: 'string', description: 'Sektör veya pozisyon' },
+          city: { type: 'string', description: 'Şehir' },
+        },
+      },
+      execute: async (args) => {
+        const res = await fetch('/api/mcp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 102,
+            method: 'tools/call',
+            params: { name: 'engelsiz_kariyer_job_search', arguments: args },
+          }),
+        });
+        const json = await res.json();
+        return json.result?.content?.[0]?.text || { status: 'success' };
+      },
+    },
+    {
+      name: 'engelsiz_egitim_burs_rehberi',
+      description: 'Engelsiz Eğitim Projesi: Engelli bursları, Braille/sesli kitap kütüphaneleri ve üniversite desteklerini sunar.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          educationLevel: { type: 'string', description: 'Eğitim seviyesi' },
+        },
+      },
+      execute: async (args) => {
+        const res = await fetch('/api/mcp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 103,
+            method: 'tools/call',
+            params: { name: 'engelsiz_egitim_burs_rehberi', arguments: args },
+          }),
+        });
+        const json = await res.json();
+        return json.result?.content?.[0]?.text || { status: 'success' };
+      },
+    },
+    {
+      name: 'engelsiz_sanat_etkinlik_rehberi',
+      description: 'Engelsiz Sanat & Kültür Projesi: Sesli betimlemeli tiyatro/sinema, işaret dili müze turları ve engelsiz spor etkinliklerini listeler.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          eventCategory: { type: 'string', description: 'Etkinlik türü' },
+        },
+      },
+      execute: async (args) => {
+        const res = await fetch('/api/mcp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 104,
+            method: 'tools/call',
+            params: { name: 'engelsiz_sanat_etkinlik_rehberi', arguments: args },
+          }),
+        });
+        const json = await res.json();
+        return json.result?.content?.[0]?.text || { status: 'success' };
+      },
+    },
+    {
+      name: 'engelsiz_teknoloji_hardware_finder',
+      description: 'Engelsiz Yardımcı Teknoloji Projesi: Görme, işitme, ortopedik donanımları ve SGK SUT geri ödemelerini sorgular.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          category: { type: 'string', description: 'Teknoloji kategorisi' },
+        },
+      },
+      execute: async (args) => {
+        const res = await fetch('/api/mcp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 105,
+            method: 'tools/call',
+            params: { name: 'engelsiz_teknoloji_hardware_finder', arguments: args },
+          }),
+        });
+        const json = await res.json();
+        return json.result?.content?.[0]?.text || { status: 'success' };
+      },
+    },
+    {
       name: 'engelsizforum_live_disability_news',
       description: 'Türkiye ve dünyadaki en güncel engelli haberlerini, Resmi Gazete Kararlarını, ÖTV 2026 düzenlemelerini, Aile Bakanlığı ve SGK duyurularını canlı arar ve özetler.',
       inputSchema: {

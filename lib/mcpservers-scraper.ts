@@ -106,28 +106,22 @@ function parseMCPServersFromHTML(html: string, sourceUrl: string): MCPServerEntr
 
 function categorizeByTitle(title: string): MCPServerEntry['category'] {
   const t = title.toLowerCase();
-  if (t.includes('postgres') || t.includes('db') || t.includes('sql') || t.includes('code') || t.includes('git') || t.includes('docker') || t.includes('file')) {
-    return 'engineering';
+  if (t.includes('legal') || t.includes('hukuk') || t.includes('kanun') || t.includes('mevzuat') || t.includes('cimer')) {
+    return 'disability_rights';
   }
-  if (t.includes('legal') || t.includes('hukuk') || t.includes('kanun')) {
-    return 'legal';
+  if (t.includes('tech') || t.includes('nvda') || t.includes('jaws') || t.includes('device') || t.includes('ramp') || t.includes('braille')) {
+    return 'assistive_tech';
   }
-  if (t.includes('tax') || t.includes('vergi') || t.includes('finance') || t.includes('maas')) {
-    return 'finance';
+  if (t.includes('health') || t.includes('saglik') || t.includes('medical') || t.includes('sgk') || t.includes('protez') || t.includes('ortez')) {
+    return 'healthcare_medical';
   }
-  if (t.includes('health') || t.includes('saglik') || t.includes('medical')) {
-    return 'healthcare';
+  if (t.includes('ram') || t.includes('okul') || t.includes('egitim') || t.includes('ogretim') || t.includes('child')) {
+    return 'education_ram';
   }
-  if (t.includes('a11y') || t.includes('engelli') || t.includes('wcag') || t.includes('accessibility')) {
-    return 'accessibility';
+  if (t.includes('wcag') || t.includes('code') || t.includes('aria') || t.includes('contrast') || t.includes('ui') || t.includes('ux') || t.includes('web')) {
+    return 'web_wcag';
   }
-  if (t.includes('design') || t.includes('ui') || t.includes('ux')) {
-    return 'design';
-  }
-  if (t.includes('sec') || t.includes('guvenlik') || t.includes('auth')) {
-    return 'security';
-  }
-  return 'utilities';
+  return 'accessibility';
 }
 
 /**

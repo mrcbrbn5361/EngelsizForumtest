@@ -240,69 +240,51 @@ export default function WebMCPPage() {
   };
 
   const BASE_TOOLS_LIST = [
-    { id: 'engelsizforum_live_disability_news', name: 'engelsizforum_live_disability_news', desc: 'Resmi Gazete & Bakanlık Canlı Haber Ajanı', category: 'accessibility', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_web_search', name: 'engelsizforum_web_search', desc: 'Google Grounding Canlı Web Araması', category: 'utilities', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_fact_checker_ai', name: 'engelsizforum_fact_checker_ai', desc: 'Haber & İddia Doğrulama (Fact-Checker AI)', category: 'security', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_general_legislation_lookup', name: 'engelsizforum_general_legislation_lookup', desc: '4857 İş Kanunu, Tüketici & Borçlar Hukuku', category: 'legal', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_general_tax_salary_calc', name: 'engelsizforum_general_tax_salary_calc', desc: 'Maaş, Net-Brüt & Kıdem Tazminatı Hesabı', category: 'finance', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_emergency_disaster_info', name: 'engelsizforum_emergency_disaster_info', desc: 'AFAD Deprem & Acil Durum Rehberi', category: 'utilities', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_turkiye_gov_guide', name: 'engelsizforum_turkiye_gov_guide', desc: 'e-Devlet, MHRS & CİMER Rehberi', category: 'utilities', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_code_accessibility_inspector', name: 'engelsizforum_code_accessibility_inspector', desc: 'WCAG 2.1 & Clean Code Denetçisi', category: 'engineering', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_universal_ergonomics_checker', name: 'engelsizforum_universal_ergonomics_checker', desc: 'Ofis & Bilgisayar Ergonomisi', category: 'healthcare', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_career_cv_advisor', name: 'engelsizforum_career_cv_advisor', desc: 'Kariyer & CV Hazırlama Danışmanı', category: 'utilities', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_text_summarizer_ai', name: 'engelsizforum_text_summarizer_ai', desc: 'AI Belge & Resmi Yazı Özetleyici', category: 'utilities', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_balthazard_calc', name: 'engelsizforum_balthazard_calc', desc: 'Balthazard Net Engel Oranı Hesabı', category: 'accessibility', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_disability_rights_guide', name: 'engelsizforum_disability_rights_guide', desc: 'Yasal Engelli Hakları Sorgulama', category: 'accessibility', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_legislation_lookup', name: 'engelsizforum_legislation_lookup', desc: 'ÖTV, Emeklilik & Evde Bakım Mevzuatı', category: 'legal', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_cozger_calculator', name: 'engelsizforum_cozger_calculator', desc: 'ÇÖZGER Çocuk Özel Gereksinim Derecesi', category: 'accessibility', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_accessibility_checker', name: 'engelsizforum_accessibility_checker', desc: 'Web Erişilebilirlik Audit Aracı', category: 'accessibility', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_assistive_tech_finder', name: 'engelsizforum_assistive_tech_finder', desc: 'Yardımcı Teknolojiler & Donanım Bulucu', category: 'accessibility', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_tax_discount_calc', name: 'engelsizforum_tax_discount_calc', desc: 'Engellilik Gelir Vergisi İndirimi', category: 'finance', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_sgk_prosthesis_coverage', name: 'engelsizforum_sgk_prosthesis_coverage', desc: 'SGK Medikal Cihaz & Protez Ödeneği', category: 'healthcare', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_home_care_allowance_calc', name: 'engelsizforum_home_care_allowance_calc', desc: 'Evde Bakım Maaşı Gelir Testi', category: 'accessibility', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_wheelchair_ramp_standards', name: 'engelsizforum_wheelchair_ramp_standards', desc: 'TS 9111 Engelli Rampası Hesaplayıcı', category: 'accessibility', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_ram_special_education_info', name: 'engelsizforum_ram_special_education_info', desc: 'RAM & Özel Eğitim Destek Rehberi', category: 'education', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_accessibility_toggle', name: 'engelsizforum_accessibility_toggle', desc: 'Erişilebilirlik Tercihleri', category: 'accessibility', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_get_categories', name: 'engelsizforum_get_categories', desc: 'Forum Kategori Ağacı', category: 'utilities', server: 'EngelsizForum Universal' },
-    { id: 'engelsizforum_universal_dictionary_slang', name: 'engelsizforum_universal_dictionary_slang', desc: 'Hukuki & Medikal Terim Sözlüğü', category: 'utilities', server: 'EngelsizForum Universal' },
+    // 🌐 Farklı Engelsiz Projeler Ekosistemi
+    { id: 'engelsiz_harita_location_finder', name: 'engelsiz_harita_location_finder', desc: 'Engelsiz Harita Projesi: Erişilebilir Mekanlar, Rampa & Şarj İstasyonları', category: 'projects', server: 'Engelsiz Harita Projesi' },
+    { id: 'engelsiz_kariyer_job_search', name: 'engelsiz_kariyer_job_search', desc: 'Engelsiz Kariyer Projesi: Engelli İş İlanları & EKPSS Kontenjanları', category: 'projects', server: 'Engelsiz Kariyer Projesi' },
+    { id: 'engelsiz_egitim_burs_rehberi', name: 'engelsiz_egitim_burs_rehberi', desc: 'Engelsiz Eğitim Projesi: Engelli Öğrenci Bursları & Sesli Kütüphane', category: 'projects', server: 'Engelsiz Eğitim Projesi' },
+    { id: 'engelsiz_sanat_etkinlik_rehberi', name: 'engelsiz_sanat_etkinlik_rehberi', desc: 'Engelsiz Sanat Projesi: Sesli Betimlemeli Tiyatro & Kapsayıcı Spor', category: 'projects', server: 'Engelsiz Sanat Projesi' },
+    { id: 'engelsiz_teknoloji_hardware_finder', name: 'engelsiz_teknoloji_hardware_finder', desc: 'Engelsiz Teknoloji Projesi: Yardımcı Donanımlar & SGK SUT Desteği', category: 'projects', server: 'Engelsiz Teknoloji Projesi' },
+
+    // 📰 Engelsiz Haber Kaynakları & Canlı Arama
+    { id: 'engelsizforum_live_disability_news', name: 'engelsizforum_live_disability_news', desc: 'Resmi Gazete, Aile Bakanlığı & SGK Canlı Haber Ajanı', category: 'news', server: 'Engelsiz News Stream' },
+    { id: 'engelsizforum_web_search', name: 'engelsizforum_web_search', desc: 'Google Grounding Canlı Web Araması & Mevzuat Tarayıcı', category: 'news', server: 'Engelsiz News Stream' },
+    { id: 'engelsizforum_fact_checker_ai', name: 'engelsizforum_fact_checker_ai', desc: 'Resmi Gazete & Haber Doğrulama Ajanı (Fact-Checker AI)', category: 'news', server: 'Engelsiz News Stream' },
+
+    // 📜 Mevzuat, Balthazard & Yasal Haklar
+    { id: 'engelsizforum_balthazard_calc', name: 'engelsizforum_balthazard_calc', desc: 'Balthazard Net Engel Oranı & Hak Hesaplayıcı', category: 'rights_legislation', server: 'Mevzuat & Haklar Hub' },
+    { id: 'engelsizforum_disability_rights_guide', name: 'engelsizforum_disability_rights_guide', desc: 'Yasal Engelli Hakları & Emeklilik Sorgulama', category: 'rights_legislation', server: 'Mevzuat & Haklar Hub' },
+    { id: 'engelsizforum_legislation_lookup', name: 'engelsizforum_legislation_lookup', desc: 'ÖTV 2026, Emeklilik & Evde Bakım Mevzuatı', category: 'rights_legislation', server: 'Mevzuat & Haklar Hub' },
+    { id: 'engelsizforum_cozger_calculator', name: 'engelsizforum_cozger_calculator', desc: 'ÇÖZGER Çocuk Özel Gereksinim Derecesi', category: 'rights_legislation', server: 'Mevzuat & Haklar Hub' },
+    { id: 'engelsizforum_tax_discount_calc', name: 'engelsizforum_tax_discount_calc', desc: 'Engellilik Gelir Vergisi İndirimi Hesabı', category: 'rights_legislation', server: 'Mevzuat & Haklar Hub' },
+    { id: 'engelsizforum_home_care_allowance_calc', name: 'engelsizforum_home_care_allowance_calc', desc: 'Evde Bakım Maaşı Gelir Testi & Şartları', category: 'rights_legislation', server: 'Mevzuat & Haklar Hub' },
+    { id: 'engelsizforum_general_legislation_lookup', name: 'engelsizforum_general_legislation_lookup', desc: '4857 İş Kanunu, Tüketici & Borçlar Hukuku', category: 'rights_legislation', server: 'Mevzuat & Haklar Hub' },
+
+    // ♿ Erişilebilirlik, Sağlık & Kamu Hizmetleri
+    { id: 'engelsizforum_accessibility_checker', name: 'engelsizforum_accessibility_checker', desc: 'Web & Mobil Erişilebilirlik Audit Aracı', category: 'accessibility_health', server: 'Erişilebilirlik & Sağlık Hub' },
+    { id: 'engelsizforum_code_accessibility_inspector', name: 'engelsizforum_code_accessibility_inspector', desc: 'WCAG 2.2 AAA & Clean Code Denetçisi', category: 'accessibility_health', server: 'Erişilebilirlik & Sağlık Hub' },
+    { id: 'engelsizforum_wheelchair_ramp_standards', name: 'engelsizforum_wheelchair_ramp_standards', desc: 'TS 9111 Engelli Rampası & Mimari Standartlar', category: 'accessibility_health', server: 'Erişilebilirlik & Sağlık Hub' },
+    { id: 'engelsizforum_sgk_prosthesis_coverage', name: 'engelsizforum_sgk_prosthesis_coverage', desc: 'SGK Medikal Cihaz & Protez Ödeneği Sorgulama', category: 'accessibility_health', server: 'Erişilebilirlik & Sağlık Hub' },
+    { id: 'engelsizforum_ram_special_education_info', name: 'engelsizforum_ram_special_education_info', desc: 'RAM & Özel Eğitim Destek Rehberi', category: 'accessibility_health', server: 'Erişilebilirlik & Sağlık Hub' },
+    { id: 'engelsizforum_universal_ergonomics_checker', name: 'engelsizforum_universal_ergonomics_checker', desc: 'Ofis, Postür & Bilgisayar Ergonomisi Danışmanı', category: 'accessibility_health', server: 'Erişilebilirlik & Sağlık Hub' },
+    { id: 'engelsizforum_emergency_disaster_info', name: 'engelsizforum_emergency_disaster_info', desc: 'AFAD Engelli Afet & Acil Durum Rehberi', category: 'accessibility_health', server: 'Erişilebilirlik & Sağlık Hub' },
+    { id: 'engelsizforum_turkiye_gov_guide', name: 'engelsizforum_turkiye_gov_guide', desc: 'e-Devlet, MHRS & CİMER Kamu Rehberi', category: 'accessibility_health', server: 'Erişilebilirlik & Sağlık Hub' },
+
+    // 💬 EngelsizForum Platformu & Bireysel Ajan Araçları
+    { id: 'engelsizforum_search', name: 'engelsizforum_search', desc: 'EngelsizForum İçi Arama & Soru-Cevap', category: 'forum_core', server: 'EngelsizForum Çekirdek' },
+    { id: 'engelsizforum_get_categories', name: 'engelsizforum_get_categories', desc: 'EngelsizForum Kategori Ağacı & Konular', category: 'forum_core', server: 'EngelsizForum Çekirdek' },
+    { id: 'engelsizforum_accessibility_toggle', name: 'engelsizforum_accessibility_toggle', desc: 'Site İçi Erişilebilirlik Tercihleri Modu', category: 'forum_core', server: 'EngelsizForum Çekirdek' },
+    { id: 'engelsizforum_universal_dictionary_slang', name: 'engelsizforum_universal_dictionary_slang', desc: 'Hukuki & Medikal Terim Sözlüğü Ajanı', category: 'forum_core', server: 'EngelsizForum Çekirdek' },
+    { id: 'engelsizforum_text_summarizer_ai', name: 'engelsizforum_text_summarizer_ai', desc: 'AI Belge, Rapor & Dilekçe Özetleyici', category: 'forum_core', server: 'EngelsizForum Çekirdek' },
+    { id: 'engelsizforum_career_cv_advisor', name: 'engelsizforum_career_cv_advisor', desc: 'Engelli Bireyler İçin Kariyer & CV Danışmanı', category: 'forum_core', server: 'EngelsizForum Çekirdek' },
+    { id: 'engelsizforum_general_tax_salary_calc', name: 'engelsizforum_general_tax_salary_calc', desc: 'Maaş, Net-Brüt & Kıdem Tazminatı Hesabı', category: 'forum_core', server: 'EngelsizForum Çekirdek' },
   ];
 
-  // Dynamic tools merged seamlessly from INITIAL_MCP_DIRECTORY and live mcpservers.org / mcpserver.com directory
+  // ALL_TOOLS_LIST strictly returns the Engelsiz Forum & Disability ecosystem tools
   const ALL_TOOLS_LIST = React.useMemo(() => {
-    const list: Array<{ id: string; name: string; desc: string; category: string; server: string }> = [...BASE_TOOLS_LIST];
-    const existingIds = new Set(list.map((t) => t.id));
-
-    // Helper to add servers tools
-    const addServerTools = (servers: MCPServerEntry[]) => {
-      servers.forEach((server) => {
-        if (server.tools && Array.isArray(server.tools)) {
-          server.tools.forEach((tool) => {
-            const standardizedName = tool.name.startsWith('engelsizforum_')
-              ? tool.name
-              : `engelsizforum_${tool.name}`;
-            
-            if (!existingIds.has(standardizedName)) {
-              existingIds.add(standardizedName);
-              list.push({
-                id: standardizedName,
-                name: standardizedName,
-                desc: tool.description || `${server.name} aracı`,
-                category: server.category || 'utilities',
-                server: server.name,
-              });
-            }
-          });
-        }
-      });
-    };
-
-    addServerTools(INITIAL_MCP_DIRECTORY);
-    if (directoryServers && directoryServers.length > 0) {
-      addServerTools(directoryServers);
-    }
-
-    return list;
-  }, [directoryServers]);
+    return BASE_TOOLS_LIST;
+  }, []);
 
   const filteredTools = React.useMemo(() => {
     return ALL_TOOLS_LIST.filter((t) => {
@@ -334,7 +316,17 @@ export default function WebMCPPage() {
         return;
       }
     } else {
-      if (selectedTool === 'engelsizforum_live_disability_news') {
+      if (selectedTool === 'engelsiz_harita_location_finder') {
+        payloadArgs = { city: toolParams.city || 'İstanbul', facilityType: 'rampa_asansor' };
+      } else if (selectedTool === 'engelsiz_kariyer_job_search') {
+        payloadArgs = { category: toolParams.jobTitle || 'Yazılım', city: toolParams.city || 'İstanbul' };
+      } else if (selectedTool === 'engelsiz_egitim_burs_rehberi') {
+        payloadArgs = { educationLevel: 'lisans' };
+      } else if (selectedTool === 'engelsiz_sanat_etkinlik_rehberi') {
+        payloadArgs = { eventCategory: 'tiyatro_sinema' };
+      } else if (selectedTool === 'engelsiz_teknoloji_hardware_finder') {
+        payloadArgs = { category: toolParams.equipmentType || 'gorme' };
+      } else if (selectedTool === 'engelsizforum_live_disability_news') {
         payloadArgs = { topic: toolParams.topic || 'ÖTV 2026', scope: 'turkiye' };
       } else if (selectedTool === 'engelsizforum_web_search') {
         payloadArgs = { query: toolParams.query || 'engelli hakları' };
@@ -354,18 +346,40 @@ export default function WebMCPPage() {
           .map((n) => Number(n.trim()))
           .filter((n) => !isNaN(n) && n > 0);
         payloadArgs = { rates: ratesArray };
-      } else if (selectedTool.includes('postgres') || selectedTool.includes('sqlite') || selectedTool.includes('mysql') || selectedTool.includes('supabase')) {
-        payloadArgs = { query: toolParams.sqlQuery || 'SELECT 1;', tableName: toolParams.tableName };
-      } else if (selectedTool.includes('github') || selectedTool.includes('gitlab')) {
-        payloadArgs = { repo: toolParams.repo, query: toolParams.query || 'issue search', title: toolParams.issueTitle };
-      } else if (selectedTool.includes('filesystem') || selectedTool.includes('obsidian')) {
-        payloadArgs = { path: toolParams.filePath, content: toolParams.fileContent, query: toolParams.query };
-      } else if (selectedTool.includes('slack') || selectedTool.includes('discord')) {
-        payloadArgs = { channel: toolParams.channel, message: toolParams.message };
-      } else if (selectedTool.includes('puppeteer') || selectedTool.includes('fetch')) {
-        payloadArgs = { url: toolParams.url, query: toolParams.query };
+      } else if (selectedTool === 'engelsizforum_disability_rights_guide') {
+        payloadArgs = { reportPercentage: 40, disabilityType: 'Ortopedik' };
+      } else if (selectedTool === 'engelsizforum_legislation_lookup') {
+        payloadArgs = { category: 'otv_2026' };
+      } else if (selectedTool === 'engelsizforum_ram_special_education_info') {
+        payloadArgs = { diagnosis: 'Otizm Spektrum' };
+      } else if (selectedTool === 'engelsizforum_cozger_calculator') {
+        payloadArgs = { degree: 'belirgin' };
+      } else if (selectedTool === 'engelsizforum_accessibility_checker') {
+        payloadArgs = { urlOrContent: 'https://www.engelsizforum.com', targetLevel: 'WCAG_AAA' };
+      } else if (selectedTool === 'engelsizforum_assistive_tech_finder') {
+        payloadArgs = { disabilityCategory: 'gorme', userGoal: 'Ekran Okuyucu' };
+      } else if (selectedTool === 'engelsizforum_tax_discount_calc') {
+        payloadArgs = { degree: 1, grossSalary: 50000 };
+      } else if (selectedTool === 'engelsizforum_sgk_prosthesis_coverage') {
+        payloadArgs = { equipmentType: toolParams.equipmentType || 'akulu_sandalye' };
+      } else if (selectedTool === 'engelsizforum_home_care_allowance_calc') {
+        payloadArgs = { householdCount: 4, totalHouseholdIncome: 35000 };
+      } else if (selectedTool === 'engelsizforum_wheelchair_ramp_standards') {
+        payloadArgs = { heightDifferenceCm: 50 };
+      } else if (selectedTool === 'engelsizforum_turkiye_gov_guide') {
+        payloadArgs = { serviceName: toolParams.serviceName || 'edevlet' };
+      } else if (selectedTool === 'engelsizforum_career_cv_advisor') {
+        payloadArgs = { jobTitle: toolParams.jobTitle || 'Yazılım Geliştirici', experienceYears: 2 };
+      } else if (selectedTool === 'engelsizforum_universal_dictionary_slang') {
+        payloadArgs = { term: toolParams.term || 'Balthazard Formülü' };
+      } else if (selectedTool === 'engelsizforum_search') {
+        payloadArgs = { query: toolParams.query || 'ÖTV 2026' };
+      } else if (selectedTool === 'engelsizforum_get_categories') {
+        payloadArgs = {};
+      } else if (selectedTool === 'engelsizforum_accessibility_toggle') {
+        payloadArgs = { feature: 'highContrast', enabled: true };
       } else {
-        payloadArgs = { query: toolParams.query || toolParams.topic || 'Genel Sorgu', payload: toolParams.fileContent };
+        payloadArgs = { query: toolParams.query || toolParams.topic || 'Genel Sorgu' };
       }
     }
 
@@ -604,7 +618,7 @@ export default function WebMCPPage() {
                     type="text"
                     value={toolSearchFilter}
                     onChange={(e) => setToolSearchFilter(e.target.value)}
-                    placeholder="Araç veya sunucu adı ara (örn: news, postgres, github, slack)..."
+                    placeholder="Engelsiz araç veya konu ara (örn: harita, Balthazard, ÖTV, kariyer, haber)..."
                     className="w-full pl-8.5 pr-8 py-2 rounded-xl border border-border bg-background text-xs font-medium text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-sky-500 transition-colors"
                   />
                   {toolSearchFilter && (
@@ -620,14 +634,12 @@ export default function WebMCPPage() {
                 {/* Category Pills */}
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs scrollbar-none">
                   {[
-                    { id: 'all', label: 'Tümü' },
-                    { id: 'accessibility', label: 'Erişilebilirlik' },
-                    { id: 'legal', label: 'Hukuk ve Mevzuat' },
-                    { id: 'finance', label: 'Maaş ve Vergi' },
-                    { id: 'database', label: 'Veritabanı' },
-                    { id: 'engineering', label: 'Geliştirici / Git' },
-                    { id: 'utilities', label: 'Yardımcı Araçlar' },
-                    { id: 'ai-agents', label: 'AI ve Ajanlar' },
+                    { id: 'all', label: 'Tüm Engelsiz Araçlar (30)' },
+                    { id: 'projects', label: '🌐 Engelsiz Projeler' },
+                    { id: 'news', label: '📰 Canlı Haber & Arama' },
+                    { id: 'rights_legislation', label: '📜 Mevzuat & Yasal Haklar' },
+                    { id: 'accessibility_health', label: '♿ Erişilebilirlik & Sağlık' },
+                    { id: 'forum_core', label: '💬 EngelsizForum Çekirdek' },
                   ].map((cat) => (
                     <button
                       key={cat.id}
