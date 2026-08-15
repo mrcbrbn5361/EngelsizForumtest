@@ -73,7 +73,7 @@ export function Navbar() {
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger asChild>
                   <button
-                    className="hidden sm:flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
+                    className="flex items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
                     aria-label="Erişilebilirlik Araçlarını Aç"
                   >
                     <Accessibility size={22} aria-hidden="true" />
@@ -81,7 +81,7 @@ export function Navbar() {
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.Content 
-                    className="z-[100] min-w-[280px] bg-background border border-border p-3 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200"
+                    className="z-[100] min-w-[280px] max-w-[90vw] bg-background border border-border p-3 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200"
                     align="end"
                     sideOffset={8}
                   >
@@ -174,7 +174,7 @@ export function Navbar() {
             </DropdownMenu.Root>
             ) : (
               <button
-                className="hidden sm:flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none"
+                className="flex items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none"
                 aria-label="Erişilebilirlik Araçlarını Aç"
               >
                 <Accessibility size={22} aria-hidden="true" />
@@ -183,7 +183,7 @@ export function Navbar() {
 
             <Link
               href="/search"
-              className="hidden sm:flex items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
+              className="flex items-center justify-center rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-primary transition-all outline-none focus:ring-4 focus:ring-primary/20"
               aria-label="Arama sayfasına git"
             >
               <Search size={22} aria-hidden="true" />

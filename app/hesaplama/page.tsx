@@ -396,7 +396,7 @@ export default function DisabilityCalculatorsPage() {
 
                 <div className="space-y-2">
                   <span className="font-bold text-sm text-foreground">Engel Dereceniz / Rapor Oranı:</span>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     {[
                       { id: 'heavy', label: '%60 ve Üzeri (1. Derece)' },
                       { id: 'medium', label: '%50 - %59 (2. Derece)' },
@@ -406,9 +406,9 @@ export default function DisabilityCalculatorsPage() {
                         key={lvl.id}
                         type="button"
                         onClick={() => setDisabilityLevel(lvl.id as any)}
-                        className={`p-3 rounded-lg border text-xs font-bold transition-all text-center cursor-pointer ${
+                        className={`p-3 rounded-xl border text-xs font-bold transition-all text-center cursor-pointer min-h-[44px] flex items-center justify-center ${
                           disabilityLevel === lvl.id 
-                            ? 'bg-primary text-primary-foreground border-primary' 
+                            ? 'bg-primary text-primary-foreground border-primary shadow-sm' 
                             : 'bg-card text-muted-foreground border-border hover:bg-muted'
                         }`}
                       >
