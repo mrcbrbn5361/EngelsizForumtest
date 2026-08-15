@@ -1,6 +1,4 @@
 'use client';
-import { getVisitorStats } from '../actions';
-import { toast } from 'sonner';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -12,11 +10,6 @@ import {
   Search, 
   Plus, 
   Trash2, 
-  Edit, 
-  CheckCircle, 
-  XCircle,
-  LayoutDashboard,
-  Settings,
   MoreVertical,
   ChevronRight,
   TrendingUp,
@@ -29,20 +22,26 @@ import {
   Copy,
   Check,
   Code,
-  Sparkles
+  Sparkles,
+  Lock,
+  Unlock,
+  Radio,
+  Sliders,
+  ExternalLink
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import * as Tabs from '@radix-ui/react-tabs';
 import * as Dialog from '@radix-ui/react-dialog';
+import { toast } from 'sonner';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useRole } from '@/hooks/use-role';
 import { Skeleton } from '@/components/ui/skeleton';
-import { cn, generateUUID } from '@/lib/utils';
+import { generateUUID } from '@/lib/utils';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 
 export default function AdminDashboard() {
-  const { user, profile, loading } = useAuth();
+  const { profile, loading } = useAuth();
   const { isStaff, isAdmin } = useRole();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
@@ -95,7 +94,7 @@ export default function AdminDashboard() {
     } finally {
       setIsDataLoading(false);
     }
-  }, [supabase]);
+  }, []);
 
   const fetchCategories = useCallback(async () => {
     const { data, error } = await supabase.from('categories').select('*').order('name');
@@ -104,9 +103,7 @@ export default function AdminDashboard() {
   }, []);
 
   const fetchUsers = useCallback(async () => {
-    // Önce created_at ile dene, hata alırsa id ile dene (created_at yeni eklendiği için)
     const { data, error } = await supabase.from('profiles').select('*').order('username', { ascending: true }).limit(50);
-    
     if (data) setUsersList(data);
     if (error) {
       console.error('Users error:', error);
@@ -128,8 +125,8 @@ export default function AdminDashboard() {
 
   if (loading || !isStaff) {
     return (
-      <div className="flex min-h-screen bg-background p-8">
-        <div className="max-w-7xl mx-auto w-full space-y-8">
+      <div className="flex min-h-screen bg-[#090A0F] p-6 sm:p-8">
+        <div className="max-w-7xl mx-auto w-full space-y-6">
           <div className="flex items-center gap-4">
             <Skeleton className="h-12 w-12 rounded-xl" />
             <div className="space-y-2">
@@ -137,13 +134,13 @@ export default function AdminDashboard() {
               <Skeleton className="h-4 w-32" />
             </div>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            <Skeleton className="h-32 rounded-3xl" />
-            <Skeleton className="h-32 rounded-3xl" />
-            <Skeleton className="h-32 rounded-3xl" />
-            <Skeleton className="h-32 rounded-3xl" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <Skeleton className="h-28 rounded-2xl" />
+            <Skeleton className="h-28 rounded-2xl" />
+            <Skeleton className="h-28 rounded-2xl" />
+            <Skeleton className="h-28 rounded-2xl" />
           </div>
-          <Skeleton className="h-[400px] rounded-3xl" />
+          <Skeleton className="h-[400px] rounded-2xl" />
         </div>
       </div>
     );
@@ -151,147 +148,177 @@ export default function AdminDashboard() {
 
   return (
     <DashboardLayout>
-      <div className="container mx-auto px-4 py-8 md:py-12 space-y-8">
-        <header className="flex items-center justify-between gap-4 border-b border-border pb-8">
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
-              <Shield size={32} />
+      <div className="container mx-auto px-4 py-6 md:py-10 space-y-8 max-w-7xl">
+        {/* Header */}
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.08] pb-6">
+          <div className="flex items-center gap-3.5">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400">
+              <Shield size={24} />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">Yetkili Paneli</h1>
-              <p className="text-sm text-muted-foreground font-medium mt-1">
-                Hoş geldin, <span className="text-foreground font-bold">{profile?.username}</span> • {profile?.role}
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-100">Yönetim & Yetkili Paneli</h1>
+                <span className="px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-medium">
+                  {profile?.role === 'admin' ? 'Admin' : 'Moderatör'}
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-400 font-normal mt-0.5">
+                Hoş geldin, <span className="text-slate-200 font-semibold">{profile?.username}</span> • Sistem ve topluluk yönetimi
               </p>
             </div>
           </div>
           <button 
             onClick={() => router.push('/')}
-            className="inline-flex items-center justify-center rounded-xl bg-background px-6 py-3 text-sm font-bold text-foreground border border-border transition hover:bg-muted"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#111726]/80 hover:bg-[#161F33] px-4 py-2 text-xs font-semibold text-slate-200 border border-white/[0.08] transition whitespace-nowrap"
           >
             Foruma Dön
           </button>
         </header>
 
-        <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col gap-8">
-          <div className="overflow-x-auto scrollbar-hide pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-            <Tabs.List className="flex gap-1.5 sm:gap-2 p-1.5 bg-muted rounded-2xl w-max sm:w-fit">
-              <TabButton value="overview" icon={<LayoutDashboard size={18} />} label="Özet" />
-              <TabButton value="mcp" icon={<Bot size={18} />} label="WebMCP & AI Ajanlar" />
-              <TabButton value="analiz" icon={<TrendingUp size={18} />} label="Analiz" />
-              <TabButton value="categories" icon={<FolderTree size={18} />} label="Kategori" />
-              <TabButton value="users" icon={<Users size={18} />} label="Üyeler" />
-              <TabButton value="moderation" icon={<MessageSquare size={18} />} label="Mod" />
+        {/* Tabs Navigation */}
+        <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col gap-6">
+          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+            <Tabs.List className="flex gap-1.5 p-1 bg-[#111726]/90 border border-white/[0.08] rounded-xl w-max sm:w-fit">
+              <TabButton value="overview" icon={<TrendingUp size={16} />} label="Genel Bakış" />
+              <TabButton value="mcp" icon={<Bot size={16} />} label="WebMCP & AI Ajanlar" />
+              <TabButton value="analiz" icon={<Radio size={16} />} label="Trafik & IoT" />
+              <TabButton value="categories" icon={<FolderTree size={16} />} label="Kategoriler" />
+              <TabButton value="users" icon={<Users size={16} />} label="Üyeler" />
+              <TabButton value="moderation" icon={<MessageSquare size={16} />} label="Moderasyon" />
             </Tabs.List>
           </div>
 
-          <Tabs.Content value="overview" className="outline-none space-y-8">
-            <div className="grid lg:grid-cols-2 gap-8">
-              <div className="rounded-3xl border border-border p-8 bg-card shadow-sm">
-                <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-xl font-extrabold tracking-tight">Son Kayıt Olan Üyeler</h3>
-                  <button onClick={() => setActiveTab('users')} className="text-sm font-bold text-primary hover:underline">Tümünü Gör</button>
+          {/* Tab 1: Overview */}
+          <Tabs.Content value="overview" className="outline-none space-y-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <StatCard label="Toplam Üye" value={stats.users} icon={<Users size={18} />} />
+              <StatCard label="Toplam Konu" value={stats.topics} icon={<MessageSquare size={18} />} />
+              <StatCard label="Yanıt & Yorum" value={stats.comments} icon={<Sparkles size={18} />} />
+              <StatCard label="Aktif Ziyaretçi" value={stats.active_visitors} icon={<Radio size={18} />} live />
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-6">
+              <div className="rounded-2xl border border-white/[0.08] p-6 bg-[#111726]/80 backdrop-blur-md shadow-sm">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-base font-bold text-slate-100">Son Kayıt Olan Üyeler</h3>
+                    <p className="text-xs text-slate-400">Platforma katılan en yeni 5 üye</p>
+                  </div>
+                  <button onClick={() => setActiveTab('users')} className="text-xs font-medium text-sky-400 hover:text-sky-300 transition">Tümünü İncele</button>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-2.5">
                   {usersList.slice(0, 5).map((u) => (
-                    <div key={u.id} className="flex items-center justify-between p-4 rounded-2xl hover:bg-muted/50 transition-colors border border-transparent hover:border-border">
-                      <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm border border-primary/20">
+                    <div key={u.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-900/40 border border-white/[0.04] hover:border-sky-500/30 transition-all">
+                      <div className="flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center font-bold text-sky-400 text-xs">
                           {(u.username || '?')[0].toUpperCase()}
                         </div>
                         <div>
-                          <p className="font-bold">@{u.username || 'isimsiz'}</p>
-                          <p className="text-xs text-muted-foreground uppercase tracking-wider">{u.role}</p>
+                          <p className="text-xs font-semibold text-slate-200">@{u.username || 'isimsiz'}</p>
+                          <p className="text-[11px] text-slate-400">{u.full_name || 'Üye'}</p>
                         </div>
                       </div>
-                      <ChevronRight size={18} className="text-muted-foreground" />
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${
+                        u.role === 'admin' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                        u.role === 'moderator' ? 'bg-sky-500/10 text-sky-400 border-sky-500/20' :
+                        'bg-slate-800/60 text-slate-400 border-slate-700/60'
+                      }`}>
+                        {u.role || 'user'}
+                      </span>
                     </div>
                   ))}
                 </div>
               </div>
+
+              <div className="rounded-2xl border border-white/[0.08] p-6 bg-[#111726]/80 backdrop-blur-md shadow-sm flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-sky-400 text-xs font-semibold mb-2">
+                    <Sparkles size={14} /> WebMCP Model Context Protocol
+                  </div>
+                  <h3 className="text-base font-bold text-slate-100">Yapay Zeka Ajan Entegrasyonları</h3>
+                  <p className="text-xs text-slate-400 leading-relaxed mt-1">
+                    EngelsizForum, 26 adet canlı MCP aracıyla Claude, Cursor, ChatGPT, Gemini ve özel IoT donanımlarına erişilebilirlik ve mevzuat verisi sağlar.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 my-4">
+                  <div className="p-3 rounded-xl bg-slate-900/60 border border-white/[0.06]">
+                    <span className="text-[10px] font-medium text-slate-400">Protokol</span>
+                    <p className="text-xs font-mono font-semibold text-slate-200 mt-0.5">MCP 2024-11-05</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-slate-900/60 border border-white/[0.06]">
+                    <span className="text-[10px] font-medium text-slate-400">Durum</span>
+                    <p className="text-xs font-mono font-semibold text-emerald-400 mt-0.5">200 OK / Aktif</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setActiveTab('mcp')}
+                  className="w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition flex items-center justify-center gap-2"
+                >
+                  <Bot size={15} /> WebMCP Konsolunu Aç
+                </button>
+              </div>
             </div>
           </Tabs.Content>
 
+          {/* Tab 2: WebMCP & AI Ajanlar */}
           <Tabs.Content value="mcp" className="outline-none">
             <McpAdminManager />
           </Tabs.Content>
 
-          <Tabs.Content value="analiz" className="outline-none space-y-8">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-              <StatCard label="Toplam Ziyaretçi" value={stats.total_visitors} icon={<Users size={20} />} />
-              <StatCard label="Anlık Ziyaretçi" value={stats.active_visitors} icon={<Users size={20} />} />
-              <StatCard label="Üyeler" value={stats.users} icon={<Users size={20} />} />
-              <StatCard label="Konular" value={stats.topics} icon={<MessageSquare size={20} />} />
-              <div className="col-span-2 lg:col-span-4">
-                <SummaryCounter stats={stats} />
-              </div>
+          {/* Tab 3: Trafik & IoT */}
+          <Tabs.Content value="analiz" className="outline-none space-y-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <StatCard label="Toplam Ziyaretçi" value={stats.total_visitors} icon={<Users size={18} />} />
+              <StatCard label="Anlık Aktif Ziyaretçi" value={stats.active_visitors} icon={<Radio size={18} />} live />
+              <StatCard label="Kayıtlı Üyeler" value={stats.users} icon={<Users size={18} />} />
+              <StatCard label="Açılan Konular" value={stats.topics} icon={<MessageSquare size={18} />} />
             </div>
 
-            <div className="rounded-3xl border border-border p-8 bg-card shadow-sm">
-              <h3 className="text-xl font-black mb-6">Raspberry Pi Entegrasyon Kodu</h3>
-              <p className="text-sm text-muted-foreground mb-6">
-                Bu kodu Raspberry Pi cihazınızda çalıştırarak verileri admin panelinize gönderebilirsiniz.
-              </p>
-              <pre className="bg-foreground text-background p-6 rounded-2xl font-mono text-xs overflow-x-auto">
-{`import requests
-import time
-import uuid
+            <div className="rounded-2xl border border-white/[0.08] p-6 bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-4">
+              <div>
+                <h3 className="text-base font-bold text-slate-100">Raspberry Pi / Donanım İstemci Kodu</h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Bu Python betiğini Raspberry Pi veya IoT cihazınızda çalıştırarak anlık ziyaretçi sayısını forum API&apos;sine iletebilirsiniz.
+                </p>
+              </div>
+              <pre className="bg-[#090A0F] text-slate-300 p-4 rounded-xl border border-white/[0.06] font-mono text-xs overflow-x-auto leading-relaxed">
+{`import requests, time, uuid
 
-# Uygulamanızın URL'ini buraya yazın
 API_URL = "https://www.engelsizforum.com/api/visitor-stats" 
 TOKEN = "engelsizforumteknofesttanitim"
-# Cihaz için benzersiz bir ID
-DEVICE_ID = ':'.join(['{:02x}'.format((uuid.getnode() >> elements) & 0xff) for elements in range(0, 2*6, 2)][::-1])
+DEVICE_ID = ':'.join(['{:02x}'.format((uuid.getnode() >> el) & 0xff) for el in range(0, 12, 2)][::-1])
 
 def veriyi_cek():
     try:
-        # Önce bu cihazı aktif olarak kaydediyoruz (POST)
-        requests.post(
-            API_URL,
-            json={"device_id": DEVICE_ID},
-            headers={
-                "Authorization": f"Bearer {TOKEN}",
-                "Content-Type": "application/json"
-            },
-            timeout=10
-        )
-        
-        # Sonra güncel istatistikleri çekiyoruz (GET)
-        response = requests.get(
-            API_URL,
-            headers={
-                "Authorization": f"Bearer {TOKEN}",
-                "User-Agent": "VisitorTracker/1.0"
-            },
-            timeout=15
-        )
-        
-        if response.status_code == 200:
-            data = response.json()
-            print(f"[{time.strftime('%H:%M:%S')}] Toplam: {data.get('total_visitors', 0)}, Anlık: {data.get('active_visitors', 0)}")
-        else:
-            print(f"[{time.strftime('%H:%M:%S')}] Hata: Sunucu {response.status_code} koduyla yanıt verdi.")
-    except requests.exceptions.RequestException as e:
-        print(f"[{time.strftime('%H:%M:%S')}] Bağlantı Hatası: {e}")
+        # Cihazı aktif olarak kaydet (POST)
+        requests.post(API_URL, json={"device_id": DEVICE_ID}, headers={"Authorization": f"Bearer {TOKEN}"}, timeout=10)
+        # Güncel veriyi al (GET)
+        res = requests.get(API_URL, headers={"Authorization": f"Bearer {TOKEN}"}, timeout=15)
+        if res.status_code == 200:
+            d = res.json()
+            print(f"Toplam: {d.get('total_visitors', 0)}, Anlik: {d.get('active_visitors', 0)}")
     except Exception as e:
-        print(f"[{time.strftime('%H:%M:%S')}] Beklenmedik Hata: {e}")
+        print(f"Hata: {e}")
 
 if __name__ == "__main__":
-    print(f"--- Engelsiz Forum Ziyaretçi Takip Başlatıldı (5 dakikada bir) ---")
     while True:
         veriyi_cek()
-        time.sleep(300) # 5 dakikada bir`}
+        time.sleep(300)`}
               </pre>
             </div>
           </Tabs.Content>
 
+          {/* Tab 4: Categories */}
           <Tabs.Content value="categories" className="outline-none">
             <CategoryManager categories={categories} onRefresh={fetchAllData} />
           </Tabs.Content>
 
+          {/* Tab 5: Users */}
           <Tabs.Content value="users" className="outline-none">
              <UserManager users={usersList} onRefresh={fetchAllData} isAdmin={isAdmin} />
           </Tabs.Content>
 
+          {/* Tab 6: Moderation */}
           <Tabs.Content value="moderation" className="outline-none">
             <ModerationManager onTopicChange={fetchAllData} />
           </Tabs.Content>
@@ -301,100 +328,11 @@ if __name__ == "__main__":
   );
 }
 
-function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
-  const [topics, setTopics] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchRecentTopics = useCallback(async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('topics')
-      .select('*, author:profiles(username)')
-      .order('created_at', { ascending: false })
-      .limit(20);
-    
-    if (data) setTopics(data);
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    fetchRecentTopics();
-  }, [fetchRecentTopics]);
-
-  const handleDeleteTopic = async (id: string) => {
-    if (!confirm('Bu konuyu ve tüm yorumlarını silmek istediğinize emin misiniz?')) return;
-    
-    const { error } = await supabase.from('topics').delete().eq('id', id);
-    if (error) toast.error('Hata: ' + error.message);
-    else {
-      toast.success('Konu silindi');
-      fetchRecentTopics();
-      onTopicChange?.();
-    }
-  };
-
-  const handleToggleLock = async (id: string, currentStatus: boolean) => {
-    const { error } = await supabase.from('topics').update({ is_locked: !currentStatus }).eq('id', id);
-    if (error) toast.error('Hata: ' + error.message);
-    else {
-      toast.success(currentStatus ? 'Konu kilidi açıldı' : 'Konu kilitlendi');
-      fetchRecentTopics();
-      onTopicChange?.();
-    }
-  };
-
-  return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-black tracking-tight">Moderasyon</h2>
-      
-      <div className="space-y-4">
-        {loading ? (
-          <div className="h-40 animate-pulse bg-muted rounded-3xl"></div>
-        ) : topics.length === 0 ? (
-          <div className="p-12 text-center border-2 border-dashed border-border rounded-3xl text-muted-foreground font-bold">
-            Henüz incelenecek konu bulunmuyor.
-          </div>
-        ) : (
-          topics.map((topic) => (
-            <div key={topic.id} className="p-6 rounded-3xl border border-border bg-card shadow-sm flex items-center justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-primary">@{topic.author?.username}</span>
-                  <span className="text-[10px] text-muted-foreground">• {new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
-                </div>
-                <h4 className="font-bold text-lg truncate">{topic.title}</h4>
-                <p className="text-xs text-muted-foreground line-clamp-1 mt-1 opacity-80">{topic.content}</p>
-              </div>
-              
-              <div className="flex items-center gap-2 shrink-0">
-                <button 
-                  onClick={() => handleToggleLock(topic.id, topic.is_locked)}
-                  className={`p-3 rounded-xl transition-all ${topic.is_locked ? 'bg-amber-500 text-white' : 'bg-muted text-muted-foreground hover:bg-amber-500/10 hover:text-amber-500'}`}
-                  title={topic.is_locked ? 'Kilidi Aç' : 'Kilitle'}
-                >
-                  <AlertTriangle size={18} />
-                </button>
-                <button 
-                  onClick={() => handleDeleteTopic(topic.id)}
-                  className="p-3 rounded-xl bg-muted text-muted-foreground hover:bg-red-500 hover:text-white transition-all"
-                  title="Sil"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
-}
-
 function TabButton({ value, icon, label }: { value: string, icon: React.ReactNode, label: string }) {
   return (
     <Tabs.Trigger 
       value={value}
-      className="flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-black rounded-xl transition-all data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-primary uppercase tracking-wider sm:tracking-widest whitespace-nowrap shrink-0"
+      className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-slate-200 transition-all data-[state=active]:bg-sky-500/10 data-[state=active]:text-sky-400 data-[state=active]:border data-[state=active]:border-sky-500/20 outline-none whitespace-nowrap shrink-0"
     >
       <span className="shrink-0">{icon}</span>
       <span>{label}</span>
@@ -402,36 +340,21 @@ function TabButton({ value, icon, label }: { value: string, icon: React.ReactNod
   );
 }
 
-function StatCard({ label, value, icon }: { label: string, value: number, icon: React.ReactNode }) {
+function StatCard({ label, value, icon, live }: { label: string, value: number, icon: React.ReactNode, live?: boolean }) {
   return (
-    <div className="p-6 rounded-3xl border border-border bg-card shadow-sm hover:border-primary/30 transition-colors">
-      <div className="flex items-center justify-between mb-4">
-        <div className="p-2 bg-muted rounded-xl text-primary">{icon}</div>
+    <div className="p-4 sm:p-5 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm hover:border-sky-500/30 transition-colors">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-medium text-slate-400">{label}</span>
+        <div className="flex items-center gap-1.5">
+          {live && <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />}
+          <div className="p-1.5 bg-slate-800/80 rounded-lg text-sky-400">{icon}</div>
+        </div>
       </div>
-      <div>
-        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
-        <p className="text-3xl font-black tabular-nums">{value}</p>
-      </div>
+      <p className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100 tabular-nums">{value}</p>
     </div>
   );
 }
 
-function SummaryCounter({ stats }: { stats: any }) {
-  const total = stats.total_visitors + stats.active_visitors + stats.users + stats.topics;
-  return (
-    <div className="p-6 rounded-3xl border border-primary/20 bg-primary/5 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
-        <div className="p-2 bg-primary/10 rounded-xl text-primary"><TrendingUp size={20} /></div>
-      </div>
-      <div>
-        <p className="text-xs font-black text-primary uppercase tracking-widest mb-1">Genel Özet Sayacı</p>
-        <p className="text-3xl font-black tabular-nums text-primary">{total}</p>
-      </div>
-    </div>
-  );
-}
-
-// Sub-components
 function CategoryManager({ categories, onRefresh }: { categories: any[], onRefresh: () => void }) {
   const [isAdding, setIsAdding] = useState(false);
   const [seeding, setSeeding] = useState(false);
@@ -561,30 +484,29 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
     }
   };
 
-  // Filter only main (parent) categories for dropdown list
   const parentCategoriesList = categories.filter(c => !c.parent_id);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-black tracking-tight">Kategori Yönetimi</h2>
-          <p className="text-sm text-muted-foreground font-medium">Forum yapısını ve alt forumları hiyerarşik olarak düzenleyin.</p>
+          <h2 className="text-lg font-bold text-slate-100">Kategori & Forum Hiyerarşisi</h2>
+          <p className="text-xs text-slate-400">Ana bölümleri ve alt forum dallarını yönetin.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <button 
             onClick={handleSeedDefaultCategories}
             disabled={seeding}
-            className="flex items-center gap-2 bg-secondary text-secondary-foreground border border-border px-4 py-2 rounded-xl text-sm font-bold shadow hover:bg-muted transition-all disabled:opacity-50"
+            className="flex items-center gap-2 bg-[#111726] hover:bg-[#161F33] text-slate-200 border border-white/[0.08] px-3.5 py-2 rounded-xl text-xs font-semibold transition disabled:opacity-50"
           >
-            {seeding ? <Loader2 size={18} className="animate-spin" /> : <FolderTree size={18} />}
-            Varsayılan Hiyerarşiyi Seed Et
+            {seeding ? <Loader2 size={15} className="animate-spin" /> : <FolderTree size={15} />}
+            Varsayılan Ağacı Yükle
           </button>
           <button 
             onClick={() => setIsAdding(true)}
-            className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-bold shadow-lg hover:scale-105 transition-transform"
+            className="flex items-center gap-1.5 bg-sky-600 hover:bg-sky-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold transition"
           >
-            <Plus size={18} /> Yeni Kategori / Alt Forum
+            <Plus size={15} /> Yeni Kategori Ekle
           </button>
         </div>
       </div>
@@ -596,34 +518,34 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
             : null;
 
           return (
-            <div key={cat.id} className="p-5 rounded-3xl border border-border bg-card shadow-sm hover:shadow-md transition-all group relative flex flex-col justify-between">
+            <div key={cat.id} className="p-5 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm hover:border-sky-500/30 transition-all group flex flex-col justify-between">
               <div>
                 <div className="flex items-start justify-between">
-                  <div className="h-10 w-10 rounded-xl bg-primary/5 flex items-center justify-center text-primary mb-4 font-bold">
+                  <div className="h-8 w-8 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 mb-3 font-semibold text-xs">
                     {cat.parent_id ? '↳' : '⊞'}
                   </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => handleDelete(cat.id)} className="p-2 rounded-full hover:bg-red-50 text-red-500 transition-colors" title="Sil"><Trash2 size={14}/></button>
-                  </div>
+                  <button onClick={() => handleDelete(cat.id)} className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition" title="Sil">
+                    <Trash2 size={14}/>
+                  </button>
                 </div>
                 <div className="mb-2">
                   {parentName && (
-                    <span className="inline-block text-[10px] font-black uppercase tracking-widest text-primary/80 bg-primary/5 px-2 py-0.5 rounded-full mb-1">
+                    <span className="inline-block text-[10px] font-medium text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-md mb-1">
                       Alt Forum / {parentName}
                     </span>
                   )}
                   {!cat.parent_id && (
-                    <span className="inline-block text-[10px] font-black uppercase tracking-widest text-muted-foreground bg-muted px-2 py-0.5 rounded-full mb-1">
+                    <span className="inline-block text-[10px] font-medium text-slate-400 bg-slate-800/80 border border-slate-700/60 px-2 py-0.5 rounded-md mb-1">
                       Ana Forum Bölümü
                     </span>
                   )}
-                  <h4 className="font-black text-lg leading-tight mt-1">{cat.name}</h4>
+                  <h4 className="font-bold text-sm text-slate-100 mt-1">{cat.name}</h4>
                 </div>
-                <p className="text-xs text-muted-foreground font-medium leading-relaxed mb-4 line-clamp-2">{cat.description || 'Açıklama yok.'}</p>
+                <p className="text-xs text-slate-400 font-normal leading-relaxed mb-4 line-clamp-2">{cat.description || 'Açıklama belirtilmemiş.'}</p>
               </div>
-              <div className="flex items-center gap-2 py-2 px-3 bg-muted rounded-xl w-fit">
-                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">SLUG:</span>
-                <span className="text-[10px] font-mono font-bold text-foreground/80">{cat.slug}</span>
+              <div className="flex items-center gap-1.5 py-1 px-2.5 bg-slate-900/60 border border-white/[0.04] rounded-lg w-fit">
+                <span className="text-[10px] font-mono text-slate-400">slug:</span>
+                <span className="text-[10px] font-mono font-medium text-slate-300">{cat.slug}</span>
               </div>
             </div>
           );
@@ -632,51 +554,50 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
 
       <Dialog.Root open={isAdding} onOpenChange={setIsAdding}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md bg-background p-8 rounded-3xl shadow-2xl focus:outline-none">
-            <Dialog.Title className="text-2xl font-black tracking-tight mb-2">Yeni Kategori Ekle</Dialog.Title>
-            <Dialog.Description className="text-sm text-muted-foreground mb-6 font-medium">Bu kategori veya alt forum tüm üyeler tarafından forum ana sayfasında görülecektir.</Dialog.Description>
+          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs" />
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md bg-[#111726] border border-white/[0.1] p-6 rounded-2xl shadow-2xl focus:outline-none">
+            <Dialog.Title className="text-lg font-bold text-slate-100 mb-1">Yeni Kategori Ekle</Dialog.Title>
+            <Dialog.Description className="text-xs text-slate-400 mb-4">Bu kategori forum ana dizininde ve filtrelerde görünecektir.</Dialog.Description>
             
-            <form onSubmit={handleAdd} className="space-y-4">
+            <form onSubmit={handleAdd} className="space-y-3.5">
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest mb-1.5 ml-1">Kategori / Alt Forum Adı</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Kategori / Alt Forum Adı</label>
                 <input 
                   required
                   type="text" 
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full p-4 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary focus:bg-background outline-none transition-all font-bold" 
-                  placeholder="Erişilebilirlik Sorunları"
+                  className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none" 
+                  placeholder="Örn: Erişilebilirlik Donanımları"
                 />
               </div>
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest mb-1.5 ml-1">Üst Kategori (Opsiyonel)</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Üst Kategori (Opsiyonel)</label>
                 <select 
                   value={formData.parent_id}
                   onChange={(e) => setFormData({...formData, parent_id: e.target.value})}
-                  className="w-full p-4 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary focus:bg-background outline-none transition-all font-bold cursor-pointer"
+                  className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none cursor-pointer"
                 >
-                  <option value="">-- Ana Forum Bölümü Yap (Üst Kategori Yok) --</option>
+                  <option value="">-- Ana Forum Bölümü Yap --</option>
                   {parentCategoriesList.map(parent => (
                     <option key={parent.id} value={parent.id}>{parent.name}</option>
                   ))}
                 </select>
-                <p className="text-[10px] text-muted-foreground mt-1 ml-1 font-medium">Eğer bu bir Alt Forum olacaksa, bağlı olduğu Ana Bölümü seçin.</p>
               </div>
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest mb-1.5 ml-1">Açıklama</label>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Açıklama</label>
                 <textarea 
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  className="w-full p-4 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary focus:bg-background outline-none transition-all font-bold min-h-[100px]" 
-                  placeholder="Erişilebilirlik hakkında tartışmalar..."
+                  className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none min-h-[80px]" 
+                  placeholder="Bu kategori altında paylaşılabilecek konular hakkında kısa bilgi..."
                 />
               </div>
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-2.5 pt-2">
                 <Dialog.Close asChild>
-                  <button type="button" className="flex-1 p-4 rounded-xl bg-muted font-bold hover:bg-muted/80 transition-colors">İptal</button>
+                  <button type="button" className="flex-1 p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition">İptal</button>
                 </Dialog.Close>
-                <button type="submit" className="flex-1 p-4 rounded-xl bg-primary text-primary-foreground font-black shadow-lg hover:shadow-primary/20 transition-all">Oluştur</button>
+                <button type="submit" className="flex-1 p-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold transition">Oluştur</button>
               </div>
             </form>
           </Dialog.Content>
@@ -691,7 +612,7 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
 
   const handleRoleChange = async (userId: string, newRole: string) => {
     if (!isAdmin) {
-      toast.error('Bu işlem için yetkiniz yok');
+      toast.error('Bu işlem için admin yetkisi gereklidir');
       return;
     }
 
@@ -710,62 +631,86 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <h2 className="text-2xl font-black tracking-tight">Kullanıcı Yönetimi</h2>
-        <div className="relative w-full md:w-80">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+        <div>
+          <h2 className="text-lg font-bold text-slate-100">Kullanıcı & Rol Yönetimi</h2>
+          <p className="text-xs text-slate-400">Üye rolleri ve erişim yetkilerini düzenleyin.</p>
+        </div>
+        <div className="relative w-full md:w-72">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={15} />
           <input 
             type="text" 
-            placeholder="Kullanıcı ara..."
+            placeholder="Kullanıcı adı ara..."
             aria-label="Kullanıcı listesinde ara"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-muted/50 focus:ring-2 focus:ring-primary outline-none transition-all font-bold text-sm"
+            className="w-full pl-10 pr-3.5 py-2 rounded-xl border border-white/[0.08] bg-[#111726]/80 text-xs text-slate-200 focus:ring-1 focus:ring-sky-500 outline-none"
           />
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-3xl border border-border shadow-sm">
-        <table className="w-full text-left border-collapse">
-          <thead className="bg-muted/50 border-b border-border">
+      <div className="overflow-x-auto rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm">
+        <table className="w-full text-left border-collapse min-w-[500px]">
+          <thead className="bg-slate-900/60 border-b border-white/[0.06]">
             <tr>
-              <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Kullanıcı</th>
-              <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Durum / Rol</th>
-              <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground text-right">Eylemler</th>
+              <th className="px-5 py-3 text-[11px] font-semibold text-slate-400">Kullanıcı</th>
+              <th className="px-5 py-3 text-[11px] font-semibold text-slate-400">Rol / Yetki</th>
+              <th className="px-5 py-3 text-[11px] font-semibold text-slate-400 text-right">İşlem</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y divide-white/[0.04]">
             {filteredUsers.map((u) => (
-              <tr key={u.id} className="hover:bg-muted/20 transition-colors">
-                <td className="px-6 py-4">
+              <tr key={u.id} className="hover:bg-slate-900/40 transition-colors">
+                <td className="px-5 py-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-sm border border-primary/20 shrink-0">
+                    <div className="h-8 w-8 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center font-bold text-sky-400 text-xs shrink-0">
                       {(u.username || '?')[0].toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-bold">@{u.username || 'isimsiz'}</p>
-                      <p className="text-xs text-muted-foreground">{u.full_name || 'İsimsiz Üye'}</p>
+                      <p className="text-xs font-semibold text-slate-200">@{u.username || 'isimsiz'}</p>
+                      <p className="text-[11px] text-slate-400">{u.full_name || 'İsimsiz Üye'}</p>
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                    u.role === 'admin' ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
-                    u.role === 'moderator' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20' : 
-                    'bg-muted text-muted-foreground border border-border'
+                <td className="px-5 py-3">
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border ${
+                    u.role === 'admin' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 
+                    u.role === 'moderator' ? 'bg-sky-500/10 text-sky-400 border-sky-500/20' : 
+                    'bg-slate-800/60 text-slate-400 border-slate-700/60'
                   }`}>
-                    {u.role}
+                    {u.role || 'user'}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-right">
-                  <DropdownMenu 
-                    trigger={<button className="p-2 hover:bg-muted rounded-xl transition-colors"><MoreVertical size={18}/></button>}
-                    items={[
-                      { label: 'Admin Yap', onClick: () => handleRoleChange(u.id, 'admin'), hide: u.role === 'admin' || !isAdmin },
-                      { label: 'Moderatör Yap', onClick: () => handleRoleChange(u.id, 'moderator'), hide: u.role === 'moderator' || !isAdmin },
-                      { label: 'Normal Üye Yap', onClick: () => handleRoleChange(u.id, 'user'), hide: u.role === 'user' || !isAdmin },
-                      { label: 'Profili Gör', onClick: () => {}, isExternal: true },
-                    ]}
-                  />
+                <td className="px-5 py-3 text-right">
+                  <div className="inline-flex items-center gap-1.5">
+                    {isAdmin && (
+                      <>
+                        {u.role !== 'admin' && (
+                          <button 
+                            onClick={() => handleRoleChange(u.id, 'admin')} 
+                            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition"
+                          >
+                            Admin Yap
+                          </button>
+                        )}
+                        {u.role !== 'moderator' && (
+                          <button 
+                            onClick={() => handleRoleChange(u.id, 'moderator')} 
+                            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition"
+                          >
+                            Moderatör Yap
+                          </button>
+                        )}
+                        {u.role !== 'user' && (
+                          <button 
+                            onClick={() => handleRoleChange(u.id, 'user')} 
+                            className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition"
+                          >
+                            Üye Yap
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -776,36 +721,99 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
   );
 }
 
-// Minimal Dropdown Component
-function DropdownMenu({ trigger, items }: { trigger: React.ReactNode, items: { label: string, onClick?: () => void, isExternal?: boolean, hide?: boolean }[] }) {
-  const [open, setOpen] = useState(false);
+function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
+  const [topics, setTopics] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchRecentTopics = useCallback(async () => {
+    setLoading(true);
+    const { data } = await supabase
+      .from('topics')
+      .select('*, author:profiles(username)')
+      .order('created_at', { ascending: false })
+      .limit(20);
+    
+    if (data) setTopics(data);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchRecentTopics();
+  }, [fetchRecentTopics]);
+
+  const handleDeleteTopic = async (id: string) => {
+    if (!confirm('Bu konuyu ve tüm yanıtlarını silmek istediğinize emin misiniz?')) return;
+    
+    const { error } = await supabase.from('topics').delete().eq('id', id);
+    if (error) toast.error('Hata: ' + error.message);
+    else {
+      toast.success('Konu silindi');
+      fetchRecentTopics();
+      onTopicChange?.();
+    }
+  };
+
+  const handleToggleLock = async (id: string, currentStatus: boolean) => {
+    const { error } = await supabase.from('topics').update({ is_locked: !currentStatus }).eq('id', id);
+    if (error) toast.error('Hata: ' + error.message);
+    else {
+      toast.success(currentStatus ? 'Konu kilidi açıldı' : 'Konu kilitlendi');
+      fetchRecentTopics();
+      onTopicChange?.();
+    }
+  };
 
   return (
-    <div className="relative">
-      <div onClick={() => setOpen(!open)}>{trigger}</div>
-      <AnimatePresence>
-        {open && (
-          <>
-            <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: -10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              className="absolute right-0 top-full mt-2 w-48 bg-card border border-border rounded-2xl shadow-xl z-50 py-1 overflow-hidden"
-            >
-              {items.filter(item => !item.hide).map((item, idx) => (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-lg font-bold text-slate-100">Topluluk Moderasyonu</h2>
+        <p className="text-xs text-slate-400">Konu kilitleme, denetim ve silme işlemleri</p>
+      </div>
+      
+      <div className="space-y-3">
+        {loading ? (
+          <div className="h-32 animate-pulse bg-slate-900/60 rounded-2xl"></div>
+        ) : topics.length === 0 ? (
+          <div className="p-8 text-center border border-dashed border-white/[0.08] rounded-2xl text-slate-400 text-xs">
+            İncelenecek konu bulunmuyor.
+          </div>
+        ) : (
+          topics.map((topic) => (
+            <div key={topic.id} className="p-4 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm flex items-center justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-[10px] font-medium text-sky-400">@{topic.author?.username || 'isimsiz'}</span>
+                  <span className="text-[10px] text-slate-500">• {new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
+                  {topic.is_locked && (
+                    <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[9px] font-medium">
+                      Kilitli
+                    </span>
+                  )}
+                </div>
+                <h4 className="font-semibold text-xs sm:text-sm text-slate-200 truncate">{topic.title}</h4>
+                <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">{topic.content}</p>
+              </div>
+              
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button 
-                  key={idx}
-                  onClick={() => { item.onClick?.(); setOpen(false); }}
-                  className="w-full text-left px-4 py-3 text-sm font-bold hover:bg-muted transition-colors first:rounded-t-xl last:rounded-b-xl"
+                  onClick={() => handleToggleLock(topic.id, topic.is_locked)}
+                  className={`p-2 rounded-xl transition ${topic.is_locked ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-slate-800 text-slate-400 hover:text-amber-400'}`}
+                  title={topic.is_locked ? 'Kilidi Aç' : 'Kilitle'}
                 >
-                  {item.label}
+                  {topic.is_locked ? <Unlock size={15} /> : <Lock size={15} />}
                 </button>
-              ))}
-            </motion.div>
-          </>
+                <button 
+                  onClick={() => handleDeleteTopic(topic.id)}
+                  className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition"
+                  title="Sil"
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
+            </div>
+          ))
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 }
@@ -823,43 +831,26 @@ function McpAdminManager() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const toolsList: Array<{ id: string; name: string; desc: string; defaultParams: Record<string, string> }> = [
-    { id: 'engelsizforum_live_disability_news', name: 'engelsizforum_live_disability_news', desc: 'İnternet Canlı Engelli Haberleri & Resmi Gazete (Gemini Search)', defaultParams: { topic: 'ÖTV 2026 ve Engelli Hakları', scope: 'turkiye' } },
-    { id: 'engelsizforum_web_search', name: 'engelsizforum_web_search', desc: 'İnternet Genel Engelli Arama Motoru', defaultParams: { query: 'engelli erken emeklilik prim şartları 2026' } },
-    { id: 'engelsizforum_search', name: 'engelsizforum_search', desc: 'EngelsizForum Konu Arama', defaultParams: { query: 'ÖTV 2026' } },
-    { id: 'engelsizforum_balthazard_calc', name: 'engelsizforum_balthazard_calc', desc: 'Balthazard Hesaplama', defaultParams: { rates: '40, 20, 10' } },
-    { id: 'engelsizforum_disability_rights_guide', name: 'engelsizforum_disability_rights_guide', desc: 'Yasal Haklar Rehberi', defaultParams: { reportPercentage: '40', disabilityType: 'Ortopedik' } },
+    { id: 'engelsizforum_live_disability_news', name: 'engelsizforum_live_disability_news', desc: 'Canlı Engelli Haberleri & Resmi Gazete (Gemini Grounding)', defaultParams: { topic: 'ÖTV 2026 ve Engelli Hakları', scope: 'turkiye' } },
+    { id: 'engelsizforum_web_search', name: 'engelsizforum_web_search', desc: 'Genel Engelli Mevzuat & Arama Motoru', defaultParams: { query: 'engelli erken emeklilik prim şartları 2026' } },
+    { id: 'engelsizforum_search', name: 'engelsizforum_search', desc: 'EngelsizForum İçi Konu Arama', defaultParams: { query: 'ÖTV 2026' } },
+    { id: 'engelsizforum_balthazard_calc', name: 'engelsizforum_balthazard_calc', desc: 'Balthazard Oran Hesaplama', defaultParams: { rates: '40, 20, 10' } },
+    { id: 'engelsizforum_disability_rights_guide', name: 'engelsizforum_disability_rights_guide', desc: 'Yasal Haklar & Muafiyet Rehberi', defaultParams: { reportPercentage: '40', disabilityType: 'Ortopedik' } },
     { id: 'engelsizforum_legislation_lookup', name: 'engelsizforum_legislation_lookup', desc: 'Mevzuat Sorgulama (ÖTV, Emeklilik)', defaultParams: { category: 'otv_2026' } },
-    { id: 'engelsizforum_ram_special_education_info', name: 'engelsizforum_ram_special_education_info', desc: 'RAM & Özel Eğitim Destek Rehberi', defaultParams: { diagnosis: 'Otizm Spektrum' } },
-    { id: 'engelsizforum_accessibility_toggle', name: 'engelsizforum_accessibility_toggle', desc: 'Erişilebilirlik Tercihleri', defaultParams: { feature: 'highContrast', enabled: 'true' } },
-    { id: 'engelsizforum_get_categories', name: 'engelsizforum_get_categories', desc: 'Kategori Ağacı', defaultParams: {} },
-    { id: 'engelsizforum_cozger_calculator', name: 'engelsizforum_cozger_calculator', desc: 'ÇÖZGER Çocuk Özel Gereksinim Derecesi', defaultParams: { degree: 'belirgin' } },
-    { id: 'engelsizforum_accessibility_checker', name: 'engelsizforum_accessibility_checker', desc: 'WCAG Web Erişilebilirlik Denetçisi', defaultParams: { urlOrContent: 'https://www.engelsizforum.com', targetLevel: 'WCAG_AAA' } },
-    { id: 'engelsizforum_assistive_tech_finder', name: 'engelsizforum_assistive_tech_finder', desc: 'Yardımcı Teknolojiler Bulucu', defaultParams: { disabilityCategory: 'gorme', userGoal: 'Bilgisayarda kod yazmak' } },
+    { id: 'engelsizforum_accessibility_checker', name: 'engelsizforum_accessibility_checker', desc: 'WCAG 2.2 Web Erişilebilirlik Denetçisi', defaultParams: { urlOrContent: 'https://www.engelsizforum.com', targetLevel: 'WCAG_AAA' } },
     { id: 'engelsizforum_tax_discount_calc', name: 'engelsizforum_tax_discount_calc', desc: 'Engellilik Gelir Vergisi İndirimi', defaultParams: { degree: '1', grossSalary: '60000' } },
-    { id: 'engelsizforum_sgk_prosthesis_coverage', name: 'engelsizforum_sgk_prosthesis_coverage', desc: 'SGK Medikal Cihaz & Protez Ödeneği', defaultParams: { equipmentType: 'akulu_sandalye' } },
     { id: 'engelsizforum_home_care_allowance_calc', name: 'engelsizforum_home_care_allowance_calc', desc: 'Evde Bakım Maaşı Gelir Testi', defaultParams: { householdCount: '4', totalHouseholdIncome: '35000', disabilityPercentage: '70' } },
-    { id: 'engelsizforum_wheelchair_ramp_standards', name: 'engelsizforum_wheelchair_ramp_standards', desc: 'TS 9111 Engelli Rampası Hesaplayıcı', defaultParams: { heightDifferenceCm: '60' } },
-    { id: 'engelsizforum_general_legislation_lookup', name: 'engelsizforum_general_legislation_lookup', desc: 'Genel Hukuk & İş Kanunu Rehberi', defaultParams: { category: 'is_kanunu' } },
-    { id: 'engelsizforum_text_summarizer_ai', name: 'engelsizforum_text_summarizer_ai', desc: 'AI Belge & Metin Özetleme', defaultParams: { text: 'Resmi Gazete yayımlanan karar gereğince kıdem tazminatı tavanı güncellendi...', maxLength: 'Ozet' } },
-    { id: 'engelsizforum_fact_checker_ai', name: 'engelsizforum_fact_checker_ai', desc: 'Canlı Bilgi & Haber Doğrulama (Fact-Checker AI)', defaultParams: { claim: '2026 yılında elektrik faturalarında engelli indirimi kaldırıldı mı?' } },
-    { id: 'engelsizforum_general_tax_salary_calc', name: 'engelsizforum_general_tax_salary_calc', desc: 'Genel Maaş, Net-Brüt & Kıdem Hesaplama', defaultParams: { grossSalary: '50000', workingYears: '4', calcType: 'kidem_ihbar' } },
-    { id: 'engelsizforum_universal_ergonomics_checker', name: 'engelsizforum_universal_ergonomics_checker', desc: 'Çalışma Ergonomisi & Postür Rehberi', defaultParams: { workType: 'masabasi_bilgisayar', symptoms: 'Boyun ve sırt ağrısı' } },
-    { id: 'engelsizforum_emergency_disaster_info', name: 'engelsizforum_emergency_disaster_info', desc: 'AFAD Deprem & Acil Durum Rehberi', defaultParams: { disasterType: 'deprem' } },
-    { id: 'engelsizforum_turkiye_gov_guide', name: 'engelsizforum_turkiye_gov_guide', desc: 'e-Devlet & Kamu Hizmetleri Rehberi', defaultParams: { serviceName: 'edevlet' } },
-    { id: 'engelsizforum_career_cv_advisor', name: 'engelsizforum_career_cv_advisor', desc: 'Kariyer & CV Danışmanı', defaultParams: { jobTitle: 'Yazılım Mühendisi', experienceYears: '3' } },
-    { id: 'engelsizforum_code_accessibility_inspector', name: 'engelsizforum_code_accessibility_inspector', desc: 'Kod Erişilebilirlik & WCAG İnceleyici', defaultParams: { codeSnippet: '<button onClick={doSomething}><img src="icon.png" /></button>', framework: 'React' } },
-    { id: 'engelsizforum_universal_dictionary_slang', name: 'engelsizforum_universal_dictionary_slang', desc: 'Terim & Sözlük Açıklama Ajanı', defaultParams: { term: 'Mücbir Sebep' } },
+    { id: 'engelsizforum_fact_checker_ai', name: 'engelsizforum_fact_checker_ai', desc: 'Canlı Bilgi & Haber Doğrulama (Fact-Checker)', defaultParams: { claim: '2026 yılında elektrik faturalarında engelli indirimi kaldırıldı mı?' } },
+    { id: 'engelsizforum_general_tax_salary_calc', name: 'engelsizforum_general_tax_salary_calc', desc: 'Net-Brüt Maaş & Kıdem Tazminatı Hesaplama', defaultParams: { grossSalary: '50000', workingYears: '4', calcType: 'kidem_ihbar' } },
+    { id: 'engelsizforum_code_accessibility_inspector', name: 'engelsizforum_code_accessibility_inspector', desc: 'Kod Erişilebilirlik & ARIA Denetleyici', defaultParams: { codeSnippet: '<button onClick={doSomething}><img src="icon.png" /></button>', framework: 'React' } },
   ];
 
   const presets: Array<{ label: string; tool: string; params: Record<string, string> }> = [
     { label: '🚗 ÖTV 2026 Limiti', tool: 'engelsizforum_live_disability_news', params: { topic: 'ÖTV 2026 limiti ve Resmi Gazete kararları', scope: 'turkiye' } },
     { label: '📰 Canlı Haber Taraması', tool: 'engelsizforum_web_search', params: { query: 'Resmi Gazete engelli bakıcı maaşı zammı 2026' } },
     { label: '📊 Balthazard (%40+%20)', tool: 'engelsizforum_balthazard_calc', params: { rates: '40, 20' } },
-    { label: '⚖️ 4857 İş Kanunu & Kıdem', tool: 'engelsizforum_general_legislation_lookup', params: { category: 'is_kanunu' } },
     { label: '🔍 Fact-Checker (Haber Doğrulama)', tool: 'engelsizforum_fact_checker_ai', params: { claim: 'Kıdem tazminatı tavanı 2026 zammı açıklandı mı?' } },
     { label: '💵 Net-Brüt Maaş & Kıdem', tool: 'engelsizforum_general_tax_salary_calc', params: { grossSalary: '55000', workingYears: '5', calcType: 'kidem_ihbar' } },
-    { label: '🚨 AFAD Deprem Rehberi', tool: 'engelsizforum_emergency_disaster_info', params: { disasterType: 'deprem' } },
-    { label: '🏛️ e-Devlet & MHRS Rehberi', tool: 'engelsizforum_turkiye_gov_guide', params: { serviceName: 'edevlet' } },
     { label: '💻 Kod WCAG Denetimi', tool: 'engelsizforum_code_accessibility_inspector', params: { codeSnippet: '<button onClick={() => {}}><img src="avatar.jpg" /></button>', framework: 'React' } },
   ];
 
@@ -887,8 +878,6 @@ function McpAdminManager() {
         formattedArgs = { rates: ratesStr.split(',').map((s) => Number(s.trim())).filter((n) => !isNaN(n)) };
       } else if (selectedTool === 'engelsizforum_disability_rights_guide') {
         formattedArgs = { ...toolArgs, reportPercentage: Number(toolArgs.reportPercentage || 40) };
-      } else if (selectedTool === 'engelsizforum_accessibility_toggle') {
-        formattedArgs = { feature: toolArgs.feature || 'highContrast', enabled: toolArgs.enabled === 'true' };
       }
 
       const payload = {
@@ -930,92 +919,90 @@ function McpAdminManager() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="p-6 rounded-3xl border border-border bg-card shadow-sm space-y-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-4 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">MCP Sunucu Durumu</span>
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[11px] font-medium text-slate-400">MCP Sunucu Durumu</span>
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
           </div>
-          <p className="text-xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400">ONLINE (200 OK)</p>
-          <p className="text-xs text-muted-foreground font-mono">/api/mcp (SSE &amp; JSON-RPC)</p>
+          <p className="text-base font-bold font-mono text-emerald-400">ONLINE (200 OK)</p>
+          <p className="text-[11px] text-slate-500 font-mono">/api/mcp (SSE & JSON-RPC)</p>
         </div>
 
-        <div className="p-6 rounded-3xl border border-border bg-card shadow-sm space-y-2">
+        <div className="p-4 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">Aktif Ajan Araçları</span>
-            <Bot size={18} className="text-blue-500" />
+            <span className="text-[11px] font-medium text-slate-400">Aktif Ajan Araçları</span>
+            <Bot size={16} className="text-sky-400" />
           </div>
-          <p className="text-3xl font-black tabular-nums">26 Araç</p>
-          <p className="text-xs text-muted-foreground">Herkes İçin Evrensel AI Ajanı</p>
+          <p className="text-xl font-bold text-slate-100 tabular-nums">26 Araç</p>
+          <p className="text-[11px] text-slate-500">Mevzuat & Erişilebilirlik Motoru</p>
         </div>
 
-        <div className="p-6 rounded-3xl border border-border bg-card shadow-sm space-y-2">
+        <div className="p-4 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">İnternet Arama (Grounding)</span>
-            <Sparkles size={18} className="text-amber-500" />
+            <span className="text-[11px] font-medium text-slate-400">Canlı Arama (Grounding)</span>
+            <Sparkles size={16} className="text-sky-400" />
           </div>
-          <p className="text-xl font-extrabold text-amber-600 dark:text-amber-400">Gemini 2.5 Flash Live</p>
-          <p className="text-xs text-muted-foreground">Tüm Web &amp; Resmi Gazete Arama</p>
+          <p className="text-base font-bold text-slate-100">Gemini 2.5 Flash</p>
+          <p className="text-[11px] text-slate-500">Resmi Gazete & Web Doğrulama</p>
         </div>
 
-        <div className="p-6 rounded-3xl border border-border bg-card shadow-sm space-y-2">
+        <div className="p-4 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase text-muted-foreground tracking-wider">Protokol &amp; Sürüm</span>
-            <Globe size={18} className="text-purple-500" />
+            <span className="text-[11px] font-medium text-slate-400">Protokol Standardı</span>
+            <Globe size={16} className="text-sky-400" />
           </div>
-          <p className="text-xl font-bold font-mono">MCP (2024-11-05)</p>
-          <p className="text-xs text-muted-foreground">JSON-RPC 2.0 / W3C Web ML Standardı</p>
+          <p className="text-base font-bold font-mono text-slate-100">MCP (2024-11-05)</p>
+          <p className="text-[11px] text-slate-500">JSON-RPC 2.0 / W3C WebML</p>
         </div>
       </div>
 
       {/* Interactive Tool Test Console */}
-      <div className="p-8 rounded-3xl border border-border bg-card shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-primary/10 text-primary">
-              <Terminal size={22} />
+      <div className="p-6 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400">
+              <Terminal size={18} />
             </div>
             <div>
-              <h3 className="text-xl font-black tracking-tight">Canlı MCP Araç Test Konsolu</h3>
-              <p className="text-xs text-muted-foreground font-medium">
-                Tüm yapay zeka ajan araçlarını (WebMCP &amp; MCP) admin panelinizden doğrudan test edin.
-              </p>
+              <h3 className="text-base font-bold text-slate-100">Canlı MCP Araç Test Konsolu</h3>
+              <p className="text-xs text-slate-400">WebMCP ve JSON-RPC araçlarını doğrudan test edin.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-muted p-1 rounded-xl">
+          <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-white/[0.06]">
             <button
               onClick={() => setTestMode('remote')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all ${testMode === 'remote' ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${testMode === 'remote' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              ⚡ Remote MCP API
+              Remote MCP
             </button>
             <button
               onClick={() => setTestMode('webmcp')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all ${testMode === 'webmcp' ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${testMode === 'webmcp' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              🌐 WebMCP Client
+              WebMCP Client
             </button>
             <button
               onClick={() => setTestMode('simulation')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition-all ${testMode === 'simulation' ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${testMode === 'simulation' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              🤖 Ajan Simülasyonu
+              Ajan Simülasyonu
             </button>
           </div>
         </div>
 
         {/* Quick Presets */}
-        <div className="space-y-2">
-          <span className="text-[11px] font-black uppercase text-muted-foreground tracking-wider">Hızlı Test Önayarları:</span>
-          <div className="flex flex-wrap gap-2">
+        <div className="space-y-1.5">
+          <span className="text-[11px] font-medium text-slate-400">Hızlı Test Önayarları:</span>
+          <div className="flex flex-wrap gap-1.5">
             {presets.map((preset, idx) => (
               <button
                 key={idx}
                 onClick={() => applyPreset(preset)}
-                className="px-3 py-1.5 rounded-xl border border-border bg-background hover:bg-muted font-bold text-xs transition-all shadow-xs"
+                className="px-2.5 py-1 rounded-lg border border-white/[0.06] bg-slate-900/60 hover:bg-slate-800 text-slate-300 font-medium text-xs transition"
               >
                 {preset.label}
               </button>
@@ -1023,14 +1010,14 @@ function McpAdminManager() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="space-y-4 md:col-span-1">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="space-y-3 md:col-span-1">
             <div>
-              <label className="block text-xs font-black uppercase tracking-widest mb-2 text-muted-foreground">Test Edilecek Araç Seçin</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">Araç Seçimi</label>
               <select
                 value={selectedTool}
                 onChange={(e) => handleToolSelect(e.target.value)}
-                className="w-full p-3.5 rounded-xl border border-border bg-muted/50 font-bold text-sm focus:ring-2 focus:ring-primary outline-none"
+                className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 font-medium text-xs focus:ring-1 focus:ring-sky-500 outline-none"
               >
                 {toolsList.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -1040,68 +1027,65 @@ function McpAdminManager() {
               </select>
             </div>
 
-            <div className="space-y-3">
-              <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground">Parametreler</label>
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-slate-300">Parametreler</label>
               {Object.entries(toolArgs).map(([paramKey, paramVal]) => (
                 <div key={paramKey}>
-                  <span className="text-[11px] font-mono font-bold text-foreground">{paramKey}:</span>
+                  <span className="text-[11px] font-mono text-slate-400">{paramKey}:</span>
                   <input
                     type="text"
                     value={paramVal}
                     onChange={(e) => setToolArgs({ ...toolArgs, [paramKey]: e.target.value })}
-                    className="w-full mt-1 p-3 rounded-xl border border-border bg-background text-sm font-medium focus:ring-2 focus:ring-primary outline-none"
+                    className="w-full mt-0.5 p-2 rounded-xl border border-white/[0.08] bg-slate-900/80 text-xs text-slate-200 focus:ring-1 focus:ring-sky-500 outline-none"
                   />
                 </div>
               ))}
-              {Object.keys(toolArgs).length === 0 && (
-                <p className="text-xs text-muted-foreground italic">Bu araç parametre gerektirmez.</p>
-              )}
             </div>
 
             <button
               onClick={handleRunTest}
               disabled={isExecuting}
-              className="w-full py-3.5 px-6 rounded-xl bg-primary text-primary-foreground font-black text-sm shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2"
+              className="w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition flex items-center justify-center gap-2 shadow-sm"
             >
-              {isExecuting ? <Loader2 size={18} className="animate-spin" /> : <Terminal size={18} />}
-              {testMode === 'webmcp' ? 'WebMCP Çalıştır' : testMode === 'simulation' ? 'Ajan Simülasyonu Çalıştır' : 'Araç Çalıştır (JSON-RPC)'}
+              {isExecuting ? <Loader2 size={15} className="animate-spin" /> : <Terminal size={15} />}
+              {testMode === 'webmcp' ? 'WebMCP Çalıştır' : 'Aracı Çalıştır'}
             </button>
           </div>
 
-          <div className="space-y-3 md:col-span-2">
+          <div className="space-y-2 md:col-span-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">
-                Canlı Çıktı &amp; Ajan Yanıtı ({testMode.toUpperCase()})
+              <span className="text-xs font-semibold text-slate-300">
+                Konsol Çıktısı ({testMode.toUpperCase()})
               </span>
               {testResult && (
-                <span className="text-xs font-mono text-emerald-500 font-bold">200 OK • {testResult.timestamp}</span>
+                <span className="text-xs font-mono text-emerald-400">200 OK • {testResult.timestamp}</span>
               )}
             </div>
 
-            <div className="p-5 rounded-2xl bg-foreground text-background font-mono text-xs overflow-x-auto min-h-[260px] max-h-[420px] space-y-4">
+            <div className="p-4 rounded-xl bg-[#090A0F] border border-white/[0.06] font-mono text-xs overflow-x-auto min-h-[220px] max-h-[360px] space-y-3">
               {isExecuting ? (
-                <div className="flex items-center gap-3 text-muted-foreground animate-pulse py-16 justify-center">
-                  <Loader2 size={24} className="animate-spin text-primary" />
-                  <span>Gemini Search Grounding &amp; MCP Sunucusu Canlı Taranıyor...</span>
+                <div className="flex items-center gap-2.5 text-slate-400 py-16 justify-center">
+                  <Loader2 size={18} className="animate-spin text-sky-400" />
+                  <span className="text-xs">MCP ve Gemini Grounding taranıyor...</span>
                 </div>
               ) : testResult ? (
                 <>
                   <div>
-                    <span className="text-emerald-400 font-bold">// YAPAY ZEKA AJAN YANITI (Formatted Response):</span>
-                    <pre className="mt-2 text-white font-sans text-xs whitespace-pre-wrap leading-relaxed bg-black/40 p-3.5 rounded-xl border border-white/10">
+                    <span className="text-emerald-400 font-semibold">// Formatlanmış Yanıt:</span>
+                    <pre className="mt-1.5 text-slate-200 font-sans text-xs whitespace-pre-wrap leading-relaxed bg-black/40 p-3 rounded-lg border border-white/[0.06]">
                       {testResult.responsePayload?.result?.content?.[0]?.text || JSON.stringify(testResult, null, 2)}
                     </pre>
                   </div>
                   <div>
-                    <span className="text-blue-400 font-bold">// HAM JSON-RPC 2.0 PROTOKOL YANITI:</span>
-                    <pre className="mt-1 text-slate-300 text-[11px] overflow-x-auto">
+                    <span className="text-sky-400 font-semibold">// JSON-RPC Yanıtı:</span>
+                    <pre className="mt-1 text-slate-400 text-[11px] overflow-x-auto">
                       {JSON.stringify(testResult.responsePayload, null, 2)}
                     </pre>
                   </div>
                 </>
               ) : (
-                <div className="text-muted-foreground/60 py-20 text-center font-sans text-sm">
-                  Soldaki araç menüsünden veya üstteki hazır test butonlarından seçim yapıp <strong className="text-muted-foreground">&quot;Araç Çalıştır&quot;</strong> butonuna basarak canlı MCP yanıtını test edin.
+                <div className="text-slate-500 py-16 text-center font-sans text-xs">
+                  Soldaki araç menüsünden seçim yapıp &quot;Aracı Çalıştır&quot; butonuna basarak canlı MCP yanıtını test edin.
                 </div>
               )}
             </div>
@@ -1109,171 +1093,101 @@ function McpAdminManager() {
         </div>
       </div>
 
-      {/* Comprehensive Integration Code Snippets Section */}
-      <div className="p-8 rounded-3xl border border-border bg-card shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
-              <Code size={22} />
+      {/* Integration Snippets */}
+      <div className="p-6 rounded-2xl border border-white/[0.08] bg-[#111726]/80 backdrop-blur-md shadow-sm space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400">
+              <Code size={18} />
             </div>
             <div>
-              <h3 className="text-xl font-black tracking-tight">Tüm AI Ajanlar &amp; Donanım Entegrasyon Rehberi</h3>
-              <p className="text-xs text-muted-foreground font-medium">
-                Tüm Web, Masaüstü, Terminal AI Ajanları ve Akıllı Donanımlar (Raspberry Pi/IoT) için hazır entegrasyon kodları.
-              </p>
+              <h3 className="text-base font-bold text-slate-100">Geliştirici &amp; Ajan Entegrasyon Rehberi</h3>
+              <p className="text-xs text-slate-400">Cursor, Claude, Windsurf, Python ve IoT entegrasyon kodları.</p>
             </div>
           </div>
 
-          {/* Navigation Tabs */}
-          <div className="flex items-center gap-1.5 bg-muted p-1 rounded-xl flex-wrap">
+          <div className="flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-white/[0.06] flex-wrap">
             <button
               onClick={() => setActiveTab('web')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${activeTab === 'web' ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${activeTab === 'web' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              🌐 Web AI Ajanları
+              Web AI
             </button>
             <button
               onClick={() => setActiveTab('desktop')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${activeTab === 'desktop' ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${activeTab === 'desktop' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              💻 Masaüstü Ajanları
+              Masaüstü IDE
             </button>
             <button
               onClick={() => setActiveTab('terminal')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${activeTab === 'terminal' ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${activeTab === 'terminal' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              ⚡ Terminal / CLI
+              Terminal / CLI
             </button>
             <button
               onClick={() => setActiveTab('hardware')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${activeTab === 'hardware' ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${activeTab === 'hardware' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              🤖 Donanım &amp; IoT
+              Donanım &amp; IoT
             </button>
           </div>
         </div>
 
-        {/* Tab 1: WEB AI AGENTS */}
+        {/* Tab 1: Web AI */}
         {activeTab === 'web' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Gemini Web */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Bot size={14} className="text-blue-500" /> Google Gemini Web (Custom Connected Apps)
-                </span>
+                <span className="text-xs font-semibold text-sky-400">Google Gemini &amp; Claude Web Remote MCP</span>
                 <button
-                  onClick={() => copyText('https://www.engelsizforum.com/mcp', 'Gemini Web URL')}
-                  className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => copyText('https://www.engelsizforum.com/mcp', 'Remote MCP URL')}
+                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
                   title="Kopyala"
                 >
-                  {copiedCode === 'Gemini Web URL' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                  {copiedCode === 'Remote MCP URL' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                gemini.google.com &gt; Ayarlar &gt; Özel Bağlı Uygulama Ekle kutusuna gireceğiniz doğrudan MCP URL&apos;si:
-              </p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
+              <p className="text-xs text-slate-400">Custom Connected Apps veya Remote MCP sunucu adresi:</p>
+              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
                 https://www.engelsizforum.com/mcp
               </pre>
             </div>
 
-            {/* Claude Web */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Globe size={14} className="text-amber-500" /> Claude.ai Web Remote MCP Connector
-                </span>
+                <span className="text-xs font-semibold text-sky-400">ChatGPT / Custom GPT OpenAPI Endpoint</span>
                 <button
-                  onClick={() => copyText('https://www.engelsizforum.com/mcp', 'Claude Web URL')}
-                  className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => copyText('https://www.engelsizforum.com/api/mcp', 'OpenAPI URL')}
+                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
                   title="Kopyala"
                 >
-                  {copiedCode === 'Claude Web URL' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                  {copiedCode === 'OpenAPI URL' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                claude.ai hesabınızda Integrations &gt; Custom MCP Server alanına girilecek sunucu adresi:
-              </p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
-                https://www.engelsizforum.com/mcp
-              </pre>
-            </div>
-
-            {/* ChatGPT Web Custom GPT */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Sparkles size={14} className="text-emerald-500" /> ChatGPT / Custom GPTs Action Schema
-                </span>
-                <button
-                  onClick={() => copyText('https://www.engelsizforum.com/api/mcp', 'ChatGPT OpenAPI Schema')}
-                  className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
-                  title="Kopyala"
-                >
-                  {copiedCode === 'ChatGPT OpenAPI Schema' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
-                </button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                chatgpt.com &gt; My GPTs &gt; Create GPT &gt; Add Actions sekmesinde Endpoint alanına yazılacak adres:
-              </p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
+              <p className="text-xs text-slate-400">GPTs Actions sekmesinde kullanılacak Endpoint:</p>
+              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
                 https://www.engelsizforum.com/api/mcp
               </pre>
             </div>
-
-            {/* Chrome WebMCP document.modelContext */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Globe size={14} className="text-purple-500" /> Chrome Native WebMCP JS Kaydı
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Chrome W3C WebML built-in AI / Window AI istemcilerinde doğrudan araç kaydı:
-              </p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
-{`if (document.modelContext?.registerTool) {
-  document.modelContext.registerTool({
-    name: 'engelsizforum_live_disability_news',
-    description: 'Canlı engelli haberleri',
-    parameters: { topic: { type: 'string', required: true } },
-    execute: async (args) => {
-      const res = await fetch('/api/mcp', { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'engelsizforum_live_disability_news', arguments: args } })
-      });
-      return res.json();
-    }
-  });
-}`}
-              </pre>
-            </div>
           </div>
         )}
 
-        {/* Tab 2: DESKTOP AI AGENTS */}
+        {/* Tab 2: Desktop */}
         {activeTab === 'desktop' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Cursor IDE */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Cpu size={14} className="text-blue-500" /> Cursor IDE (.cursor/mcp.json)
-                </span>
+                <span className="text-xs font-semibold text-sky-400">Cursor IDE (.cursor/mcp.json)</span>
                 <button
-                  onClick={() => copyText(JSON.stringify({ mcpServers: { engelsizforum: { url: 'https://www.engelsizforum.com/mcp' } } }, null, 2), 'Cursor MCP Config')}
-                  className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => copyText(JSON.stringify({ mcpServers: { engelsizforum: { url: 'https://www.engelsizforum.com/mcp' } } }, null, 2), 'Cursor Config')}
+                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
                   title="Kopyala"
                 >
-                  {copiedCode === 'Cursor MCP Config' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                  {copiedCode === 'Cursor Config' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Cursor IDE &gt; Settings &gt; MCP &gt; Add new MCP Server alanına veya `.cursor/mcp.json` dosyasına eklenecek kod:
-              </p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
+              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
 {`{
   "mcpServers": {
     "engelsizforum": {
@@ -1284,73 +1198,18 @@ function McpAdminManager() {
               </pre>
             </div>
 
-            {/* Claude Desktop */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Cpu size={14} className="text-amber-500" /> Claude Desktop (claude_desktop_config.json)
-                </span>
+                <span className="text-xs font-semibold text-sky-400">Windsurf &amp; Claude Desktop</span>
                 <button
-                  onClick={() => copyText(JSON.stringify({ mcpServers: { engelsizforum: { url: 'https://www.engelsizforum.com/mcp' } } }, null, 2), 'Claude Desktop Config')}
-                  className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => copyText(JSON.stringify({ mcpServers: { engelsizforum: { url: 'https://www.engelsizforum.com/mcp' } } }, null, 2), 'Desktop Config')}
+                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
                   title="Kopyala"
                 >
-                  {copiedCode === 'Claude Desktop Config' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                  {copiedCode === 'Desktop Config' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                `claude_desktop_config.json` dosyası içeriği:
-              </p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
-{`{
-  "mcpServers": {
-    "engelsizforum": {
-      "url": "https://www.engelsizforum.com/mcp"
-    }
-  }
-}`}
-              </pre>
-            </div>
-
-            {/* Windsurf IDE */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Cpu size={14} className="text-purple-500" /> Windsurf IDE (Codeium Cascade)
-                </span>
-                <button
-                  onClick={() => copyText(JSON.stringify({ mcpServers: { engelsizforum: { serverUrl: 'https://www.engelsizforum.com/mcp' } } }, null, 2), 'Windsurf Config')}
-                  className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
-                  title="Kopyala"
-                >
-                  {copiedCode === 'Windsurf Config' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
-                </button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                `~/.codeium/windsurf/mcp_config.json` yapılandırma dosyası:
-              </p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
-{`{
-  "mcpServers": {
-    "engelsizforum": {
-      "serverUrl": "https://www.engelsizforum.com/mcp"
-    }
-  }
-}`}
-              </pre>
-            </div>
-
-            {/* VS Code Extension (Cline / Roo Code) */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Code size={14} className="text-emerald-500" /> VS Code (Roo Code / Cline / Continue.dev)
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                VS Code MCP eklenti ayarlarında (`cline_mcp_settings.json`):
-              </p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
+              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
 {`{
   "mcpServers": {
     "engelsizforum": {
@@ -1363,194 +1222,80 @@ function McpAdminManager() {
           </div>
         )}
 
-        {/* Tab 3: TERMINAL / CLI AGENTS */}
+        {/* Tab 3: Terminal */}
         {activeTab === 'terminal' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Claude Code CLI */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Terminal size={14} /> Claude Code CLI Komutu
-                </span>
+                <span className="text-xs font-semibold text-sky-400">Claude Code CLI</span>
                 <button
                   onClick={() => copyText('claude mcp add engelsizforum https://www.engelsizforum.com/mcp', 'Claude CLI')}
-                  className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
-                  title="Kopyala"
+                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
                 >
-                  {copiedCode === 'Claude CLI' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                  {copiedCode === 'Claude CLI' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">Terminalde çalıştırmak için tek satırlık MCP ekleme komutu:</p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
+              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
                 claude mcp add engelsizforum https://www.engelsizforum.com/mcp
               </pre>
             </div>
 
-            {/* Aider AI CLI */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Terminal size={14} /> Aider CLI Ajan Komutu
-                </span>
+                <span className="text-xs font-semibold text-sky-400">Aider CLI</span>
                 <button
                   onClick={() => copyText('aider --mcp-server https://www.engelsizforum.com/mcp', 'Aider CLI')}
-                  className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
-                  title="Kopyala"
+                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
                 >
-                  {copiedCode === 'Aider CLI' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                  {copiedCode === 'Aider CLI' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">Aider AI terminal aracını EngelsizForum MCP sunucusuyla başlatma:</p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
+              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
                 aider --mcp-server https://www.engelsizforum.com/mcp
-              </pre>
-            </div>
-
-            {/* Goose CLI */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Terminal size={14} /> Block / Goose CLI
-                </span>
-                <button
-                  onClick={() => copyText('goose configure add mcp --url https://www.engelsizforum.com/mcp', 'Goose CLI')}
-                  className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
-                  title="Kopyala"
-                >
-                  {copiedCode === 'Goose CLI' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
-                </button>
-              </div>
-              <p className="text-xs text-muted-foreground">Goose AI terminal ajanı için MCP sunucu kaydı:</p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
-                goose configure add mcp --url https://www.engelsizforum.com/mcp
-              </pre>
-            </div>
-
-            {/* Ollama / Local LLM CLI */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Terminal size={14} /> Ollama &amp; Yerel LLM Ajanları
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">Yerel LLM modelleri için Ollama MCP köprüsü çalıştırma komutu:</p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
-                npx -y @modelcontextprotocol/server-fetch https://www.engelsizforum.com/mcp
               </pre>
             </div>
           </div>
         )}
 
-        {/* Tab 4: HARDWARE & IOT DEVICES */}
+        {/* Tab 4: Hardware */}
         {activeTab === 'hardware' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Raspberry Pi */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Cpu size={14} className="text-red-500" /> Raspberry Pi / Jetson Nano Sesli Asistan (Python)
-                </span>
+                <span className="text-xs font-semibold text-sky-400">Raspberry Pi (Python Asistan)</span>
                 <button
-                  onClick={() => copyText(`import requests, json
-
-def mcp_arac_calistir(tool_name, tool_args):
-    url = "https://www.engelsizforum.com/api/mcp"
-    payload = {
-        "jsonrpc": "2.0",
-        "id": 1,
-        "method": "tools/call",
-        "params": { "name": tool_name, "arguments": tool_args }
-    }
-    res = requests.post(url, json=payload, headers={"Content-Type": "application/json"})
-    return res.json()["result"]["content"][0]["text"]
-
-# Canlı ÖTV 2026 Kararlarını Oku
-haber = mcp_arac_calistir("engelsizforum_live_disability_news", {"topic": "ÖTV 2026 limitleri"})
-print(haber)`, 'Raspberry Pi Python')}
-                  className="p-1.5 hover:bg-background rounded-lg text-muted-foreground hover:text-foreground transition-colors"
-                  title="Kopyala"
+                  onClick={() => copyText(`import requests
+res = requests.post("https://www.engelsizforum.com/api/mcp", json={
+    "jsonrpc": "2.0", "id": 1, "method": "tools/call",
+    "params": {"name": "engelsizforum_live_disability_news", "arguments": {"topic": "ÖTV 2026"}}
+})
+print(res.json()["result"]["content"][0]["text"])`, 'Python Script')}
+                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition"
                 >
-                  {copiedCode === 'Raspberry Pi Python' ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                  {copiedCode === 'Python Script' ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">Raspberry Pi veya Jetson Nano donanımlarında canlı haber ve hakları sesli okuyan Python betiği:</p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
-{`import requests, json
-
-def mcp_arac_calistir(tool_name, tool_args):
-    url = "https://www.engelsizforum.com/api/mcp"
-    payload = {
-        "jsonrpc": "2.0",
-        "id": 1,
-        "method": "tools/call",
-        "params": { "name": tool_name, "arguments": tool_args }
-    }
-    res = requests.post(url, json=payload, headers={"Content-Type": "application/json"})
-    return res.json()["result"]["content"][0]["text"]
-
-# Canlı ÖTV 2026 Kararlarını Oku
-haber = mcp_arac_calistir("engelsizforum_live_disability_news", {"topic": "ÖTV 2026 limitleri"})
-print(haber)`}
-              </pre>
-            </div>
-
-            {/* Arduino / ESP32 Node */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Cpu size={14} className="text-emerald-500" /> ESP32 / Arduino AI Donanım Düğümü (MicroPython)
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground">ESP32 mikrodenetleyicide MicroPython ile canlı MCP araç isteği:</p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
-{`import urequests, ujson
-
-url = "https://www.engelsizforum.com/api/mcp"
-headers = {"Content-Type": "application/json"}
-body = ujson.dumps({
+              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
+{`import requests
+res = requests.post("https://www.engelsizforum.com/api/mcp", json={
     "jsonrpc": "2.0", "id": 1, "method": "tools/call",
-    "params": {"name": "engelsizforum_balthazard_calc", "arguments": {"rates": [40, 20]}}
+    "params": {"name": "engelsizforum_live_disability_news", "arguments": {"topic": "ÖTV 2026"}}
 })
-
-res = urequests.post(url, data=body, headers=headers)
 print(res.json()["result"]["content"][0]["text"])`}
               </pre>
             </div>
 
-            {/* Android / iOS Mobile AI SDK */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
+            <div className="p-4 rounded-xl bg-slate-900/60 border border-white/[0.06] space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Globe size={14} className="text-blue-500" /> Mobil Uygulama AI İstemci (Swift &amp; Kotlin SDK)
-                </span>
+                <span className="text-xs font-semibold text-sky-400">ESP32 (MicroPython)</span>
               </div>
-              <p className="text-xs text-muted-foreground">iOS / Android uygulamalarında doğrudan MCP API bağlayıcı adresi:</p>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
-                https://www.engelsizforum.com/api/mcp
-              </pre>
-            </div>
-
-            {/* Donanım Ziyaretçi Sayacı */}
-            <div className="p-6 rounded-2xl bg-muted/50 border border-border space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-1.5">
-                  <Cpu size={14} className="text-amber-500" /> Donanım Ziyaretçi &amp; Stat Sayacı Python Kodu
-                </span>
-              </div>
-              <pre className="p-3.5 rounded-xl bg-foreground text-background font-mono text-xs overflow-x-auto">
-{`import requests, time, uuid
-API_URL = "https://www.engelsizforum.com/api/visitor-stats" 
-TOKEN = "engelsizforumteknofesttanitim"
-DEVICE_ID = ':'.join(['{:02x}'.format((uuid.getnode() >> el) & 0xff) for el in range(0, 12, 2)][::-1])
-
-def veriyi_cek():
-    requests.post(API_URL, json={"device_id": DEVICE_ID}, headers={"Authorization": f"Bearer {TOKEN}"})
-    res = requests.get(API_URL, headers={"Authorization": f"Bearer {TOKEN}"})
-    print(res.json())
-
-while True:
-    veriyi_cek()
-    time.sleep(300)`}
+              <pre className="p-2.5 rounded-lg bg-[#090A0F] text-slate-200 font-mono text-xs overflow-x-auto">
+{`import urequests, ujson
+res = urequests.post("https://www.engelsizforum.com/api/mcp", 
+    headers={"Content-Type": "application/json"},
+    data=ujson.dumps({"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "engelsizforum_balthazard_calc", "arguments": {"rates": [40, 20]}}})
+)
+print(res.json())`}
               </pre>
             </div>
           </div>

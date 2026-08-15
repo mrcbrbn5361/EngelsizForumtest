@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 import { useAuth } from '@/components/providers/auth-provider';
 import {
   Bot, Sparkles, CheckCircle2, ArrowLeft, ShieldCheck, Terminal,
@@ -342,8 +344,10 @@ export default function WebMCPPage() {
   }, [directoryServers]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-      {/* Top Header */}
+    <div className="min-h-screen flex flex-col bg-background">
+      <Navbar />
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 space-y-8 overflow-x-hidden">
+        {/* Top Header */}
       <div className="space-y-4">
         <Link
           href="/"
@@ -1390,6 +1394,8 @@ export default function WebMCPPage() {
           )}
         </div>
       )}
+      </main>
+      <Footer />
     </div>
   );
 }

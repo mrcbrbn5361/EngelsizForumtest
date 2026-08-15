@@ -8,7 +8,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { toast } from 'sonner';
 import dynamic from 'next/dynamic';
 import { BionicMarkdown } from '@/components/ui/bionic-markdown';
-const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false });
+
 const VoiceInput = dynamic(
   () => import('@/components/ui/voice-input').then(mod => mod.VoiceInput),
   { ssr: false }
@@ -74,7 +74,6 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
         const fullBase64 = reader.result as string;
         const base64Data = fullBase64.split(',')[1];
         
-        // Use local data URL if Supabase was skipped or failed
         const finalImgUrl = imageUrl || fullBase64;
         
         try {
@@ -93,7 +92,7 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
           console.error('Alt-text generation failed:', err);
           const markdownImage = `\n![Görsel](${finalImgUrl})\n`;
           onChange(value + markdownImage);
-          toast.success('Görsel yüklendi (AI betimlemesi başarısız).');
+          toast.success('Görsel yüklendi.');
         } finally {
           setIsUploading(false);
         }
@@ -155,7 +154,7 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
 
   return (
     <div 
-      className="w-full border border-border rounded-xl md:rounded-2xl bg-card overflow-hidden transition-all shadow-sm focus-within:shadow-md relative"
+      className="w-full border border-white/[0.08] rounded-xl bg-slate-900/90 overflow-hidden transition-all shadow-sm focus-within:border-sky-500/40 relative"
       onDragOver={handleDragOver}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
@@ -167,76 +166,74 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-primary/10 border-4 border-dashed border-primary/40 z-50 flex flex-col items-center justify-center backdrop-blur-sm pointer-events-none"
+            className="absolute inset-0 bg-sky-950/80 border-2 border-dashed border-sky-400 z-50 flex flex-col items-center justify-center backdrop-blur-xs pointer-events-none"
           >
-            <div className="bg-background/95 border border-primary/20 p-6 md:p-8 rounded-2xl shadow-xl flex flex-col items-center gap-4 text-center max-w-sm mx-4">
-              <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary animate-bounce">
-                <ImageIcon size={32} />
+            <div className="bg-slate-900 border border-sky-500/30 p-6 rounded-2xl shadow-xl flex flex-col items-center gap-3 text-center max-w-sm mx-4">
+              <div className="size-12 rounded-full bg-sky-500/20 flex items-center justify-center text-sky-400">
+                <ImageIcon size={24} />
               </div>
-              <div>
-                <h3 className="text-lg font-black uppercase tracking-wider text-primary">Görseli Bırakın</h3>
-                <p className="text-xs text-muted-foreground font-bold uppercase tracking-wide mt-2 leading-relaxed">
-                  Yapay zeka ile otomatik erişilebilir alt-metin açıklaması üretilecektir.
-                </p>
-              </div>
+              <h3 className="text-sm font-bold text-slate-100">Görseli Bırakın</h3>
+              <p className="text-xs text-slate-400">
+                Ekran okuyucu kullanıcıları için otomatik AI betimlemesi oluşturulacaktır.
+              </p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col sm:flex-row items-center justify-between px-2 py-2 md:px-4 md:py-2 border-b bg-muted/40 gap-2">
+      <div className="flex flex-col sm:flex-row items-center justify-between px-3 py-2 border-b border-white/[0.08] bg-slate-950/60 gap-2">
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <div className="flex bg-muted/60 rounded-lg md:rounded-xl p-1 gap-1 flex-1 sm:flex-none">
+          <div className="flex bg-slate-900 rounded-lg p-1 gap-1 flex-1 sm:flex-none border border-white/[0.06]">
             <button 
               type="button" 
               onClick={() => setIsPreview(false)} 
-              className={`flex-1 sm:flex-none px-3 md:px-4 py-2 rounded-md md:rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${
-                !isPreview ? 'bg-card shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                !isPreview ? 'bg-sky-600 text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
               }`}
               aria-label="Düzenleme Modu"
               aria-pressed={!isPreview}
             >
-              <Edit3 size={14} /> Düzenle
+              <Edit3 size={13} /> Düzenle
             </button>
             <button 
               type="button" 
               onClick={() => setIsPreview(true)} 
-              className={`flex-1 sm:flex-none px-3 md:px-4 py-2 rounded-md md:rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all ${
-                isPreview ? 'bg-card shadow-sm text-primary' : 'text-muted-foreground hover:text-foreground'
+              className={`px-3 py-1.5 rounded-md text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                isPreview ? 'bg-sky-600 text-white shadow-xs' : 'text-slate-400 hover:text-slate-200'
               }`}
               aria-label="Önizleme Modu"
               aria-pressed={isPreview}
             >
-              <Eye size={14} /> Önizle
+              <Eye size={13} /> Önizle
             </button>
           </div>
 
           {!isPreview && (
-            <label className="cursor-pointer size-10 md:size-12 rounded-lg md:rounded-xl bg-muted/60 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all border border-transparent hover:border-primary/20 relative">
-              {isUploading ? <Loader2 size={18} className="animate-spin text-primary" /> : <ImageIcon size={18} />}
+            <label className="cursor-pointer size-8 rounded-lg bg-slate-900 flex items-center justify-center text-slate-400 hover:text-sky-400 hover:bg-sky-500/10 transition-all border border-white/[0.06] hover:border-sky-500/30">
+              {isUploading ? <Loader2 size={15} className="animate-spin text-sky-400" /> : <ImageIcon size={15} />}
               <input 
                 type="file" 
                 className="hidden" 
                 accept="image/*" 
                 onChange={handleImageUpload} 
                 disabled={isUploading} 
-                aria-label="Görsel Yükle (Erişilebilirlik için otomatik açıklama üretilir)"
+                aria-label="Görsel Yükle (Erişilebilirlik için otomatik AI açıklama üretilir)"
               />
             </label>
           )}
         </div>
-        <div className="text-[9px] md:text-[10px] font-bold text-muted-foreground uppercase tracking-widest text-center">
-          Sürükle-Bırak Görsel ve Markdown Desteklenir
+        <div className="text-[10px] text-slate-500 text-center font-normal">
+          Sürükle-bırak görsel &amp; Markdown desteklenir
         </div>
       </div>
       
       {!isPreview && (
-        <div className="px-4 py-2 bg-muted/20 border-b border-border/50">
+        <div className="px-3 py-1.5 bg-slate-950/40 border-b border-white/[0.06]">
           <VoiceInput onTranscript={handleVoiceTranscript} label="Konuyu Sesle Yaz" />
         </div>
       )}
 
-      <div className="p-0 min-h-[250px] md:min-h-[350px] relative">
+      <div className="p-0 min-h-[220px] md:min-h-[280px] relative">
         <AnimatePresence mode="wait">
           {!isPreview ? (
             <motion.div
@@ -249,8 +246,8 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
               <textarea
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                placeholder={placeholder || 'Buraya yazın... (Görselleri doğrudan buraya sürükleyip bırakabilirsiniz)'}
-                className="w-full min-h-[250px] md:min-h-[350px] p-4 md:p-6 outline-none bg-transparent resize-y font-medium leading-relaxed text-sm md:text-base"
+                placeholder={placeholder || 'Konu detaylarını buraya yazın... (Görselleri doğrudan buraya sürükleyip bırakabilirsiniz)'}
+                className="w-full min-h-[220px] md:min-h-[280px] p-4 outline-none bg-transparent resize-y text-slate-200 text-xs sm:text-sm font-normal leading-relaxed placeholder:text-slate-500"
                 aria-label="Tartışma İçeriği"
               />
             </motion.div>
@@ -260,13 +257,13 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="w-full h-full p-4 md:p-6 bg-muted/5"
+              className="w-full h-full p-4 bg-slate-950/20"
             >
-              <div className="markdown-body prose prose-sm md:prose-base prose-slate max-w-none dark:prose-invert break-words overflow-hidden min-h-[250px] md:min-h-[350px]">
+              <div className="markdown-body prose prose-invert prose-sm max-w-none break-words overflow-hidden min-h-[220px] md:min-h-[280px] text-slate-200 text-xs sm:text-sm">
                 {value ? (
                   <BionicMarkdown content={value} />
                 ) : (
-                  <p className="text-muted-foreground italic">Henüz bir şey yazmadınız. Önizleme boş.</p>
+                  <p className="text-slate-500 italic text-xs">Henüz bir şey yazmadınız. Önizleme alanı boş.</p>
                 )}
               </div>
             </motion.div>

@@ -6,9 +6,8 @@ import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { 
   Users, Search, ChevronRight, MessageSquare, Handshake, Loader2, Plus, Save,
   Scale, CreditCard, PiggyBank, Award, FileText, HeartPulse, Activity, Eye, Volume2, MapPin, 
-  GraduationCap, Calendar, AlertTriangle, FolderTree, HelpCircle, Stethoscope, BookOpen, 
-  Briefcase, Cpu, Code, Smile, Shield, Settings, Megaphone, Car, Sparkles, Info, X, Check,
-  Bookmark
+  GraduationCap, Calendar, AlertTriangle, FolderTree, Stethoscope, BookOpen, 
+  Briefcase, Cpu, Code, Smile, Shield, Settings, Megaphone, Car, Sparkles, Info, X, Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
@@ -26,9 +25,7 @@ interface Community {
   topic_count?: number;
 }
 
-// Rich aesthetic data mapped to community slugs
 const COMMUNITY_META: Record<string, {
-  color: string;
   focusGroups: string[];
   tags: string[];
   memberCount: number;
@@ -37,7 +34,6 @@ const COMMUNITY_META: Record<string, {
   rules: string[];
 }> = {
   'sgk': {
-    color: 'rose',
     focusGroups: ['haklar'],
     tags: ['Emeklilik', 'Sağlık Kurulu', 'Mevzuat'],
     memberCount: 1420,
@@ -50,7 +46,6 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'ekpss': {
-    color: 'violet',
     focusGroups: ['bilissel', 'haklar'],
     tags: ['Sınav Hazırlığı', 'Kadro Atamaları', 'Çalışma Grupları'],
     memberCount: 2350,
@@ -59,13 +54,12 @@ const COMMUNITY_META: Record<string, {
     rules: [
       'Telif hakkı içeren sınav dokümanlarını veya korsan kitap linklerini kesinlikle paylaşmayın.',
       'Sınav stresi ve motivasyon dışı kırıcı, rekabetçi veya incitici tartışmalardan kaçının.',
-      'Öğretmenlik, mühendislik, düz memurluk gibi kadro özelindeki soruları ilgili konu başlıklarında toplayın.'
+      'Öğretmenlik, mühendislik, memurluk gibi kadro özelindeki soruları ilgili konu başlıklarında toplayın.'
     ]
   },
   'otv': {
-    color: 'amber',
     focusGroups: ['ortopedik'],
-    tags: ['Araç Alımı', 'ÖTV Muafiyeti', 'Mevzuat Değişikliği'],
+    tags: ['Araç Alımı', 'ÖTV Muafiyeti', 'Limit Takibi'],
     memberCount: 1890,
     topicCount: 425,
     featured: true,
@@ -76,7 +70,6 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'saglik': {
-    color: 'emerald',
     focusGroups: ['ortopedik', 'bilissel'],
     tags: ['Rapor Derecesi', 'Tedavi Süreçleri', 'Hekim Tavsiyeleri'],
     memberCount: 1210,
@@ -88,7 +81,6 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'egitim': {
-    color: 'sky',
     focusGroups: ['bilissel'],
     tags: ['Özel Eğitim', 'RAM Raporları', 'Kapsayıcı Okullar'],
     memberCount: 940,
@@ -100,7 +92,6 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'istihdam': {
-    color: 'indigo',
     focusGroups: ['haklar'],
     tags: ['Kariyer', 'İş İlanları', 'Mülakat Teknikleri'],
     memberCount: 1560,
@@ -113,9 +104,8 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'teknoloji': {
-    color: 'teal',
     focusGroups: ['gorme', 'isitme'],
-    tags: ['Ekran Okuyucular', 'Yardımcı Yazılımlar', 'Erişilebilirlik Yamaları'],
+    tags: ['Ekran Okuyucular', 'Yardımcı Yazılımlar', 'Erişilebilirlik'],
     memberCount: 2100,
     topicCount: 480,
     featured: true,
@@ -126,181 +116,36 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'yazilim': {
-    color: 'blue',
     focusGroups: ['gorme', 'isitme'],
     tags: ['Erişilebilir Kod', 'A11y Standartları', 'Web Geliştirme'],
     memberCount: 820,
     topicCount: 140,
     rules: [
-      'Kod paylaşırken Markdown formatını (` ```js ` gibi) kullanarak kodun okunabilirliğini artırın.',
-      'WCAG (Web İçeriği Erişilebilirlik Kılavuzu) standartlarına uygun örnekler paylaşmaya çalışın.',
+      'Kod paylaşırken Markdown formatını kullanarak kodun okunabilirliğini artırın.',
+      'WCAG standartlarına uygun örnekler paylaşmaya özen gösterin.',
       'Erişilebilirlik kütüphaneleri ve test araçları hakkında tecrübelerinizi aktarın.'
     ]
   },
-  'yapay-zeka': {
-    color: 'fuchsia',
-    focusGroups: ['gorme', 'bilissel'],
-    tags: ['Gemini Entegrasyonu', 'Görsel Betimleme', 'Yapay Zeka Sesleri'],
-    memberCount: 1150,
-    topicCount: 195,
-    rules: [
-      'Yapay zeka ile tamamen otomatik üretilmiş uzun makale/tartışmaları "Yapay Zeka" etiketiyle paylaşın.',
-      'Görsel betimleme araçları (Gemini Vision vb.) kullanan üyelerimizin deneyimlerini paylaşmasını destekleyin.',
-      'Hayatı kolaylaştırıcı prompt (komut) önerilerini paylaşırken sade bir dil kullanın.'
-    ]
-  },
   'gunluk-yasam': {
-    color: 'pink',
     focusGroups: ['gorme', 'isitme', 'ortopedik', 'bilissel'],
-    tags: ['Social Sohbet', 'Hobiler & Sanat', 'Engelsiz Seyahat'],
+    tags: ['Sohbet', 'Hobiler & Sanat', 'Engelsiz Seyahat'],
     memberCount: 1780,
     topicCount: 390,
     rules: [
-      'Politik, ideolojik veya inanç temelli hassas konuları içeren kutuplaştırıcı tartışmalardan kaçının.',
+      'Kutuplaştırıcı ve incitici tartışmalardan kaçının.',
       'Engelsiz seyahat ve mekan deneyimlerinizde rampa, asansör, sesli yönlendirme detaylarını belirtin.',
       'Hobiler, kitap kulüpleri ve sanatsal faaliyetlerde kapsayıcı etkinlikleri duyurun.'
     ]
-  },
-  'sosyal-haklar': {
-    color: 'purple',
-    focusGroups: ['haklar'],
-    tags: ['Yasal Ödenekler', 'Ulaşım İndirimleri', 'Belediye Hizmetleri'],
-    memberCount: 1670,
-    topicCount: 310,
-    rules: [
-      'Sadece resmi kanun maddeleri ve doğrulanmış kamu sitelerini kaynak göstererek iddialarda bulunun.',
-      'Belediye indirimleri, engelli kartı alma adımları gibi pratik rehberleri aşama aşama anlatın.',
-      'Sosyal yardım başvurularında karşılaşılan bürokratik engelleri yapıcı bir dille paylaşın.'
-    ]
-  },
-  'engelli-haklari': {
-    color: 'cyan',
-    focusGroups: ['haklar'],
-    tags: ['Hak Savunuculuğu', 'Ayrımcılık Bildirimi', 'Farkındalık Projeleri'],
-    memberCount: 1340,
-    topicCount: 280,
-    rules: [
-      'Yaşanan hak ihlallerini veya ayrımcı tutumları aktarırken hakaret içermeyen, tamamen hukuki ve nesnel bir dil tercih edin.',
-      'Farkındalık projelerini ve sivil toplum kuruluşlarının (STK) kapsayıcı etkinliklerini destekleyin.',
-      'Erişilebilirlik standartları dışı yapı ve mimarilerin bildirilmesi süreçlerini koordine edin.'
-    ]
-  },
-  'araclar': {
-    color: 'slate',
-    focusGroups: ['ortopedik'],
-    tags: ['Tekerlekli Sandalyeler', 'Protez / Ortez', 'Rehabilitasyon'],
-    memberCount: 750,
-    topicCount: 115,
-    rules: [
-      'Medikal marka kayırmadan, kullandığınız tekerlekli sandalye veya protez cihazlarının artı/eksilerini dürüstçe yazın.',
-      'İhtiyaç sahipleri için hibe veya takas amaçlı cihaz paylaşımlarında ticari kâr amacı gütmeyin.',
-      'Yardımcı araç tamiratı ve yedek parça temini gibi teknik tüyoları paylaşın.'
-    ]
-  },
-  'kamu-duyurulari': {
-    color: 'orange',
-    focusGroups: ['haklar'],
-    tags: ['Resmi İlanlar', 'Yönetmelik Değişikliği', 'Bakanlık Açıklamaları'],
-    memberCount: 990,
-    topicCount: 160,
-    rules: [
-      'Duyurunun asıl kaynağını (Resmi Gazete bağlantısı, bakanlık basın bülteni vb.) mutlaka konuya ekleyin.',
-      'Aynı duyurunun mükerrer olarak paylaşılmasını önlemek amacıyla konuyu açmadan önce arama yapın.',
-      'Duyuruları yalınlaştırarak, ağır bürokratik dilden uzak bir özetle sunun.'
-    ]
-  }
-};
-
-const COLOR_SCHEMES: Record<string, {
-  bg: string;
-  text: string;
-  border: string;
-  hoverBorder: string;
-  lightBg: string;
-  darkText: string;
-  gradient: string;
-  badgeBg: string;
-  badgeText: string;
-}> = {
-  rose: {
-    bg: 'bg-rose-500', text: 'text-rose-500', border: 'border-rose-200 dark:border-rose-900/30', hoverBorder: 'hover:border-rose-400 dark:hover:border-rose-700/50',
-    lightBg: 'bg-rose-500/10', darkText: 'text-rose-700 dark:text-rose-300', gradient: 'from-rose-500/15 via-rose-500/5 to-transparent',
-    badgeBg: 'bg-rose-50 dark:bg-rose-950/20', badgeText: 'text-rose-600 dark:text-rose-400'
-  },
-  violet: {
-    bg: 'bg-violet-500', text: 'text-violet-500', border: 'border-violet-200 dark:border-violet-900/30', hoverBorder: 'hover:border-violet-400 dark:hover:border-violet-700/50',
-    lightBg: 'bg-violet-500/10', darkText: 'text-violet-700 dark:text-violet-300', gradient: 'from-violet-500/15 via-violet-500/5 to-transparent',
-    badgeBg: 'bg-violet-50 dark:bg-violet-950/20', badgeText: 'text-violet-600 dark:text-violet-400'
-  },
-  amber: {
-    bg: 'bg-amber-500', text: 'text-amber-500', border: 'border-amber-200 dark:border-amber-900/30', hoverBorder: 'hover:border-amber-400 dark:hover:border-amber-700/50',
-    lightBg: 'bg-amber-500/10', darkText: 'text-amber-700 dark:text-amber-300', gradient: 'from-amber-500/15 via-amber-500/5 to-transparent',
-    badgeBg: 'bg-amber-50 dark:bg-amber-950/20', badgeText: 'text-amber-600 dark:text-amber-400'
-  },
-  emerald: {
-    bg: 'bg-emerald-500', text: 'text-emerald-500', border: 'border-emerald-200 dark:border-emerald-900/30', hoverBorder: 'hover:border-emerald-400 dark:hover:border-emerald-700/50',
-    lightBg: 'bg-emerald-500/10', darkText: 'text-emerald-700 dark:text-emerald-300', gradient: 'from-emerald-500/15 via-emerald-500/5 to-transparent',
-    badgeBg: 'bg-emerald-50 dark:bg-emerald-950/20', badgeText: 'text-emerald-600 dark:text-emerald-400'
-  },
-  sky: {
-    bg: 'bg-sky-500', text: 'text-sky-500', border: 'border-sky-200 dark:border-sky-900/30', hoverBorder: 'hover:border-sky-400 dark:hover:border-sky-700/50',
-    lightBg: 'bg-sky-500/10', darkText: 'text-sky-700 dark:text-sky-300', gradient: 'from-sky-500/15 via-sky-500/5 to-transparent',
-    badgeBg: 'bg-sky-50 dark:bg-sky-950/20', badgeText: 'text-sky-600 dark:text-sky-400'
-  },
-  indigo: {
-    bg: 'bg-indigo-500', text: 'text-indigo-500', border: 'border-indigo-200 dark:border-indigo-900/30', hoverBorder: 'hover:border-indigo-400 dark:hover:border-indigo-700/50',
-    lightBg: 'bg-indigo-500/10', darkText: 'text-indigo-700 dark:text-indigo-300', gradient: 'from-indigo-500/15 via-indigo-500/5 to-transparent',
-    badgeBg: 'bg-indigo-50 dark:bg-indigo-950/20', badgeText: 'text-indigo-600 dark:text-indigo-400'
-  },
-  teal: {
-    bg: 'bg-teal-500', text: 'text-teal-500', border: 'border-teal-200 dark:border-teal-900/30', hoverBorder: 'hover:border-teal-400 dark:hover:border-teal-700/50',
-    lightBg: 'bg-teal-500/10', darkText: 'text-teal-700 dark:text-teal-300', gradient: 'from-teal-500/15 via-teal-500/5 to-transparent',
-    badgeBg: 'bg-teal-50 dark:bg-teal-950/20', badgeText: 'text-teal-600 dark:text-teal-400'
-  },
-  fuchsia: {
-    bg: 'bg-fuchsia-500', text: 'text-fuchsia-500', border: 'border-fuchsia-200 dark:border-fuchsia-900/30', hoverBorder: 'hover:border-fuchsia-400 dark:hover:border-fuchsia-700/50',
-    lightBg: 'bg-fuchsia-500/10', darkText: 'text-fuchsia-700 dark:text-fuchsia-300', gradient: 'from-fuchsia-500/15 via-fuchsia-500/5 to-transparent',
-    badgeBg: 'bg-fuchsia-50 dark:bg-fuchsia-950/20', badgeText: 'text-fuchsia-600 dark:text-fuchsia-400'
-  },
-  pink: {
-    bg: 'bg-pink-500', text: 'text-pink-500', border: 'border-pink-200 dark:border-pink-900/30', hoverBorder: 'hover:border-pink-400 dark:hover:border-pink-700/50',
-    lightBg: 'bg-pink-500/10', darkText: 'text-pink-700 dark:text-pink-300', gradient: 'from-pink-500/15 via-pink-500/5 to-transparent',
-    badgeBg: 'bg-pink-50 dark:bg-pink-950/20', badgeText: 'text-pink-600 dark:text-pink-400'
-  },
-  purple: {
-    bg: 'bg-purple-500', text: 'text-purple-500', border: 'border-purple-200 dark:border-purple-900/30', hoverBorder: 'hover:border-purple-400 dark:hover:border-purple-700/50',
-    lightBg: 'bg-purple-500/10', darkText: 'text-purple-700 dark:text-purple-300', gradient: 'from-purple-500/15 via-purple-500/5 to-transparent',
-    badgeBg: 'bg-purple-50 dark:bg-purple-950/20', badgeText: 'text-purple-600 dark:text-purple-400'
-  },
-  cyan: {
-    bg: 'bg-cyan-500', text: 'text-cyan-500', border: 'border-cyan-200 dark:border-cyan-900/30', hoverBorder: 'hover:border-cyan-400 dark:hover:border-cyan-700/50',
-    lightBg: 'bg-cyan-500/10', darkText: 'text-cyan-700 dark:text-cyan-300', gradient: 'from-cyan-500/15 via-cyan-500/5 to-transparent',
-    badgeBg: 'bg-cyan-50 dark:bg-cyan-950/20', badgeText: 'text-cyan-600 dark:text-cyan-400'
-  },
-  slate: {
-    bg: 'bg-slate-500', text: 'text-slate-500', border: 'border-slate-200 dark:border-slate-900/30', hoverBorder: 'hover:border-slate-400 dark:hover:border-slate-700/50',
-    lightBg: 'bg-slate-500/10', darkText: 'text-slate-700 dark:text-slate-300', gradient: 'from-slate-500/15 via-slate-500/5 to-transparent',
-    badgeBg: 'bg-slate-50 dark:bg-slate-950/20', badgeText: 'text-slate-600 dark:text-slate-400'
-  },
-  orange: {
-    bg: 'bg-orange-500', text: 'text-orange-500', border: 'border-orange-200 dark:border-orange-900/30', hoverBorder: 'hover:border-orange-400 dark:hover:border-orange-700/50',
-    lightBg: 'bg-orange-500/10', darkText: 'text-orange-700 dark:text-orange-300', gradient: 'from-orange-500/15 via-orange-500/5 to-transparent',
-    badgeBg: 'bg-orange-50 dark:bg-orange-950/20', badgeText: 'text-orange-600 dark:text-orange-400'
-  },
-  blue: {
-    bg: 'bg-blue-500', text: 'text-blue-500', border: 'border-blue-200 dark:border-blue-900/30', hoverBorder: 'hover:border-blue-400 dark:hover:border-blue-700/50',
-    lightBg: 'bg-blue-500/10', darkText: 'text-blue-700 dark:text-blue-300', gradient: 'from-blue-500/15 via-blue-500/5 to-transparent',
-    badgeBg: 'bg-blue-50 dark:bg-blue-950/20', badgeText: 'text-blue-600 dark:text-blue-400'
   }
 };
 
 const FOCUS_GROUPS = [
-  { id: 'all', label: 'TÜM TOPLULUKLAR', icon: '🌐', desc: 'Platformumuzdaki tüm alt forum ve uzmanlık grupları.' },
-  { id: 'gorme', label: 'GÖRME ENGELLİ', icon: '👁️', desc: 'Ekran okuyucular, kabartma ekranlar ve sesli kütüphaneler.' },
-  { id: 'isitme', label: 'İŞİTME ENGELLİ', icon: '👂', desc: 'Altyazı çözümleri, işaret dili destekleri ve cihaz ayarları.' },
-  { id: 'ortopedik', label: 'ORTOPEDİK ENGELLİ', icon: '♿', desc: 'ÖTV araç alımları, protezler ve fiziksel mekan erişilebilirliği.' },
-  { id: 'bilissel', label: 'BİLİŞSEL & NÖROÇEŞİTLİ', icon: '🧠', desc: 'Özel eğitim, otizm, disleksi ve dikkat destek süreçleri.' },
-  { id: 'haklar', label: 'HAKLAR & MEVZUAT', icon: '⚖️', desc: 'Maaşlar, vergi muafiyetleri, yasal haklar ve SGK işlemleri.' },
+  { id: 'all', label: 'Tüm Topluluklar', icon: '🌐', desc: 'Platformdaki tüm alt forum ve uzmanlık grupları.' },
+  { id: 'gorme', label: 'Görme Engelliler', icon: '👁️', desc: 'Ekran okuyucular, kabartma ekranlar ve sesli kütüphaneler.' },
+  { id: 'isitme', label: 'İşitme Engelliler', icon: '👂', desc: 'Altyazı çözümleri, işaret dili destekleri ve cihaz ayarları.' },
+  { id: 'ortopedik', label: 'Ortopedik Engelliler', icon: '♿', desc: 'ÖTV araç alımları, protezler ve mekan erişilebilirliği.' },
+  { id: 'bilissel', label: 'Bilişsel & Nöroçeşitli', icon: '🧠', desc: 'Özel eğitim, otizm, disleksi ve dikkat destek süreçleri.' },
+  { id: 'haklar', label: 'Haklar & Mevzuat', icon: '⚖️', desc: 'Maaşlar, vergi muafiyetleri, yasal haklar ve SGK işlemleri.' },
 ];
 
 export default function CommunitiesPage() {
@@ -310,14 +155,10 @@ export default function CommunitiesPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newCommunity, setNewCommunity] = useState({ name: '', description: '', icon: 'users' });
   const [creating, setCreating] = useState(false);
-  
-  // Custom states for Bento & Inclusive additions
   const [selectedGroup, setSelectedGroup] = useState('all');
   const [joinedList, setJoinedList] = useState<string[]>([]);
   const [activeRulesCommunity, setActiveRulesCommunity] = useState<Community | null>(null);
-  const [showWelcomeTip, setShowWelcomeTip] = useState(true);
 
-  // Load joined list from local storage
   useEffect(() => {
     const saved = localStorage.getItem('joined_communities');
     if (saved) {
@@ -329,7 +170,7 @@ export default function CommunitiesPage() {
     }
   }, []);
 
-  const fetchCommunities = React.useCallback(async () => {
+  const fetchCommunities = useCallback(async () => {
     if (!isSupabaseConfigured) {
       setCommunities([]);
       setLoading(false);
@@ -337,7 +178,6 @@ export default function CommunitiesPage() {
     }
 
     try {
-      // Fetch categories with topic counts
       const { data, error } = await supabase
         .from('categories')
         .select('*, topics:topics(count)')
@@ -366,14 +206,10 @@ export default function CommunitiesPage() {
     setCreating(true);
     try {
       const slug = newCommunity.name.toLowerCase()
-        .replace(/ğ/g, 'g')
-        .replace(/ü/g, 'u')
-        .replace(/ş/g, 's')
-        .replace(/ı/g, 'i')
-        .replace(/ö/g, 'o')
-        .replace(/ç/g, 'c')
+        .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
+        .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
         .replace(/[^a-z0-9]/g, '-');
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('categories')
         .insert([{ ...newCommunity, slug }]);
       
@@ -391,22 +227,15 @@ export default function CommunitiesPage() {
   };
 
   useEffect(() => {
-    let isMounted = true;
-    const init = async () => {
-      if (isMounted) await fetchCommunities();
-    };
-    init();
-    return () => { isMounted = false; };
+    fetchCommunities();
   }, [fetchCommunities]);
 
-  // Dynamic mapper for custom aesthetics
   const getMeta = (slug: string) => {
     const normalized = slug?.toLowerCase() || '';
     if (COMMUNITY_META[normalized]) {
       return COMMUNITY_META[normalized];
     }
     return {
-      color: 'indigo',
       focusGroups: ['gorme', 'isitme', 'ortopedik', 'bilissel'],
       tags: ['Topluluk', 'Yardımlaşma', 'Genel'],
       memberCount: 240,
@@ -418,12 +247,6 @@ export default function CommunitiesPage() {
     };
   };
 
-  const getScheme = (slug: string) => {
-    const meta = getMeta(slug);
-    return COLOR_SCHEMES[meta.color] || COLOR_SCHEMES['indigo'];
-  };
-
-  // Toggle gruba katılım
   const toggleJoin = (communityId: string, communityName: string, event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -435,13 +258,12 @@ export default function CommunitiesPage() {
       toast.success(`"${communityName}" topluluğundan ayrıldınız.`);
     } else {
       updated = [...joinedList, communityId];
-      toast.success(`"${communityName}" topluluğuna katıldınız! Artık bu gruptaki gelişmeler akışınızda öne çıkacaktır.`);
+      toast.success(`"${communityName}" topluluğuna katıldınız!`);
     }
     setJoinedList(updated);
     localStorage.setItem('joined_communities', JSON.stringify(updated));
   };
 
-  // Filters logic
   const filteredAndGroupedCommunities = useMemo(() => {
     return communities.filter(c => {
       const matchSearch = c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -455,452 +277,353 @@ export default function CommunitiesPage() {
     });
   }, [communities, searchQuery, selectedGroup]);
 
-  // Icons renderer
-  const getIcon = (iconName?: string, customColorClass?: string) => {
-    const baseColor = customColorClass || "text-primary";
+  const getIcon = (iconName?: string) => {
+    const cls = "text-sky-400";
     switch (iconName?.toLowerCase()) {
-      case 'stethoscope': return <Stethoscope className={baseColor} />;
+      case 'stethoscope': return <Stethoscope size={18} className={cls} />;
       case 'bookopen':
-      case 'book-open': return <BookOpen className={baseColor} />;
-      case 'briefcase': return <Briefcase className={baseColor} />;
-      case 'cpu': return <Cpu className={baseColor} />;
-      case 'code': return <Code className={baseColor} />;
-      case 'smile': return <Smile className={baseColor} />;
-      case 'shield': return <Shield className={baseColor} />;
-      case 'settings': return <Settings className={baseColor} />;
-      case 'megaphone': return <Megaphone className={baseColor} />;
-      case 'car': return <Car className={baseColor} />;
-      case 'scale': return <Scale className={baseColor} />;
+      case 'book-open': return <BookOpen size={18} className={cls} />;
+      case 'briefcase': return <Briefcase size={18} className={cls} />;
+      case 'cpu': return <Cpu size={18} className={cls} />;
+      case 'code': return <Code size={18} className={cls} />;
+      case 'smile': return <Smile size={18} className={cls} />;
+      case 'shield': return <Shield size={18} className={cls} />;
+      case 'settings': return <Settings size={18} className={cls} />;
+      case 'megaphone': return <Megaphone size={18} className={cls} />;
+      case 'car': return <Car size={18} className={cls} />;
+      case 'scale': return <Scale size={18} className={cls} />;
       case 'creditcard':
-      case 'credit-card': return <CreditCard className={baseColor} />;
+      case 'credit-card': return <CreditCard size={18} className={cls} />;
       case 'piggybank':
-      case 'piggy-bank': return <PiggyBank className={baseColor} />;
-      case 'award': return <Award className={baseColor} />;
+      case 'piggy-bank': return <PiggyBank size={18} className={cls} />;
+      case 'award': return <Award size={18} className={cls} />;
       case 'filetext':
-      case 'file-text': return <FileText className={baseColor} />;
+      case 'file-text': return <FileText size={18} className={cls} />;
       case 'heartpulse':
-      case 'heart-pulse': return <HeartPulse className={baseColor} />;
-      case 'activity': return <Activity className={baseColor} />;
-      case 'eye': return <Eye className={baseColor} />;
+      case 'heart-pulse': return <HeartPulse size={18} className={cls} />;
+      case 'activity': return <Activity size={18} className={cls} />;
+      case 'eye': return <Eye size={18} className={cls} />;
       case 'volume2':
-      case 'volume-2': return <Volume2 className={baseColor} />;
+      case 'volume-2': return <Volume2 size={18} className={cls} />;
       case 'mappin':
-      case 'map-pin': return <MapPin className={baseColor} />;
+      case 'map-pin': return <MapPin size={18} className={cls} />;
       case 'graduationcap':
-      case 'graduation-cap': return <GraduationCap className={baseColor} />;
-      case 'calendar': return <Calendar className={baseColor} />;
+      case 'graduation-cap': return <GraduationCap size={18} className={cls} />;
+      case 'calendar': return <Calendar size={18} className={cls} />;
       case 'alerttriangle':
-      case 'alert-triangle': return <AlertTriangle className={baseColor} />;
-      case 'users': return <Users className={baseColor} />;
-      case 'message': return <MessageSquare className={baseColor} />;
-      case 'handshake': return <Handshake className={baseColor} />;
-      case 'sparkles': return <Sparkles className={baseColor} />;
-      default: return <FolderTree className={baseColor} />;
+      case 'alert-triangle': return <AlertTriangle size={18} className={cls} />;
+      case 'users': return <Users size={18} className={cls} />;
+      case 'message': return <MessageSquare size={18} className={cls} />;
+      case 'handshake': return <Handshake size={18} className={cls} />;
+      case 'sparkles': return <Sparkles size={18} className={cls} />;
+      default: return <FolderTree size={18} className={cls} />;
     }
   };
 
   return (
     <DashboardLayout>
-      <div className="container mx-auto px-4 py-12 md:py-16 max-w-7xl">
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl space-y-8">
         
-        {/* Screen Reader accessible updates */}
-        <div className="sr-only" aria-live="polite">
-          {searchQuery ? `${filteredAndGroupedCommunities.length} topluluk bulundu.` : ''}
-          {selectedGroup !== 'all' ? `${FOCUS_GROUPS.find(g => g.id === selectedGroup)?.label} filtresi uygulandı.` : ''}
-        </div>
+        {/* Breadcrumb */}
+        <nav aria-label="Erişim yolu" className="flex items-center gap-2 text-xs text-slate-400">
+          <Link href="/" className="hover:text-sky-400 transition-colors">Ana Sayfa</Link>
+          <ChevronRight size={14} className="text-slate-600" />
+          <span className="text-slate-200 font-medium">Topluluklar ve Uzmanlık Grupları</span>
+        </nav>
 
-        {/* Dynamic Welcome Tip Banner */}
+        {/* Header Hero */}
+        <header className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-6 sm:p-8 backdrop-blur-md">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-3xl">
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold">
+                <Sparkles size={13} /> Uzmanlık &amp; Akran Dayanışması
+              </div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-100">
+                Topluluklar ve Forum Kategorileri
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-400 font-normal leading-relaxed">
+                Engel gruplarına, hukuki haklara ve erişilebilirlik teknolojilerine özel odaklanmış toplulukları keşfedin, akranlarınızla yardımlaşın.
+              </p>
+            </div>
+            <button 
+              onClick={() => setShowCreateForm(!showCreateForm)}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-500 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition whitespace-nowrap self-start lg:self-auto cursor-pointer"
+              aria-expanded={showCreateForm}
+            >
+              <Plus size={16} className={showCreateForm ? 'rotate-45 transition-transform' : 'transition-transform'} />
+              {showCreateForm ? 'İptal Et' : 'Yeni Topluluk Kur'}
+            </button>
+          </div>
+        </header>
+
+        {/* Create Community Form */}
         <AnimatePresence>
-          {showWelcomeTip && (
-            <motion.div 
+          {showCreateForm && (
+            <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mb-8 p-5 bg-primary/10 border border-primary/20 rounded-2xl relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+              exit={{ opacity: 0, y: -10 }}
             >
-              <div className="flex gap-3 items-center">
-                <span className="text-2xl" role="img" aria-label="Ampul">💡</span>
-                <div className="space-y-1">
-                  <h4 className="text-sm font-black uppercase tracking-wider text-primary">Erişilebilirlik İpucu</h4>
-                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-wide">
-                    İlgi gruplarını filtreleyerek ihtiyacınız olan topluluğa doğrudan erişebilir, &quot;Katıl&quot; butonuyla akışınızı özelleştirebilirsiniz.
-                  </p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setShowWelcomeTip(false)}
-                className="text-xs font-black text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest flex items-center gap-1.5 shrink-0 self-end sm:self-auto"
-                aria-label="İpucu panelini kapat"
+              <form 
+                onSubmit={createCommunity}
+                className="bg-[#111726] border border-white/[0.1] rounded-2xl p-6 sm:p-8 shadow-xl space-y-4"
               >
-                <X size={14} /> Anladım
-              </button>
+                <div className="space-y-1">
+                  <h2 className="text-base font-bold text-slate-100">Yeni Bir Topluluk Kur</h2>
+                  <p className="text-xs text-slate-400">Yeni uzmanlık veya dayanışma grubunuzu başlatın.</p>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label htmlFor="community-name" className="text-xs font-semibold text-slate-300">Topluluk Adı</label>
+                    <input 
+                      id="community-name"
+                      type="text" 
+                      placeholder="Örn: Erişilebilir Oyunlar" 
+                      value={newCommunity.name}
+                      onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
+                      required
+                      className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label htmlFor="community-icon" className="text-xs font-semibold text-slate-300">İkon Seçin</label>
+                    <select 
+                      id="community-icon"
+                      className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none cursor-pointer"
+                      value={newCommunity.icon}
+                      onChange={(e) => setNewCommunity({...newCommunity, icon: e.target.value})}
+                    >
+                      <option value="users">Kullanıcılar (Varsayılan)</option>
+                      <option value="message">Sohbet &amp; Tartışma</option>
+                      <option value="handshake">Dayanışma</option>
+                      <option value="cpu">Erişilebilir Teknoloji</option>
+                      <option value="code">Yazılım &amp; Web</option>
+                      <option value="smile">Sosyal Yaşam</option>
+                      <option value="scale">Hukuk &amp; Haklar</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="community-desc" className="text-xs font-semibold text-slate-300">Topluluk Amacı ve Açıklaması</label>
+                  <textarea 
+                    id="community-desc"
+                    placeholder="Bu topluluğun amacını ve kimlere hitap ettiğini kısaca belirtin..." 
+                    value={newCommunity.description}
+                    onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
+                    required
+                    className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none min-h-[90px]"
+                  />
+                </div>
+                <div className="flex justify-end gap-2.5 pt-2">
+                  <button 
+                    type="button"
+                    onClick={() => setShowCreateForm(false)}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-200 transition-colors"
+                  >
+                    İptal
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={creating}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-500 px-5 py-2 text-xs font-semibold text-white transition-all disabled:opacity-50"
+                  >
+                    {creating ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                    {creating ? 'Oluşturuluyor...' : 'Topluluğu Başlat'}
+                  </button>
+                </div>
+              </form>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Forum Breadcrumb */}
-        <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest mb-6">
-          <Link href="/" className="hover:text-primary transition-colors">ANA SAYFA</Link>
-          <ChevronRight size={14} />
-          <span className="text-foreground font-black">FORUM KATEGORİLERİ & TOPLULUKLAR</span>
-        </div>
+        {/* Filter Tabs & Search Bar */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex flex-wrap gap-1.5 p-1 bg-[#111726]/90 border border-white/[0.08] rounded-xl w-fit">
+              {FOCUS_GROUPS.map((group) => (
+                <button
+                  key={group.id}
+                  onClick={() => setSelectedGroup(group.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all outline-none cursor-pointer ${
+                    selectedGroup === group.id
+                      ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                  }`}
+                  aria-pressed={selectedGroup === group.id}
+                >
+                  <span className="text-xs">{group.icon}</span>
+                  <span>{group.label}</span>
+                </button>
+              ))}
+            </div>
 
-        <header className="mb-12">
-          <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 md:p-14 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 size-80 bg-primary/[0.02] rounded-full translate-x-1/3 -translate-y-1/3 blur-3xl -z-10" />
-            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-              <div className="space-y-4">
-                <p className="text-xs font-black text-primary tracking-widest uppercase">UZMANLIK VE YARDIMLAŞMA GRUPLARI</p>
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-none">Topluluklar</h1>
-                <p className="text-lg md:text-xl text-muted-foreground font-bold uppercase tracking-wide max-w-2xl leading-relaxed">
-                  Bariyersiz paylaşımlar ve kolektif tecrübe edinimi için özelleşmiş alt forumları keşfedin.
-                </p>
-              </div>
-              <button 
-                onClick={() => setShowCreateForm(!showCreateForm)}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 text-xs font-black tracking-widest text-primary-foreground transition-all hover:bg-primary/90 hover:scale-[1.02] active:scale-95 shadow-md shadow-primary/10 self-start lg:self-auto"
-                aria-label="Yeni bir topluluk oluşturma panelini aç"
-                aria-expanded={showCreateForm}
-              >
-                <Plus size={18} className={showCreateForm ? 'rotate-45 transition-transform' : 'transition-transform'} />
-                {showCreateForm ? 'VAZGEÇ' : 'YENİ TOPLULUK KUR'}
-              </button>
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={15} />
+              <input 
+                type="text" 
+                placeholder="Topluluklarda ara..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-3.5 py-2 rounded-xl border border-white/[0.08] bg-[#111726]/80 text-xs text-slate-200 focus:ring-1 focus:ring-sky-500 outline-none placeholder:text-slate-500"
+                aria-label="Topluluk arama kutusu"
+              />
             </div>
           </div>
-        </header>
 
-        {showCreateForm && (
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-12"
-          >
-            <form 
-              onSubmit={createCommunity}
-              className="bg-card border border-border rounded-3xl p-6 sm:p-8 md:p-12 shadow-sm relative overflow-hidden space-y-8"
-            >
-              <div className="absolute top-0 left-0 w-full h-1.5 bg-primary" />
-              <div className="space-y-2">
-                <h2 className="text-2xl font-black text-foreground tracking-tight uppercase">Yeni Bir Topluluk Kur</h2>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Topluluğunuzu başlatın ve üyelerinizi bir araya getirin.</p>
-              </div>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label htmlFor="community-name" className="text-xs font-black uppercase tracking-widest text-foreground">Topluluk Adı</label>
-                  <input 
-                    id="community-name"
-                    type="text" 
-                    placeholder="Örn: Erişilebilir Oyunlar" 
-                    value={newCommunity.name}
-                    onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
-                    required
-                    className="w-full p-4 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary outline-none font-bold text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="community-icon" className="text-xs font-black uppercase tracking-widest text-foreground">İkon Seçin</label>
-                  <select 
-                    id="community-icon"
-                    className="w-full p-4 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary outline-none font-bold text-sm cursor-pointer"
-                    value={newCommunity.icon}
-                    onChange={(e) => setNewCommunity({...newCommunity, icon: e.target.value})}
-                  >
-                    <option value="users">Kullanıcılar (Varsayılan)</option>
-                    <option value="message">Sohbet Mesajı</option>
-                    <option value="handshake">Dayanışma</option>
-                    <option value="cpu">Erişilebilir Teknoloji</option>
-                    <option value="code">Kodlama / Yazılım</option>
-                    <option value="smile">Sosyal Hayat</option>
-                    <option value="scale">Hukuk ve Haklar</option>
-                  </select>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="community-desc" className="text-xs font-black uppercase tracking-widest text-foreground">Topluluk Amacı ve Açıklaması</label>
-                <textarea 
-                  id="community-desc"
-                  placeholder="Bu topluluğun amacını, kurallarını ve kimlere hitap ettiğini detaylıca belirtin..." 
-                  value={newCommunity.description}
-                  onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
-                  required
-                  className="w-full p-4 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary outline-none font-bold text-sm min-h-[140px]"
-                />
-              </div>
-              <div className="flex justify-end gap-4 pt-4">
-                <button 
-                  type="button"
-                  onClick={() => setShowCreateForm(false)}
-                  className="px-6 py-4 rounded-xl text-xs font-black tracking-widest text-muted-foreground hover:bg-muted transition-colors uppercase"
-                >
-                  İPTAL ET
-                </button>
-                <button 
-                  type="submit" 
-                  disabled={creating}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 text-xs font-black tracking-widest text-primary-foreground transition-all hover:bg-primary/90"
-                >
-                  {creating ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                  {creating ? 'KURULUYOR...' : 'TOPLULUĞU BAŞLAT'}
-                </button>
-              </div>
-            </form>
-          </motion.div>
-        )}
-
-        {/* Premium Focus Filter Tabs */}
-        <div className="mb-10 space-y-4">
-          <div className="flex items-center justify-between px-1">
-            <h2 className="text-xs font-black uppercase tracking-widest text-muted-foreground">İlgi Alanına Göre Keşfet</h2>
-            {selectedGroup !== 'all' && (
-              <button 
-                onClick={() => setSelectedGroup('all')}
-                className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest"
-              >
-                Filtreleri Temizle
-              </button>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-2.5">
-            {FOCUS_GROUPS.map((group) => (
-              <button
-                key={group.id}
-                onClick={() => setSelectedGroup(group.id)}
-                className={`px-4 py-3 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2.5 transition-all border outline-none ${
-                  selectedGroup === group.id
-                    ? 'bg-primary text-primary-foreground border-primary shadow-sm shadow-primary/15'
-                    : 'bg-card text-muted-foreground border-border hover:text-foreground hover:border-muted-foreground/30'
-                }`}
-                aria-pressed={selectedGroup === group.id}
-                aria-label={`${group.label} odaklı topluluklar`}
-              >
-                <span>{group.icon}</span>
-                {group.label}
-              </button>
-            ))}
-          </div>
-          <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider pl-1">
+          <p className="text-xs text-slate-400">
             {FOCUS_GROUPS.find(g => g.id === selectedGroup)?.desc}
           </p>
         </div>
 
-        {/* Search Input block */}
-        <div className="relative mb-12 max-w-xl mx-auto">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-          <input 
-            type="text" 
-            placeholder="TOPLULUKLARDA VEYA AÇIKLAMALARDA ARA..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-12 rounded-xl border border-border bg-background pl-12 pr-4 text-xs font-black tracking-widest uppercase outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/50"
-            aria-label="Topluluk arama kutusu"
-          />
-        </div>
-
+        {/* Communities Grid */}
         {loading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className="bg-card border border-border rounded-2xl p-6 h-[220px] flex flex-col justify-between">
-                <div className="space-y-3">
-                  <Skeleton className="h-6 w-3/4 bg-primary/10" />
-                  <Skeleton className="h-4 w-full bg-primary/5" />
-                  <Skeleton className="h-4 w-5/6 bg-primary/5" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 h-[180px] flex flex-col justify-between">
+                <div className="space-y-2">
+                  <Skeleton className="h-5 w-3/4 bg-slate-800" />
+                  <Skeleton className="h-4 w-full bg-slate-850" />
                 </div>
-                <Skeleton className="h-5 w-24 bg-primary/5" />
+                <Skeleton className="h-4 w-24 bg-slate-800" />
               </div>
             ))}
           </div>
+        ) : filteredAndGroupedCommunities.length === 0 ? (
+          <div className="text-center py-16 px-6 bg-[#111726]/60 rounded-2xl border border-dashed border-white/[0.08] max-w-md mx-auto space-y-2">
+            <Users className="mx-auto text-slate-600" size={40} />
+            <h3 className="text-sm font-bold text-slate-200">Topluluk Bulunamadı</h3>
+            <p className="text-xs text-slate-400">
+              Aradığınız kriterlere uygun bir grup bulunamadı. &quot;Yeni Topluluk Kur&quot; butonuyla siz başlatabilirsiniz.
+            </p>
+          </div>
         ) : (
-          (() => {
-            const activeCategories = filteredAndGroupedCommunities;
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredAndGroupedCommunities.map((community) => {
+              const meta = getMeta(community.slug);
+              const isJoined = joinedList.includes(community.id);
 
-            if (activeCategories.length === 0) {
               return (
-                <div className="text-center py-20 px-6 bg-card rounded-3xl border border-dashed border-border max-w-md mx-auto">
-                  <Users className="mx-auto text-muted-foreground/20 mb-4" size={56} />
-                  <h3 className="text-lg font-black mb-1 text-foreground tracking-tight uppercase">Topluluk Bulunamadı</h3>
-                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-wide leading-relaxed">
-                    Aradığınız kriterlere uygun bir grup henüz oluşturulmamış. Yeni bir topluluk başlatabilirsiniz!
-                  </p>
+                <div 
+                  key={community.id}
+                  className="group flex flex-col justify-between bg-[#111726]/80 border border-white/[0.08] hover:border-sky-500/30 rounded-2xl p-5 transition-all shadow-sm backdrop-blur-md"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2.5 bg-sky-500/10 border border-sky-500/20 rounded-xl shrink-0">
+                          {getIcon(community.icon || 'users')}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-semibold text-sky-400">Topluluk</span>
+                            {meta.featured && (
+                              <span className="px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[9px] font-medium flex items-center gap-1">
+                                <Sparkles size={9} /> Öne Çıkan
+                              </span>
+                            )}
+                          </div>
+                          <h3 className="text-sm font-bold text-slate-100 group-hover:text-sky-400 transition-colors">
+                            <Link href={`/discussions?kategori=${community.slug}`}>
+                              {community.name}
+                            </Link>
+                          </h3>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => setActiveRulesCommunity(community)}
+                        className="p-1.5 text-slate-500 hover:text-sky-400 hover:bg-sky-500/10 rounded-lg transition-all shrink-0 cursor-pointer"
+                        aria-label={`${community.name} kurallarını görüntüle`}
+                        title="Topluluk Kuralları"
+                      >
+                        <Info size={15} />
+                      </button>
+                    </div>
+
+                    <p className="text-xs text-slate-400 font-normal leading-relaxed line-clamp-2">
+                      {community.description || 'Açıklama belirtilmemiş.'}
+                    </p>
+
+                    <div className="flex flex-wrap gap-1">
+                      {meta.tags.map((tag, tIdx) => (
+                        <span 
+                          key={tIdx} 
+                          className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-900/60 text-slate-300 border border-white/[0.04]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-3 pt-1 text-[11px] text-slate-400">
+                      <div className="flex items-center gap-1">
+                        <MessageSquare size={12} className="text-slate-500" />
+                        <span>{(community as any).topic_count || 0} Tartışma</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Users size={12} className="text-slate-500" />
+                        <span>{meta.memberCount} Üye</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card Actions */}
+                  <div className="pt-4 border-t border-white/[0.06] mt-4 flex items-center justify-between gap-2">
+                    <button
+                      onClick={(e) => toggleJoin(community.id, community.name, e)}
+                      className={`flex items-center gap-1.5 h-8 px-3 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                        isJoined 
+                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                          : 'bg-slate-900/80 text-slate-300 hover:text-white hover:bg-slate-800 border border-white/[0.06]'
+                      }`}
+                    >
+                      {isJoined ? (
+                        <>
+                          <Check size={12} /> Katıldınız
+                        </>
+                      ) : (
+                        <>
+                          <Plus size={12} /> Katıl
+                        </>
+                      )}
+                    </button>
+
+                    <div className="flex items-center gap-1.5">
+                      <Link 
+                        href={`/discussions/new?kategori=${community.slug}`}
+                        className="flex items-center gap-1 h-8 px-2.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-800 border border-white/[0.06] transition-colors"
+                      >
+                        <Plus size={12} /> Konu Aç
+                      </Link>
+
+                      <Link 
+                        href={`/discussions?kategori=${community.slug}`}
+                        className="flex items-center gap-0.5 text-xs font-semibold text-sky-400 hover:text-sky-300 transition-colors pl-1"
+                      >
+                        <span>İncele</span>
+                        <ChevronRight size={13} />
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               );
-            }
-
-            return (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 auto-rows-fr">
-                {activeCategories.map((community, index) => {
-                  const meta = getMeta(community.slug);
-                  const scheme = getScheme(community.slug);
-                  const isFeatured = meta.featured && selectedGroup === 'all' && !searchQuery;
-                  const isJoined = joinedList.includes(community.id);
-
-                  return (
-                    <motion.div 
-                      key={community.id}
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.03 }}
-                      className={`group relative ${isFeatured ? 'md:col-span-2' : 'col-span-1'}`}
-                    >
-                      <div className={`h-full flex flex-col justify-between bg-card border ${scheme.border} ${scheme.hoverBorder} rounded-3xl p-6 md:p-8 transition-all shadow-sm hover:shadow-md relative overflow-hidden`}>
-                        
-                        {/* Decorative gradient background for aesthetics */}
-                        <div className={`absolute inset-x-0 top-0 h-40 bg-gradient-to-b ${scheme.gradient} -z-10`} />
-
-                        <div>
-                          {/* Card Header */}
-                          <div className="flex items-start justify-between gap-4 mb-5">
-                            <div className="flex items-center gap-4">
-                              <div className={`p-3.5 ${scheme.lightBg} ${scheme.text} rounded-2xl shrink-0 transition-transform group-hover:scale-105`}>
-                                {getIcon(community.icon || 'users', scheme.text)}
-                              </div>
-                              <div>
-                                <div className="flex flex-wrap gap-1.5 items-center">
-                                  <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">TOPLULUK</span>
-                                  {isFeatured && (
-                                    <span className="px-1.5 py-0.5 rounded-md bg-primary/10 text-primary text-[8px] font-black uppercase tracking-widest flex items-center gap-1">
-                                      <Sparkles size={8} /> ÖNE ÇIKAN
-                                    </span>
-                                  )}
-                                </div>
-                                <h3 className="text-lg sm:text-xl font-black tracking-tight text-foreground whitespace-normal break-words leading-tight group-hover:text-primary transition-colors">
-                                  <Link href={`/discussions?kategori=${community.slug}`}>
-                                    {community.name}
-                                  </Link>
-                                </h3>
-                              </div>
-                            </div>
-
-                            {/* Rules and info action */}
-                            <button
-                              onClick={() => setActiveRulesCommunity(community)}
-                              className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-xl transition-all shrink-0"
-                              aria-label={`${community.name} kurallarını görüntüle`}
-                              title="Kurallar ve Rehber"
-                            >
-                              <Info size={16} />
-                            </button>
-                          </div>
-
-                          {/* Description */}
-                          <p className="text-xs md:text-sm text-muted-foreground font-bold uppercase tracking-wide leading-relaxed line-clamp-3 mb-5">
-                            {community.description}
-                          </p>
-
-                          {/* Focus tags */}
-                          <div className="flex flex-wrap gap-1.5 mb-6">
-                            {meta.tags.map((tag, tIdx) => (
-                              <span 
-                                key={tIdx} 
-                                className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${scheme.badgeBg} ${scheme.badgeText}`}
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                          <div className="flex items-center gap-3 mt-4 mb-1">
-                            <div className="flex items-center gap-1.5">
-                              <MessageSquare size={12} className="text-muted-foreground" />
-                              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{(community as any).topic_count || 0} TARTIŞMA</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                              <Users size={12} className="text-muted-foreground" />
-                              <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{meta.memberCount} ÜYE</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Card Footer Actions */}
-                        <div className="pt-4 border-t border-border mt-auto flex flex-wrap items-center justify-between gap-4">
-                          <button
-                            onClick={(e) => toggleJoin(community.id, community.name, e)}
-                            className={`flex items-center gap-1.5 h-10 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                              isJoined 
-                                ? 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20'
-                                : 'bg-muted text-muted-foreground hover:text-primary hover:bg-primary/5 border border-transparent'
-                            }`}
-                            aria-label={`${community.name} grubuna ${isJoined ? 'üyesiniz. Ayrılmak için tıklayın' : 'katılmak için tıklayın'}`}
-                          >
-                            {isJoined ? (
-                              <>
-                                <Check size={12} className="stroke-[3]" /> KATILDINIZ
-                              </>
-                            ) : (
-                              <>
-                                <Plus size={12} className="stroke-[3]" /> KATIL
-                              </>
-                            )}
-                          </button>
-
-                          <div className="flex items-center gap-2">
-                            <Link 
-                              href={`/discussions/new?kategori=${community.slug}`}
-                              className="flex items-center gap-1.5 h-10 px-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-primary border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors"
-                              aria-label={`${community.name} kategorisinde yeni bir konu aç`}
-                            >
-                              <Plus size={12} className="stroke-[3]" /> KONU AÇ
-                            </Link>
-
-                            <Link 
-                              href={`/discussions?kategori=${community.slug}`}
-                              className="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-primary hover:text-primary/80 transition-colors"
-                              aria-label={`${community.name} tartışmalarına gözat`}
-                            >
-                              TARTIŞMALAR <ChevronRight size={14} className="stroke-[3]" />
-                            </Link>
-                          </div>
-                        </div>
-
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            );
-          })()
-        )}
-
-        {/* Inclusive Information guidelines */}
-        <section className="mt-20">
-          <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 md:p-14 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 size-80 bg-primary/[0.01] rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-            <div className="max-w-4xl mx-auto space-y-8">
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-foreground uppercase">Toplumsal Bilginin Gücü: Engelsiz Dayanışma</h2>
-              <p className="text-sm md:text-base text-muted-foreground font-bold uppercase tracking-wide leading-relaxed">
-                EngelsizForum toplulukları sıradan birer kategori başlığı değildir. Her topluluk belirli bir engellilik odağı veya hak arama alanına yönelik kurgulanmış, akran desteğini ve kolektif yardımlaşmayı amaçlayan bağımsız **deneyim odalarıdır**.
-              </p>
-
-              <div className="grid md:grid-cols-2 gap-6 my-10">
-                <div className="space-y-3 p-6 bg-muted/40 rounded-2xl border border-border">
-                  <h3 className="text-base font-black text-foreground uppercase tracking-tight">Akran Dayanışması</h3>
-                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-wide leading-relaxed">
-                    Resmi mevzuatlarda bazen karmaşık görünen süreçler, topluluk üyelerimizin birebir tecrübe aktarımları sayesinde çözüme ulaşır.
-                  </p>
-                </div>
-                <div className="space-y-3 p-6 bg-muted/40 rounded-2xl border border-border">
-                  <h3 className="text-base font-black text-foreground uppercase tracking-tight">Yapay Zeka Yardımı</h3>
-                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-wide leading-relaxed">
-                    Yeterly AI ve Gemini entegrasyonumuz sayesinde, her gruptaki uzun ve detaylı tartışmaların akıcı seslendirmeye uygun özetleri tek tıkla üretilir.
-                  </p>
-                </div>
-              </div>
-            </div>
+            })}
           </div>
-        </section>
+        )}
 
       </div>
 
-      {/* Accessible Rules Overlay / Dialog Modal */}
+      {/* Rules Modal */}
       <AnimatePresence>
         {activeRulesCommunity && (() => {
           const meta = getMeta(activeRulesCommunity.slug);
-          const scheme = getScheme(activeRulesCommunity.slug);
 
           return (
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-background/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
+              className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4"
               role="dialog"
               aria-modal="true"
               aria-labelledby="modal-title"
@@ -909,58 +632,51 @@ export default function CommunitiesPage() {
               }}
             >
               <motion.div 
-                initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 15 }}
-                className="w-full max-w-lg max-h-[85vh] bg-card border border-border rounded-3xl shadow-2xl relative overflow-hidden flex flex-col"
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                className="w-full max-w-md bg-[#111726] border border-white/[0.1] rounded-2xl shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="absolute top-0 left-0 w-full h-1.5 bg-primary z-10" />
-                
-                {/* Header */}
-                <div className="flex items-start justify-between gap-4 p-6 md:p-8 pb-4 border-b border-border/50 shrink-0">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2.5 ${scheme.lightBg} ${scheme.text} rounded-xl shrink-0`}>
-                      {getIcon(activeRulesCommunity.icon || 'users', scheme.text)}
+                <div className="flex items-start justify-between gap-3 p-5 border-b border-white/[0.08]">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 bg-sky-500/10 border border-sky-500/20 rounded-xl text-sky-400">
+                      {getIcon(activeRulesCommunity.icon || 'users')}
                     </div>
                     <div>
-                      <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">TOPLULUK REHBERİ</span>
-                      <h3 id="modal-title" className="text-lg md:text-xl font-black text-foreground uppercase tracking-tight leading-tight">
+                      <span className="text-[10px] font-semibold text-sky-400">Topluluk Rehberi</span>
+                      <h3 id="modal-title" className="text-sm font-bold text-slate-100">
                         {activeRulesCommunity.name} Kuralları
                       </h3>
                     </div>
                   </div>
                   <button 
                     onClick={() => setActiveRulesCommunity(null)}
-                    className="p-2 text-muted-foreground hover:text-foreground rounded-lg hover:bg-muted transition-colors shrink-0"
+                    className="p-1.5 text-slate-400 hover:text-slate-200 rounded-lg hover:bg-slate-800 transition-colors"
                     aria-label="Kapat"
                   >
-                    <X size={18} />
+                    <X size={16} />
                   </button>
                 </div>
 
-                {/* Content */}
-                <div className="overflow-y-auto p-6 md:p-8 py-4 space-y-4 flex-1">
-                  <p className="text-xs text-muted-foreground font-bold uppercase tracking-wide leading-relaxed border-b pb-4">
-                    Bu kurallar, tüm grup üyelerinin güvenliği, bilgi doğruluğu ve kapsayıcı iletişim ortamının korunması için hazırlanmıştır.
+                <div className="p-5 space-y-3.5">
+                  <p className="text-xs text-slate-400 font-normal leading-relaxed">
+                    Bu kurallar üyelerin güvenliği, doğrulanmış mevzuat akışı ve saygılı iletişim ortamı için belirlenmiştir:
                   </p>
                   
-                  <ul className="space-y-4">
+                  <ul className="space-y-2.5">
                     {meta.rules.map((rule, rIdx) => (
-                      <li key={rIdx} className="flex gap-3 items-start">
-                        <span className="text-primary mt-1 text-xs font-black shrink-0">📌</span>
-                        <p className="text-xs md:text-sm text-foreground font-bold uppercase tracking-wide leading-relaxed">
-                          {rule}
-                        </p>
+                      <li key={rIdx} className="flex gap-2.5 items-start text-xs text-slate-300 leading-relaxed">
+                        <span className="text-sky-400 font-bold shrink-0 mt-0.5">•</span>
+                        <span>{rule}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                {/* Footer Action */}
-                <div className="p-6 md:p-8 pt-4 border-t border-border shrink-0 bg-muted/25">
+                <div className="p-4 border-t border-white/[0.08] bg-slate-900/60">
                   <button
                     onClick={() => setActiveRulesCommunity(null)}
-                    className="w-full sm:w-auto px-6 py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-black tracking-widest uppercase rounded-xl transition-colors"
+                    className="w-full py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold rounded-xl transition-colors"
                   >
                     Anladım, Kuralları Kabul Ediyorum
                   </button>

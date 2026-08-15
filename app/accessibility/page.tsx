@@ -3,190 +3,156 @@
 import React from 'react';
 import { SiteLayout } from '@/components/layout/site-layout';
 import { 
-  Award, Accessibility, ShieldCheck, Keyboard, Sparkles, 
-  Eye, MousePointer, Type, Monitor, Smartphone, 
-  CheckCircle2, AlertCircle, MessageSquare, ArrowRight,
-  Zap, Brain, Volume2, Search, Scale
+  ShieldCheck, Accessibility, Keyboard, 
+  Monitor, Sparkles, CheckCircle2, AlertCircle, 
+  MessageSquare, ArrowRight, ChevronRight, Mail,
+  Eye, MousePointer, Type, Smartphone
 } from 'lucide-react';
-import { motion } from 'motion/react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 
 export default function AccessibilityStatementPage() {
   return (
     <SiteLayout>
-      <div className="flex-1 w-full" role="main">
+      <div className="flex-1 w-full bg-[#090A0F] text-slate-100" role="main">
         
         {/* --- HERO SECTION --- */}
-        <section className="relative py-16 md:py-24 overflow-hidden border-b border-border/60 bg-gradient-to-b from-sky-500/5 via-transparent to-transparent">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-3xl mx-auto text-center space-y-6">
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-bold uppercase tracking-wider"
-              >
-                <Award size={14} className="animate-pulse" /> WCAG 2.2 AAA UYUMLULUK
-              </motion.div>
+        <section className="relative py-12 md:py-16 border-b border-white/[0.08] bg-gradient-to-b from-sky-500/[0.04] via-transparent to-transparent">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+            {/* Breadcrumb */}
+            <nav aria-label="Erişim yolu" className="flex items-center gap-2 text-xs text-slate-400 mb-6">
+              <Link href="/" className="hover:text-sky-400 transition-colors">Ana Sayfa</Link>
+              <ChevronRight size={14} className="text-slate-600" />
+              <span className="text-slate-200 font-medium">Erişilebilirlik Beyannamesi</span>
+            </nav>
+
+            <div className="max-w-3xl space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold">
+                <ShieldCheck size={14} /> WCAG 2.2 Seviye AA / AAA Uyumluluk
+              </div>
               
-              <motion.h1 
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15]"
-              >
-                Erişilebilirlik <br />
-                <span className="text-sky-400">Taahhüdümüz.</span>
-              </motion.h1>
+              <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight text-slate-100 leading-[1.2]">
+                Erişilebilirlik Beyannamesi &amp; <br className="hidden sm:inline" />
+                <span className="text-sky-400">Dijital Eşitlik Standartlarımız.</span>
+              </h1>
               
-              <motion.p 
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-base sm:text-lg text-muted-foreground font-normal leading-relaxed max-w-2xl mx-auto"
-              >
-                EngelsizForum, sadece bir forum değil; her bireyin bilgiye eşit, bağımsız ve konforlu bir şekilde ulaşabildiği dijital bir dayanışma platformudur.
-              </motion.p>
+              <p className="text-sm sm:text-base text-slate-400 font-normal leading-relaxed max-w-2xl">
+                EngelsizForum, her bireyin bilgiye, mevzuata ve topluluk dayanışmasına bağımsız ve engelsiz biçimde ulaşmasını en temel hak kabul eder. Tüm arayüz W3C WAI standartlarına göre optimize edilmiştir.
+              </p>
             </div>
           </div>
         </section>
 
         {/* --- CORE STANDARDS GRID --- */}
-        <section className="py-16 bg-muted/20">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <section className="py-12 md:py-16 border-b border-white/[0.08]">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {[
                 { 
-                  icon: <ShieldCheck className="w-6 h-6" />, 
-                  title: 'DÜZEY AA / AAA', 
-                  text: 'Tüm temel alanlarda WCAG 2.2 AA uyumluluk kriterlerini karşılıyor, AAA seviyesini hedefliyoruz.',
-                  tag: 'STANDART'
+                  icon: <ShieldCheck className="w-6 h-6 text-sky-400" />, 
+                  title: 'Düzey AA & AAA Kriterleri', 
+                  desc: 'Metin kontrastları, odak halkaları ve dokunmatik hedef boyutları en güncel WCAG 2.2 kılavuzuna göre test edilmiştir.',
+                  tag: 'Standart'
                 },
                 { 
-                  icon: <Accessibility className="w-6 h-6" />, 
-                  title: 'EKRAN OKUYUCULAR', 
-                  text: 'VoiceOver, NVDA ve JAWS ile test edilmiş semantik HTML ve ARIA etiketleri ile tam uyum.',
-                  tag: 'TEKNOLOJİ'
+                  icon: <Accessibility className="w-6 h-6 text-sky-400" />, 
+                  title: 'Ekran Okuyucu Uyumu', 
+                  desc: 'NVDA, JAWS ve VoiceOver için tam semantik başlık ağacı (H1-H4), ARIA etiketleri ve canlı bildirim bölgeleri.',
+                  tag: 'Teknoloji'
                 },
                 { 
-                  icon: <Keyboard className="w-6 h-6" />, 
-                  title: 'KLAVYE GEZİNTİSİ', 
-                  text: 'Mouse kullanmadan, sadece Tab tuşuyla tüm kontrollere ve sayfalara hızlı ve mantıksal erişim.',
-                  tag: 'NAVİGASYON'
+                  icon: <Keyboard className="w-6 h-6 text-sky-400" />, 
+                  title: 'Klavye ile Tam Gezinim', 
+                  desc: 'Mouse olmadan, yalnızca Tab, Shift+Tab ve yön tuşlarıyla menüler, formlar ve tartışmalar arasında akıcı gezinme.',
+                  tag: 'Navigasyon'
                 }
               ].map((item, idx) => (
-                <motion.div 
-                  key={item.title}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="bg-card border border-border/80 rounded-2xl p-8 shadow-xs hover:border-sky-500/40 transition-all group"
+                <div 
+                  key={idx}
+                  className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-6 backdrop-blur-md shadow-sm hover:border-sky-500/30 transition-all flex flex-col justify-between"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 mb-6 group-hover:scale-105 transition-transform">
-                    {item.icon}
+                  <div className="space-y-4">
+                    <div className="w-11 h-11 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center">
+                      {item.icon}
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-semibold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-md">
+                        {item.tag}
+                      </span>
+                      <h3 className="text-base font-bold text-slate-100 mt-2">{item.title}</h3>
+                    </div>
+                    <p className="text-xs sm:text-sm text-slate-400 font-normal leading-relaxed">
+                      {item.desc}
+                    </p>
                   </div>
-                  <div className="text-[10px] font-bold text-sky-400 uppercase tracking-wider mb-2">{item.tag}</div>
-                  <h3 className="text-xl font-bold text-foreground tracking-tight mb-3">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground font-normal leading-relaxed">
-                    {item.text}
-                  </p>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* --- DETAILED FEATURES BENTO --- */}
-        <section className="py-16 border-y border-border/60">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-            <div className="flex flex-col lg:flex-row gap-12 items-center">
-              <div className="lg:w-1/2 space-y-6">
-                <div className="space-y-3">
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">Teknik Özellikler</h2>
-                  <p className="text-base text-muted-foreground font-normal leading-relaxed">
-                    Platformumuzun her satır kodu, yardımcı teknolojilerin en verimli şekilde çalışabilmesi için optimize edilmiştir.
-                  </p>
-                </div>
+        {/* --- DETAILED TECHNICAL SPECIFICATIONS --- */}
+        <section className="py-12 md:py-16 border-b border-white/[0.08]">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl space-y-10">
+            <div className="max-w-2xl space-y-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">Teknik Erişilebilirlik Önlemleri</h2>
+              <p className="text-xs sm:text-sm text-slate-400 font-normal">
+                Platform kod mimarisinde tavizsiz uyguladığımız temel teknik özellikler:
+              </p>
+            </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    { title: 'Semantik HTML5', icon: <Monitor className="w-5 h-5" /> },
-                    { title: 'ARIA Roller', icon: <Zap className="w-5 h-5" /> },
-                    { title: 'Odak Belirteçleri', icon: <MousePointer className="w-5 h-5" /> },
-                    { title: 'Alternatif Metinler', icon: <Eye className="w-5 h-5" /> },
-                    { title: 'Esnek Yazı Tipleri', icon: <Type className="w-5 h-5" /> },
-                    { title: 'Mobil Uyumluluk', icon: <Smartphone className="w-5 h-5" /> }
-                  ].map((feat, i) => (
-                    <div key={i} className="flex items-center gap-3.5 p-4 bg-card border border-border/80 rounded-xl shadow-xs hover:border-sky-500/30 transition-all group">
-                      <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-muted-foreground group-hover:text-sky-400 group-hover:bg-sky-500/10 transition-colors">
-                        {feat.icon}
-                      </div>
-                      <span className="font-bold text-foreground text-xs uppercase tracking-wider">{feat.title}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { title: 'Semantik HTML5 Yapısı', desc: 'main, nav, article ve header etiketleriyle net içerik hiyerarşisi.', icon: <Monitor className="w-5 h-5 text-sky-400" /> },
+                { title: 'WAI-ARIA Nitelikleri', desc: 'aria-expanded, aria-controls ve role bildirimleri ile dinamik durum aktarımı.', icon: <Sparkles className="w-5 h-5 text-sky-400" /> },
+                { title: 'Belirgin Odak Halkaları', desc: 'Klavye kullanırken görünür ve yüksek kontrastlı focus-visible göstergeleri.', icon: <MousePointer className="w-5 h-5 text-sky-400" /> },
+                { title: 'Açıklayıcı Alternatif Metinler', desc: 'Tüm simgeler ve görseller için ekran okuyucu uyumlu alt etiketleri.', icon: <Eye className="w-5 h-5 text-sky-400" /> },
+                { title: 'Okunabilir ve Ayarlanabilir Font', desc: 'Disleksi dostu font seçenekleri ve dinamik metin boyutu ölçeklemesi.', icon: <Type className="w-5 h-5 text-sky-400" /> },
+                { title: 'Sıfır Yatay Kaydırma (Responsive)', desc: 'Ekran büyüteçleri ve mobil cihazlarda yatay taşma yapmayan esnek ızgara düzeni.', icon: <Smartphone className="w-5 h-5 text-sky-400" /> }
+              ].map((feat, i) => (
+                <div key={i} className="p-4 rounded-2xl bg-[#111726]/80 border border-white/[0.08] backdrop-blur-md space-y-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-slate-900/60 border border-white/[0.06] flex items-center justify-center shrink-0">
+                      {feat.icon}
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="lg:w-1/2 relative w-full">
-                <div className="bg-card border border-border/80 text-foreground rounded-2xl p-8 md:p-10 shadow-xs relative overflow-hidden space-y-6">
-                  <div className="space-y-4">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-sky-500/10 text-sky-400 text-[10px] font-bold uppercase tracking-wider border border-sky-500/20">
-                      <Brain size={13} /> AI DESTEKLİ ERİŞİLEBİLİRLİK
-                    </div>
-                    <h3 className="text-2xl font-extrabold tracking-tight">Akıllı Adaptasyon</h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
-                      Yapay zeka araçlarımız platformdaki içerikleri analiz ederek karmaşık mevzuat maddelerini ve terimleri sadeleştirir.
-                    </p>
-                    <ul className="space-y-3 pt-2">
-                      {[
-                        'Otomatik Metin Özetleme & Sade Dil',
-                        'Bilişsel Yükü Azaltan Modlar (Disleksi, Biyonik)',
-                        'Yüksek Kontrast & Dinamik Boyutlandırma'
-                      ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-2.5 text-xs font-bold text-foreground">
-                          <CheckCircle2 className="text-sky-400 w-4 h-4 shrink-0" /> {item}
-                        </li>
-                      ))}
-                    </ul>
+                    <h3 className="font-semibold text-xs text-slate-200">{feat.title}</h3>
                   </div>
+                  <p className="text-xs text-slate-400 leading-relaxed font-normal">{feat.desc}</p>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* --- ASSISTIVE TECH TABLE --- */}
-        <section className="py-16 container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto space-y-8">
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">Desteklenen Yardımcı Teknolojiler</h2>
-              <p className="text-xs sm:text-sm text-muted-foreground font-normal">Platformumuz aşağıdaki araçlarla en yüksek performansta çalışacak şekilde kodlanmıştır.</p>
+        <section className="py-12 md:py-16 border-b border-white/[0.08]">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl space-y-6">
+            <div className="space-y-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">Test Edilen Yardımcı Teknolojiler</h2>
+              <p className="text-xs sm:text-sm text-slate-400 font-normal">EngelsizForum aşağıdaki işletim sistemleri ve ekran okuyucu araçlarıyla periyodik olarak doğrulanır.</p>
             </div>
 
-            <div className="overflow-x-auto border border-border/80 rounded-2xl shadow-xs bg-card">
+            <div className="overflow-x-auto border border-white/[0.08] rounded-2xl bg-[#111726]/80 backdrop-blur-md shadow-sm">
               <table className="w-full text-left border-collapse min-w-[500px]">
-                <thead className="bg-muted/40">
+                <thead className="bg-slate-900/60 border-b border-white/[0.06]">
                   <tr>
-                    <th className="p-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/60">PLATFORM</th>
-                    <th className="p-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/60">YARDIMCI ARAÇ</th>
-                    <th className="p-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/60 text-right">DURUM</th>
+                    <th className="px-5 py-3.5 text-xs font-semibold text-slate-400">İşletim Sistemi / Platform</th>
+                    <th className="px-5 py-3.5 text-xs font-semibold text-slate-400">Yardımcı Araç</th>
+                    <th className="px-5 py-3.5 text-xs font-semibold text-slate-400 text-right">Uyumluluk Durumu</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/60">
+                <tbody className="divide-y divide-white/[0.04]">
                   {[
-                    { plat: 'Windows', tool: 'NVDA & JAWS', status: 'Tam Uyumlu' },
-                    { plat: 'macOS / iOS', tool: 'VoiceOver', status: 'Tam Uyumlu' },
-                    { plat: 'Android', tool: 'TalkBack', status: 'Tam Uyumlu' },
-                    { plat: 'Tüm Tarayıcılar', tool: 'Ekran Büyüteçleri', status: 'Optimize Edildi' }
+                    { plat: 'Windows 10 / 11', tool: 'NVDA & JAWS Son Sürümler', status: 'Tam Uyumlu (Seviye AAA)' },
+                    { plat: 'macOS & iOS', tool: 'Apple VoiceOver & Safari', status: 'Tam Uyumlu' },
+                    { plat: 'Android', tool: 'Google TalkBack & Chrome', status: 'Tam Uyumlu' },
+                    { plat: 'Tüm Modern Tarayıcılar', tool: 'Tarayıcı Büyüteçleri (%200-%400 Yakınlaştırma)', status: 'Optimize Edildi' }
                   ].map((row, i) => (
-                    <tr key={i} className="hover:bg-muted/30 transition-colors">
-                      <td className="p-4 text-xs font-bold text-foreground uppercase tracking-wide">{row.plat}</td>
-                      <td className="p-4 text-xs font-medium text-muted-foreground">{row.tool}</td>
-                      <td className="p-4 text-right">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-md text-[10px] font-bold uppercase tracking-wider border border-emerald-500/20">
-                          {row.status}
+                    <tr key={i} className="hover:bg-slate-900/40 transition-colors">
+                      <td className="px-5 py-3.5 text-xs font-semibold text-slate-200">{row.plat}</td>
+                      <td className="px-5 py-3.5 text-xs font-medium text-slate-400">{row.tool}</td>
+                      <td className="px-5 py-3.5 text-right">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-md text-[11px] font-medium border border-emerald-500/20">
+                          <CheckCircle2 size={12} /> {row.status}
                         </span>
                       </td>
                     </tr>
@@ -198,40 +164,36 @@ export default function AccessibilityStatementPage() {
         </section>
 
         {/* --- FEEDBACK SECTION --- */}
-        <section className="py-16 bg-muted/20 border-t border-border/60">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto bg-card border border-border/80 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center">
-              <div className="flex-1 space-y-4">
-                <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
-                  <MessageSquare size={24} />
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+            <div className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-6 sm:p-10 backdrop-blur-md flex flex-col md:flex-row gap-8 items-center justify-between">
+              <div className="space-y-3 max-w-xl">
+                <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                  <MessageSquare size={20} />
                 </div>
-                <div className="space-y-2">
-                  <h2 className="text-2xl font-extrabold text-foreground tracking-tight">Geri Bildiriminiz Değerlidir</h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
-                    Erişilebilirlik yolculuğumuz asla bitmiyor. Eğer bir engelle karşılaşırsanız, lütfen bize bildirin. Geri bildirimlerinizi öncelikli olarak inceliyoruz.
-                  </p>
-                </div>
-                <div className="p-4 bg-muted/40 rounded-xl border border-border/60 space-y-1">
-                  <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">İLETİŞİM E-POSTA</div>
-                  <a href="mailto:miracbirben@engelsizforum.com" className="text-sm font-bold text-sky-400 hover:underline">miracbirben@engelsizforum.com</a>
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">Erişilebilirlik Geri Bildirimi</h2>
+                <p className="text-xs sm:text-sm text-slate-400 font-normal leading-relaxed">
+                  Platformumuzda herhangi bir erişilebilirlik engeliyle karşılaşırsanız veya bir öneriniz olursa lütfen bize iletin. Tüm bildirimler öncelikle değerlendirilir.
+                </p>
+                <div className="flex items-center gap-2 pt-1 text-xs text-sky-400 font-medium">
+                  <Mail size={14} />
+                  <a href="mailto:miracbirben@engelsizforum.com" className="hover:underline">miracbirben@engelsizforum.com</a>
                 </div>
               </div>
-              <div className="flex-1 space-y-4 w-full">
-                 <div className="bg-sky-500/5 border border-sky-500/20 rounded-xl p-5 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <AlertCircle className="text-sky-400 w-4 h-4 shrink-0" />
-                      <span className="font-bold text-foreground text-xs uppercase tracking-wider">Hata Bildirim Süreci</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground font-normal leading-relaxed">
-                      Bildirilen her erişilebilirlik sorunu, teknik ekibimiz tarafından 48 saat içerisinde incelenir ve düzeltme planına dahil edilir.
-                    </p>
-                 </div>
-                 <Link 
-                    href="/discussions" 
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 hover:bg-sky-400 px-6 py-3 text-xs font-bold text-white transition uppercase tracking-wider shadow-xs"
-                  >
-                    Forum Tartışmalarına Dön <ArrowRight size={14} />
-                 </Link>
+
+              <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">
+                <Link 
+                  href="/accessibility-settings" 
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-500 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition whitespace-nowrap"
+                >
+                  Erişilebilirlik Ayarlarını Aç
+                </Link>
+                <Link 
+                  href="/" 
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/[0.08] px-5 py-2.5 text-xs font-semibold text-slate-200 transition whitespace-nowrap"
+                >
+                  Ana Sayfaya Dön
+                </Link>
               </div>
             </div>
           </div>

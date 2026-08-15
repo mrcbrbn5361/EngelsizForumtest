@@ -1,19 +1,19 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, use } from 'react';
-import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
 import { 
-  User, Mail, Shield, Award, Sparkles, Zap, Flame, Star, 
+  User, Award, Sparkles, Zap, Flame, Star, 
   MessageSquare, BookOpen, Heart, Calendar, Loader2, ArrowLeft, Clock,
-  Plus, Edit, Camera, X, Check
+  Plus, Edit, X
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { cn } from '@/lib/utils';
 import { UserAvatar } from '@/components/ui/user-avatar';
+import { toast } from 'sonner';
 
 interface Badge {
   id: string;
@@ -78,7 +78,6 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
         if (error) throw error;
         if (data) {
-          // Fetch real follow counts if they might be inaccurate in profile row
           const { count: followers } = await supabase
             .from('follows')
             .select('*', { count: 'exact', head: true })
@@ -139,9 +138,10 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       } : null);
       
       setIsEditing(false);
+      toast.success('Profil başarıyla güncellendi.');
     } catch (err) {
       console.error('Error updating profile:', err);
-      alert('Profil güncellenirken bir hata oluştu.');
+      toast.error('Profil güncellenirken bir hata oluştu.');
     } finally {
       setUpdateLoading(false);
     }
@@ -183,6 +183,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
         if (error) throw error;
         setIsFollowing(false);
         setProfile(prev => prev ? { ...prev, followers_count: Math.max(0, prev.followers_count - 1) } : null);
+        toast.success('Takip bırakıldı.');
       } else {
         const { error } = await supabase
           .from('follows')
@@ -194,8 +195,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
         if (error) throw error;
         setIsFollowing(true);
         setProfile(prev => prev ? { ...prev, followers_count: prev.followers_count + 1 } : null);
+        toast.success('Kullanıcı takip ediliyor.');
 
-        // Send notification safely
         try {
           await supabase.from('notifications').insert({
             recipient_id: userId,
@@ -212,6 +213,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       }
     } catch (err) {
       console.error('Error toggling follow:', err);
+      toast.error('İşlem başarısız oldu.');
     } finally {
       setFollowLoading(false);
     }
@@ -223,7 +225,6 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       setLoadingContent(true);
 
       try {
-        // 1. Fetch Opened Topics
         const { data: opened, error: openedErr } = await supabase
           .from('topics')
           .select(`
@@ -238,7 +239,6 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
           setOpenedTopics(opened);
         }
 
-        // 2. Fetch Replied Topics (Unique Topics from user's comments)
         const { data: commentsData, error: commentsErr } = await supabase
           .from('comments')
           .select(`
@@ -261,7 +261,6 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
           setRepliedTopics(Array.from(uniqueTopicsMap.values()));
         }
 
-        // 3. Fetch Liked Topics (Unique Topics from user's reactions of type 'like')
         const { data: reactionsData, error: reactionsErr } = await supabase
           .from('reactions')
           .select(`
@@ -302,8 +301,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       name: 'İlk Adım',
       description: 'EngelsizForum topluluğuna katıldınız.',
       requirement: 'Hesap oluşturun',
-      icon: <Sparkles className="size-6" />,
-      color: 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
+      icon: <Sparkles className="size-5" />,
+      color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
       unlockedAtXp: 0
     },
     {
@@ -311,8 +310,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       name: 'Aktif Katılımcı',
       description: 'Topluluk tartışmalarına katılarak fikirlerinizi paylaştınız.',
       requirement: '100 XP Barajı',
-      icon: <Flame className="size-6" />,
-      color: 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30',
+      icon: <Flame className="size-5" />,
+      color: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
       unlockedAtXp: 100
     },
     {
@@ -320,8 +319,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       name: 'Erişilebilirlik Elçisi',
       description: 'Disleksi font, biyonik okuma ve yüksek kontrast özellikleri kullandınız.',
       requirement: '300 XP Barajı',
-      icon: <Award className="size-6" />,
-      color: 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border-indigo-500/30',
+      icon: <Award className="size-5" />,
+      color: 'bg-sky-500/10 text-sky-400 border-sky-500/20',
       unlockedAtXp: 300
     },
     {
@@ -329,8 +328,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       name: 'Kapsayıcı Lider',
       description: 'Sistemdeki diğer kullanıcılara çözüm sunup en iyi cevap işaretlendiniz.',
       requirement: '500 XP Barajı',
-      icon: <Star className="size-6" />,
-      color: 'bg-violet-500/15 text-violet-600 dark:text-violet-400 border-violet-500/30',
+      icon: <Star className="size-5" />,
+      color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
       unlockedAtXp: 500
     }
   ], []);
@@ -349,24 +348,23 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     
-    // Within last 10 minutes -> Online
     if (diffMs < 10 * 60 * 1000) {
       return 'Şu an aktif';
     }
     
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
     if (diffMinutes < 60) {
-      return `${diffMinutes} dakika önce aktifti`;
+      return `${diffMinutes} dakika önce`;
     }
     
     const diffHours = Math.floor(diffMinutes / 60);
     if (diffHours < 24) {
-      return `${diffHours} saat önce aktifti`;
+      return `${diffHours} saat önce`;
     }
     
     const diffDays = Math.floor(diffHours / 24);
-    if (diffDays === 1) return 'Dün aktifti';
-    return `${diffDays} gün önce aktifti`;
+    if (diffDays === 1) return 'Dün';
+    return `${diffDays} gün önce`;
   }
 
   const isOnline = useMemo(() => {
@@ -378,122 +376,126 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className="flex h-[60vh] w-full flex-col items-center justify-center gap-4">
-          <Loader2 className="animate-spin text-primary size-10" />
-          <p className="text-sm font-bold uppercase tracking-widest text-muted-foreground animate-pulse">
-            Profil Yükleniyor...
-          </p>
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center py-32 gap-3">
+          <Loader2 className="animate-spin text-sky-400 size-8" />
+          <p className="text-xs font-semibold text-slate-400">Profil yükleniyor...</p>
         </div>
-      </DashboardLayout>
+        <Footer />
+      </div>
     );
   }
 
   if (!profile) {
     return (
-      <DashboardLayout>
-        <div className="flex h-[50vh] w-full flex-col items-center justify-center gap-6 text-center">
-          <div className="p-4 bg-red-500/10 text-red-500 rounded-full">
-            <User size={48} />
-          </div>
-          <div className="space-y-2">
-            <h1 className="text-2xl font-black uppercase tracking-widest">Kullanıcı Bulunamadı</h1>
-            <p className="text-muted-foreground font-semibold max-w-md">
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center py-24 text-center px-4">
+          <div className="bg-[#111726]/80 p-8 rounded-2xl border border-white/[0.08] max-w-md w-full space-y-4">
+            <div className="size-12 bg-rose-500/10 text-rose-400 rounded-xl flex items-center justify-center mx-auto border border-rose-500/20">
+              <User size={24} />
+            </div>
+            <h1 className="text-lg font-bold text-slate-100">Kullanıcı Bulunamadı</h1>
+            <p className="text-slate-400 text-xs leading-relaxed">
               Aradığınız profil mevcut değil veya silinmiş olabilir.
             </p>
+            <Link 
+              href="/" 
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-colors"
+            >
+              <ArrowLeft size={13} /> Ana Sayfaya Dön
+            </Link>
           </div>
-          <Link href="/" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm">
-            <ArrowLeft size={14} /> Ana Sayfaya Dön
-          </Link>
         </div>
-      </DashboardLayout>
+        <Footer />
+      </div>
     );
   }
 
   return (
-    <DashboardLayout>
+    <div className="min-h-screen flex flex-col bg-background">
+      <Navbar />
+
       {/* Edit Profile Modal */}
       {isEditing && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div 
             onClick={() => setIsEditing(false)}
-            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/70 backdrop-blur-xs"
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="w-full max-w-lg bg-card border border-border/80 rounded-2xl shadow-2xl overflow-hidden relative z-10 p-6 sm:p-8"
+            className="w-full max-w-md bg-[#111726] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden relative z-10 p-6 space-y-4"
           >
-            <div className="flex items-center justify-between mb-6 pb-3 border-b border-border/60">
-              <h2 className="text-lg font-bold text-foreground">Profili Düzenle</h2>
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+              <h2 className="text-base font-bold text-slate-100">Profili Düzenle</h2>
               <button 
                 onClick={() => setIsEditing(false)}
-                className="p-1.5 hover:bg-muted/60 text-muted-foreground hover:text-foreground rounded-lg transition-colors cursor-pointer"
+                className="p-1 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-lg transition-colors cursor-pointer"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
             </div>
 
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Ad Soyad</label>
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-300">Ad Soyad</label>
                 <input
                   type="text"
                   value={editForm.full_name}
                   onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
-                  className="vibe-input"
+                  className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                   placeholder="Adınız Soyadınız"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Kullanıcı Adı</label>
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-300">Kullanıcı Adı</label>
                 <input
                   type="text"
                   value={editForm.username}
                   onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
-                  className="vibe-input"
+                  className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                   placeholder="kullaniciadi"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Biyografi</label>
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-300">Biyografi</label>
                 <textarea
                   value={editForm.bio}
                   onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                  className="vibe-input h-24 p-3 resize-none text-sm"
-                  placeholder="Kendinizden ve ilgi alanlarınızdan bahsedin..."
+                  className="w-full h-20 p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none resize-none"
+                  placeholder="Kendinizden bahsedin..."
                   maxLength={160}
                 />
-                <div className="text-[11px] text-right text-muted-foreground font-mono">{editForm.bio.length}/160</div>
+                <div className="text-[10px] text-right text-slate-500 font-mono">{editForm.bio.length}/160</div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Avatar URL</label>
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-300">Avatar URL</label>
                 <input
                   type="text"
                   value={editForm.avatar_url}
                   onChange={(e) => setEditForm({ ...editForm, avatar_url: e.target.value })}
-                  className="vibe-input"
+                  className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                   placeholder="https://..."
                 />
               </div>
 
-              <div className="flex gap-3 pt-3">
+              <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="flex-1 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer"
+                  className="flex-1 py-2 rounded-xl font-semibold text-xs bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors cursor-pointer"
                 >
                   İptal
                 </button>
                 <button
                   onClick={handleUpdateProfile}
                   disabled={updateLoading}
-                  className="flex-1 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-sky-500 hover:bg-sky-400 text-white transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                  className="flex-1 py-2 rounded-xl font-semibold text-xs bg-sky-600 hover:bg-sky-500 text-white transition-colors cursor-pointer disabled:opacity-50"
                 >
                   {updateLoading ? <Loader2 className="animate-spin mx-auto size-4" /> : "Kaydet"}
                 </button>
@@ -503,83 +505,84 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
         </div>
       )}
 
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-10 space-y-6 min-w-0">
+      <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-7xl space-y-6">
         <div>
-          <Link href="/" className="inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-sky-400 transition-colors uppercase tracking-wider">
-            <ArrowLeft size={14} /> Tartışmalara Geri Dön
+          <Link href="/" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-sky-400 transition-colors">
+            <ArrowLeft size={13} /> Tartışmalara Geri Dön
           </Link>
         </div>
 
-        {/* Profile Header Card */}
-        <div className="flex flex-col 2xl:grid 2xl:grid-cols-[1fr_320px] gap-6 w-full min-w-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          <div className="space-y-6 min-w-0 w-full">
-            <header className="bg-card border border-border/80 rounded-2xl overflow-hidden shadow-xs">
-              <div className="p-5 sm:p-7 md:p-8 flex flex-col md:flex-row items-center gap-5 sm:gap-6 text-center md:text-left">
+          {/* Main User Profile & Tabs (8 cols) */}
+          <div className="lg:col-span-8 space-y-6 min-w-0">
+            
+            {/* Header Box */}
+            <header className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl overflow-hidden backdrop-blur-md">
+              <div className="p-6 sm:p-7 flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
                 
-                {/* Avatar */}
                 <UserAvatar 
                   src={profile.avatar_url}
                   username={profile.username}
                   name={profile.full_name}
                   size="xl"
-                  className="size-20 sm:size-24 rounded-2xl border-2 border-sky-500/20 shadow-sm shrink-0"
+                  className="size-20 rounded-2xl border border-sky-500/30 shrink-0"
                   badge={
                     isOnline && (
-                      <span className="absolute bottom-1 right-1 size-3.5 rounded-full bg-emerald-400 border-2 border-background animate-pulse" title="Çevrimiçi" />
+                      <span className="absolute bottom-0 right-0 size-3 rounded-full bg-emerald-400 border-2 border-[#111726]" title="Çevrimiçi" />
                     )
                   }
                 />
 
-                <div className="space-y-2.5 min-w-0 flex-1 w-full">
+                <div className="space-y-2 min-w-0 flex-1 w-full">
                   <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
-                    <span className="px-2.5 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
-                      {profile.role.toUpperCase()}
+                    <span className="px-2 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-semibold rounded-md">
+                      {profile.role === 'admin' ? 'Yönetici' : profile.role === 'moderator' ? 'Moderatör' : 'Üye'}
                     </span>
-                    <span className="px-2.5 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg flex items-center gap-1">
-                      <Zap size={10} className="fill-current" /> SEVİYE {userLevel}
+                    <span className="px-2 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-semibold rounded-md flex items-center gap-1">
+                      <Zap size={10} className="fill-current" /> Seviye {userLevel}
                     </span>
                     {isOnline ? (
-                      <span className="px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
-                        ÇEVRİMİÇİ
+                      <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold rounded-md">
+                        Çevrimiçi
                       </span>
                     ) : (
-                      <span className="px-2.5 py-0.5 bg-muted/60 text-muted-foreground text-[10px] font-bold uppercase tracking-wider rounded-lg">
-                        ÇEVRİMDIŞI
+                      <span className="px-2 py-0.5 bg-slate-800 text-slate-400 text-[10px] font-semibold rounded-md border border-white/[0.06]">
+                        Çevrimdışı
                       </span>
                     )}
                   </div>
 
-                  <h2 className="text-xl sm:text-2xl font-black tracking-tight text-foreground truncate max-w-full">
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-100 truncate">
                     {profile.full_name || profile.username || 'Engelsiz Kullanıcı'}
                   </h2>
                   
                   {profile.bio && (
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                    <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-2xl">
                       {profile.bio}
                     </p>
                   )}
 
-                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs font-semibold text-muted-foreground">
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs text-slate-400">
                     <span className="text-sky-400 font-mono">@{profile.username || 'isimsiz'}</span>
-                    <span className="text-muted-foreground/40">•</span>
-                    <span className="text-foreground">{profile.followers_count || 0} Takipçi</span>
-                    <span className="text-muted-foreground/40">•</span>
-                    <span className="text-foreground">{profile.following_count || 0} Takip</span>
+                    <span className="text-slate-600">•</span>
+                    <span className="text-slate-300">{profile.followers_count || 0} Takipçi</span>
+                    <span className="text-slate-600">•</span>
+                    <span className="text-slate-300">{profile.following_count || 0} Takip</span>
                   </div>
 
-                  <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 pt-2 w-full">
-                    <div className="px-3 py-1.5 bg-muted/20 border border-border/60 rounded-xl text-center md:text-left">
-                      <div className="text-sm font-bold text-foreground font-mono">{openedTopics.length}</div>
-                      <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Konu</div>
+                  <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 pt-1 w-full">
+                    <div className="px-3 py-1.5 bg-slate-900/60 border border-white/[0.06] rounded-xl text-center md:text-left">
+                      <div className="text-xs font-bold text-slate-200 font-mono">{openedTopics.length}</div>
+                      <div className="text-[9px] text-slate-400">Konu</div>
                     </div>
-                    <div className="px-3 py-1.5 bg-muted/20 border border-border/60 rounded-xl text-center md:text-left">
-                      <div className="text-sm font-bold text-foreground font-mono">{repliedTopics.length}</div>
-                      <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Yanıt</div>
+                    <div className="px-3 py-1.5 bg-slate-900/60 border border-white/[0.06] rounded-xl text-center md:text-left">
+                      <div className="text-xs font-bold text-slate-200 font-mono">{repliedTopics.length}</div>
+                      <div className="text-[9px] text-slate-400">Yanıt</div>
                     </div>
-                    <div className="px-3 py-1.5 bg-muted/20 border border-border/60 rounded-xl text-center md:text-left">
-                      <div className="text-sm font-bold text-foreground font-mono">{likedTopics.length}</div>
-                      <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Beğeni</div>
+                    <div className="px-3 py-1.5 bg-slate-900/60 border border-white/[0.06] rounded-xl text-center md:text-left">
+                      <div className="text-xs font-bold text-slate-200 font-mono">{likedTopics.length}</div>
+                      <div className="text-[9px] text-slate-400">Beğeni</div>
                     </div>
                   </div>
 
@@ -588,20 +591,19 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                       <button
                         onClick={handleFollowToggle}
                         disabled={followLoading}
-                        className={cn(
-                          "h-9 px-5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 w-full sm:w-auto cursor-pointer",
+                        className={`h-8 px-4 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                           isFollowing 
-                            ? "bg-muted/60 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-400 border border-border/80" 
-                            : "bg-sky-500 hover:bg-sky-400 text-white shadow-sm"
-                        )}
+                            ? 'bg-slate-800 text-slate-300 hover:bg-rose-500/10 hover:text-rose-400 border border-white/[0.06]' 
+                            : 'bg-sky-600 hover:bg-sky-500 text-white'
+                        }`}
                       >
                         {followLoading ? (
-                          <Loader2 size={14} className="animate-spin" />
+                          <Loader2 size={13} className="animate-spin" />
                         ) : isFollowing ? (
                           "Takibi Bırak"
                         ) : (
                           <>
-                            <Plus size={14} /> Takip Et
+                            <Plus size={13} /> Takip Et
                           </>
                         )}
                       </button>
@@ -612,9 +614,9 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                     <div className="pt-2 flex justify-center md:justify-start">
                       <button
                         onClick={() => setIsEditing(true)}
-                        className="h-9 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 bg-muted/60 text-foreground border border-border/80 hover:bg-sky-500/10 hover:text-sky-400 hover:border-sky-500/30 w-full sm:w-auto cursor-pointer"
+                        className="h-8 px-3.5 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/[0.08] cursor-pointer"
                       >
-                        <Edit size={14} /> Profili Düzenle
+                        <Edit size={13} /> Profili Düzenle
                       </button>
                     </div>
                   )}
@@ -622,60 +624,58 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               </div>
 
               {/* Activity Info Footer */}
-              <div className="bg-muted/10 border-t border-border/60 px-5 sm:px-7 py-3 flex flex-col sm:flex-row flex-wrap gap-2.5 sm:gap-6 items-center justify-center md:justify-start text-xs font-semibold text-muted-foreground">
+              <div className="bg-slate-950/40 border-t border-white/[0.06] px-6 py-2.5 flex flex-wrap gap-4 items-center justify-center md:justify-start text-xs text-slate-500">
                 <div className="flex items-center gap-1.5">
-                  <Clock size={13} className="text-sky-400 shrink-0" />
-                  <span>Son Görülme: <strong className="text-foreground font-normal">{formatLastSeen(profile.last_seen_at, profile.updated_at)}</strong></span>
+                  <Clock size={12} className="text-sky-400 shrink-0" />
+                  <span>Son Aktivite: <strong className="text-slate-300 font-normal">{formatLastSeen(profile.last_seen_at, profile.updated_at)}</strong></span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Calendar size={13} className="text-sky-400 shrink-0" />
-                  <span>Katılım: <strong className="text-foreground font-normal">{new Date(profile.created_at).toLocaleDateString('tr-TR')}</strong></span>
+                  <Calendar size={12} className="text-sky-400 shrink-0" />
+                  <span>Katılım: <strong className="text-slate-300 font-normal">{new Date(profile.created_at).toLocaleDateString('tr-TR')}</strong></span>
                 </div>
               </div>
             </header>
 
             {/* TABBED AREA FOR USER CONTRIBUTIONS */}
-            <section className="space-y-4" aria-label="Kullanıcı Etkinlikleri">
-              {/* Tab Buttons */}
-              <div className="flex border-b border-border/80 gap-1 overflow-x-auto pb-px">
+            <section className="space-y-3" aria-label="Kullanıcı Etkinlikleri">
+              <div className="flex border-b border-white/[0.08] gap-1 overflow-x-auto pb-px">
                 <button
                   onClick={() => setActiveTab('opened')}
-                  className={`py-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                  className={`py-2 px-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                     activeTab === 'opened'
-                      ? 'border-sky-500 text-sky-400 font-bold'
-                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                      ? 'border-sky-500 text-sky-400'
+                      : 'border-transparent text-slate-400 hover:text-slate-200'
                   }`}
                 >
-                  <BookOpen size={14} /> Açtığı Konular ({openedTopics.length})
+                  <BookOpen size={13} /> Açtığı Konular ({openedTopics.length})
                 </button>
                 <button
                   onClick={() => setActiveTab('replied')}
-                  className={`py-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                  className={`py-2 px-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                     activeTab === 'replied'
-                      ? 'border-sky-500 text-sky-400 font-bold'
-                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                      ? 'border-sky-500 text-sky-400'
+                      : 'border-transparent text-slate-400 hover:text-slate-200'
                   }`}
                 >
-                  <MessageSquare size={14} /> Yanıtladığı Konular ({repliedTopics.length})
+                  <MessageSquare size={13} /> Yanıtladığı Konular ({repliedTopics.length})
                 </button>
                 <button
                   onClick={() => setActiveTab('liked')}
-                  className={`py-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                  className={`py-2 px-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                     activeTab === 'liked'
-                      ? 'border-sky-500 text-sky-400 font-bold'
-                      : 'border-transparent text-muted-foreground hover:text-foreground'
+                      ? 'border-sky-500 text-sky-400'
+                      : 'border-transparent text-slate-400 hover:text-slate-200'
                   }`}
                 >
-                  <Heart size={14} /> Beğendiği Konular ({likedTopics.length})
+                  <Heart size={13} /> Beğendiği Konular ({likedTopics.length})
                 </button>
               </div>
 
-              {/* Tab Content Panels */}
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {loadingContent ? (
-                  <div className="py-12 flex flex-col items-center justify-center gap-3">
-                    <Loader2 className="animate-spin text-sky-400 size-6" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">İçerikler Yükleniyor...</span>
+                  <div className="py-12 flex flex-col items-center justify-center gap-2">
+                    <Loader2 className="animate-spin text-sky-400 size-5" />
+                    <span className="text-xs text-slate-400">İçerikler yükleniyor...</span>
                   </div>
                 ) : (
                   <>
@@ -683,7 +683,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                       openedTopics.length > 0 ? (
                         openedTopics.map(topic => <CompactTopicCard key={topic.id} topic={topic} />)
                       ) : (
-                        <EmptyState message="Bu kullanıcı henüz hiç konu açmamış." />
+                        <EmptyState message="Bu kullanıcı henüz bir konu başlatmamış." />
                       )
                     )}
 
@@ -708,79 +708,81 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             </section>
           </div>
 
-          {/* Gamification Sidebar */}
-          <aside className="space-y-6">
-            <section className="bg-card border border-border/80 rounded-2xl p-5 text-center relative overflow-hidden w-full max-w-full" aria-label="XP Durumu">
-              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-5">Seviye ve Tecrübe</h3>
+          {/* Gamification & Badges Sidebar (4 cols) */}
+          <aside className="lg:col-span-4 space-y-4">
+            
+            {/* Level & XP Status */}
+            <section className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 text-center backdrop-blur-md space-y-4" aria-label="XP Durumu">
+              <h3 className="text-xs font-bold text-slate-300 pb-2 border-b border-white/[0.06]">Seviye ve Puan Durumu</h3>
               
-              <div className="relative size-32 mx-auto mb-5 flex items-center justify-center">
+              <div className="relative size-28 mx-auto flex items-center justify-center">
                 <svg className="absolute inset-0 size-full -rotate-90" viewBox="0 0 100 100">
                   <circle 
-                    cx="50" cy="50" r="42" 
-                    className="stroke-muted/30" 
-                    strokeWidth="8" 
+                    cx="50" cy="50" r="40" 
+                    className="stroke-slate-800" 
+                    strokeWidth="7" 
                     fill="transparent" 
                   />
                   <circle 
-                    cx="50" cy="50" r="42" 
+                    cx="50" cy="50" r="40" 
                     className="stroke-sky-500 transition-all duration-500 ease-out" 
-                    strokeWidth="8" 
+                    strokeWidth="7" 
                     fill="transparent" 
-                    strokeDasharray="264"
-                    strokeDashoffset={264 - (264 * xpProgressPercentage) / 100}
+                    strokeDasharray="251"
+                    strokeDashoffset={251 - (251 * xpProgressPercentage) / 100}
                     strokeLinecap="round"
                   />
                 </svg>
 
                 <div className="text-center z-10">
-                  <span className="text-3xl font-black text-foreground font-mono">{userLevel}</span>
-                  <span className="block text-[9px] font-bold text-muted-foreground uppercase tracking-wider">SEVİYE</span>
+                  <span className="text-2xl font-bold text-slate-100 font-mono">{userLevel}</span>
+                  <span className="block text-[9px] font-medium text-slate-400">SEVİYE</span>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-[11px] font-mono font-semibold text-muted-foreground">
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-[10px] font-mono text-slate-400">
                   <span>{xpInCurrentLevel} XP</span>
                   <span>{xpNeededForNextLevel} XP</span>
                 </div>
-                <div className="w-full h-2 bg-muted/40 rounded-full overflow-hidden border border-border/60">
+                <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-white/[0.06]">
                   <div 
                     className="h-full bg-sky-500 rounded-full transition-all duration-500" 
                     style={{ width: `${xpProgressPercentage}%` }} 
                   />
                 </div>
-                <p className="text-[11px] font-bold text-sky-400 uppercase tracking-wider pt-1">
+                <p className="text-[11px] font-semibold text-sky-400 pt-0.5">
                   Toplam: {userXp} XP
                 </p>
               </div>
             </section>
 
             {/* Badges Section */}
-            <section className="bg-card border border-border/80 rounded-2xl p-5 w-full max-w-full" aria-label="Kazanılan Rozetler">
-              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 text-center">Kazanılan Rozetler</h3>
-              <div className="space-y-2.5">
+            <section className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md space-y-3" aria-label="Kazanılan Rozetler">
+              <h3 className="text-xs font-bold text-slate-300 pb-2 border-b border-white/[0.06]">Kazanılan Rozetler</h3>
+              <div className="space-y-2">
                 {badgesList.map((badge) => {
                   const isUnlocked = userXp >= badge.unlockedAtXp;
                   return (
                     <div 
                       key={badge.id}
-                      className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${
+                      className={`flex items-start gap-2.5 p-2.5 rounded-xl border transition-all ${
                         isUnlocked 
-                          ? `${badge.color} shadow-sm` 
-                          : 'bg-muted/10 border-border/40 opacity-40 grayscale'
+                          ? `${badge.color}` 
+                          : 'bg-slate-900/40 border-white/[0.04] opacity-40 grayscale'
                       }`}
                     >
-                      <div className="p-2 rounded-lg bg-background/80 shadow-xs border border-border/40 shrink-0">
+                      <div className="p-1.5 rounded-lg bg-slate-900/80 shrink-0 border border-white/[0.06]">
                         {badge.icon}
                       </div>
                       <div className="space-y-0.5 min-w-0">
-                        <h4 className="text-xs font-bold text-foreground">
+                        <h4 className="text-xs font-semibold text-slate-200">
                           {badge.name}
                         </h4>
-                        <p className="text-[11px] leading-relaxed text-muted-foreground">
+                        <p className="text-[11px] leading-relaxed text-slate-400">
                           {badge.description}
                         </p>
-                        <span className="inline-block text-[9px] font-semibold tracking-wider uppercase text-muted-foreground/80 bg-background/60 px-1.5 py-0.5 rounded border border-border/20 mt-1">
+                        <span className="inline-block text-[9px] font-medium text-slate-500 bg-slate-900 px-1.5 py-0.2 rounded border border-white/[0.04] mt-0.5">
                           {badge.requirement}
                         </span>
                       </div>
@@ -790,45 +792,40 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               </div>
             </section>
           </aside>
+
         </div>
-      </div>
-    </DashboardLayout>
+      </main>
+      <Footer />
+    </div>
   );
 }
 
 function CompactTopicCard({ topic }: { topic: any }) {
   return (
-    <div className="bg-card p-4 sm:p-5 rounded-2xl border border-border/80 hover:border-sky-500/40 transition-all flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
-      <div className="space-y-1.5 min-w-0 flex-1">
+    <div className="bg-[#111726]/80 p-4 rounded-xl border border-white/[0.06] hover:border-sky-500/40 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 backdrop-blur-md">
+      <div className="space-y-1 min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span 
-            className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border"
-            style={{ 
-              backgroundColor: `${topic.category?.color || '#38bdf8'}15`, 
-              color: topic.category?.color || '#38bdf8',
-              borderColor: `${topic.category?.color || '#38bdf8'}30`
-            }}
-          >
-            {topic.category?.name || 'GENEL'}
+          <span className="px-2 py-0.2 text-[10px] font-medium rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20">
+            {topic.category?.name || 'Genel'}
           </span>
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-[11px] text-slate-500">
             {new Date(topic.created_at).toLocaleDateString('tr-TR')}
           </span>
         </div>
-        <h3 className="text-sm sm:text-base font-bold tracking-tight text-foreground hover:text-sky-400 transition-colors truncate">
+        <h3 className="text-xs sm:text-sm font-semibold text-slate-200 hover:text-sky-400 transition-colors truncate">
           <Link href={`/discussions/${topic.id}`}>
             {topic.title}
           </Link>
         </h3>
       </div>
 
-      <div className="flex items-center gap-3 shrink-0 text-xs font-semibold text-muted-foreground">
+      <div className="flex items-center gap-3 shrink-0 text-xs text-slate-400">
         <span className="flex items-center gap-1">
           <MessageSquare size={13} className="text-sky-400" />
           {(topic.comments as any)?.[0]?.count || 0} yanıt
         </span>
         <span className="flex items-center gap-1">
-          <Heart size={13} className="text-rose-400 fill-rose-500/10" />
+          <Heart size={13} className="text-rose-400" />
           {topic.likes_count || 0} beğeni
         </span>
       </div>
@@ -838,8 +835,8 @@ function CompactTopicCard({ topic }: { topic: any }) {
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="bg-card p-8 text-center border border-dashed border-border/80 rounded-2xl flex flex-col items-center justify-center gap-2">
-      <p className="text-xs font-medium text-muted-foreground">
+    <div className="bg-[#111726]/40 p-8 text-center border border-dashed border-white/[0.08] rounded-xl">
+      <p className="text-xs text-slate-400">
         {message}
       </p>
     </div>

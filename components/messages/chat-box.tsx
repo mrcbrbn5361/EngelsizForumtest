@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { Message, Profile } from '@/types/database';
 import { Send, Loader2, User } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -49,7 +49,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
 
     fetchMessages();
 
-    // Subscribe to new messages
     const channel = supabase
       .channel(`chat:${conversationId}`)
       .on(
@@ -98,55 +97,56 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
   };
 
   return (
-    <div className="flex flex-col h-full bg-background border rounded-lg md:rounded-2xl overflow-hidden shadow-2xl">
+    <div className="flex flex-col h-full bg-slate-950/40">
       {/* Header */}
-      <div className="p-4 border-b bg-card flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="p-3.5 border-b border-white/[0.08] bg-[#111726]/90 flex items-center justify-between">
+        <div className="flex items-center gap-3 pl-8 md:pl-0">
           <UserAvatar 
-            src={otherUser.avatar_url}
-            username={otherUser.username}
-            name={otherUser.full_name}
-            size="md"
+            src={otherUser?.avatar_url}
+            username={otherUser?.username}
+            name={otherUser?.full_name}
+            size="sm"
+            className="rounded-xl border border-white/[0.08]"
           />
           <div>
-            <h2 className="font-black text-sm uppercase tracking-wider">{otherUser.full_name}</h2>
-            <p className="text-[10px] text-muted-foreground font-bold uppercase">@{otherUser.username}</p>
+            <h2 className="font-semibold text-xs text-slate-100">{otherUser?.full_name || otherUser?.username || 'Kullanıcı'}</h2>
+            <p className="text-[10px] text-sky-400 font-mono">@{otherUser?.username || 'isimsiz'}</p>
           </div>
         </div>
       </div>
 
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-muted/5 scrollbar-thin scrollbar-thumb-primary/20">
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
         {loading ? (
           <div className="flex items-center justify-center h-full">
-            <Loader2 className="animate-spin text-primary" size={32} />
+            <Loader2 className="animate-spin text-sky-400" size={24} />
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full opacity-30">
-            <User size={64} />
-            <p className="text-sm font-black uppercase mt-4">Henüz sohbet başlamadı</p>
+          <div className="flex flex-col items-center justify-center h-full text-slate-500">
+            <User size={40} className="opacity-30" />
+            <p className="text-xs font-semibold text-slate-400 mt-2">Henüz mesaj yok</p>
           </div>
         ) : (
-          messages.map((msg, index) => {
+          messages.map((msg) => {
             const isMe = msg.sender_id === currentUserProfile.id;
             return (
               <motion.div
                 key={msg.id}
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
                 className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`max-w-[85%] md:max-w-[70%] space-y-1`}>
+                <div className="max-w-[85%] sm:max-w-[70%] space-y-1">
                   <div
-                    className={`p-4 rounded-2xl text-sm font-medium leading-relaxed shadow-sm ${
+                    className={`p-3 rounded-2xl text-xs leading-relaxed ${
                       isMe
-                        ? 'bg-primary text-primary-foreground rounded-tr-none'
-                        : 'bg-card border border-border rounded-tl-none'
+                        ? 'bg-sky-600 text-white rounded-br-xs'
+                        : 'bg-[#111726] border border-white/[0.08] text-slate-200 rounded-bl-xs'
                     }`}
                   >
                     {msg.content}
                   </div>
-                  <div className={`text-[9px] font-bold uppercase tracking-widest text-muted-foreground px-1 ${isMe ? 'text-right' : 'text-left'}`}>
+                  <div className={`text-[10px] text-slate-500 px-1 font-mono ${isMe ? 'text-right' : 'text-left'}`}>
                     {format(new Date(msg.created_at), 'HH:mm', { locale: tr })}
                   </div>
                 </div>
@@ -158,22 +158,22 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
       </div>
 
       {/* Input area */}
-      <form onSubmit={handleSend} className="p-4 border-t bg-card">
-        <div className="relative flex items-center gap-3">
+      <form onSubmit={handleSend} className="p-3 border-t border-white/[0.08] bg-[#111726]/90">
+        <div className="relative flex items-center gap-2">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Mesajınızı buraya yazın..."
             disabled={sending}
-            className="flex-1 vibe-input h-14 md:h-16 px-6 text-sm rounded-full bg-muted/30 border-transparent focus:border-primary/30"
+            className="flex-1 h-10 px-4 text-xs rounded-xl bg-slate-900 border border-white/[0.08] text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
           />
           <button
             type="submit"
             disabled={!newMessage.trim() || sending}
-            className="size-12 md:size-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center transition-all active:scale-95 disabled:opacity-50 disabled:grayscale"
+            className="size-10 rounded-xl bg-sky-600 hover:bg-sky-500 text-white flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40"
           >
-            {sending ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
+            {sending ? <Loader2 className="animate-spin" size={16} /> : <Send size={15} />}
           </button>
         </div>
       </form>

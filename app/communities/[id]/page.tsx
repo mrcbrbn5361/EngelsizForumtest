@@ -1,14 +1,14 @@
 'use client';
-import { toast } from 'sonner';
 
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { 
-  ArrowLeft, Users, MessageSquare, Shield, Globe, Loader2, Sparkles, Plus, Search, Check, Info, X,
+  ArrowLeft, Users, MessageSquare, Shield, Globe, Loader2, Sparkles, Plus, Search, Check,
   Stethoscope, BookOpen, Briefcase, Cpu, Code, Smile, Settings, Megaphone, Scale, 
   CreditCard, PiggyBank, Award, FileText, HeartPulse, Activity, Eye, Volume2, MapPin, 
-  GraduationCap, Calendar, AlertTriangle, FolderTree, HelpCircle, Car
+  GraduationCap, Calendar, AlertTriangle, FolderTree, Car, HelpCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
@@ -25,7 +25,6 @@ interface Community {
 }
 
 const COMMUNITY_META: Record<string, {
-  color: string;
   focusGroups: string[];
   tags: string[];
   memberCount: number;
@@ -34,7 +33,6 @@ const COMMUNITY_META: Record<string, {
   rules: string[];
 }> = {
   'sgk': {
-    color: 'rose',
     focusGroups: ['haklar'],
     tags: ['Emeklilik', 'Sağlık Kurulu', 'Mevzuat'],
     memberCount: 1420,
@@ -47,7 +45,6 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'ekpss': {
-    color: 'violet',
     focusGroups: ['bilissel', 'haklar'],
     tags: ['Sınav Hazırlığı', 'Kadro Atamaları', 'Çalışma Grupları'],
     memberCount: 2350,
@@ -56,13 +53,12 @@ const COMMUNITY_META: Record<string, {
     rules: [
       'Telif hakkı içeren sınav dokümanlarını veya korsan kitap linklerini kesinlikle paylaşmayın.',
       'Sınav stresi ve motivasyon dışı kırıcı, rekabetçi veya incitici tartışmalardan kaçının.',
-      'Öğretmenlik, mühendislik, düz memurluk gibi kadro özelindeki soruları ilgili konu başlıklarında toplayın.'
+      'Öğretmenlik, mühendislik, memurluk gibi kadro özelindeki soruları ilgili konu başlıklarında toplayın.'
     ]
   },
   'otv': {
-    color: 'amber',
     focusGroups: ['ortopedik'],
-    tags: ['Araç Alımı', 'ÖTV Muafiyeti', 'Mevzuat Değişikliği'],
+    tags: ['Araç Alımı', 'ÖTV Muafiyeti', 'Limit Takibi'],
     memberCount: 1890,
     topicCount: 425,
     featured: true,
@@ -73,7 +69,6 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'saglik': {
-    color: 'emerald',
     focusGroups: ['ortopedik', 'bilissel'],
     tags: ['Rapor Derecesi', 'Tedavi Süreçleri', 'Hekim Tavsiyeleri'],
     memberCount: 1210,
@@ -85,7 +80,6 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'egitim': {
-    color: 'sky',
     focusGroups: ['bilissel'],
     tags: ['Özel Eğitim', 'RAM Raporları', 'Kapsayıcı Okullar'],
     memberCount: 940,
@@ -97,7 +91,6 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'istihdam': {
-    color: 'indigo',
     focusGroups: ['haklar'],
     tags: ['Kariyer', 'İş İlanları', 'Mülakat Teknikleri'],
     memberCount: 1560,
@@ -110,9 +103,8 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'teknoloji': {
-    color: 'teal',
     focusGroups: ['gorme', 'isitme'],
-    tags: ['Ekran Okuyucular', 'Yardımcı Yazılımlar', 'Erişilebilirlik Yamaları'],
+    tags: ['Ekran Okuyucular', 'Yardımcı Yazılımlar', 'Erişilebilirlik'],
     memberCount: 2100,
     topicCount: 480,
     featured: true,
@@ -123,171 +115,26 @@ const COMMUNITY_META: Record<string, {
     ]
   },
   'yazilim': {
-    color: 'blue',
     focusGroups: ['gorme', 'isitme'],
     tags: ['Erişilebilir Kod', 'A11y Standartları', 'Web Geliştirme'],
     memberCount: 820,
     topicCount: 140,
     rules: [
-      'Kod paylaşırken Markdown formatını (` ```js ` gibi) kullanarak kodun okunabilirliğini artırın.',
-      'WCAG (Web İçeriği Erişilebilirlik Kılavuzu) standartlarına uygun örnekler paylaşmaya çalışın.',
+      'Kod paylaşırken Markdown formatını kullanarak kodun okunabilirliğini artırın.',
+      'WCAG standartlarına uygun örnekler paylaşmaya özen gösterin.',
       'Erişilebilirlik kütüphaneleri ve test araçları hakkında tecrübelerinizi aktarın.'
     ]
   },
-  'yapay-zeka': {
-    color: 'fuchsia',
-    focusGroups: ['gorme', 'bilissel'],
-    tags: ['Gemini Entegrasyonu', 'Görsel Betimleme', 'Yapay Zeka Sesleri'],
-    memberCount: 1150,
-    topicCount: 195,
-    rules: [
-      'Yapay zeka ile tamamen otomatik üretilmiş uzun makale/tartışmaları "Yapay Zeka" etiketiyle paylaşın.',
-      'Görsel betimleme araçları (Gemini Vision vb.) kullanan üyelerimizin deneyimlerini paylaşmasını destekleyin.',
-      'Hayatı kolaylaştırıcı prompt (komut) önerilerini paylaşırken sade bir dil kullanın.'
-    ]
-  },
   'gunluk-yasam': {
-    color: 'pink',
     focusGroups: ['gorme', 'isitme', 'ortopedik', 'bilissel'],
-    tags: ['Social Sohbet', 'Hobiler & Sanat', 'Engelsiz Seyahat'],
+    tags: ['Sohbet', 'Hobiler & Sanat', 'Engelsiz Seyahat'],
     memberCount: 1780,
     topicCount: 390,
     rules: [
-      'Politik, ideolojik veya inanç temelli hassas konuları içeren kutuplaştırıcı tartışmalardan kaçının.',
+      'Kutuplaştırıcı ve incitici tartışmalardan kaçının.',
       'Engelsiz seyahat ve mekan deneyimlerinizde rampa, asansör, sesli yönlendirme detaylarını belirtin.',
       'Hobiler, kitap kulüpleri ve sanatsal faaliyetlerde kapsayıcı etkinlikleri duyurun.'
     ]
-  },
-  'sosyal-haklar': {
-    color: 'purple',
-    focusGroups: ['haklar'],
-    tags: ['Yasal Ödenekler', 'Ulaşım İndirimleri', 'Belediye Hizmetleri'],
-    memberCount: 1670,
-    topicCount: 310,
-    rules: [
-      'Sadece resmi kanun maddeleri ve doğrulanmış kamu sitelerini kaynak göstererek iddialarda bulunun.',
-      'Belediye indirimleri, engelli kartı alma adımları gibi pratik rehberleri aşama aşama anlatın.',
-      'Sosyal yardım başvurularında karşılaşılan bürokratik engelleri yapıcı bir dille paylaşın.'
-    ]
-  },
-  'engelli-haklari': {
-    color: 'cyan',
-    focusGroups: ['haklar'],
-    tags: ['Hak Savunuculuğu', 'Ayrımcılık Bildirimi', 'Farkındalık Projeleri'],
-    memberCount: 1340,
-    topicCount: 280,
-    rules: [
-      'Yaşanan hak ihlallerini veya ayrımcı tutumları aktarırken hakaret içermeyen, tamamen hukuki ve nesnel bir dil tercih edin.',
-      'Farkındalık projelerini ve sivil toplum kuruluşlarının (STK) kapsayıcı etkinliklerini destekleyin.',
-      'Erişilebilirlik standartları dışı yapı ve mimarilerin bildirilmesi süreçlerini koordine edin.'
-    ]
-  },
-  'araclar': {
-    color: 'slate',
-    focusGroups: ['ortopedik'],
-    tags: ['Tekerlekli Sandalyeler', 'Protez / Ortez', 'Rehabilitasyon'],
-    memberCount: 750,
-    topicCount: 115,
-    rules: [
-      'Medikal marka kayırmadan, kullandığınız tekerlekli sandalye veya protez cihazlarının artı/eksilerini dürüstçe yazın.',
-      'İhtiyaç sahipleri için hibe veya takas amaçlı cihaz paylaşımlarında ticari kâr amacı gütmeyin.',
-      'Yardımcı araç tamiratı ve yedek parça temini gibi teknik tüyoları paylaşın.'
-    ]
-  },
-  'kamu-duyurulari': {
-    color: 'orange',
-    focusGroups: ['haklar'],
-    tags: ['Resmi İlanlar', 'Yönetmelik Değişikliği', 'Bakanlık Açıklamaları'],
-    memberCount: 990,
-    topicCount: 160,
-    rules: [
-      'Duyurunun asıl kaynağını (Resmi Gazete bağlantısı, bakanlık basın bülteni vb.) mutlaka konuya ekleyin.',
-      'Aynı duyurunun mükerrer olarak paylaşılmasını önlemek amacıyla konuyu açmadan önce arama yapın.',
-      'Duyuruları yalınlaştırarak, ağır bürokratik dilden uzak bir özetle sunun.'
-    ]
-  }
-};
-
-const COLOR_SCHEMES: Record<string, {
-  bg: string;
-  text: string;
-  border: string;
-  hoverBorder: string;
-  lightBg: string;
-  darkText: string;
-  gradient: string;
-  badgeBg: string;
-  badgeText: string;
-}> = {
-  rose: {
-    bg: 'bg-rose-500', text: 'text-rose-500', border: 'border-rose-200 dark:border-rose-900/30', hoverBorder: 'hover:border-rose-400 dark:hover:border-rose-700/50',
-    lightBg: 'bg-rose-500/10', darkText: 'text-rose-700 dark:text-rose-300', gradient: 'from-rose-500/15 via-rose-500/5 to-transparent',
-    badgeBg: 'bg-rose-50 dark:bg-rose-950/20', badgeText: 'text-rose-600 dark:text-rose-400'
-  },
-  violet: {
-    bg: 'bg-violet-500', text: 'text-violet-500', border: 'border-violet-200 dark:border-violet-900/30', hoverBorder: 'hover:border-violet-400 dark:hover:border-violet-700/50',
-    lightBg: 'bg-violet-500/10', darkText: 'text-violet-700 dark:text-violet-300', gradient: 'from-violet-500/15 via-violet-500/5 to-transparent',
-    badgeBg: 'bg-violet-50 dark:bg-violet-950/20', badgeText: 'text-violet-600 dark:text-violet-400'
-  },
-  amber: {
-    bg: 'bg-amber-500', text: 'text-amber-500', border: 'border-amber-200 dark:border-amber-900/30', hoverBorder: 'hover:border-amber-400 dark:hover:border-amber-700/50',
-    lightBg: 'bg-amber-500/10', darkText: 'text-amber-700 dark:text-amber-300', gradient: 'from-amber-500/15 via-amber-500/5 to-transparent',
-    badgeBg: 'bg-amber-50 dark:bg-amber-950/20', badgeText: 'text-amber-600 dark:text-amber-400'
-  },
-  emerald: {
-    bg: 'bg-emerald-500', text: 'text-emerald-500', border: 'border-emerald-200 dark:border-emerald-900/30', hoverBorder: 'hover:border-emerald-400 dark:hover:border-emerald-700/50',
-    lightBg: 'bg-emerald-500/10', darkText: 'text-emerald-700 dark:text-emerald-300', gradient: 'from-emerald-500/15 via-emerald-500/5 to-transparent',
-    badgeBg: 'bg-emerald-50 dark:bg-emerald-950/20', badgeText: 'text-emerald-600 dark:text-emerald-400'
-  },
-  sky: {
-    bg: 'bg-sky-500', text: 'text-sky-500', border: 'border-sky-200 dark:border-sky-900/30', hoverBorder: 'hover:border-sky-400 dark:hover:border-sky-700/50',
-    lightBg: 'bg-sky-500/10', darkText: 'text-sky-700 dark:text-sky-300', gradient: 'from-sky-500/15 via-sky-500/5 to-transparent',
-    badgeBg: 'bg-sky-50 dark:bg-sky-950/20', badgeText: 'text-sky-600 dark:text-sky-400'
-  },
-  indigo: {
-    bg: 'bg-indigo-500', text: 'text-indigo-500', border: 'border-indigo-200 dark:border-indigo-900/30', hoverBorder: 'hover:border-indigo-400 dark:hover:border-indigo-700/50',
-    lightBg: 'bg-indigo-500/10', darkText: 'text-indigo-700 dark:text-indigo-300', gradient: 'from-indigo-500/15 via-indigo-500/5 to-transparent',
-    badgeBg: 'bg-indigo-50 dark:bg-indigo-950/20', badgeText: 'text-indigo-600 dark:text-indigo-400'
-  },
-  teal: {
-    bg: 'bg-teal-500', text: 'text-teal-500', border: 'border-teal-200 dark:border-teal-900/30', hoverBorder: 'hover:border-teal-400 dark:hover:border-teal-700/50',
-    lightBg: 'bg-teal-500/10', darkText: 'text-teal-700 dark:text-teal-300', gradient: 'from-teal-500/15 via-teal-500/5 to-transparent',
-    badgeBg: 'bg-teal-50 dark:bg-teal-950/20', badgeText: 'text-teal-600 dark:text-teal-400'
-  },
-  fuchsia: {
-    bg: 'bg-fuchsia-500', text: 'text-fuchsia-500', border: 'border-fuchsia-200 dark:border-fuchsia-900/30', hoverBorder: 'hover:border-fuchsia-400 dark:hover:border-fuchsia-700/50',
-    lightBg: 'bg-fuchsia-500/10', darkText: 'text-fuchsia-700 dark:text-fuchsia-300', gradient: 'from-fuchsia-500/15 via-fuchsia-500/5 to-transparent',
-    badgeBg: 'bg-fuchsia-50 dark:bg-fuchsia-950/20', badgeText: 'text-fuchsia-600 dark:text-fuchsia-400'
-  },
-  pink: {
-    bg: 'bg-pink-500', text: 'text-pink-500', border: 'border-pink-200 dark:border-pink-900/30', hoverBorder: 'hover:border-pink-400 dark:hover:border-pink-700/50',
-    lightBg: 'bg-pink-500/10', darkText: 'text-pink-700 dark:text-pink-300', gradient: 'from-pink-500/15 via-pink-500/5 to-transparent',
-    badgeBg: 'bg-pink-50 dark:bg-pink-950/20', badgeText: 'text-pink-600 dark:text-pink-400'
-  },
-  purple: {
-    bg: 'bg-purple-500', text: 'text-purple-500', border: 'border-purple-200 dark:border-purple-900/30', hoverBorder: 'hover:border-purple-400 dark:hover:border-purple-700/50',
-    lightBg: 'bg-purple-500/10', darkText: 'text-purple-700 dark:text-purple-300', gradient: 'from-purple-500/15 via-purple-500/5 to-transparent',
-    badgeBg: 'bg-purple-50 dark:bg-purple-950/20', badgeText: 'text-purple-600 dark:text-purple-400'
-  },
-  cyan: {
-    bg: 'bg-cyan-500', text: 'text-cyan-500', border: 'border-cyan-200 dark:border-cyan-900/30', hoverBorder: 'hover:border-cyan-400 dark:hover:border-cyan-700/50',
-    lightBg: 'bg-cyan-500/10', darkText: 'text-cyan-700 dark:text-cyan-300', gradient: 'from-cyan-500/15 via-cyan-500/5 to-transparent',
-    badgeBg: 'bg-cyan-50 dark:bg-cyan-950/20', badgeText: 'text-cyan-600 dark:text-cyan-400'
-  },
-  slate: {
-    bg: 'bg-slate-500', text: 'text-slate-500', border: 'border-slate-200 dark:border-slate-900/30', hoverBorder: 'hover:border-slate-400 dark:hover:border-slate-700/50',
-    lightBg: 'bg-slate-500/10', darkText: 'text-slate-700 dark:text-slate-300', gradient: 'from-slate-500/15 via-slate-500/5 to-transparent',
-    badgeBg: 'bg-slate-50 dark:bg-slate-950/20', badgeText: 'text-slate-600 dark:text-slate-400'
-  },
-  orange: {
-    bg: 'bg-orange-500', text: 'text-orange-500', border: 'border-orange-200 dark:border-orange-900/30', hoverBorder: 'hover:border-orange-400 dark:hover:border-orange-700/50',
-    lightBg: 'bg-orange-500/10', darkText: 'text-orange-700 dark:text-orange-300', gradient: 'from-orange-500/15 via-orange-500/5 to-transparent',
-    badgeBg: 'bg-orange-50 dark:bg-orange-950/20', badgeText: 'text-orange-600 dark:text-orange-400'
-  },
-  blue: {
-    bg: 'bg-blue-500', text: 'text-blue-500', border: 'border-blue-200 dark:border-blue-900/30', hoverBorder: 'hover:border-blue-400 dark:hover:border-blue-700/50',
-    lightBg: 'bg-blue-500/10', darkText: 'text-blue-700 dark:text-blue-300', gradient: 'from-blue-500/15 via-blue-500/5 to-transparent',
-    badgeBg: 'bg-blue-50 dark:bg-blue-950/20', badgeText: 'text-blue-600 dark:text-blue-400'
   }
 };
 
@@ -302,7 +149,6 @@ export default function CommunityDetailPage() {
   const [summaryResult, setSummaryResult] = useState<{ id: string, text: string } | null>(null);
   const [memberCount, setMemberCount] = useState<number>(0);
   
-  // Filtering and searching states
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'solved' | 'pinned' | 'popular'>('all');
   const [isJoined, setIsJoined] = useState(false);
@@ -313,7 +159,6 @@ export default function CommunityDetailPage() {
       return COMMUNITY_META[normalized];
     }
     return {
-      color: 'indigo',
       focusGroups: ['gorme', 'isitme', 'ortopedik', 'bilissel'],
       tags: ['Topluluk', 'Yardımlaşma', 'Genel'],
       memberCount: 240,
@@ -325,12 +170,6 @@ export default function CommunityDetailPage() {
     };
   }, []);
 
-  const getScheme = useCallback((slug: string) => {
-    const meta = getMeta(slug);
-    return COLOR_SCHEMES[meta.color] || COLOR_SCHEMES['indigo'];
-  }, [getMeta]);
-
-  // Sync joined state with local storage
   useEffect(() => {
     if (community?.id) {
       const saved = localStorage.getItem('joined_communities');
@@ -359,7 +198,7 @@ export default function CommunityDetailPage() {
     }
 
     if (isJoined) {
-      list = list.filter(id => id !== community.id);
+      list = list.filter(itemId => itemId !== community.id);
       setIsJoined(false);
       toast.success(`"${community.name}" topluluğundan ayrıldınız.`);
     } else {
@@ -432,14 +271,14 @@ export default function CommunityDetailPage() {
     }
   }, [id, fetchCommunityData]);
 
-  const handleSummarize = async (id: string) => {
-    const topic = topics.find(t => t.id === id);
+  const handleSummarize = async (topicId: string) => {
+    const topic = topics.find(t => t.id === topicId);
     if (!topic) {
       toast.error('AI Özeti için gerekli veriler eksik.');
       return;
     }
 
-    setSummarizingId(id);
+    setSummarizingId(topicId);
     try {
       const response = await fetch('/api/summarize', {
         method: 'POST',
@@ -454,7 +293,7 @@ export default function CommunityDetailPage() {
       }
       
       if (data.text) {
-        setSummaryResult({ id, text: data.text });
+        setSummaryResult({ id: topicId, text: data.text });
       }
     } catch (error: any) {
       console.error('Summarization failed:', error);
@@ -464,49 +303,48 @@ export default function CommunityDetailPage() {
     }
   };
 
-  const getIcon = (iconName?: string, customColorClass?: string) => {
-    const baseColor = customColorClass || "text-primary";
+  const getIcon = (iconName?: string) => {
+    const cls = "text-sky-400";
     switch (iconName?.toLowerCase()) {
-      case 'stethoscope': return <Stethoscope className={baseColor} />;
+      case 'stethoscope': return <Stethoscope size={20} className={cls} />;
       case 'bookopen':
-      case 'book-open': return <BookOpen className={baseColor} />;
-      case 'briefcase': return <Briefcase className={baseColor} />;
-      case 'cpu': return <Cpu className={baseColor} />;
-      case 'code': return <Code className={baseColor} />;
-      case 'smile': return <Smile className={baseColor} />;
-      case 'shield': return <Shield className={baseColor} />;
-      case 'settings': return <Settings className={baseColor} />;
-      case 'megaphone': return <Megaphone className={baseColor} />;
-      case 'car': return <Car className={baseColor} />;
-      case 'scale': return <Scale className={baseColor} />;
+      case 'book-open': return <BookOpen size={20} className={cls} />;
+      case 'briefcase': return <Briefcase size={20} className={cls} />;
+      case 'cpu': return <Cpu size={20} className={cls} />;
+      case 'code': return <Code size={20} className={cls} />;
+      case 'smile': return <Smile size={20} className={cls} />;
+      case 'shield': return <Shield size={20} className={cls} />;
+      case 'settings': return <Settings size={20} className={cls} />;
+      case 'megaphone': return <Megaphone size={20} className={cls} />;
+      case 'car': return <Car size={20} className={cls} />;
+      case 'scale': return <Scale size={20} className={cls} />;
       case 'creditcard':
-      case 'credit-card': return <CreditCard className={baseColor} />;
+      case 'credit-card': return <CreditCard size={20} className={cls} />;
       case 'piggybank':
-      case 'piggy-bank': return <PiggyBank className={baseColor} />;
-      case 'award': return <Award className={baseColor} />;
+      case 'piggy-bank': return <PiggyBank size={20} className={cls} />;
+      case 'award': return <Award size={20} className={cls} />;
       case 'filetext':
-      case 'file-text': return <FileText className={baseColor} />;
+      case 'file-text': return <FileText size={20} className={cls} />;
       case 'heartpulse':
-      case 'heart-pulse': return <HeartPulse className={baseColor} />;
-      case 'activity': return <Activity className={baseColor} />;
-      case 'eye': return <Eye className={baseColor} />;
+      case 'heart-pulse': return <HeartPulse size={20} className={cls} />;
+      case 'activity': return <Activity size={20} className={cls} />;
+      case 'eye': return <Eye size={20} className={cls} />;
       case 'volume2':
-      case 'volume-2': return <Volume2 className={baseColor} />;
+      case 'volume-2': return <Volume2 size={20} className={cls} />;
       case 'mappin':
-      case 'map-pin': return <MapPin className={baseColor} />;
+      case 'map-pin': return <MapPin size={20} className={cls} />;
       case 'graduationcap':
-      case 'graduation-cap': return <GraduationCap className={baseColor} />;
-      case 'calendar': return <Calendar className={baseColor} />;
+      case 'graduation-cap': return <GraduationCap size={20} className={cls} />;
+      case 'calendar': return <Calendar size={20} className={cls} />;
       case 'alerttriangle':
-      case 'alert-triangle': return <AlertTriangle className={baseColor} />;
-      case 'users': return <Users className={baseColor} />;
-      case 'message': return <MessageSquare className={baseColor} />;
-      case 'sparkles': return <Sparkles className={baseColor} />;
-      default: return <Users className={baseColor} />;
+      case 'alert-triangle': return <AlertTriangle size={20} className={cls} />;
+      case 'users': return <Users size={20} className={cls} />;
+      case 'message': return <MessageSquare size={20} className={cls} />;
+      case 'sparkles': return <Sparkles size={20} className={cls} />;
+      default: return <FolderTree size={20} className={cls} />;
     }
   };
 
-  // Dynamic filtering and search matching
   const filteredTopics = useMemo(() => {
     let result = [...topics];
     if (searchQuery) {
@@ -522,7 +360,7 @@ export default function CommunityDetailPage() {
     } else if (activeFilter === 'pinned') {
       result = result.filter(t => t.is_pinned);
     } else if (activeFilter === 'popular') {
-      result = result.sort((a, b) => (b.likes_count || 0) - (a.likes_count || 0));
+      result = result.sort((a, b) => (b.views_count || 0) - (a.views_count || 0));
     }
     
     return result;
@@ -532,8 +370,8 @@ export default function CommunityDetailPage() {
     return (
       <DashboardLayout>
         <div className="flex-1 flex flex-col items-center justify-center py-24">
-          <Loader2 className="animate-spin text-primary" size={64} />
-          <p className="mt-6 font-black text-muted-foreground uppercase tracking-widest text-sm">Yükleniyor...</p>
+          <Loader2 className="animate-spin text-sky-400" size={40} />
+          <p className="mt-4 text-xs font-semibold text-slate-400">Topluluk verileri yükleniyor...</p>
         </div>
       </DashboardLayout>
     );
@@ -542,11 +380,14 @@ export default function CommunityDetailPage() {
   if (!community) {
     return (
       <DashboardLayout>
-        <div className="flex-1 flex flex-col items-center justify-center py-24 text-center px-6">
-          <h1 className="text-3xl md:text-5xl font-black mb-6 tracking-tighter">Topluluk Bulunamadı</h1>
+        <div className="flex-1 flex flex-col items-center justify-center py-24 text-center px-6 space-y-4">
+          <h1 className="text-xl font-bold text-slate-100">Topluluk Bulunamadı</h1>
+          <p className="text-xs text-slate-400 max-w-sm">
+            Aradığınız topluluk mevcut değil veya taşınmış olabilir.
+          </p>
           <button 
             onClick={() => router.push('/communities')} 
-            className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-black text-lg shadow-xl shadow-primary/20"
+            className="px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold shadow-sm transition-colors cursor-pointer"
           >
             Topluluklara Geri Dön
           </button>
@@ -556,243 +397,235 @@ export default function CommunityDetailPage() {
   }
 
   const meta = getMeta(community.slug);
-  const scheme = getScheme(community.slug);
 
   return (
     <DashboardLayout>
-      <div className="w-full py-8 md:py-12">
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl space-y-6">
         
-        {/* Screen Reader Announcements */}
-        <div className="sr-only" aria-live="polite">
-          {searchQuery ? `${filteredTopics.length} sonuç listelendi.` : ''}
-          {activeFilter !== 'all' ? `${activeFilter} filtresi uygulandı.` : ''}
-        </div>
+        {/* Navigation Breadcrumb */}
+        <nav aria-label="Erişim yolu" className="flex items-center gap-2 text-xs text-slate-400">
+          <Link href="/communities" className="inline-flex items-center gap-1.5 hover:text-sky-400 transition-colors">
+            <ArrowLeft size={14} /> Topluluklar
+          </Link>
+          <span className="text-slate-600">/</span>
+          <span className="text-slate-200 font-medium">{community.name}</span>
+        </nav>
 
-        <button 
-          onClick={() => router.push('/communities')}
-          className="mb-8 flex items-center gap-3 text-sm font-black text-muted-foreground hover:text-primary transition-all group uppercase tracking-[0.2em] px-2"
-        >
-          <ArrowLeft size={18} className="group-hover:-translate-x-2 transition-transform" /> TOPLULUKLAR
-        </button>
-
-        <div className="flex flex-col 2xl:grid 2xl:grid-cols-[1fr_320px] gap-6 w-full min-w-0">
-          <div className="space-y-8 sm:space-y-12 min-w-0 w-full overflow-hidden">
-            
-            {/* Header / Banner Card */}
-            <header className="vibe-card p-6 sm:p-8 md:p-12 relative overflow-hidden shadow-2xl border-2 border-border">
-              <div className={`absolute inset-0 bg-gradient-to-br ${scheme.gradient} opacity-40 -z-10`} />
-              <div className="relative z-10 space-y-8">
-                <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8">
-                  <div className={`w-16 h-16 md:w-28 md:h-28 ${scheme.lightBg} ${scheme.text} rounded-2xl md:rounded-[2.5rem] flex items-center justify-center shrink-0 transition-all shadow-md`}>
-                    {getIcon(community.icon || 'users', `${scheme.text} w-8 h-8 md:w-12 md:h-12`)}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="vibe-label ml-0 mb-2 md:mb-3">TOPLULUK VE PAYLAŞIM GRUBU</p>
-                    <h1 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tight leading-none text-foreground whitespace-normal break-normal">{community.name}</h1>
-                  </div>
+        {/* Header Hero Banner */}
+        <header className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-6 sm:p-8 backdrop-blur-md space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div className="flex items-start gap-4">
+              <div className="p-3.5 bg-sky-500/10 border border-sky-500/20 rounded-2xl text-sky-400 shrink-0">
+                {getIcon(community.icon || 'users')}
+              </div>
+              <div className="space-y-1.5">
+                <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-semibold">
+                  Topluluk &amp; Paylaşım Grubu
                 </div>
-                <p className="text-base sm:text-lg md:text-xl text-muted-foreground font-bold uppercase tracking-wide leading-relaxed max-w-3xl">
-                  {community.description}
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
+                  {community.name}
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-400 font-normal leading-relaxed max-w-2xl">
+                  {community.description || 'Bu toplulukta deneyimlerinizi paylaşabilir, soru sorabilir ve uzman akran desteği alabilirsiniz.'}
                 </p>
-
-                {/* Focus group tags */}
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {meta.tags.map((tag, tIdx) => (
-                    <span 
-                      key={tIdx} 
-                      className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest ${scheme.badgeBg} ${scheme.badgeText}`}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap gap-4 pt-4">
-                  <button 
-                    onClick={toggleJoin}
-                    className={`h-14 sm:h-16 px-8 sm:px-10 rounded-[1.2rem] font-black text-sm uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-95 outline-none flex items-center justify-center gap-2 ${
-                      isJoined 
-                        ? 'bg-green-500/15 text-green-600 dark:text-green-400 border-2 border-green-500/30'
-                        : `${scheme.bg} text-white shadow-xl shadow-primary/25`
-                    }`}
-                  >
-                    {isJoined ? <Check size={18} className="stroke-[3]" /> : <Plus size={18} className="stroke-[3]" />}
-                    {isJoined ? 'TOPLULUKTASINIZ' : 'GRUBA KATIL'}
-                  </button>
-                  <Link 
-                    href={`/discussions/new?category_id=${community.id}`}
-                    className="h-14 sm:h-16 px-8 sm:px-10 rounded-[1.2rem] bg-muted border-2 border-transparent hover:border-primary/20 text-foreground font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-muted/80 hover:scale-[1.02] active:scale-95 transition-all outline-none"
-                  >
-                    <Plus size={18} className="shrink-0 stroke-[3]" /> BAŞLIK AÇ
-                  </Link>
-                </div>
               </div>
-            </header>
+            </div>
 
-            {/* Topics/Discussions Section */}
-            <section className="space-y-8">
-              
-              {/* Dynamic Filtering Toolbar */}
-              <div className="vibe-card p-6 flex flex-col md:flex-row gap-6 justify-between items-stretch md:items-center border border-border">
-                
-                {/* Search Bar */}
-                <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={16} />
-                  <input 
-                    type="text" 
-                    placeholder="BU TOPLULUK İÇİNDE ARA..." 
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-11 pl-11 pr-4 rounded-xl border border-border bg-background text-xs font-black tracking-widest uppercase outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground/50"
-                  />
-                </div>
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+              <button 
+                onClick={toggleJoin}
+                className={`inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  isJoined 
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                    : 'bg-sky-600 hover:bg-sky-500 text-white'
+                }`}
+              >
+                {isJoined ? <Check size={14} /> : <Plus size={14} />}
+                {isJoined ? 'Topluluktasınız' : 'Gruba Katıl'}
+              </button>
 
-                {/* Filters */}
-                <div className="flex flex-wrap gap-2">
-                  {[
-                    { id: 'all', label: 'HEPSİ' },
-                    { id: 'pinned', label: 'SABİT' },
-                    { id: 'solved', label: 'ÇÖZÜLMÜŞ' },
-                    { id: 'popular', label: 'POPÜLER' }
-                  ].map((filter) => (
-                    <button
-                      key={filter.id}
-                      onClick={() => setActiveFilter(filter.id as any)}
-                      className={`px-4 h-11 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border outline-none ${
-                        activeFilter === filter.id
-                          ? `${scheme.bg} text-white border-transparent`
-                          : 'bg-background text-muted-foreground border-border hover:text-foreground'
-                      }`}
-                    >
-                      {filter.label}
-                    </button>
-                  ))}
-                </div>
-
-              </div>
-
-              <h2 className="vibe-section-title px-4 flex items-center gap-6">
-                <MessageSquare size={48} className="text-primary" /> Tartışmalar 
-                <span className="text-primary/20">{filteredTopics.length}</span>
-              </h2>
-              
-              <div className="grid gap-6">
-                {filteredTopics.length > 0 ? (
-                  filteredTopics.map((topic, index) => (
-                    <motion.div
-                      key={topic.id}
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                    >
-                      <DiscussionCard 
-                        topic={topic} 
-                        onSummarize={handleSummarize}
-                        isLoading={summarizingId === topic.id}
-                      />
-                      <AnimatePresence>
-                        {summaryResult && summaryResult.id === topic.id && (
-                          <motion.div 
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                            className="mt-3 p-6 md:p-8 bg-primary/5 border border-primary/10 rounded-2xl relative overflow-hidden ring-1 ring-primary/20"
-                          >
-                            <div className="flex items-center gap-2 text-primary font-bold text-[10px] md:text-xs uppercase tracking-widest mb-4">
-                              <Sparkles size={16} /> AI ÖZETİ
-                            </div>
-                            <div className="text-base md:text-lg leading-relaxed font-bold text-foreground italic">
-                              &ldquo;{summaryResult.text}&rdquo;
-                            </div>
-                            <button 
-                              onClick={() => setSummaryResult(null)}
-                              className="mt-6 text-[10px] font-black text-muted-foreground hover:text-primary transition-colors underline uppercase tracking-widest"
-                            >
-                              Özeti Kapat
-                            </button>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </motion.div>
-                  ))
-                ) : (
-                  <div className="text-center py-24 bg-card rounded-[2rem] border-2 border-dashed border-border px-8">
-                    <MessageSquare size={80} className="mx-auto text-muted-foreground/10 mb-8" />
-                    <p className="text-xl md:text-3xl font-black text-muted-foreground/40 mb-10 tracking-tighter">Aradığınız kriterlere uygun konu bulunamadı.</p>
-                    <Link 
-                      href={`/discussions/new?category_id=${community.id}`}
-                      className="bg-primary text-primary-foreground px-10 py-5 rounded-2xl font-black text-xl shadow-xl shadow-primary/20 inline-block"
-                    >
-                      İlk tartışmayı sen başlat!
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </section>
+              <Link 
+                href={`/discussions/new?category_id=${community.id}`}
+                className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/[0.08] transition-colors"
+              >
+                <Plus size={14} /> Başlık Aç
+              </Link>
+            </div>
           </div>
 
-          {/* Sidebar Area */}
-          <aside className="space-y-10">
+          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-white/[0.06]">
+            {meta.tags.map((tag, tIdx) => (
+              <span 
+                key={tIdx} 
+                className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-900/80 text-slate-300 border border-white/[0.06]"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </header>
+
+        {/* Layout: Main topics stream & Right Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* Main Discussions Column (2 cols on large screen) */}
+          <div className="lg:col-span-2 space-y-4">
             
-            {/* Rules of Community Card */}
-            <section className="vibe-card p-5 sm:p-6 border border-border w-full max-w-full">
-              <h2 className="text-2xl font-black mb-10 flex items-center gap-4 tracking-tighter text-foreground">
-                <Shield size={32} className="text-primary" /> KURALLAR
-              </h2>
-              <ul className="space-y-10">
+            {/* Search and Filters Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#111726]/80 border border-white/[0.08] rounded-xl p-3 backdrop-blur-md">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+                <input 
+                  type="text" 
+                  placeholder="Bu topluluk içinde ara..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-white/[0.06] bg-slate-900/60 text-xs text-slate-200 focus:ring-1 focus:ring-sky-500 outline-none placeholder:text-slate-500"
+                />
+              </div>
+
+              <div className="flex flex-wrap gap-1">
+                {[
+                  { id: 'all', label: 'Tümü' },
+                  { id: 'pinned', label: 'Sabit' },
+                  { id: 'solved', label: 'Çözüldü' },
+                  { id: 'popular', label: 'Popüler' }
+                ].map((filter) => (
+                  <button
+                    key={filter.id}
+                    onClick={() => setActiveFilter(filter.id as any)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                      activeFilter === filter.id
+                        ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Discussions List */}
+            <div className="space-y-3">
+              {filteredTopics.length > 0 ? (
+                filteredTopics.map((topic) => (
+                  <div key={topic.id} className="space-y-2">
+                    <DiscussionCard 
+                      topic={topic} 
+                      onSummarize={handleSummarize}
+                      isLoading={summarizingId === topic.id}
+                    />
+                    <AnimatePresence>
+                      {summaryResult && summaryResult.id === topic.id && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="p-4 bg-sky-500/5 border border-sky-500/20 rounded-xl space-y-2"
+                        >
+                          <div className="flex items-center gap-1.5 text-sky-400 text-xs font-semibold">
+                            <Sparkles size={14} /> AI Tartışma Özeti
+                          </div>
+                          <p className="text-xs text-slate-300 leading-relaxed italic">
+                            &ldquo;{summaryResult.text}&rdquo;
+                          </p>
+                          <button 
+                            onClick={() => setSummaryResult(null)}
+                            className="text-[11px] text-slate-400 hover:text-sky-400 underline transition-colors cursor-pointer"
+                          >
+                            Özeti Kapat
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-16 px-6 bg-[#111726]/60 rounded-2xl border border-dashed border-white/[0.08] space-y-3">
+                  <MessageSquare size={36} className="mx-auto text-slate-600" />
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-bold text-slate-200">Henüz Tartışma Bulunmuyor</h3>
+                    <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                      Bu grupta henüz konu açılmamış veya arama filtrenize uygun başlık yok.
+                    </p>
+                  </div>
+                  <Link 
+                    href={`/discussions/new?category_id=${community.id}`}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold transition-colors"
+                  >
+                    <Plus size={14} /> İlk Başlığı Siz Açın
+                  </Link>
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          {/* Right Sidebar Column (1 col on large screen) */}
+          <aside className="space-y-4">
+            
+            {/* Rules Card */}
+            <div className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-200">
+                <Shield size={16} className="text-sky-400" />
+                <span>Topluluk Kuralları</span>
+              </div>
+              <ul className="space-y-2.5 text-xs text-slate-300 leading-relaxed">
                 {meta.rules.map((rule, idx) => (
-                  <li className="flex gap-4" key={idx}>
-                    <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-black text-primary mt-1 border border-primary/20">
-                      {idx + 1}
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground leading-relaxed font-semibold uppercase tracking-wide">{rule}</p>
-                    </div>
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-sky-400 font-bold mt-0.5">•</span>
+                    <span>{rule}</span>
                   </li>
                 ))}
               </ul>
-            </section>
+            </div>
 
-            {/* Statistics */}
-            <div className="vibe-card p-5 sm:p-6 border border-border w-full max-w-full">
-              <h3 className="vibe-label ml-0 mb-10">İSTATİSTİKLER</h3>
-              <div className="space-y-8">
-                <div className="flex items-center justify-between border-b border-border pb-6">
-                  <span className="text-lg text-muted-foreground font-black flex items-center gap-4 tracking-tight"><Users size={24} /> Üyeler</span>
-                  <span className="text-2xl font-black text-primary tracking-tighter">
+            {/* Statistics Card */}
+            <div className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md space-y-3">
+              <div className="text-xs font-bold text-slate-200">Topluluk İstatistikleri</div>
+              <div className="space-y-2 text-xs">
+                <div className="flex items-center justify-between py-1.5 border-b border-white/[0.06]">
+                  <span className="text-slate-400 flex items-center gap-2"><Users size={14} className="text-slate-500" /> Üyeler</span>
+                  <span className="font-semibold text-slate-200">
                     {memberCount > 0 ? formatCompact(memberCount + meta.memberCount) : formatCompact(meta.memberCount)}
                   </span>
                 </div>
-                <div className="flex items-center justify-between border-b border-border pb-6">
-                  <span className="text-lg text-muted-foreground font-black flex items-center gap-4 tracking-tight"><MessageSquare size={24} /> Konular</span>
-                  <span className="text-2xl font-black text-primary tracking-tighter">{topics.length}</span>
+                <div className="flex items-center justify-between py-1.5 border-b border-white/[0.06]">
+                  <span className="text-slate-400 flex items-center gap-2"><MessageSquare size={14} className="text-slate-500" /> Konular</span>
+                  <span className="font-semibold text-slate-200">{topics.length}</span>
                 </div>
-                <div className="flex items-center justify-between border-b border-border pb-6">
-                  <span className="text-lg text-muted-foreground font-black flex items-center gap-4 tracking-tight"><Globe size={24} /> Görünürlük</span>
-                  <span className="vibe-label ml-0">AÇIK TOPLULUK</span>
+                <div className="flex items-center justify-between py-1.5 border-b border-white/[0.06]">
+                  <span className="text-slate-400 flex items-center gap-2"><Globe size={14} className="text-slate-500" /> Görünürlük</span>
+                  <span className="text-sky-400 font-medium">Açık Topluluk</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-lg text-muted-foreground font-black flex items-center gap-4 tracking-tight"><Shield size={24} /> Durum</span>
-                  <span className="text-[10px] font-black text-green-500 uppercase tracking-[0.2em]">GÜVENLİ</span>
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-slate-400 flex items-center gap-2"><Shield size={14} className="text-slate-500" /> Durum</span>
+                  <span className="text-emerald-400 font-medium">Moderatör Onaylı</span>
                 </div>
               </div>
             </div>
 
-            {/* Quick Help */}
-            <div className="bg-primary p-6 md:p-8 rounded-[2.5rem] text-primary-foreground relative overflow-hidden shadow-2xl group w-full max-w-full">
-              <div className="absolute -right-16 -bottom-16 opacity-10 group-hover:scale-110 transition-transform">
-                <Shield size={220} />
+            {/* Quick Contact Card */}
+            <div className="bg-gradient-to-br from-sky-950/40 to-slate-900/60 border border-sky-500/20 rounded-2xl p-5 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-sky-400">
+                <HelpCircle size={16} /> Destek &amp; Moderasyon
               </div>
-              <div className="relative z-10">
-                <h3 className="vibe-label ml-0 mb-6 text-white/70">HIZLI YARDIM</h3>
-                <p className="text-2xl font-black mb-10 leading-tight tracking-tight">Topluluk hakkında sorun mu var? Moderatörlere hemen yaz.</p>
-                <button className="w-full h-16 bg-white text-primary rounded-[1.5rem] font-black text-sm uppercase tracking-[0.2em] hover:bg-white/90 transition-all active:scale-95 shadow-2xl shadow-black/20">
-                  BİZE ULAŞIN
-                </button>
-              </div>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Bu topluluk ile ilgili hak ihlali, yanıltıcı bilgi veya erişilebilirlik sorunu yaşarsanız moderatör ekibimizle iletişime geçebilirsiniz.
+              </p>
+              <Link 
+                href="/messages"
+                className="inline-flex items-center justify-center w-full py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold transition-colors"
+              >
+                Moderatöre Ulaşın
+              </Link>
             </div>
+
           </aside>
+
         </div>
+
       </div>
     </DashboardLayout>
   );

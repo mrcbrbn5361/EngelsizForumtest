@@ -1,14 +1,13 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { Navbar } from '@/components/layout/navbar';
+import { Footer } from '@/components/layout/footer';
 import { ConversationList } from '@/components/messages/conversation-list';
 import { ChatBox } from '@/components/messages/chat-box';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase } from '@/lib/supabase';
-import { Profile } from '@/types/database';
-import { MessageSquare, Loader2, Menu, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { MessageSquare, Loader2, Menu } from 'lucide-react';
 
 export default function MessagesPage() {
   const { user, profile } = useAuth();
@@ -60,7 +59,7 @@ export default function MessagesPage() {
             ...conv,
             other_user: otherMember?.user,
             last_message: lastMsg,
-            unread_count: 0 // In a real app, you'd calculate this
+            unread_count: 0
           };
         }) || [];
 
@@ -74,7 +73,6 @@ export default function MessagesPage() {
 
     fetchConversations();
 
-    // Realtime update for conversations (last message)
     const channel = supabase
       .channel('conversations_updates')
       .on(
@@ -93,34 +91,38 @@ export default function MessagesPage() {
 
   if (!user || !profile) {
     return (
-      <DashboardLayout>
-        <div className="flex flex-col items-center justify-center h-[70vh] p-4 text-center">
-          <Loader2 className="animate-spin text-primary mb-4" size={48} />
-          <h1 className="text-2xl font-black uppercase tracking-widest">Yükleniyor...</h1>
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center p-4">
+          <Loader2 className="animate-spin text-sky-400 mb-2 size-7" />
+          <p className="text-xs text-slate-400">Mesajlar yükleniyor...</p>
         </div>
-      </DashboardLayout>
+        <Footer />
+      </div>
     );
   }
 
   return (
-    <DashboardLayout>
-      <main className="container mx-auto px-4 py-6 md:py-8 h-[calc(100vh-140px)] md:h-[calc(100vh-160px)] min-h-[500px] max-w-7xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2.5 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
-            <MessageSquare size={22} />
+    <div className="min-h-screen flex flex-col bg-background">
+      <Navbar />
+
+      <main className="flex-1 container mx-auto px-4 py-6 md:py-8 h-[calc(100vh-140px)] min-h-[500px] max-w-7xl flex flex-col">
+        <div className="flex items-center gap-2.5 mb-4 shrink-0">
+          <div className="p-2 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
+            <MessageSquare size={18} />
           </div>
           <div>
-            <h1 className="text-xl md:text-2xl font-extrabold text-foreground tracking-tight">Mesajlar</h1>
-            <p className="text-xs text-muted-foreground font-normal">Bireysel ve Özel Yazışmalarınız</p>
+            <h1 className="text-lg md:text-xl font-bold text-slate-100 tracking-tight">Özel Mesajlar</h1>
+            <p className="text-xs text-slate-400">Üyeler arası bireysel dayanışma ve yazışmalar</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 h-[calc(100%-80px)] gap-0 bg-card border border-border/80 rounded-2xl overflow-hidden shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-12 flex-1 min-h-0 bg-[#111726]/80 border border-white/[0.08] rounded-2xl overflow-hidden backdrop-blur-md">
           {/* List Sidebar */}
-          <div className={`${showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-4 lg:col-span-3 border-r border-border/80 h-full overflow-hidden`}>
-            <div className="p-3.5 border-b border-border/80 bg-muted/20 flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Sohbetler</span>
-              <div className="size-2 bg-sky-400 rounded-full animate-pulse" />
+          <div className={`${showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-4 lg:col-span-3 border-r border-white/[0.08] h-full overflow-hidden`}>
+            <div className="p-3 border-b border-white/[0.08] bg-slate-900/60 flex items-center justify-between">
+              <span className="text-xs font-semibold text-slate-300">Sohbetler</span>
+              <div className="size-2 bg-sky-400 rounded-full" />
             </div>
             <div className="flex-1 overflow-y-auto">
               <ConversationList 
@@ -136,14 +138,14 @@ export default function MessagesPage() {
           </div>
 
           {/* Chat Content */}
-          <div className={`${!showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-8 lg:col-span-9 h-full relative bg-background/50`}>
+          <div className={`${!showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-8 lg:col-span-9 h-full relative bg-slate-950/40`}>
             {selectedConversation ? (
               <>
                 <button 
                   onClick={() => setShowListOnMobile(true)}
-                  className="md:hidden absolute top-3 left-3 z-50 p-2 bg-card border border-border/80 rounded-xl shadow-sm cursor-pointer"
+                  className="md:hidden absolute top-3 left-3 z-50 p-1.5 bg-slate-900 border border-white/[0.08] rounded-lg text-slate-300 cursor-pointer"
                 >
-                  <Menu size={18} />
+                  <Menu size={16} />
                 </button>
                 <ChatBox 
                   conversationId={selectedConversation.id} 
@@ -152,15 +154,17 @@ export default function MessagesPage() {
                 />
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-center p-8 opacity-40">
-                <MessageSquare size={64} className="text-muted-foreground mb-4" />
-                <h3 className="text-lg font-bold tracking-tight text-foreground">Bir sohbet seçin</h3>
-                <p className="text-xs text-muted-foreground mt-1">Yazışmaya başlamak için sol listeden bir görüşme seçin</p>
+              <div className="flex flex-col items-center justify-center h-full text-center p-8 text-slate-500">
+                <MessageSquare size={48} className="mb-3 opacity-30 text-sky-400" />
+                <h3 className="text-sm font-semibold text-slate-300">Bir sohbet seçin</h3>
+                <p className="text-xs text-slate-500 mt-1 max-w-xs">Yazışmaya başlamak için sol listeden bir görüşme seçin veya üye profilinden mesaj gönderin.</p>
               </div>
             )}
           </div>
         </div>
       </main>
-    </DashboardLayout>
+
+      <Footer />
+    </div>
   );
 }
