@@ -174,25 +174,21 @@ export default function RegisterPage() {
   return (
     <SiteLayout>
       <div className="flex-1 min-h-[calc(100vh-140px)] flex items-center justify-center p-4 sm:p-6 bg-gradient-to-b from-muted/10 to-muted/30">
-        <main className="w-full max-w-xl">
+        <main className="w-full max-w-lg">
           <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="vibe-card p-8 sm:p-12 border-2 border-border shadow-2xl rounded-[2.5rem] bg-card relative overflow-hidden"
+            className="p-6 sm:p-10 border border-border/80 shadow-xs rounded-2xl bg-card relative overflow-hidden space-y-6"
           >
-            {/* Ambient Background Details */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -mr-12 -mt-12 -z-10" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl -ml-12 -mb-12 -z-10" />
-
             {/* Steps Progress Indicator */}
-            <div className="flex items-center justify-between mb-10 border-b border-border/60 pb-6">
+            <div className="flex items-center justify-between border-b border-border/60 pb-5">
               <StepIndicator num={1} label="Erişilebilirlik" active={step === 1} completed={step > 1} />
               <div className="flex-1 h-0.5 mx-3 bg-muted rounded-full overflow-hidden">
-                <div className={`h-full bg-primary transition-all duration-300 ${step > 1 ? 'w-full' : 'w-0'}`} />
+                <div className={`h-full bg-sky-500 transition-all duration-300 ${step > 1 ? 'w-full' : 'w-0'}`} />
               </div>
               <StepIndicator num={2} label="Profil" active={step === 2} completed={step > 2} />
               <div className="flex-1 h-0.5 mx-3 bg-muted rounded-full overflow-hidden">
-                <div className={`h-full bg-primary transition-all duration-300 ${step > 2 ? 'w-full' : 'w-0'}`} />
+                <div className={`h-full bg-sky-500 transition-all duration-300 ${step > 2 ? 'w-full' : 'w-0'}`} />
               </div>
               <StepIndicator num={3} label="Hesap" active={step === 3} completed={false} />
             </div>
@@ -206,9 +202,9 @@ export default function RegisterPage() {
             {error && (
               <div 
                 role="alert" 
-                className="flex items-start gap-3 p-4 mb-6 rounded-2xl bg-destructive/10 text-destructive border-2 border-destructive/20 font-bold text-xs uppercase tracking-wide leading-relaxed"
+                className="flex items-start gap-2.5 p-3.5 rounded-xl bg-destructive/10 text-destructive border border-destructive/20 font-bold text-xs leading-relaxed"
               >
-                <AlertCircle size={18} className="shrink-0 mt-0.5" />
+                <AlertCircle size={16} className="shrink-0 mt-0.5" />
                 <span>{error}</span>
               </div>
             )}
@@ -223,16 +219,16 @@ export default function RegisterPage() {
                   initial={{ opacity: 0, x: -15 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 15 }}
-                  className="space-y-6"
+                  className="space-y-5"
                 >
-                  <header className="mb-6">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full mb-3">
+                  <header className="space-y-1.5">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
                       <Sparkles size={10} className="fill-current" /> Adım 1: ERİŞİM SİHİRBAZI
                     </span>
-                    <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                       Arayüzü Özelleştirin
                     </h2>
-                    <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-2">
+                    <p className="text-xs text-muted-foreground font-normal leading-relaxed">
                       Sizin için en rahat okuma ve etkileşim ortamını oluşturun. Ayarlar anında uygulanır.
                     </p>
                   </header>
@@ -240,20 +236,20 @@ export default function RegisterPage() {
                   <div className="space-y-4">
                     
                     {/* Font Size Selector */}
-                    <div className="vibe-card p-5 border border-border bg-muted/15">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Type size={16} className="text-primary" />
-                        <h3 className="text-xs font-black uppercase tracking-wider text-foreground">Yazı Boyutu</h3>
+                    <div className="p-4 border border-border/80 rounded-xl bg-muted/15 space-y-2.5">
+                      <div className="flex items-center gap-2">
+                        <Type size={15} className="text-sky-400" />
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">Yazı Boyutu</h3>
                       </div>
-                      <div className="grid grid-cols-4 gap-2 bg-background p-1 rounded-xl border border-border">
+                      <div className="grid grid-cols-4 gap-2 bg-background p-1 rounded-xl border border-border/80">
                         {(['sm', 'md', 'lg', 'xl'] as const).map((sz) => (
                           <button
                             key={sz}
                             type="button"
                             onClick={() => updateSettings({ fontSize: sz })}
-                            className={`py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all outline-none ${
+                            className={`py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all outline-none cursor-pointer ${
                               fontSize === sz 
-                                ? 'bg-primary text-white shadow-md' 
+                                ? 'bg-sky-500 text-white shadow-xs' 
                                 : 'hover:bg-muted text-muted-foreground'
                             }`}
                             aria-label={`Yazı Boyutu ${sz.toUpperCase()}`}
@@ -265,11 +261,11 @@ export default function RegisterPage() {
                     </div>
 
                     {/* Quick Toggles */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       
                       {/* Dyslexic font toggle */}
                       <AccessibilityToggle
-                        icon={<BookOpen size={16} />}
+                        icon={<BookOpen size={15} />}
                         title="DİSLEKSİ FONTU"
                         checked={dyslexicFont}
                         onChange={(val) => updateSettings({ dyslexicFont: val })}
@@ -277,7 +273,7 @@ export default function RegisterPage() {
 
                       {/* High Contrast toggle */}
                       <AccessibilityToggle
-                        icon={<Award size={16} />}
+                        icon={<Award size={15} />}
                         title="YÜKSEK KONTRAST"
                         checked={highContrast}
                         onChange={(val) => updateSettings({ highContrast: val })}
@@ -285,7 +281,7 @@ export default function RegisterPage() {
 
                       {/* Bionic reading toggle */}
                       <AccessibilityToggle
-                        icon={<Compass size={16} />}
+                        icon={<Compass size={15} />}
                         title="BİYONİK OKUMA"
                         checked={bionicReading}
                         onChange={(val) => updateSettings({ bionicReading: val })}
@@ -293,7 +289,7 @@ export default function RegisterPage() {
 
                       {/* Reduced motion toggle */}
                       <AccessibilityToggle
-                        icon={<Sparkles size={16} />}
+                        icon={<Sparkles size={15} />}
                         title="HAREKETLERİ KIS"
                         checked={reducedMotion}
                         onChange={(val) => updateSettings({ reducedMotion: val })}
@@ -302,9 +298,9 @@ export default function RegisterPage() {
                     </div>
 
                     {/* Instant Dynamic Preview Card */}
-                    <div className="p-5 border-2 border-dashed border-primary/20 rounded-2xl bg-muted/5 mt-6">
-                      <span className="text-[9px] font-black uppercase tracking-widest text-primary/70 block mb-2">ANLIK ERİŞİLEBİLİRLİK ÖNİZLEMESİ</span>
-                      <div className="text-sm text-foreground/90 font-medium">
+                    <div className="p-4 border border-dashed border-sky-500/30 rounded-xl bg-sky-500/[0.03]">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400 block mb-1">ANLIK ERİŞİLEBİLİRLİK ÖNİZLEMESİ</span>
+                      <div className="text-xs sm:text-sm text-foreground/90 font-medium">
                         {previewText}
                       </div>
                     </div>
@@ -314,9 +310,9 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={handleNextStep}
-                    className="w-full vibe-button-primary h-14 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 mt-8"
+                    className="w-full h-11 bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer mt-4"
                   >
-                    DEVAM ET <ChevronRight size={14} className="stroke-[3]" />
+                    Devam Et <ChevronRight size={14} />
                   </button>
                 </motion.div>
               )}
@@ -328,59 +324,59 @@ export default function RegisterPage() {
                   initial={{ opacity: 0, x: -15 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 15 }}
-                  className="space-y-6"
+                  className="space-y-5"
                 >
-                  <header className="mb-6">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full mb-3">
+                  <header className="space-y-1.5">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
                       <Sparkles size={10} className="fill-current" /> Adım 2: KİŞİSEL PROFİL
                     </span>
-                    <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                       Kendinizi Tanıtın
                     </h2>
-                    <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-2">
+                    <p className="text-xs text-muted-foreground font-normal leading-relaxed">
                       Platformda görünecek isminizi ve kullanıcı adınızı belirleyin.
                     </p>
                   </header>
 
-                  <div className="space-y-5">
+                  <div className="space-y-4">
                     
                     {/* User name input */}
-                    <div className="space-y-2">
-                      <label htmlFor={usernameId} className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">
+                    <div className="space-y-1.5">
+                      <label htmlFor={usernameId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Kullanıcı Adı <span className="text-destructive" aria-hidden="true">*</span>
                       </label>
                       <div className="relative">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={18} />
+                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                         <input
                           id={usernameId}
                           type="text"
                           required
                           value={username}
                           onChange={(e) => setUsername(e.target.value)}
-                          className="vibe-input pl-12 pr-4 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
+                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
                           placeholder="ornek_kullanici"
                           autoComplete="username"
                         />
                       </div>
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1 block">
+                      <span className="text-[10px] text-muted-foreground font-medium block">
                         Yalnızca İngilizce harfler, rakamlar ve alt çizgi (_) kullanılabilir.
                       </span>
                     </div>
 
                     {/* Full Name input */}
-                    <div className="space-y-2">
-                      <label htmlFor={fullNameId} className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">
+                    <div className="space-y-1.5">
+                      <label htmlFor={fullNameId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Adınız Soyadınız <span className="text-destructive" aria-hidden="true">*</span>
                       </label>
                       <div className="relative">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={18} />
+                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                         <input
                           id={fullNameId}
                           type="text"
                           required
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
-                          className="vibe-input pl-12 pr-4 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
+                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
                           placeholder="Ahmet Yılmaz"
                           autoComplete="name"
                         />
@@ -390,20 +386,20 @@ export default function RegisterPage() {
                   </div>
 
                   {/* Navigation Buttons */}
-                  <div className="flex gap-4 mt-8">
+                  <div className="flex gap-3 mt-4">
                     <button
                       type="button"
                       onClick={handlePrevStep}
-                      className="flex-1 h-14 border-2 border-border hover:border-primary/30 rounded-2xl font-black text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground flex items-center justify-center gap-2 cursor-pointer transition-all"
+                      className="flex-1 h-11 border border-border/80 hover:border-sky-500/40 rounded-xl font-bold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-background"
                     >
-                      <ChevronLeft size={14} className="stroke-[3]" /> GERİ
+                      <ChevronLeft size={14} /> Geri
                     </button>
                     <button
                       type="button"
                       onClick={handleNextStep}
-                      className="flex-[2] vibe-button-primary h-14 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2"
+                      className="flex-[2] h-11 bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      İLERLE <ChevronRight size={14} className="stroke-[3]" />
+                      İlerle <ChevronRight size={14} />
                     </button>
                   </div>
                 </motion.div>
@@ -416,36 +412,36 @@ export default function RegisterPage() {
                   initial={{ opacity: 0, x: -15 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 15 }}
-                  className="space-y-6"
+                  className="space-y-5"
                 >
-                  <header className="mb-6">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full mb-3">
+                  <header className="space-y-1.5">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
                       <Sparkles size={10} className="fill-current" /> Adım 3: HESAP BİLGİLERİ
                     </span>
-                    <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                       Güvenliğinizi Sağlayın
                     </h2>
-                    <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mt-2">
+                    <p className="text-xs text-muted-foreground font-normal leading-relaxed">
                       Giriş yaparken kullanacağınız e-posta adresi ve şifrenizi belirleyin.
                     </p>
                   </header>
 
-                  <form onSubmit={handleRegister} className="space-y-5">
+                  <form onSubmit={handleRegister} className="space-y-4">
                     
                     {/* E-mail Input */}
-                    <div className="space-y-2">
-                      <label htmlFor={emailId} className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">
+                    <div className="space-y-1.5">
+                      <label htmlFor={emailId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         E-posta Adresi <span className="text-destructive" aria-hidden="true">*</span>
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={18} />
+                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                         <input
                           id={emailId}
                           type="email"
                           required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="vibe-input pl-12 pr-4 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
+                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
                           placeholder="ornek@adresiniz.com"
                           autoComplete="email"
                         />
@@ -453,47 +449,47 @@ export default function RegisterPage() {
                     </div>
 
                     {/* Password Input */}
-                    <div className="space-y-2">
-                      <label htmlFor={passwordId} className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">
+                    <div className="space-y-1.5">
+                      <label htmlFor={passwordId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Şifre <span className="text-destructive" aria-hidden="true">*</span>
                       </label>
                       <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={18} />
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                         <input
                           id={passwordId}
                           type={showPassword ? "text" : "password"}
                           required
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="vibe-input pl-12 pr-12 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
+                          className="w-full h-11 pl-10 pr-10 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
                           placeholder="En az 6 karakter"
                           autoComplete="new-password"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-foreground cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/20 rounded p-1"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer outline-none p-1"
                           aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
                         >
-                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
                       </div>
                     </div>
 
                     {/* Password Confirm Input */}
-                    <div className="space-y-2">
-                      <label htmlFor={passwordConfirmId} className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">
+                    <div className="space-y-1.5">
+                      <label htmlFor={passwordConfirmId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         Şifre Tekrarı <span className="text-destructive" aria-hidden="true">*</span>
                       </label>
                       <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={18} />
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                         <input
                           id={passwordConfirmId}
                           type={showPassword ? "text" : "password"}
                           required
                           value={passwordConfirm}
                           onChange={(e) => setPasswordConfirm(e.target.value)}
-                          className="vibe-input pl-12 pr-4 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
+                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
                           placeholder="Şifrenizi tekrar girin"
                           autoComplete="new-password"
                         />
@@ -501,25 +497,25 @@ export default function RegisterPage() {
                     </div>
 
                     {/* Navigation Buttons */}
-                    <div className="flex gap-4 mt-8 pt-2">
+                    <div className="flex gap-3 mt-4">
                       <button
                         type="button"
                         onClick={handlePrevStep}
-                        className="flex-1 h-14 border-2 border-border hover:border-primary/30 rounded-2xl font-black text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground flex items-center justify-center gap-2 cursor-pointer transition-all"
+                        className="flex-1 h-11 border border-border/80 hover:border-sky-500/40 rounded-xl font-bold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-background"
                       >
-                        <ChevronLeft size={14} className="stroke-[3]" /> GERİ
+                        <ChevronLeft size={14} /> Geri
                       </button>
                       <button
                         type="submit"
                         disabled={loading}
-                        className="flex-[2] vibe-button-primary h-14 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3"
+                        className="flex-[2] h-11 bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                       >
                         {loading ? (
                           <Loader2 className="animate-spin" size={16} />
                         ) : (
-                          <UserPlus size={16} className="stroke-[3]" />
+                          <UserPlus size={16} />
                         )}
-                        {loading ? 'KAYDEDİLİYOR...' : 'KAYDI TAMAMLA'}
+                        {loading ? 'Kaydediliyor...' : 'Kaydı Tamamla'}
                       </button>
                     </div>
 
@@ -530,15 +526,15 @@ export default function RegisterPage() {
             </AnimatePresence>
 
             {/* Login Link Promoters */}
-            <footer className="mt-10 pt-8 border-t border-border text-center">
-              <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-4">
+            <footer className="pt-4 border-t border-border/60 text-center space-y-3">
+              <p className="text-xs text-muted-foreground font-normal">
                 Zaten bir hesabınız var mı?
               </p>
               <Link 
                 href="/login" 
-                className="inline-flex items-center gap-2 px-6 py-3 border-2 border-border hover:border-primary/25 text-muted-foreground hover:text-primary font-black text-xs uppercase tracking-widest rounded-2xl transition-all cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-sky-500/30 hover:border-sky-500 text-sky-400 hover:bg-sky-500/10 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer"
               >
-                <LogIn size={14} className="stroke-[3]" /> Giriş Yap
+                <LogIn size={14} /> Giriş Yap
               </Link>
             </footer>
 
@@ -556,20 +552,20 @@ function StepIndicator({ num, label, active, completed }: { num: number, label: 
   return (
     <div className="flex items-center gap-2 shrink-0 select-none">
       <div 
-        className={`size-8 rounded-full flex items-center justify-center text-xs font-black transition-all ${
+        className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
           completed 
-            ? 'bg-primary text-white' 
+            ? 'bg-sky-500 text-white' 
             : active 
-              ? 'bg-primary/20 text-primary border-2 border-primary shadow-sm' 
+              ? 'bg-sky-500/20 text-sky-400 border-2 border-sky-500 shadow-xs' 
               : 'bg-muted text-muted-foreground border border-border/80'
         }`}
         aria-hidden="true"
       >
-        {completed ? <Check size={14} className="stroke-[4]" /> : num}
+        {completed ? <Check size={13} className="stroke-[3]" /> : num}
       </div>
       <span 
-        className={`hidden sm:inline text-[10px] font-black uppercase tracking-wider transition-colors ${
-          active ? 'text-primary' : completed ? 'text-foreground' : 'text-muted-foreground/60'
+        className={`hidden sm:inline text-[11px] font-bold uppercase tracking-wider transition-colors ${
+          active ? 'text-sky-400' : completed ? 'text-foreground' : 'text-muted-foreground/60'
         }`}
       >
         {label}
@@ -592,10 +588,10 @@ function AccessibilityToggle({ icon, title, checked, onChange }: ToggleProps) {
   const toggleId = useMemo(() => `toggle-${title.replace(/\s+/g, '-').toLowerCase()}`, [title]);
 
   return (
-    <div className="vibe-card p-4 border border-border bg-background flex items-center justify-between transition-all hover:border-primary/20">
-      <div className="flex items-center gap-2.5 min-w-0">
-        <span className="text-primary shrink-0">{icon}</span>
-        <span className="text-[10px] font-black uppercase tracking-wider text-foreground truncate">{title}</span>
+    <div className="p-3.5 border border-border/80 bg-background rounded-xl flex items-center justify-between transition-all hover:border-sky-500/30">
+      <div className="flex items-center gap-2 min-w-0">
+        <span className="text-sky-400 shrink-0">{icon}</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-foreground truncate">{title}</span>
       </div>
 
       <button
@@ -604,14 +600,14 @@ function AccessibilityToggle({ icon, title, checked, onChange }: ToggleProps) {
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={`w-10 h-5.5 rounded-full p-0.5 transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-primary/20 shrink-0 cursor-pointer ${
-          checked ? 'bg-primary' : 'bg-muted-foreground/30'
+        className={`w-9 h-5 rounded-full p-0.5 transition-colors duration-300 outline-none shrink-0 cursor-pointer ${
+          checked ? 'bg-sky-500' : 'bg-muted-foreground/30'
         }`}
         aria-label={title}
       >
         <div 
-          className={`size-4.5 bg-white rounded-full transition-transform duration-300 shadow-sm ${
-            checked ? 'translate-x-4.5' : 'translate-x-0'
+          className={`size-4 bg-white rounded-full transition-transform duration-300 shadow-xs ${
+            checked ? 'translate-x-4' : 'translate-x-0'
           }`}
         />
       </button>

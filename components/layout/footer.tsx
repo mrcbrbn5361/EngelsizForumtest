@@ -1,74 +1,134 @@
 import React from 'react';
 import Link from 'next/link';
-import { MessageSquare, Users, Info, Shield, HelpCircle, Mail, MapPin } from 'lucide-react';
+import { MessageSquare, Users, Info, Shield, HelpCircle, Mail, MapPin, Calculator, Heart } from 'lucide-react';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-card w-full" role="contentinfo">
-      <div className="vibe-container py-20 md:py-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
+    <footer id="main-footer" className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 w-full mt-auto" role="contentinfo">
+      <div className="vibe-container py-12 md:py-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
           {/* Brand Column */}
-          <div className="space-y-8 text-center md:text-left">
-            <Link href="/" className="inline-block group">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center h-10 w-10 bg-blue-600 text-white font-black rounded-2xl text-xl shadow-xl shadow-blue-500/20 group-hover:rotate-6 transition-transform">E</div>
-                <div className="text-2xl font-black tracking-tighter uppercase">
-                  ENGELSİZ<span className="text-blue-600 dark:text-blue-400">FORUM</span>
-                </div>
+          <div className="space-y-4 text-left">
+            <Link href="/" className="inline-flex items-center gap-2.5 group">
+              <div className="flex items-center justify-center h-8 w-8 bg-sky-600 text-white font-black rounded-lg text-base shadow-xs group-hover:scale-105 transition-transform">
+                E
+              </div>
+              <div className="text-xl font-black tracking-tight text-slate-900 dark:text-slate-100 uppercase">
+                ENGELSİZ<span className="text-sky-600 dark:text-sky-400">FORUM</span>
               </div>
             </Link>
-            <p className="text-muted-foreground text-base font-medium leading-relaxed max-w-xs mx-auto md:mx-0">
-              Türkiye&apos;nin ilk tam erişilebilir, yapay zeka destekli topluluk platformunun <span className="text-primary font-bold">Prototip ve Demo Sürümü</span>. Tüm özellikler tam işlevseldir.
+            <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed max-w-sm">
+              Türkiye&apos;nin erişilebilir, yapay zeka destekli kapsayıcı topluluk platformu. Engelli bireyler ve aileleri için güncel mevzuat, dayanışma ve rehberlik alanı.
             </p>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              Canlı Prototip &amp; Demo Sürümü
+            </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="space-y-8 text-center md:text-left">
-            <h3 className="vibe-label ml-0">PLATFORM</h3>
-            <ul className="space-y-4 text-sm font-black text-muted-foreground uppercase tracking-widest">
-              <li><Link href="/discussions" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><MessageSquare size={18} className="text-primary" /> TARTIŞMALAR</Link></li>
-              <li><Link href="/communities" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Users size={18} className="text-primary" /> TOPLULUKLAR</Link></li>
-              <li><Link href="/about" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Info size={18} className="text-primary" /> HAKKIMIZDA</Link></li>
-              <li><Link href="/help" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><HelpCircle size={18} className="text-primary" /> YARDIM MERKEZİ</Link></li>
+          {/* Platform Links */}
+          <div className="space-y-3.5 text-left">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+              Topluluk &amp; Platform
+            </h3>
+            <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400">
+              <li>
+                <Link href="/discussions" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-2">
+                  <MessageSquare size={15} className="text-slate-400 dark:text-slate-500" /> Tartışma Başlıkları
+                </Link>
+              </li>
+              <li>
+                <Link href="/communities" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-2">
+                  <Users size={15} className="text-slate-400 dark:text-slate-500" /> İlgi &amp; Tanı Toplulukları
+                </Link>
+              </li>
+              <li>
+                <Link href="/hesaplama" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-2">
+                  <Calculator size={15} className="text-slate-400 dark:text-slate-500" /> Hak &amp; Maaş Hesaplama
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-2">
+                  <Info size={15} className="text-slate-400 dark:text-slate-500" /> Hakkımızda &amp; Misyon
+                </Link>
+              </li>
+              <li>
+                <Link href="/help" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-2">
+                  <HelpCircle size={15} className="text-slate-400 dark:text-slate-500" /> Yardım Merkezi &amp; SSS
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Legal / Safety */}
-          <div className="space-y-8 text-center md:text-left">
-            <h3 className="vibe-label ml-0">GÜVENLİK</h3>
-            <ul className="space-y-4 text-sm font-black text-muted-foreground uppercase tracking-widest">
-              <li><Link href="/security" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Shield size={18} className="text-primary" /> BİLGİ GÜVENLİĞİ</Link></li>
-              <li><Link href="/privacy" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Shield size={18} className="text-primary" /> GİZLİLİK POLİTİKASI</Link></li>
-              <li><Link href="/terms" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><Info size={18} className="text-primary" /> KULLANIM ŞARTLARI</Link></li>
-              <li><Link href="/accessibility" className="hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-3"><HelpCircle size={18} className="text-primary" /> ERİŞİLEBİLİRLİK BEYANI</Link></li>
+          <div className="space-y-3.5 text-left">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+              Erişilebilirlik &amp; Hukuk
+            </h3>
+            <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400">
+              <li>
+                <Link href="/accessibility" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-2">
+                  <Shield size={15} className="text-slate-400 dark:text-slate-500" /> Erişilebilirlik Beyanı (WCAG 2.1)
+                </Link>
+              </li>
+              <li>
+                <Link href="/security" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-2">
+                  <Shield size={15} className="text-slate-400 dark:text-slate-500" /> Bilgi Güvenliği Politikası
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-2">
+                  <Shield size={15} className="text-slate-400 dark:text-slate-500" /> KVKK &amp; Gizlilik Politikası
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-2">
+                  <Info size={15} className="text-slate-400 dark:text-slate-500" /> Kullanım &amp; Topluluk Şartları
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Contact */}
-          <div className="space-y-8 text-center md:text-left">
-            <h3 className="vibe-label ml-0">İLETİŞİM</h3>
-            <ul className="space-y-6 text-sm font-black text-muted-foreground uppercase tracking-widest">
-              <li className="flex items-start justify-center md:justify-start gap-4">
-                <MapPin size={22} className="text-primary shrink-0" />
-                <span className="text-xs leading-relaxed">Bağcılar / İstanbul, Türkiye</span>
+          <div className="space-y-3.5 text-left">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+              İletişim &amp; Destek
+            </h3>
+            <ul className="space-y-3 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400">
+              <li className="flex items-start gap-2.5">
+                <MapPin size={16} className="text-sky-600 dark:text-sky-400 shrink-0 mt-0.5" />
+                <span className="text-xs sm:text-sm">Bağcılar / İstanbul, Türkiye</span>
               </li>
-              <li className="flex items-center justify-center md:justify-start gap-4">
-                <Mail size={22} className="text-primary shrink-0" />
-                <a href="mailto:miracbirben@engelsizforum.com" className="hover:text-primary transition-colors text-xs">miracbirben@engelsizforum.com</a>
+              <li className="flex items-center gap-2.5">
+                <Mail size={16} className="text-sky-600 dark:text-sky-400 shrink-0" />
+                <a href="mailto:miracbirben@engelsizforum.com" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-xs sm:text-sm break-all">
+                  miracbirben@engelsizforum.com
+                </a>
+              </li>
+              <li className="pt-1">
+                <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                  <span>Erişilebilirlik önceliği ile tasarlandı</span>
+                  <Heart size={13} className="text-rose-500 fill-rose-500 inline" />
+                </div>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-10 border-t border-border flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="text-[10px] md:text-xs font-black text-muted-foreground uppercase tracking-[0.3em] text-center">
-            © {currentYear} ENGELSİZFORUM • PROTOTİP & DEMO SÜRÜMÜ
+        {/* Bottom Bar */}
+        <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+            © {currentYear} EngelsizForum. Tüm hakları saklıdır.
           </div>
-          <div className="flex items-center gap-6 text-[8px] md:text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
-            <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> PROTOTİP & DEMO</span>
-            <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary" /> TAM İŞLEVSEL</span>
+          <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              Sistem Aktif
+            </span>
+            <span className="hidden sm:inline">•</span>
+            <span className="text-slate-400 dark:text-slate-500">v1.4.0</span>
           </div>
         </div>
       </div>

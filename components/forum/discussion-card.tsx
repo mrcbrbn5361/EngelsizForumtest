@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { MessageSquare, User, Calendar, Pin, Sparkles, Loader2, Trash2 } from 'lucide-react';
+import { MessageSquare, Calendar, Pin, Sparkles, Loader2, Trash2, CheckCircle2, Lock } from 'lucide-react';
 import { Topic } from '@/types/database';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { UserRoleBadge } from '@/components/ui/user-badge';
@@ -19,16 +19,10 @@ interface DiscussionCardProps {
 
 /**
  * Accessible Discussion Card with AI Summary feature.
+ * Modern Discourse & Linear inspired styling (WCAG AA).
  */
 export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCardProps) {
   const { isStaff } = useRole();
-
-  // ... rest of the component
-  
-  // In the JSX, conditionally render the AI button:
-  // {onSummarize && (
-  //   <button ... onClick={(e) => { ... onSummarize(topic.id); }} ...>
-  // ...
 
   const handleDelete = async () => {
     if (!confirm('Bu tartışmayı silmek istediğinize emin misiniz?')) return;
@@ -39,52 +33,54 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
 
   return (
     <motion.article 
-      whileHover={{ y: -4 }}
-      className={`vibe-card vibe-card-hover relative p-6 md:p-8 ${
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.15 }}
+      className={`group relative p-5 sm:p-6 rounded-2xl border transition-all duration-200 ${
         topic.is_pinned 
-          ? 'border-primary/30 bg-primary/[0.02] shadow-[0_0_20px_-12px_rgba(var(--primary),0.2)]' 
-          : ''
+          ? 'bg-sky-500/[0.04] border-sky-500/30 shadow-[0_0_20px_-10px_rgba(14,165,233,0.15)]' 
+          : 'bg-card/70 hover:bg-card border-border/80 hover:border-sky-500/30 shadow-xs hover:shadow-md'
       }`}
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-3 sm:gap-4">
         <div className="flex-1 min-w-0">
-          <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground/60">
+          <div className="mb-2 flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80">
             {topic.is_pinned && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[10px] md:text-xs font-bold text-primary shrink-0">
-                <Pin size={10} className="md:w-3 md:h-3" /> <span className="hidden sm:inline">SABİT</span>
+              <span className="inline-flex items-center gap-1 rounded-md bg-sky-500/10 px-2 py-0.5 text-[10px] font-black text-sky-400 border border-sky-500/20 shrink-0">
+                <Pin size={11} /> <span>SABİT</span>
               </span>
             )}
             {topic.is_solved && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-3 py-1 text-[10px] md:text-xs font-bold text-green-600 shrink-0">
-                ÇÖZÜLDÜ
+              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-black text-emerald-400 border border-emerald-500/20 shrink-0">
+                <CheckCircle2 size={11} /> <span>ÇÖZÜLDÜ</span>
               </span>
             )}
             {topic.is_locked && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-[10px] md:text-xs font-bold text-red-600 shrink-0">
-                KİLİTLİ
+              <span className="inline-flex items-center gap-1 rounded-md bg-rose-500/10 px-2 py-0.5 text-[10px] font-black text-rose-400 border border-rose-500/20 shrink-0">
+                <Lock size={11} /> <span>KİLİTLİ</span>
               </span>
             )}
-            <span className="truncate">
+            <span className="text-sky-400/90 font-black truncate max-w-[140px] sm:max-w-[200px]">
               {topic.category?.name || 'GENEL'}
             </span>
-            <span className="hidden sm:inline">•</span>
-            <span className="hidden sm:inline">{topic.views_count || 0} GÖRÜNTÜLENME</span>
+            <span className="text-muted-foreground/40">•</span>
+            <span className="whitespace-nowrap">{topic.views_count || 0} GÖRÜNTÜLENME</span>
           </div>
-          <h2 className="text-lg md:text-2xl font-black leading-tight group-hover:text-primary transition-colors tracking-tight [overflow-wrap:anywhere] [hyphens:auto]" lang="tr">
-            <Link href={`/discussions/${topic.id}`} className="outline-none after:absolute after:inset-0 after:content-[''] after:z-0">
+
+          <h2 className="text-base sm:text-lg md:text-xl font-bold leading-snug text-foreground group-hover:text-sky-400 transition-colors tracking-tight break-words" lang="tr">
+            <Link href={`/discussions/${topic.id}`} className="outline-none focus-visible:underline after:absolute after:inset-0 after:content-[''] after:z-0">
               {topic.title}
             </Link>
           </h2>
         </div>
         
-        <div className="flex gap-2 relative z-10">
+        <div className="flex items-center gap-1.5 sm:gap-2 relative z-10 shrink-0">
           {isStaff && (
             <button
               onClick={handleDelete}
-              className="flex h-9 md:h-11 items-center justify-center rounded-xl bg-red-500/10 px-3 text-red-600 hover:bg-red-500 hover:text-white transition-all border border-red-500/10"
+              className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all border border-rose-500/20"
               aria-label="Tartışmayı sil"
             >
-              <Trash2 size={16} />
+              <Trash2 size={14} />
             </button>
           )}
 
@@ -96,26 +92,26 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
                 onSummarize(topic.id);
               }}
               disabled={isLoading}
-              className="flex h-9 md:h-11 items-center justify-center gap-2 rounded-xl bg-primary/5 px-3 md:px-5 text-[10px] md:text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all disabled:opacity-50 border border-primary/10 group/ai uppercase tracking-widest"
+              className="flex h-8 sm:h-9 items-center justify-center gap-1.5 rounded-xl bg-sky-500/10 px-2.5 sm:px-3.5 text-[10px] sm:text-xs font-bold text-sky-400 hover:bg-sky-500 hover:text-white transition-all disabled:opacity-50 border border-sky-500/20 group/ai uppercase tracking-wider"
               aria-label="AI ile özetle"
             >
               {isLoading ? (
-                <Loader2 className="animate-spin" size={14} />
+                <Loader2 className="animate-spin" size={13} />
               ) : (
-                <Sparkles size={14} className="group-hover/ai:rotate-12 transition-transform" />
+                <Sparkles size={13} className="group-hover/ai:rotate-12 transition-transform" />
               )}
-              <span className="hidden sm:inline">{isLoading ? 'ÖZETLENİYOR...' : 'AI ÖZETLE'}</span>
+              <span className="hidden sm:inline whitespace-nowrap">{isLoading ? 'ÖZETLENİYOR...' : 'AI ÖZET'}</span>
             </button>
           )}
         </div>
       </div>
 
-      <p className="line-clamp-2 text-sm md:text-base text-muted-foreground leading-relaxed relative z-10 pointer-events-none font-medium">
+      <p className="mt-2.5 line-clamp-2 text-xs sm:text-sm text-muted-foreground leading-relaxed relative z-10 pointer-events-none font-normal">
         {topic.content}
       </p>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] md:text-xs text-muted-foreground relative z-10">
-        <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-2.5 min-w-0 relative z-20 pointer-events-auto hover:opacity-80 transition-opacity">
+      <div className="mt-4 pt-3 border-t border-border/40 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-[11px] text-muted-foreground relative z-10">
+        <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-2 min-w-0 relative z-20 pointer-events-auto hover:opacity-80 transition-opacity">
           <UserAvatar 
             src={topic.author?.avatar_url}
             username={topic.author?.username}
@@ -124,19 +120,23 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
             isOnline={true}
           />
           <div className="flex flex-col min-w-0 text-left">
-            <span className="font-bold text-foreground truncate max-w-[120px] sm:max-w-none hover:underline text-left">
+            <span className="font-semibold text-foreground truncate max-w-[120px] sm:max-w-[180px] hover:underline text-left">
               {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
             </span>
             <UserRoleBadge role={topic.author?.role} size="xs" />
           </div>
         </Link>
-        <div className="flex items-center gap-1.5 opacity-70 whitespace-nowrap">
-          <Calendar size={12} className="md:w-3.5 md:h-3.5" />
-          <span className="font-bold tracking-wider uppercase">{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
-        </div>
-        <div className="flex items-center gap-1.5 opacity-70 whitespace-nowrap">
-          <MessageSquare size={12} className="md:w-3.5 md:h-3.5" />
-          <span className="font-bold tracking-wider uppercase">{(topic.comments as any)?.[0]?.count || 0} YANIT</span>
+
+        <div className="flex items-center gap-3 text-muted-foreground/80 shrink-0">
+          <div className="flex items-center gap-1.5 whitespace-nowrap">
+            <Calendar size={12} className="text-sky-400/80" />
+            <span className="font-medium">{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
+          </div>
+          <div className="flex items-center gap-1.5 whitespace-nowrap">
+            <MessageSquare size={12} className="text-sky-400/80" />
+            <span className="font-bold text-foreground">{(topic.comments as any)?.[0]?.count || (topic as any).comments_count || 0}</span>
+            <span className="hidden sm:inline">YANIT</span>
+          </div>
         </div>
       </div>
     </motion.article>

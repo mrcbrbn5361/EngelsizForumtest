@@ -135,7 +135,7 @@ function NewTopicForm() {
       <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
         <h1 className="text-3xl font-bold mb-4">Lütfen giriş yapın</h1>
         <p className="text-muted-foreground mb-8 max-w-sm">Yeni bir tartışma başlatmak için üye girişi yapmalısınız.</p>
-        <button onClick={() => router.push('/login')} className="vibe-button-primary">Giriş Yap</button>
+        <button onClick={() => router.push('/login')} className="px-6 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm cursor-pointer">Giriş Yap</button>
       </div>
     );
   }
@@ -144,35 +144,35 @@ function NewTopicForm() {
     <main className="flex-1 container mx-auto px-4 py-8 max-w-3xl">
       <button 
         onClick={() => router.back()} 
-        className="mb-6 flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors"
+        className="mb-6 inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-sky-400 transition-colors uppercase tracking-wider cursor-pointer"
       >
-        <ArrowLeft size={16} /> GERİ DÖN
+        <ArrowLeft size={14} /> Geri Dön
       </button>
 
-      <div className="vibe-card p-6 md:p-10 space-y-8">
-        <header className="space-y-2">
-          <h1 className="text-2xl md:text-3xl font-black text-foreground">Yeni Konu Başlat</h1>
-          <p className="text-muted-foreground text-sm font-medium">
-            Topluluk üyelerine soru sorun, mevzuat deneyimlerinizi paylaşın veya emsal karar yayınlayın.
+      <div className="bg-card border border-border/80 rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm">
+        <header className="space-y-1.5 border-b border-border/60 pb-4">
+          <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">Yeni Konu Başlat</h1>
+          <p className="text-muted-foreground text-xs sm:text-sm font-normal">
+            Topluluk üyelerine soru sorun, mevzuat deneyimlerinizi paylaşın veya emsal kararları yayınlayın.
           </p>
         </header>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Preset Tag Selection */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <Tag size={14} className="text-primary" /> Hızlı Etiket Seçimi
+              <Tag size={13} className="text-sky-400" /> Hızlı Konu Etiketi
             </label>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {PRESET_TAGS.map((tag) => (
                 <button
                   key={tag}
                   type="button"
                   onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
                     selectedTag === tag 
-                      ? 'bg-primary text-primary-foreground border-primary' 
-                      : 'bg-muted hover:bg-card text-muted-foreground border-border'
+                      ? 'bg-sky-500 text-white border-sky-500 shadow-sm' 
+                      : 'bg-muted/30 hover:bg-muted/60 text-muted-foreground hover:text-foreground border-border/80'
                   }`}
                 >
                   {tag}
@@ -181,7 +181,7 @@ function NewTopicForm() {
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label htmlFor="title" className="text-xs font-bold uppercase tracking-wider text-foreground">
               Konu Başlığı *
             </label>
@@ -193,11 +193,11 @@ function NewTopicForm() {
               placeholder="Örn: 2026 ÖTV üst sınırı ile ilgili bayi faturası deneyimlerim" 
               value={title} 
               onChange={e => setTitle(e.target.value)}
-              className="vibe-input font-semibold text-base"
+              className="vibe-input font-medium text-sm sm:text-base"
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label htmlFor="category" className="text-xs font-bold uppercase tracking-wider text-foreground">
               Kategori *
             </label>
@@ -207,7 +207,7 @@ function NewTopicForm() {
               disabled={loading}
               value={categoryId} 
               onChange={e => setCategoryId(e.target.value)}
-              className="vibe-input text-sm font-semibold cursor-pointer"
+              className="vibe-input text-xs sm:text-sm font-medium cursor-pointer"
             >
               <option value="">Kategori Seçin...</option>
               {categories.map(cat => (
@@ -216,23 +216,23 @@ function NewTopicForm() {
             </select>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold uppercase tracking-wider text-foreground">
                 Konu Detayı (Markdown / Zengin Metin) *
               </label>
-              <span className="text-[10px] text-primary font-bold flex items-center gap-1">
-                <Eye size={12} /> Görsel Yüklemelerde Otomatik Alt-Metin Eklenir
+              <span className="text-[11px] text-sky-400 font-medium flex items-center gap-1">
+                <Eye size={12} /> Görsellerde otomatik erişilebilir alt-metin desteklenir
               </span>
             </div>
             <TopicEditor value={content} onChange={setContent} />
           </div>
 
           {/* Soru Konusu Checkbox */}
-          <div className="p-4 bg-muted/50 rounded-xl border border-border flex items-center justify-between">
+          <div className="p-3.5 bg-muted/20 rounded-xl border border-border/60 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 text-primary rounded-lg">
-                <HelpCircle size={20} />
+              <div className="p-2 bg-sky-500/10 text-sky-400 rounded-lg shrink-0">
+                <HelpCircle size={18} />
               </div>
               <div>
                 <div className="text-xs font-bold text-foreground">Soru Konusu (Çözüm Bekliyor)</div>
@@ -245,27 +245,27 @@ function NewTopicForm() {
               type="checkbox"
               checked={isQuestion}
               onChange={e => setIsQuestion(e.target.checked)}
-              className="w-5 h-5 rounded text-primary focus:ring-primary cursor-pointer"
+              className="w-4 h-4 rounded text-sky-500 focus:ring-sky-500 cursor-pointer"
             />
           </div>
 
           {isStaff && (
-            <div className="p-4 bg-primary/5 rounded-xl border border-primary/20 flex gap-6 text-xs font-bold">
-              <label className="flex items-center gap-2 cursor-pointer">
+            <div className="p-3.5 bg-sky-500/5 rounded-xl border border-sky-500/20 flex gap-6 text-xs font-bold">
+              <label className="flex items-center gap-2 cursor-pointer text-foreground">
                 <input 
                   type="checkbox" 
                   checked={isPinned} 
                   onChange={e => setIsPinned(e.target.checked)}
-                  className="rounded text-primary"
+                  className="rounded text-sky-500 focus:ring-sky-500 cursor-pointer"
                 />
                 <span>Konuyu Sabitle</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer text-foreground">
                 <input 
                   type="checkbox" 
                   checked={isLocked} 
                   onChange={e => setIsLocked(e.target.checked)}
-                  className="rounded text-primary"
+                  className="rounded text-sky-500 focus:ring-sky-500 cursor-pointer"
                 />
                 <span>Konuyu Kilitle</span>
               </label>
@@ -275,10 +275,10 @@ function NewTopicForm() {
           <button 
             type="submit" 
             disabled={loading}
-            className="vibe-button-primary w-full py-3.5 text-sm flex items-center justify-center gap-2"
+            className="w-full py-3 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all shadow-sm disabled:opacity-50"
           >
-            {loading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-            <span>{loading ? 'Yayınlanıyor...' : 'KONUYU YAYINLA'}</span>
+            {loading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+            <span>{loading ? 'Yayınlanıyor...' : 'Konuyu Yayınla'}</span>
           </button>
         </form>
       </div>

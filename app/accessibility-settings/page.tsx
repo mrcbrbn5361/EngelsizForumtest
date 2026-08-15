@@ -22,50 +22,50 @@ export default function AccessibilitySettingsPage() {
 
   return (
     <SiteLayout>
-      <div className="vibe-container py-12 max-w-4xl mx-auto space-y-12">
-        <header className="space-y-4 text-center">
-          <div className="inline-flex p-4 bg-primary/10 text-primary rounded-3xl mb-4">
-            <AccessibilityIcon size={48} strokeWidth={3} />
+      <div className="container mx-auto px-4 py-10 md:py-16 max-w-4xl space-y-10">
+        <header className="space-y-3 text-center">
+          <div className="inline-flex p-3.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-2xl mb-2">
+            <AccessibilityIcon size={36} />
           </div>
-          <h1 className="vibe-section-title !text-4xl">Görünüm ve Erişilebilirlik</h1>
-          <p className="text-muted-foreground font-medium max-w-xl mx-auto">
-            EngelsizForum'u kendinize göre özelleştirin. Bu ayarlar tarayıcınızda saklanır ve anında uygulanır.
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">Görünüm ve Erişilebilirlik</h1>
+          <p className="text-sm sm:text-base text-muted-foreground font-normal max-w-xl mx-auto leading-relaxed">
+            EngelsizForum&apos;u ihtiyaçlarınıza göre özelleştirin. Bu ayarlar tarayıcınızda saklanır ve anında uygulanır.
           </p>
         </header>
 
         <div className="grid grid-cols-1 gap-8">
           {/* Visual section */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-primary">
-              <Eye size={16} /> Görsel Tercihler
+          <section className="space-y-4">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-400">
+              <Eye size={14} /> Görsel Tercihler
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <SettingsCard 
-                icon={<Contrast size={24} />}
+                icon={<Contrast size={20} />}
                 title="Yüksek Kontrast"
-                description="Metinleri ve düğmeleri daha belirgin hale getirir."
+                description="Metinleri ve butonları daha yüksek kontrastla belirginleştirir."
                 active={a11y.highContrast}
                 onClick={() => updateSettings({ highContrast: !a11y.highContrast })}
               />
               <SettingsCard 
-                icon={<Type size={24} />}
+                icon={<Type size={20} />}
                 title="Disleksi Dostu Font"
-                description="Okumayı kolaylaştıran özel OpenDyslexic yazı tipi."
+                description="Okumayı kolaylaştıran özel OpenDyslexic yazı tipini etkinleştirir."
                 active={a11y.dyslexicFont}
                 onClick={() => updateSettings({ dyslexicFont: !a11y.dyslexicFont })}
               />
               <SettingsCard 
-                icon={<Zap size={24} />}
+                icon={<Zap size={20} />}
                 title="Biyonik Okuma"
-                description="Hızlı odaklanma için kelimelerin baş harflerini vurgular."
+                description="Hızlı odaklanma için kelimelerin başlangıç harflerini kalınlaştırır."
                 active={a11y.bionicReading}
                 onClick={() => updateSettings({ bionicReading: !a11y.bionicReading })}
               />
               <SettingsCard 
-                icon={<MousePointer2 size={24} />}
+                icon={<MousePointer2 size={20} />}
                 title="Hareketi Azalt"
-                description="Göz yorgunluğunu önlemek için animasyonları kapatır."
+                description="Göz yorgunluğunu ve dikkat dağınıklığını önlemek için animasyonları durdurur."
                 active={a11y.reducedMotion}
                 onClick={() => updateSettings({ reducedMotion: !a11y.reducedMotion })}
               />
@@ -73,25 +73,25 @@ export default function AccessibilitySettingsPage() {
           </section>
 
           {/* Text Size Section */}
-          <section className="space-y-6">
-            <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-primary">
-              <Type size={16} /> Yazı Boyutu
+          <section className="space-y-4">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-400">
+              <Type size={14} /> Yazı Boyutu
             </div>
-            <div className="vibe-card p-8 bg-muted/30">
-              <div className="flex flex-wrap gap-4 items-center justify-between">
+            <div className="bg-card border border-border/80 rounded-2xl p-6 sm:p-8">
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
                 <div className="space-y-1">
-                  <p className="text-sm font-bold">Okunabilirlik Ölçeği</p>
-                  <p className="text-xs text-muted-foreground italic">Seçtiğiniz boyut tüm sayfalarda geçerli olur.</p>
+                  <p className="text-sm font-bold text-foreground">Okunabilirlik Ölçeği</p>
+                  <p className="text-xs text-muted-foreground">Seçtiğiniz boyut tüm sayfalarda ve tartışma yazılarında geçerli olur.</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 shrink-0">
                   {(['sm', 'md', 'lg', 'xl'] as const).map(size => (
                     <button
                       key={size}
                       onClick={() => updateSettings({ fontSize: size })}
-                      className={`px-6 py-3 rounded-2xl text-xs font-black uppercase transition-all border-2 ${
+                      className={`px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all border cursor-pointer ${
                         a11y.fontSize === size 
-                          ? 'bg-primary text-primary-foreground border-primary shadow-lg' 
-                          : 'bg-white border-transparent hover:border-primary/30'
+                          ? 'bg-sky-500 text-white border-sky-500 shadow-sm' 
+                          : 'bg-muted/30 border-border/80 text-muted-foreground hover:text-foreground hover:bg-muted/60'
                       }`}
                     >
                       {size.toUpperCase()}
@@ -103,10 +103,10 @@ export default function AccessibilitySettingsPage() {
           </section>
 
           {/* Info Card */}
-          <div className="vibe-card p-6 bg-primary/5 border-primary/20 flex gap-4 items-start">
-            <Info className="text-primary shrink-0" size={20} />
-            <p className="text-xs font-medium text-muted-foreground leading-relaxed">
-              Bu ayarlar <strong>WCAG 2.2 Seviye AAA</strong> uyumluluğu hedeflenerek tasarlanmıştır. Herhangi bir sayfada erişilebilirlik sorunu yaşarsanız, lütfen sayfanın en altındaki raporla butonunu kullanın.
+          <div className="bg-sky-500/5 border border-sky-500/20 rounded-2xl p-5 flex gap-3.5 items-start">
+            <Info className="text-sky-400 shrink-0 mt-0.5" size={18} />
+            <p className="text-xs font-normal text-muted-foreground leading-relaxed">
+              Bu ayarlar <strong className="text-foreground font-semibold">WCAG 2.2 Seviye AAA</strong> uyumluluğu hedeflenerek tasarlanmıştır. Ekran okuyucu, klavye gezintisi veya kontrast konusunda herhangi bir engelle karşılaşırsanız destek ekibimizle iletişime geçebilirsiniz.
             </p>
           </div>
         </div>
@@ -119,22 +119,24 @@ function SettingsCard({ icon, title, description, active, onClick }: { icon: Rea
   return (
     <button 
       onClick={onClick}
-      className={`vibe-card p-8 text-left space-y-4 transition-all border-2 group ${
-        active ? 'border-primary bg-primary/5 shadow-xl' : 'hover:border-primary/20 bg-white'
+      className={`p-6 rounded-2xl text-left space-y-3 transition-all border cursor-pointer ${
+        active 
+          ? 'border-sky-500 bg-sky-500/5 shadow-sm' 
+          : 'border-border/80 bg-card hover:border-sky-500/30'
       }`}
       aria-pressed={active}
     >
       <div className="flex items-center justify-between">
-        <div className={`p-3 rounded-2xl transition-colors ${active ? 'bg-primary text-white' : 'bg-muted group-hover:bg-primary/10 group-hover:text-primary'}`}>
+        <div className={`p-2.5 rounded-xl transition-colors ${active ? 'bg-sky-500 text-white' : 'bg-muted/40 text-muted-foreground'}`}>
           {icon}
         </div>
-        <div className={`w-12 h-6 rounded-full transition-colors relative border-2 ${active ? 'bg-primary border-primary' : 'bg-muted border-muted'}`}>
-          <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all shadow-sm ${active ? 'right-0.5' : 'left-0.5'}`} />
+        <div className={`w-10 h-5 rounded-full transition-colors relative border ${active ? 'bg-sky-500 border-sky-500' : 'bg-muted/40 border-border'}`}>
+          <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-white transition-all shadow-sm ${active ? 'right-0.5' : 'left-0.5'}`} />
         </div>
       </div>
       <div className="space-y-1">
-        <h3 className="text-base font-black tracking-tight">{title}</h3>
-        <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
+        <h3 className="text-sm font-bold text-foreground tracking-tight">{title}</h3>
+        <p className="text-xs text-muted-foreground leading-relaxed font-normal">{description}</p>
       </div>
     </button>
   );

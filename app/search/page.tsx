@@ -140,53 +140,60 @@ export default function SearchPage() {
 
   return (
     <DashboardLayout>
-      <main className="vibe-container py-8 md:py-12">
-        <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest mb-8">
-          <Link href="/" className="hover:text-primary transition-colors">ANA SAYFA</Link>
-          <ChevronRight size={14} />
-          <span className="text-foreground font-black">FORUM İÇİNDE ARAMA & FİLTRELEME</span>
+      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-10 space-y-6">
+        <div className="flex flex-wrap items-center gap-2 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
+          <Link href="/" className="hover:text-sky-400 transition-colors">Ana Sayfa</Link>
+          <ChevronRight size={12} className="text-muted-foreground/50" />
+          <span className="text-foreground font-black">Forum İçi Arama</span>
         </div>
 
-        <header className="mb-12">
-          <p className="vibe-label ml-0">GELİŞMİŞ ARAMA</p>
-          <h1 className="vibe-section-title mb-8 uppercase">Toplulukta Keşfedin</h1>
+        <header className="bg-card border border-border/80 rounded-2xl p-5 sm:p-7 shadow-xs space-y-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider mb-2">
+              <Sparkles size={12} /> Akıllı Arama & Filtreleme
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+              Forumda Keşfedin ve Arayın
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground font-normal mt-1 max-w-2xl">
+              Hukuki haklar, mevzuat maddeleri, Balthazard ve ÖTV konuları dahil tüm topluluk arşivinde arama yapın.
+            </p>
+          </div>
 
-          <form onSubmit={handleSearch} className="w-full max-w-5xl space-y-4">
-            {/* Optimized layout for search row preventing any overflow on screens */}
-            <div className="flex flex-col sm:flex-row gap-3 items-stretch">
+          <form onSubmit={handleSearch} className="w-full max-w-4xl space-y-3">
+            <div className="flex flex-col sm:flex-row gap-2.5 items-stretch">
               <div className="relative flex-1 min-w-0">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10" size={20} />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10" size={18} />
                 <input 
                   type="text" 
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="TARTIŞMA VEYA İÇERİK ARA..." 
-                  className="vibe-input !pl-12 h-12 text-sm uppercase rounded border border-border bg-background w-full"
+                  placeholder="Başlık, mevzuat maddesi veya kelime ara..." 
+                  className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
                   autoFocus
                 />
               </div>
 
-              {/* Action buttons side-by-side cleanly */}
               <div className="flex items-center gap-2 shrink-0">
                 <button 
                   type="button"
                   onClick={() => setShowFilters(!showFilters)}
                   className={cn(
-                    "h-12 px-4 rounded-xl transition-all border shadow-sm flex items-center justify-center gap-2",
-                    showFilters ? 'bg-primary text-primary-foreground border-primary' : 'bg-muted/50 hover:bg-muted text-muted-foreground border-border'
+                    "h-11 px-3.5 rounded-xl transition-all border text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer",
+                    showFilters ? 'bg-sky-500 text-white border-sky-500' : 'bg-background hover:bg-muted/60 text-muted-foreground border-border/80 hover:text-foreground'
                   )}
                   title="Filtreler"
                 >
-                  <Filter className="size-4" />
-                  <span className="font-bold text-xs uppercase tracking-widest">Filtrele</span>
+                  <Filter className="size-3.5" />
+                  <span>Filtrele</span>
                 </button>
 
                 <button 
                   type="button"
                   onClick={startVoiceSearch}
                   className={cn(
-                    "h-12 w-12 rounded-xl transition-all border border-border shadow-sm flex items-center justify-center",
-                    isListening ? 'bg-destructive text-white animate-pulse border-destructive' : 'bg-muted/50 hover:bg-muted text-muted-foreground active:scale-95'
+                    "h-11 w-11 rounded-xl transition-all border flex items-center justify-center cursor-pointer",
+                    isListening ? 'bg-rose-500 text-white animate-pulse border-rose-500' : 'bg-background hover:bg-muted/60 text-muted-foreground border-border/80 hover:text-foreground'
                   )}
                   title="Sesli Ara"
                 >
@@ -196,9 +203,9 @@ export default function SearchPage() {
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="vibe-button-primary h-12 px-6 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2"
+                  className="h-11 px-5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
-                  {loading ? <Loader2 size={16} className="animate-spin" /> : 'ARA'}
+                  {loading ? <Loader2 size={16} className="animate-spin" /> : 'Ara'}
                 </button>
               </div>
             </div>
@@ -211,16 +218,16 @@ export default function SearchPage() {
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden"
                 >
-                  <div className="p-6 bg-card border border-border rounded-xl shadow-sm flex flex-col gap-3 mt-4">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Kategori Filtresi</label>
+                  <div className="p-4 bg-muted/20 border border-border/80 rounded-xl flex flex-col gap-2 mt-2">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Kategori Filtresi</label>
                     <select 
                       value={categoryId}
                       onChange={(e) => setCategoryId(e.target.value)}
-                      className="w-full h-11 bg-background border border-border rounded-xl px-4 text-sm font-bold outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer uppercase"
+                      className="w-full h-10 bg-background border border-border/80 rounded-lg px-3 text-xs font-semibold outline-none focus:border-sky-500 cursor-pointer"
                     >
-                      <option value="">TÜM KATEGORİLER</option>
+                      <option value="">Tüm Kategoriler</option>
                       {categories.map(c => (
-                        <option key={c.id || c.slug} value={c.slug || c.id}>{c.name.toUpperCase()}</option>
+                        <option key={c.id || c.slug} value={c.slug || c.id}>{c.name}</option>
                       ))}
                     </select>
                   </div>
@@ -231,62 +238,64 @@ export default function SearchPage() {
         </header>
 
         <section>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-border pb-4">
-            <h2 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
-              {loading ? 'ARANIYOR...' : `${results.length} SONUÇ BULUNDU`}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-border/60 pb-3">
+            <h2 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+              {loading ? 'Aranıyor...' : `${results.length} Sonuç Bulundu`}
             </h2>
             {!loading && expandedTermsUsed.length > 1 && (
-              <div className="flex flex-wrap items-center gap-2 text-xs text-primary bg-primary/5 px-3 py-1.5 rounded-xl border border-primary/10">
-                <Sparkles className="size-3.5 shrink-0 text-primary" />
-                <span className="font-bold">Arama Kelimeleri Genişletildi:</span>
-                <span className="font-medium text-muted-foreground">{expandedTermsUsed.join(", ")}</span>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-sky-400 bg-sky-500/10 px-3 py-1 rounded-lg border border-sky-500/20">
+                <Sparkles className="size-3.5 shrink-0" />
+                <span className="font-semibold">İlişkili Terimler:</span>
+                <span className="font-normal text-muted-foreground">{expandedTermsUsed.join(", ")}</span>
               </div>
             )}
           </div>
 
-          <div className="grid gap-6">
+          <div className="grid gap-3">
             <AnimatePresence mode="popLayout">
               {results.length > 0 ? (
                 results.map((topic, index) => (
                   <motion.div
                     key={topic.id}
-                    initial={{ opacity: 0, y: 15 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.04 }}
+                    transition={{ delay: index * 0.03 }}
                     exit={{ opacity: 0, scale: 0.98 }}
                   >
                     <Link 
                       href={`/discussions/${topic.id}`}
-                      className="vibe-card vibe-card-hover block p-6 md:p-8"
+                      className="block p-4 sm:p-5 rounded-2xl bg-card border border-border/80 hover:border-sky-500/40 hover:-translate-y-0.5 transition-all group"
                     >
-                      <div className="flex items-start justify-between gap-6">
-                        <div className="space-y-4 min-w-0 flex-1">
-                          <div className="flex items-center gap-3">
-                            <span className="vibe-badge bg-primary/10 text-primary uppercase text-[10px] px-2.5 py-1 rounded-full font-bold">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="space-y-2 min-w-0 flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold">
                               {topic.category?.name || 'Genel'}
                             </span>
-                            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                            <span className="text-[10px] text-muted-foreground">
                               {new Date(topic.created_at).toLocaleDateString('tr-TR')}
                             </span>
                           </div>
-                          <h3 className="text-lg md:text-2xl font-bold group-hover:text-primary transition-colors tracking-tight leading-snug line-clamp-2 text-foreground whitespace-normal break-words">{topic.title}</h3>
-                          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed font-medium pointer-events-none">
+                          <h3 className="text-base sm:text-lg font-bold group-hover:text-sky-400 transition-colors tracking-tight leading-snug line-clamp-2 text-foreground">
+                            {topic.title}
+                          </h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                             {topic.content}
                           </p>
                         </div>
-                        <div className="p-3 rounded-xl bg-muted/60 text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-all shadow-sm shrink-0 flex items-center justify-center h-10 w-10">
-                          <ArrowRight size={18} />
+                        <div className="p-2 rounded-xl bg-muted/60 text-muted-foreground group-hover:bg-sky-500 group-hover:text-white transition-all shrink-0 flex items-center justify-center h-8 w-8">
+                          <ArrowRight size={14} />
                         </div>
                       </div>
                     </Link>
                   </motion.div>
                 ))
               ) : !loading && (query || categoryId) && (
-                <div className="text-center py-24 bg-card rounded-2xl border-2 border-dashed border-border px-8">
-                  <Search size={64} className="mx-auto text-muted-foreground/15 mb-6" />
-                  <h3 className="text-lg md:text-xl font-bold text-foreground mb-2 tracking-tight">Sonuç Bulunamadı</h3>
-                  <p className="text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
-                    Aradığınız kriterlere uygun bir içerik bulamadık. Lütfen farklı anahtar kelimeler kullanarak tekrar deneyin.
+                <div className="text-center py-16 bg-card rounded-2xl border border-dashed border-border/80 px-6">
+                  <Search size={48} className="mx-auto text-muted-foreground/30 mb-4" />
+                  <h3 className="text-base font-bold text-foreground mb-1">Sonuç Bulunamadı</h3>
+                  <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                    Aradığınız kriterlere uygun bir içerik bulunamadı. Lütfen farklı anahtar kelimeler kullanarak tekrar deneyin.
                   </p>
                 </div>
               )}

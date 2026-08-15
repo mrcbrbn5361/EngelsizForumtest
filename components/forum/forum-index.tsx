@@ -167,10 +167,10 @@ export function ForumIndex() {
 
   if (isLoading) {
     return (
-      <div className="vibe-container py-20 flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
-        <p className="text-muted-foreground text-xs font-bold uppercase tracking-widest">
-          EngelsizForum Topluluk Verileri Yükleniyor...
+      <div className="max-w-7xl mx-auto px-4 py-28 flex flex-col items-center justify-center space-y-4">
+        <Loader2 className="w-8 h-8 text-sky-400 animate-spin" />
+        <p className="text-muted-foreground text-xs font-semibold uppercase tracking-wider">
+          EngelsizForum verileri yükleniyor...
         </p>
       </div>
     );

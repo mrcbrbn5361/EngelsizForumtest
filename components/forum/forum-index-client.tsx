@@ -3,21 +3,19 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  Users, Search, ChevronRight, MessageSquare, Handshake, Plus, Sparkles, 
+  Users, Search, ChevronRight, MessageSquare, Plus, Sparkles, 
   Scale, CreditCard, PiggyBank, Award, FileText, HeartPulse, Activity, Eye, 
   Volume2, MapPin, GraduationCap, Calendar, AlertTriangle, FolderTree, Pin,
-  TrendingUp, Clock, BarChart2, CheckCircle2, User, HelpCircle, ArrowRight,
-  Send, Loader2, Play, Stethoscope, BookOpen, Briefcase, Cpu, Code, Smile, 
-  Shield, Settings, Megaphone, Car
+  TrendingUp, CheckCircle2,
+  Send, Loader2, Stethoscope, BookOpen, Briefcase, Cpu, Code, Smile, 
+  Shield, Settings, Megaphone, Car, ArrowUpRight
 } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useAuth } from '@/components/providers/auth-provider';
 import { Topic, Category } from '@/types/database';
 import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
 import { UserAvatar } from '@/components/ui/user-avatar';
-import { UserRoleBadge, OnlineStatusDot, UserLevelBadge } from '@/components/ui/user-badge';
+import { UserRoleBadge } from '@/components/ui/user-badge';
 
 interface ForumIndexClientProps {
   initialTopics: Topic[];
@@ -44,7 +42,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
   // Interactive AI Copilot State
   const [aiQuestion, setAiQuestion] = useState('');
   const [aiAnswers, setAiAnswers] = useState<{ sender: 'user' | 'ai'; text: string }[]>([
-    { sender: 'ai', text: 'Merhaba! Ben EngelsizForum Yapay Zeka Asistanıyım. Erişilebilirlik, engelli hakları ya da yardımcı teknolojiler hakkında ne öğrenmek istersiniz?' }
+    { sender: 'ai', text: 'Merhaba! Ben EngelsizForum Asistanıyım. Erişilebilirlik, engelli hakları, ÖTV muafiyeti veya sağlık raporları hakkında ne öğrenmek istersiniz?' }
   ]);
   const [aiLoading, setAiLoading] = useState(false);
 
@@ -72,39 +70,39 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
 
   const getSubforumIcon = (iconName?: string | null) => {
     switch (iconName?.toLowerCase()) {
-      case 'stethoscope': return <Stethoscope className="w-5 h-5" />;
+      case 'stethoscope': return <Stethoscope className="w-4 h-4 sm:w-5 sm:h-5" />;
       case 'bookopen':
-      case 'book-open': return <BookOpen className="w-5 h-5" />;
-      case 'briefcase': return <Briefcase className="w-5 h-5" />;
-      case 'cpu': return <Cpu className="w-5 h-5" />;
-      case 'code': return <Code className="w-5 h-5" />;
-      case 'smile': return <Smile className="w-5 h-5" />;
-      case 'shield': return <Shield className="w-5 h-5" />;
-      case 'settings': return <Settings className="w-5 h-5" />;
-      case 'megaphone': return <Megaphone className="w-5 h-5" />;
-      case 'car': return <Car className="w-5 h-5" />;
-      case 'scale': return <Scale className="w-5 h-5" />;
+      case 'book-open': return <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'briefcase': return <Briefcase className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'cpu': return <Cpu className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'code': return <Code className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'smile': return <Smile className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'shield': return <Shield className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'settings': return <Settings className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'megaphone': return <Megaphone className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'car': return <Car className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'scale': return <Scale className="w-4 h-4 sm:w-5 sm:h-5" />;
       case 'creditcard':
-      case 'credit-card': return <CreditCard className="w-5 h-5" />;
+      case 'credit-card': return <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />;
       case 'piggybank':
-      case 'piggy-bank': return <PiggyBank className="w-5 h-5" />;
-      case 'award': return <Award className="w-5 h-5" />;
+      case 'piggy-bank': return <PiggyBank className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'award': return <Award className="w-4 h-4 sm:w-5 sm:h-5" />;
       case 'filetext':
-      case 'file-text': return <FileText className="w-5 h-5" />;
+      case 'file-text': return <FileText className="w-4 h-4 sm:w-5 sm:h-5" />;
       case 'heartpulse':
-      case 'heart-pulse': return <HeartPulse className="w-5 h-5" />;
-      case 'activity': return <Activity className="w-5 h-5" />;
-      case 'eye': return <Eye className="w-5 h-5" />;
+      case 'heart-pulse': return <HeartPulse className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'activity': return <Activity className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'eye': return <Eye className="w-4 h-4 sm:w-5 sm:h-5" />;
       case 'volume2':
-      case 'volume-2': return <Volume2 className="w-5 h-5" />;
+      case 'volume-2': return <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />;
       case 'mappin':
-      case 'map-pin': return <MapPin className="w-5 h-5" />;
+      case 'map-pin': return <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />;
       case 'graduationcap':
-      case 'graduation-cap': return <GraduationCap className="w-5 h-5" />;
-      case 'calendar': return <Calendar className="w-5 h-5" />;
+      case 'graduation-cap': return <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'calendar': return <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />;
       case 'alerttriangle':
-      case 'alert-triangle': return <AlertTriangle className="w-5 h-5" />;
-      default: return <FolderTree className="w-5 h-5" />;
+      case 'alert-triangle': return <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />;
+      default: return <FolderTree className="w-4 h-4 sm:w-5 sm:h-5" />;
     }
   };
 
@@ -123,28 +121,28 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
       {
         id: "sec-1",
         name: "Haklar, Mevzuat ve İstihdam",
-        description: "Engelli hakları, yasal süreçler, SGK, ÖTV muafiyeti ve kariyer olanakları.",
+        description: "Engelli hakları, yasal süreçler, SGK, ÖTV muafiyeti ve istihdam rehberleri.",
         icon: "Scale",
         slugs: ['sosyal-haklar', 'engelli-haklari', 'sgk', 'otv', 'istihdam']
       },
       {
         id: "sec-2",
-        name: "Sağlık, Medikal ve Eğitim",
-        description: "Sağlık raporları, medikal cihazlar, protezler ve özel eğitim süreçleri.",
+        name: "Sağlık Kurulu Raporları ve Medikal",
+        description: "Sağlık kurulu oranları, Balthazard formülü, medikal cihaz ve protez süreçleri.",
         icon: "HeartPulse",
         slugs: ['saglik', 'araclar', 'egitim']
       },
       {
         id: "sec-3",
-        name: "Erişilebilirlik ve Teknoloji",
-        description: "Ekran okuyucular, yardımcı cihazlar, yazılım ve yapay zeka entegrasyonları.",
+        name: "Erişilebilirlik ve Yardımcı Teknolojiler",
+        description: "Ekran okuyucular, dijital erişilebilirlik araçları ve yapay zeka rehberleri.",
         icon: "Eye",
         slugs: ['teknoloji', 'yazilim', 'yapay-zeka']
       },
       {
         id: "sec-4",
-        name: "Sosyal Yaşam ve Duyurular",
-        description: "Günlük sohbetler, hobiler, EKPSS sınavı ve kamu duyuruları.",
+        name: "Sosyal Yaşam, EKPSS ve Duyurular",
+        description: "Günlük sohbetler, spor, sanat, EKPSS sınav hazırlığı ve resmi duyurular.",
         icon: "GraduationCap",
         slugs: ['gunluk-yasam', 'ekpss', 'kamu-duyurulari']
       }
@@ -193,13 +191,11 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
     if (!aiQuestion.trim() || aiLoading) return;
     const userMsg = aiQuestion.trim();
     
-    // Add user message to UI state immediately
     setAiAnswers(prev => [...prev, { sender: 'user', text: userMsg }]);
     setAiQuestion('');
     setAiLoading(true);
     
     try {
-      // Build conversational history for context
       const history = aiAnswers.map(ans => ({
         role: ans.sender === 'ai' ? 'model' : 'user',
         text: ans.text
@@ -224,185 +220,226 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
       }
     } catch (error) {
       console.error("AI Copilot request failed:", error);
-      setAiAnswers(prev => [...prev, { sender: 'ai', text: "Bağlantı hatası oluştu. Lütfen internetinizi kontrol edip tekrar deneyin." }]);
+      setAiAnswers(prev => [...prev, { sender: 'ai', text: "Bağlantı hatası oluştu. Lütfen tekrar deneyin." }]);
     } finally {
       setAiLoading(false);
     }
   };
 
   return (
-    <div className="flex-1 w-full" role="main">
-      <section className="bg-gradient-to-br from-primary/[0.04] via-primary/[0.01] to-transparent py-12 md:py-20 border-b border-border/50 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
-          >
-            <div className="lg:col-span-7 space-y-8">
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] sm:text-xs font-bold uppercase tracking-widest"
-              >
-                <Sparkles size={14} className="animate-pulse" /> %100 ERİŞİLEBİLİR DİJİTAL EKOSİSTEM
-              </motion.div>
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.1] uppercase text-foreground">
+    <div className="flex-1 w-full min-w-0" role="main">
+      {/* Hero Header */}
+      <section className="bg-slate-900 border-b border-slate-800 py-8 sm:py-12 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 relative z-10 min-w-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+            <div className="lg:col-span-7 space-y-4">
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-sky-950/80 border border-sky-800 text-sky-400 text-[10px] sm:text-xs font-bold tracking-wide">
+                <Sparkles size={13} className="shrink-0 text-sky-400" />
+                <span>ENGELSİZ BİLGİ &amp; DAYANIŞMA PLATFORMU</span>
+              </div>
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
                 {profile ? (
-                  <>Hoş Geldin, <br /><span className="text-primary">{profile.full_name || profile.username}</span>!</>
+                  <>Hoş Geldiniz, <span className="text-sky-400">{profile.full_name || profile.username}</span></>
                 ) : (
-                  <>Bariyersiz Bilgi, <br /><span className="text-primary">Eşit Topluluk</span></>
+                  <>Bariyersiz Bilgi, <span className="text-sky-400">Eşit Topluluk</span></>
                 )}
               </h1>
-              <p className="text-muted-foreground text-sm sm:text-lg md:text-xl font-medium leading-relaxed max-w-2xl">
-                EngelsizForum, internette bariyersiz bilgi paylaşımı arayan herkes için tasarlanmış Türkiye&apos;nin ilk tam erişilebilir forumudur.
+              <p className="text-slate-300 text-xs sm:text-sm md:text-base font-medium leading-relaxed max-w-2xl">
+                Engelli hakları, ÖTV muafiyeti, sağlık kurulu raporları, emeklilik hesaplamaları ve sosyal dayanışma için Türkiye&apos;nin tam erişilebilir forumu.
               </p>
-              <div className="relative max-w-xl w-full group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/5 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
-                <div className="relative">
-                  <Search className="absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 text-muted-foreground/60 z-10 pointer-events-none" size={20} />
-                  <input 
-                    type="text" 
-                    placeholder="TARTIŞMALARDA VE KONULARDA ARA..." 
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="vibe-input !pl-12 sm:!pl-14 h-12 sm:h-16 text-xs sm:text-sm uppercase rounded-2xl border border-border bg-card w-full shadow-lg focus:border-primary/80 transition-all font-bold tracking-wider placeholder:text-muted-foreground/40"
-                  />
-                </div>
+              <div className="relative max-w-xl w-full">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none" size={18} />
+                <input 
+                  type="text" 
+                  placeholder="Başlıklar, mevzuat ve konularda ara..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 h-11 text-xs sm:text-sm rounded-lg border border-slate-700 bg-slate-800/90 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all font-medium"
+                />
               </div>
             </div>
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="lg:col-span-5 grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-5"
-            >
+
+            {/* Stats Counter Grid */}
+            <div className="lg:col-span-5 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2.5 sm:gap-3">
               {[
-                { label: 'TOPLAM BAŞLIK', val: stats?.totalTopics !== undefined ? stats.totalTopics.toString() : '0', sub: `+${stats?.todayTopics || 0} Bugün`, color: 'primary' },
-                { label: 'TOPLAM CEVAP', val: stats?.totalComments !== undefined ? stats.totalComments.toString() : '0', sub: `+${stats?.todayComments || 0} Bugün`, color: 'foreground' },
-                { label: 'TOPLAM ÜYE', val: stats?.totalMembers !== undefined ? stats.totalMembers.toString() : '0', sub: stats?.newestMember ? `Son üye: @${stats.newestMember}` : 'Son üye bulunamadı', color: 'foreground' },
-                { label: 'ÇEVRİMİÇİ ÜYE', val: stats?.activeMembers ? stats.activeMembers.length.toString() : '0', sub: 'Lively / Canlı', color: 'primary', live: true }
+                { label: 'TOPLAM BAŞLIK', val: stats?.totalTopics !== undefined ? stats.totalTopics.toString() : '0', sub: `+${stats?.todayTopics || 0} Bugün`, accent: 'sky' },
+                { label: 'TOPLAM CEVAP', val: stats?.totalComments !== undefined ? stats.totalComments.toString() : '0', sub: `+${stats?.todayComments || 0} Bugün`, accent: 'slate' },
+                { label: 'TOPLAM ÜYE', val: stats?.totalMembers !== undefined ? stats.totalMembers.toString() : '0', sub: stats?.newestMember ? `@${stats.newestMember}` : 'Aktif', accent: 'slate' },
+                { label: 'ÇEVRİMİÇİ ÜYE', val: stats?.activeMembers ? stats.activeMembers.length.toString() : '0', sub: 'Canlı topluluk', accent: 'emerald', live: true }
               ].map((stat, i) => (
-                <div key={i} className={cn(
-                  "bg-card border border-border rounded-2xl sm:rounded-3xl p-3.5 sm:p-7 shadow-sm transition-all hover:shadow-md hover:border-primary/20 relative overflow-hidden group min-w-0",
-                  stat.color === 'primary' && "bg-primary/[0.01] border-primary/10"
-                )}>
+                <div key={i} className="bg-slate-800/80 border border-slate-700/80 rounded-lg p-3 sm:p-4 transition-all hover:border-slate-600 relative overflow-hidden min-w-0">
                   {stat.live && (
-                    <div className="absolute top-3 right-3 flex h-2.5 w-2.5">
+                    <div className="absolute top-2.5 right-2.5 flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                     </div>
                   )}
-                  <div className={cn("text-[10px] font-bold uppercase tracking-widest mb-3", stat.color === 'primary' ? 'text-primary' : 'text-muted-foreground')}>
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 truncate">
                     {stat.label}
                   </div>
-                  <div className={cn("text-3xl font-black font-mono", stat.color === 'primary' ? 'text-primary' : 'text-foreground')}>
+                  <div className={cn("text-xl sm:text-2xl font-black font-mono", stat.accent === 'sky' ? 'text-sky-400' : stat.accent === 'emerald' ? 'text-emerald-400' : 'text-white')}>
                     {stat.val}
                   </div>
-                  <div className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-2 opacity-70">
+                  <div className="text-[10px] text-slate-400 font-medium mt-1 truncate">
                     {stat.sub}
                   </div>
                 </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          <div className="lg:col-span-8 space-y-16 min-w-0">
-            <div className="space-y-12">
-              <div className="flex items-center justify-between border-b border-border/80 pb-5">
-                <h2 className="text-xl md:text-2xl font-black text-foreground uppercase tracking-widest flex items-center gap-4">
-                  <FolderTree className="text-primary w-6 h-6" /> FORUM DİZİNİ
-                </h2>
-                <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 bg-muted rounded-full text-[10px] font-bold text-muted-foreground uppercase tracking-widest">4 ANA BÖLÜM</span>
+      {/* Main Content Layout */}
+      <section className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-8 sm:py-12 min-w-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start min-w-0">
+          
+          {/* Main Forum Column */}
+          <div className="lg:col-span-8 space-y-8 min-w-0">
+            
+            {/* Quick Action Tools Banner */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
+              <Link 
+                href="/hesaplama"
+                className="p-3 sm:p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-sky-500/40 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 transition-all flex items-center gap-2.5 group min-w-0"
+              >
+                <div className="h-8 w-8 rounded-md bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                  <Scale size={16} />
                 </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors truncate">
+                    Balthazard Hesapla
+                  </div>
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">Rapor oranı formülü</div>
+                </div>
+              </Link>
+
+              <Link 
+                href="/hesaplama"
+                className="p-3 sm:p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-emerald-500/40 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition-all flex items-center gap-2.5 group min-w-0"
+              >
+                <div className="h-8 w-8 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                  <Car size={16} />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">
+                    ÖTV 2026 Limiti
+                  </div>
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">Muafiyetli araç rehberi</div>
+                </div>
+              </Link>
+
+              <Link 
+                href="/communities"
+                className="col-span-2 sm:col-span-1 p-3 sm:p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-indigo-500/40 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all flex items-center gap-2.5 group min-w-0"
+              >
+                <div className="h-8 w-8 rounded-md bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                  <Users size={16} />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">
+                    Tanı Toplulukları
+                  </div>
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">Özel ilgi grupları</div>
+                </div>
+              </Link>
+            </div>
+
+            {/* Forum Directory Sections */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
+                <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                  <FolderTree className="text-sky-600 dark:text-sky-400 w-4 h-4" /> 
+                  <span>Forum Kategorileri</span>
+                </h2>
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                  {forumSections.length} Ana Kategori
+                </span>
               </div>
-              {forumSections.map((section, idx) => {
+
+              {forumSections.map((section) => {
                 const isCollapsed = collapsedCategories[section.id];
                 return (
-                  <motion.div 
+                  <div 
                     key={section.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.1 }}
-                    className="bg-card border border-border rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-md transition-all group"
+                    className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden shadow-xs"
                   >
+                    {/* Category Header */}
                     <div 
                       onClick={() => toggleCategory(section.id)}
-                      className="bg-muted/30 px-8 py-6 border-b border-border/50 flex items-center justify-between cursor-pointer select-none hover:bg-muted/50 transition-colors"
+                      className="bg-slate-50 dark:bg-slate-800/60 px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between cursor-pointer select-none hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                     >
-                      <div className="flex items-center gap-5 min-w-0">
-                        <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 shadow-sm group-hover:scale-110 transition-transform">
+                      <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-sky-100 dark:bg-sky-950/80 border border-sky-200 dark:border-sky-800/80 flex items-center justify-center text-sky-600 dark:text-sky-400 shrink-0">
                           {getSubforumIcon(section.icon)}
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-black text-base sm:text-lg tracking-tight uppercase truncate text-foreground">{section.name}</h3>
-                          <p className="text-xs text-muted-foreground font-semibold hidden sm:inline-block truncate max-w-lg opacity-80">{section.description}</p>
+                          <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 truncate">{section.name}</h3>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate hidden sm:block">{section.description}</p>
                         </div>
                       </div>
-                      <button className="p-2 rounded-xl hover:bg-background text-muted-foreground focus:ring-2 focus:ring-primary outline-none transition-all">
-                        <ChevronRight className={cn("w-6 h-6 transition-transform duration-300", !isCollapsed && "rotate-90")} />
+                      <button 
+                        className="p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-transform"
+                        aria-label={isCollapsed ? "Kategoriyi genişlet" : "Kategoriyi daralt"}
+                      >
+                        <ChevronRight className={cn("w-4 h-4 transition-transform duration-200", !isCollapsed && "rotate-90")} />
                       </button>
                     </div>
+
+                    {/* Subforum Row List */}
                     <AnimatePresence initial={false}>
                       {!isCollapsed && (
                         <motion.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="overflow-hidden divide-y divide-border/50"
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden divide-y divide-slate-100 dark:divide-slate-800/70"
                         >
                           {section.subforums.map((subforum) => (
-                            <div key={subforum.id} className="p-4 sm:p-7 md:p-9 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-8 hover:bg-primary/[0.01] transition-colors relative">
-                              <div className="flex items-start gap-3 sm:gap-5 min-w-0 flex-1">
-                                <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-3xl bg-primary/5 border border-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
+                            <div 
+                              key={subforum.id} 
+                              className="p-3 sm:p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-4 hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-colors"
+                            >
+                              <div className="flex items-start gap-2.5 sm:gap-3 min-w-0 flex-1">
+                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center shrink-0 mt-0.5">
                                   {getSubforumIcon(subforum.icon)}
                                 </div>
                                 <div className="min-w-0 flex-1">
-                                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
-                                    <Link href={`/discussions?kategori=${subforum.slug}`} className="font-black text-base sm:text-xl text-foreground hover:text-primary transition-colors block leading-tight uppercase tracking-tight">
+                                  <div className="flex items-center gap-2 mb-0.5">
+                                    <Link 
+                                      href={`/discussions?kategori=${subforum.slug}`} 
+                                      className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 hover:text-sky-600 dark:hover:text-sky-400 transition-colors truncate"
+                                    >
                                       {subforum.name}
                                     </Link>
                                     <Link 
                                       href={`/discussions/new?kategori=${subforum.slug}`} 
-                                      className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-primary bg-primary/5 hover:bg-primary/10 px-2 py-1 rounded-lg border border-primary/10 transition-all shrink-0"
-                                      title={`${subforum.name} kategorisinde yeni bir konu aç`}
+                                      className="text-[10px] font-bold text-sky-600 dark:text-sky-400 hover:underline shrink-0"
+                                      title="Konu aç"
                                     >
-                                      <Plus size={10} className="stroke-[3]" /> Yeni Konu
+                                      + Konu Aç
                                     </Link>
                                   </div>
-                                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-semibold max-w-xl opacity-90 line-clamp-2">{subforum.desc}</p>
+                                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 leading-normal line-clamp-1">{subforum.desc}</p>
                                 </div>
                               </div>
-                              <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 sm:gap-8 shrink-0 xl:w-[400px] justify-between border-t border-border/40 pt-4 xl:border-t-0 xl:pt-0">
-                                <div className="flex gap-4 sm:gap-8 font-mono text-[11px] font-bold text-muted-foreground">
-                                  <div className="text-center">
-                                    <span className="block text-sm sm:text-base font-black text-foreground">{subforum.topics}</span>
-                                    <span className="opacity-60 text-[9px] sm:text-[10px]">KONU</span>
-                                  </div>
-                                  <div className="text-center">
-                                    <span className="block text-sm sm:text-base font-black text-foreground">{subforum.replies}</span>
-                                    <span className="opacity-60 text-[9px] sm:text-[10px]">CEVAP</span>
-                                  </div>
+
+                              <div className="flex items-center gap-3 sm:gap-6 shrink-0 justify-between md:justify-end border-t md:border-t-0 border-slate-100 dark:border-slate-800/60 pt-2 md:pt-0 pl-9 md:pl-0">
+                                <div className="flex gap-3 text-[11px] font-medium text-slate-500 dark:text-slate-400 shrink-0">
+                                  <span><strong className="text-slate-800 dark:text-slate-200">{subforum.topics}</strong> k</span>
+                                  <span><strong className="text-slate-800 dark:text-slate-200">{subforum.replies}</strong> c</span>
                                 </div>
-                                <div className="text-left sm:text-right text-[11px] min-w-0 max-w-[180px] sm:max-w-[240px]">
-                                  <div className="text-[9px] sm:text-[10px] font-bold text-primary uppercase tracking-widest mb-0.5 sm:mb-1 opacity-70">SON PAYLAŞIM</div>
-                                  <Link href={`/discussions`} className="font-bold text-xs sm:text-sm text-foreground hover:text-primary transition-colors block truncate hover:underline" title={subforum.lastPost.title}>
+                                <div className="text-right text-[11px] min-w-0 max-w-[160px] sm:max-w-[200px]">
+                                  <Link 
+                                    href={`/discussions`} 
+                                    className="font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 transition-colors truncate block text-xs" 
+                                    title={subforum.lastPost.title}
+                                  >
                                     {subforum.lastPost.title}
                                   </Link>
-                                  <div className="text-muted-foreground font-bold flex items-center justify-start sm:justify-end gap-1.5 sm:gap-2 mt-1 uppercase tracking-tighter text-[10px]">
-                                    <span className="text-foreground/80 underline decoration-primary/30 decoration-2 underline-offset-4 truncate max-w-[100px] sm:max-w-none">@{subforum.lastPost.author}</span>
-                                    <span>•</span>
-                                    <time className="whitespace-nowrap font-mono text-[9px] sm:text-[10px]">{subforum.lastPost.date}</time>
+                                  <div className="text-[10px] text-slate-400 truncate">
+                                    @{subforum.lastPost.author} {subforum.lastPost.date && `• ${subforum.lastPost.date}`}
                                   </div>
                                 </div>
                               </div>
@@ -411,224 +448,292 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
 
-            <div className="space-y-8 sm:space-y-10 pt-6 sm:pt-10">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6 border-b border-border/80 pb-6">
-                <div className="space-y-1.5">
-                  <h2 className="text-lg sm:text-xl md:text-2xl font-black text-foreground uppercase tracking-widest flex items-center gap-3 sm:gap-4">
-                    <TrendingUp className="text-primary w-5 h-5 sm:w-6 sm:h-6" /> TARTIŞMA AKIŞI
+            {/* Discussion Feed */}
+            <div className="space-y-4 pt-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
+                <div className="space-y-0.5">
+                  <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                    <TrendingUp className="text-sky-600 dark:text-sky-400 w-4 h-4" /> 
+                    <span>Son Tartışmalar</span>
                   </h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground font-medium">Topluluğumuzda öne çıkan en yeni başlıklar ve popüler konular.</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Toplulukta en son güncellenen konular ve soru-cevaplar.</p>
                 </div>
-                <Link href="/discussions/new" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 sm:px-7 py-3 sm:py-3.5 text-xs font-black text-primary-foreground shadow-lg shadow-primary/20 transition hover:bg-primary/90 active:scale-95 uppercase tracking-widest w-full sm:w-auto">
-                  <Plus size={16} /> YENİ KONU BAŞLAT
+                <Link 
+                  href="/discussions/new" 
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-400 px-3.5 py-2 text-xs font-bold text-white dark:text-slate-950 shadow-xs transition-all whitespace-nowrap self-start sm:self-auto"
+                >
+                  <Plus size={14} /> Yeni Konu Başlat
                 </Link>
               </div>
-              <div className="flex border border-border bg-muted/30 p-1.5 sm:p-2 rounded-2xl w-full sm:w-fit overflow-x-auto no-scrollbar gap-1.5 shadow-sm">
-                {[{ id: 'all', label: 'TÜMÜ' }, { id: 'pinned', label: 'SABİTLENENLER' }, { id: 'solved', label: 'ÇÖZÜLENLER' }, { id: 'popular', label: 'POPÜLER' }].map((tab) => (
-                  <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={cn("px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-xl text-[10px] sm:text-xs font-black transition-all uppercase tracking-widest whitespace-nowrap shrink-0", activeTab === tab.id ? "bg-card text-primary shadow-sm border border-border" : "text-muted-foreground hover:text-foreground hover:bg-muted/50")}>
+
+              {/* Tabs */}
+              <div className="flex border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800/60 p-1 rounded-lg w-full sm:w-fit overflow-x-auto no-scrollbar gap-1">
+                {[
+                  { id: 'all', label: 'Tümü' }, 
+                  { id: 'pinned', label: 'Sabitlenenler' }, 
+                  { id: 'solved', label: 'Çözülenler' }, 
+                  { id: 'popular', label: 'Popüler' }
+                ].map((tab) => (
+                  <button 
+                    key={tab.id} 
+                    onClick={() => setActiveTab(tab.id as any)} 
+                    className={cn(
+                      "px-3 py-1.5 rounded-md text-xs font-bold transition-all whitespace-nowrap shrink-0",
+                      activeTab === tab.id 
+                        ? "bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-xs border border-slate-200 dark:border-slate-700" 
+                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                    )}
+                  >
                     {tab.label}
                   </button>
                 ))}
               </div>
-              <div className="space-y-8">
+
+              {/* Topics List */}
+              <div className="space-y-2.5">
                 {filteredTopics.length > 0 ? (
-                  filteredTopics.map((topic, i) => (
-                    <motion.article 
+                  filteredTopics.map((topic) => (
+                    <article 
                       key={topic.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.05 }}
-                      className={cn("bg-card border border-border p-5 sm:p-10 hover:border-primary/40 hover:shadow-xl transition-all relative rounded-3xl sm:rounded-[2rem] group", topic.is_pinned && "border-primary/30 bg-primary/[0.01] ring-1 ring-primary/5 shadow-md")}
+                      className={cn(
+                        "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3.5 sm:p-4 hover:border-sky-400/50 dark:hover:border-sky-600/50 transition-all rounded-lg group",
+                        topic.is_pinned && "border-sky-200 dark:border-sky-900/60 bg-sky-50/20 dark:bg-sky-950/10"
+                      )}
                     >
-                      <div className="flex items-start justify-between gap-6 mb-6">
+                      <div className="flex items-start justify-between gap-3 mb-2">
                         <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-3 text-[10px] font-black uppercase tracking-widest mb-4">
-                            {topic.is_pinned && <span className="inline-flex items-center gap-1.5 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-[9px] shadow-sm"><Pin size={10} className="fill-current" /> SABİT KONU</span>}
-                            {topic.is_solved && <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 px-3 py-1.5 rounded-full text-[9px]"><CheckCircle2 size={11} /> ÇÖZÜLDÜ</span>}
-                            <span className="bg-muted text-muted-foreground border border-border px-3 py-1.5 rounded-full">{topic.category?.name || 'GENEL'}</span>
+                          <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider mb-1.5">
+                            {topic.is_pinned && (
+                              <span className="inline-flex items-center gap-1 bg-sky-600 text-white px-2 py-0.5 rounded text-[9px]">
+                                <Pin size={9} className="fill-current" /> SABİT
+                              </span>
+                            )}
+                            {topic.is_solved && (
+                              <span className="inline-flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded text-[9px]">
+                                <CheckCircle2 size={10} /> ÇÖZÜLDÜ
+                              </span>
+                            )}
+                            <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded text-[10px]">
+                              {topic.category?.name || 'GENEL'}
+                            </span>
                           </div>
-                          <h3 className="text-lg sm:text-xl md:text-2xl font-black text-foreground group-hover:text-primary transition-colors tracking-tight line-clamp-2 uppercase leading-tight">
-                            <Link href={`/discussions/${topic.id}`} className="after:absolute after:inset-0 after:content-[''] after:z-0">{topic.title}</Link>
+                          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors tracking-tight line-clamp-2">
+                            <Link href={`/discussions/${topic.id}`}>{topic.title}</Link>
                           </h3>
                         </div>
-                        <div className="h-16 w-16 rounded-[1.25rem] bg-muted/40 border border-border flex flex-col items-center justify-center shrink-0 self-start font-mono shadow-sm group-hover:bg-primary/5 group-hover:border-primary/20 transition-all">
-                          <span className="text-lg font-black text-foreground group-hover:text-primary">{(topic.comments as any)?.[0]?.count || topic.comments_count || 0}</span>
-                          <span className="text-[9px] font-bold text-muted-foreground uppercase leading-none mt-0.5">CEVAP</span>
+                        <div className="h-11 w-11 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center shrink-0 font-mono">
+                          <span className="text-xs font-black text-slate-800 dark:text-slate-200">
+                            {(topic.comments as any)?.[0]?.count || topic.comments_count || 0}
+                          </span>
+                          <span className="text-[8px] font-semibold text-slate-400 uppercase">Cevap</span>
                         </div>
                       </div>
-                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed font-medium line-clamp-2 mb-8 pointer-events-none opacity-90">{topic.content}</p>
-                      <div className="flex items-center justify-between gap-6 text-[11px] text-muted-foreground pointer-events-none border-t border-border/50 pt-6">
-                        <div className="flex items-center gap-3.5 min-w-0">
+
+                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-3 leading-relaxed">
+                        {topic.content}
+                      </p>
+
+                      <div className="flex items-center justify-between gap-3 text-xs text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
+                        <div className="flex items-center gap-2 min-w-0">
                           <UserAvatar 
                             src={topic.author?.avatar_url} 
                             username={topic.author?.username} 
                             name={topic.author?.full_name}
-                            size="md"
+                            size="sm"
                             isOnline={true}
                           />
-                          <div className="flex flex-col gap-0.5">
-                            <span className="font-black text-foreground text-xs uppercase tracking-tight flex items-center gap-2">
-                              {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
-                            </span>
-                            <UserRoleBadge role={topic.author?.role || 'user'} size="xs" />
-                          </div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 text-xs truncate">
+                            {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
+                          </span>
+                          <UserRoleBadge role={topic.author?.role || 'user'} size="xs" />
                         </div>
-                        <div className="flex items-center gap-6 text-xs font-mono font-bold">
-                          <span className="hidden sm:inline-flex items-center gap-1.5"><HeartPulse size={14} className="text-rose-500" /> {topic.likes_count || 0} BEĞENİ</span>
-                          <time className="font-black uppercase tracking-widest bg-muted px-3 py-1 rounded-lg border border-border/50">{formatDate(topic.created_at)}</time>
+                        <div className="flex items-center gap-3 text-[11px] font-medium shrink-0">
+                          <span className="hidden sm:inline text-rose-500 font-semibold">
+                            ♥ {topic.likes_count || 0}
+                          </span>
+                          <time className="font-mono text-slate-400">
+                            {formatDate(topic.created_at)}
+                          </time>
                         </div>
                       </div>
-                    </motion.article>
+                    </article>
                   ))
                 ) : (
-                  <div className="text-center py-28 bg-card rounded-[2.5rem] border-2 border-dashed border-border p-12 shadow-inner">
-                    <MessageSquare size={40} className="mx-auto text-muted-foreground/30 mb-6" />
-                    <h3 className="text-xl font-black text-foreground mb-2 uppercase tracking-widest">Tartışma Bulunamadı</h3>
-                    <p className="text-sm text-muted-foreground font-medium max-w-sm mx-auto leading-relaxed">Yeni bir tartışma başlatarak topluluğu canlandırabilirsiniz.</p>
+                  <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-6">
+                    <MessageSquare size={32} className="mx-auto text-slate-300 dark:text-slate-600 mb-2" />
+                    <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">Henüz Tartışma Bulunamadı</h3>
+                    <p className="text-xs text-slate-500">İlk konuyu siz başlatarak toplulukla etkileşime geçebilirsiniz.</p>
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          <aside className="lg:col-span-4 space-y-12">
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="bg-card border border-border rounded-3xl sm:rounded-[2rem] p-6 sm:p-10 shadow-sm relative overflow-hidden group">
-              <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-8 flex items-center gap-3"><Award className="text-primary w-5 h-5" /> PROFİL PANELİ</h3>
+          {/* Sidebar */}
+          <aside className="lg:col-span-4 space-y-4 min-w-0">
+            {/* User Profile Summary */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-xs">
+              <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                <Award className="text-sky-600 dark:text-sky-400 w-4 h-4" /> Profil Durumu
+              </h3>
               {user ? (
-                <div className="space-y-8">
-                  <div className="flex items-center gap-5">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
                     <UserAvatar 
                       src={profile?.avatar_url}
                       username={profile?.username}
                       name={profile?.full_name}
-                      size="xl"
-                      className="w-16 h-16 border-2 border-primary/20 shadow-md"
+                      size="lg"
                     />
                     <div className="min-w-0 flex-1">
-                      <div className="font-black text-lg text-foreground truncate uppercase tracking-tight">{profile?.full_name || profile?.username || user.email}</div>
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest mt-1">SEVİYE {profile?.level || 1}</div>
+                      <div className="font-bold text-sm text-slate-900 dark:text-slate-100 truncate">
+                        {profile?.full_name || profile?.username || user.email}
+                      </div>
+                      <div className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-600 dark:text-sky-400 mt-0.5">
+                        Seviye {profile?.level || 1} • {profile?.xp || 0} XP
+                      </div>
                     </div>
                   </div>
-                  <Link href="/profile" className="w-full h-14 bg-foreground text-background hover:bg-foreground/90 text-xs font-black uppercase tracking-[0.2em] rounded-2xl transition-all text-center flex items-center justify-center shadow-lg">PROFİL AYARLARI</Link>
+                  <Link 
+                    href="/profile" 
+                    className="w-full h-9 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white text-xs font-bold rounded-lg transition-all text-center flex items-center justify-center"
+                  >
+                    Profilimi Yönet
+                  </Link>
                 </div>
               ) : (
-                <div className="space-y-6">
-                  <p className="text-sm text-muted-foreground leading-relaxed font-semibold opacity-90">Aramıza katılarak engelsiz bir dijital dünya inşasına destek olun!</p>
-                  <Link href="/auth" className="inline-flex items-center justify-center w-full h-14 bg-primary text-primary-foreground text-xs font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 transition hover:bg-primary/90">KATIL / GİRİŞ YAP</Link>
+                <div className="space-y-3">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Soru sormak, deneyim paylaşmak ve topluluk araçlarını kullanmak için giriş yapın.
+                  </p>
+                  <Link 
+                    href="/login" 
+                    className="inline-flex items-center justify-center w-full h-9 bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-400 text-white dark:text-slate-950 text-xs font-bold rounded-lg shadow-xs transition-all"
+                  >
+                    Giriş Yap / Kayıt Ol
+                  </Link>
                 </div>
               )}
-            </motion.div>
+            </div>
 
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} className="bg-card border border-border rounded-3xl sm:rounded-[2rem] p-6 sm:p-8 shadow-sm">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] flex items-center gap-2.5">
-                  <Users className="text-primary w-4 h-4" /> ÇEVRİMİÇİ ÜYELER
+            {/* Online Members */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-xs">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                  <Users className="text-sky-600 dark:text-sky-400 w-4 h-4" /> Çevrimiçi Üyeler
                 </h3>
-                <span className="flex items-center gap-1.5 text-[10px] font-mono font-black text-emerald-400 uppercase bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  {onlineMembers.length} CANLI
+                <span className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  {onlineMembers.length} Canlı
                 </span>
               </div>
               {onlineMembers.length > 0 ? (
-                <div className="space-y-3 max-h-[320px] overflow-y-auto pr-1 no-scrollbar">
+                <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1 no-scrollbar">
                   {onlineMembers.map(member => (
-                    <Link href={`/profile/${member.id}`} key={member.id} className="flex items-center gap-3 p-2.5 rounded-2xl hover:bg-muted/60 transition-all border border-transparent hover:border-border/60 group">
+                    <Link 
+                      href={`/profile`} 
+                      key={member.id} 
+                      className="flex items-center gap-2.5 p-1.5 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
+                    >
                       <UserAvatar 
                         src={member.avatar} 
                         username={member.username} 
                         name={member.name}
-                        size="md"
+                        size="sm"
                         isOnline={true}
                       />
                       <div className="min-w-0 flex-1">
-                        <div className="font-black text-xs text-foreground truncate group-hover:text-primary transition-colors flex items-center gap-1.5">
+                        <div className="font-bold text-xs text-slate-800 dark:text-slate-200 truncate group-hover:text-sky-600 dark:group-hover:text-sky-400">
                           @{member.username}
                         </div>
-                        <UserRoleBadge role={member.role} size="xs" showLabel={true} />
                       </div>
-                      <ChevronRight size={14} className="text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                      <UserRoleBadge role={member.role} size="xs" showLabel={false} />
                     </Link>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-6 text-xs text-muted-foreground font-semibold uppercase tracking-wider">
-                  Henüz çevrim içi üye yok
+                <div className="text-center py-4 text-xs text-slate-400">
+                  Şu an çevrim içi üye yok
                 </div>
               )}
-            </motion.div>
+            </div>
 
-            {stats?.topContributors && stats.topContributors.length > 0 && (
-              <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.15 }} className="bg-card border border-border rounded-3xl sm:rounded-[2rem] p-6 sm:p-10 shadow-sm">
-                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-8 flex items-center gap-3"><Sparkles className="text-primary w-5 h-5" /> EN AKTİF ÜYELER</h3>
-                <div className="space-y-6">
-                  {stats.topContributors.map((contributor, i) => (
-                    <Link key={contributor.id} href={`/profile/${contributor.id}`} className="flex items-center gap-4 group">
-                      <div className="relative">
-                        <UserAvatar 
-                          src={contributor.avatar_url} 
-                          username={contributor.username} 
-                          size="md"
-                        />
-                        <div className="absolute -top-2 -left-2 w-5 h-5 rounded-full bg-primary text-[10px] font-black text-white flex items-center justify-center shadow-lg border-2 border-card">
-                          {i + 1}
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-black text-sm text-foreground truncate group-hover:text-primary transition-colors">@{contributor.username}</div>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">SEVİYE {contributor.level}</span>
-                          <span className="text-[9px] font-black text-primary uppercase tracking-widest">{contributor.xp} XP</span>
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
+            {/* Trending Tags */}
             {stats?.trendingTags && stats.trendingTags.length > 0 && (
-              <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-card border border-border rounded-3xl sm:rounded-[2rem] p-6 sm:p-10 shadow-sm">
-                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em] mb-8 flex items-center gap-3"><Megaphone className="text-primary w-5 h-5" /> POPÜLER ETİKETLER</h3>
-                <div className="flex flex-wrap gap-2">
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 shadow-xs">
+                <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <Megaphone className="text-sky-600 dark:text-sky-400 w-4 h-4" /> Popüler Etiketler
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
                   {stats.trendingTags.map((tag) => (
                     <Link 
                       key={tag.slug} 
                       href={`/discussions?etiket=${tag.slug}`}
-                      className="px-4 py-2 rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground transition-all text-[10px] font-black uppercase tracking-widest border border-border"
+                      className="px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-950/50 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-[11px] font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                     >
                       #{tag.name}
                     </Link>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             )}
 
-            <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="bg-gradient-to-br from-primary to-primary-foreground text-primary-foreground rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl relative overflow-hidden group">
-              <div className="relative z-10 space-y-8">
-                <h3 className="text-xl sm:text-2xl font-black uppercase tracking-tight">AI Copilot</h3>
-                <div className="h-56 bg-white/10 rounded-3xl p-5 overflow-y-auto space-y-4 scrollbar-hide text-xs font-bold border border-white/10 backdrop-blur-sm">
-                  {aiAnswers.map((msg, i) => (
-                    <div key={i} className={cn("p-4 rounded-2xl max-w-[90%] leading-relaxed", msg.sender === 'user' ? "bg-white/20 text-white ml-auto" : "bg-white text-primary")}>
-                      {msg.text}
-                    </div>
-                  ))}
-                  {aiLoading && <div className="bg-white/10 text-white p-4 rounded-2xl flex items-center gap-3"><Loader2 className="animate-spin" size={14} /> Analiz...</div>}
-                </div>
-                <form onSubmit={handleAskAi} className="flex gap-3">
-                  <input type="text" placeholder="Soru sorun..." value={aiQuestion} onChange={(e) => setAiQuestion(e.target.value)} className="flex-1 bg-white/20 border border-white/30 rounded-2xl px-5 py-4 text-xs text-white placeholder:text-white/40 outline-none" disabled={aiLoading} />
-                  <button type="submit" className="w-14 h-14 bg-white text-primary rounded-2xl flex items-center justify-center shadow-lg"><Send size={20} /></button>
-                </form>
+            {/* AI Copilot Assistant Box */}
+            <div className="bg-slate-900 text-white rounded-lg p-4 shadow-sm border border-slate-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
+                  <Sparkles size={14} /> Asistan Copilot
+                </h3>
+                <span className="text-[10px] text-slate-400 font-mono">Yapay Zeka Destekli</span>
               </div>
-            </motion.div>
+              <div className="h-44 bg-slate-950/80 rounded-lg p-3 overflow-y-auto space-y-2.5 text-xs font-medium border border-slate-800">
+                {aiAnswers.map((msg, i) => (
+                  <div 
+                    key={i} 
+                    className={cn(
+                      "p-2.5 rounded-lg max-w-[90%] leading-relaxed text-xs",
+                      msg.sender === 'user' 
+                        ? "bg-sky-600 text-white ml-auto" 
+                        : "bg-slate-800 text-slate-200 border border-slate-700"
+                    )}
+                  >
+                    {msg.text}
+                  </div>
+                ))}
+                {aiLoading && (
+                  <div className="bg-slate-800 text-slate-300 p-2.5 rounded-lg flex items-center gap-2">
+                    <Loader2 className="animate-spin" size={13} /> Analiz ediliyor...
+                  </div>
+                )}
+              </div>
+              <form onSubmit={handleAskAi} className="flex gap-1.5">
+                <input 
+                  type="text" 
+                  placeholder="Mevzuat veya soru sorun..." 
+                  value={aiQuestion} 
+                  onChange={(e) => setAiQuestion(e.target.value)} 
+                  className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500 font-medium" 
+                  disabled={aiLoading} 
+                />
+                <button 
+                  type="submit" 
+                  className="h-8 w-8 bg-sky-600 hover:bg-sky-500 text-white rounded-lg flex items-center justify-center shadow-xs transition-colors shrink-0 disabled:opacity-50"
+                  disabled={aiLoading || !aiQuestion.trim()}
+                  aria-label="Soruyu gönder"
+                >
+                  <Send size={14} />
+                </button>
+              </form>
+            </div>
           </aside>
         </div>
       </section>
     </div>
   );
 }
+

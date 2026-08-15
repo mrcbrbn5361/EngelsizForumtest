@@ -117,38 +117,34 @@ export default function LoginPage() {
   return (
     <SiteLayout>
       <div className="flex-1 min-h-[calc(100vh-140px)] flex items-center justify-center p-4 sm:p-6 bg-gradient-to-b from-muted/10 to-muted/30">
-        <main className="w-full max-w-xl">
+        <main className="w-full max-w-lg">
           <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="vibe-card p-8 sm:p-12 border-2 border-border shadow-2xl rounded-[2.5rem] bg-card relative overflow-hidden"
+            className="p-6 sm:p-10 border border-border/80 shadow-xs rounded-2xl bg-card relative overflow-hidden space-y-6"
           >
-            {/* Visual ambient details */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl -mr-12 -mt-12 -z-10" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl -ml-12 -mb-12 -z-10" />
-
             {/* Form Header */}
-            <header className="text-center mb-10">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full mb-4">
-                <Sparkles size={10} className="fill-current" /> ENGELSİZ ERİŞİM SİSTEMİ
+            <header className="text-center space-y-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
+                <Sparkles size={11} className="fill-current" /> ENGELSİZ ERİŞİM SİSTEMİ
               </span>
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-foreground">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                 Tekrar Hoş Geldiniz
               </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground font-semibold uppercase tracking-wider mt-3">
+              <p className="text-xs text-muted-foreground font-normal leading-relaxed">
                 Kapsayıcı, engelsiz ve güvenli bilgi paylaşım ağı.
               </p>
             </header>
 
             {/* Social Authentication */}
-            <div className="space-y-4 mb-8">
+            <div className="space-y-4">
               <button
                 onClick={handleGoogleLogin}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-3 bg-background border-2 border-border hover:border-primary/40 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest text-foreground hover:bg-muted/30 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none"
+                className="w-full flex items-center justify-center gap-3 bg-background border border-border/80 hover:border-sky-500/40 px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-foreground hover:bg-muted/30 transition-all cursor-pointer outline-none"
                 aria-label="Google Hesabı ile Giriş Yap"
               >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                   <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                   <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
@@ -157,12 +153,12 @@ export default function LoginPage() {
                 Google ile Giriş Yap
               </button>
 
-              <div className="relative py-2" aria-hidden="true">
+              <div className="relative py-1" aria-hidden="true">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border"></div>
+                  <div className="w-full border-t border-border/60"></div>
                 </div>
                 <div className="relative flex justify-center text-[10px] uppercase">
-                  <span className="bg-card px-4 text-muted-foreground font-black tracking-widest">VEYA E-POSTA İLE</span>
+                  <span className="bg-card px-3 text-muted-foreground font-bold tracking-wider">VEYA E-POSTA İLE</span>
                 </div>
               </div>
             </div>
@@ -171,31 +167,30 @@ export default function LoginPage() {
             {error && (
               <div 
                 role="alert" 
-                className="flex items-start gap-3 p-4 mb-6 rounded-2xl bg-destructive/10 text-destructive border-2 border-destructive/20 font-bold text-xs uppercase tracking-wide leading-relaxed"
+                className="flex items-start gap-2.5 p-3.5 rounded-xl bg-destructive/10 text-destructive border border-destructive/20 font-bold text-xs leading-relaxed"
               >
-                <AlertCircle size={18} className="shrink-0 mt-0.5" />
+                <AlertCircle size={16} className="shrink-0 mt-0.5" />
                 <span>{error}</span>
               </div>
             )}
 
             {/* Standard Login Form */}
-            <form onSubmit={handleLogin} className="space-y-6">
+            <form onSubmit={handleLogin} className="space-y-4">
               
               {/* E-mail Input */}
-              <div className="space-y-2">
-                <label htmlFor={emailId} className="text-xs font-black uppercase tracking-widest text-muted-foreground ml-1">
+              <div className="space-y-1.5">
+                <label htmlFor={emailId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                   E-posta Adresi <span className="text-destructive" aria-hidden="true">*</span>
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60 pointer-events-none z-10" size={18} />
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10" size={16} />
                   <input
                     id={emailId}
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="vibe-input vibe-input-pl-12 pr-4 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
-                    style={{ paddingLeft: '3.5rem' }}
+                    className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
                     placeholder="ornek@adresiniz.com"
                     autoComplete="email"
                   />
@@ -203,71 +198,70 @@ export default function LoginPage() {
               </div>
 
               {/* Password Input */}
-              <div className="space-y-2">
-                <div className="flex justify-between items-center px-1">
-                  <label htmlFor={passwordId} className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center px-0.5">
+                  <label htmlFor={passwordId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                     Şifre <span className="text-destructive" aria-hidden="true">*</span>
                   </label>
                   <Link 
                     href="/auth/forgot-password" 
-                    className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline outline-none focus-visible:ring-2 focus-visible:ring-primary/20 rounded px-1"
+                    className="text-[11px] font-bold text-sky-400 hover:underline outline-none"
                   >
                     Şifremi Unuttum?
                   </Link>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60 pointer-events-none z-10" size={18} />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10" size={16} />
                   <input
                     id={passwordId}
                     type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="vibe-input vibe-input-pl-12 vibe-input-pr-20 h-14 text-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 outline-none font-semibold transition-all w-full"
-                    style={{ paddingLeft: '3.5rem', paddingRight: '3.5rem' }}
+                    className="w-full h-11 pl-10 pr-10 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
                     placeholder="••••••••"
                     autoComplete="current-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-foreground cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/20 rounded p-1"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer outline-none p-1"
                     aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
 
               {/* Remember Me Toggle */}
               <div className="flex items-center justify-between pt-1">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     id={rememberMeId}
                     role="checkbox"
                     aria-checked={rememberMe}
                     onClick={() => setRememberMe(!rememberMe)}
-                    className={`size-6 rounded-lg border-2 flex items-center justify-center transition-all cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/20 ${
+                    className={`size-5 rounded-md border flex items-center justify-center transition-all cursor-pointer outline-none ${
                       rememberMe 
-                        ? 'bg-primary border-primary text-white' 
-                        : 'border-border hover:border-primary/40 bg-background'
+                        ? 'bg-sky-500 border-sky-500 text-white' 
+                        : 'border-border/80 hover:border-sky-500/40 bg-background'
                     }`}
                     aria-label="Beni Hatırla"
                   >
-                    {rememberMe && <Check size={14} className="stroke-[4]" />}
+                    {rememberMe && <Check size={12} className="stroke-[3]" />}
                   </button>
                   <label 
                     onClick={() => setRememberMe(!rememberMe)} 
-                    className="text-xs font-black uppercase tracking-widest text-muted-foreground select-none cursor-pointer"
+                    className="text-xs font-bold text-muted-foreground select-none cursor-pointer"
                   >
                     Beni Hatırla
                   </label>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <HelpCircle size={14} />
-                  <span className="text-[10px] font-black uppercase tracking-wider">GÜVENLİ GİRİŞ</span>
+                <div className="flex items-center gap-1 text-muted-foreground text-[11px] font-semibold">
+                  <HelpCircle size={13} />
+                  <span>GÜVENLİ GİRİŞ</span>
                 </div>
               </div>
 
@@ -275,27 +269,27 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full vibe-button-primary h-14 font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 mt-4"
+                className="w-full h-11 bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
               >
                 {loading ? (
                   <Loader2 className="animate-spin" size={16} />
                 ) : (
-                  <LogIn size={16} className="stroke-[3]" />
+                  <LogIn size={16} />
                 )}
-                {loading ? 'SİSTEME GİRİŞ YAPILIYOR...' : 'SİSTEME GİRİŞ YAP'}
+                {loading ? 'Giriş Yapılıyor...' : 'Sisteme Giriş Yap'}
               </button>
             </form>
 
             {/* Registration Promotion Section */}
-            <footer className="mt-10 pt-8 border-t border-border text-center">
-              <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-4">
+            <footer className="pt-4 border-t border-border/60 text-center space-y-3">
+              <p className="text-xs text-muted-foreground font-normal">
                 Henüz bir hesabınız yok mu?
               </p>
               <Link 
                 href="/register" 
-                className="inline-flex items-center gap-2 px-6 py-3 border-2 border-primary/20 hover:border-primary/50 text-primary hover:bg-primary/5 font-black text-xs uppercase tracking-widest rounded-2xl transition-all cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-sky-500/30 hover:border-sky-500 text-sky-400 hover:bg-sky-500/10 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer"
               >
-                <UserPlus size={14} className="stroke-[3]" /> Engelsiz Sihirbazla Kayıt Ol
+                <UserPlus size={14} /> Engelsiz Sihirbazla Kayıt Ol
               </Link>
             </footer>
 

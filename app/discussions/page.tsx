@@ -436,54 +436,53 @@ function DiscussionsContent() {
       <div className="container mx-auto px-4 py-8 md:py-12">
         <header className="mb-10">
           {/* Bento Stats Headers */}
-          <div className="mb-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-card border border-border/80 rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300">
-              <h2 className="text-xs font-bold text-primary uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
-                <span className="text-xl" role="img" aria-label="Popüler">🔥</span> POPÜLER KONULAR
+          <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs hover:border-sky-500/30 transition-all duration-200">
+              <h2 className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                <span className="text-base" role="img" aria-label="Popüler">🔥</span> Popüler Konular
               </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Yardımcı teknolojiler, erişilebilir oyun dünyası ve engelli hakları bu hafta en çok konuşulan başlıklar arasında.
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Yardımcı teknolojiler, ÖTV muafiyetli araç limitleri, SGK ve engelli hakları en çok konuşulan başlıklar arasında.
               </p>
             </div>
-            <div className="bg-card border border-border/80 rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300">
-              <h2 className="text-xs font-bold text-primary uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
-                <span className="text-xl" role="img" aria-label="Robot">🤖</span> AI DESTEĞİ
+            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs hover:border-sky-500/30 transition-all duration-200">
+              <h2 className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                <span className="text-base" role="img" aria-label="Robot">🤖</span> AI Copilot Desteği
               </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Yapay zeka özetleme ve sesli asistan aracı ile saniyeler içinde bilgiye ulaşın. Engelsiz bilgi platformu yanınızda.
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Yapay zeka özetleme ve mevzuat asistanı ile uzun tartışmaları ve resmi yönetmelikleri saniyeler içinde analiz edin.
               </p>
             </div>
-            <div className="bg-card border border-border/80 rounded-3xl p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300">
-              <h2 className="text-xs font-bold text-primary uppercase tracking-[0.2em] mb-3 flex items-center gap-3">
-                <span className="text-xl" role="img" aria-label="El Sıkışma">🤝</span> ÜYE DAYANIŞMASI
+            <div className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs hover:border-sky-500/30 transition-all duration-200">
+              <h2 className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                <span className="text-base" role="img" aria-label="El Sıkışma">🤝</span> Dayanışma ve Çözüm
               </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Her gün ortalama 50+ yeni çözüm önerisi paylaşılıyor. Kendi deneyiminizi paylaşarak topluluğa rehberlik edin.
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Engelliler.biz kültürüyle tecrübe paylaşımı: Sağlık kurulu itirazları ve Balthazard tecrübeleri tek çatı altında.
               </p>
             </div>
           </div>
 
-          {/* Large Header Banner with glass effect */}
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-8 md:p-12 shadow-md">
-            <div className="absolute top-0 right-0 size-96 bg-primary/[0.04] rounded-full -translate-y-1/3 translate-x-1/3 blur-3xl pointer-events-none" />
-            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
-                  <Sparkles size={12} /> BİLGİ PAYLAŞTIKÇA ÇOĞALIR
+          {/* Large Header Banner with sleek effect */}
+          <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs">
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-1.5 rounded-md bg-sky-500/10 px-2.5 py-0.5 text-xs font-bold text-sky-400 border border-sky-500/20">
+                  <Sparkles size={12} /> Bilgi Paylaştıkça Çoğalır
                 </div>
-                <h1 id="feed-heading" className="text-3xl md:text-5xl font-extrabold tracking-tight text-foreground">
-                  Topluluk Konuşmaları
+                <h1 id="feed-heading" className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                  Topluluk Tartışmaları
                 </h1>
-                <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                  Yardımlaşmak, deneyim ve çözümleri paylaşmak, engelsiz teknolojileri keşfetmek için buradayız.
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl font-normal">
+                  Mevzuat soruları, hak arayışları, sağlık raporları ve engelsiz yaşam deneyimlerini paylaşmak için doğru yerdesiniz.
                 </p>
               </div>
               <button 
                 onClick={() => user ? setIsCreateModalOpen(true) : window.location.href = '/login'}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition-all duration-200 hover:bg-primary/90 hover:scale-[1.02] shadow-sm focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 hover:bg-sky-400 px-5 py-2.5 text-xs font-bold text-white transition-all shadow-xs shrink-0 cursor-pointer uppercase tracking-wider"
                 aria-label="Yeni tartışma başlığı oluştur"
               >
-                <Plus size={20} /> YENİ BAŞLIK AÇ
+                <Plus size={16} /> Yeni Konu Başlat
               </button>
             </div>
           </div>
@@ -491,87 +490,87 @@ function DiscussionsContent() {
 
         {/* Create Topic Modal */}
         {isCreateModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="bg-card w-full max-w-2xl rounded-3xl shadow-[0_0_50px_-12px_rgba(79,70,229,0.25)] border border-border overflow-hidden animate-in zoom-in-95 duration-200">
-              <div className="p-8 border-b border-border flex justify-between items-center bg-muted/30">
-                <div className="space-y-1">
-                  <h2 className="text-xl font-extrabold tracking-tight">YENİ TARTIŞMA OLUŞTUR</h2>
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Topluluğa Katkıda Bulunun</p>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-card w-full max-w-2xl rounded-2xl shadow-xl border border-border/80 overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="px-6 py-4 border-b border-border/80 flex justify-between items-center bg-muted/20">
+                <div className="space-y-0.5">
+                  <h2 className="text-base sm:text-lg font-bold tracking-tight text-foreground">Yeni Tartışma Oluştur</h2>
+                  <p className="text-xs text-muted-foreground">Topluluğa soru sorun veya deneyiminizi paylaşın</p>
                 </div>
-                <button onClick={() => setIsCreateModalOpen(false)} className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
-                  <X size={24} />
+                <button onClick={() => setIsCreateModalOpen(false)} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer">
+                  <X size={20} />
                 </button>
               </div>
-              <form onSubmit={handleCreateTopic} className="p-8 space-y-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">TARTIŞMA BAŞLIĞI</label>
+              <form onSubmit={handleCreateTopic} className="p-6 space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Tartışma Başlığı</label>
                   <input 
                     required
                     type="text" 
-                    placeholder="Etkileyici ve açıklayıcı bir başlık yazın..." 
-                    className="w-full h-14 px-5 rounded-2xl border border-border bg-background text-sm font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                    placeholder="Örn: [ÖTV 2026] Otomatik vites tertibatlı araç alım süreci..." 
+                    className="w-full h-11 px-4 rounded-xl border border-border/80 bg-background text-sm font-medium focus:border-sky-500 outline-none transition-colors"
                     value={newTopic.title}
                     onChange={e => setNewTopic({...newTopic, title: e.target.value})}
                   />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">KATEGORİ SEÇİMİ</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Kategori Seçimi</label>
                     <select 
                       required
-                      className="w-full h-14 px-5 rounded-2xl border border-border bg-background text-xs font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all cursor-pointer appearance-none"
+                      className="w-full h-11 px-3 rounded-xl border border-border/80 bg-background text-xs font-semibold focus:border-sky-500 outline-none transition-colors cursor-pointer"
                       value={newTopic.category_id}
                       onChange={e => setNewTopic({...newTopic, category_id: e.target.value})}
                     >
-                      <option value="">LÜTFEN BİR KATEGORİ SEÇİN</option>
+                      <option value="">Lütfen Kategori Seçin</option>
                       {categories.filter(c => c.is_main || !c.parent_id).map(mainCat => {
                         const subCats = categories.filter(sub => sub.parent_id === mainCat.id);
                         if (subCats.length > 0) {
                           return (
-                            <optgroup key={mainCat.id} label={mainCat.name.toUpperCase()} className="font-black text-primary">
+                            <optgroup key={mainCat.id} label={mainCat.name} className="font-bold text-sky-400">
                               {subCats.map(sub => (
-                                <option key={sub.id} value={sub.id} className="text-foreground">-- {sub.name.toUpperCase()}</option>
+                                <option key={sub.id} value={sub.id} className="text-foreground">-- {sub.name}</option>
                               ))}
                             </optgroup>
                           );
                         }
-                        return <option key={mainCat.id} value={mainCat.id}>{mainCat.name.toUpperCase()}</option>;
+                        return <option key={mainCat.id} value={mainCat.id}>{mainCat.name}</option>;
                       })}
                     </select>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">ERİŞİLEBİLİRLİK ETİKETİ</label>
-                    <div className="h-14 px-5 rounded-2xl border border-border bg-muted/20 flex items-center text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                      <Sparkles size={14} className="mr-2 text-primary" /> OTOMATİK ANALİZ AKTİF
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Erişilebilirlik Durumu</label>
+                    <div className="h-11 px-4 rounded-xl border border-border/80 bg-muted/20 flex items-center text-xs font-semibold text-sky-400">
+                      <Sparkles size={14} className="mr-2 text-sky-400" /> WCAG AA Uyumlu & Biyonik Aktif
                     </div>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">DETAYLI AÇIKLAMA</label>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Tartışma Detayı</label>
                   <textarea 
                     required
-                    rows={6}
-                    placeholder="Sorunuzu, önerinizi veya paylaşmak istediğiniz deneyimi buraya yazın..." 
-                    className="w-full p-5 rounded-2xl border border-border bg-background text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
+                    rows={5}
+                    placeholder="Mevzuat maddesi, sağlık kurulu raporu oranı, hastane süreci veya sorunuzu detaylandırın..." 
+                    className="w-full p-4 rounded-xl border border-border/80 bg-background text-sm font-normal focus:border-sky-500 outline-none transition-colors resize-none"
                     value={newTopic.content}
                     onChange={e => setNewTopic({...newTopic, content: e.target.value})}
                   />
                 </div>
-                <div className="flex gap-4 pt-2">
+                <div className="flex gap-3 pt-2">
                   <button 
                     type="button"
                     onClick={() => setIsCreateModalOpen(false)}
-                    className="flex-1 h-14 rounded-2xl bg-muted text-xs font-bold hover:bg-muted/80 transition-all uppercase tracking-widest"
+                    className="flex-1 py-2.5 rounded-xl bg-muted text-xs font-bold hover:bg-muted/80 transition-colors uppercase tracking-wider cursor-pointer"
                   >
-                    VAZGEÇ
+                    Vazgeç
                   </button>
                   <button 
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex-[2] h-14 rounded-2xl bg-primary text-primary-foreground text-xs font-bold hover:bg-primary/90 transition-all shadow-lg shadow-indigo-200 uppercase tracking-widest flex items-center justify-center gap-3 disabled:opacity-50"
+                    className="flex-[2] py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition-colors shadow-xs uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                   >
-                    {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-                    ŞİMDİ YAYINLA
+                    {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                    Konuyu Yayınla
                   </button>
                 </div>
               </form>
@@ -580,30 +579,30 @@ function DiscussionsContent() {
         )}
 
         {/* Categories Rail Filter Section */}
-        <section aria-labelledby="categories-heading" className="mb-8 bg-card/60 border border-border p-4 rounded-3xl backdrop-blur-xs">
-          <div className="flex items-center justify-between mb-3 px-1">
-            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
-              <FolderTree size={14} className="text-primary" /> KATEGORİ SEÇİMİ (5 ANA, 20 ALT KATEGORİ)
+        <section aria-labelledby="categories-heading" className="mb-6 bg-card border border-border/80 p-3.5 rounded-2xl shadow-xs">
+          <div className="flex items-center justify-between mb-2.5 px-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <FolderTree size={13} className="text-sky-400" /> Kategori Filtresi
             </span>
             {selectedCategory && (
               <button 
                 onClick={() => setSelectedCategory('')}
-                className="text-[10px] font-bold text-primary hover:underline uppercase"
+                className="text-[10px] font-bold text-sky-400 hover:underline uppercase tracking-wider cursor-pointer"
               >
                 Filtreyi Temizle
               </button>
             )}
           </div>
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             <button
               onClick={() => setSelectedCategory('')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-2xl border text-xs font-bold whitespace-nowrap transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 !selectedCategory
-                  ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                  : 'bg-card border-border text-muted-foreground hover:border-primary/40 hover:text-foreground'
+                  ? 'bg-sky-500 text-white border-sky-500 shadow-xs'
+                  : 'bg-muted/30 border-border/60 text-muted-foreground hover:border-sky-500/30 hover:text-foreground'
               }`}
             >
-              <FolderTree size={14} className="shrink-0" /> TÜMÜ
+              <FolderTree size={13} className="shrink-0" /> TÜMÜ
             </button>
             {categories.map((cat) => {
               const isSelected = selectedCategory === cat.slug || selectedCategory === cat.id;
@@ -612,72 +611,72 @@ function DiscussionsContent() {
                 <button
                   key={cat.id || cat.slug}
                   onClick={() => setSelectedCategory(cat.slug || cat.id)}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl border text-xs font-bold whitespace-nowrap transition-all focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                      ? 'bg-sky-500 text-white border-sky-500 shadow-xs'
                       : isMainCat
-                      ? 'bg-primary/5 border-primary/20 text-primary hover:bg-primary/10 font-black'
-                      : 'bg-card border-border text-muted-foreground hover:border-primary/40 hover:text-foreground'
+                      ? 'bg-sky-500/10 border-sky-500/20 text-sky-400 hover:bg-sky-500/20 font-bold'
+                      : 'bg-card border-border/60 text-muted-foreground hover:border-sky-500/30 hover:text-foreground'
                   }`}
                   title={cat.description}
                 >
                   {getCategoryIcon(cat.icon)}
-                  <span>{cat.name.toUpperCase()}</span>
-                  {isMainCat && <span className="text-[9px] bg-primary/20 px-1.5 py-0.5 rounded-md font-extrabold">ANA</span>}
+                  <span>{cat.name}</span>
+                  {isMainCat && <span className="text-[9px] bg-sky-500/20 px-1 py-0.2 rounded font-bold">ANA</span>}
                 </button>
               );
             })}
           </div>
         </section>
 
-        {/* Search, Tabs and Feed main layouts - 2 Column Premium Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Search, Tabs and Feed main layouts */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* Left Column: Feed and Filters (Span 8) */}
           <main className="lg:col-span-8 space-y-6">
             
             {/* Search and Quick Filters card */}
-            <div className="bg-card border border-border rounded-3xl p-6 shadow-sm space-y-6">
+            <div className="bg-card border border-border/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
               
-              <div className="flex flex-col md:flex-row gap-4 items-center">
+              <div className="flex flex-col md:flex-row gap-3 items-center">
                 {/* Voice & Keyboard accessible Search input */}
                 <div className="relative w-full flex-1">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/70" size={20} />
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/70" size={18} />
                   <input 
                     type="text" 
-                    placeholder="Tartışmalarda kelime veya başlık ara..." 
+                    placeholder="Tartışmalarda kelime, mevzuat maddesi veya başlık ara..." 
                     aria-label="Tartışmalarda ara"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-12 rounded-2xl border border-border bg-background pl-12 pr-12 text-sm font-medium outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    className="w-full h-10 rounded-xl border border-border/80 bg-background pl-10 pr-10 text-xs sm:text-sm font-medium outline-none focus:border-sky-500 transition-colors"
                   />
                   <button 
                     type="button"
                     onClick={startVoiceSearch}
-                    className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${
+                    className={`absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all cursor-pointer ${
                       isListening 
-                        ? 'text-red-500 bg-red-500/10 animate-pulse ring-2 ring-red-500/30' 
+                        ? 'text-rose-500 bg-rose-500/10 animate-pulse' 
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                     }`}
                     title="Sesli arama yap"
                     aria-label="Mikrofon ile sesli arama"
                   >
-                    <Mic size={20} />
+                    <Mic size={18} />
                   </button>
                 </div>
 
                 {/* Styled select fallback */}
-                <div className="w-full md:w-[220px]">
+                <div className="w-full md:w-[200px]">
                   <select
                     value={selectedCategory}
                     aria-label="Kategoriye göre filtrele"
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full h-12 bg-background border border-border rounded-2xl px-4 text-xs font-bold outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer"
+                    className="w-full h-10 bg-background border border-border/80 rounded-xl px-3 text-xs font-semibold outline-none focus:border-sky-500 cursor-pointer"
                   >
-                    <option value="">TÜM KATEGORİLER</option>
+                    <option value="">Tüm Kategoriler</option>
                     {categories.map(c => (
                       <option key={c.id || c.slug} value={c.slug || c.id}>
-                        {c.name.toUpperCase()}
+                        {c.name}
                       </option>
                     ))}
                   </select>
@@ -686,19 +685,19 @@ function DiscussionsContent() {
 
               {/* Smart Search Synonyms/Homonyms Expansion indicator */}
               {searchQuery.trim() && expandedTermsUsed.length > 1 && (
-                <div className="flex flex-wrap items-center gap-2 text-xs text-primary bg-primary/5 px-3 py-1.5 rounded-xl border border-primary/10">
-                  <Sparkles className="size-3.5 shrink-0 text-primary" />
-                  <span className="font-bold">Arama Kelimeleri Genişletildi:</span>
+                <div className="flex flex-wrap items-center gap-1.5 text-xs text-sky-400 bg-sky-500/10 px-3 py-1 rounded-lg border border-sky-500/20">
+                  <Sparkles className="size-3.5 shrink-0 text-sky-400" />
+                  <span className="font-bold">Arama Genişletildi:</span>
                   <span className="font-medium text-muted-foreground">{expandedTermsUsed.join(", ")}</span>
                 </div>
               )}
 
               {/* Status tabs */}
-              <div className="flex flex-wrap gap-2 border-t border-border/50 pt-4">
+              <div className="flex flex-wrap gap-2 border-t border-border/60 pt-3">
                 {[
                   { id: 'all', label: 'TÜM BAŞLIKLAR' },
-                  { id: 'solved', label: 'ÇÖZÜME ULAŞANLAR' },
-                  { id: 'popular', label: 'POPÜLER KONULAR' },
+                  { id: 'solved', label: 'ÇÖZÜLENLER' },
+                  { id: 'popular', label: 'POPÜLER' },
                   { id: 'pinned', label: 'SABİTLENENLER' }
                 ].map((tab) => (
                   <button
@@ -706,9 +705,9 @@ function DiscussionsContent() {
                     onClick={() => {
                       setActiveTab(tab.id as any);
                     }}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer ${
                       activeTab === tab.id
-                        ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                        ? 'bg-sky-500 text-white border-sky-500 shadow-xs'
                         : 'bg-muted/30 hover:bg-muted border-transparent text-muted-foreground hover:text-foreground'
                     }`}
                   >
@@ -835,14 +834,14 @@ function DiscussionsContent() {
               )}
 
               {hasMore && filteredTopics.length > 0 && !searchQuery && (
-                <div className="pt-8 flex justify-center">
+                <div className="pt-6 flex justify-center">
                   <button
                     onClick={() => fetchInitialData(true)}
                     disabled={loading}
-                    className="vibe-button-primary h-14 px-10 text-xs flex items-center gap-3"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-card border border-border/80 hover:border-sky-500/40 text-foreground font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-xs disabled:opacity-50"
                   >
-                    {loading ? <Loader2 size={18} className="animate-spin" /> : <Plus size={18} />}
-                    DAHA FAZLA YÜKLE
+                    {loading ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+                    Daha Fazla Göster
                   </button>
                 </div>
               )}
@@ -851,18 +850,18 @@ function DiscussionsContent() {
           </main>
 
           {/* Right Column: Premium Sidebar Widget Panels (Span 4) */}
-          <aside className="lg:col-span-4 space-y-6">
+          <aside className="lg:col-span-4 space-y-4">
             
             {/* Top Contributors Widget */}
             {topContributors.length > 0 && (
-              <section className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-6 pb-4 border-b border-border/50">
-                  <Sparkles className="text-primary size-5 shrink-0" />
-                  <h2 className="text-sm font-black tracking-wider text-foreground uppercase">
+              <section className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs">
+                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-border/60">
+                  <Sparkles className="text-sky-400 size-4 shrink-0" />
+                  <h2 className="text-xs font-bold tracking-wider text-foreground uppercase">
                     Aktif Katılımcılar
                   </h2>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {topContributors.map((contributor, i) => (
                     <Link key={contributor.id} href={`/profile/${contributor.id}`} className="flex items-center gap-3 group">
                       <UserAvatar 
@@ -870,18 +869,18 @@ function DiscussionsContent() {
                         username={contributor.username}
                         size="sm"
                         badge={
-                          <div className="absolute -top-1.5 -left-1.5 w-4 h-4 rounded-full bg-primary text-[8px] font-black text-white flex items-center justify-center border border-card">
+                          <div className="absolute -top-1 -left-1 w-3.5 h-3.5 rounded-full bg-sky-500 text-[8px] font-black text-white flex items-center justify-center border border-card">
                             {i + 1}
                           </div>
                         }
                       />
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs font-black text-foreground truncate group-hover:text-primary transition-colors">
+                        <div className="text-xs font-semibold text-foreground truncate group-hover:text-sky-400 transition-colors">
                           @{contributor.username}
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">LVL {contributor.level}</span>
-                          <span className="text-[9px] font-black text-primary uppercase tracking-widest">{contributor.xp} XP</span>
+                          <span className="text-[9px] font-bold text-muted-foreground uppercase">LVL {contributor.level}</span>
+                          <span className="text-[9px] font-bold text-sky-400 uppercase">{contributor.xp} XP</span>
                         </div>
                       </div>
                     </Link>
@@ -892,19 +891,19 @@ function DiscussionsContent() {
 
             {/* Popular Tags Widget */}
             {popularTags.length > 0 && (
-              <section className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm">
-                <div className="flex items-center gap-2 mb-6 pb-4 border-b border-border/50">
-                  <Megaphone className="text-primary size-5 shrink-0" />
-                  <h2 className="text-sm font-black tracking-wider text-foreground uppercase">
+              <section className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs">
+                <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-border/60">
+                  <Megaphone className="text-sky-400 size-4 shrink-0" />
+                  <h2 className="text-xs font-bold tracking-wider text-foreground uppercase">
                     Popüler Etiketler
                   </h2>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {popularTags.map((tag) => (
                     <Link 
                       key={tag.slug} 
                       href={`/discussions?etiket=${tag.slug}`}
-                      className="px-3 py-1.5 rounded-xl bg-muted/50 border border-border hover:border-primary hover:bg-primary/5 transition-all text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary"
+                      className="px-2.5 py-1 rounded-lg bg-muted/40 border border-border/60 hover:border-sky-500/30 hover:bg-sky-500/5 transition-colors text-[10px] font-semibold text-muted-foreground hover:text-sky-400"
                     >
                       #{tag.name}
                     </Link>
@@ -916,27 +915,25 @@ function DiscussionsContent() {
             {/* Sidebar Widget 1: Premium Accessibility Settings Panel */}
             <section 
               aria-labelledby="accessibility-widget-heading"
-              className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm relative overflow-hidden"
+              className="bg-card border border-border/80 rounded-2xl p-5 shadow-xs relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 size-40 bg-primary/[0.01] rounded-full pointer-events-none" />
-              
-              <div className="flex items-center gap-2 mb-4 pb-4 border-b border-border/50">
-                <Settings className="text-primary size-5 shrink-0" />
-                <h2 id="accessibility-widget-heading" className="text-sm font-black tracking-wider text-foreground uppercase">
+              <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-border/60">
+                <Settings className="text-sky-400 size-4 shrink-0" />
+                <h2 id="accessibility-widget-heading" className="text-xs font-bold tracking-wider text-foreground uppercase">
                   Erişilebilirlik Paneli
                 </h2>
               </div>
               
-              <p className="text-xs text-muted-foreground leading-relaxed mb-5">
-                Bu paneldeki ayarları özelleştirerek okuma konforunuzu artırabilir ve arayüzü engelsiz kılabilirsiniz.
+              <p className="text-xs text-muted-foreground leading-relaxed mb-4 font-normal">
+                Yazı boyutu ve okuma düzenini kişiselleştirerek okuma konforunuzu artırabilirsiniz.
               </p>
 
-              <div className="space-y-5">
+              <div className="space-y-4">
                 {/* Text Size Scale */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <label className="text-xs font-bold text-muted-foreground flex items-center justify-between">
                     <span>YAZI BOYUTU</span>
-                    <span className="text-primary font-black uppercase text-[10px]">
+                    <span className="text-sky-400 font-bold uppercase text-[10px]">
                       {textSize === 'normal' ? 'Normal' : textSize === 'large' ? 'Büyük (+15%)' : 'Çok Büyük (+30%)'}
                     </span>
                   </label>
@@ -953,10 +950,10 @@ function DiscussionsContent() {
                           toast.success(`Yazı boyutu ${sz.label} olarak ayarlandı.`);
                           announceToScreenReader(`Yazı boyutu değiştirildi: ${sz.label}`);
                         }}
-                        className={`py-2 rounded-xl border text-xs font-black transition-all ${
+                        className={`py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
                           textSize === sz.id
-                            ? 'bg-primary border-primary text-primary-foreground shadow-sm'
-                            : 'bg-muted/30 border-border text-muted-foreground hover:bg-muted hover:text-foreground'
+                            ? 'bg-sky-500 border-sky-500 text-white shadow-xs'
+                            : 'bg-muted/30 border-border/60 text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                         aria-label={`Yazı boyutunu ${sz.id === 'normal' ? 'Normal' : sz.id === 'large' ? 'Büyük' : 'Çok Büyük'} yap`}
                       >
@@ -967,10 +964,10 @@ function DiscussionsContent() {
                 </div>
 
                 {/* Dyslexic Helper Toggle */}
-                <div className="flex items-center justify-between p-3.5 bg-muted/30 border border-border/50 rounded-2xl">
-                  <div className="space-y-1 pr-4">
+                <div className="flex items-center justify-between p-3 bg-muted/30 border border-border/60 rounded-xl">
+                  <div className="space-y-0.5 pr-3">
                     <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                      <Type size={14} className="text-primary" />
+                      <Type size={13} className="text-sky-400" />
                       Disleksi Dostu Düzen
                     </div>
                     <p className="text-[10px] text-muted-foreground leading-snug">

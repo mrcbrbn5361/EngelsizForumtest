@@ -18,81 +18,69 @@ export default function AboutPage() {
       <div className="flex-1 w-full" role="main">
         
         {/* --- HERO SECTION --- */}
-        <section className="relative py-24 md:py-32 overflow-hidden border-b border-border/50 bg-gradient-to-br from-primary/[0.04] via-transparent to-primary/[0.02]">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none" />
+        <section className="relative py-16 md:py-24 overflow-hidden border-b border-border/60 bg-gradient-to-b from-sky-500/5 via-transparent to-transparent">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest mb-10">
-              <Link href="/" className="hover:text-primary transition-colors">ANA SAYFA</Link>
+            <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-widest mb-8">
+              <Link href="/" className="hover:text-sky-400 transition-colors">Ana Sayfa</Link>
               <ChevronRight size={14} />
-              <span className="text-foreground font-black">HAKKIMIZDA & ENGELSİZFORUM VİZYONU</span>
+              <span className="text-foreground font-bold">Hakkımızda & EngelsizForum</span>
             </div>
-            <div className="max-w-4xl mx-auto text-center space-y-8">
+            <div className="max-w-3xl mx-auto text-center space-y-6">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em]"
+                transition={{ duration: 0.5 }}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-bold uppercase tracking-wider"
               >
-                <Sparkles size={14} className="animate-pulse" /> ENGELSİZ BİR DİJİTAL DÜNYA İÇİN
-              </motion.div>
-
-              {/* TEST UPDATE FOR GITHUB ACTIONS AUTOMATION */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-                className="text-[10px] font-black text-primary/60 uppercase tracking-[0.3em]"
-              >
-                Son Güncelleme: Sosyal Medya Otomasyonu Entegre Edildi
+                <Sparkles size={13} /> Engelsiz Bir Dijital Dünya İçin
               </motion.div>
               
               <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-5xl md:text-7xl font-black tracking-tighter text-foreground uppercase leading-[1.1]"
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15]"
               >
                 Bariyersiz Bilgi, <br />
-                <span className="text-primary">Eşit Topluluk.</span>
+                <span className="text-sky-400">Eşit Topluluk.</span>
               </motion.h1>
               
               <motion.p 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-3xl mx-auto opacity-80"
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="text-base sm:text-lg text-muted-foreground font-normal leading-relaxed max-w-2xl mx-auto"
               >
-                EngelsizForum, Türkiye&apos;nin ilk tam erişilebilir dijital ekosistemi olarak, her bireyin bilgiye ve sosyal etkileşime engelsiz ulaşması amacıyla inşa edildi.
+                EngelsizForum, Türkiye&apos;nin ilk tam erişilebilir dijital ekosistemi olarak, her bireyin bilgiye, mevzuat desteğine ve sosyal dayanışmaya engelsiz ulaşması amacıyla geliştirildi.
               </motion.p>
             </div>
           </div>
         </section>
 
         {/* --- CORE PILLARS BENTO GRID --- */}
-        <section className="py-24 bg-card/30">
+        <section className="py-16 bg-muted/20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
               
               {/* Pillar 1: Mission */}
               <motion.div 
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="lg:col-span-7 bg-card border border-border rounded-[2.5rem] p-10 md:p-16 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden"
+                className="lg:col-span-7 bg-card border border-border/80 rounded-2xl p-8 md:p-10 shadow-sm relative overflow-hidden"
               >
-                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                <div className="relative z-10 space-y-6">
-                  <div className="w-16 h-16 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                    <Target size={32} />
+                <div className="relative z-10 space-y-5">
+                  <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                    <Target size={24} />
                   </div>
-                  <h2 className="text-3xl md:text-4xl font-black text-foreground uppercase tracking-tight">Misyonumuz</h2>
-                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-medium">
-                    Engelli bireylerin teknoloji, sosyal yaşam ve hak arama süreçlerinde birbirleriyle yardımlaşabileceği, AI destekli ve <span className="text-primary font-bold">WCAG 2.1</span> standartlarının ötesinde bir kullanıcı deneyimi sunmaktır.
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">Misyonumuz</h2>
+                  <p className="text-base text-muted-foreground leading-relaxed font-normal">
+                    Engelli bireylerin teknoloji, sosyal yaşam ve hak arama süreçlerinde birbirleriyle yardımlaşabileceği, AI destekli ve <span className="text-sky-400 font-bold">WCAG 2.2 AAA</span> standartlarının ötesinde bir kullanıcı deneyimi sunmaktır.
                   </p>
-                  <div className="pt-6 flex flex-wrap gap-4">
-                    <div className="px-4 py-2 bg-muted rounded-2xl text-[10px] font-black text-muted-foreground uppercase tracking-widest border border-border">#KAPSAYICILIK</div>
-                    <div className="px-4 py-2 bg-muted rounded-2xl text-[10px] font-black text-muted-foreground uppercase tracking-widest border border-border">#ERİŞİLEBİLİRLİK</div>
-                    <div className="px-4 py-2 bg-muted rounded-2xl text-[10px] font-black text-muted-foreground uppercase tracking-widest border border-border">#EŞİTLİK</div>
+                  <div className="pt-4 flex flex-wrap gap-2">
+                    <div className="px-3 py-1 bg-muted/60 rounded-lg text-xs font-bold text-muted-foreground border border-border">#Kapsayıcılık</div>
+                    <div className="px-3 py-1 bg-muted/60 rounded-lg text-xs font-bold text-muted-foreground border border-border">#Erişilebilirlik</div>
+                    <div className="px-3 py-1 bg-muted/60 rounded-lg text-xs font-bold text-muted-foreground border border-border">#Eşitlik</div>
                   </div>
                 </div>
               </motion.div>
@@ -102,22 +90,21 @@ export default function AboutPage() {
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                className="lg:col-span-5 flex flex-col gap-8"
+                className="lg:col-span-5 flex flex-col gap-6"
               >
-                <div className="bg-primary text-primary-foreground rounded-[2.5rem] p-10 flex-1 shadow-lg shadow-primary/20 relative overflow-hidden">
-                   <div className="relative z-10 space-y-4">
-                    <Heart size={40} className="mb-4" />
-                    <h3 className="text-2xl font-black uppercase tracking-tight">Değerlerimiz</h3>
-                    <p className="text-sm font-bold opacity-80 leading-relaxed uppercase tracking-wide">
-                      Kapsayıcılık, Şeffaflık ve Yenilikçilik ana değerlerimizdir. Platformumuzdaki her özellik, topluluğumuzun doğrudan geri bildirimleri ile şekillenmektedir.
+                <div className="bg-sky-500 text-white rounded-2xl p-8 flex-1 shadow-sm relative overflow-hidden">
+                   <div className="relative z-10 space-y-3">
+                    <Heart size={28} className="mb-2 text-white/90" />
+                    <h3 className="text-xl font-bold tracking-tight">Değerlerimiz</h3>
+                    <p className="text-xs sm:text-sm font-normal text-white/90 leading-relaxed">
+                      Kapsayıcılık, Şeffaflık ve Yenilikçilik ana ilkelerimizdir. Platformumuzdaki her özellik, topluluğumuzun doğrudan geri bildirimleri ile şekillenmektedir.
                     </p>
                    </div>
-                   <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl" />
                 </div>
-                <div className="bg-card border border-border rounded-[2.5rem] p-10 flex-1 flex flex-col justify-center">
-                  <div className="text-xs font-black text-primary uppercase tracking-[0.2em] mb-4">GÜCÜMÜZÜ TOPLULUKTAN ALIYORUZ</div>
-                  <div className="text-5xl font-black text-foreground font-mono tracking-tighter">1.2k+</div>
-                  <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-2">AKTİF TARTIŞMA KONUSU</div>
+                <div className="bg-card border border-border/80 rounded-2xl p-8 flex-1 flex flex-col justify-center">
+                  <div className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-2">Gücümüzü Topluluktan Alıyoruz</div>
+                  <div className="text-4xl font-extrabold text-foreground font-mono tracking-tight">1.200+</div>
+                  <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mt-1">Aktif Tartışma Konusu</div>
                 </div>
               </motion.div>
             </div>
@@ -125,28 +112,28 @@ export default function AboutPage() {
         </section>
 
         {/* --- PROJECT ORIGIN & TECH STACK --- */}
-        <section className="py-24 container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-6 space-y-8">
-              <div className="space-y-4">
-                <h2 className="text-4xl font-black text-foreground uppercase tracking-tight">Proje Vizyonu</h2>
-                <p className="text-lg text-muted-foreground font-medium leading-relaxed">
-                  EngelsizForum, dijital dünyadaki bariyerleri yıkmak amacıyla <span className="text-foreground font-bold underline decoration-primary decoration-4 underline-offset-4">Miraç Birben</span> tarafından hayal edildi ve hayata geçirildi.
+        <section className="py-16 container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-6 space-y-6">
+              <div className="space-y-3">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">Proje Vizyonu</h2>
+                <p className="text-base text-muted-foreground font-normal leading-relaxed">
+                  EngelsizForum, dijital dünyadaki bariyerleri yıkmak amacıyla <span className="text-foreground font-bold">Miraç Birben</span> tarafından hayata geçirildi.
                 </p>
               </div>
               
-              <div className="space-y-6">
-                <h3 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">GELİŞTİRME ARAÇLARI</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Teknoloji Altyapısı</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
                     { name: 'Google AI Studio', desc: 'Yapay Zeka Mimarisi' },
                     { name: 'Vercel', desc: 'Bulut Dağıtım & Hosting' },
                     { name: 'GitHub', desc: 'Kaynak Kod Yönetimi' },
                     { name: 'Supabase', desc: 'Veritabanı & Auth' }
                   ].map((tech) => (
-                    <div key={tech.name} className="p-5 bg-card border border-border rounded-2xl shadow-sm hover:border-primary/30 transition-all">
-                      <div className="font-black text-foreground text-sm uppercase tracking-tight mb-1">{tech.name}</div>
-                      <div className="text-[10px] font-bold text-primary uppercase tracking-widest">{tech.desc}</div>
+                    <div key={tech.name} className="p-4 bg-card border border-border/80 rounded-xl shadow-sm hover:border-sky-500/30 transition-all">
+                      <div className="font-bold text-foreground text-sm tracking-tight mb-0.5">{tech.name}</div>
+                      <div className="text-xs text-sky-400 font-medium">{tech.desc}</div>
                     </div>
                   ))}
                 </div>
@@ -154,72 +141,15 @@ export default function AboutPage() {
             </div>
 
             <div className="lg:col-span-6">
-              <div className="relative group">
-                <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 to-primary/5 rounded-[3rem] blur-xl opacity-50 group-hover:opacity-75 transition duration-1000" />
-                <div className="relative bg-card border border-border rounded-[2.5rem] p-10 md:p-16 flex flex-col items-center text-center space-y-8">
-                  <div className="w-24 h-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-                    <Handshake size={48} />
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-black text-foreground uppercase tracking-tight">Topluluk Odaklı Geliştirme</h3>
-                    <p className="text-sm text-muted-foreground font-medium leading-relaxed">
-                      Her satır kod, engelli bireylerin dijital dünyada daha özgür olması için titizlikle yazıldı. Bu proje, teknolojinin insan hayatını nasıl kolaylaştırabileceğinin canlı bir örneğidir.
-                    </p>
-                  </div>
+              <div className="bg-card border border-border/80 rounded-2xl p-8 md:p-12 flex flex-col items-center text-center space-y-6">
+                <div className="w-16 h-16 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                  <Handshake size={32} />
                 </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-
-
-        {/* --- VISION & TECHNOLOGY --- */}
-        <section className="py-24 border-y border-border/50 bg-muted/20">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col lg:flex-row gap-16 items-center">
-              <div className="lg:w-1/2 space-y-10">
-                <div className="space-y-4">
-                  <h2 className="text-4xl font-black text-foreground uppercase tracking-tight">Teknolojik Vizyonumuz</h2>
-                  <p className="text-lg text-muted-foreground font-medium leading-relaxed">
-                    Yapay zeka (AI) destekli özelliklerimizle, internetteki bariyerleri sadece kaldırmıyor, onları tamamen yok ediyoruz.
+                <div className="space-y-3">
+                  <h3 className="text-xl font-bold text-foreground tracking-tight">Topluluk Odaklı Geliştirme</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed max-w-md">
+                    Her satır kod, engelli bireylerin dijital dünyada daha özgür olması için titizlikle yazıldı. Bu platform, teknolojinin insan hayatını nasıl kolaylaştırabileceğinin canlı bir örneğidir.
                   </p>
-                </div>
-
-                <div className="space-y-6">
-                  {[
-                    { title: 'Bilişsel Erişilebilirlik', text: 'Karmaşık yasal ve tıbbi terimleri AI ile herkesin anlayabileceği sadeliğe dönüştürüyoruz.', icon: <Scale className="w-5 h-5 text-primary" /> },
-                    { title: 'Sesli & Görsel Adaptasyon', text: 'Tüm tartışmalar ve içerikler ekran okuyucular ve yardımcı teknolojilerle tam uyumlu şekilde kodlanmıştır.', icon: <Eye className="w-5 h-5 text-primary" /> },
-                    { title: 'Bariyersiz Navigasyon', text: 'Klavye kısayolları ve sesli komut destekleri ile fiziksel engelleri arayüzde aşıyoruz.', icon: <Rocket className="w-5 h-5 text-primary" /> }
-                  ].map((item, i) => (
-                    <div key={i} className="flex gap-5">
-                      <div className="w-12 h-12 rounded-2xl bg-card border border-border flex items-center justify-center shrink-0 shadow-sm">
-                        {item.icon}
-                      </div>
-                      <div className="space-y-1">
-                        <h4 className="font-black text-foreground uppercase text-sm tracking-tight">{item.title}</h4>
-                        <p className="text-sm text-muted-foreground font-medium opacity-80 leading-relaxed">{item.text}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="lg:w-1/2 relative">
-                <div className="aspect-square bg-gradient-to-br from-primary/10 to-transparent rounded-[3rem] border border-primary/20 overflow-hidden p-8 md:p-16 flex items-center justify-center">
-                   <div className="w-full h-full border-2 border-dashed border-primary/20 rounded-[2rem] flex flex-col items-center justify-center gap-6 relative">
-                      <div className="absolute inset-0 bg-primary/5 blur-[80px] rounded-full pointer-events-none" />
-                      <Sparkles className="w-20 h-20 text-primary animate-pulse" />
-                      <div className="text-center space-y-2 relative z-10">
-                        <div className="text-2xl font-black text-foreground uppercase tracking-tight">AI LABORATUVARI</div>
-                        <p className="text-xs font-bold text-muted-foreground tracking-widest uppercase">Erişilebilirlik Ar-Ge Merkezi</p>
-                      </div>
-                   </div>
-                </div>
-                {/* Float elements */}
-                <div className="absolute -top-6 -right-6 bg-card border border-border p-5 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce duration-3000">
-                  <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                  <span className="text-[10px] font-black text-foreground uppercase tracking-widest">Sistem Aktif</span>
                 </div>
               </div>
             </div>
@@ -227,35 +157,34 @@ export default function AboutPage() {
         </section>
 
         {/* --- CALL TO ACTION --- */}
-        <section className="py-24 container mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-16 container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="bg-foreground text-background rounded-[3rem] p-12 md:p-24 text-center space-y-10 shadow-2xl relative overflow-hidden"
+            className="bg-card border border-border/80 rounded-2xl p-8 md:p-14 text-center space-y-6 shadow-sm relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-primary/10 opacity-50 blur-3xl rounded-full translate-y-1/2" />
-            <div className="relative z-10 space-y-6">
-              <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-tight">
-                Bu Yolculuğa <br /> <span className="text-primary">Birlikte Çıkalım.</span>
+            <div className="relative z-10 space-y-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground leading-tight">
+                Bu Dayanışmaya <span className="text-sky-400">Birlikte Katılalım.</span>
               </h2>
-              <p className="text-lg md:text-xl text-background/70 font-medium leading-relaxed max-w-2xl mx-auto">
-                Daha erişilebilir bir gelecek için sesinizi duyurun, tecrübelerinizi paylaşın ve topluluğumuzun bir parçası olun.
+              <p className="text-sm sm:text-base text-muted-foreground font-normal leading-relaxed max-w-xl mx-auto">
+                Daha erişilebilir bir gelecek için deneyimlerinizi paylaşın, sorularınızı sorun ve topluluğumuzun bir parçası olun.
               </p>
             </div>
 
-            <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-6 pt-6">
+            <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <Link 
-                href="/auth" 
-                className="w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-primary px-10 py-5 text-sm font-black text-primary-foreground shadow-xl shadow-primary/20 transition hover:bg-primary/90 hover:scale-105 active:scale-95 uppercase tracking-widest"
+                href="/login" 
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-sky-500 px-6 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-sky-400 uppercase tracking-wider"
               >
-                HEMEN KATIL
+                Hemen Katıl
               </Link>
               <Link 
                 href="/discussions" 
-                className="w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-white/10 px-10 py-5 text-sm font-black text-white border border-white/20 transition hover:bg-white/20 hover:scale-105 active:scale-95 uppercase tracking-widest"
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-muted/60 border border-border/80 px-6 py-3 text-xs font-bold text-foreground transition hover:bg-muted uppercase tracking-wider"
               >
-                TARTIŞMALARI KEŞFET
+                Tartışmaları Keşfet
               </Link>
             </div>
           </motion.div>

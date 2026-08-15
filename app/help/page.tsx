@@ -103,28 +103,31 @@ export default function HelpPage() {
           })
         }}
       />
-      <div className="container mx-auto px-4 py-16 md:py-24">
-        <header className="mb-24 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-6">Yardım Merkezi</h1>
-          <p className="text-xl text-muted-foreground leading-relaxed max-w-4xl mx-auto font-medium">
-            Platform araçlarımız, sesli kontrol özellikleri ve erişilebilirlik panelleriyle ilgili tüm detaylara buradan ulaşabilirsiniz.
+      <div className="container mx-auto px-4 py-10 md:py-16 max-w-5xl">
+        <header className="mb-12 text-center">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-bold uppercase tracking-wider mb-4">
+            <BookOpen size={12} /> Rehber ve Destek
+          </div>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground mb-4">Yardım Merkezi</h1>
+          <p className="text-base text-muted-foreground leading-relaxed max-w-2xl mx-auto font-normal">
+            Platform araçlarımız, sesli kontrol özellikleri, mevzuat hesaplayıcılar ve erişilebilirlik panelleriyle ilgili tüm detaylara buradan ulaşabilirsiniz.
           </p>
         </header>
 
         {/* Categories Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
           {[
-            { icon: <BookOpen size={28} />, title: 'Kullanım Kılavuzu', text: 'Platformun erişilebilirlik araçlarını, sesli giriş özelliklerini ve yapay zeka özetleyicisini nasıl kullanacağınızı öğrenin.' },
-            { icon: <User size={28} />, title: 'Hesap Yönetimi', text: 'Profil oluşturma, şifre sıfırlama, bildirim tercihleri ve hesap silme süreçleri hakkında detaylı yönergeler.' },
-            { icon: <ShieldAlert size={28} />, title: 'Güvenlik ve Topluluk', text: 'Güvenliğiniz için aldığımız önlemler, moderasyon kuralları ve platform etik ilkeleri.' },
-            { icon: <FileText size={28} />, title: 'Sorun Giderme', text: 'Tarayıcı uyumluluğu, oturum açma sorunları ve ekran okuyucu optimizasyonu hakkında teknik destek bilgileri.' },
+            { icon: <BookOpen size={22} />, title: 'Kullanım Kılavuzu', text: 'Platformun erişilebilirlik araçlarını, sesli giriş özelliklerini ve yapay zeka özetleyicisini nasıl kullanacağınızı öğrenin.' },
+            { icon: <User size={22} />, title: 'Hesap Yönetimi', text: 'Profil oluşturma, şifre sıfırlama, bildirim tercihleri ve hesap doğrulama süreçleri hakkında detaylı yönergeler.' },
+            { icon: <ShieldAlert size={22} />, title: 'Güvenlik ve Topluluk', text: 'Güvenliğiniz için aldığımız önlemler, moderasyon kuralları ve platform etik ilkeleri.' },
+            { icon: <FileText size={22} />, title: 'Sorun Giderme', text: 'Tarayıcı uyumluluğu, oturum açma sorunları ve ekran okuyucu optimizasyonu hakkında teknik destek bilgileri.' },
           ].map((item, index) => (
-            <div key={index} className="bg-card border border-border rounded-3xl p-8 md:p-10 shadow-sm transition-all hover:shadow-md">
-              <div className="p-4 bg-primary/10 text-primary w-fit rounded-2xl mb-6" aria-hidden="true">
+            <div key={index} className="bg-card border border-border/80 rounded-2xl p-6 shadow-sm transition-all hover:border-sky-500/40">
+              <div className="p-2.5 bg-sky-500/10 text-sky-400 w-fit rounded-xl mb-4" aria-hidden="true">
                 {item.icon}
               </div>
-              <h2 className="text-2xl font-bold mb-4 tracking-tight text-foreground">{item.title}</h2>
-              <p className="text-muted-foreground leading-relaxed font-medium">
+              <h2 className="text-lg font-bold mb-2 tracking-tight text-foreground">{item.title}</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed font-normal">
                 {item.text}
               </p>
             </div>
@@ -132,20 +135,20 @@ export default function HelpPage() {
         </section>
 
         {/* FAQ List */}
-        <section className="mb-24 space-y-12">
-          <h2 className="text-3xl font-extrabold text-foreground tracking-tight">Sıkça Sorulan Sorular</h2>
+        <section className="mb-16 space-y-6">
+          <h2 className="text-xl md:text-2xl font-extrabold text-foreground tracking-tight">Sıkça Sorulan Sorular</h2>
           
-          <div className="bg-card border border-border rounded-3xl p-8 md:p-12 space-y-10 shadow-sm">
+          <div className="bg-card border border-border/80 rounded-2xl p-6 md:p-8 space-y-4 shadow-sm">
             {[
               { q: "EngelsizForum tamamen ücretsiz mi?", a: "Evet. EngelsizForum, engelli bireylerin bilgiye ve topluluğa erişimini kolaylaştırmak amacıyla tamamen ücretsiz olarak sunulan açık kaynaklı bir sosyal platformdur." },
               { q: "Ekran okuyucu kullanırken sorun yaşıyorum, ne yapmalıyım?", a: "Platformumuz NVDA, JAWS & VoiceOver ekran okuyucularıyla tam uyumlu çalışacak şekilde tasarlanmıştır. Sorun yaşarsanız, sol alttaki erişilebilirlik menüsünden ilgili profili optimize edebilir veya bizimle iletişime geçebilirsiniz." },
               { q: "Yapay zeka sesli desteği nasıl çalışıyor?", a: "Gönderilerdeki 'Yapay Zeka Seslendir' butonunu kullanarak metinleri doğal konuşma sesiyle dinleyebilirsiniz. Ayrıca sesinizi kullanarak sesli yanıtlar gönderebilir ve tartışmalara katılabilirsiniz." }
             ].map((item, index) => (
-              <div key={index} className="space-y-4 p-8 bg-muted/30 rounded-2xl border border-border/50">
-                <h3 className="text-lg font-bold text-foreground flex gap-3">
-                  <span className="text-primary">Q.</span> {item.q}
+              <div key={index} className="space-y-2 p-4 bg-muted/20 rounded-xl border border-border/60">
+                <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+                  <span className="text-sky-400 font-extrabold">S.</span> {item.q}
                 </h3>
-                <p className="text-muted-foreground leading-relaxed pl-8 font-medium">
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed pl-5 font-normal">
                   {item.a}
                 </p>
               </div>
@@ -154,31 +157,30 @@ export default function HelpPage() {
         </section>
 
         {/* Support Section */}
-        <section className="bg-primary/5 border border-primary/10 p-10 md:p-16 rounded-3xl mb-24 relative overflow-hidden">
-          <div className="absolute top-0 right-0 size-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <section className="bg-gradient-to-r from-sky-500/10 via-sky-500/5 to-transparent border border-sky-500/20 p-6 md:p-10 rounded-2xl mb-12 relative overflow-hidden">
           <div className="relative z-10 max-w-2xl">
-            <h2 className="text-3xl font-extrabold mb-6 flex items-center gap-4 text-foreground">
-              <Mail size={32} className="text-primary" /> Bize Ulaşın
+            <h2 className="text-xl md:text-2xl font-extrabold mb-3 flex items-center gap-3 text-foreground">
+              <Mail size={24} className="text-sky-400" /> Bize Ulaşın
             </h2>
-            <p className="text-lg text-muted-foreground font-medium mb-10 leading-relaxed">
-              Aradığınız yanıtı bulamadınız mı? Destek ekibimize doğrudan ulaşın. 24 saat içinde geri dönüş sağlıyoruz.
+            <p className="text-sm text-muted-foreground font-normal mb-6 leading-relaxed">
+              Aradığınız yanıtı bulamadınız mı? Destek ekibimize doğrudan e-posta ile ulaşabilirsiniz. En kısa sürede geri dönüş sağlıyoruz.
             </p>
             <a 
               href="mailto:miracbirben@engelsizforum.com" 
-              className="inline-flex items-center justify-center gap-3 rounded-xl bg-primary px-8 py-4 text-sm font-bold text-primary-foreground transition hover:bg-primary/90"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-sky-400 cursor-pointer"
             >
-              <Mail size={18} /> miracbirben@engelsizforum.com
+              <Mail size={14} /> miracbirben@engelsizforum.com
             </a>
           </div>
         </section>
 
         {/* Back Link */}
-        <div className="flex gap-6">
+        <div className="flex gap-4">
           <Link 
             href="/" 
-            className="inline-flex items-center justify-center gap-3 rounded-xl bg-background border border-border px-8 py-4 text-sm font-bold text-foreground transition hover:bg-muted"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-card border border-border/80 px-5 py-2.5 text-xs font-bold text-foreground transition hover:bg-muted"
           >
-            <ArrowLeft size={18} /> Ana Sayfaya Dön
+            <ArrowLeft size={14} /> Ana Sayfaya Dön
           </Link>
         </div>
       </div>

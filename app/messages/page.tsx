@@ -104,21 +104,23 @@ export default function MessagesPage() {
 
   return (
     <DashboardLayout>
-      <main className="vibe-container py-8 md:py-12 h-[calc(100vh-140px)] md:h-[calc(100vh-160px)] min-h-[500px]">
-        <div className="flex items-center gap-4 mb-8">
-          <MessageSquare size={32} className="text-primary" />
+      <main className="container mx-auto px-4 py-6 md:py-8 h-[calc(100vh-140px)] md:h-[calc(100vh-160px)] min-h-[500px] max-w-7xl">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2.5 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
+            <MessageSquare size={22} />
+          </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tighter">Mesajlar</h1>
-            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Özel Yazışmaların</p>
+            <h1 className="text-xl md:text-2xl font-extrabold text-foreground tracking-tight">Mesajlar</h1>
+            <p className="text-xs text-muted-foreground font-normal">Bireysel ve Özel Yazışmalarınız</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 h-full gap-0 md:gap-8 bg-card border rounded-2xl overflow-hidden shadow-xl">
+        <div className="grid grid-cols-1 md:grid-cols-12 h-[calc(100%-80px)] gap-0 bg-card border border-border/80 rounded-2xl overflow-hidden shadow-sm">
           {/* List Sidebar */}
-          <div className={`${showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-4 lg:col-span-3 border-r h-full overflow-hidden`}>
-            <div className="p-4 border-b bg-muted/20 flex items-center justify-between">
-              <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">Sohbetler</span>
-              <div className="size-2 bg-primary rounded-full animate-pulse" />
+          <div className={`${showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-4 lg:col-span-3 border-r border-border/80 h-full overflow-hidden`}>
+            <div className="p-3.5 border-b border-border/80 bg-muted/20 flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Sohbetler</span>
+              <div className="size-2 bg-sky-400 rounded-full animate-pulse" />
             </div>
             <div className="flex-1 overflow-y-auto">
               <ConversationList 
@@ -134,14 +136,14 @@ export default function MessagesPage() {
           </div>
 
           {/* Chat Content */}
-          <div className={`${!showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-8 lg:col-span-9 h-full relative`}>
+          <div className={`${!showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-8 lg:col-span-9 h-full relative bg-background/50`}>
             {selectedConversation ? (
               <>
                 <button 
                   onClick={() => setShowListOnMobile(true)}
-                  className="md:hidden absolute top-4 left-4 z-50 p-2 bg-card border rounded-full shadow-md"
+                  className="md:hidden absolute top-3 left-3 z-50 p-2 bg-card border border-border/80 rounded-xl shadow-sm cursor-pointer"
                 >
-                  <Menu size={20} />
+                  <Menu size={18} />
                 </button>
                 <ChatBox 
                   conversationId={selectedConversation.id} 
@@ -150,10 +152,10 @@ export default function MessagesPage() {
                 />
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-center p-8 opacity-20 grayscale">
-                <MessageSquare size={128} />
-                <h3 className="text-2xl font-black uppercase mt-8 tracking-tighter">Bir sohbet seçin</h3>
-                <p className="text-sm font-bold uppercase tracking-widest mt-2">Yazışmaya başlamak için listeden birini seçin</p>
+              <div className="flex flex-col items-center justify-center h-full text-center p-8 opacity-40">
+                <MessageSquare size={64} className="text-muted-foreground mb-4" />
+                <h3 className="text-lg font-bold tracking-tight text-foreground">Bir sohbet seçin</h3>
+                <p className="text-xs text-muted-foreground mt-1">Yazışmaya başlamak için sol listeden bir görüşme seçin</p>
               </div>
             )}
           </div>

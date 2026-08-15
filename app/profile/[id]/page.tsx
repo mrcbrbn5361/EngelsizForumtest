@@ -402,8 +402,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               Aradığınız profil mevcut değil veya silinmiş olabilir.
             </p>
           </div>
-          <Link href="/" className="vibe-button-primary h-12 px-6 flex items-center gap-2">
-            <ArrowLeft size={16} /> ANA SAYFAYA DÖN
+          <Link href="/" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm">
+            <ArrowLeft size={14} /> Ana Sayfaya Dön
           </Link>
         </div>
       </DashboardLayout>
@@ -423,109 +423,99 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             className="absolute inset-0 bg-background/80 backdrop-blur-sm"
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            className="w-full max-w-lg bg-card border-2 border-border rounded-[2.5rem] shadow-2xl overflow-hidden relative z-10"
+            className="w-full max-w-lg bg-card border border-border/80 rounded-2xl shadow-2xl overflow-hidden relative z-10 p-6 sm:p-8"
           >
-            <div className="p-8 sm:p-10">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-black uppercase tracking-tight text-foreground">PROFİLİ DÜZENLE</h2>
-                <button 
-                  onClick={() => setIsEditing(false)}
-                  className="p-2 hover:bg-muted rounded-xl transition-colors"
-                >
-                  <X size={20} />
-                </button>
+            <div className="flex items-center justify-between mb-6 pb-3 border-b border-border/60">
+              <h2 className="text-lg font-bold text-foreground">Profili Düzenle</h2>
+              <button 
+                onClick={() => setIsEditing(false)}
+                className="p-1.5 hover:bg-muted/60 text-muted-foreground hover:text-foreground rounded-lg transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Ad Soyad</label>
+                <input
+                  type="text"
+                  value={editForm.full_name}
+                  onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
+                  className="vibe-input"
+                  placeholder="Adınız Soyadınız"
+                />
               </div>
 
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">AD SOYAD</label>
-                  <input
-                    type="text"
-                    value={editForm.full_name}
-                    onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
-                    className="w-full h-12 bg-muted/50 border-2 border-border rounded-xl px-4 font-bold focus:border-primary outline-none transition-all"
-                    placeholder="Adınız Soyadınız"
-                  />
-                </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Kullanıcı Adı</label>
+                <input
+                  type="text"
+                  value={editForm.username}
+                  onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
+                  className="vibe-input"
+                  placeholder="kullaniciadi"
+                />
+              </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">KULLANICI ADI</label>
-                  <input
-                    type="text"
-                    value={editForm.username}
-                    onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
-                    className="w-full h-12 bg-muted/50 border-2 border-border rounded-xl px-4 font-bold focus:border-primary outline-none transition-all"
-                    placeholder="kullaniciadi"
-                  />
-                </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Biyografi</label>
+                <textarea
+                  value={editForm.bio}
+                  onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                  className="vibe-input h-24 p-3 resize-none text-sm"
+                  placeholder="Kendinizden ve ilgi alanlarınızdan bahsedin..."
+                  maxLength={160}
+                />
+                <div className="text-[11px] text-right text-muted-foreground font-mono">{editForm.bio.length}/160</div>
+              </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">BİO (KISA ÖZGEÇMİŞ)</label>
-                  <textarea
-                    value={editForm.bio}
-                    onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                    className="w-full h-32 bg-muted/50 border-2 border-border rounded-xl p-4 font-bold focus:border-primary outline-none transition-all resize-none"
-                    placeholder="Kendinizden bahsedin..."
-                    maxLength={160}
-                  />
-                  <div className="text-[10px] text-right text-muted-foreground font-bold">{editForm.bio.length}/160</div>
-                </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Avatar URL</label>
+                <input
+                  type="text"
+                  value={editForm.avatar_url}
+                  onChange={(e) => setEditForm({ ...editForm, avatar_url: e.target.value })}
+                  className="vibe-input"
+                  placeholder="https://..."
+                />
+              </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">AVATAR URL</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={editForm.avatar_url}
-                      onChange={(e) => setEditForm({ ...editForm, avatar_url: e.target.value })}
-                      className="flex-1 h-12 bg-muted/50 border-2 border-border rounded-xl px-4 font-bold focus:border-primary outline-none transition-all"
-                      placeholder="https://..."
-                    />
-                    <div className="size-12 rounded-xl border-2 border-border overflow-hidden shrink-0 bg-muted">
-                      {editForm.avatar_url && (
-                        <img src={editForm.avatar_url} alt="Önizleme" className="w-full h-full object-cover" />
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-4 pt-4">
-                  <button
-                    onClick={() => setIsEditing(false)}
-                    className="flex-1 h-12 rounded-2xl font-black text-xs uppercase tracking-widest bg-muted text-foreground hover:bg-muted/80 transition-all"
-                  >
-                    İPTAL
-                  </button>
-                  <button
-                    onClick={handleUpdateProfile}
-                    disabled={updateLoading}
-                    className="flex-1 h-12 rounded-2xl font-black text-xs uppercase tracking-widest vibe-button-primary disabled:opacity-50"
-                  >
-                    {updateLoading ? <Loader2 className="animate-spin mx-auto" /> : "KAYDET"}
-                  </button>
-                </div>
+              <div className="flex gap-3 pt-3">
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="flex-1 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted transition-all cursor-pointer"
+                >
+                  İptal
+                </button>
+                <button
+                  onClick={handleUpdateProfile}
+                  disabled={updateLoading}
+                  className="flex-1 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider bg-sky-500 hover:bg-sky-400 text-white transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                >
+                  {updateLoading ? <Loader2 className="animate-spin mx-auto size-4" /> : "Kaydet"}
+                </button>
               </div>
             </div>
           </motion.div>
         </div>
       )}
 
-      <div className="w-full py-6 sm:py-8 md:py-12 min-w-0">
-        <div className="mb-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-black text-muted-foreground hover:text-primary transition-colors uppercase tracking-widest">
-            <ArrowLeft size={14} className="stroke-[3]" /> TARTIŞMALARA GERİ DÖN
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-10 space-y-6 min-w-0">
+        <div>
+          <Link href="/" className="inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-sky-400 transition-colors uppercase tracking-wider">
+            <ArrowLeft size={14} /> Tartışmalara Geri Dön
           </Link>
         </div>
 
         {/* Profile Header Card */}
         <div className="flex flex-col 2xl:grid 2xl:grid-cols-[1fr_320px] gap-6 w-full min-w-0">
           
-          <div className="space-y-6 sm:space-y-8 min-w-0 w-full overflow-hidden">
-            <header className="vibe-card p-0 relative overflow-hidden shadow-2xl border-2 border-border rounded-[2.5rem]">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent -z-10" />
-              <div className="p-5 sm:p-10 md:p-12 flex flex-col md:flex-row items-center gap-5 sm:gap-8 text-center md:text-left">
+          <div className="space-y-6 min-w-0 w-full">
+            <header className="bg-card border border-border/80 rounded-2xl overflow-hidden shadow-xs">
+              <div className="p-5 sm:p-7 md:p-8 flex flex-col md:flex-row items-center gap-5 sm:gap-6 text-center md:text-left">
                 
                 {/* Avatar */}
                 <UserAvatar 
@@ -533,63 +523,63 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                   username={profile.username}
                   name={profile.full_name}
                   size="xl"
-                  className="size-20 sm:size-28 md:size-32 rounded-[1.75rem] sm:rounded-[2rem] border-4 border-primary/20 shadow-xl shrink-0"
+                  className="size-20 sm:size-24 rounded-2xl border-2 border-sky-500/20 shadow-sm shrink-0"
                   badge={
                     isOnline && (
-                      <span className="absolute bottom-1 right-1 sm:bottom-2 sm:right-2 size-3.5 sm:size-4 rounded-full bg-green-500 border-2 border-background animate-pulse" title="Çevrimiçi" />
+                      <span className="absolute bottom-1 right-1 size-3.5 rounded-full bg-emerald-400 border-2 border-background animate-pulse" title="Çevrimiçi" />
                     )
                   }
                 />
 
-                <div className="space-y-3 min-w-0 flex-1 w-full">
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2 justify-center md:justify-start">
-                    <span className="px-2.5 py-1 bg-primary/15 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl">
+                <div className="space-y-2.5 min-w-0 flex-1 w-full">
+                  <div className="flex flex-wrap gap-1.5 justify-center md:justify-start">
+                    <span className="px-2.5 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
                       {profile.role.toUpperCase()}
                     </span>
-                    <span className="px-2.5 py-1 bg-amber-500/15 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center gap-1">
+                    <span className="px-2.5 py-0.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg flex items-center gap-1">
                       <Zap size={10} className="fill-current" /> SEVİYE {userLevel}
                     </span>
                     {isOnline ? (
-                      <span className="px-2.5 py-1 bg-green-500/15 text-green-600 dark:text-green-400 text-[10px] font-black uppercase tracking-widest rounded-xl">
+                      <span className="px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
                         ÇEVRİMİÇİ
                       </span>
                     ) : (
-                      <span className="px-2.5 py-1 bg-muted text-muted-foreground text-[10px] font-black uppercase tracking-widest rounded-xl">
+                      <span className="px-2.5 py-0.5 bg-muted/60 text-muted-foreground text-[10px] font-bold uppercase tracking-wider rounded-lg">
                         ÇEVRİMDIŞI
                       </span>
                     )}
                   </div>
 
-                  <h2 className="text-xl sm:text-3xl md:text-4xl font-black tracking-tight text-foreground truncate max-w-full">
+                  <h2 className="text-xl sm:text-2xl font-black tracking-tight text-foreground truncate max-w-full">
                     {profile.full_name || profile.username || 'Engelsiz Kullanıcı'}
                   </h2>
                   
                   {profile.bio && (
-                    <p className="text-xs sm:text-sm font-semibold text-muted-foreground leading-relaxed max-w-2xl italic">
-                      "{profile.bio}"
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                      {profile.bio}
                     </p>
                   )}
 
-                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs font-black text-muted-foreground uppercase tracking-wider">
-                    <span className="truncate max-w-[150px] sm:max-w-none">@{profile.username || 'isimsiz'}</span>
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs font-semibold text-muted-foreground">
+                    <span className="text-sky-400 font-mono">@{profile.username || 'isimsiz'}</span>
                     <span className="text-muted-foreground/40">•</span>
-                    <span className="text-foreground">{profile.followers_count || 0} TAKİPÇİ</span>
+                    <span className="text-foreground">{profile.followers_count || 0} Takipçi</span>
                     <span className="text-muted-foreground/40">•</span>
-                    <span className="text-foreground">{profile.following_count || 0} TAKİP</span>
+                    <span className="text-foreground">{profile.following_count || 0} Takip</span>
                   </div>
 
-                  <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 sm:gap-4 pt-2 w-full">
-                    <div className="px-3 py-2 bg-muted/50 border border-border rounded-xl text-center md:text-left">
-                      <div className="text-base sm:text-lg font-black text-foreground leading-none">{openedTopics.length}</div>
-                      <div className="text-[8px] sm:text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">KONU</div>
+                  <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 pt-2 w-full">
+                    <div className="px-3 py-1.5 bg-muted/20 border border-border/60 rounded-xl text-center md:text-left">
+                      <div className="text-sm font-bold text-foreground font-mono">{openedTopics.length}</div>
+                      <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Konu</div>
                     </div>
-                    <div className="px-3 py-2 bg-muted/50 border border-border rounded-xl text-center md:text-left">
-                      <div className="text-base sm:text-lg font-black text-foreground leading-none">{repliedTopics.length}</div>
-                      <div className="text-[8px] sm:text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">YANIT</div>
+                    <div className="px-3 py-1.5 bg-muted/20 border border-border/60 rounded-xl text-center md:text-left">
+                      <div className="text-sm font-bold text-foreground font-mono">{repliedTopics.length}</div>
+                      <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Yanıt</div>
                     </div>
-                    <div className="px-3 py-2 bg-muted/50 border border-border rounded-xl text-center md:text-left">
-                      <div className="text-base sm:text-lg font-black text-foreground leading-none">{likedTopics.length}</div>
-                      <div className="text-[8px] sm:text-[9px] font-black text-muted-foreground uppercase tracking-widest mt-1">BEĞENİ</div>
+                    <div className="px-3 py-1.5 bg-muted/20 border border-border/60 rounded-xl text-center md:text-left">
+                      <div className="text-sm font-bold text-foreground font-mono">{likedTopics.length}</div>
+                      <div className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Beğeni</div>
                     </div>
                   </div>
 
@@ -599,19 +589,19 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                         onClick={handleFollowToggle}
                         disabled={followLoading}
                         className={cn(
-                          "h-10 px-6 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 w-full sm:w-auto",
+                          "h-9 px-5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 w-full sm:w-auto cursor-pointer",
                           isFollowing 
-                            ? "bg-muted text-muted-foreground hover:bg-red-500/10 hover:text-red-500 border border-border" 
-                            : "vibe-button-primary"
+                            ? "bg-muted/60 text-muted-foreground hover:bg-rose-500/10 hover:text-rose-400 border border-border/80" 
+                            : "bg-sky-500 hover:bg-sky-400 text-white shadow-sm"
                         )}
                       >
                         {followLoading ? (
                           <Loader2 size={14} className="animate-spin" />
                         ) : isFollowing ? (
-                          "TAKİBİ BIRAK"
+                          "Takibi Bırak"
                         ) : (
                           <>
-                            <Plus size={14} /> TAKİP ET
+                            <Plus size={14} /> Takip Et
                           </>
                         )}
                       </button>
@@ -622,9 +612,9 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                     <div className="pt-2 flex justify-center md:justify-start">
                       <button
                         onClick={() => setIsEditing(true)}
-                        className="h-10 px-6 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 bg-muted text-foreground border border-border hover:bg-primary/10 hover:text-primary w-full sm:w-auto"
+                        className="h-9 px-4 rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 bg-muted/60 text-foreground border border-border/80 hover:bg-sky-500/10 hover:text-sky-400 hover:border-sky-500/30 w-full sm:w-auto cursor-pointer"
                       >
-                        <Edit size={14} /> PROFİLİ DÜZENLE
+                        <Edit size={14} /> Profili Düzenle
                       </button>
                     </div>
                   )}
@@ -632,60 +622,60 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               </div>
 
               {/* Activity Info Footer */}
-              <div className="bg-muted/35 border-t border-border px-4 sm:px-8 py-3.5 flex flex-col sm:flex-row flex-wrap gap-2.5 sm:gap-6 items-center justify-center md:justify-start text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Clock size={14} className="text-primary shrink-0" />
-                  <span>En Son Görülme: <strong className="text-foreground">{formatLastSeen(profile.last_seen_at, profile.updated_at)}</strong></span>
+              <div className="bg-muted/10 border-t border-border/60 px-5 sm:px-7 py-3 flex flex-col sm:flex-row flex-wrap gap-2.5 sm:gap-6 items-center justify-center md:justify-start text-xs font-semibold text-muted-foreground">
+                <div className="flex items-center gap-1.5">
+                  <Clock size={13} className="text-sky-400 shrink-0" />
+                  <span>Son Görülme: <strong className="text-foreground font-normal">{formatLastSeen(profile.last_seen_at, profile.updated_at)}</strong></span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Calendar size={14} className="text-primary shrink-0" />
-                  <span>Katılım: <strong className="text-foreground">{new Date(profile.created_at).toLocaleDateString('tr-TR')}</strong></span>
+                <div className="flex items-center gap-1.5">
+                  <Calendar size={13} className="text-sky-400 shrink-0" />
+                  <span>Katılım: <strong className="text-foreground font-normal">{new Date(profile.created_at).toLocaleDateString('tr-TR')}</strong></span>
                 </div>
               </div>
             </header>
 
             {/* TABBED AREA FOR USER CONTRIBUTIONS */}
-            <section className="space-y-6" aria-label="Kullanıcı Etkinlikleri">
+            <section className="space-y-4" aria-label="Kullanıcı Etkinlikleri">
               {/* Tab Buttons */}
-              <div className="flex border-b border-border gap-2 overflow-x-auto pb-px">
+              <div className="flex border-b border-border/80 gap-1 overflow-x-auto pb-px">
                 <button
                   onClick={() => setActiveTab('opened')}
-                  className={`py-4 px-6 text-xs font-black uppercase tracking-widest border-b-2 transition-all whitespace-nowrap flex items-center gap-2 ${
+                  className={`py-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                     activeTab === 'opened'
-                      ? 'border-primary text-primary'
+                      ? 'border-sky-500 text-sky-400 font-bold'
                       : 'border-transparent text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  <BookOpen size={14} /> AÇTIĞI KONULAR ({openedTopics.length})
+                  <BookOpen size={14} /> Açtığı Konular ({openedTopics.length})
                 </button>
                 <button
                   onClick={() => setActiveTab('replied')}
-                  className={`py-4 px-6 text-xs font-black uppercase tracking-widest border-b-2 transition-all whitespace-nowrap flex items-center gap-2 ${
+                  className={`py-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                     activeTab === 'replied'
-                      ? 'border-primary text-primary'
+                      ? 'border-sky-500 text-sky-400 font-bold'
                       : 'border-transparent text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  <MessageSquare size={14} /> YANITLADIĞI KONULAR ({repliedTopics.length})
+                  <MessageSquare size={14} /> Yanıtladığı Konular ({repliedTopics.length})
                 </button>
                 <button
                   onClick={() => setActiveTab('liked')}
-                  className={`py-4 px-6 text-xs font-black uppercase tracking-widest border-b-2 transition-all whitespace-nowrap flex items-center gap-2 ${
+                  className={`py-3 px-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                     activeTab === 'liked'
-                      ? 'border-primary text-primary'
+                      ? 'border-sky-500 text-sky-400 font-bold'
                       : 'border-transparent text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  <Heart size={14} /> BEĞENDİĞİ KONULAR ({likedTopics.length})
+                  <Heart size={14} /> Beğendiği Konular ({likedTopics.length})
                 </button>
               </div>
 
               {/* Tab Content Panels */}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {loadingContent ? (
                   <div className="py-12 flex flex-col items-center justify-center gap-3">
-                    <Loader2 className="animate-spin text-primary size-8" />
-                    <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">İçerikler Yükleniyor...</span>
+                    <Loader2 className="animate-spin text-sky-400 size-6" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">İçerikler Yükleniyor...</span>
                   </div>
                 ) : (
                   <>
@@ -719,21 +709,21 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
           </div>
 
           {/* Gamification Sidebar */}
-          <aside className="space-y-8">
-            <section className="vibe-card p-4 sm:p-6 border-2 border-border text-center relative overflow-hidden w-full max-w-full" aria-label="XP Durumu">
-              <h3 className="vibe-label ml-0 mb-6">SEVİYE VE TECRÜBE</h3>
+          <aside className="space-y-6">
+            <section className="bg-card border border-border/80 rounded-2xl p-5 text-center relative overflow-hidden w-full max-w-full" aria-label="XP Durumu">
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-5">Seviye ve Tecrübe</h3>
               
-              <div className="relative size-36 mx-auto mb-6 flex items-center justify-center">
+              <div className="relative size-32 mx-auto mb-5 flex items-center justify-center">
                 <svg className="absolute inset-0 size-full -rotate-90" viewBox="0 0 100 100">
                   <circle 
                     cx="50" cy="50" r="42" 
-                    className="stroke-muted" 
+                    className="stroke-muted/30" 
                     strokeWidth="8" 
                     fill="transparent" 
                   />
                   <circle 
                     cx="50" cy="50" r="42" 
-                    className="stroke-primary transition-all duration-500 ease-out" 
+                    className="stroke-sky-500 transition-all duration-500 ease-out" 
                     strokeWidth="8" 
                     fill="transparent" 
                     strokeDasharray="264"
@@ -743,54 +733,54 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                 </svg>
 
                 <div className="text-center z-10">
-                  <span className="text-4xl font-black text-foreground">{userLevel}</span>
-                  <span className="block text-[10px] font-black text-muted-foreground uppercase tracking-wider">SEVİYE</span>
+                  <span className="text-3xl font-black text-foreground font-mono">{userLevel}</span>
+                  <span className="block text-[9px] font-bold text-muted-foreground uppercase tracking-wider">SEVİYE</span>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between items-center text-xs font-black uppercase tracking-widest text-muted-foreground">
+                <div className="flex justify-between items-center text-[11px] font-mono font-semibold text-muted-foreground">
                   <span>{xpInCurrentLevel} XP</span>
                   <span>{xpNeededForNextLevel} XP</span>
                 </div>
-                <div className="w-full h-3 bg-muted rounded-full overflow-hidden border border-border">
+                <div className="w-full h-2 bg-muted/40 rounded-full overflow-hidden border border-border/60">
                   <div 
-                    className="h-full bg-primary rounded-full transition-all duration-500" 
+                    className="h-full bg-sky-500 rounded-full transition-all duration-500" 
                     style={{ width: `${xpProgressPercentage}%` }} 
                   />
                 </div>
-                <p className="text-[10px] font-black text-primary uppercase tracking-widest pt-2">
-                  Son Toplam: {userXp} XP
+                <p className="text-[11px] font-bold text-sky-400 uppercase tracking-wider pt-1">
+                  Toplam: {userXp} XP
                 </p>
               </div>
             </section>
 
             {/* Badges Section */}
-            <section className="vibe-card p-4 sm:p-6 border-2 border-border w-full max-w-full" aria-label="Kazanılan Rozetler">
-              <h3 className="vibe-label ml-0 mb-6 text-center">KAZANILAN ROZETLER</h3>
-              <div className="space-y-4">
+            <section className="bg-card border border-border/80 rounded-2xl p-5 w-full max-w-full" aria-label="Kazanılan Rozetler">
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 text-center">Kazanılan Rozetler</h3>
+              <div className="space-y-2.5">
                 {badgesList.map((badge) => {
                   const isUnlocked = userXp >= badge.unlockedAtXp;
                   return (
                     <div 
                       key={badge.id}
-                      className={`flex items-start gap-4 p-4 rounded-2xl border transition-all ${
+                      className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${
                         isUnlocked 
                           ? `${badge.color} shadow-sm` 
                           : 'bg-muted/10 border-border/40 opacity-40 grayscale'
                       }`}
                     >
-                      <div className="p-2.5 rounded-xl bg-background shadow-md border border-border/20 shrink-0">
+                      <div className="p-2 rounded-lg bg-background/80 shadow-xs border border-border/40 shrink-0">
                         {badge.icon}
                       </div>
-                      <div className="space-y-1 min-w-0">
-                        <h4 className="text-xs font-black uppercase tracking-wider text-foreground">
+                      <div className="space-y-0.5 min-w-0">
+                        <h4 className="text-xs font-bold text-foreground">
                           {badge.name}
                         </h4>
-                        <p className="text-[10px] leading-relaxed font-semibold text-muted-foreground">
+                        <p className="text-[11px] leading-relaxed text-muted-foreground">
                           {badge.description}
                         </p>
-                        <span className="inline-block text-[8px] font-black tracking-widest uppercase text-muted-foreground/80 bg-background/50 px-2 py-0.5 rounded-md border border-border/10">
+                        <span className="inline-block text-[9px] font-semibold tracking-wider uppercase text-muted-foreground/80 bg-background/60 px-1.5 py-0.5 rounded border border-border/20 mt-1">
                           {badge.requirement}
                         </span>
                       </div>
@@ -808,38 +798,38 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
 function CompactTopicCard({ topic }: { topic: any }) {
   return (
-    <div className="vibe-card p-6 border border-border hover:border-primary/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div className="space-y-2 min-w-0 flex-1">
+    <div className="bg-card p-4 sm:p-5 rounded-2xl border border-border/80 hover:border-sky-500/40 transition-all flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
+      <div className="space-y-1.5 min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span 
-            className="px-2.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-md border text-xs"
+            className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border"
             style={{ 
-              backgroundColor: `${topic.category?.color || '#3b82f6'}15`, 
-              color: topic.category?.color || '#3b82f6',
-              borderColor: `${topic.category?.color || '#3b82f6'}30`
+              backgroundColor: `${topic.category?.color || '#38bdf8'}15`, 
+              color: topic.category?.color || '#38bdf8',
+              borderColor: `${topic.category?.color || '#38bdf8'}30`
             }}
           >
             {topic.category?.name || 'GENEL'}
           </span>
-          <span className="text-[10px] font-bold text-muted-foreground">
+          <span className="text-[11px] text-muted-foreground">
             {new Date(topic.created_at).toLocaleDateString('tr-TR')}
           </span>
         </div>
-        <h3 className="text-base sm:text-lg font-black tracking-tight text-foreground hover:text-primary transition-colors truncate">
+        <h3 className="text-sm sm:text-base font-bold tracking-tight text-foreground hover:text-sky-400 transition-colors truncate">
           <Link href={`/discussions/${topic.id}`}>
             {topic.title}
           </Link>
         </h3>
       </div>
 
-      <div className="flex items-center gap-4 shrink-0 text-xs font-black uppercase tracking-widest text-muted-foreground">
+      <div className="flex items-center gap-3 shrink-0 text-xs font-semibold text-muted-foreground">
         <span className="flex items-center gap-1">
-          <MessageSquare size={14} className="text-primary" />
-          {(topic.comments as any)?.[0]?.count || 0} YANIT
+          <MessageSquare size={13} className="text-sky-400" />
+          {(topic.comments as any)?.[0]?.count || 0} yanıt
         </span>
         <span className="flex items-center gap-1">
-          <Heart size={14} className="text-red-500 fill-red-500/10" />
-          {topic.likes_count || 0} BEĞENİ
+          <Heart size={13} className="text-rose-400 fill-rose-500/10" />
+          {topic.likes_count || 0} beğeni
         </span>
       </div>
     </div>
@@ -848,8 +838,8 @@ function CompactTopicCard({ topic }: { topic: any }) {
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="vibe-card p-12 text-center border-2 border-dashed border-border bg-transparent flex flex-col items-center justify-center gap-4">
-      <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+    <div className="bg-card p-8 text-center border border-dashed border-border/80 rounded-2xl flex flex-col items-center justify-center gap-2">
+      <p className="text-xs font-medium text-muted-foreground">
         {message}
       </p>
     </div>

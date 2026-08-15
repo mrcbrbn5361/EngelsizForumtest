@@ -18,60 +18,59 @@ export default function AccessibilityStatementPage() {
       <div className="flex-1 w-full" role="main">
         
         {/* --- HERO SECTION --- */}
-        <section className="relative py-24 md:py-32 overflow-hidden border-b border-border/50 bg-gradient-to-br from-primary/[0.04] via-transparent to-primary/[0.02]">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none" />
+        <section className="relative py-16 md:py-24 overflow-hidden border-b border-border/60 bg-gradient-to-b from-sky-500/5 via-transparent to-transparent">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-4xl mx-auto text-center space-y-8">
+            <div className="max-w-3xl mx-auto text-center space-y-6">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em]"
+                transition={{ duration: 0.5 }}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-bold uppercase tracking-wider"
               >
-                <Award size={14} className="animate-pulse" /> WCAG 2.1 AA / AAA UYUMLULUK
+                <Award size={14} className="animate-pulse" /> WCAG 2.2 AAA UYUMLULUK
               </motion.div>
               
               <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-5xl md:text-7xl font-black tracking-tighter text-foreground uppercase leading-[1.1]"
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15]"
               >
                 Erişilebilirlik <br />
-                <span className="text-primary">Taahhüdümüz.</span>
+                <span className="text-sky-400">Taahhüdümüz.</span>
               </motion.h1>
               
               <motion.p 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-3xl mx-auto opacity-80"
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="text-base sm:text-lg text-muted-foreground font-normal leading-relaxed max-w-2xl mx-auto"
               >
-                EngelsizForum, sadece bir web sitesi değil; her bireyin bilgiye eşit, bağımsız ve konforlu bir şekilde ulaşabildiği dijital bir kaledir.
+                EngelsizForum, sadece bir forum değil; her bireyin bilgiye eşit, bağımsız ve konforlu bir şekilde ulaşabildiği dijital bir dayanışma platformudur.
               </motion.p>
             </div>
           </div>
         </section>
 
         {/* --- CORE STANDARDS GRID --- */}
-        <section className="py-24 bg-card/30">
+        <section className="py-16 bg-muted/20">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
                 { 
-                  icon: <ShieldCheck className="w-8 h-8" />, 
+                  icon: <ShieldCheck className="w-6 h-6" />, 
                   title: 'DÜZEY AA / AAA', 
-                  text: 'Tüm temel alanlarda WCAG 2.1 AA uyumluluk kriterlerini karşılıyor, AAA seviyesini hedefliyoruz.',
+                  text: 'Tüm temel alanlarda WCAG 2.2 AA uyumluluk kriterlerini karşılıyor, AAA seviyesini hedefliyoruz.',
                   tag: 'STANDART'
                 },
                 { 
-                  icon: <Accessibility className="w-8 h-8" />, 
+                  icon: <Accessibility className="w-6 h-6" />, 
                   title: 'EKRAN OKUYUCULAR', 
                   text: 'VoiceOver, NVDA ve JAWS ile test edilmiş semantik HTML ve ARIA etiketleri ile tam uyum.',
                   tag: 'TEKNOLOJİ'
                 },
                 { 
-                  icon: <Keyboard className="w-8 h-8" />, 
+                  icon: <Keyboard className="w-6 h-6" />, 
                   title: 'KLAVYE GEZİNTİSİ', 
                   text: 'Mouse kullanmadan, sadece Tab tuşuyla tüm kontrollere ve sayfalara hızlı ve mantıksal erişim.',
                   tag: 'NAVİGASYON'
@@ -79,18 +78,18 @@ export default function AccessibilityStatementPage() {
               ].map((item, idx) => (
                 <motion.div 
                   key={item.title}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: idx * 0.1 }}
-                  className="bg-card border border-border rounded-[2rem] p-10 shadow-sm hover:shadow-xl transition-all group"
+                  className="bg-card border border-border/80 rounded-2xl p-8 shadow-xs hover:border-sky-500/40 transition-all group"
                 >
-                  <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-8 group-hover:scale-110 transition-transform">
+                  <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 mb-6 group-hover:scale-105 transition-transform">
                     {item.icon}
                   </div>
-                  <div className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-4">{item.tag}</div>
-                  <h3 className="text-2xl font-black text-foreground uppercase tracking-tight mb-4">{item.title}</h3>
-                  <p className="text-base text-muted-foreground font-medium leading-relaxed opacity-80">
+                  <div className="text-[10px] font-bold text-sky-400 uppercase tracking-wider mb-2">{item.tag}</div>
+                  <h3 className="text-xl font-bold text-foreground tracking-tight mb-3">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground font-normal leading-relaxed">
                     {item.text}
                   </p>
                 </motion.div>
@@ -100,18 +99,18 @@ export default function AccessibilityStatementPage() {
         </section>
 
         {/* --- DETAILED FEATURES BENTO --- */}
-        <section className="py-24 border-y border-border/50">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
-            <div className="flex flex-col lg:flex-row gap-16 items-center">
-              <div className="lg:w-1/2 space-y-8">
-                <div className="space-y-4">
-                  <h2 className="text-4xl font-black text-foreground uppercase tracking-tight">Teknik Özellikler</h2>
-                  <p className="text-lg text-muted-foreground font-medium leading-relaxed">
+        <section className="py-16 border-y border-border/60">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+            <div className="flex flex-col lg:flex-row gap-12 items-center">
+              <div className="lg:w-1/2 space-y-6">
+                <div className="space-y-3">
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">Teknik Özellikler</h2>
+                  <p className="text-base text-muted-foreground font-normal leading-relaxed">
                     Platformumuzun her satır kodu, yardımcı teknolojilerin en verimli şekilde çalışabilmesi için optimize edilmiştir.
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
                     { title: 'Semantik HTML5', icon: <Monitor className="w-5 h-5" /> },
                     { title: 'ARIA Roller', icon: <Zap className="w-5 h-5" /> },
@@ -120,35 +119,34 @@ export default function AccessibilityStatementPage() {
                     { title: 'Esnek Yazı Tipleri', icon: <Type className="w-5 h-5" /> },
                     { title: 'Mobil Uyumluluk', icon: <Smartphone className="w-5 h-5" /> }
                   ].map((feat, i) => (
-                    <div key={i} className="flex items-center gap-4 p-5 bg-card border border-border rounded-2xl shadow-sm hover:border-primary/30 transition-all group">
-                      <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground group-hover:text-primary group-hover:bg-primary/10 transition-colors">
+                    <div key={i} className="flex items-center gap-3.5 p-4 bg-card border border-border/80 rounded-xl shadow-xs hover:border-sky-500/30 transition-all group">
+                      <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center text-muted-foreground group-hover:text-sky-400 group-hover:bg-sky-500/10 transition-colors">
                         {feat.icon}
                       </div>
-                      <span className="font-bold text-foreground text-xs uppercase tracking-tight">{feat.title}</span>
+                      <span className="font-bold text-foreground text-xs uppercase tracking-wider">{feat.title}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="lg:w-1/2 relative">
-                <div className="bg-foreground text-background rounded-[3rem] p-10 md:p-16 shadow-2xl relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                  <div className="relative z-10 space-y-8">
-                    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/10 text-white text-[10px] font-black uppercase tracking-widest border border-white/20">
-                      <Brain size={14} className="text-primary" /> AI DESTEKLİ ERİŞİLEBİLİRLİK
+              <div className="lg:w-1/2 relative w-full">
+                <div className="bg-card border border-border/80 text-foreground rounded-2xl p-8 md:p-10 shadow-xs relative overflow-hidden space-y-6">
+                  <div className="space-y-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-sky-500/10 text-sky-400 text-[10px] font-bold uppercase tracking-wider border border-sky-500/20">
+                      <Brain size={13} /> AI DESTEKLİ ERİŞİLEBİLİRLİK
                     </div>
-                    <h3 className="text-3xl font-black uppercase tracking-tight">Akıllı Adaptasyon</h3>
-                    <p className="text-sm md:text-base text-background/70 font-medium leading-relaxed">
-                      Yapay zeka asistanlarımız Aria, Felix ve Bora; platformdaki içerikleri analiz ederek karmaşık terimleri sadeleştirir ve görsel içerikler için anlık betimlemeler oluşturur.
+                    <h3 className="text-2xl font-extrabold tracking-tight">Akıllı Adaptasyon</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
+                      Yapay zeka araçlarımız platformdaki içerikleri analiz ederek karmaşık mevzuat maddelerini ve terimleri sadeleştirir.
                     </p>
-                    <ul className="space-y-4">
+                    <ul className="space-y-3 pt-2">
                       {[
-                        'Otomatik Metin Özetleme',
-                        'Bilişsel Yükü Azaltan Sade Dil',
-                        'Gerçek Zamanlı Sesli Destek'
+                        'Otomatik Metin Özetleme & Sade Dil',
+                        'Bilişsel Yükü Azaltan Modlar (Disleksi, Biyonik)',
+                        'Yüksek Kontrast & Dinamik Boyutlandırma'
                       ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-background/90">
-                          <CheckCircle2 className="text-primary w-4 h-4" /> {item}
+                        <li key={i} className="flex items-center gap-2.5 text-xs font-bold text-foreground">
+                          <CheckCircle2 className="text-sky-400 w-4 h-4 shrink-0" /> {item}
                         </li>
                       ))}
                     </ul>
@@ -160,23 +158,23 @@ export default function AccessibilityStatementPage() {
         </section>
 
         {/* --- ASSISTIVE TECH TABLE --- */}
-        <section className="py-24 container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto space-y-12">
-            <div className="text-center space-y-4">
-              <h2 className="text-3xl font-black text-foreground uppercase tracking-tight">Desteklenen Yardımcı Teknolojiler</h2>
-              <p className="text-muted-foreground font-medium">Platformumuz aşağıdaki araçlarla en yüksek performansta çalışacak şekilde kodlanmıştır.</p>
+        <section className="py-16 container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">Desteklenen Yardımcı Teknolojiler</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground font-normal">Platformumuz aşağıdaki araçlarla en yüksek performansta çalışacak şekilde kodlanmıştır.</p>
             </div>
 
-            <div className="overflow-x-auto border border-border rounded-[2rem] shadow-sm">
+            <div className="overflow-x-auto border border-border/80 rounded-2xl shadow-xs bg-card">
               <table className="w-full text-left border-collapse min-w-[500px]">
-                <thead className="bg-muted/50">
+                <thead className="bg-muted/40">
                   <tr>
-                    <th className="p-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border">PLATFORM</th>
-                    <th className="p-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border">YARDIMCI ARAÇ</th>
-                    <th className="p-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest border-b border-border text-right">DURUM</th>
+                    <th className="p-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/60">PLATFORM</th>
+                    <th className="p-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/60">YARDIMCI ARAÇ</th>
+                    <th className="p-4 text-[10px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/60 text-right">DURUM</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border">
+                <tbody className="divide-y divide-border/60">
                   {[
                     { plat: 'Windows', tool: 'NVDA & JAWS', status: 'Tam Uyumlu' },
                     { plat: 'macOS / iOS', tool: 'VoiceOver', status: 'Tam Uyumlu' },
@@ -184,10 +182,10 @@ export default function AccessibilityStatementPage() {
                     { plat: 'Tüm Tarayıcılar', tool: 'Ekran Büyüteçleri', status: 'Optimize Edildi' }
                   ].map((row, i) => (
                     <tr key={i} className="hover:bg-muted/30 transition-colors">
-                      <td className="p-6 text-sm font-black text-foreground uppercase tracking-tight">{row.plat}</td>
-                      <td className="p-6 text-sm font-bold text-muted-foreground uppercase tracking-tight">{row.tool}</td>
-                      <td className="p-6 text-right">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-500/20">
+                      <td className="p-4 text-xs font-bold text-foreground uppercase tracking-wide">{row.plat}</td>
+                      <td className="p-4 text-xs font-medium text-muted-foreground">{row.tool}</td>
+                      <td className="p-4 text-right">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-md text-[10px] font-bold uppercase tracking-wider border border-emerald-500/20">
                           {row.status}
                         </span>
                       </td>
@@ -200,39 +198,39 @@ export default function AccessibilityStatementPage() {
         </section>
 
         {/* --- FEEDBACK SECTION --- */}
-        <section className="py-24 bg-muted/30 border-t border-border/50">
+        <section className="py-16 bg-muted/20 border-t border-border/60">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-5xl mx-auto bg-card border border-border rounded-[3rem] p-10 md:p-20 flex flex-col md:flex-row gap-16 items-center">
-              <div className="flex-1 space-y-8">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <MessageSquare size={32} />
+            <div className="max-w-4xl mx-auto bg-card border border-border/80 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row gap-8 items-center">
+              <div className="flex-1 space-y-4">
+                <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                  <MessageSquare size={24} />
                 </div>
-                <div className="space-y-4">
-                  <h2 className="text-3xl font-black text-foreground uppercase tracking-tight">Geri Bildiriminiz Değerlidir</h2>
-                  <p className="text-lg text-muted-foreground font-medium leading-relaxed">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-extrabold text-foreground tracking-tight">Geri Bildiriminiz Değerlidir</h2>
+                  <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
                     Erişilebilirlik yolculuğumuz asla bitmiyor. Eğer bir engelle karşılaşırsanız, lütfen bize bildirin. Geri bildirimlerinizi öncelikli olarak inceliyoruz.
                   </p>
                 </div>
-                <div className="p-6 bg-muted rounded-2xl border border-border/50 space-y-2">
-                  <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">İLETİŞİM E-POSTA</div>
-                  <a href="mailto:miracbirben@engelsizforum.com" className="text-xl font-black text-primary hover:underline">miracbirben@engelsizforum.com</a>
+                <div className="p-4 bg-muted/40 rounded-xl border border-border/60 space-y-1">
+                  <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">İLETİŞİM E-POSTA</div>
+                  <a href="mailto:miracbirben@engelsizforum.com" className="text-sm font-bold text-sky-400 hover:underline">miracbirben@engelsizforum.com</a>
                 </div>
               </div>
-              <div className="flex-1 space-y-6">
-                 <div className="bg-primary/5 border border-primary/10 rounded-2xl p-8 space-y-4">
-                    <div className="flex items-center gap-3">
-                      <AlertCircle className="text-primary w-5 h-5" />
-                      <span className="font-black text-foreground text-xs uppercase tracking-tight">Hatalı Bildirim Süreci</span>
+              <div className="flex-1 space-y-4 w-full">
+                 <div className="bg-sky-500/5 border border-sky-500/20 rounded-xl p-5 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <AlertCircle className="text-sky-400 w-4 h-4 shrink-0" />
+                      <span className="font-bold text-foreground text-xs uppercase tracking-wider">Hata Bildirim Süreci</span>
                     </div>
-                    <p className="text-xs text-muted-foreground font-bold leading-relaxed opacity-80 uppercase tracking-wide">
+                    <p className="text-xs text-muted-foreground font-normal leading-relaxed">
                       Bildirilen her erişilebilirlik sorunu, teknik ekibimiz tarafından 48 saat içerisinde incelenir ve düzeltme planına dahil edilir.
                     </p>
                  </div>
                  <Link 
-                    href="/" 
-                    className="w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-foreground px-8 py-5 text-sm font-black text-background transition hover:bg-foreground/90 uppercase tracking-widest shadow-xl"
+                    href="/discussions" 
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 hover:bg-sky-400 px-6 py-3 text-xs font-bold text-white transition uppercase tracking-wider shadow-xs"
                   >
-                    ANA SAYFAYA DÖN <ArrowRight size={18} />
+                    Forum Tartışmalarına Dön <ArrowRight size={14} />
                  </Link>
               </div>
             </div>
