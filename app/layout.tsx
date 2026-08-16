@@ -61,12 +61,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/favicon.jpg', type: 'image/jpeg' },
-      { url: '/icon.png', type: 'image/png', sizes: '192x192' },
+      { url: '/favicon.ico?v=2026', sizes: 'any' },
+      { url: '/favicon.png?v=2026', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon.jpg?v=2026', type: 'image/jpeg' },
+      { url: '/icon.png?v=2026', type: 'image/png', sizes: '192x192' },
     ],
     apple: [
-      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+      { url: '/apple-icon.png?v=2026', sizes: '180x180', type: 'image/png' },
     ],
   },
   openGraph: {
@@ -78,7 +79,7 @@ export const metadata: Metadata = {
     locale: 'tr_TR',
     images: [
       {
-        url: 'https://engelsizforum.com/og-image.png',
+        url: 'https://engelsizforum.com/og-image.png?v=2026',
         width: 1200,
         height: 630,
         alt: 'EngelsizForum - Tam Erişilebilir Topluluk Platformu',
@@ -92,7 +93,7 @@ export const metadata: Metadata = {
     description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli forum platformu.',
     site: '@engelsizforum',
     creator: '@engelsizforum',
-    images: ['https://engelsizforum.com/og-image.png'],
+    images: ['https://engelsizforum.com/og-image.png?v=2026'],
   },
   formatDetection: {
     telephone: false,
@@ -110,7 +111,7 @@ const jsonLd = {
       "@id": "https://engelsizforum.com/#organization",
       "name": "EngelsizForum",
       "url": "https://engelsizforum.com",
-      "logo": "https://engelsizforum.com/logo.png",
+      "logo": "https://engelsizforum.com/logo.png?v=2026",
       "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve forum platformu.",
       "sameAs": [
         "https://github.com/engelsizforum"
@@ -140,6 +141,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr" className={`dark ${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} h-full`} suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/favicon.ico?v=2026" sizes="any" />
+        <link rel="icon" type="image/png" href="/favicon.png?v=2026" sizes="32x32" />
+        <link rel="icon" type="image/png" href="/icon.png?v=2026" sizes="192x192" />
+        <link rel="apple-touch-icon" href="/apple-icon.png?v=2026" sizes="180x180" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="EngelsizForum" />
+        <meta property="og:title" content="EngelsizForum | Tam Erişilebilir Topluluk Platformu" />
+        <meta property="og:description" content="Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli forum platformu." />
+        <meta property="og:image" content="https://engelsizforum.com/og-image.png?v=2026" />
+        <meta property="og:image:secure_url" content="https://engelsizforum.com/og-image.png?v=2026" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="EngelsizForum | Tam Erişilebilir Topluluk Platformu" />
+        <meta name="twitter:description" content="Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli forum platformu." />
+        <meta name="twitter:image" content="https://engelsizforum.com/og-image.png?v=2026" />
         <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

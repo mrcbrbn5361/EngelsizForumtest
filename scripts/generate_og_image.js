@@ -264,6 +264,11 @@ async function main() {
     .toFile(path.join(publicDir, 'favicon.ico'));
 
   await sharp(svgLogoBuffer)
+    .resize(48, 48)
+    .png({ quality: 100 })
+    .toFile(path.join(publicDir, 'favicon.png'));
+
+  await sharp(svgLogoBuffer)
     .resize(512, 512)
     .jpeg({ quality: 95 })
     .toFile(path.join(publicDir, 'favicon.jpg'));
