@@ -226,6 +226,22 @@ const svgLogo = `
 </svg>
 `;
 
+function createIcoFromPng(pngBuffer, width = 48, height = 48) {
+  const header = Buffer.alloc(22);
+  header.writeUInt16LE(0, 0); // Reserved
+  header.writeUInt16LE(1, 2); // ICO type
+  header.writeUInt16LE(1, 4); // 1 image
+  header.writeUInt8(width >= 256 ? 0 : width, 6);
+  header.writeUInt8(height >= 256 ? 0 : height, 7);
+  header.writeUInt8(0, 8); // color palette
+  header.writeUInt8(0, 9); // reserved
+  header.writeUInt16LE(1, 10); // color planes
+  header.writeUInt16LE(32, 12); // bits per pixel
+  header.writeUInt32LE(pngBuffer.length, 14); // image size
+  header.writeUInt32LE(22, 18); // offset where PNG data starts
+  return Buffer.concat([header, pngBuffer]);
+}
+
 async function main() {
   const publicDir = path.join(__dirname, '../public');
   if (!fs.existsSync(publicDir)) {
@@ -235,53 +251,50 @@ async function main() {
   const svgBannerBuffer = Buffer.from(svgBanner);
   const svgLogoBuffer = Buffer.from(svgLogo);
 
-  // 1. OG Images (1200x630)
-  await sharp(svgBannerBuffer)
+  // 1. OG Images (1200x630) - Truecolor 32-bit RGBA PNGs
+  const ogPng = await sharp(svgBannerBuffer)
     .resize(1200, 630)
-    .png({ quality: 100 })
-    .toFile(path.join(publicDir, 'og-image.png'));
+    .png({ quality: 100, palette: false, compressionLevel: 6 })
+    .toBuffer();
 
-  await sharp(svgBannerBuffer)
-    .resize(1200, 630)
-    .png({ quality: 100 })
-    .toFile(path.join(publicDir, 'banner.png'));
-
-  await sharp(svgBannerBuffer)
-    .resize(1200, 630)
-    .png({ quality: 100 })
-    .toFile(path.join(publicDir, 'twitter-image.png'));
+  fs.writeFileSync(path.join(publicDir, 'og-image.png'), ogPng);
+  fs.writeFileSync(path.join(publicDir, 'banner.png'), ogPng);
+  fs.writeFileSync(path.join(publicDir, 'twitter-image.png'), ogPng);
 
   // 2. Logo Image (512x512)
-  await sharp(svgLogoBuffer)
+  const logoPng = await sharp(svgLogoBuffer)
     .resize(512, 512)
-    .png({ quality: 100 })
-    .toFile(path.join(publicDir, 'logo.png'));
+    .png({ quality: 100, palette: false })
+    .toBuffer();
+
+  fs.writeFileSync(path.join(publicDir, 'logo.png'), logoPng);
 
   // 3. Favicons
-  await sharp(svgLogoBuffer)
+  const favicon48Png = await sharp(svgLogoBuffer)
     .resize(48, 48)
-    .png({ quality: 100 })
-    .toFile(path.join(publicDir, 'favicon.ico'));
+    .png({ quality: 100, palette: false })
+    .toBuffer();
 
-  await sharp(svgLogoBuffer)
-    .resize(48, 48)
-    .png({ quality: 100 })
-    .toFile(path.join(publicDir, 'favicon.png'));
+  const realIcoBinary = createIcoFromPng(favicon48Png, 48, 48);
+  fs.writeFileSync(path.join(publicDir, 'favicon.ico'), realIcoBinary);
+  fs.writeFileSync(path.join(publicDir, 'favicon.png'), favicon48Png);
 
   await sharp(svgLogoBuffer)
     .resize(512, 512)
     .jpeg({ quality: 95 })
     .toFile(path.join(publicDir, 'favicon.jpg'));
 
-  await sharp(svgLogoBuffer)
+  const icon192Png = await sharp(svgLogoBuffer)
     .resize(192, 192)
-    .png({ quality: 100 })
-    .toFile(path.join(publicDir, 'icon.png'));
+    .png({ quality: 100, palette: false })
+    .toBuffer();
+  fs.writeFileSync(path.join(publicDir, 'icon.png'), icon192Png);
 
-  await sharp(svgLogoBuffer)
+  const apple180Png = await sharp(svgLogoBuffer)
     .resize(180, 180)
-    .png({ quality: 100 })
-    .toFile(path.join(publicDir, 'apple-icon.png'));
+    .png({ quality: 100, palette: false })
+    .toBuffer();
+  fs.writeFileSync(path.join(publicDir, 'apple-icon.png'), apple180Png);
 
   console.log('Blue OG Banner, Logo and Favicons generated successfully!');
 }
