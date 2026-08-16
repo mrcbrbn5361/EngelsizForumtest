@@ -21,8 +21,8 @@ interface DiscussionCardProps {
 }
 
 /**
- * Accessible, Corporate Futuristic Discussion Card for EngelsizForum.
- * Strict WCAG AA contrast, Linear/GitHub aesthetic, micro-interactions.
+ * Accessible, Modernized Discussion Card for EngelsizForum.
+ * Strictly WCAG AA compliant, Linear/GitHub aesthetic, micro-interactions.
  */
 export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCardProps) {
   const { isStaff } = useRole();
@@ -49,15 +49,15 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
       id={`topic-card-${topic.id}`}
       className={`group relative p-4 sm:p-5 md:p-6 rounded-2xl border transition-all duration-200 ${
         topic.is_pinned 
-          ? 'bg-sky-500/[0.04] border-sky-500/40 shadow-xs' 
-          : 'bg-card/80 hover:bg-card border-border/80 hover:border-sky-500/40 shadow-xs hover:shadow-md backdrop-blur-md'
+          ? 'bg-[#111726]/90 border-sky-500/40 shadow-xs' 
+          : 'bg-[#111726]/80 hover:bg-[#151d30] border-white/[0.08] hover:border-sky-500/40 shadow-xs hover:shadow-lg backdrop-blur-md'
       }`}
     >
       <div className="flex items-start justify-between gap-3 sm:gap-4">
         <div className="flex-1 min-w-0">
           
           {/* Metadata badges row */}
-          <div className="mb-2.5 flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] font-medium text-muted-foreground">
+          <div className="mb-2.5 flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] font-medium text-slate-400">
             {topic.is_pinned && (
               <span className="inline-flex items-center gap-1 rounded-md bg-sky-500/10 px-2 py-0.5 text-[10px] font-semibold text-sky-400 border border-sky-500/30 shrink-0">
                 <Pin size={11} aria-hidden="true" />
@@ -79,21 +79,21 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
             <span className="px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 font-semibold truncate max-w-[160px] sm:max-w-[220px]">
               {topic.category?.name || 'Genel Danışma'}
             </span>
-            <span className="text-muted-foreground/40 hidden sm:inline">•</span>
-            <span className="text-muted-foreground text-[11px] font-medium hidden sm:inline-flex items-center gap-1">
+            <span className="text-slate-600 hidden sm:inline">•</span>
+            <span className="text-slate-400 text-[11px] font-medium hidden sm:inline-flex items-center gap-1">
               <Eye size={12} className="text-sky-400/80" />
               {topic.views_count || 0} görüntülenme
             </span>
           </div>
 
           {/* Title with link */}
-          <h2 className="text-base sm:text-lg md:text-xl font-bold leading-snug text-foreground group-hover:text-sky-400 transition-colors tracking-tight break-words" lang="tr">
+          <h2 className="text-base sm:text-lg md:text-xl font-bold leading-snug text-slate-100 group-hover:text-sky-400 transition-colors tracking-tight break-words" lang="tr">
             <Link 
               href={`/discussions/${topic.id}`} 
               className="outline-none focus-visible:underline after:absolute after:inset-0 after:content-[''] after:z-0 flex items-center justify-between gap-2"
             >
               <span>{topic.title}</span>
-              <ArrowUpRight size={16} className="text-muted-foreground/40 group-hover:text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0 hidden sm:inline-block" />
+              <ArrowUpRight size={16} className="text-slate-500 group-hover:text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0 hidden sm:inline-block" />
             </Link>
           </h2>
         </div>
@@ -136,13 +136,13 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
 
       {/* Snippet preview */}
       {topic.content && (
-        <p className="mt-2.5 line-clamp-2 text-xs sm:text-sm text-muted-foreground leading-relaxed relative z-10 pointer-events-none font-normal">
+        <p className="mt-2.5 line-clamp-2 text-xs sm:text-sm text-slate-400 leading-relaxed relative z-10 pointer-events-none font-normal">
           {topic.content}
         </p>
       )}
 
       {/* Card footer: Author info & meta */}
-      <div className="mt-4 pt-3 border-t border-border/60 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-[11px] text-muted-foreground relative z-10">
+      <div className="mt-4 pt-3 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-[11px] text-slate-400 relative z-10">
         <Link 
           href={`/profile/${topic.author?.id}`} 
           className="flex items-center gap-2.5 min-w-0 relative z-20 pointer-events-auto hover:opacity-80 transition-opacity"
@@ -155,26 +155,25 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
             isOnline={true}
           />
           <div className="flex flex-col min-w-0 text-left">
-            <span className="font-semibold text-foreground truncate max-w-[130px] sm:max-w-[200px] hover:underline text-left">
+            <span className="font-semibold text-slate-200 truncate max-w-[130px] sm:max-w-[200px] hover:underline text-left">
               {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
             </span>
             <UserRoleBadge role={topic.author?.role} size="xs" />
           </div>
         </Link>
 
-        <div className="flex items-center gap-3.5 text-muted-foreground shrink-0 font-medium">
+        <div className="flex items-center gap-3.5 text-slate-400 shrink-0 font-medium">
           <div className="flex items-center gap-1.5 whitespace-nowrap">
             <Calendar size={12} className="text-sky-400" />
             <span>{new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
           </div>
-          <div className="flex items-center gap-1.5 whitespace-nowrap px-2 py-0.5 rounded-md bg-muted/60 text-foreground font-semibold">
+          <div className="flex items-center gap-1.5 whitespace-nowrap px-2 py-0.5 rounded-md bg-slate-900/80 text-slate-200 border border-white/[0.04] font-semibold">
             <MessageSquare size={12} className="text-sky-400" />
             <span>{commentsCount}</span>
-            <span className="text-[10px] text-muted-foreground font-normal hidden sm:inline">yanıt</span>
+            <span className="text-[10px] text-slate-400 font-normal hidden sm:inline">yanıt</span>
           </div>
         </div>
       </div>
     </motion.article>
   );
 }
-

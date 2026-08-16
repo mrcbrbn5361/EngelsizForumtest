@@ -97,15 +97,6 @@ export function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <div className="hidden lg:flex items-center gap-1">
-          <NavLink href="/discussions" icon={<MessageSquare size={16} aria-hidden="true" />} label="Tartışmalar" />
-          <NavLink href="/communities" icon={<Users size={16} aria-hidden="true" />} label="Topluluklar" />
-          <NavLink href="/hesaplama" icon={<Calculator size={16} aria-hidden="true" />} label="Hak &amp; Maaş Hesabı" />
-          <NavLink href="/webmcp" icon={<Zap size={16} aria-hidden="true" />} label="AI Agents &amp; MCP" />
-          <NavLink href="/about" icon={<Info size={16} aria-hidden="true" />} label="Hakkımızda" />
-        </div>
-
         {/* Right Header Action Items */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Accessibility Quick Menu */}
@@ -305,13 +296,14 @@ export function Navbar() {
             <div className="h-8 w-8 animate-pulse bg-[#161f33] rounded-full ml-0.5" aria-hidden="true" />
           )}
 
-          {/* Mobile Menu Button with Radix Dialog */}
+          {/* Hamburger Menu Button with Radix Dialog (Available on Desktop & Mobile) */}
           <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
             <Dialog.Trigger asChild>
               <button
                 id="navbar-mobile-menu-trigger"
-                className="flex lg:hidden items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 bg-[#111726] hover:bg-[#161f33] text-slate-200 border border-white/[0.08] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0 ml-0.5"
+                className="flex items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 bg-[#111726] hover:bg-[#161f33] text-slate-200 border border-white/[0.08] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0 ml-0.5 cursor-pointer"
                 aria-label={isOpen ? "Menüyü Kapat" : "Menüyü Aç"}
+                title="Tüm Sayfalar ve Menü"
                 suppressHydrationWarning
               >
                 <Menu size={18} className="sm:w-5 sm:h-5" />
@@ -472,17 +464,17 @@ export function Navbar() {
 
 function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href + '/');
   
   return (
     <Link
       href={href}
       aria-current={isActive ? 'page' : undefined}
       className={cn(
-        "flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 min-h-[40px]",
+        "flex items-center gap-1.5 rounded-lg px-2.5 lg:px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0",
         isActive 
-          ? "bg-sky-500/10 text-sky-400 font-bold border border-sky-500/30" 
-          : "text-slate-300 hover:bg-slate-800/80 hover:text-white"
+          ? "bg-sky-500/15 text-sky-400 font-bold border border-sky-500/30 shadow-xs" 
+          : "text-slate-300 hover:bg-[#161f33] hover:text-white border border-transparent"
       )}
     >
       <span className={cn(isActive ? "text-sky-400" : "text-slate-400")}>

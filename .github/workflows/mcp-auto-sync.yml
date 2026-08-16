@@ -35,6 +35,7 @@ jobs:
 
       - name: 4. MCP Senkronizasyon Betiğini Çalıştır
         env:
+          TZ: 'Europe/Istanbul'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/sync-mcpservers.py
 

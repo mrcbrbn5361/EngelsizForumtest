@@ -24,6 +24,7 @@ jobs:
 
       - name: 3. Gemini AI İle Metin Üretimi ve Sosyal Medya Paylaşımı (Make.com LinkedIn & NSosyal)
         env:
+          TZ: 'Europe/Istanbul'
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           MAKE_WEBHOOK_URL: ${{ secrets.MAKE_WEBHOOK_URL }}
           LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
@@ -31,5 +32,5 @@ jobs:
           NSOSYAL_API_URL: ${{ secrets.NSOSYAL_API_URL }}
           NSOSYAL_BEARER_TOKEN: ${{ secrets.NSOSYAL_BEARER_TOKEN }}
         run: |
-          echo "=== Gemini AI Analizi ve Metin Üretimi Başlatılıyor ==="
+          echo "=== Gemini AI Analizi ve Metin Üretimi Başlatılıyor (Türkiye Saati: $(date '+%d.%m.%Y %H:%M:%S %Z')) ==="
           node scripts/auto-social-poster.js

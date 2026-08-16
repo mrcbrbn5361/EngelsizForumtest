@@ -1,0 +1,623 @@
+'use client';
+
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { 
+  ArrowLeft, Users, MessageSquare, Shield, Globe, Loader2, Sparkles, Plus, Search, Check,
+  Stethoscope, BookOpen, Briefcase, Cpu, Code, Smile, Settings, Megaphone, Scale, 
+  CreditCard, PiggyBank, Award, FileText, HeartPulse, Activity, Eye, Volume2, MapPin, 
+  GraduationCap, Calendar, AlertTriangle, FolderTree, Car, HelpCircle, ChevronRight, X
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { Topic } from '@/types/database';
+import { DiscussionCard } from '@/components/forum/discussion-card';
+import Link from 'next/link';
+
+interface Community {
+  id: string;
+  name: string;
+  description: string;
+  slug: string;
+  icon?: string;
+}
+
+const COMMUNITY_META: Record<string, {
+  focusGroups: string[];
+  tags: string[];
+  memberCount: number;
+  topicCount: number;
+  featured?: boolean;
+  rules: string[];
+}> = {
+  'sgk': {
+    focusGroups: ['haklar'],
+    tags: ['Emeklilik', 'Sağlık Kurulu', 'Mevzuat'],
+    memberCount: 1420,
+    topicCount: 312,
+    featured: true,
+    rules: [
+      'Resmi evrak ve raporlarınızı paylaşırken kişisel verilerinizi maskeleyin.',
+      'Sadece güncel mevzuat ve resmi kurum duyuruları üzerinden bilgi paylaşımı yapın.',
+      'Soru sorarken engelli oranı ve sigorta başlangıcı bilgilerinizi net ifade edin.'
+    ]
+  },
+  'ekpss': {
+    focusGroups: ['bilissel', 'haklar'],
+    tags: ['Sınav Hazırlığı', 'Kadro Atamaları', 'Çalışma Grupları'],
+    memberCount: 2350,
+    topicCount: 540,
+    featured: true,
+    rules: [
+      'Telif hakkı içeren sınav dokümanlarını veya korsan linkleri paylaşmayın.',
+      'Sınav stresi ve motivasyon dışı kırıcı tartışmalardan kaçının.',
+      'Kadro özelindeki soruları ilgili konu başlıklarında toplayın.'
+    ]
+  },
+  'otv': {
+    focusGroups: ['ortopedik'],
+    tags: ['Araç Alımı', 'ÖTV Muafiyeti', 'Limit Takibi'],
+    memberCount: 1890,
+    topicCount: 425,
+    featured: true,
+    rules: [
+      'Otomobil galerisi veya takip firması reklamı yapmak kesinlikle yasaktır.',
+      'Sadece resmi vergi dairesi özelgelerini ve yasal mevzuatı referans gösterin.',
+      'Alım-satım işlemlerinde spekülatif yorumlar yapmayın.'
+    ]
+  },
+  'saglik': {
+    focusGroups: ['ortopedik', 'bilissel'],
+    tags: ['Rapor Derecesi', 'Tedavi Süreçleri', 'Hekim Tavsiyeleri'],
+    memberCount: 1210,
+    topicCount: 245,
+    rules: [
+      'Tıbbi tanı koymak veya reçeteli ilaç tavsiyesinde bulunmak yasaktır.',
+      'Onaylanmamış alternatif yöntemlerin reklamını yapmayın.',
+      'Sağlık kurulu muayene süreçleri deneyimlerinizde yapıcı olun.'
+    ]
+  },
+  'egitim': {
+    focusGroups: ['bilissel'],
+    tags: ['Özel Eğitim', 'RAM Raporları', 'Kapsayıcı Okullar'],
+    memberCount: 940,
+    topicCount: 180,
+    rules: [
+      'Özel gereksinimli bireylerin açıkça isimlerini içeren görseller paylaşmayın.',
+      'Öğretmenler ve veliler arasında saygılı, yapıcı bir dil kullanın.'
+    ]
+  },
+  'istihdam': {
+    focusGroups: ['haklar'],
+    tags: ['Kariyer', 'İş İlanları', 'Mülakat Teknikleri'],
+    memberCount: 1560,
+    topicCount: 290,
+    featured: true,
+    rules: [
+      'Sadece engelli kadrosu barındıran gerçek ilanları paylaşın.',
+      'Kişisel özgeçmiş paylaşımlarında hassas verileri maskeleyin.'
+    ]
+  },
+  'teknoloji': {
+    focusGroups: ['gorme', 'isitme'],
+    tags: ['Ekran Okuyucular', 'Yardımcı Yazılımlar', 'Erişilebilirlik'],
+    memberCount: 2100,
+    topicCount: 480,
+    featured: true,
+    rules: [
+      'Yazılımsal yardımlaşmalarda güvenilir açık kaynak bağlantıları seçin.',
+      'Ekran okuyucu ses paketleri paylaşırken telif haklarına dikkat edin.'
+    ]
+  },
+  'yazilim': {
+    focusGroups: ['gorme', 'isitme'],
+    tags: ['Erişilebilir Kod', 'A11y Standartları', 'Web Geliştirme'],
+    memberCount: 820,
+    topicCount: 140,
+    rules: [
+      'Kod paylaşırken Markdown formatını kullanın.',
+      'WCAG standartlarına uygun örnekler paylaşmaya özen gösterin.'
+    ]
+  },
+  'gunluk-yasam': {
+    focusGroups: ['gorme', 'isitme', 'ortopedik', 'bilissel'],
+    tags: ['Sohbet', 'Hobiler & Sanat', 'Engelsiz Seyahat'],
+    memberCount: 1780,
+    topicCount: 390,
+    rules: [
+      'Kapsayıcı ve yapıcı paylaşımlarda bulunun.',
+      'Engelsiz mekan deneyimlerinizde rampa ve asansör detaylarını belirtin.'
+    ]
+  }
+};
+
+const formatCompact = (num: number) => {
+  return new Intl.NumberFormat('tr-TR', { notation: 'compact', compactDisplay: 'short' }).format(num);
+};
+
+export default function CommunityDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const id = params?.id as string;
+
+  const [community, setCommunity] = useState<Community | null>(null);
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'solved' | 'pinned' | 'popular'>('all');
+  const [isJoined, setIsJoined] = useState(false);
+  const [memberCount, setMemberCount] = useState<number>(0);
+  const [summarizingId, setSummarizingId] = useState<string | null>(null);
+  const [summaryResult, setSummaryResult] = useState<{ id: string; text: string } | null>(null);
+
+  const getMeta = (slug?: string) => {
+    const normalized = slug?.toLowerCase() || '';
+    if (COMMUNITY_META[normalized]) {
+      return COMMUNITY_META[normalized];
+    }
+    return {
+      focusGroups: ['gorme', 'isitme', 'ortopedik', 'bilissel'],
+      tags: ['Topluluk', 'Yardımlaşma', 'Genel'],
+      memberCount: 350,
+      topicCount: 45,
+      rules: [
+        'Topluluk saygı çerçevesinde paylaşımlar yapmalıdır.',
+        'Kapsayıcı ve hakaret içermeyen bir dil kullanılması zorunludur.'
+      ]
+    };
+  };
+
+  const checkJoinStatus = useCallback((communityId: string) => {
+    const saved = localStorage.getItem('joined_communities');
+    if (saved) {
+      try {
+        const list = JSON.parse(saved);
+        setIsJoined(list.includes(communityId));
+      } catch (e) {
+        console.error('Error parsing joined list:', e);
+      }
+    }
+  }, []);
+
+  const toggleJoin = () => {
+    if (!community) return;
+    const saved = localStorage.getItem('joined_communities');
+    let list: string[] = [];
+    if (saved) {
+      try {
+        list = JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    if (isJoined) {
+      list = list.filter(item => item !== community.id);
+      setIsJoined(false);
+      toast.success(`"${community.name}" topluluğundan ayrıldınız.`);
+    } else {
+      list.push(community.id);
+      setIsJoined(true);
+      toast.success(`"${community.name}" topluluğuna katıldınız!`);
+    }
+    localStorage.setItem('joined_communities', JSON.stringify(list));
+  };
+
+  const fetchCommunityData = useCallback(async () => {
+    if (!id || !isSupabaseConfigured) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+      let catQuery = supabase.from('categories').select('*');
+      if (isUUID) {
+        catQuery = catQuery.eq('id', id);
+      } else {
+        catQuery = catQuery.eq('slug', id);
+      }
+
+      const { data: catData, error: catError } = await catQuery.maybeSingle();
+      if (catError) throw catError;
+
+      if (catData) {
+        setCommunity(catData);
+        checkJoinStatus(catData.id);
+
+        const { data: topicsData, error: topicsError } = await supabase
+          .from('topics')
+          .select(`
+            id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, created_at, updated_at, slug,
+            author:profiles(*),
+            category:categories(name, slug, id),
+            comments:posts(count)
+          `)
+          .eq('category_id', catData.id)
+          .order('is_pinned', { ascending: false })
+          .order('created_at', { ascending: false });
+
+        if (topicsError) throw topicsError;
+        setTopics((topicsData as any || []).filter((t: any) => t.author));
+      }
+
+      const { count: totalProfiles } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+      if (totalProfiles) {
+        setMemberCount(totalProfiles);
+      }
+    } catch (error) {
+      console.error('Error fetching community data:', error);
+      setCommunity(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [id, checkJoinStatus]);
+
+  useEffect(() => {
+    if (id) {
+      fetchCommunityData();
+    }
+  }, [id, fetchCommunityData]);
+
+  const handleSummarize = async (topicId: string) => {
+    const topic = topics.find(t => t.id === topicId);
+    if (!topic) {
+      toast.error('AI Özeti için gerekli veriler eksik.');
+      return;
+    }
+
+    setSummarizingId(topicId);
+    try {
+      const response = await fetch('/api/summarize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: topic.title, content: topic.content, type: 'topic_summary' })
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Özet oluşturulamadı');
+      }
+      
+      if (data.text) {
+        setSummaryResult({ id: topicId, text: data.text });
+      }
+    } catch (error: any) {
+      console.error('Summarization failed:', error);
+      toast.error('Özet oluşturulurken bir hata oluştu: ' + error.message);
+    } finally {
+      setSummarizingId(null);
+    }
+  };
+
+  const getIcon = (iconName?: string) => {
+    const cls = "text-sky-400";
+    switch (iconName?.toLowerCase()) {
+      case 'stethoscope': return <Stethoscope size={20} className={cls} />;
+      case 'bookopen':
+      case 'book-open': return <BookOpen size={20} className={cls} />;
+      case 'briefcase': return <Briefcase size={20} className={cls} />;
+      case 'cpu': return <Cpu size={20} className={cls} />;
+      case 'code': return <Code size={20} className={cls} />;
+      case 'smile': return <Smile size={20} className={cls} />;
+      case 'shield': return <Shield size={20} className={cls} />;
+      case 'settings': return <Settings size={20} className={cls} />;
+      case 'megaphone': return <Megaphone size={20} className={cls} />;
+      case 'car': return <Car size={20} className={cls} />;
+      case 'scale': return <Scale size={20} className={cls} />;
+      case 'creditcard':
+      case 'credit-card': return <CreditCard size={20} className={cls} />;
+      case 'piggybank':
+      case 'piggy-bank': return <PiggyBank size={20} className={cls} />;
+      case 'award': return <Award size={20} className={cls} />;
+      case 'filetext':
+      case 'file-text': return <FileText size={20} className={cls} />;
+      case 'heartpulse':
+      case 'heart-pulse': return <HeartPulse size={20} className={cls} />;
+      case 'activity': return <Activity size={20} className={cls} />;
+      case 'eye': return <Eye size={20} className={cls} />;
+      case 'volume2':
+      case 'volume-2': return <Volume2 size={20} className={cls} />;
+      case 'mappin':
+      case 'map-pin': return <MapPin size={20} className={cls} />;
+      case 'graduationcap':
+      case 'graduation-cap': return <GraduationCap size={20} className={cls} />;
+      case 'calendar': return <Calendar size={20} className={cls} />;
+      case 'alerttriangle':
+      case 'alert-triangle': return <AlertTriangle size={20} className={cls} />;
+      case 'users': return <Users size={20} className={cls} />;
+      case 'message': return <MessageSquare size={20} className={cls} />;
+      case 'sparkles': return <Sparkles size={20} className={cls} />;
+      default: return <FolderTree size={20} className={cls} />;
+    }
+  };
+
+  const filteredTopics = useMemo(() => {
+    let result = [...topics];
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(t => 
+        t.title.toLowerCase().includes(q) || 
+        t.content.toLowerCase().includes(q)
+      );
+    }
+    
+    if (activeFilter === 'solved') {
+      result = result.filter(t => t.is_solved);
+    } else if (activeFilter === 'pinned') {
+      result = result.filter(t => t.is_pinned);
+    } else if (activeFilter === 'popular') {
+      result = result.sort((a, b) => (b.views_count || 0) - (a.views_count || 0));
+    }
+    
+    return result;
+  }, [topics, searchQuery, activeFilter]);
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="animate-spin text-sky-400" size={36} />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!community) {
+    return (
+      <DashboardLayout>
+        <div className="flex flex-col items-center justify-center py-20 text-center px-6 space-y-4">
+          <h1 className="text-xl font-bold text-slate-100">Topluluk Bulunamadı</h1>
+          <p className="text-xs text-slate-400 max-w-sm">
+            Aradığınız topluluk mevcut değil veya kaldırılmış olabilir.
+          </p>
+          <button 
+            onClick={() => router.push('/communities')} 
+            className="px-5 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+          >
+            Topluluklara Geri Dön
+          </button>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  const meta = getMeta(community.slug);
+
+  return (
+    <DashboardLayout>
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl space-y-6">
+        
+        {/* Navigation Breadcrumb */}
+        <nav aria-label="Erişim yolu" className="flex items-center gap-2 text-xs text-slate-400">
+          <Link href="/" className="hover:text-sky-400 transition-colors">Ana Sayfa</Link>
+          <ChevronRight size={14} className="text-slate-600" />
+          <Link href="/communities" className="hover:text-sky-400 transition-colors">Topluluklar</Link>
+          <ChevronRight size={14} className="text-slate-600" />
+          <span className="text-slate-200 font-medium">{community.name}</span>
+        </nav>
+
+        {/* Header Hero Banner */}
+        <header className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-6 sm:p-8 backdrop-blur-md space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+            <div className="flex items-start gap-4">
+              <div className="p-3.5 bg-sky-500/10 border border-sky-500/20 rounded-2xl text-sky-400 shrink-0">
+                {getIcon(community.icon || 'users')}
+              </div>
+              <div className="space-y-1.5">
+                <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-semibold">
+                  Topluluk &amp; Paylaşım Grubu
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100">
+                  {community.name}
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-400 font-normal leading-relaxed max-w-2xl">
+                  {community.description || 'Bu toplulukta deneyimlerinizi paylaşabilir, soru sorabilir ve uzman akran desteği alabilirsiniz.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+              <button 
+                onClick={toggleJoin}
+                className={`inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  isJoined 
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                    : 'bg-sky-600 hover:bg-sky-500 text-white'
+                }`}
+              >
+                {isJoined ? <Check size={14} /> : <Plus size={14} />}
+                {isJoined ? 'Topluluktasınız' : 'Gruba Katıl'}
+              </button>
+
+              <Link 
+                href={`/discussions/new?category_id=${community.id}`}
+                className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/[0.08] transition-colors"
+              >
+                <Plus size={14} /> Başlık Aç
+              </Link>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-white/[0.06]">
+            {meta.tags.map((tag, tIdx) => (
+              <span 
+                key={tIdx} 
+                className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-900/80 text-slate-300 border border-white/[0.06]"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </header>
+
+        {/* Layout: Main topics stream & Right Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* Main Discussions Column */}
+          <div className="lg:col-span-2 space-y-4">
+            
+            {/* Search and Filters Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#111726]/80 border border-white/[0.08] rounded-xl p-3 backdrop-blur-md">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+                <input 
+                  type="text" 
+                  placeholder="Bu topluluk içinde ara..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-white/[0.06] bg-slate-900/60 text-xs text-slate-200 focus:ring-1 focus:ring-sky-500 outline-none placeholder:text-slate-500"
+                />
+              </div>
+
+              <div className="flex flex-wrap gap-1">
+                {[
+                  { id: 'all', label: 'Tümü' },
+                  { id: 'pinned', label: 'Sabit' },
+                  { id: 'solved', label: 'Çözüldü' },
+                  { id: 'popular', label: 'Popüler' }
+                ].map((filter) => (
+                  <button
+                    key={filter.id}
+                    onClick={() => setActiveFilter(filter.id as any)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                      activeFilter === filter.id
+                        ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Discussions List */}
+            <div className="space-y-3">
+              {filteredTopics.length > 0 ? (
+                filteredTopics.map((topic) => (
+                  <div key={topic.id} className="space-y-2">
+                    <DiscussionCard 
+                      topic={topic} 
+                      onSummarize={handleSummarize}
+                      isLoading={summarizingId === topic.id}
+                    />
+                    <AnimatePresence>
+                      {summaryResult && summaryResult.id === topic.id && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="p-4 bg-[#0e172a] border border-sky-500/30 rounded-xl space-y-2 backdrop-blur-md"
+                        >
+                          <div className="flex items-center gap-1.5 text-sky-400 text-xs font-semibold">
+                            <Sparkles size={14} /> AI Tartışma Özeti
+                          </div>
+                          <p className="text-xs text-slate-300 leading-relaxed italic">
+                            &ldquo;{summaryResult.text}&rdquo;
+                          </p>
+                          <button 
+                            onClick={() => setSummaryResult(null)}
+                            className="text-[11px] text-slate-400 hover:text-sky-400 underline transition-colors cursor-pointer"
+                          >
+                            Özeti Kapat
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-16 px-6 bg-[#111726]/60 rounded-2xl border border-dashed border-white/[0.08] space-y-3">
+                  <MessageSquare size={36} className="mx-auto text-slate-600" />
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-bold text-slate-200">Henüz Tartışma Bulunmuyor</h3>
+                    <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                      Bu grupta henüz konu açılmamış veya arama filtrenize uygun başlık yok.
+                    </p>
+                  </div>
+                  <Link 
+                    href={`/discussions/new?category_id=${community.id}`}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold transition-colors"
+                  >
+                    <Plus size={14} /> İlk Başlığı Siz Açın
+                  </Link>
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          {/* Right Sidebar Column */}
+          <aside className="space-y-4">
+            
+            {/* Rules Card */}
+            <div className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-200">
+                <Shield size={16} className="text-sky-400" />
+                <span>Topluluk Kuralları</span>
+              </div>
+              <ul className="space-y-2.5 text-xs text-slate-300 leading-relaxed">
+                {meta.rules.map((rule, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-sky-400 font-bold mt-0.5">•</span>
+                    <span>{rule}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Statistics Card */}
+            <div className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md space-y-3">
+              <div className="text-xs font-bold text-slate-200">Topluluk İstatistikleri</div>
+              <div className="space-y-2 text-xs">
+                <div className="flex items-center justify-between py-1.5 border-b border-white/[0.06]">
+                  <span className="text-slate-400 flex items-center gap-2"><Users size={14} className="text-slate-500" /> Üyeler</span>
+                  <span className="font-semibold text-slate-200">
+                    {memberCount > 0 ? formatCompact(memberCount + meta.memberCount) : formatCompact(meta.memberCount)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-1.5 border-b border-white/[0.06]">
+                  <span className="text-slate-400 flex items-center gap-2"><MessageSquare size={14} className="text-slate-500" /> Konular</span>
+                  <span className="font-semibold text-slate-200">{topics.length}</span>
+                </div>
+                <div className="flex items-center justify-between py-1.5 border-b border-white/[0.06]">
+                  <span className="text-slate-400 flex items-center gap-2"><Globe size={14} className="text-slate-500" /> Görünürlük</span>
+                  <span className="text-sky-400 font-medium">Açık Topluluk</span>
+                </div>
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-slate-400 flex items-center gap-2"><Shield size={14} className="text-slate-500" /> Durum</span>
+                  <span className="text-emerald-400 font-medium">Moderatör Onaylı</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Contact Card */}
+            <div className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 space-y-3 backdrop-blur-md">
+              <div className="flex items-center gap-2 text-xs font-bold text-sky-400">
+                <HelpCircle size={16} /> Destek &amp; Moderasyon
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Bu topluluk ile ilgili hak ihlali, yanıltıcı bilgi veya erişilebilirlik sorunu yaşarsanız moderatör ekibimizle iletişime geçebilirsiniz.
+              </p>
+              <Link 
+                href="/messages"
+                className="inline-flex items-center justify-center w-full py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold transition-colors"
+              >
+                Moderatöre Ulaşın
+              </Link>
+            </div>
+
+          </aside>
+
+        </div>
+
+      </div>
+    </DashboardLayout>
+  );
+}

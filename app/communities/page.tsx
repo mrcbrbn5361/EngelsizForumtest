@@ -7,7 +7,7 @@ import {
   Users, Search, ChevronRight, MessageSquare, Handshake, Loader2, Plus, Save,
   Scale, CreditCard, PiggyBank, Award, FileText, HeartPulse, Activity, Eye, Volume2, MapPin, 
   GraduationCap, Calendar, AlertTriangle, FolderTree, Stethoscope, BookOpen, 
-  Briefcase, Cpu, Code, Smile, Shield, Settings, Megaphone, Car, Sparkles, Info, X, Check
+  Briefcase, Cpu, Code, Smile, Shield, Settings, Megaphone, Car, Sparkles, Info, X, Check, ArrowUpRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
@@ -523,7 +523,7 @@ export default function CommunitiesPage() {
                             )}
                           </div>
                           <h3 className="text-sm font-bold text-slate-100 group-hover:text-sky-400 transition-colors">
-                            <Link href={`/discussions?kategori=${community.slug}`}>
+                            <Link href={`/communities/${community.slug || community.id}`}>
                               {community.name}
                             </Link>
                           </h3>
@@ -597,7 +597,7 @@ export default function CommunitiesPage() {
                       </Link>
 
                       <Link 
-                        href={`/discussions?kategori=${community.slug}`}
+                        href={`/communities/${community.slug || community.id}`}
                         className="flex items-center gap-0.5 text-xs font-semibold text-sky-400 hover:text-sky-300 transition-colors pl-1"
                       >
                         <span>İncele</span>

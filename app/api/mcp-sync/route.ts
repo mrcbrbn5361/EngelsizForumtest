@@ -22,7 +22,9 @@ async function handleSync(req: NextRequest) {
   const cronSecret = process.env.CRON_SECRET || 'engelsizforum-mcp-sync-secret';
 
   // Perform automated sync routines
-  const timestamp = new Date().toISOString();
+  const now = new Date();
+  const timestamp = now.toISOString();
+  const turkeyTime = now.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul', dateStyle: 'full', timeStyle: 'medium' }) + ' (TSİ)';
   let syncCount = 0;
   const syncedServers = INITIAL_MCP_DIRECTORY.map((server) => {
     syncCount++;
@@ -72,6 +74,7 @@ async function handleSync(req: NextRequest) {
     status: 'success',
     message: 'MCP Sunucu ve Ajan Dizini otomatik olarak senkronize edildi.',
     timestamp,
+    turkey_time: turkeyTime,
     syncedServersCount: syncCount,
     dbPersisted,
     activeIntegrations: [

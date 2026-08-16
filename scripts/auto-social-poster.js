@@ -28,6 +28,55 @@ function getGitInfo() {
 }
 
 /**
+ * Returns current timestamp formatted according to Turkey Time (TSİ / Europe/Istanbul UTC+3).
+ * @returns {{ date: string, dateLong: string, time: string, shortTime: string, fullTurkeyTime: string, timeZone: string, offset: string }}
+ */
+function getTurkeyTimeInfo() {
+  const now = new Date();
+  
+  const dateStr = now.toLocaleDateString('tr-TR', {
+    timeZone: 'Europe/Istanbul',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+  
+  const dateLongStr = now.toLocaleDateString('tr-TR', {
+    timeZone: 'Europe/Istanbul',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  const timeStr = now.toLocaleTimeString('tr-TR', {
+    timeZone: 'Europe/Istanbul',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+
+  const shortTimeStr = now.toLocaleTimeString('tr-TR', {
+    timeZone: 'Europe/Istanbul',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+
+  const turkeyTimestamp = `${dateStr} ${timeStr} (TSİ - Türkiye Saati)`;
+
+  return {
+    date: dateStr,
+    dateLong: dateLongStr,
+    time: timeStr,
+    shortTime: shortTimeStr,
+    fullTurkeyTime: turkeyTimestamp,
+    timeZone: 'Europe/Istanbul',
+    offset: '+03:00'
+  };
+}
+
+/**
  * Generates an update announcement using Google Gemini API.
  * @param {string} commitMessage
  * @param {string} diffContent
@@ -36,20 +85,26 @@ function getGitInfo() {
  */
 async function generateUpdateNote(commitMessage, diffContent, apiKey) {
   const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+  const turkeyTime = getTurkeyTimeInfo();
 
   const prompt = `
 Sen EngelsizForum'un (https://engelsizforum.com) kurucusu ve geliştiricisisin. EngelsizForum, engelli bireyler için tam erişilebilir, bariyersiz ve bağımsız bir topluluk platformudur.
 
+[GÜNCEL TARİH VE TÜRKİYE SAATİ (TSİ / UTC+3)]:
+Tarih: ${turkeyTime.dateLong} (${turkeyTime.date})
+Saat: ${turkeyTime.shortTime} (Türkiye Saati - TSİ)
+
 Aşağıda verilen son Git commit mesajını ve kod değişikliklerini (git diff) incele. LinkedIn ve sosyal medya takipçilerin için yapay zeka tarafından yazıldığı HİÇBİR ŞEKİLDE ANLAŞILMAYAN, tamamen içten, samimi, insan diliyle yazılmış, pes etmeyen bir emek ve mücadele ruhu taşıyan Türkçe bir paylaşım metni hazırla.
 
 YAZIM TARZI VE USLUP KURALLARI (ÇOK KRİTİK):
-1. KESİNLİKLE yapay zeka veya reklam/ajans dili KULLANMA. ("Heyecanla duyuruyoruz!", "Harika yenilikler!", "Güçlü adımlarla ilerliyoruz!", "Sizlere sunmaktan gurur duyuyoruz!" gibi yapay zeka kalıpları ve robotik pazarlama cümleleri KESİNLİKLE YASAKTIR).
-2. Tıpkı kendi sosyal medya hesabında içini döken, gece gündüz emek vererek engelleri kaldırmaya çalışan gerçek bir geliştiricinin/kurucunun samimiyetiyle yaz.
-3. İçten, doğal, doğrudan ve insan dili kullan. Kendi emeğini, erişilebilirlik için verilen mücadeleyi ve bu güncellemede neyi neden çözdüğünü samimiyetle anlat.
-4. Yapay zeka gibi duran abartılı emoji dizileri kullanma. Sadece gerekirse 1-2 çok doğal simge veya tamamen emojisiz düz insan metni tercih et.
-5. Soğuk teknik kod maddeleri yerine; yapılan erişilebilirlik, ekran okuyucu (screen reader) veya arayüz düzeltmelerini "Bugün şuna odaklandım...", "EngelsizForum'da şu engeli aşmak için..." gibi doğal bir dille aktar.
-6. KESİNLİKLE hiçbir API Key, Secret Token, şifre, veritabanı adresi veya hassas sistem bilgisini paylaşıma ekleme.
-7. Paylaşımın sonuna doğal bir şekilde platform linkini (https://engelsizforum.com) ekle.
+1. ZAMAN VE SAAT: Zamana atıfta bulunacaksan ("Bugün", "Bu akşam", "Saat ... sularında" vb.) KESİNLİKLE yukarıda verilen Türkiye Saatini (TSİ) esas al.
+2. KESİNLİKLE yapay zeka veya reklam/ajans dili KULLANMA. ("Heyecanla duyuruyoruz!", "Harika yenilikler!", "Güçlü adımlarla ilerliyoruz!", "Sizlere sunmaktan gurur duyuyoruz!" gibi yapay zeka kalıpları ve robotik pazarlama cümleleri KESİNLİKLE YASAKTIR).
+3. Tıpkı kendi sosyal medya hesabında içini döken, gece gündüz emek vererek engelleri kaldırmaya çalışan gerçek bir geliştiricinin/kurucunun samimiyetiyle yaz.
+4. İçten, doğal, doğrudan ve insan dili kullan. Kendi emeğini, erişilebilirlik için verilen mücadeleyi ve bu güncellemede neyi neden çözdüğünü samimiyetle anlat.
+5. Yapay zeka gibi duran abartılı emoji dizileri kullanma. Sadece gerekirse 1-2 çok doğal simge veya tamamen emojisiz düz insan metni tercih et.
+6. Soğuk teknik kod maddeleri yerine; yapılan erişilebilirlik, ekran okuyucu (screen reader) veya arayüz düzeltmelerini "Bugün şuna odaklandım...", "EngelsizForum'da şu engeli aşmak için..." gibi doğal bir dille aktar.
+7. KESİNLİKLE hiçbir API Key, Secret Token, şifre, veritabanı adresi veya hassas sistem bilgisini paylaşıma ekleme.
+8. Paylaşımın sonuna doğal bir şekilde platform linkini (https://engelsizforum.com) ekle.
 
 [COMMIT MESAJI]:
 ${commitMessage}
@@ -368,14 +423,22 @@ async function sendToMakeWebhook(content, webhookUrl, commitMessage) {
     return;
   }
 
-  process.stdout.write('=== Make.com Webhook Üzerinden LinkedIn Gönderisi Tetikleniyor ===\n');
+  const turkeyTime = getTurkeyTimeInfo();
+  process.stdout.write(`=== Make.com Webhook Üzerinden LinkedIn Gönderisi Tetikleniyor [${turkeyTime.fullTurkeyTime}] ===\n`);
 
   const payload = {
     text: content,
     message: content,
     project: 'EngelsizForum',
     commit: commitMessage || '',
-    timestamp: new Date().toISOString()
+    turkey_time: turkeyTime.fullTurkeyTime,
+    turkey_date: turkeyTime.dateLong,
+    turkey_hour: turkeyTime.time,
+    date: turkeyTime.date,
+    time: turkeyTime.shortTime,
+    timezone: 'Europe/Istanbul',
+    timestamp: new Date().toISOString(),
+    timestamp_tr: `${turkeyTime.date} ${turkeyTime.time}`
   };
 
   const response = await fetch(webhookUrl, {
@@ -388,7 +451,7 @@ async function sendToMakeWebhook(content, webhookUrl, commitMessage) {
   });
 
   if (response.ok) {
-    process.stdout.write('🎉 BAŞARILI: Make.com Webhook tetiklendi! LinkedIn gönderiniz Make senaryosu üzerinden ücretsiz ve otomatik yayınlanacak.\n');
+    process.stdout.write(`🎉 BAŞARILI: Make.com Webhook tetiklendi! LinkedIn gönderiniz Türkiye Saati (${turkeyTime.fullTurkeyTime}) ile Make senaryosu üzerinden yayınlanacak.\n`);
     return { status: 'success' };
   }
 
@@ -416,6 +479,8 @@ async function main() {
   }
 
   try {
+    const turkeyTime = getTurkeyTimeInfo();
+    process.stdout.write(`🕒 Otomasyon Çalıştırılıyor: ${turkeyTime.fullTurkeyTime}\n`);
     const { commitMessage, diffContent } = getGitInfo();
     const rawNote = await generateUpdateNote(commitMessage, diffContent, geminiApiKey);
     const finalNote = sanitizeAndTruncateText(rawNote, 9900);
