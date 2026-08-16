@@ -84,21 +84,14 @@ export function Navbar() {
         <Link 
           href="/" 
           id="navbar-brand-logo"
-          className="flex items-center gap-2 sm:gap-2.5 outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg p-0.5 group shrink-0 transition-opacity hover:opacity-90 min-w-0"
+          className="flex items-center outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg p-0.5 group shrink-0 transition-opacity hover:opacity-90 min-w-0 select-none"
           aria-label="EngelsizForum Ana Sayfa"
         >
-          <div 
-            className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 bg-sky-500 text-slate-950 font-bold rounded-xl select-none shadow-xs transition-transform group-hover:scale-105 shrink-0" 
-            aria-hidden="true" 
-            suppressHydrationWarning
-          >
-            <span className="text-base sm:text-lg font-bold">E</span>
-          </div>
-          <div className="flex flex-col min-w-0">
+          <div className="flex flex-col min-w-0 select-none pointer-events-none" style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}>
             <span className="select-none text-base sm:text-lg lg:text-xl font-bold tracking-tight text-slate-100 leading-none truncate" suppressHydrationWarning>
               Engelsiz<span className="text-sky-400">Forum</span>
             </span>
-            <span className="text-[10px] font-medium tracking-wide text-slate-400 leading-tight mt-0.5 hidden md:inline">
+            <span className="select-none text-[10px] font-medium tracking-wide text-slate-400 leading-tight mt-0.5 hidden md:inline">
               Erişilebilir Topluluk Platformu
             </span>
           </div>
@@ -338,14 +331,14 @@ export function Navbar() {
                   <Link 
                     href="/" 
                     onClick={() => setIsOpen(false)} 
-                    className="flex items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg group"
+                    className="flex items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg group select-none"
+                    aria-label="EngelsizForum Ana Sayfa"
                   >
-                    <div className="flex items-center justify-center h-8 w-8 bg-sky-500 text-slate-950 rounded-lg font-black text-base shadow-xs" suppressHydrationWarning>
-                      E
+                    <div className="flex flex-col min-w-0 select-none pointer-events-none" style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}>
+                      <span className="select-none text-lg font-black tracking-tight text-slate-100 uppercase leading-none" suppressHydrationWarning>
+                        engelsiz<span className="text-sky-400">forum</span>
+                      </span>
                     </div>
-                    <span className="text-lg font-black tracking-tight text-slate-100 uppercase leading-none" suppressHydrationWarning>
-                      engelsiz<span className="text-sky-400">forum</span>
-                    </span>
                   </Link>
                   <Dialog.Close asChild>
                     <button 

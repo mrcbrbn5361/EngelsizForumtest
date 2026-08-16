@@ -16,8 +16,8 @@ export default function OgImage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#0f172a',
-          backgroundImage: 'radial-gradient(circle at 50% 0%, #1e3a8a 0%, #0f172a 70%)',
+          backgroundColor: '#090a0f',
+          backgroundImage: 'radial-gradient(circle at 50% 0%, #0b1528 0%, #090a0f 75%)',
           color: '#ffffff',
           padding: '60px',
           fontFamily: 'sans-serif',
@@ -51,20 +51,39 @@ export default function OgImage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '80px',
-              height: '80px',
-              backgroundColor: '#2563eb',
-              color: '#ffffff',
-              fontSize: '48px',
-              fontWeight: 900,
+              width: '88px',
+              height: '88px',
+              backgroundColor: '#0b0f19',
               borderRadius: '24px',
-              boxShadow: '0 20px 25px -5px rgba(37, 99, 235, 0.4)',
+              border: '2px solid rgba(56, 189, 248, 0.6)',
+              boxShadow: '0 20px 30px -5px rgba(56, 189, 248, 0.3)',
+              padding: '10px',
             }}
           >
-            E
+            <svg
+              viewBox="0 0 100 100"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{ width: '100%', height: '100%' }}
+            >
+              <circle cx="50" cy="22" r="9" fill="#38BDF8" />
+              <path
+                d="M 20 40 C 32 30, 68 30, 80 40 C 83 42.5, 80 46.5, 75 45.5 C 62 40, 38 40, 25 45.5 C 20 46.5, 17 42.5, 20 40 Z"
+                fill="#38BDF8"
+              />
+              <path
+                d="M 30 53 L 62 53 C 65 53, 65 58, 62 58 L 30 58 C 27 58, 27 53, 30 53 Z"
+                fill="#0284C7"
+              />
+              <circle cx="68" cy="55.5" r="4" fill="#10B981" />
+              <path
+                d="M 23 36 L 23 72 C 23 78, 29 81, 38 80 L 76 76 C 80 75.5, 80 70.5, 75 71 L 33 75 C 29.5 75, 28.5 73, 28.5 69 L 28.5 36 C 28.5 33, 23 33, 23 36 Z"
+                fill="#0284C7"
+              />
+            </svg>
           </div>
           <div style={{ fontSize: '64px', fontWeight: 900, letterSpacing: '-2px', textTransform: 'uppercase' }}>
-            ENGELSİZ<span style={{ color: '#3b82f6' }}>FORUM</span>
+            ENGELSİZ<span style={{ color: '#38bdf8' }}>FORUM</span>
           </div>
         </div>
 

@@ -11,12 +11,11 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
           {/* Brand Column */}
           <div className="space-y-4 text-left">
-            <Link href="/" className="inline-flex items-center gap-2.5 group">
-              <div className="flex items-center justify-center h-8 w-8 bg-sky-500 text-slate-950 font-bold rounded-xl text-base shadow-xs group-hover:scale-105 transition-transform">
-                E
-              </div>
-              <div className="text-xl font-bold tracking-tight text-slate-100">
-                Engelsiz<span className="text-sky-400">Forum</span>
+            <Link href="/" className="inline-flex items-center group select-none" aria-label="EngelsizForum Ana Sayfa">
+              <div className="flex flex-col min-w-0 select-none pointer-events-none" style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}>
+                <div className="text-xl font-bold tracking-tight text-slate-100">
+                  Engelsiz<span className="text-sky-400">Forum</span>
+                </div>
               </div>
             </Link>
             <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm leading-relaxed max-w-sm">

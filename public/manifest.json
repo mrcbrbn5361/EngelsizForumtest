@@ -4,8 +4,8 @@
   "description": "Engelli bireyler için tam erişilebilir, yapay zeka destekli yerli sosyal topluluk platformu.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#2563eb",
+  "background_color": "#090a0f",
+  "theme_color": "#38bdf8",
   "orientation": "portrait",
   "icons": [
     {
