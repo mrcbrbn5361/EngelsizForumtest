@@ -275,8 +275,7 @@ async function main() {
     .png({ quality: 100, palette: false })
     .toBuffer();
 
-  const realIcoBinary = createIcoFromPng(favicon48Png, 48, 48);
-  fs.writeFileSync(path.join(publicDir, 'favicon.ico'), realIcoBinary);
+  fs.writeFileSync(path.join(publicDir, 'favicon.ico'), favicon48Png);
   fs.writeFileSync(path.join(publicDir, 'favicon.png'), favicon48Png);
 
   await sharp(svgLogoBuffer)
