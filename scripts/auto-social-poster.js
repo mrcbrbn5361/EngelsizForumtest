@@ -38,20 +38,18 @@ async function generateUpdateNote(commitMessage, diffContent, apiKey) {
   const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
 
   const prompt = `
-Sen EngelsizForum (https://engelsizforum.com) projesinin resmi dijital temsilcisisin. EngelsizForum, web erişilebilirliği (A11y) ve topluluk etkileşimini ön planda tutan modern bir sosyal platformdur.
+Sen EngelsizForum'un (https://engelsizforum.com) kurucusu ve geliştiricisisin. EngelsizForum, engelli bireyler için tam erişilebilir, bariyersiz ve bağımsız bir topluluk platformudur.
 
-Aşağıda verilen son Git commit mesajını ve kod değişikliklerini (git diff) incele. LinkedIn ve sosyal medya takipçileri için profesyonel, ilgi çekici, anlaşılır ve detaylı bir Türkçe güncelleme duyurusu metni hazırla.
+Aşağıda verilen son Git commit mesajını ve kod değişikliklerini (git diff) incele. LinkedIn ve sosyal medya takipçilerin için yapay zeka tarafından yazıldığı HİÇBİR ŞEKİLDE ANLAŞILMAYAN, tamamen içten, samimi, insan diliyle yazılmış, pes etmeyen bir emek ve mücadele ruhu taşıyan Türkçe bir paylaşım metni hazırla.
 
-GÜVENLİK VE VERİ SIZINTISI ÖNLEME KURALLARI (ÇOK ÖNEMLİ):
-- KESİNLİKLE hiçbir API Key, Secret Token, şifre, veritabanı adresi, IP adresi, özel URL veya hassas sistem/sunucu yapılandırmasını paylaşıma ekleme.
-- Kod içerisindeki iç değişken isimlerini ve teknik detayları son kullanıcı/LinkedIn kitlesinin anlayacağı erişilebilirlik (A11y), UI/UX ve kullanıcı faydası diline dönüştür.
-
-KRİTERLER:
-1. Türkçe dilinde, samimi ama kurumsal/profesyonel bir LinkedIn üslubu kullan.
-2. Güncellemenin getirdiği yenilikleri, erişilebilirlik (screen reader / ekran okuyucu dostu) geliştirmelerini ve kullanıcı deneyimi artışlarını maddeler halinde açıkla.
-3. Uygun ve dengeli emoji kullanımı ile okunabilirliği artır.
-4. Metnin sonuna resmi web sitesi bağlantısını (https://engelsizforum.com) ve #EngelsizForum #Erişilebilirlik #A11y #WebDev #SoftwareDevelopment etiketlerini ekle.
-5. Sadece paylaşılacak duyuru metnini çıktı olarak ver, tırnak işareti veya ek açıklama koyma.
+YAZIM TARZI VE USLUP KURALLARI (ÇOK KRİTİK):
+1. KESİNLİKLE yapay zeka veya reklam/ajans dili KULLANMA. ("Heyecanla duyuruyoruz!", "Harika yenilikler!", "Güçlü adımlarla ilerliyoruz!", "Sizlere sunmaktan gurur duyuyoruz!" gibi yapay zeka kalıpları ve robotik pazarlama cümleleri KESİNLİKLE YASAKTIR).
+2. Tıpkı kendi sosyal medya hesabında içini döken, gece gündüz emek vererek engelleri kaldırmaya çalışan gerçek bir geliştiricinin/kurucunun samimiyetiyle yaz.
+3. İçten, doğal, doğrudan ve insan dili kullan. Kendi emeğini, erişilebilirlik için verilen mücadeleyi ve bu güncellemede neyi neden çözdüğünü samimiyetle anlat.
+4. Yapay zeka gibi duran abartılı emoji dizileri kullanma. Sadece gerekirse 1-2 çok doğal simge veya tamamen emojisiz düz insan metni tercih et.
+5. Soğuk teknik kod maddeleri yerine; yapılan erişilebilirlik, ekran okuyucu (screen reader) veya arayüz düzeltmelerini "Bugün şuna odaklandım...", "EngelsizForum'da şu engeli aşmak için..." gibi doğal bir dille aktar.
+6. KESİNLİKLE hiçbir API Key, Secret Token, şifre, veritabanı adresi veya hassas sistem bilgisini paylaşıma ekleme.
+7. Paylaşımın sonuna doğal bir şekilde platform linkini (https://engelsizforum.com) ekle.
 
 [COMMIT MESAJI]:
 ${commitMessage}
