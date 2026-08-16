@@ -691,7 +691,7 @@ function handleDisabilityRightsGuide(reportPercentage: number, disabilityType?: 
   const pct = Number(reportPercentage);
   const type = disabilityType ? disabilityType.toLowerCase() : '';
 
-  let mainRights = [];
+  const mainRights: string[] = [];
 
   if (pct >= 90) {
     mainRights.push('🚗 ÖTV 2026 Araç Alım Muafiyeti (%100 ÖTV Muafiyeti, 2.247.100 TL üst limiti ile)');

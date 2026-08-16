@@ -54,6 +54,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/brand" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-2">
+                  <Shield size={15} className="text-slate-400 dark:text-slate-500" /> Marka &amp; Görseller
+                </Link>
+              </li>
+              <li>
                 <Link href="/help" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors inline-flex items-center gap-2">
                   <HelpCircle size={15} className="text-slate-400 dark:text-slate-500" /> Yardım Merkezi &amp; SSS
                 </Link>

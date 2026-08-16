@@ -1071,13 +1071,13 @@ function McpAdminManager() {
               ) : testResult ? (
                 <>
                   <div>
-                    <span className="text-emerald-400 font-semibold">// Formatlanmış Yanıt:</span>
+                    <span className="text-emerald-400 font-semibold">{"// Formatlanmış Yanıt:"}</span>
                     <pre className="mt-1.5 text-foreground font-sans text-xs whitespace-pre-wrap leading-relaxed bg-muted/40 p-3 rounded-lg border border-border/60">
                       {testResult.responsePayload?.result?.content?.[0]?.text || JSON.stringify(testResult, null, 2)}
                     </pre>
                   </div>
                   <div>
-                    <span className="text-sky-400 font-semibold">// JSON-RPC Yanıtı:</span>
+                    <span className="text-sky-400 font-semibold">{"// JSON-RPC Yanıtı:"}</span>
                     <pre className="mt-1 text-muted-foreground text-[11px] overflow-x-auto">
                       {JSON.stringify(testResult.responsePayload, null, 2)}
                     </pre>

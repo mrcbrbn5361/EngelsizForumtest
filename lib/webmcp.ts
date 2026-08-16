@@ -205,7 +205,10 @@ export function initWebMCPPolyfill() {
           modelContextObj.registerTool(tool);
         }
       } catch (err) {
-        console.warn('WebMCP registerTool catch:', err);
+        const errStr = String(err);
+        if (!errStr.includes('permissions policy') && !errStr.includes('disallowed')) {
+          console.warn('WebMCP registerTool catch:', err);
+        }
       }
     },
   };
@@ -525,13 +528,17 @@ export function registerEngelsizForumWebMCPTools(callbacks?: {
         const res = document.modelContext.registerTool(tool);
         if (res && typeof (res as Promise<boolean>).catch === 'function') {
           (res as Promise<boolean>).catch((err) => {
-            if (!String(err).includes('Duplicate tool name')) {
-              console.warn('WebMCP registerTool warning:', err);
+            const errStr = String(err);
+            if (!errStr.includes('Duplicate tool name') && !errStr.includes('permissions policy') && !errStr.includes('disallowed')) {
+              console.warn('WebMCP registerTool notice:', err);
             }
           });
         }
       } catch (e) {
-        console.warn('WebMCP tool register error:', e);
+        const errStr = String(e);
+        if (!errStr.includes('permissions policy') && !errStr.includes('disallowed')) {
+          console.warn('WebMCP tool register notice:', e);
+        }
       }
     } else {
       syncDeclarativeDOMForm(tool);
