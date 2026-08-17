@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabase';
 import { MessageSquare, Loader2, Menu, Sparkles, Plus, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { generateUUID } from '@/lib/utils';
+import { createOrGetConversationAction } from '@/app/actions';
 import { UserAvatar } from '@/components/ui/user-avatar';
 
 export default function MessagesPage() {
@@ -34,7 +35,7 @@ function MessagesContent() {
   const searchParams = useSearchParams();
   const targetUserId = searchParams.get('userId');
 
-  const { user, profile } = useAuth();
+  const { user, profile, loading: authLoading } = useAuth();
   const [conversations, setConversations] = useState<any[]>([]);
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,93 +49,14 @@ function MessagesContent() {
     if (!user || !targetId) return;
 
     try {
-      // 1. Fetch target user profile by UUID or username
-      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(targetId);
-      let profQuery = supabase.from('profiles').select('*');
-      if (isUUID) {
-        profQuery = profQuery.eq('id', targetId);
-      } else {
-        profQuery = profQuery.eq('username', targetId);
-      }
-
-      let { data: otherProfile, error: profErr } = await profQuery.maybeSingle();
-
-      if (!otherProfile && isUUID) {
-        const { data: byUser } = await supabase.from('profiles').select('*').eq('username', targetId).maybeSingle();
-        if (byUser) otherProfile = byUser;
-      }
-
-      if (profErr || !otherProfile) {
-        toast.error('Kullanıcı profili bulunamadı.');
+      const res = await createOrGetConversationAction(targetId);
+      if (!res.success) {
+        toast.error(res.error || 'Sohbet başlatılamadı.');
         return;
       }
 
-      const resolvedTargetId = otherProfile.id;
-
-      if (resolvedTargetId === user.id) {
-        toast.info('Kendinize mesaj gönderemezsiniz.');
-        return;
-      }
-
-      // 2. Try to find existing conversation in current list or DB
-      const existingInList = currentConvs.find(c => c.other_user?.id === resolvedTargetId);
-      if (existingInList) {
-        setSelectedConvId(existingInList.id);
-        setShowListOnMobile(false);
-        return;
-      }
-
-      const { data: myConvs } = await supabase
-        .from('conversation_members')
-        .select('conversation_id')
-        .eq('user_id', user.id);
-
-      if (myConvs && myConvs.length > 0) {
-        const cIds = myConvs.map(m => m.conversation_id);
-        const { data: commonMember } = await supabase
-          .from('conversation_members')
-          .select('conversation_id')
-          .eq('user_id', resolvedTargetId)
-          .in('conversation_id', cIds)
-          .maybeSingle();
-
-        if (commonMember) {
-          const matchedConv = currentConvs.find(c => c.id === commonMember.conversation_id);
-          if (!matchedConv) {
-            const newConvItem = {
-              id: commonMember.conversation_id,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-              other_user: otherProfile,
-              last_message: null,
-              unread_count: 0
-            };
-            setConversations(prev => [newConvItem, ...prev]);
-          }
-          setSelectedConvId(commonMember.conversation_id);
-          setShowListOnMobile(false);
-          return;
-        }
-      }
-
-      // 3. Create new conversation in Supabase
-      const newConvId = generateUUID();
-      const { data: newConv, error: createErr } = await supabase
-        .from('conversations')
-        .insert({
-          id: newConvId,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })
-        .select()
-        .maybeSingle();
-
-      const conversationId = newConv?.id || newConvId;
-
-      await supabase.from('conversation_members').insert([
-        { id: generateUUID(), conversation_id: conversationId, user_id: user.id, joined_at: new Date().toISOString() },
-        { id: generateUUID(), conversation_id: conversationId, user_id: resolvedTargetId, joined_at: new Date().toISOString() }
-      ]);
+      const conversationId = res.conversationId!;
+      const otherProfile = res.otherUser;
 
       const newConvItem = {
         id: conversationId,
@@ -151,7 +73,9 @@ function MessagesContent() {
       });
       setSelectedConvId(conversationId);
       setShowListOnMobile(false);
-      toast.success(`${otherProfile.full_name || otherProfile.username} ile sohbet açıldı.`);
+      if (res.isNew) {
+        toast.success(`${otherProfile?.full_name || otherProfile?.username} ile sohbet açıldı.`);
+      }
     } catch (err) {
       console.error('Error initiating direct conversation:', err);
       toast.error('Sohbet başlatılırken bir hata oluştu.');
@@ -252,13 +176,51 @@ function MessagesContent() {
 
   const selectedConversation = conversations.find(c => c.id === selectedConvId);
 
-  if (!user || !profile) {
+  const activeProfile = profile || (user ? {
+    id: user.id,
+    username: user.user_metadata?.username || user.email?.split('@')[0] || 'kullanici',
+    full_name: user.user_metadata?.full_name || null,
+    avatar_url: user.user_metadata?.avatar_url || null,
+    role: 'user' as const,
+    level: 1,
+    xp: 0,
+    bio: null,
+    is_verified: false,
+    accessibility_prefs: null,
+    updated_at: new Date().toISOString()
+  } : null);
+
+  if (authLoading) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Navbar />
         <div className="flex-1 flex flex-col items-center justify-center p-4">
           <Loader2 className="animate-spin text-sky-400 mb-2 size-7" />
-          <p className="text-xs text-slate-400">Mesajlar yükleniyor...</p>
+          <p className="text-xs text-slate-400">Oturum kontrol ediliyor...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!user || !activeProfile) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto">
+          <div className="size-16 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-4">
+            <MessageSquare size={32} />
+          </div>
+          <h1 className="text-lg font-bold text-slate-100 mb-2">Özel Mesajlar</h1>
+          <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+            Üyelerle doğrudan mesajlaşabilmek ve gelen mesajlarınızı görebilmek için lütfen giriş yapın.
+          </p>
+          <a
+            href="/login?redirect=/messages"
+            className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-colors shadow-lg"
+          >
+            Giriş Yap
+          </a>
         </div>
         <Footer />
       </div>
@@ -382,7 +344,7 @@ function MessagesContent() {
             {selectedConversation ? (
               <ChatBox 
                 conversationId={selectedConversation.id} 
-                currentUserProfile={profile} 
+                currentUserProfile={activeProfile} 
                 otherUser={selectedConversation.other_user} 
                 onBack={() => setShowListOnMobile(true)}
               />

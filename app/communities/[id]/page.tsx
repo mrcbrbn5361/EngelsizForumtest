@@ -286,24 +286,32 @@ export default function CommunityDetailPage() {
       setIsJoined(false);
       toast.success(`"${community.name}" topluluğundan ayrıldınız.`);
       if (user) {
-        await supabase
-          .from('community_members')
-          .delete()
-          .eq('community_id', community.id)
-          .eq('user_id', user.id);
+        try {
+          await supabase
+            .from('community_members')
+            .delete()
+            .eq('community_id', community.id)
+            .eq('user_id', user.id);
+        } catch (err) {
+          console.warn('Could not delete community member remotely:', err);
+        }
       }
     } else {
       list.push(community.id);
       setIsJoined(true);
       toast.success(`"${community.name}" topluluğuna katıldınız!`);
       if (user) {
-        await supabase
-          .from('community_members')
-          .insert({
-            id: generateUUID(),
-            community_id: community.id,
-            user_id: user.id
-          });
+        try {
+          await supabase
+            .from('community_members')
+            .insert({
+              id: generateUUID(),
+              community_id: community.id,
+              user_id: user.id
+            });
+        } catch (err) {
+          console.warn('Could not insert community member remotely:', err);
+        }
       }
     }
     localStorage.setItem('joined_communities', JSON.stringify(list));

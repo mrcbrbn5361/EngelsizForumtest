@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { toast } from 'sonner';
 import { generateUUID } from '@/lib/utils';
+import { toggleFollowAction } from '@/app/actions';
 
 interface Badge {
   id: string;
@@ -228,59 +229,34 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
     setFollowLoading(true);
     try {
-      if (isFollowing) {
-        const { error } = await supabase
-          .from('follows')
-          .delete()
-          .eq('follower_id', currentUser.id)
-          .eq('following_id', targetUserId);
-        
-        if (error) throw error;
-        setIsFollowing(false);
-        setMyFollowedUserIds(prev => {
-          const next = new Set(prev);
-          next.delete(targetUserId);
-          return next;
-        });
-        setProfile(prev => prev ? { ...prev, followers_count: Math.max(0, prev.followers_count - 1) } : null);
-        toast.success('Takip bırakıldı.');
-      } else {
-        const { error } = await supabase
-          .from('follows')
-          .insert({
-            id: generateUUID(),
-            follower_id: currentUser.id,
-            following_id: targetUserId,
-            created_at: new Date().toISOString()
-          });
-        
-        if (error && error.code !== '23505') throw error;
-        setIsFollowing(true);
-        setMyFollowedUserIds(prev => {
-          const next = new Set(prev);
-          next.add(targetUserId);
-          return next;
-        });
-        setProfile(prev => prev ? { ...prev, followers_count: prev.followers_count + 1 } : null);
-        toast.success('Kullanıcı takip ediliyor.');
-
-        try {
-          const senderName = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'Bir üye';
-          await supabase.from('notifications').insert({
-            id: generateUUID(),
-            recipient_id: targetUserId,
-            sender_id: currentUser.id,
-            type: 'follow',
-            title: 'Yeni Takipçi',
-            body: `${senderName} sizi takip etmeye başladı.`,
-            content: `${senderName} sizi takip etmeye başladı.`,
-            data: { link: `/profile/${currentUser.id}` },
-            created_at: new Date().toISOString()
-          });
-        } catch (notifErr) {
-          console.warn('Could not send follow notification:', notifErr);
-        }
+      const res = await toggleFollowAction(targetUserId);
+      if (!res.success) {
+        toast.error(res.error || 'İşlem gerçekleştirilemedi.');
+        return;
       }
+
+      const newIsFollowing = Boolean(res.following);
+      setIsFollowing(newIsFollowing);
+      setMyFollowedUserIds(prev => {
+        const next = new Set(prev);
+        if (newIsFollowing) {
+          next.add(targetUserId);
+        } else {
+          next.delete(targetUserId);
+        }
+        return next;
+      });
+
+      setProfile(prev => {
+        if (!prev) return null;
+        const currentCount = prev.followers_count ?? 0;
+        return {
+          ...prev,
+          followers_count: newIsFollowing ? currentCount + 1 : Math.max(0, currentCount - 1)
+        };
+      });
+
+      toast.success(newIsFollowing ? 'Kullanıcı takip ediliyor.' : 'Takip bırakıldı.');
     } catch (err) {
       console.error('Error toggling follow:', err);
       toast.error('İşlem gerçekleştirilemedi.');
@@ -291,66 +267,38 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
   const handleMemberFollowToggle = async (memberId: string) => {
     if (!currentUser || !memberId || currentUser.id === memberId) return;
-    const isCurrentlyFollowing = myFollowedUserIds.has(memberId);
 
     try {
-      if (isCurrentlyFollowing) {
-        const { error } = await supabase
-          .from('follows')
-          .delete()
-          .eq('follower_id', currentUser.id)
-          .eq('following_id', memberId);
-
-        if (error) throw error;
-        setMyFollowedUserIds(prev => {
-          const next = new Set(prev);
-          next.delete(memberId);
-          return next;
-        });
-        if (memberId === targetUserId) {
-          setIsFollowing(false);
-          setProfile(prev => prev ? { ...prev, followers_count: Math.max(0, prev.followers_count - 1) } : null);
-        }
-        toast.success('Takip bırakıldı.');
-      } else {
-        const { error } = await supabase
-          .from('follows')
-          .insert({
-            id: generateUUID(),
-            follower_id: currentUser.id,
-            following_id: memberId,
-            created_at: new Date().toISOString()
-          });
-
-        if (error && error.code !== '23505') throw error;
-        setMyFollowedUserIds(prev => {
-          const next = new Set(prev);
-          next.add(memberId);
-          return next;
-        });
-        if (memberId === targetUserId) {
-          setIsFollowing(true);
-          setProfile(prev => prev ? { ...prev, followers_count: prev.followers_count + 1 } : null);
-        }
-        toast.success('Kullanıcı takip ediliyor.');
-
-        try {
-          const senderName = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'Bir üye';
-          await supabase.from('notifications').insert({
-            id: generateUUID(),
-            recipient_id: memberId,
-            sender_id: currentUser.id,
-            type: 'follow',
-            title: 'Yeni Takipçi',
-            body: `${senderName} sizi takip etmeye başladı.`,
-            content: `${senderName} sizi takip etmeye başladı.`,
-            data: { link: `/profile/${currentUser.id}` },
-            created_at: new Date().toISOString()
-          });
-        } catch (notifErr) {
-          console.warn('Could not send follow notification:', notifErr);
-        }
+      const res = await toggleFollowAction(memberId);
+      if (!res.success) {
+        toast.error(res.error || 'İşlem gerçekleştirilemedi.');
+        return;
       }
+
+      const newIsFollowing = Boolean(res.following);
+      setMyFollowedUserIds(prev => {
+        const next = new Set(prev);
+        if (newIsFollowing) {
+          next.add(memberId);
+        } else {
+          next.delete(memberId);
+        }
+        return next;
+      });
+
+      if (memberId === targetUserId) {
+        setIsFollowing(newIsFollowing);
+        setProfile(prev => {
+          if (!prev) return null;
+          const currentCount = prev.followers_count ?? 0;
+          return {
+            ...prev,
+            followers_count: newIsFollowing ? currentCount + 1 : Math.max(0, currentCount - 1)
+          };
+        });
+      }
+
+      toast.success(newIsFollowing ? 'Kullanıcı takip ediliyor.' : 'Takip bırakıldı.');
     } catch (err) {
       console.error('Error toggling member follow:', err);
       toast.error('İşlem başarısız oldu.');

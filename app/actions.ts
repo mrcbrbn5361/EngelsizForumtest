@@ -3,7 +3,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
-import { supabaseServer } from '@/lib/supabase-server';
+import { supabaseServer, getSupabaseServer } from '@/lib/supabase-server';
 import { generateUUID, slugify, generateUniqueSlug } from '@/lib/utils';
 
 /**
@@ -375,7 +375,7 @@ export async function getVisitorStats() {
 }
 
 /**
- * Records or updates a visitor activity heartbeat using a device ID.
+ * Server Action: Records or updates a visitor activity heartbeat using a device ID.
  */
 export async function recordVisitor(deviceId: string) {
   if (!deviceId) return { success: false };
@@ -393,3 +393,386 @@ export async function recordVisitor(deviceId: string) {
   }
   return { success: true };
 }
+
+/**
+ * Server Action: Toggles following a user safely on the server side with privilege fallback.
+ */
+export async function toggleFollowAction(targetUserId: string) {
+  if (!targetUserId) {
+    return { success: false, error: 'Geçersiz kullanıcı hedefi.' };
+  }
+
+  const supabaseUserClient = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabaseUserClient.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Kullanıcıyı takip etmek için oturum açmalısınız.' };
+  }
+
+  if (user.id === targetUserId) {
+    return { success: false, error: 'Kendinizi takip edemezsiniz.' };
+  }
+
+  const serviceClient = getSupabaseServer();
+
+  let isFollowing = false;
+  let followRecordId: string | null = null;
+
+  try {
+    const { data: existing } = await serviceClient
+      .from('follows')
+      .select('id')
+      .eq('follower_id', user.id)
+      .eq('following_id', targetUserId)
+      .maybeSingle();
+
+    if (existing) {
+      isFollowing = true;
+      followRecordId = existing.id;
+    }
+  } catch (err) {
+    try {
+      const { data: existingAlt } = await serviceClient
+        .from('follows')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('target_id', targetUserId)
+        .maybeSingle();
+      if (existingAlt) {
+        isFollowing = true;
+        followRecordId = existingAlt.id;
+      }
+    } catch {}
+  }
+
+  if (isFollowing) {
+    // Unfollow
+    let deleteErr: any = null;
+    if (followRecordId) {
+      const { error } = await serviceClient.from('follows').delete().eq('id', followRecordId);
+      deleteErr = error;
+    } else {
+      const { error } = await serviceClient
+        .from('follows')
+        .delete()
+        .eq('follower_id', user.id)
+        .eq('following_id', targetUserId);
+      deleteErr = error;
+    }
+
+    if (deleteErr) {
+      console.error('Error deleting follow:', deleteErr);
+      return { success: false, error: deleteErr.message || 'Takip bırakılamadı.' };
+    }
+
+    revalidatePath(`/profile/${targetUserId}`);
+    revalidatePath(`/profile/${user.id}`);
+    return { success: true, following: false };
+  } else {
+    // Follow
+    const followId = generateUUID();
+    const payload: any = {
+      id: followId,
+      follower_id: user.id,
+      following_id: targetUserId,
+      created_at: new Date().toISOString()
+    };
+
+    let insertErr = null;
+    const { error } = await serviceClient.from('follows').insert(payload);
+    insertErr = error;
+
+    if (insertErr && (insertErr.code === '42703' || insertErr.message?.includes('column'))) {
+      const altPayload = {
+        id: followId,
+        user_id: user.id,
+        target_id: targetUserId,
+        created_at: new Date().toISOString()
+      };
+      const { error: altErr } = await serviceClient.from('follows').insert(altPayload);
+      insertErr = altErr;
+    }
+
+    if (insertErr && insertErr.code !== '23505') {
+      console.error('Error inserting follow:', insertErr);
+      return { success: false, error: insertErr.message || 'Takip edilemedi.' };
+    }
+
+    // Send notification
+    try {
+      const { data: senderProfile } = await serviceClient
+        .from('profiles')
+        .select('full_name, username')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      const senderName = senderProfile?.full_name || senderProfile?.username || user.email?.split('@')[0] || 'Bir üye';
+
+      await serviceClient.from('notifications').insert({
+        id: generateUUID(),
+        recipient_id: targetUserId,
+        sender_id: user.id,
+        type: 'follow',
+        title: 'Yeni Takipçi',
+        body: `${senderName} sizi takip etmeye başladı.`,
+        content: `${senderName} sizi takip etmeye başladı.`,
+        data: { link: `/profile/${user.id}` },
+        created_at: new Date().toISOString()
+      });
+    } catch (notifErr) {
+      console.warn('Could not create follow notification:', notifErr);
+    }
+
+    revalidatePath(`/profile/${targetUserId}`);
+    revalidatePath(`/profile/${user.id}`);
+    return { success: true, following: true };
+  }
+}
+
+/**
+ * Server Action: Sends a direct message with privilege fallback and recipient notification.
+ */
+export async function sendMessageAction(params: {
+  conversationId: string;
+  content: string;
+  messageType?: 'text' | 'audio' | 'voice' | 'image' | 'file';
+  audioUrl?: string | null;
+  duration?: number;
+  messageId?: string;
+}) {
+  const { conversationId, content, messageType = 'text', audioUrl, duration, messageId } = params;
+  if (!conversationId || (!content && !audioUrl)) {
+    return { success: false, error: 'Mesaj içeriği boş olamaz.' };
+  }
+
+  const supabaseUserClient = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabaseUserClient.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Mesaj göndermek için oturum açmalısınız.' };
+  }
+
+  const serviceClient = getSupabaseServer();
+  const id = messageId || generateUUID();
+  const now = new Date().toISOString();
+
+  // 1. Ensure conversation exists and sender is a member in DB
+  try {
+    const { data: conv } = await serviceClient
+      .from('conversations')
+      .select('id')
+      .eq('id', conversationId)
+      .maybeSingle();
+
+    if (!conv) {
+      await serviceClient.from('conversations').upsert({
+        id: conversationId,
+        created_at: now,
+        updated_at: now,
+      });
+    }
+
+    const { data: member } = await serviceClient
+      .from('conversation_members')
+      .select('id')
+      .eq('conversation_id', conversationId)
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (!member) {
+      await serviceClient.from('conversation_members').insert({
+        id: generateUUID(),
+        conversation_id: conversationId,
+        user_id: user.id,
+        joined_at: now,
+      });
+    }
+  } catch (convErr) {
+    console.warn('Conversation member sync notice:', convErr);
+  }
+
+  // 2. Insert message with resilience for optional schema columns
+  const fullPayload: any = {
+    id,
+    conversation_id: conversationId,
+    sender_id: user.id,
+    content: content || (messageType === 'audio' ? '🎤 Sesli Mesaj' : ''),
+    message_type: messageType,
+    created_at: now,
+    updated_at: now,
+  };
+
+  if (audioUrl) {
+    fullPayload.audio_url = audioUrl;
+    fullPayload.is_voice_message = true;
+  }
+  if (duration) {
+    fullPayload.duration = duration;
+  }
+
+  let { data: inserted, error: insertError } = await serviceClient
+    .from('messages')
+    .insert(fullPayload)
+    .select('*')
+    .maybeSingle();
+
+  // If column error occurs (e.g. is_voice_message or audio_url doesn't exist in older table versions)
+  if (insertError && (insertError.code === '42703' || insertError.message?.includes('column'))) {
+    const minimalPayload: any = {
+      id,
+      conversation_id: conversationId,
+      sender_id: user.id,
+      content: content || (messageType === 'audio' ? '🎤 Sesli Mesaj' : ''),
+      created_at: now,
+    };
+    const { data: retryInserted, error: retryError } = await serviceClient
+      .from('messages')
+      .insert(minimalPayload)
+      .select('*')
+      .maybeSingle();
+
+    if (!retryError) {
+      inserted = retryInserted || minimalPayload;
+      insertError = null;
+    }
+  }
+
+  if (insertError) {
+    console.error('Error inserting message via server action:', insertError);
+    return { success: false, error: insertError.message || 'Mesaj iletilemedi.' };
+  }
+
+  // 3. Update conversation updated_at
+  try {
+    await serviceClient
+      .from('conversations')
+      .update({ updated_at: now })
+      .eq('id', conversationId);
+  } catch {}
+
+  // 4. Send notification to conversation participants
+  try {
+    const { data: otherMembers } = await serviceClient
+      .from('conversation_members')
+      .select('user_id')
+      .eq('conversation_id', conversationId)
+      .neq('user_id', user.id);
+
+    if (otherMembers && otherMembers.length > 0) {
+      const { data: senderProfile } = await serviceClient
+        .from('profiles')
+        .select('full_name, username')
+        .eq('id', user.id)
+        .maybeSingle();
+      const senderName = senderProfile?.full_name || senderProfile?.username || 'Bir üye';
+
+      for (const other of otherMembers) {
+        if (!other?.user_id) continue;
+        await serviceClient.from('notifications').insert({
+          id: generateUUID(),
+          recipient_id: other.user_id,
+          sender_id: user.id,
+          type: 'message',
+          title: 'Yeni Doğrudan Mesaj',
+          body: `${senderName}: ${content.slice(0, 70)}`,
+          content: `${senderName}: ${content.slice(0, 70)}`,
+          data: { conversation_id: conversationId, link: `/messages?userId=${user.id}` },
+          created_at: now,
+        });
+      }
+    }
+  } catch (notifErr) {
+    console.warn('Could not generate message notification:', notifErr);
+  }
+
+  return { success: true, message: inserted || fullPayload };
+}
+
+/**
+ * Server Action: Finds or creates a direct conversation between current user and target user.
+ */
+export async function createOrGetConversationAction(targetUserId: string) {
+  if (!targetUserId) {
+    return { success: false, error: 'Hedef kullanıcı belirtilmedi.' };
+  }
+
+  const supabaseUserClient = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabaseUserClient.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Sohbet başlatmak için oturum açmalısınız.' };
+  }
+
+  const serviceClient = getSupabaseServer();
+
+  // Resolve target user
+  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(targetUserId);
+  let profQuery = serviceClient.from('profiles').select('*');
+  if (isUUID) {
+    profQuery = profQuery.eq('id', targetUserId);
+  } else {
+    profQuery = profQuery.eq('username', targetUserId);
+  }
+
+  let { data: otherProfile } = await profQuery.maybeSingle();
+  if (!otherProfile && isUUID) {
+    const { data: byUser } = await serviceClient.from('profiles').select('*').eq('username', targetUserId).maybeSingle();
+    if (byUser) otherProfile = byUser;
+  }
+
+  if (!otherProfile) {
+    return { success: false, error: 'Kullanıcı profili bulunamadı.' };
+  }
+
+  const resolvedTargetId = otherProfile.id;
+  if (resolvedTargetId === user.id) {
+    return { success: false, error: 'Kendinizle sohbet başlatamazsınız.' };
+  }
+
+  // Find existing conversation with both users
+  try {
+    const { data: myConvs } = await serviceClient
+      .from('conversation_members')
+      .select('conversation_id')
+      .eq('user_id', user.id);
+
+    if (myConvs && myConvs.length > 0) {
+      const convIds = myConvs.map(m => m.conversation_id);
+      const { data: commonMembers } = await serviceClient
+        .from('conversation_members')
+        .select('conversation_id')
+        .eq('user_id', resolvedTargetId)
+        .in('conversation_id', convIds);
+
+      if (commonMembers && commonMembers.length > 0) {
+        const existingConvId = commonMembers[0].conversation_id;
+        return { success: true, conversationId: existingConvId, otherUser: otherProfile, isNew: false };
+      }
+    }
+  } catch (err) {
+    console.warn('Error checking existing conversations:', err);
+  }
+
+  // Create new conversation
+  const newConvId = generateUUID();
+  const now = new Date().toISOString();
+
+  const { error: convErr } = await serviceClient.from('conversations').insert({
+    id: newConvId,
+    created_at: now,
+    updated_at: now,
+  });
+
+  if (convErr) {
+    console.error('Error creating conversation:', convErr);
+    return { success: false, error: 'Sohbet oluşturulamadı.' };
+  }
+
+  await serviceClient.from('conversation_members').insert([
+    { id: generateUUID(), conversation_id: newConvId, user_id: user.id, joined_at: now },
+    { id: generateUUID(), conversation_id: newConvId, user_id: resolvedTargetId, joined_at: now },
+  ]);
+
+  return { success: true, conversationId: newConvId, otherUser: otherProfile, isNew: true };
+}
+

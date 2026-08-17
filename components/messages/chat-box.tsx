@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { generateUUID } from '@/lib/utils';
+import { sendMessageAction } from '@/app/actions';
 import { AudioMessagePlayer } from './audio-message-player';
 
 interface ChatBoxProps {
@@ -200,20 +201,18 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         });
       }
 
-      const { error: insertErr } = await supabase
-        .from('messages')
-        .insert({
-          id: messageId,
-          conversation_id: conversationId,
-          sender_id: currentUserProfile.id,
-          content: '🎤 Sesli Mesaj',
-          message_type: 'audio',
-          audio_url: finalAudioUrl,
-          duration: recordingTime || 1,
-          is_voice_message: true,
-        });
+      const res = await sendMessageAction({
+        conversationId,
+        content: '🎤 Sesli Mesaj',
+        messageType: 'audio',
+        audioUrl: finalAudioUrl,
+        duration: recordingTime || 1,
+        messageId,
+      });
 
-      if (insertErr) throw insertErr;
+      if (!res.success) {
+        throw new Error(res.error || 'Sesli mesaj kaydedilemedi.');
+      }
 
       setRecordedAudioBlob(null);
       setRecordedAudioUrl(null);
@@ -232,7 +231,8 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
     const textToSend = newMessage.trim();
     if (!textToSend || sending) return;
 
-    const tempId = `temp-${generateUUID()}`;
+    const messageId = generateUUID();
+    const tempId = `temp-${messageId}`;
     const optimisticMessage: Message = {
       id: tempId,
       conversation_id: conversationId,
@@ -250,27 +250,19 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
     setTimeout(() => scrollToBottom(true), 30);
 
     try {
-      const { error: insertErr } = await supabase
-        .from('messages')
-        .insert({
-          id: generateUUID(),
-          conversation_id: conversationId,
-          sender_id: currentUserProfile.id,
-          content: textToSend,
-          message_type: 'text',
-        });
+      const res = await sendMessageAction({
+        conversationId,
+        content: textToSend,
+        messageType: 'text',
+        messageId,
+      });
 
-      if (insertErr) throw insertErr;
-
-      // Update conversation updated_at
-      supabase
-        .from('conversations')
-        .update({ updated_at: new Date().toISOString() })
-        .eq('id', conversationId)
-        .then(() => {});
+      if (!res.success) {
+        throw new Error(res.error || 'Mesaj gönderilemedi.');
+      }
     } catch (err: any) {
       console.error('Error sending message:', err);
-      toast.error('Mesaj gönderilemedi.');
+      toast.error(err.message || 'Mesaj gönderilemedi.');
       // Rollback optimistic message
       setMessages(prev => prev.filter(m => m.id !== tempId));
       setNewMessage(textToSend);
