@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { generateUUID } from '@/lib/utils';
-import { sendMessageAction } from '@/app/actions';
+import { sendMessageAction, getConversationMessagesAction } from '@/app/actions';
 import { AudioMessagePlayer } from './audio-message-player';
 
 interface ChatBoxProps {
@@ -21,9 +21,20 @@ interface ChatBoxProps {
 }
 
 export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack }: ChatBoxProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window !== 'undefined' && conversationId) {
+      try {
+        const cached = localStorage.getItem(`engelsiz_chat_${conversationId}`);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch {}
+    }
+    return [];
+  });
   const [newMessage, setNewMessage] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -37,33 +48,81 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Helper to persist messages locally
+  const saveToLocalCache = useCallback((newMsgs: Message[]) => {
+    if (typeof window !== 'undefined' && conversationId && Array.isArray(newMsgs)) {
+      try {
+        localStorage.setItem(`engelsiz_chat_${conversationId}`, JSON.stringify(newMsgs));
+      } catch (e) {
+        console.warn('Cache write failed:', e);
+      }
+    }
+  }, [conversationId]);
+
   const scrollToBottom = useCallback((smooth = true) => {
     messagesEndRef.current?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' });
   }, []);
 
   const fetchMessages = useCallback(async () => {
     if (!conversationId) return;
-    setLoading(true);
     setError(null);
-    try {
-      const { data, error: fetchErr } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('conversation_id', conversationId)
-        .order('created_at', { ascending: true });
 
-      if (fetchErr) throw fetchErr;
-      setMessages(data || []);
+    // If we don't have cached messages, show loading spinner
+    if (messages.length === 0) {
+      setLoading(true);
+    }
+
+    try {
+      // 1. Try server action with service role fallback
+      const res = await getConversationMessagesAction(conversationId);
+      if (res.success && Array.isArray(res.messages)) {
+        setMessages(prev => {
+          // Merge server messages with any temporary optimistic messages
+          const serverMap = new Map<string, Message>();
+          res.messages!.forEach((m: any) => serverMap.set(m.id, m));
+
+          const pending = prev.filter(m => m.id.startsWith('temp-') && !serverMap.has(m.id.replace('temp-', '')));
+          const combined = [...res.messages!, ...pending].sort(
+            (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          );
+          saveToLocalCache(combined);
+          return combined;
+        });
+      } else {
+        // Fallback to client query
+        const { data, error: fetchErr } = await supabase
+          .from('messages')
+          .select('*')
+          .eq('conversation_id', conversationId)
+          .order('created_at', { ascending: true });
+
+        if (!fetchErr && data) {
+          setMessages(data);
+          saveToLocalCache(data);
+        }
+      }
     } catch (err: any) {
       console.error('Error fetching messages:', err);
-      setError('Mesajlar yüklenirken bir sorun oluştu.');
+      // Keep cached messages if any
     } finally {
       setLoading(false);
       setTimeout(() => scrollToBottom(false), 100);
     }
-  }, [conversationId, scrollToBottom]);
+  }, [conversationId, messages.length, saveToLocalCache, scrollToBottom]);
 
+  // When conversationId changes, load cache immediately
   useEffect(() => {
+    if (typeof window !== 'undefined' && conversationId) {
+      try {
+        const cached = localStorage.getItem(`engelsiz_chat_${conversationId}`);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed)) {
+            setMessages(parsed);
+          }
+        }
+      } catch {}
+    }
     fetchMessages();
 
     const channel = supabase
@@ -79,12 +138,12 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         (payload) => {
           const newMsg = payload.new as Message;
           setMessages((prev) => {
-            // Replace optimistic message or append
             const exists = prev.some(m => m.id === newMsg.id);
             if (exists) return prev;
-            // Also check if matches temporary optimistic message with same sender and content
             const withoutTemp = prev.filter(m => !(m.id.startsWith('temp-') && m.sender_id === newMsg.sender_id && m.content === newMsg.content));
-            return [...withoutTemp, newMsg];
+            const updated = [...withoutTemp, newMsg];
+            saveToLocalCache(updated);
+            return updated;
           });
           setTimeout(() => scrollToBottom(true), 50);
         }
@@ -95,7 +154,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       supabase.removeChannel(channel);
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [conversationId, fetchMessages, scrollToBottom]);
+  }, [conversationId, fetchMessages, saveToLocalCache, scrollToBottom]);
 
   // Start Voice Recording
   const startRecording = async () => {
@@ -214,6 +273,15 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         throw new Error(res.error || 'Sesli mesaj kaydedilemedi.');
       }
 
+      if (res.message) {
+        setMessages(prev => {
+          const exists = prev.some(m => m.id === res.message.id);
+          const updated = exists ? prev : [...prev, res.message];
+          saveToLocalCache(updated);
+          return updated;
+        });
+      }
+
       setRecordedAudioBlob(null);
       setRecordedAudioUrl(null);
       setRecordingTime(0);
@@ -243,8 +311,12 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       updated_at: new Date().toISOString(),
     };
 
-    // Optimistic UI update
-    setMessages(prev => [...prev, optimisticMessage]);
+    // Optimistic UI update & immediate cache persist
+    setMessages(prev => {
+      const updated = [...prev, optimisticMessage];
+      saveToLocalCache(updated);
+      return updated;
+    });
     setNewMessage('');
     setSending(true);
     setTimeout(() => scrollToBottom(true), 30);
@@ -260,11 +332,24 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       if (!res.success) {
         throw new Error(res.error || 'Mesaj gönderilemedi.');
       }
+
+      // Replace temp message with server confirmed message
+      if (res.message) {
+        setMessages(prev => {
+          const replaced = prev.map(m => (m.id === tempId ? res.message : m));
+          saveToLocalCache(replaced);
+          return replaced;
+        });
+      }
     } catch (err: any) {
       console.error('Error sending message:', err);
       toast.error(err.message || 'Mesaj gönderilemedi.');
       // Rollback optimistic message
-      setMessages(prev => prev.filter(m => m.id !== tempId));
+      setMessages(prev => {
+        const rolledBack = prev.filter(m => m.id !== tempId);
+        saveToLocalCache(rolledBack);
+        return rolledBack;
+      });
       setNewMessage(textToSend);
     } finally {
       setSending(false);

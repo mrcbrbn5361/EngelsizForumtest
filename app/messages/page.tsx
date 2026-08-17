@@ -11,7 +11,7 @@ import { supabase } from '@/lib/supabase';
 import { MessageSquare, Loader2, Menu, Sparkles, Plus, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { generateUUID } from '@/lib/utils';
-import { createOrGetConversationAction } from '@/app/actions';
+import { createOrGetConversationAction, getUserConversationsAction } from '@/app/actions';
 import { UserAvatar } from '@/components/ui/user-avatar';
 
 export default function MessagesPage() {
@@ -36,14 +36,35 @@ function MessagesContent() {
   const targetUserId = searchParams.get('userId');
 
   const { user, profile, loading: authLoading } = useAuth();
-  const [conversations, setConversations] = useState<any[]>([]);
+  const [conversations, setConversations] = useState<any[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem('engelsiz_conversations');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch {}
+    }
+    return [];
+  });
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [showListOnMobile, setShowListOnMobile] = useState(true);
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
   const [searchMemberQuery, setSearchMemberQuery] = useState('');
   const [searchedProfiles, setSearchedProfiles] = useState<any[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
+
+  const saveConversationsToCache = (convList: any[]) => {
+    if (typeof window !== 'undefined' && Array.isArray(convList)) {
+      try {
+        localStorage.setItem('engelsiz_conversations', JSON.stringify(convList));
+      } catch (e) {
+        console.warn('Conversations cache error:', e);
+      }
+    }
+  };
 
   const initiateDirectConversation = async (targetId: string, currentConvs: any[]) => {
     if (!user || !targetId) return;
@@ -69,7 +90,9 @@ function MessagesContent() {
 
       setConversations(prev => {
         const exists = prev.some(c => c.id === conversationId);
-        return exists ? prev : [newConvItem, ...prev];
+        const updated = exists ? prev : [newConvItem, ...prev];
+        saveConversationsToCache(updated);
+        return updated;
       });
       setSelectedConvId(conversationId);
       setShowListOnMobile(false);
@@ -87,50 +110,62 @@ function MessagesContent() {
 
     const fetchConversations = async () => {
       try {
-        setLoading(true);
-        const { data: membersData, error: membersError } = await supabase
-          .from('conversation_members')
-          .select('conversation_id')
-          .eq('user_id', user.id);
-
-        if (membersError) throw membersError;
-
-        const convIds = membersData?.map(m => m.conversation_id) || [];
-        
-        let processed: any[] = [];
-        if (convIds.length > 0) {
-          const { data: convData } = await supabase
-            .from('conversations')
-            .select(`
-              *,
-              members:conversation_members(
-                user:profiles(*)
-              ),
-              last_message:messages(*)
-            `)
-            .in('id', convIds)
-            .order('updated_at', { ascending: false });
-
-          processed = convData?.map(conv => {
-            const otherMember = conv.members?.find((m: any) => m?.user?.id !== user.id);
-            const lastMsg = conv.last_message && conv.last_message.length > 0 
-              ? conv.last_message.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
-              : null;
-            
-            return {
-              ...conv,
-              other_user: otherMember?.user,
-              last_message: lastMsg,
-              unread_count: 0
-            };
-          }) || [];
+        if (conversations.length === 0) {
+          setLoading(true);
         }
 
-        setConversations(processed);
+        let processed: any[] = [];
+
+        // 1. Try server action first
+        const res = await getUserConversationsAction();
+        if (res.success && Array.isArray(res.conversations)) {
+          processed = res.conversations;
+        } else {
+          // 2. Fallback to client query
+          const { data: membersData } = await supabase
+            .from('conversation_members')
+            .select('conversation_id')
+            .eq('user_id', user.id);
+
+          const convIds = membersData?.map(m => m.conversation_id) || [];
+          
+          if (convIds.length > 0) {
+            const { data: convData } = await supabase
+              .from('conversations')
+              .select(`
+                *,
+                members:conversation_members(
+                  user:profiles(*)
+                ),
+                last_message:messages(*)
+              `)
+              .in('id', convIds)
+              .order('updated_at', { ascending: false });
+
+            processed = convData?.map(conv => {
+              const otherMember = conv.members?.find((m: any) => m?.user?.id !== user.id);
+              const lastMsg = conv.last_message && conv.last_message.length > 0 
+                ? conv.last_message.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
+                : null;
+              
+              return {
+                ...conv,
+                other_user: otherMember?.user,
+                last_message: lastMsg,
+                unread_count: 0
+              };
+            }) || [];
+          }
+        }
+
+        if (processed.length > 0 || conversations.length === 0) {
+          setConversations(processed);
+          saveConversationsToCache(processed);
+        }
 
         // If targetUserId is present in URL params, open or create conversation
         if (targetUserId) {
-          const existing = processed.find(c => 
+          const existing = (processed.length > 0 ? processed : conversations).find(c => 
             c.other_user?.id === targetUserId || 
             c.other_user?.username?.toLowerCase() === targetUserId.toLowerCase()
           );

@@ -776,3 +776,106 @@ export async function createOrGetConversationAction(targetUserId: string) {
   return { success: true, conversationId: newConvId, otherUser: otherProfile, isNew: true };
 }
 
+/**
+ * Server Action: Fetches all messages for a specific conversation safely without RLS drop.
+ */
+export async function getConversationMessagesAction(conversationId: string) {
+  if (!conversationId) {
+    return { success: false, error: 'Geçersiz sohbet ID.' };
+  }
+
+  const serviceClient = getSupabaseServer();
+
+  try {
+    const { data: messages, error: fetchErr } = await serviceClient
+      .from('messages')
+      .select('*')
+      .eq('conversation_id', conversationId)
+      .order('created_at', { ascending: true });
+
+    if (fetchErr) {
+      console.error('Error in getConversationMessagesAction:', fetchErr);
+      return { success: false, error: fetchErr.message };
+    }
+
+    return { success: true, messages: messages || [] };
+  } catch (err: any) {
+    console.error('Fatal error fetching conversation messages:', err);
+    return { success: false, error: err?.message || 'Mesajlar alınamadı.' };
+  }
+}
+
+/**
+ * Server Action: Fetches conversations and other members for current user.
+ */
+export async function getUserConversationsAction() {
+  const supabaseUserClient = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabaseUserClient.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Oturum açılmamış.' };
+  }
+
+  const serviceClient = getSupabaseServer();
+
+  try {
+    // 1. Get conversation memberships for user
+    const { data: memberships, error: memErr } = await serviceClient
+      .from('conversation_members')
+      .select('conversation_id')
+      .eq('user_id', user.id);
+
+    if (memErr) {
+      console.error('Error fetching conversation memberships:', memErr);
+      return { success: false, error: memErr.message };
+    }
+
+    const convIds = (memberships || []).map(m => m.conversation_id);
+    if (convIds.length === 0) {
+      return { success: true, conversations: [] };
+    }
+
+    // 2. Fetch conversations
+    const { data: convData, error: convErr } = await serviceClient
+      .from('conversations')
+      .select(`
+        *,
+        members:conversation_members(
+          user_id,
+          user:profiles(*)
+        ),
+        messages:messages(*)
+      `)
+      .in('id', convIds)
+      .order('updated_at', { ascending: false });
+
+    if (convErr) {
+      console.error('Error fetching conversations details:', convErr);
+      return { success: false, error: convErr.message };
+    }
+
+    const processed = (convData || []).map(conv => {
+      const otherMember = conv.members?.find((m: any) => m?.user_id !== user.id || m?.user?.id !== user.id);
+      const messagesList = conv.messages || [];
+      const lastMsg = messagesList.length > 0
+        ? [...messagesList].sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
+        : null;
+
+      return {
+        id: conv.id,
+        created_at: conv.created_at,
+        updated_at: conv.updated_at,
+        other_user: otherMember?.user || null,
+        last_message: lastMsg,
+        unread_count: 0
+      };
+    });
+
+    return { success: true, conversations: processed };
+  } catch (err: any) {
+    console.error('Fatal error in getUserConversationsAction:', err);
+    return { success: false, error: err?.message || 'Sohbetler alınamadı.' };
+  }
+}
+
+
