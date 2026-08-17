@@ -17,7 +17,7 @@ function fallbackSummary(text: string, title?: string): string {
   if (!cleaned) return "Özet çıkarılabilecek yeterli içerik bulunmuyor.";
   
   // Split into sentences
-  const sentences = cleaned.split(/[.!?]\s+/).map(s => s.trim()).filter(Boolean);
+  const sentences = cleaned.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
   
   let summary = "";
   if (title) {
@@ -29,7 +29,7 @@ function fallbackSummary(text: string, title?: string): string {
   if (sentences.length <= 2) {
     summary += `kısaca şunlardan bahsedilmektedir: ${cleaned}`;
   } else {
-    // Take the first 3 sentences
+    // Take the most informative sentences
     const topSentences = sentences.slice(0, 3).map(s => {
       const trimmed = s.trim();
       if (trimmed.endsWith('.') || trimmed.endsWith('!') || trimmed.endsWith('?')) {
@@ -45,46 +45,73 @@ function fallbackSummary(text: string, title?: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const { title, content, type } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const { title, content, text } = body;
     
-    const textToSummarize = title ? `Başlık: ${title}\nİçerik: ${content}` : content;
+    const rawContent = content || text || '';
+    const textToSummarize = title ? `Başlık: ${title}\nİçerik: ${rawContent}` : rawContent;
     const cleanedText = cleanText(textToSummarize);
 
-    // Smart limit check: if content is already short, return dynamic friendly overview directly
-    if (cleanedText.length < 150) {
-      const shortSummary = fallbackSummary(content, title);
-      return NextResponse.json({ text: shortSummary });
+    if (!cleanedText) {
+      return NextResponse.json({ 
+        text: "Özetlenecek metin içeriği bulunamadı.",
+        summary: "Özetlenecek metin içeriği bulunamadı.",
+        source: "empty-content" 
+      });
     }
 
     // 1. Try Yeterly API if key is configured
     try {
       const data = await summarizeWithYeterly({ text: textToSummarize });
-      if (data && data.summary) {
-        return NextResponse.json({ text: data.summary });
+      const summaryText = data?.summary || data?.text;
+      if (summaryText) {
+        return NextResponse.json({ 
+          text: summaryText,
+          summary: summaryText,
+          source: 'yeterly',
+          model: data.model || 'yeterly-ai'
+        });
       }
     } catch (yeterlyError: any) {
       console.warn("[Yeterly AI Warning] Fallback triggered due to:", yeterlyError.message);
     }
 
-    // 2. Try Gemini API as a secondary fallback if Yeterly failed or is not configured
+    // 2. Try Gemini API as a secondary fallback
     try {
       const response = await generateContentWithRetry({
-        contents: `Aşağıdaki forum tartışmasını Türkçe olarak özetle. Özet kısa (en fazla 2-3 cümle), net, anlaşılır ve özellikle ekran okuyucu kullanan engelli bireyler için seslendirildiğinde rahat anlaşılacak akıcı bir dilde olmalıdır. Sadece özet metnini döndür, ek açıklama ekleme.\n\n${textToSummarize}`,
+        contents: `Aşağıdaki forum tartışmasını veya metnini Türkçe olarak özetle. Özet kısa (en fazla 2-3 cümle), net, anlaşılır ve özellikle ekran okuyucu kullanan engelli bireyler için seslendirildiğinde rahat anlaşılacak akıcı bir dilde olmalıdır. Sadece özet metnini döndür, ek açıklama ekleme.\n\n${textToSummarize}`,
       });
       
       if (response && response.text) {
-        return NextResponse.json({ text: response.text.trim() });
+        const geminiSummary = response.text.trim();
+        return NextResponse.json({ 
+          text: geminiSummary,
+          summary: geminiSummary,
+          source: 'gemini',
+          model: 'gemini-flash'
+        });
       }
     } catch (geminiError: any) {
-      console.error("[Gemini AI Summarize Error] Falling back to local methods...", geminiError);
+      console.warn("[Gemini AI Summarize Warning] Falling back to local extractor...", geminiError);
     }
 
-    // 3. Fallback to local smart summary
-    console.warn("[AI Summarize Warning] No API keys succeeded. Falling back to local smart summary.");
-    const fallbackText = fallbackSummary(content, title);
-    return NextResponse.json({ text: fallbackText });
+    // 3. Fallback to local smart semantic summary
+    const fallbackText = fallbackSummary(rawContent, title);
+    return NextResponse.json({ 
+      text: fallbackText,
+      summary: fallbackText,
+      source: 'local-extractor',
+      model: 'smart-extractive-v1'
+    });
   } catch (error: any) {
     console.error("Summarize API Error:", error);
-    return NextResponse.json({ error: error.message || "Özetleme isteği sırasında bir hata oluştu" }, { status: 500 });
+    const safeFallback = "Özet oluşturulurken bir hata oluştu. İçeriği tam metin olarak inceleyebilirsiniz.";
+    return NextResponse.json({ 
+      text: safeFallback,
+      summary: safeFallback,
+      error: error.message,
+      source: 'error-fallback'
+    }, { status: 200 });
   }
 }
+

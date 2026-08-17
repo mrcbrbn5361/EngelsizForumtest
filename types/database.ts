@@ -39,6 +39,8 @@ export type Topic = {
   is_pinned: boolean;
   is_locked: boolean;
   is_solved?: boolean;
+  audio_url?: string | null;
+  voice_duration?: number;
   updated_at?: string;
   created_at: string;
   author?: Profile;
@@ -53,10 +55,13 @@ export type Comment = {
   parent_id: string | null;
   content: string;
   is_solution: boolean;
+  audio_url?: string | null;
+  voice_duration?: number;
   updated_at?: string;
   created_at: string;
   author?: Profile;
 };
+
 
 export type Badge = {
   id: string;
@@ -93,9 +98,32 @@ export type Message = {
   conversation_id: string;
   sender_id: string;
   content: string;
-  read_at: string | null;
+  message_type?: 'text' | 'audio' | 'voice' | 'image' | 'file';
+  audio_url?: string | null;
+  media_url?: string | null;
+  duration?: number;
+  is_voice_message?: boolean;
+  waveform?: number[];
+  metadata?: any;
+  read_at?: string | null;
   created_at: string;
 };
+
+export type VoiceMessage = {
+  id: string;
+  user_id: string;
+  conversation_id?: string | null;
+  topic_id?: string | null;
+  comment_id?: string | null;
+  audio_url: string;
+  duration: number;
+  file_size?: number;
+  mime_type?: string;
+  transcription?: string | null;
+  waveform?: number[];
+  created_at: string;
+};
+
 
 export type Upload = {
   id: string;

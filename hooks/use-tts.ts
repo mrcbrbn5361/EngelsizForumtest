@@ -15,6 +15,7 @@ export function useTTS() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [boundary, setBoundary] = useState<TTSBoundary | null>(null);
+  const [audioSource, setAudioSource] = useState<'yeterly' | 'browser' | null>(null);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   
   // Ref for the Yeterly high quality audio player
@@ -27,10 +28,18 @@ export function useTTS() {
 
     const loadVoices = () => {
       const allVoices = window.speechSynthesis.getVoices();
+      if (!allVoices || allVoices.length === 0) return;
+      
       setVoices(allVoices);
 
       // Prioritize Turkish voices
-      const trVoice = allVoices.find(v => v.lang.startsWith('tr')) || allVoices.find(v => v.lang.includes('TR'));
+      const trVoice = allVoices.find(v => 
+        v.lang.toLowerCase().startsWith('tr') || 
+        v.lang.toLowerCase().includes('tr') ||
+        v.name.toLowerCase().includes('turkish') ||
+        v.name.toLowerCase().includes('türkçe')
+      );
+
       if (trVoice) {
         setSelectedVoice(trVoice);
       } else if (allVoices.length > 0) {
@@ -44,7 +53,7 @@ export function useTTS() {
     }
 
     return () => {
-      if (window.speechSynthesis) {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
       if (audioPlayerRef.current) {
@@ -70,46 +79,61 @@ export function useTTS() {
     setIsPlaying(false);
     setIsPaused(false);
     setBoundary(null);
+    setAudioSource(null);
   }, []);
 
   // Web Speech API fallback player
   const playWebSpeechFallback = useCallback((cleanText: string) => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
 
+    // Cancel previous utterance and resume if suspended
+    window.speechSynthesis.cancel();
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utteranceRef.current = utterance;
 
+    // Voice and Turkish language setting
     if (selectedVoice) {
       utterance.voice = selectedVoice;
+      utterance.lang = selectedVoice.lang;
+    } else {
+      utterance.lang = 'tr-TR';
     }
+    
     utterance.rate = rate;
     utterance.pitch = pitch;
 
     utterance.onstart = () => {
       setIsPlaying(true);
       setIsPaused(false);
+      setAudioSource('browser');
     };
 
     utterance.onend = () => {
       setIsPlaying(false);
       setIsPaused(false);
       setBoundary(null);
+      setAudioSource(null);
     };
 
     utterance.onerror = (e) => {
-      if (e.error !== 'interrupted') {
-        console.error('SpeechSynthesis error:', e);
-        setIsPlaying(false);
-        setIsPaused(false);
-        setBoundary(null);
+      if (e.error !== 'interrupted' && e.error !== 'canceled') {
+        console.warn('SpeechSynthesis event notice:', e.error);
       }
+      setIsPlaying(false);
+      setIsPaused(false);
+      setBoundary(null);
+      setAudioSource(null);
     };
 
     utterance.onboundary = (event) => {
-      if (event.name === 'word') {
+      if (event.name === 'word' || event.name === '') {
         setBoundary({
           charIndex: event.charIndex,
-          charLength: event.charLength || 0,
+          charLength: event.charLength || 6,
         });
       }
     };
@@ -123,9 +147,15 @@ export function useTTS() {
     // Stop anything currently speaking/playing
     stop();
 
-    if (!text.trim()) return;
+    if (!text || !text.trim()) return;
 
-    const cleanText = text.replace(/<[^>]*>/g, '').trim(); // Strip HTML tags
+    const cleanText = text
+      .replace(/<[^>]*>/g, '') // Strip HTML
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Strip MD links
+      .replace(/[*_#`~>]/g, '') // Strip formatting
+      .trim();
+
+    if (!cleanText) return;
 
     try {
       // Attempt Yeterly TTS
@@ -135,14 +165,11 @@ export function useTTS() {
         body: JSON.stringify({ text: cleanText }),
       });
 
-      if (!res.ok) {
-        throw new Error('Yeterly API returned non-200 status');
-      }
+      const data = await res.json().catch(() => null);
 
-      const data = await res.json();
-      if (data.audio_base64) {
-        // High quality voice synthesized successfully
-        const audioUrl = `data:audio/mpeg;base64,${data.audio_base64}`;
+      if (data && (data.audio_base64 || data.audio_url)) {
+        // High quality Yeterly voice synthesized successfully
+        const audioUrl = data.audio_url || `data:audio/mpeg;base64,${data.audio_base64}`;
         const audio = new Audio(audioUrl);
         audioPlayerRef.current = audio;
         isYeterlyPlayingRef.current = true;
@@ -150,6 +177,7 @@ export function useTTS() {
         audio.onplay = () => {
           setIsPlaying(true);
           setIsPaused(false);
+          setAudioSource('yeterly');
         };
 
         audio.onpause = () => {
@@ -161,26 +189,27 @@ export function useTTS() {
           setIsPaused(false);
           isYeterlyPlayingRef.current = false;
           audioPlayerRef.current = null;
+          setAudioSource(null);
         };
 
         audio.onerror = (e) => {
-          console.error('Yeterly Audio playback error:', e);
+          console.warn('Yeterly Audio playback notice, falling back to Web Speech:', e);
           setIsPlaying(false);
           setIsPaused(false);
           isYeterlyPlayingRef.current = false;
           audioPlayerRef.current = null;
-          // Failover on runtime audio error
+          // Failover to browser speech synthesis
           playWebSpeechFallback(cleanText);
         };
 
         await audio.play();
         return;
       } else {
-        throw new Error('No audio base64 returned');
+        // Smoothly fall back to browser Web Speech
+        playWebSpeechFallback(cleanText);
       }
     } catch (err) {
-      console.warn('Yeterly TTS failed or not configured, falling back to Web Speech API:', err);
-      // Fallback
+      console.warn('Yeterly TTS fallback triggered:', err);
       isYeterlyPlayingRef.current = false;
       playWebSpeechFallback(cleanText);
     }
@@ -203,7 +232,7 @@ export function useTTS() {
   const resume = useCallback(() => {
     if (isYeterlyPlayingRef.current && audioPlayerRef.current) {
       audioPlayerRef.current.play().catch(err => {
-        console.error('Failed to resume Yeterly audio:', err);
+        console.error('Failed to resume audio:', err);
       });
       setIsPaused(false);
       return;
@@ -227,9 +256,11 @@ export function useTTS() {
     isPlaying,
     isPaused,
     boundary,
+    audioSource,
     play,
     pause,
     resume,
     stop,
   };
 }
+
