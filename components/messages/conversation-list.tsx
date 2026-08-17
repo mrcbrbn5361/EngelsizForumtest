@@ -6,7 +6,7 @@ import { UserAvatar } from '@/components/ui/user-avatar';
 import { OnlineStatusDot } from '@/components/ui/user-badge';
 import { formatDistanceToNow } from 'date-fns';
 import { tr } from 'date-fns/locale';
-import { MessageSquare, Search, Sparkles } from 'lucide-react';
+import { MessageSquare, Search, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export interface ConversationItem {
@@ -26,9 +26,10 @@ interface ConversationListProps {
   selectedId?: string;
   onSelect: (id: string) => void;
   loading: boolean;
+  onStartNewChat?: () => void;
 }
 
-export function ConversationList({ conversations, selectedId, onSelect, loading }: ConversationListProps) {
+export function ConversationList({ conversations, selectedId, onSelect, loading, onStartNewChat }: ConversationListProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredConversations = conversations.filter(conv => {
@@ -58,22 +59,30 @@ export function ConversationList({ conversations, selectedId, onSelect, loading 
 
   return (
     <div className="flex flex-col h-full">
-      {/* Search Bar */}
-      {conversations.length > 3 && (
-        <div className="p-2.5 border-b border-white/[0.06] bg-[#0b0f19]/60">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5" aria-hidden="true" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Sohbetlerde ara..."
-              className="w-full bg-[#111726] border border-white/[0.08] rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
-              aria-label="Sohbetlerde arama yap"
-            />
-          </div>
+      {/* Search & Actions Bar */}
+      <div className="p-2.5 border-b border-white/[0.06] bg-[#0b0f19]/60 flex items-center gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5" aria-hidden="true" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Sohbetlerde ara..."
+            className="w-full bg-[#111726] border border-white/[0.08] rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
+            aria-label="Sohbetlerde arama yap"
+          />
         </div>
-      )}
+        {onStartNewChat && (
+          <button
+            onClick={onStartNewChat}
+            className="p-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white cursor-pointer transition-colors shrink-0"
+            title="Yeni Mesaj Başlat"
+            aria-label="Yeni Mesaj Başlat"
+          >
+            <Plus size={15} />
+          </button>
+        )}
+      </div>
 
       {conversations.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-8 text-center text-slate-500 flex-1">
@@ -81,9 +90,17 @@ export function ConversationList({ conversations, selectedId, onSelect, loading 
             <MessageSquare size={22} className="text-sky-400" aria-hidden="true" />
           </div>
           <p className="text-xs font-bold text-slate-300">Henüz sohbetiniz yok</p>
-          <p className="text-[11px] mt-1 text-slate-400 max-w-[200px] leading-relaxed">
-            Üye profillerinden doğrudan özel mesaj gönderebilirsiniz.
+          <p className="text-[11px] mt-1 text-slate-400 max-w-[200px] leading-relaxed mb-4">
+            Üye profillerinden veya aşağıdaki butondan mesaj başlatabilirsiniz.
           </p>
+          {onStartNewChat && (
+            <button
+              onClick={onStartNewChat}
+              className="px-3.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Plus size={13} /> Yeni Sohbet Başlat
+            </button>
+          )}
         </div>
       ) : filteredConversations.length === 0 ? (
         <div className="p-6 text-center text-slate-400 text-xs flex-1">

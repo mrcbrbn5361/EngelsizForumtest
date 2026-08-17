@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { Message, Profile } from '@/types/database';
-import { Send, Loader2, User, Mic, MicOff, Square, Trash2, Check, AlertCircle, RefreshCw } from 'lucide-react';
+import { Send, Loader2, User, Mic, MicOff, Square, Trash2, Check, AlertCircle, RefreshCw, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
@@ -16,9 +16,10 @@ interface ChatBoxProps {
   conversationId: string;
   currentUserProfile: Profile;
   otherUser: Profile;
+  onBack?: () => void;
 }
 
-export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatBoxProps) {
+export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack }: ChatBoxProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
@@ -280,22 +281,40 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
   return (
     <div id="chat-box-container" className="flex flex-col h-full bg-[#090a0f] text-slate-100">
       {/* Accessible Chat Header */}
-      <div className="p-3.5 border-b border-white/[0.08] bg-[#111726] flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="p-3 md:p-3.5 border-b border-white/[0.08] bg-[#111726] flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5 min-w-0">
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="md:hidden p-1.5 rounded-lg bg-slate-900 border border-white/[0.08] text-slate-300 hover:text-white cursor-pointer shrink-0"
+              aria-label="Sohbet listesine geri dön"
+            >
+              <ArrowLeft size={16} />
+            </button>
+          )}
           <UserAvatar 
             src={otherUser?.avatar_url}
             username={otherUser?.username}
             name={otherUser?.full_name}
             size="sm"
-            className="rounded-xl border border-white/[0.08]"
+            className="rounded-xl border border-white/[0.08] shrink-0"
           />
-          <div>
-            <h2 className="font-bold text-xs text-slate-100 leading-none mb-0.5">
+          <div className="min-w-0">
+            <h2 className="font-bold text-xs text-slate-100 leading-none mb-0.5 truncate">
               {otherUser?.full_name || otherUser?.username || 'Kullanıcı'}
             </h2>
-            <p className="text-[10px] text-sky-400 font-mono">@{otherUser?.username || 'isimsiz'}</p>
+            <p className="text-[10px] text-sky-400 font-mono truncate">@{otherUser?.username || 'isimsiz'}</p>
           </div>
         </div>
+
+        {otherUser?.id && (
+          <a
+            href={`/profile/${otherUser.id}`}
+            className="px-2.5 py-1 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-[11px] font-semibold text-slate-300 hover:text-sky-400 border border-white/[0.08] transition-colors shrink-0"
+          >
+            Profili Gör
+          </a>
+        )}
       </div>
 
       {/* Messages Live Region */}
