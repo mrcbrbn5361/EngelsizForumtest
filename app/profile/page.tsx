@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useId, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { useAuth } from '@/components/providers/auth-provider';
@@ -25,7 +26,8 @@ import {
   Type,
   MoveHorizontal,
   Contrast,
-  Target
+  Target,
+  ExternalLink
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
@@ -202,11 +204,22 @@ export default function ProfileManagementPage() {
               </div>
             </div>
 
-            {hasUnsavedChanges && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold animate-pulse">
-                <Sparkles size={13} /> Kaydedilmemiş değişiklikler var
-              </span>
-            )}
+            <div className="flex items-center gap-3 flex-wrap">
+              {user?.id && (
+                <Link
+                  href={`/profile/${user.id}`}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-xs font-semibold text-sky-400 hover:text-sky-300 border border-sky-500/20 hover:border-sky-500/40 transition-colors shadow-xs"
+                >
+                  <ExternalLink size={14} aria-hidden="true" />
+                  Herkese Açık Profilim
+                </Link>
+              )}
+              {hasUnsavedChanges && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold animate-pulse">
+                  <Sparkles size={13} /> Kaydedilmemiş değişiklikler var
+                </span>
+              )}
+            </div>
           </div>
         </div>
 

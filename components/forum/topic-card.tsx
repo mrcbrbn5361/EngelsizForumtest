@@ -17,9 +17,12 @@ interface Topic {
   views_count: number;
   is_pinned: boolean;
   is_locked: boolean;
+  author_id?: string;
   author?: {
+    id?: string;
     username: string;
     avatar_url?: string;
+    full_name?: string;
   };
   category?: {
     name: string;
@@ -84,10 +87,21 @@ export function TopicCard({ topic }: { topic: Topic }) {
         </h3>
 
         <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground pt-0.5">
-          <div className="flex items-center gap-1.5 truncate max-w-[150px]">
-            <User size={13} className="text-sky-400/70 shrink-0" />
-            <span className="truncate">{topic.author?.username || 'Anonim'}</span>
-          </div>
+          {topic.author?.id || (topic as any).author_id || topic.author?.username ? (
+            <Link 
+              href={`/profile/${topic.author?.id || (topic as any).author_id || topic.author?.username}`}
+              className="flex items-center gap-1.5 truncate max-w-[150px] relative z-10 hover:text-sky-400 transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <User size={13} className="text-sky-400/70 shrink-0" />
+              <span className="truncate">{topic.author?.username || 'Anonim'}</span>
+            </Link>
+          ) : (
+            <div className="flex items-center gap-1.5 truncate max-w-[150px]">
+              <User size={13} className="text-sky-400/70 shrink-0" />
+              <span className="truncate">{topic.author?.username || 'Anonim'}</span>
+            </div>
+          )}
           <div className="flex items-center gap-3 shrink-0">
             <span className="flex items-center gap-1">
               <MessageSquare size={13} className="text-sky-400/70" />

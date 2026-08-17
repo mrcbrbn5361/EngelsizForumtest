@@ -90,7 +90,7 @@ function CommentItem({
 
         <div className="flex gap-3 sm:gap-4">
           <div className="shrink-0">
-            <Link href={`/profile/${comment.author?.id}`} className="block relative z-20">
+            <Link href={`/profile/${comment.author?.id || (comment as any).author_id || comment.author?.username || ''}`} className="block relative z-20 hover:opacity-80 transition-opacity">
               <UserAvatar 
                 src={comment.author?.avatar_url}
                 username={comment.author?.username}
@@ -103,7 +103,7 @@ function CommentItem({
           <div className="flex-1 min-w-0 space-y-2">
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
-                <Link href={`/profile/${comment.author?.id}`} className="font-semibold text-foreground hover:text-sky-400 transition-colors">
+                <Link href={`/profile/${comment.author?.id || (comment as any).author_id || comment.author?.username || ''}`} className="font-semibold text-foreground hover:text-sky-400 transition-colors">
                   {comment.author?.full_name || comment.author?.username || 'Kullanıcı'}
                 </Link>
                 {(comment.author?.role === 'admin' || comment.author?.role === 'moderator') && (
@@ -355,14 +355,7 @@ export default function DiscussionDetailPage() {
             reaction_type: 'like'
           });
         
-        if (error) {
-          // If already liked (duplicate key violation), handle gracefully
-          if (error.code === '23505' || error.message?.includes('duplicate key')) {
-            setIsLiked(true);
-            return;
-          }
-          throw error;
-        }
+        if (error) throw error;
         setIsLiked(true);
         setLikesCount(prev => prev + 1);
       }
@@ -471,12 +464,9 @@ export default function DiscussionDetailPage() {
         setIsBookmarked(false);
         toast.success('Yer işareti kaldırıldı.');
       } else {
-        const { error: bmErr } = await supabase
+        await supabase
           .from('bookmarks')
           .insert([{ user_id: user.id, topic_id: topic.id }]);
-        if (bmErr && bmErr.code !== '23505' && !bmErr.message?.includes('duplicate key')) {
-          throw bmErr;
-        }
         setIsBookmarked(true);
         toast.success('Tartışma kaydedildi.');
       }
@@ -493,7 +483,7 @@ export default function DiscussionDetailPage() {
     try {
       const { data } = await supabase
         .from('topics')
-        .select('*, author:profiles(username)')
+        .select('*, author:profiles(id, username, avatar_url, full_name, role)')
         .eq('category_id', categoryId)
         .neq('id', excludeId)
         .limit(3);
@@ -855,7 +845,7 @@ export default function DiscussionDetailPage() {
                 </h1>
 
                 <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-border/60 text-xs text-muted-foreground">
-                  <Link href={`/profile/${topic.author?.id}`} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+                  <Link href={`/profile/${topic.author?.id || (topic as any).author_id || topic.author?.username || ''}`} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
                     <UserAvatar 
                       src={topic.author?.avatar_url}
                       username={topic.author?.username}

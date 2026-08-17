@@ -562,19 +562,39 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                       )}
 
                       <div className="flex items-center justify-between gap-3 text-xs text-slate-400 border-t border-white/[0.05] pt-2.5">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <UserAvatar 
-                            src={topic.author?.avatar_url} 
-                            username={topic.author?.username} 
-                            name={topic.author?.full_name}
-                            size="sm"
-                            isOnline={true}
-                          />
-                          <span className="font-semibold text-slate-300 text-xs truncate">
-                            {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
-                          </span>
-                          <UserRoleBadge role={topic.author?.role || 'user'} size="xs" />
-                        </div>
+                        {topic.author?.id || (topic as any).author_id || topic.author?.username ? (
+                          <Link 
+                            href={`/profile/${topic.author?.id || (topic as any).author_id || topic.author?.username}`}
+                            className="flex items-center gap-2 min-w-0 group/author hover:opacity-80 transition-opacity"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <UserAvatar 
+                              src={topic.author?.avatar_url} 
+                              username={topic.author?.username} 
+                              name={topic.author?.full_name}
+                              size="sm"
+                              isOnline={true}
+                            />
+                            <span className="font-semibold text-slate-300 text-xs truncate group-hover/author:text-sky-400 transition-colors">
+                              {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
+                            </span>
+                            <UserRoleBadge role={topic.author?.role || 'user'} size="xs" />
+                          </Link>
+                        ) : (
+                          <div className="flex items-center gap-2 min-w-0">
+                            <UserAvatar 
+                              src={topic.author?.avatar_url} 
+                              username={topic.author?.username} 
+                              name={topic.author?.full_name}
+                              size="sm"
+                              isOnline={true}
+                            />
+                            <span className="font-semibold text-slate-300 text-xs truncate">
+                              {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
+                            </span>
+                            <UserRoleBadge role={topic.author?.role || 'user'} size="xs" />
+                          </div>
+                        )}
                         <div className="flex items-center gap-3 text-[11px] font-medium shrink-0">
                           <span className="hidden sm:inline text-rose-400 font-semibold">
                             ♥ {formatCompactNumber(topic.likes_count || 0)}

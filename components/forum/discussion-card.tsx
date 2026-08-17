@@ -44,7 +44,8 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
   const commentsCount = (topic.comments as any)?.[0]?.count ?? (topic as any).comments_count ?? 0;
   const likesCount = (topic as any).likes_count ?? 0;
   const authorName = topic.author?.full_name || topic.author?.username || 'Topluluk Üyesi';
-  const authorProfileHref = topic.author?.id ? `/profile/${topic.author.id}` : '/profile';
+  const authorTargetId = topic.author?.id || (topic as any).author_id || topic.author?.username;
+  const authorProfileHref = authorTargetId ? `/profile/${authorTargetId}` : '#';
 
   return (
     <motion.article 
