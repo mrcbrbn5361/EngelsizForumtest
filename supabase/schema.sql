@@ -106,9 +106,13 @@ FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
 
 -- Supabase Auth Üyelik Oluşturulduğunda Otomatik Profil Başlatıcı
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER AS $
 DECLARE
   v_role TEXT := 'user';
+  v_username TEXT;
+  v_display_name TEXT;
+  v_full_name TEXT;
+  v_avatar_url TEXT;
 BEGIN
   -- Kurucu / Yönetici e-posta kontrolü
   IF NEW.email = 'miracbirben@gmail.com' THEN
@@ -116,6 +120,28 @@ BEGIN
   ELSE
     v_role := COALESCE(NEW.raw_user_meta_data->>'role', 'user');
   END IF;
+
+  v_username := COALESCE(
+    NEW.raw_user_meta_data->>'username', 
+    SPLIT_PART(NEW.email, '@', 1) || '_' || SUBSTRING(md5(random()::text) FROM 1 FOR 4)
+  );
+
+  v_display_name := COALESCE(
+    NEW.raw_user_meta_data->>'display_name', 
+    NEW.raw_user_meta_data->>'full_name', 
+    SPLIT_PART(NEW.email, '@', 1),
+    'Engelsiz Üye'
+  );
+
+  v_full_name := COALESCE(
+    NEW.raw_user_meta_data->>'full_name', 
+    v_display_name
+  );
+
+  v_avatar_url := COALESCE(
+    NEW.raw_user_meta_data->>'avatar_url',
+    'https://api.dicebear.com/7.x/identicon/svg?seed=' || NEW.id::text
+  );
 
   INSERT INTO public.profiles (
     id, 
@@ -127,37 +153,43 @@ BEGIN
     level,
     xp,
     reputation_points,
-    is_verified
+    is_verified,
+    last_seen,
+    accessibility_prefs
   )
   VALUES (
     NEW.id,
-    COALESCE(
-      NEW.raw_user_meta_data->>'username', 
-      SPLIT_PART(NEW.email, '@', 1) || '_' || SUBSTRING(md5(random()::text) FROM 1 FOR 4)
-    ),
-    COALESCE(
-      NEW.raw_user_meta_data->>'display_name', 
-      NEW.raw_user_meta_data->>'full_name', 
-      'Engelsiz Üye'
-    ),
-    COALESCE(NEW.raw_user_meta_data->>'full_name', SPLIT_PART(NEW.email, '@', 1)),
-    COALESCE(
-      NEW.raw_user_meta_data->>'avatar_url',
-      'https://api.dicebear.com/7.x/bottts/svg?seed=' || NEW.id::text
-    ),
+    v_username,
+    v_display_name,
+    v_full_name,
+    v_avatar_url,
     v_role,
     1,
     100,
     10,
-    (v_role = 'admin')
+    (v_role = 'admin' OR NEW.email_confirmed_at IS NOT NULL),
+    NOW(),
+    '{
+      "fontSize": 100,
+      "highContrast": false,
+      "dyslexicFont": false,
+      "reducedMotion": false,
+      "bionicReading": false,
+      "focusMode": false,
+      "voiceMode": false
+    }'::jsonb
   )
   ON CONFLICT (id) DO UPDATE SET
     avatar_url = COALESCE(public.profiles.avatar_url, EXCLUDED.avatar_url),
+    display_name = COALESCE(public.profiles.display_name, EXCLUDED.display_name),
+    full_name = COALESCE(public.profiles.full_name, EXCLUDED.full_name),
     role = CASE WHEN EXCLUDED.role = 'admin' THEN 'admin' ELSE public.profiles.role END,
+    is_verified = CASE WHEN EXCLUDED.is_verified THEN true ELSE public.profiles.is_verified END,
+    last_seen = NOW(),
     updated_at = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$ LANGUAGE plpgsql SECURITY DEFINER;
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created

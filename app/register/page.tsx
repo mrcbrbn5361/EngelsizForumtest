@@ -47,6 +47,7 @@ export default function RegisterPage() {
   const emailId = useId();
   const passwordId = useId();
   const passwordConfirmId = useId();
+  const errorId = useId();
 
   // Redirect if logged in
   useEffect(() => {
@@ -58,10 +59,8 @@ export default function RegisterPage() {
   const handleNextStep = () => {
     setError(null);
     if (step === 1) {
-      // Step 1: Accessibility settings (always valid)
       setStep(2);
     } else if (step === 2) {
-      // Step 2: Profile Validation
       if (!username.trim() || username.trim().length < 3) {
         setError('Kullanıcı adı en az 3 karakter olmalıdır.');
         return;
@@ -70,7 +69,6 @@ export default function RegisterPage() {
         setError('Tam isminiz en az 3 karakter olmalıdır.');
         return;
       }
-      // Clean username (alphanumeric and underscores)
       const cleanUsername = username.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
       if (cleanUsername !== username.trim().toLowerCase()) {
         setError('Kullanıcı adı yalnızca İngilizce harfler, rakamlar ve alt çizgi (_) içerebilir.');
@@ -89,18 +87,18 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
 
-    // Final Validations
-    if (!email.trim()) {
+    const cleanEmail = email.trim();
+    if (!cleanEmail) {
       setError('E-posta adresi boş bırakılamaz.');
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError('Lütfen geçerli bir e-posta adresi giriniz.');
+    if (!emailRegex.test(cleanEmail)) {
+      setError('Lütfen geçerli bir e-posta adresi giriniz (örnek: adiniz@domain.com).');
       return;
     }
-    if (password.length < 6) {
-      setError('Şifre en az 6 karakter olmalıdır.');
+    if (password.length < 8) {
+      setError('Şifre güvenliğiniz için en az 8 karakter olmalıdır.');
       return;
     }
     if (password !== passwordConfirm) {
@@ -110,7 +108,6 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      // Save chosen settings as accessibility_prefs metadata too, so server sync handles it on profiles creation
       const accessibilityPrefs = {
         fontSize,
         highContrast,
@@ -120,13 +117,15 @@ export default function RegisterPage() {
         focusMode
       };
 
-      const { error: signUpError, data } = await supabase.auth.signUp({ 
-        email: email.trim(), 
+      const cleanUser = username.trim().toLowerCase();
+      const { error: signUpError } = await supabase.auth.signUp({ 
+        email: cleanEmail, 
         password,
         options: {
           data: {
-            username: username.trim().toLowerCase(),
+            username: cleanUser,
             full_name: fullName.trim(),
+            display_name: fullName.trim(),
             accessibility_prefs: accessibilityPrefs
           }
         }
@@ -136,12 +135,8 @@ export default function RegisterPage() {
         throw signUpError;
       }
 
-      toast.success('Kayıt başarılı! E-posta adresinizi doğrulamak için bir mail gönderdik.', {
-        duration: 8000
-      });
-      
-      // Navigate to login
-      router.push('/login');
+      toast.success('Kayıt başarılı! E-posta adresinize doğrulama bağlantısı gönderildi.');
+      router.push('/login?registered=true');
     } catch (err: any) {
       console.error("Register Catch Error:", err);
       setError(formatAuthError(err, 'Kayıt sırasında teknik bir hata oluştu. Lütfen bilgilerinizi kontrol edip tekrar deneyin.'));
@@ -150,22 +145,21 @@ export default function RegisterPage() {
     }
   };
 
-  // Preview text paragraph generator based on current settings
   const previewText = useMemo(() => {
     if (bionicReading) {
       return (
-        <p className="leading-relaxed">
-          <strong className="font-extrabold text-foreground">Eng</strong>elsiz<strong className="font-extrabold text-foreground">For</strong>um, 
-          her <strong className="font-extrabold text-foreground">biy</strong>ireyin <strong className="font-extrabold text-foreground">bilg</strong>iye 
-          <strong className="font-extrabold text-foreground">eng</strong>elsiz <strong className="font-extrabold text-foreground">eri</strong>şebilmesini 
-          <strong className="font-extrabold text-foreground">sav</strong>unur. <strong className="font-extrabold text-foreground">Şu</strong> an 
-          <strong className="font-extrabold text-foreground">biy</strong>onik <strong className="font-extrabold text-foreground">oku</strong>ma 
-          <strong className="font-extrabold text-foreground">mod</strong>u <strong className="font-extrabold text-foreground">akt</strong>if.
+        <p className="leading-relaxed text-slate-200">
+          <strong className="font-extrabold text-sky-400">Eng</strong>elsiz<strong className="font-extrabold text-sky-400">For</strong>um, 
+          her <strong className="font-extrabold text-sky-400">biy</strong>ireyin <strong className="font-extrabold text-sky-400">bilg</strong>iye 
+          <strong className="font-extrabold text-sky-400">eng</strong>elsiz <strong className="font-extrabold text-sky-400">eri</strong>şebilmesini 
+          <strong className="font-extrabold text-sky-400">sav</strong>unur. <strong className="font-extrabold text-sky-400">Şu</strong> an 
+          <strong className="font-extrabold text-sky-400">biy</strong>onik <strong className="font-extrabold text-sky-400">oku</strong>ma 
+          <strong className="font-extrabold text-sky-400">mod</strong>u <strong className="font-extrabold text-sky-400">akt</strong>if.
         </p>
       );
     }
     return (
-      <p className="leading-relaxed">
+      <p className="leading-relaxed text-slate-300">
         EngelsizForum, her bireyin bilgiye engelsiz erişebilmesini savunur. Şu an seçtiğiniz erişilebilirlik ayarlarının önizlemesini bu kart üzerinden görüyorsunuz.
       </p>
     );
@@ -178,16 +172,16 @@ export default function RegisterPage() {
           <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-6 sm:p-10 border border-border/80 shadow-xs rounded-2xl bg-card relative overflow-hidden space-y-6"
+            className="p-6 sm:p-10 border border-white/[0.08] shadow-2xl rounded-3xl bg-[#111726]/90 backdrop-blur-md relative overflow-hidden space-y-6 text-slate-100"
           >
             {/* Steps Progress Indicator */}
-            <div className="flex items-center justify-between border-b border-border/60 pb-5">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-5">
               <StepIndicator num={1} label="Erişilebilirlik" active={step === 1} completed={step > 1} />
-              <div className="flex-1 h-0.5 mx-3 bg-muted rounded-full overflow-hidden">
+              <div className="flex-1 h-0.5 mx-3 bg-white/[0.08] rounded-full overflow-hidden">
                 <div className={`h-full bg-sky-500 transition-all duration-300 ${step > 1 ? 'w-full' : 'w-0'}`} />
               </div>
               <StepIndicator num={2} label="Profil" active={step === 2} completed={step > 2} />
-              <div className="flex-1 h-0.5 mx-3 bg-muted rounded-full overflow-hidden">
+              <div className="flex-1 h-0.5 mx-3 bg-white/[0.08] rounded-full overflow-hidden">
                 <div className={`h-full bg-sky-500 transition-all duration-300 ${step > 2 ? 'w-full' : 'w-0'}`} />
               </div>
               <StepIndicator num={3} label="Hesap" active={step === 3} completed={false} />
@@ -201,10 +195,12 @@ export default function RegisterPage() {
             {/* Error Message */}
             {error && (
               <div 
+                id={errorId}
                 role="alert" 
+                aria-live="assertive"
                 className="flex items-start gap-2.5 p-3.5 rounded-xl bg-destructive/10 text-destructive border border-destructive/20 font-bold text-xs leading-relaxed"
               >
-                <AlertCircle size={16} className="shrink-0 mt-0.5" />
+                <AlertCircle size={16} className="shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{error}</span>
               </div>
             )}
@@ -222,13 +218,13 @@ export default function RegisterPage() {
                   className="space-y-5"
                 >
                   <header className="space-y-1.5">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
                       <Sparkles size={10} className="fill-current" /> Adım 1: ERİŞİM SİHİRBAZI
                     </span>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-100">
                       Arayüzü Özelleştirin
                     </h2>
-                    <p className="text-xs text-muted-foreground font-normal leading-relaxed">
+                    <p className="text-xs text-slate-400 font-normal leading-relaxed">
                       Sizin için en rahat okuma ve etkileşim ortamını oluşturun. Ayarlar anında uygulanır.
                     </p>
                   </header>
@@ -236,12 +232,12 @@ export default function RegisterPage() {
                   <div className="space-y-4">
                     
                     {/* Font Size Selector */}
-                    <div className="p-4 border border-border/80 rounded-xl bg-muted/15 space-y-2.5">
+                    <div className="p-4 border border-white/[0.08] rounded-xl bg-[#0b0f19] space-y-2.5">
                       <div className="flex items-center gap-2">
                         <Type size={15} className="text-sky-400" />
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">Yazı Boyutu</h3>
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200">Yazı Boyutu</h3>
                       </div>
-                      <div className="grid grid-cols-4 gap-2 bg-background p-1 rounded-xl border border-border/80">
+                      <div className="grid grid-cols-4 gap-2 bg-[#111726] p-1 rounded-xl border border-white/[0.08]">
                         {(['sm', 'md', 'lg', 'xl'] as const).map((sz) => (
                           <button
                             key={sz}
@@ -249,8 +245,8 @@ export default function RegisterPage() {
                             onClick={() => updateSettings({ fontSize: sz })}
                             className={`py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all outline-none cursor-pointer ${
                               fontSize === sz 
-                                ? 'bg-sky-500 text-white shadow-xs' 
-                                : 'hover:bg-muted text-muted-foreground'
+                                ? 'bg-sky-500 text-slate-950 shadow-md' 
+                                : 'hover:bg-white/[0.04] text-slate-400 hover:text-slate-200'
                             }`}
                             aria-label={`Yazı Boyutu ${sz.toUpperCase()}`}
                           >
@@ -300,7 +296,7 @@ export default function RegisterPage() {
                     {/* Instant Dynamic Preview Card */}
                     <div className="p-4 border border-dashed border-sky-500/30 rounded-xl bg-sky-500/[0.03]">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400 block mb-1">ANLIK ERİŞİLEBİLİRLİK ÖNİZLEMESİ</span>
-                      <div className="text-xs sm:text-sm text-foreground/90 font-medium">
+                      <div className="text-xs sm:text-sm font-medium">
                         {previewText}
                       </div>
                     </div>
@@ -310,7 +306,7 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={handleNextStep}
-                    className="w-full h-11 bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer mt-4"
+                    className="w-full h-11 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-sky-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer mt-4"
                   >
                     Devam Et <ChevronRight size={14} />
                   </button>
@@ -327,13 +323,13 @@ export default function RegisterPage() {
                   className="space-y-5"
                 >
                   <header className="space-y-1.5">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
                       <Sparkles size={10} className="fill-current" /> Adım 2: KİŞİSEL PROFİL
                     </span>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-100">
                       Kendinizi Tanıtın
                     </h2>
-                    <p className="text-xs text-muted-foreground font-normal leading-relaxed">
+                    <p className="text-xs text-slate-400 font-normal leading-relaxed">
                       Platformda görünecek isminizi ve kullanıcı adınızı belirleyin.
                     </p>
                   </header>
@@ -342,41 +338,41 @@ export default function RegisterPage() {
                     
                     {/* User name input */}
                     <div className="space-y-1.5">
-                      <label htmlFor={usernameId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        Kullanıcı Adı <span className="text-destructive" aria-hidden="true">*</span>
+                      <label htmlFor={usernameId} className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                        Kullanıcı Adı <span className="text-rose-400" aria-hidden="true">*</span>
                       </label>
                       <div className="relative">
-                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
                         <input
                           id={usernameId}
                           type="text"
                           required
                           value={username}
                           onChange={(e) => setUsername(e.target.value)}
-                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
+                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
                           placeholder="ornek_kullanici"
                           autoComplete="username"
                         />
                       </div>
-                      <span className="text-[10px] text-muted-foreground font-medium block">
+                      <span className="text-[10px] text-slate-400 font-medium block">
                         Yalnızca İngilizce harfler, rakamlar ve alt çizgi (_) kullanılabilir.
                       </span>
                     </div>
 
                     {/* Full Name input */}
                     <div className="space-y-1.5">
-                      <label htmlFor={fullNameId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        Adınız Soyadınız <span className="text-destructive" aria-hidden="true">*</span>
+                      <label htmlFor={fullNameId} className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                        Adınız Soyadınız <span className="text-rose-400" aria-hidden="true">*</span>
                       </label>
                       <div className="relative">
-                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
                         <input
                           id={fullNameId}
                           type="text"
                           required
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
-                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
+                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
                           placeholder="Ahmet Yılmaz"
                           autoComplete="name"
                         />
@@ -390,14 +386,14 @@ export default function RegisterPage() {
                     <button
                       type="button"
                       onClick={handlePrevStep}
-                      className="flex-1 h-11 border border-border/80 hover:border-sky-500/40 rounded-xl font-bold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-background"
+                      className="flex-1 h-11 border border-white/[0.08] hover:border-sky-500/40 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-300 hover:text-slate-100 flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-[#0b0f19]"
                     >
                       <ChevronLeft size={14} /> Geri
                     </button>
                     <button
                       type="button"
                       onClick={handleNextStep}
-                      className="flex-[2] h-11 bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="flex-[2] h-11 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-sky-500/20 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       İlerle <ChevronRight size={14} />
                     </button>
@@ -415,33 +411,33 @@ export default function RegisterPage() {
                   className="space-y-5"
                 >
                   <header className="space-y-1.5">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
                       <Sparkles size={10} className="fill-current" /> Adım 3: HESAP BİLGİLERİ
                     </span>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-100">
                       Güvenliğinizi Sağlayın
                     </h2>
-                    <p className="text-xs text-muted-foreground font-normal leading-relaxed">
+                    <p className="text-xs text-slate-400 font-normal leading-relaxed">
                       Giriş yaparken kullanacağınız e-posta adresi ve şifrenizi belirleyin.
                     </p>
                   </header>
 
-                  <form onSubmit={handleRegister} className="space-y-4">
+                  <form onSubmit={handleRegister} className="space-y-4" noValidate>
                     
                     {/* E-mail Input */}
                     <div className="space-y-1.5">
-                      <label htmlFor={emailId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        E-posta Adresi <span className="text-destructive" aria-hidden="true">*</span>
+                      <label htmlFor={emailId} className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                        E-posta Adresi <span className="text-rose-400" aria-hidden="true">*</span>
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
                         <input
                           id={emailId}
                           type="email"
                           required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
+                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
                           placeholder="ornek@adresiniz.com"
                           autoComplete="email"
                         />
@@ -450,25 +446,25 @@ export default function RegisterPage() {
 
                     {/* Password Input */}
                     <div className="space-y-1.5">
-                      <label htmlFor={passwordId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        Şifre <span className="text-destructive" aria-hidden="true">*</span>
+                      <label htmlFor={passwordId} className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                        Şifre <span className="text-rose-400" aria-hidden="true">*</span>
                       </label>
                       <div className="relative">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
                         <input
                           id={passwordId}
                           type={showPassword ? "text" : "password"}
                           required
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
-                          className="w-full h-11 pl-10 pr-10 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
-                          placeholder="En az 6 karakter"
+                          className="w-full h-11 pl-10 pr-10 text-sm font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
+                          placeholder="En az 8 karakter"
                           autoComplete="new-password"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer outline-none p-1"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 cursor-pointer outline-none p-1"
                           aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
                         >
                           {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -478,18 +474,18 @@ export default function RegisterPage() {
 
                     {/* Password Confirm Input */}
                     <div className="space-y-1.5">
-                      <label htmlFor={passwordConfirmId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                        Şifre Tekrarı <span className="text-destructive" aria-hidden="true">*</span>
+                      <label htmlFor={passwordConfirmId} className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                        Şifre Tekrarı <span className="text-rose-400" aria-hidden="true">*</span>
                       </label>
                       <div className="relative">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={16} />
                         <input
                           id={passwordConfirmId}
                           type={showPassword ? "text" : "password"}
                           required
                           value={passwordConfirm}
                           onChange={(e) => setPasswordConfirm(e.target.value)}
-                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
+                          className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
                           placeholder="Şifrenizi tekrar girin"
                           autoComplete="new-password"
                         />
@@ -501,14 +497,14 @@ export default function RegisterPage() {
                       <button
                         type="button"
                         onClick={handlePrevStep}
-                        className="flex-1 h-11 border border-border/80 hover:border-sky-500/40 rounded-xl font-bold text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-background"
+                        className="flex-1 h-11 border border-white/[0.08] hover:border-sky-500/40 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-300 hover:text-slate-100 flex items-center justify-center gap-1.5 cursor-pointer transition-all bg-[#0b0f19]"
                       >
                         <ChevronLeft size={14} /> Geri
                       </button>
                       <button
                         type="submit"
                         disabled={loading}
-                        className="flex-[2] h-11 bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                        className="flex-[2] h-11 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-sky-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                       >
                         {loading ? (
                           <Loader2 className="animate-spin" size={16} />
@@ -526,8 +522,8 @@ export default function RegisterPage() {
             </AnimatePresence>
 
             {/* Login Link Promoters */}
-            <footer className="pt-4 border-t border-border/60 text-center space-y-3">
-              <p className="text-xs text-muted-foreground font-normal">
+            <footer className="pt-4 border-t border-white/[0.08] text-center space-y-3">
+              <p className="text-xs text-slate-400 font-normal">
                 Zaten bir hesabınız var mı?
               </p>
               <Link 
@@ -554,10 +550,10 @@ function StepIndicator({ num, label, active, completed }: { num: number, label: 
       <div 
         className={`size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
           completed 
-            ? 'bg-sky-500 text-white' 
+            ? 'bg-sky-500 text-slate-950 font-extrabold' 
             : active 
-              ? 'bg-sky-500/20 text-sky-400 border-2 border-sky-500 shadow-xs' 
-              : 'bg-muted text-muted-foreground border border-border/80'
+              ? 'bg-sky-500/20 text-sky-400 border-2 border-sky-500 shadow-md' 
+              : 'bg-white/[0.04] text-slate-400 border border-white/[0.08]'
         }`}
         aria-hidden="true"
       >
@@ -565,7 +561,7 @@ function StepIndicator({ num, label, active, completed }: { num: number, label: 
       </div>
       <span 
         className={`hidden sm:inline text-[11px] font-bold uppercase tracking-wider transition-colors ${
-          active ? 'text-sky-400' : completed ? 'text-foreground' : 'text-muted-foreground/60'
+          active ? 'text-sky-400' : completed ? 'text-slate-100' : 'text-slate-500'
         }`}
       >
         {label}
@@ -588,10 +584,10 @@ function AccessibilityToggle({ icon, title, checked, onChange }: ToggleProps) {
   const toggleId = useMemo(() => `toggle-${title.replace(/\s+/g, '-').toLowerCase()}`, [title]);
 
   return (
-    <div className="p-3.5 border border-border/80 bg-background rounded-xl flex items-center justify-between transition-all hover:border-sky-500/30">
+    <div className="p-3.5 border border-white/[0.08] bg-[#0b0f19] rounded-xl flex items-center justify-between transition-all hover:border-sky-500/30">
       <div className="flex items-center gap-2 min-w-0">
         <span className="text-sky-400 shrink-0">{icon}</span>
-        <span className="text-[10px] font-bold uppercase tracking-wider text-foreground truncate">{title}</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-200 truncate">{title}</span>
       </div>
 
       <button
@@ -601,12 +597,12 @@ function AccessibilityToggle({ icon, title, checked, onChange }: ToggleProps) {
         aria-checked={checked}
         onClick={() => onChange(!checked)}
         className={`w-9 h-5 rounded-full p-0.5 transition-colors duration-300 outline-none shrink-0 cursor-pointer ${
-          checked ? 'bg-sky-500' : 'bg-muted-foreground/30'
+          checked ? 'bg-sky-500' : 'bg-slate-700'
         }`}
         aria-label={title}
       >
         <div 
-          className={`size-4 bg-white rounded-full transition-transform duration-300 shadow-xs ${
+          className={`size-4 bg-white rounded-full transition-transform duration-300 shadow-md ${
             checked ? 'translate-x-4' : 'translate-x-0'
           }`}
         />
@@ -614,3 +610,4 @@ function AccessibilityToggle({ icon, title, checked, onChange }: ToggleProps) {
     </div>
   );
 }
+

@@ -9,6 +9,8 @@ export type Profile = {
   bio: string | null;
   is_verified: boolean;
   accessibility_prefs: any | null;
+  is_online?: boolean;
+  last_seen?: string | null;
   last_seen_at?: string | null;
   followers_count?: number;
   following_count?: number;
@@ -107,6 +109,7 @@ export type Message = {
   metadata?: any;
   read_at?: string | null;
   created_at: string;
+  updated_at?: string;
 };
 
 export type VoiceMessage = {

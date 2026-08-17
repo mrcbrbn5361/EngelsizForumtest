@@ -1,32 +1,58 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Navbar } from './navbar';
 import { Footer } from './footer';
-import { Home, MessageSquare, Users, Info, Settings, User, AlertCircle, Database } from 'lucide-react';
+import { 
+  Home, 
+  MessageSquare, 
+  Users, 
+  Info, 
+  User, 
+  AlertCircle, 
+  Database,
+  Calculator,
+  Compass,
+  Zap,
+  Bookmark,
+  TrendingUp,
+  Award
+} from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 
+interface SidebarCategory {
+  id: string;
+  name: string;
+  slug?: string;
+  icon?: string;
+  topics_count?: number;
+}
+
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const pathname = usePathname();
-  const [sidebarCategories, setSidebarCategories] = React.useState<any[]>([
-    { name: 'GÖRME', slug: 'gorme-engelli', icon: 'AlertCircle' },
-    { name: 'İŞİTME', slug: 'isitme-engelli', icon: 'Database' }
+  const [sidebarCategories, setSidebarCategories] = useState<SidebarCategory[]>([
+    { id: '1', name: 'Görme Engelliler', slug: 'gorme-engelliler' },
+    { id: '2', name: 'İşitme Engelliler', slug: 'isitme-engelliler' },
+    { id: '3', name: 'Bedensel Engelliler', slug: 'bedensel-engelliler' },
+    { id: '4', name: 'Mevzuat & Haklar', slug: 'mevzuat-haklar' },
   ]);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    let isMounted = true;
     const fetchSidebarCats = async () => {
       try {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('categories')
           .select('id, name, slug, icon')
-          .order('name');
+          .order('sort_order', { ascending: true })
+          .limit(6);
         
-        if (data && data.length > 0) {
+        if (!error && data && data.length > 0 && isMounted) {
           setSidebarCategories(data);
         }
       } catch (err) {
@@ -34,78 +60,116 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       }
     };
     fetchSidebarCats();
+    return () => {
+      isMounted = false;
+    };
   }, []);
-  
-  const NavItem = ({ href, icon: Icon, label }: { href: string, icon: any, label: string }) => {
-    const isActive = pathname === href;
+
+  const NavItem = ({ href, icon: Icon, label }: { href: string; icon: React.ComponentType<{ size?: number; className?: string }>; label: string }) => {
+    const isActive = href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href + '/');
     return (
       <Link 
         href={href} 
         aria-current={isActive ? 'page' : undefined}
         className={cn(
-          "flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all mb-2",
+          "flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all outline-none focus-visible:ring-2 focus-visible:ring-sky-500",
           isActive 
-            ? "bg-primary text-primary-foreground shadow-2xl shadow-primary/20 scale-[1.02]" 
-            : "text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent hover:border-border"
+            ? "bg-sky-500/10 text-sky-400 font-bold border border-sky-500/20 shadow-xs" 
+            : "text-slate-300 hover:bg-[#161f33] hover:text-white border border-transparent"
         )}
       >
-        <Icon size={20} /> {label}
+        <Icon size={16} className={isActive ? "text-sky-400" : "text-slate-400"} />
+        <span className="truncate">{label}</span>
       </Link>
     );
   };
   
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-[#090a0f] text-slate-100 selection:bg-sky-500/20 selection:text-sky-300">
+      {/* Skip to Main Content Link for WCAG AAA */}
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 px-4 py-2 bg-sky-500 text-slate-950 font-bold rounded-lg shadow-lg"
+      >
+        İçeriğe Atla
+      </a>
+
       <Navbar />
-      <div className="flex flex-1 w-full max-w-[1440px] mx-auto px-4 md:px-8">
-        <aside role="complementary" aria-label="Yan Menü" className="hidden lg:flex w-[320px] p-8 flex-col gap-10 sticky top-24 h-[calc(100vh-120px)] overflow-y-auto bg-card border-2 border-border/80 rounded-3xl shadow-sm mr-6 my-6 shrink-0">
-            <nav className="flex flex-col gap-2" aria-label="Ana Gezinti">
-                <NavItem href="/" icon={Home} label="ANA SAYFA" />
-                <NavItem href="/discussions" icon={MessageSquare} label="TARTIŞMALAR" />
-                <NavItem href="/communities" icon={Users} label="TOPLULUKLAR" />
-                <NavItem href="/about" icon={Info} label="HAKKIMIZDA" />
-            </nav>
 
-            <div className="border-t border-border/80"></div>
+      <div className="flex flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 gap-6">
+        {/* Accessible Left Sidebar (Desktop) */}
+        <aside 
+          role="complementary" 
+          aria-label="Sol Gezinti Menüsü" 
+          className="hidden lg:flex w-64 p-4 flex-col gap-6 sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto bg-[#111726]/80 border border-white/[0.08] rounded-2xl backdrop-blur-md shrink-0 shadow-lg"
+        >
+          {/* Main Links */}
+          <nav className="flex flex-col gap-1" aria-label="Ana Menü">
+            <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+              Platform Gezintisi
+            </p>
+            <NavItem href="/" icon={Home} label="Ana Sayfa" />
+            <NavItem href="/discussions" icon={MessageSquare} label="Tartışmalar" />
+            <NavItem href="/communities" icon={Users} label="Topluluklar" />
+            <NavItem href="/hesaplama" icon={Calculator} label="Hesaplayıcılar" />
+            <NavItem href="/about" icon={Info} label="Hakkımızda" />
+          </nav>
 
-            <nav className="flex flex-col gap-2" aria-label="Kategori Gezintisi">
-              <h4 className="vibe-label ml-4 mb-4">TOPLULUKLAR</h4>
-              {sidebarCategories.map((cat) => {
-                const IconComponent = cat.icon === 'Database' || cat.slug === 'isitme-engelli' ? Database : AlertCircle;
-                const catHref = `/communities/${cat.slug || cat.id}`;
-                const isCatActive = pathname === catHref;
-                return (
-                  <Link 
-                    key={cat.id || cat.slug}
-                    href={catHref} 
-                    aria-current={isCatActive ? 'page' : undefined}
-                    className={cn(
-                      "flex items-center gap-4 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all",
-                      isCatActive
-                        ? "bg-primary text-primary-foreground shadow-2xl shadow-primary/20 scale-[1.02]"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent hover:border-border"
-                    )}
-                    aria-label={`${cat.name} topluluğu`}
-                  >
-                    <IconComponent size={20} className={isCatActive ? "text-primary-foreground" : "text-primary"} /> {cat.name.split(' ')[0].toUpperCase()}
-                  </Link>
-                );
-              })}
-            </nav>
+          <div className="border-t border-white/[0.08]" />
 
-            {user && (
-                <nav className="flex flex-col gap-2 mt-auto" aria-label="Hesap Gezintisi">
-                    <h4 className="vibe-label ml-4 mb-4">HESAP</h4>
-                    <NavItem href="/profile" icon={User} label="PROFİL" />
-                </nav>
-            )}
+          {/* Communities / Categories */}
+          <nav className="flex flex-col gap-1" aria-label="Popüler Topluluklar">
+            <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between">
+              <span>Topluluklar</span>
+              <Link href="/communities" className="text-sky-400 hover:underline normal-case text-[11px] font-normal">Tümü</Link>
+            </p>
+            {sidebarCategories.map((cat) => {
+              const catHref = `/communities/${cat.slug || cat.id}`;
+              const isCatActive = pathname === catHref;
+              return (
+                <Link 
+                  key={cat.id || cat.slug}
+                  href={catHref} 
+                  aria-current={isCatActive ? 'page' : undefined}
+                  className={cn(
+                    "flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors outline-none",
+                    isCatActive
+                      ? "bg-sky-500/10 text-sky-400 font-bold border border-sky-500/20"
+                      : "text-slate-300 hover:bg-[#161f33] hover:text-white border border-transparent"
+                  )}
+                  aria-label={`${cat.name} topluluğu`}
+                >
+                  <span className="h-2 w-2 rounded-full bg-sky-400 shrink-0" aria-hidden="true" />
+                  <span className="truncate">{cat.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* User Account / Navigation */}
+          {user && (
+            <div className="mt-auto pt-4 border-t border-white/[0.08]">
+              <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                Hesabım
+              </p>
+              <NavItem href="/profile" icon={User} label="Profilim & Ayarlar" />
+            </div>
+          )}
         </aside>
-        <div className="flex-1 px-3 py-4 sm:p-6 md:p-8 lg:p-8 xl:p-8 bg-background min-w-0 overflow-x-hidden">
+
+        {/* Main Content Landmark */}
+        <main 
+          id="main-content" 
+          tabIndex={-1} 
+          className="flex-1 min-w-0 overflow-x-hidden outline-none"
+        >
           {children}
-        </div>
+        </main>
       </div>
+
       <Footer />
     </div>
   );
 }
+
 

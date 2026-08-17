@@ -52,16 +52,27 @@ export function PostComposer({ topicId, onSuccess, placeholder = 'Topluluğa bir
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase
-        .from('posts')
+      // First try canonical 'comments' table
+      const { error: commentErr } = await supabase
+        .from('comments')
         .insert({
           topic_id: topicId,
           author_id: user.id,
           content: content.trim(),
-          image_meta: images,
         });
 
-      if (error) throw error;
+      if (commentErr) {
+        // Fallback to 'posts' if table or schema requires it
+        const { error: postErr } = await supabase
+          .from('posts')
+          .insert({
+            topic_id: topicId,
+            author_id: user.id,
+            content: content.trim(),
+            image_meta: images,
+          });
+        if (postErr) throw postErr;
+      }
 
       setContent('');
       setImages([]);
@@ -69,7 +80,7 @@ export function PostComposer({ topicId, onSuccess, placeholder = 'Topluluğa bir
       onSuccess?.();
     } catch (error: any) {
       console.error('Post submission error:', error);
-      toast.error(`Mesaj gönderilemedi: ${error.message}`);
+      toast.error(`Mesaj gönderilemedi: ${error.message || 'Bilinmeyen hata'}`);
     } finally {
       setIsSubmitting(false);
     }

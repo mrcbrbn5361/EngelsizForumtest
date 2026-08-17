@@ -31,15 +31,21 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge,
     setIsMounted(true);
   }, []);
 
-  // Use Dicebear as a secondary fallback, but only if we haven't already failed
-  const dicebearUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${username || 'user'}`;
+  const safeUsername = encodeURIComponent(username || name || 'user');
+  const dicebearUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${safeUsername}`;
   
-  // If src is a mock path like "/avatars/..." or something invalid, we might want to default to dicebear early
-  const isMockUrl = src?.startsWith('/') || src?.includes('localhost') || src?.includes('mock');
-  const effectiveSrc = (error || isMockUrl) ? dicebearUrl : (src || dicebearUrl);
+  // If src is a mock path like "/avatars/..." or something invalid, we default to dicebear early
+  const isMockUrl = src?.startsWith('/avatars/') || src?.includes('localhost') || src?.includes('mock');
+  const effectiveSrc = (error || isMockUrl || !src) ? dicebearUrl : src;
 
   const getInitials = () => {
-    if (name) return name.substring(0, 2).toUpperCase();
+    if (name) {
+      const parts = name.trim().split(' ');
+      if (parts.length > 1) {
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      }
+      return name.substring(0, 2).toUpperCase();
+    }
     if (username) return username.substring(0, 2).toUpperCase();
     return '';
   };
@@ -47,11 +53,15 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge,
   const initials = getInitials();
 
   return (
-    <div className={cn("relative shrink-0", className)}>
-      <div className={cn(
-        "rounded-2xl border border-border overflow-hidden bg-muted relative flex items-center justify-center transition-all",
-        sizeMap[size]
-      )}>
+    <div className={cn("relative shrink-0 select-none", className)}>
+      <div 
+        role="img"
+        aria-label={name || username || 'Kullanıcı Avatarı'}
+        className={cn(
+          "rounded-xl border border-white/[0.08] overflow-hidden bg-[#161f33] relative flex items-center justify-center transition-all",
+          sizeMap[size]
+        )}
+      >
         {isMounted && (
           <Image
             src={effectiveSrc}
@@ -67,13 +77,13 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge,
         
         {/* Initials Fallback (visible while loading or if image fails) */}
         {(error || !src) && (
-          <div className="absolute inset-0 flex items-center justify-center font-black text-primary bg-primary/10 select-none">
+          <div className="absolute inset-0 flex items-center justify-center font-black text-sky-400 bg-sky-500/10 select-none">
             {initials || <UserIcon size={14} />}
           </div>
         )}
       </div>
       {isOnline && (
-        <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-slate-900 ring-2 ring-slate-900 z-10">
+        <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#090a0f] ring-2 ring-[#090a0f] z-10" title="Çevrimiçi">
           <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
         </span>

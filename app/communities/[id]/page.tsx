@@ -8,12 +8,14 @@ import {
   ArrowLeft, Users, MessageSquare, Shield, Globe, Loader2, Sparkles, Plus, Search, Check,
   Stethoscope, BookOpen, Briefcase, Cpu, Code, Smile, Settings, Megaphone, Scale, 
   CreditCard, PiggyBank, Award, FileText, HeartPulse, Activity, Eye, Volume2, MapPin, 
-  GraduationCap, Calendar, AlertTriangle, FolderTree, Car, HelpCircle
+  GraduationCap, Calendar, AlertTriangle, FolderTree, Car, HelpCircle, RefreshCw, AlertCircle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Topic } from '@/types/database';
 import { DiscussionCard } from '@/components/forum/discussion-card';
+import { useAuth } from '@/components/providers/auth-provider';
+import { formatCompactNumber, generateUUID } from '@/lib/utils';
 import Link from 'next/link';
 
 interface Community {
@@ -142,9 +144,12 @@ export default function CommunityDetailPage() {
   const params = useParams();
   const id = typeof params?.id === 'string' ? params.id : Array.isArray(params?.id) ? params.id[0] : '';
   const router = useRouter();
+  const { user } = useAuth();
+  
   const [community, setCommunity] = useState<Community | null>(null);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaryResult, setSummaryResult] = useState<{ id: string, text: string } | null>(null);
   const [memberCount, setMemberCount] = useState<number>(0);
@@ -170,13 +175,92 @@ export default function CommunityDetailPage() {
     };
   }, []);
 
+  const fetchCommunityData = useCallback(async () => {
+    if (!isSupabaseConfigured) {
+      setCommunity(null);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setFetchError(null);
+    try {
+      const isUuid = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+      
+      let catQuery = supabase.from('categories').select('*');
+      if (isUuid(id as string)) {
+        catQuery = catQuery.eq('id', id);
+      } else {
+        catQuery = catQuery.eq('slug', id);
+      }
+      
+      const { data, error } = await catQuery.maybeSingle();
+      
+      if (error || !data) {
+        setCommunity(null);
+        if (error) setFetchError(error.message);
+      } else {
+        setCommunity(data);
+        
+        const { data: topicsData, error: topicsError } = await supabase
+          .from('topics')
+          .select(`
+            id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, created_at, updated_at, slug,
+            author:profiles(id, username, display_name, full_name, avatar_url, role),
+            category:categories(id, name, slug)
+          `)
+          .eq('category_id', data.id)
+          .order('created_at', { ascending: false });
+
+        if (topicsError) {
+          console.warn('Error fetching topics:', topicsError);
+        }
+        setTopics((topicsData as any || []).filter((t: any) => t.author));
+
+        // Check if user is joined from community_members or local storage
+        if (user) {
+          const { data: memberEntry } = await supabase
+            .from('community_members')
+            .select('id')
+            .eq('community_id', data.id)
+            .eq('user_id', user.id)
+            .maybeSingle();
+          if (memberEntry) {
+            setIsJoined(true);
+          }
+        }
+      }
+
+      const { count: totalProfiles } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true });
+      if (totalProfiles) {
+        setMemberCount(totalProfiles);
+      }
+    } catch (error: any) {
+      console.error('Error fetching community data:', error);
+      setFetchError(error?.message || 'Topluluk verileri yüklenirken bir hata oluştu.');
+      setCommunity(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [id, user]);
+
+  useEffect(() => {
+    if (id) {
+      fetchCommunityData();
+    }
+  }, [id, fetchCommunityData]);
+
   useEffect(() => {
     if (community?.id) {
       const saved = localStorage.getItem('joined_communities');
       if (saved) {
         try {
           const list = JSON.parse(saved);
-          setIsJoined(list.includes(community.id));
+          if (list.includes(community.id)) {
+            setIsJoined(true);
+          }
         } catch (e) {
           console.error(e);
         }
@@ -184,7 +268,7 @@ export default function CommunityDetailPage() {
     }
   }, [community?.id]);
 
-  const toggleJoin = () => {
+  const toggleJoin = async () => {
     if (!community) return;
     
     const saved = localStorage.getItem('joined_communities');
@@ -201,75 +285,29 @@ export default function CommunityDetailPage() {
       list = list.filter(itemId => itemId !== community.id);
       setIsJoined(false);
       toast.success(`"${community.name}" topluluğundan ayrıldınız.`);
+      if (user) {
+        await supabase
+          .from('community_members')
+          .delete()
+          .eq('community_id', community.id)
+          .eq('user_id', user.id);
+      }
     } else {
       list.push(community.id);
       setIsJoined(true);
       toast.success(`"${community.name}" topluluğuna katıldınız!`);
+      if (user) {
+        await supabase
+          .from('community_members')
+          .insert({
+            id: generateUUID(),
+            community_id: community.id,
+            user_id: user.id
+          });
+      }
     }
     localStorage.setItem('joined_communities', JSON.stringify(list));
   };
-  
-  const formatCompact = (val: number) => {
-    return new Intl.NumberFormat('tr-TR', { notation: 'compact' }).format(val);
-  };
-  
-  const fetchCommunityData = useCallback(async () => {
-    if (!isSupabaseConfigured) {
-      setCommunity(null);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const isUuid = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
-      
-      let catQuery = supabase.from('categories').select('*');
-      if (isUuid(id as string)) {
-        catQuery = catQuery.eq('id', id);
-      } else {
-        catQuery = catQuery.eq('slug', id);
-      }
-      
-      const { data, error } = await catQuery.single();
-      
-      if (error || !data) {
-        setCommunity(null);
-      } else {
-        setCommunity(data);
-        
-        const { data: topicsData, error: topicsError } = await supabase
-          .from('topics')
-          .select(`
-            id, title, content, author_id, category_id, is_pinned, is_locked, is_solved, views_count, created_at, updated_at, slug,
-            author:profiles(*),
-            category:categories(name)
-          `)
-          .eq('category_id', data.id)
-          .order('created_at', { ascending: false });
-
-        if (topicsError) throw topicsError;
-        setTopics((topicsData as any || []).filter((t: any) => t.author));
-      }
-
-      const { count: totalProfiles } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true });
-      if (totalProfiles) {
-        setMemberCount(totalProfiles);
-      }
-    } catch (error) {
-      console.error('Error fetching community data:', error);
-      setCommunity(null);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    if (id) {
-      fetchCommunityData();
-    }
-  }, [id, fetchCommunityData]);
 
   const handleSummarize = async (topicId: string) => {
     const topic = topics.find(t => t.id === topicId);
@@ -306,42 +344,42 @@ export default function CommunityDetailPage() {
   const getIcon = (iconName?: string) => {
     const cls = "text-sky-400";
     switch (iconName?.toLowerCase()) {
-      case 'stethoscope': return <Stethoscope size={20} className={cls} />;
+      case 'stethoscope': return <Stethoscope size={20} className={cls} aria-hidden="true" />;
       case 'bookopen':
-      case 'book-open': return <BookOpen size={20} className={cls} />;
-      case 'briefcase': return <Briefcase size={20} className={cls} />;
-      case 'cpu': return <Cpu size={20} className={cls} />;
-      case 'code': return <Code size={20} className={cls} />;
-      case 'smile': return <Smile size={20} className={cls} />;
-      case 'shield': return <Shield size={20} className={cls} />;
-      case 'settings': return <Settings size={20} className={cls} />;
-      case 'megaphone': return <Megaphone size={20} className={cls} />;
-      case 'car': return <Car size={20} className={cls} />;
-      case 'scale': return <Scale size={20} className={cls} />;
+      case 'book-open': return <BookOpen size={20} className={cls} aria-hidden="true" />;
+      case 'briefcase': return <Briefcase size={20} className={cls} aria-hidden="true" />;
+      case 'cpu': return <Cpu size={20} className={cls} aria-hidden="true" />;
+      case 'code': return <Code size={20} className={cls} aria-hidden="true" />;
+      case 'smile': return <Smile size={20} className={cls} aria-hidden="true" />;
+      case 'shield': return <Shield size={20} className={cls} aria-hidden="true" />;
+      case 'settings': return <Settings size={20} className={cls} aria-hidden="true" />;
+      case 'megaphone': return <Megaphone size={20} className={cls} aria-hidden="true" />;
+      case 'car': return <Car size={20} className={cls} aria-hidden="true" />;
+      case 'scale': return <Scale size={20} className={cls} aria-hidden="true" />;
       case 'creditcard':
-      case 'credit-card': return <CreditCard size={20} className={cls} />;
+      case 'credit-card': return <CreditCard size={20} className={cls} aria-hidden="true" />;
       case 'piggybank':
-      case 'piggy-bank': return <PiggyBank size={20} className={cls} />;
-      case 'award': return <Award size={20} className={cls} />;
+      case 'piggy-bank': return <PiggyBank size={20} className={cls} aria-hidden="true" />;
+      case 'award': return <Award size={20} className={cls} aria-hidden="true" />;
       case 'filetext':
-      case 'file-text': return <FileText size={20} className={cls} />;
+      case 'file-text': return <FileText size={20} className={cls} aria-hidden="true" />;
       case 'heartpulse':
-      case 'heart-pulse': return <HeartPulse size={20} className={cls} />;
-      case 'activity': return <Activity size={20} className={cls} />;
-      case 'eye': return <Eye size={20} className={cls} />;
+      case 'heart-pulse': return <HeartPulse size={20} className={cls} aria-hidden="true" />;
+      case 'activity': return <Activity size={20} className={cls} aria-hidden="true" />;
+      case 'eye': return <Eye size={20} className={cls} aria-hidden="true" />;
       case 'volume2':
-      case 'volume-2': return <Volume2 size={20} className={cls} />;
+      case 'volume-2': return <Volume2 size={20} className={cls} aria-hidden="true" />;
       case 'mappin':
-      case 'map-pin': return <MapPin size={20} className={cls} />;
+      case 'map-pin': return <MapPin size={20} className={cls} aria-hidden="true" />;
       case 'graduationcap':
-      case 'graduation-cap': return <GraduationCap size={20} className={cls} />;
-      case 'calendar': return <Calendar size={20} className={cls} />;
+      case 'graduation-cap': return <GraduationCap size={20} className={cls} aria-hidden="true" />;
+      case 'calendar': return <Calendar size={20} className={cls} aria-hidden="true" />;
       case 'alerttriangle':
-      case 'alert-triangle': return <AlertTriangle size={20} className={cls} />;
-      case 'users': return <Users size={20} className={cls} />;
-      case 'message': return <MessageSquare size={20} className={cls} />;
-      case 'sparkles': return <Sparkles size={20} className={cls} />;
-      default: return <FolderTree size={20} className={cls} />;
+      case 'alert-triangle': return <AlertTriangle size={20} className={cls} aria-hidden="true" />;
+      case 'users': return <Users size={20} className={cls} aria-hidden="true" />;
+      case 'message': return <MessageSquare size={20} className={cls} aria-hidden="true" />;
+      case 'sparkles': return <Sparkles size={20} className={cls} aria-hidden="true" />;
+      default: return <FolderTree size={20} className={cls} aria-hidden="true" />;
     }
   };
 
@@ -369,8 +407,8 @@ export default function CommunityDetailPage() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="flex-1 flex flex-col items-center justify-center py-24">
-          <Loader2 className="animate-spin text-sky-400" size={40} />
+        <div className="flex-1 flex flex-col items-center justify-center py-24" role="status">
+          <Loader2 className="animate-spin text-sky-400" size={40} aria-hidden="true" />
           <p className="mt-4 text-xs font-semibold text-slate-400">Topluluk verileri yükleniyor...</p>
         </div>
       </DashboardLayout>
@@ -380,17 +418,26 @@ export default function CommunityDetailPage() {
   if (!community) {
     return (
       <DashboardLayout>
-        <div className="flex-1 flex flex-col items-center justify-center py-24 text-center px-6 space-y-4">
+        <div className="flex-1 flex flex-col items-center justify-center py-24 text-center px-6 space-y-4" role="alert">
+          <AlertCircle className="w-12 h-12 text-rose-400" aria-hidden="true" />
           <h1 className="text-xl font-bold text-slate-100">Topluluk Bulunamadı</h1>
-          <p className="text-xs text-slate-400 max-w-sm">
-            Aradığınız topluluk mevcut değil veya taşınmış olabilir.
+          <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
+            {fetchError || 'Aradığınız topluluk mevcut değil veya taşınmış olabilir.'}
           </p>
-          <button 
-            onClick={() => router.push('/communities')} 
-            className="px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold shadow-sm transition-colors cursor-pointer"
-          >
-            Topluluklara Geri Dön
-          </button>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => fetchCommunityData()} 
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-white/[0.08] transition-colors cursor-pointer"
+            >
+              <RefreshCw size={14} /> Tekrar Dene
+            </button>
+            <button 
+              onClick={() => router.push('/communities')} 
+              className="px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+            >
+              Topluluklara Geri Dön
+            </button>
+          </div>
         </div>
       </DashboardLayout>
     );
@@ -405,9 +452,9 @@ export default function CommunityDetailPage() {
         {/* Navigation Breadcrumb */}
         <nav aria-label="Erişim yolu" className="flex items-center gap-2 text-xs text-slate-400">
           <Link href="/communities" className="inline-flex items-center gap-1.5 hover:text-sky-400 transition-colors">
-            <ArrowLeft size={14} /> Topluluklar
+            <ArrowLeft size={14} aria-hidden="true" /> Topluluklar
           </Link>
-          <span className="text-slate-600">/</span>
+          <span className="text-slate-600" aria-hidden="true">/</span>
           <span className="text-slate-200 font-medium">{community.name}</span>
         </nav>
 
@@ -439,8 +486,9 @@ export default function CommunityDetailPage() {
                     ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
                     : 'bg-sky-600 hover:bg-sky-500 text-white'
                 }`}
+                aria-label={isJoined ? `${community.name} topluluğundan ayrıl` : `${community.name} topluluğuna katıl`}
               >
-                {isJoined ? <Check size={14} /> : <Plus size={14} />}
+                {isJoined ? <Check size={14} aria-hidden="true" /> : <Plus size={14} aria-hidden="true" />}
                 {isJoined ? 'Topluluktasınız' : 'Gruba Katıl'}
               </button>
 
@@ -448,7 +496,7 @@ export default function CommunityDetailPage() {
                 href={`/discussions/new?category_id=${community.id}`}
                 className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/[0.08] transition-colors"
               >
-                <Plus size={14} /> Başlık Aç
+                <Plus size={14} aria-hidden="true" /> Başlık Aç
               </Link>
             </div>
           </div>
@@ -474,17 +522,18 @@ export default function CommunityDetailPage() {
             {/* Search and Filters Bar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#111726]/80 border border-white/[0.08] rounded-xl p-3 backdrop-blur-md">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} aria-hidden="true" />
                 <input 
-                  type="text" 
+                  type="search" 
                   placeholder="Bu topluluk içinde ara..." 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  aria-label="Topluluk içi konu arama"
                   className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-white/[0.06] bg-slate-900/60 text-xs text-slate-200 focus:ring-1 focus:ring-sky-500 outline-none placeholder:text-slate-500"
                 />
               </div>
 
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1" role="tablist" aria-label="Konu filtreleme">
                 {[
                   { id: 'all', label: 'Tümü' },
                   { id: 'pinned', label: 'Sabit' },
@@ -493,6 +542,8 @@ export default function CommunityDetailPage() {
                 ].map((filter) => (
                   <button
                     key={filter.id}
+                    role="tab"
+                    aria-selected={activeFilter === filter.id}
                     onClick={() => setActiveFilter(filter.id as any)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       activeFilter === filter.id
@@ -504,6 +555,11 @@ export default function CommunityDetailPage() {
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Screen reader live notification */}
+            <div className="sr-only" aria-live="polite">
+              {filteredTopics.length} adet konu bulundu.
             </div>
 
             {/* Discussions List */}
@@ -525,7 +581,7 @@ export default function CommunityDetailPage() {
                           className="p-4 bg-sky-500/5 border border-sky-500/20 rounded-xl space-y-2"
                         >
                           <div className="flex items-center gap-1.5 text-sky-400 text-xs font-semibold">
-                            <Sparkles size={14} /> AI Tartışma Özeti
+                            <Sparkles size={14} aria-hidden="true" /> AI Tartışma Özeti
                           </div>
                           <p className="text-xs text-slate-300 leading-relaxed italic">
                             &ldquo;{summaryResult.text}&rdquo;
@@ -543,7 +599,7 @@ export default function CommunityDetailPage() {
                 ))
               ) : (
                 <div className="text-center py-16 px-6 bg-[#111726]/60 rounded-2xl border border-dashed border-white/[0.08] space-y-3">
-                  <MessageSquare size={36} className="mx-auto text-slate-600" />
+                  <MessageSquare size={36} className="mx-auto text-slate-600" aria-hidden="true" />
                   <div className="space-y-1">
                     <h3 className="text-sm font-bold text-slate-200">Henüz Tartışma Bulunmuyor</h3>
                     <p className="text-xs text-slate-400 max-w-sm mx-auto">
@@ -554,7 +610,7 @@ export default function CommunityDetailPage() {
                     href={`/discussions/new?category_id=${community.id}`}
                     className="inline-flex items-center gap-1.5 px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-semibold transition-colors"
                   >
-                    <Plus size={14} /> İlk Başlığı Siz Açın
+                    <Plus size={14} aria-hidden="true" /> İlk Başlığı Siz Açın
                   </Link>
                 </div>
               )}
@@ -563,18 +619,18 @@ export default function CommunityDetailPage() {
           </div>
 
           {/* Right Sidebar Column (1 col on large screen) */}
-          <aside className="space-y-4">
+          <aside className="space-y-4" aria-label="Topluluk Bilgileri">
             
             {/* Rules Card */}
             <div className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold text-slate-200">
-                <Shield size={16} className="text-sky-400" />
+                <Shield size={16} className="text-sky-400" aria-hidden="true" />
                 <span>Topluluk Kuralları</span>
               </div>
               <ul className="space-y-2.5 text-xs text-slate-300 leading-relaxed">
                 {meta.rules.map((rule, idx) => (
                   <li key={idx} className="flex items-start gap-2">
-                    <span className="text-sky-400 font-bold mt-0.5">•</span>
+                    <span className="text-sky-400 font-bold mt-0.5" aria-hidden="true">•</span>
                     <span>{rule}</span>
                   </li>
                 ))}
@@ -586,21 +642,21 @@ export default function CommunityDetailPage() {
               <div className="text-xs font-bold text-slate-200">Topluluk İstatistikleri</div>
               <div className="space-y-2 text-xs">
                 <div className="flex items-center justify-between py-1.5 border-b border-white/[0.06]">
-                  <span className="text-slate-400 flex items-center gap-2"><Users size={14} className="text-slate-500" /> Üyeler</span>
+                  <span className="text-slate-400 flex items-center gap-2"><Users size={14} className="text-slate-500" aria-hidden="true" /> Üyeler</span>
                   <span className="font-semibold text-slate-200">
-                    {memberCount > 0 ? formatCompact(memberCount + meta.memberCount) : formatCompact(meta.memberCount)}
+                    {memberCount > 0 ? formatCompactNumber(memberCount + meta.memberCount) : formatCompactNumber(meta.memberCount)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between py-1.5 border-b border-white/[0.06]">
-                  <span className="text-slate-400 flex items-center gap-2"><MessageSquare size={14} className="text-slate-500" /> Konular</span>
+                  <span className="text-slate-400 flex items-center gap-2"><MessageSquare size={14} className="text-slate-500" aria-hidden="true" /> Konular</span>
                   <span className="font-semibold text-slate-200">{topics.length}</span>
                 </div>
                 <div className="flex items-center justify-between py-1.5 border-b border-white/[0.06]">
-                  <span className="text-slate-400 flex items-center gap-2"><Globe size={14} className="text-slate-500" /> Görünürlük</span>
+                  <span className="text-slate-400 flex items-center gap-2"><Globe size={14} className="text-slate-500" aria-hidden="true" /> Görünürlük</span>
                   <span className="text-sky-400 font-medium">Açık Topluluk</span>
                 </div>
                 <div className="flex items-center justify-between pt-1">
-                  <span className="text-slate-400 flex items-center gap-2"><Shield size={14} className="text-slate-500" /> Durum</span>
+                  <span className="text-slate-400 flex items-center gap-2"><Shield size={14} className="text-slate-500" aria-hidden="true" /> Durum</span>
                   <span className="text-emerald-400 font-medium">Moderatör Onaylı</span>
                 </div>
               </div>
@@ -609,7 +665,7 @@ export default function CommunityDetailPage() {
             {/* Quick Contact Card */}
             <div className="bg-gradient-to-br from-sky-950/40 to-slate-900/60 border border-sky-500/20 rounded-2xl p-5 space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold text-sky-400">
-                <HelpCircle size={16} /> Destek &amp; Moderasyon
+                <HelpCircle size={16} aria-hidden="true" /> Destek &amp; Moderasyon
               </div>
               <p className="text-xs text-slate-300 leading-relaxed">
                 Bu topluluk ile ilgili hak ihlali, yanıltıcı bilgi veya erişilebilirlik sorunu yaşarsanız moderatör ekibimizle iletişime geçebilirsiniz.

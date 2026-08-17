@@ -13,7 +13,7 @@ import Link from 'next/link';
 export default function AccessibilityStatementPage() {
   return (
     <SiteLayout>
-      <div className="flex-1 w-full bg-[#090A0F] text-slate-100" role="main">
+      <div className="flex-1 w-full bg-[#090A0F] text-slate-100">
         
         {/* --- HERO SECTION --- */}
         <section className="relative py-12 md:py-16 border-b border-white/[0.08] bg-gradient-to-b from-sky-500/[0.04] via-transparent to-transparent">

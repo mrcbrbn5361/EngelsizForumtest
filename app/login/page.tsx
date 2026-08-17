@@ -8,7 +8,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { formatAuthError } from '@/lib/auth-utils';
 import { 
   LogIn, Mail, Lock, AlertCircle, Loader2, Sparkles, 
-  HelpCircle, Eye, EyeOff, Check, UserPlus
+  HelpCircle, Eye, EyeOff, Check, UserPlus 
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
@@ -31,6 +31,7 @@ export default function LoginPage() {
   const emailId = useId();
   const passwordId = useId();
   const rememberMeId = useId();
+  const errorId = useId();
 
   // Load Remembered Email
   useEffect(() => {
@@ -56,9 +57,10 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
 
+    const cleanEmail = email.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError('Lütfen geçerli bir e-posta adresi giriniz.');
+    if (!emailRegex.test(cleanEmail)) {
+      setError('Lütfen geçerli bir e-posta adresi giriniz (örnek: adiniz@domain.com).');
       return;
     }
 
@@ -69,7 +71,7 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
       
       if (signInError) {
         throw signInError;
@@ -78,7 +80,7 @@ export default function LoginPage() {
       // Handle Remember Me
       try {
         if (rememberMe) {
-          localStorage.setItem('ef_remembered_email', email);
+          localStorage.setItem('ef_remembered_email', cleanEmail);
         } else {
           localStorage.removeItem('ef_remembered_email');
         }
@@ -121,17 +123,17 @@ export default function LoginPage() {
           <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-6 sm:p-10 border border-border/80 shadow-xs rounded-2xl bg-card relative overflow-hidden space-y-6"
+            className="p-6 sm:p-10 border border-white/[0.08] shadow-2xl rounded-3xl bg-[#111726]/90 backdrop-blur-md relative overflow-hidden space-y-6 text-slate-100"
           >
             {/* Form Header */}
             <header className="text-center space-y-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
                 <Sparkles size={11} className="fill-current" /> ENGELSİZ ERİŞİM SİSTEMİ
               </span>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-100">
                 Tekrar Hoş Geldiniz
               </h1>
-              <p className="text-xs text-muted-foreground font-normal leading-relaxed">
+              <p className="text-xs text-slate-400 font-normal leading-relaxed">
                 Kapsayıcı, engelsiz ve güvenli bilgi paylaşım ağı.
               </p>
             </header>
@@ -139,9 +141,10 @@ export default function LoginPage() {
             {/* Social Authentication */}
             <div className="space-y-4">
               <button
+                type="button"
                 onClick={handleGoogleLogin}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-3 bg-background border border-border/80 hover:border-sky-500/40 px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-foreground hover:bg-muted/30 transition-all cursor-pointer outline-none"
+                className="w-full flex items-center justify-center gap-3 bg-[#0b0f19] border border-white/[0.08] hover:border-sky-500/40 px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-200 hover:bg-white/[0.02] transition-all cursor-pointer outline-none"
                 aria-label="Google Hesabı ile Giriş Yap"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
@@ -155,10 +158,10 @@ export default function LoginPage() {
 
               <div className="relative py-1" aria-hidden="true">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border/60"></div>
+                  <div className="w-full border-t border-white/[0.08]"></div>
                 </div>
                 <div className="relative flex justify-center text-[10px] uppercase">
-                  <span className="bg-card px-3 text-muted-foreground font-bold tracking-wider">VEYA E-POSTA İLE</span>
+                  <span className="bg-[#111726] px-3 text-slate-400 font-bold tracking-wider">VEYA E-POSTA İLE</span>
                 </div>
               </div>
             </div>
@@ -166,33 +169,37 @@ export default function LoginPage() {
             {/* Error Message Section */}
             {error && (
               <div 
+                id={errorId}
                 role="alert" 
+                aria-live="assertive"
                 className="flex items-start gap-2.5 p-3.5 rounded-xl bg-destructive/10 text-destructive border border-destructive/20 font-bold text-xs leading-relaxed"
               >
-                <AlertCircle size={16} className="shrink-0 mt-0.5" />
+                <AlertCircle size={16} className="shrink-0 mt-0.5" aria-hidden="true" />
                 <span>{error}</span>
               </div>
             )}
 
             {/* Standard Login Form */}
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-4" noValidate>
               
               {/* E-mail Input */}
               <div className="space-y-1.5">
-                <label htmlFor={emailId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                  E-posta Adresi <span className="text-destructive" aria-hidden="true">*</span>
+                <label htmlFor={emailId} className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                  E-posta Adresi <span className="text-rose-400" aria-hidden="true">*</span>
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10" size={16} />
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none z-10" size={16} aria-hidden="true" />
                   <input
                     id={emailId}
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
+                    className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
                     placeholder="ornek@adresiniz.com"
                     autoComplete="email"
+                    aria-invalid={!!error && !email.includes('@')}
+                    aria-describedby={error ? errorId : undefined}
                   />
                 </div>
               </div>
@@ -200,35 +207,37 @@ export default function LoginPage() {
               {/* Password Input */}
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center px-0.5">
-                  <label htmlFor={passwordId} className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                    Şifre <span className="text-destructive" aria-hidden="true">*</span>
+                  <label htmlFor={passwordId} className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                    Şifre <span className="text-rose-400" aria-hidden="true">*</span>
                   </label>
                   <Link 
                     href="/auth/forgot-password" 
-                    className="text-[11px] font-bold text-sky-400 hover:underline outline-none"
+                    className="text-[11px] font-bold text-sky-400 hover:text-sky-300 transition-colors outline-none"
                   >
                     Şifremi Unuttum?
                   </Link>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10" size={16} />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none z-10" size={16} aria-hidden="true" />
                   <input
                     id={passwordId}
                     type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full h-11 pl-10 pr-10 text-sm font-medium rounded-xl border border-border/80 bg-background text-foreground outline-none focus:border-sky-500 transition-colors"
+                    className="w-full h-11 pl-10 pr-10 text-sm font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
                     placeholder="••••••••"
                     autoComplete="current-password"
+                    aria-invalid={!!error && password.length < 6}
+                    aria-describedby={error ? errorId : undefined}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer outline-none p-1"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 cursor-pointer outline-none p-1"
                     aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
                   >
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
                   </button>
                 </div>
               </div>
@@ -244,8 +253,8 @@ export default function LoginPage() {
                     onClick={() => setRememberMe(!rememberMe)}
                     className={`size-5 rounded-md border flex items-center justify-center transition-all cursor-pointer outline-none ${
                       rememberMe 
-                        ? 'bg-sky-500 border-sky-500 text-white' 
-                        : 'border-border/80 hover:border-sky-500/40 bg-background'
+                        ? 'bg-sky-500 border-sky-500 text-slate-950' 
+                        : 'border-white/[0.12] hover:border-sky-500/40 bg-[#0b0f19]'
                     }`}
                     aria-label="Beni Hatırla"
                   >
@@ -253,14 +262,14 @@ export default function LoginPage() {
                   </button>
                   <label 
                     onClick={() => setRememberMe(!rememberMe)} 
-                    className="text-xs font-bold text-muted-foreground select-none cursor-pointer"
+                    className="text-xs font-bold text-slate-300 select-none cursor-pointer"
                   >
                     Beni Hatırla
                   </label>
                 </div>
 
-                <div className="flex items-center gap-1 text-muted-foreground text-[11px] font-semibold">
-                  <HelpCircle size={13} />
+                <div className="flex items-center gap-1 text-slate-400 text-[11px] font-semibold">
+                  <HelpCircle size={13} aria-hidden="true" />
                   <span>GÜVENLİ GİRİŞ</span>
                 </div>
               </div>
@@ -269,27 +278,27 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-11 bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
+                className="w-full h-11 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-sky-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
               >
                 {loading ? (
-                  <Loader2 className="animate-spin" size={16} />
+                  <Loader2 className="animate-spin" size={16} aria-hidden="true" />
                 ) : (
-                  <LogIn size={16} />
+                  <LogIn size={16} aria-hidden="true" />
                 )}
                 {loading ? 'Giriş Yapılıyor...' : 'Sisteme Giriş Yap'}
               </button>
             </form>
 
             {/* Registration Promotion Section */}
-            <footer className="pt-4 border-t border-border/60 text-center space-y-3">
-              <p className="text-xs text-muted-foreground font-normal">
+            <footer className="pt-4 border-t border-white/[0.08] text-center space-y-3">
+              <p className="text-xs text-slate-400 font-normal">
                 Henüz bir hesabınız yok mu?
               </p>
               <Link 
                 href="/register" 
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-sky-500/30 hover:border-sky-500 text-sky-400 hover:bg-sky-500/10 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer"
               >
-                <UserPlus size={14} /> Engelsiz Sihirbazla Kayıt Ol
+                <UserPlus size={14} aria-hidden="true" /> Engelsiz Sihirbazla Kayıt Ol
               </Link>
             </footer>
 
@@ -299,3 +308,4 @@ export default function LoginPage() {
     </SiteLayout>
   );
 }
+

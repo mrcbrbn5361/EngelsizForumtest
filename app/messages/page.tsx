@@ -1,15 +1,37 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { ConversationList } from '@/components/messages/conversation-list';
 import { ChatBox } from '@/components/messages/chat-box';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase } from '@/lib/supabase';
-import { MessageSquare, Loader2, Menu } from 'lucide-react';
+import { MessageSquare, Loader2, Menu, Sparkles } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function MessagesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <div className="flex-1 flex flex-col items-center justify-center p-4">
+          <Loader2 className="animate-spin text-sky-400 mb-2 size-7" />
+          <p className="text-xs text-slate-400">Mesajlar yükleniyor...</p>
+        </div>
+        <Footer />
+      </div>
+    }>
+      <MessagesContent />
+    </Suspense>
+  );
+}
+
+function MessagesContent() {
+  const searchParams = useSearchParams();
+  const targetUserId = searchParams.get('userId');
+
   const { user, profile } = useAuth();
   const [conversations, setConversations] = useState<any[]>([]);
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
@@ -64,10 +86,62 @@ export default function MessagesPage() {
         }) || [];
 
         setConversations(processed);
+
+        // If targetUserId is present, find or open conversation
+        if (targetUserId) {
+          const existing = processed.find(c => c.other_user?.id === targetUserId);
+          if (existing) {
+            setSelectedConvId(existing.id);
+            setShowListOnMobile(false);
+          } else {
+            // Create a new conversation with target user
+            initiateDirectConversation(targetUserId, processed);
+          }
+        }
       } catch (err) {
         console.error('Error fetching conversations:', err);
       } finally {
         setLoading(false);
+      }
+    };
+
+    const initiateDirectConversation = async (targetId: string, currentConvs: any[]) => {
+      try {
+        // Create conversation
+        const { data: newConv, error: createErr } = await supabase
+          .from('conversations')
+          .insert({})
+          .select()
+          .single();
+
+        if (createErr || !newConv) return;
+
+        // Add both members
+        await supabase.from('conversation_members').insert([
+          { conversation_id: newConv.id, user_id: user.id },
+          { conversation_id: newConv.id, user_id: targetId }
+        ]);
+
+        // Fetch target user profile
+        const { data: otherProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', targetId)
+          .maybeSingle();
+
+        const newConvItem = {
+          ...newConv,
+          other_user: otherProfile,
+          last_message: null,
+          unread_count: 0
+        };
+
+        setConversations([newConvItem, ...currentConvs]);
+        setSelectedConvId(newConv.id);
+        setShowListOnMobile(false);
+        toast.success('Yeni sohbet başlatıldı.');
+      } catch (err) {
+        console.error('Error initiating direct conversation:', err);
       }
     };
 
@@ -85,7 +159,7 @@ export default function MessagesPage() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user, targetUserId]);
 
   const selectedConversation = conversations.find(c => c.id === selectedConvId);
 
@@ -144,6 +218,7 @@ export default function MessagesPage() {
                 <button 
                   onClick={() => setShowListOnMobile(true)}
                   className="md:hidden absolute top-3 left-3 z-50 p-1.5 bg-slate-900 border border-white/[0.08] rounded-lg text-slate-300 cursor-pointer"
+                  aria-label="Sohbet Listesini Göster"
                 >
                   <Menu size={16} />
                 </button>
@@ -156,8 +231,8 @@ export default function MessagesPage() {
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center p-8 text-slate-500">
                 <MessageSquare size={48} className="mb-3 opacity-30 text-sky-400" />
-                <h3 className="text-sm font-semibold text-slate-300">Bir sohbet seçin</h3>
-                <p className="text-xs text-slate-500 mt-1 max-w-xs">Yazışmaya başlamak için sol listeden bir görüşme seçin veya üye profilinden mesaj gönderin.</p>
+                <h2 className="text-sm font-semibold text-slate-300">Bir sohbet seçin</h2>
+                <p className="text-xs text-slate-500 mt-1 max-w-xs leading-relaxed">Yazışmaya başlamak için sol listeden bir görüşme seçin veya üye profilinden mesaj gönderin.</p>
               </div>
             )}
           </div>

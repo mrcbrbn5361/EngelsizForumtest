@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { Message, Profile } from '@/types/database';
-import { Send, Loader2, User, Mic, MicOff, Square, Trash2, Check } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Send, Loader2, User, Mic, MicOff, Square, Trash2, Check, AlertCircle, RefreshCw } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -23,6 +23,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Voice Recording States
@@ -34,29 +35,33 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const scrollToBottom = useCallback((smooth = true) => {
+    messagesEndRef.current?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' });
+  }, []);
+
+  const fetchMessages = useCallback(async () => {
+    if (!conversationId) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, error: fetchErr } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: true });
+
+      if (fetchErr) throw fetchErr;
+      setMessages(data || []);
+    } catch (err: any) {
+      console.error('Error fetching messages:', err);
+      setError('Mesajlar yüklenirken bir sorun oluştu.');
+    } finally {
+      setLoading(false);
+      setTimeout(() => scrollToBottom(false), 100);
+    }
+  }, [conversationId, scrollToBottom]);
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('messages')
-          .select('*')
-          .eq('conversation_id', conversationId)
-          .order('created_at', { ascending: true });
-
-        if (error) throw error;
-        setMessages(data || []);
-      } catch (err) {
-        console.error('Error fetching messages:', err);
-      } finally {
-        setLoading(false);
-        setTimeout(scrollToBottom, 100);
-      }
-    };
-
     fetchMessages();
 
     const channel = supabase
@@ -70,12 +75,16 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
           filter: `conversation_id=eq.${conversationId}`,
         },
         (payload) => {
+          const newMsg = payload.new as Message;
           setMessages((prev) => {
-            const exists = prev.some(m => m.id === (payload.new as Message).id);
+            // Replace optimistic message or append
+            const exists = prev.some(m => m.id === newMsg.id);
             if (exists) return prev;
-            return [...prev, payload.new as Message];
+            // Also check if matches temporary optimistic message with same sender and content
+            const withoutTemp = prev.filter(m => !(m.id.startsWith('temp-') && m.sender_id === newMsg.sender_id && m.content === newMsg.content));
+            return [...withoutTemp, newMsg];
           });
-          setTimeout(scrollToBottom, 50);
+          setTimeout(() => scrollToBottom(true), 50);
         }
       )
       .subscribe();
@@ -84,12 +93,12 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
       supabase.removeChannel(channel);
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [conversationId]);
+  }, [conversationId, fetchMessages, scrollToBottom]);
 
   // Start Voice Recording
   const startRecording = async () => {
     try {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      if (typeof window === 'undefined' || !navigator?.mediaDevices?.getUserMedia) {
         toast.error('Tarayıcınız ses kaydını desteklemiyor.');
         return;
       }
@@ -110,7 +119,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
         const audioUrl = URL.createObjectURL(audioBlob);
         setRecordedAudioBlob(audioBlob);
         setRecordedAudioUrl(audioUrl);
-        // Stop audio tracks
         stream.getTracks().forEach(track => track.stop());
       };
 
@@ -147,6 +155,9 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
+    if (recordedAudioUrl) {
+      URL.revokeObjectURL(recordedAudioUrl);
+    }
     setRecordedAudioBlob(null);
     setRecordedAudioUrl(null);
     setRecordingTime(0);
@@ -161,7 +172,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
       const fileName = `voice_${conversationId}_${Date.now()}.webm`;
       const filePath = `voice-messages/${fileName}`;
 
-      // Upload to Supabase Storage if bucket exists
       let finalAudioUrl = '';
       try {
         const { error: uploadError } = await supabase.storage
@@ -181,7 +191,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
         console.warn('Storage upload fallback:', err);
       }
 
-      // If storage url was not obtained, convert to base64 Data URL
       if (!finalAudioUrl) {
         finalAudioUrl = await new Promise<string>((resolve) => {
           const reader = new FileReader();
@@ -190,7 +199,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
         });
       }
 
-      const { error } = await supabase
+      const { error: insertErr } = await supabase
         .from('messages')
         .insert({
           id: messageId,
@@ -203,16 +212,15 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
           is_voice_message: true,
         });
 
-      if (error) throw error;
+      if (insertErr) throw insertErr;
 
-      // Reset recording state
       setRecordedAudioBlob(null);
       setRecordedAudioUrl(null);
       setRecordingTime(0);
-      toast.success('Sesli mesaj gönderildi.');
+      toast.success('Sesli mesaj iletildi.');
     } catch (err: any) {
       console.error('Error sending voice message:', err);
-      toast.error('Sesli mesaj gönderilemedi: ' + err.message);
+      toast.error('Sesli mesaj gönderilemedi: ' + (err.message || 'Hata oluştu'));
     } finally {
       setSending(false);
     }
@@ -220,25 +228,44 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim() || sending) return;
+    const textToSend = newMessage.trim();
+    if (!textToSend || sending) return;
 
+    const tempId = `temp-${generateUUID()}`;
+    const optimisticMessage: Message = {
+      id: tempId,
+      conversation_id: conversationId,
+      sender_id: currentUserProfile.id,
+      content: textToSend,
+      message_type: 'text',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    // Optimistic UI update
+    setMessages(prev => [...prev, optimisticMessage]);
+    setNewMessage('');
     setSending(true);
+    setTimeout(() => scrollToBottom(true), 30);
+
     try {
-      const { error } = await supabase
+      const { error: insertErr } = await supabase
         .from('messages')
         .insert({
           id: generateUUID(),
           conversation_id: conversationId,
           sender_id: currentUserProfile.id,
-          content: newMessage.trim(),
+          content: textToSend,
           message_type: 'text',
         });
 
-      if (error) throw error;
-      setNewMessage('');
-    } catch (err) {
+      if (insertErr) throw insertErr;
+    } catch (err: any) {
       console.error('Error sending message:', err);
       toast.error('Mesaj gönderilemedi.');
+      // Rollback optimistic message
+      setMessages(prev => prev.filter(m => m.id !== tempId));
+      setNewMessage(textToSend);
     } finally {
       setSending(false);
     }
@@ -251,10 +278,10 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
   };
 
   return (
-    <div id="chat-box-container" className="flex flex-col h-full bg-slate-950/40">
-      {/* Header */}
-      <div className="p-3.5 border-b border-white/[0.08] bg-[#111726]/90 flex items-center justify-between">
-        <div className="flex items-center gap-3 pl-8 md:pl-0">
+    <div id="chat-box-container" className="flex flex-col h-full bg-[#090a0f] text-slate-100">
+      {/* Accessible Chat Header */}
+      <div className="p-3.5 border-b border-white/[0.08] bg-[#111726] flex items-center justify-between">
+        <div className="flex items-center gap-3">
           <UserAvatar 
             src={otherUser?.avatar_url}
             username={otherUser?.username}
@@ -263,23 +290,47 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
             className="rounded-xl border border-white/[0.08]"
           />
           <div>
-            <h2 className="font-semibold text-xs text-slate-100">{otherUser?.full_name || otherUser?.username || 'Kullanıcı'}</h2>
+            <h2 className="font-bold text-xs text-slate-100 leading-none mb-0.5">
+              {otherUser?.full_name || otherUser?.username || 'Kullanıcı'}
+            </h2>
             <p className="text-[10px] text-sky-400 font-mono">@{otherUser?.username || 'isimsiz'}</p>
           </div>
         </div>
       </div>
 
-      {/* Messages area */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
+      {/* Messages Live Region */}
+      <div 
+        className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3.5"
+        role="log"
+        aria-live="polite"
+        aria-label="Mesajlaşma geçmişi"
+      >
         {loading ? (
-          <div className="flex items-center justify-center h-full">
-            <Loader2 className="animate-spin text-sky-400" size={24} />
+          <div className="flex flex-col items-center justify-center h-full gap-2">
+            <Loader2 className="animate-spin text-sky-400" size={24} aria-hidden="true" />
+            <p className="text-xs text-slate-400 font-medium">Mesajlar yükleniyor...</p>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center h-full text-center p-6">
+            <AlertCircle size={32} className="text-destructive mb-2" aria-hidden="true" />
+            <p className="text-xs font-semibold text-slate-300">{error}</p>
+            <button
+              onClick={fetchMessages}
+              className="mt-3 px-3.5 py-1.5 rounded-lg bg-[#161f33] hover:bg-[#1c2740] text-xs text-sky-400 font-bold border border-white/[0.08] cursor-pointer inline-flex items-center gap-1.5"
+            >
+              <RefreshCw size={13} aria-hidden="true" />
+              Tekrar Dene
+            </button>
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-slate-500">
-            <User size={40} className="opacity-30" />
-            <p className="text-xs font-semibold text-slate-400 mt-2">Henüz mesaj yok</p>
-            <p className="text-[11px] text-slate-500">Yazılı veya sesli mesaj göndererek sohbeti başlatın.</p>
+          <div className="flex flex-col items-center justify-center h-full text-slate-400 text-center p-6">
+            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 flex items-center justify-center border border-sky-500/20 mb-3">
+              <User size={24} className="text-sky-400" aria-hidden="true" />
+            </div>
+            <p className="text-xs font-bold text-slate-200">Henüz mesaj yok</p>
+            <p className="text-[11px] text-slate-400 mt-1 max-w-[220px]">
+              Yazılı veya sesli mesaj göndererek sohbeti başlatabilirsiniz.
+            </p>
           </div>
         ) : (
           messages.map((msg) => {
@@ -304,15 +355,15 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
                     <div
                       className={`p-3 rounded-2xl text-xs leading-relaxed ${
                         isMe
-                          ? 'bg-sky-600 text-white rounded-br-xs shadow-md'
-                          : 'bg-[#111726] border border-white/[0.08] text-slate-200 rounded-bl-xs'
+                          ? 'bg-sky-500 text-slate-950 font-medium rounded-br-xs shadow-md'
+                          : 'bg-[#111726] border border-white/[0.08] text-slate-100 rounded-bl-xs'
                       }`}
                     >
                       {msg.content}
                     </div>
                   )}
                   <div className={`text-[10px] text-slate-500 px-1 font-mono ${isMe ? 'text-right' : 'text-left'}`}>
-                    {format(new Date(msg.created_at), 'HH:mm', { locale: tr })}
+                    {msg.created_at ? format(new Date(msg.created_at), 'HH:mm', { locale: tr }) : 'şimdi'}
                   </div>
                 </div>
               </motion.div>
@@ -322,14 +373,13 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input area */}
-      <div className="p-3 border-t border-white/[0.08] bg-[#111726]/90">
-        {/* Active Recording UI */}
+      {/* Input Area */}
+      <div className="p-3 border-t border-white/[0.08] bg-[#111726]">
         {isRecording ? (
-          <div className="flex items-center justify-between gap-3 bg-rose-500/10 border border-rose-500/20 rounded-xl px-4 py-2 text-xs">
+          <div className="flex items-center justify-between gap-3 bg-rose-500/10 border border-rose-500/20 rounded-xl px-4 py-2.5 text-xs">
             <div className="flex items-center gap-2">
-              <span className="size-2.5 rounded-full bg-rose-500 animate-ping" />
-              <span className="font-semibold text-rose-400">Ses Kaydediliyor...</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" aria-hidden="true" />
+              <span className="font-bold text-rose-400">Ses Kaydediliyor...</span>
               <span className="font-mono text-slate-300">({formatSecs(recordingTime)})</span>
             </div>
             <div className="flex items-center gap-2">
@@ -338,22 +388,23 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
                 onClick={cancelRecording}
                 className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
                 title="İptal Et"
+                aria-label="Ses Kaydını İptal Et"
               >
-                <Trash2 size={15} />
+                <Trash2 size={15} aria-hidden="true" />
               </button>
               <button
                 type="button"
                 onClick={stopRecording}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-semibold cursor-pointer shadow-md"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs cursor-pointer shadow-md"
+                aria-label="Kaydı Tamamla"
               >
-                <Square size={13} />
+                <Square size={13} aria-hidden="true" />
                 <span>BİTİR</span>
               </button>
             </div>
           </div>
         ) : recordedAudioUrl ? (
-          /* Recorded Audio Preview before Send */
-          <div className="flex items-center justify-between gap-3 bg-slate-900 border border-sky-500/30 rounded-xl px-3.5 py-2">
+          <div className="flex items-center justify-between gap-3 bg-[#0b0f19] border border-sky-500/30 rounded-xl px-3.5 py-2">
             <div className="flex-1 min-w-0">
               <AudioMessagePlayer audioUrl={recordedAudioUrl} duration={recordingTime} />
             </div>
@@ -363,22 +414,23 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
                 onClick={cancelRecording}
                 className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
                 title="Sil"
+                aria-label="Kaydı Sil"
               >
-                <Trash2 size={15} />
+                <Trash2 size={15} aria-hidden="true" />
               </button>
               <button
                 type="button"
                 onClick={sendVoiceMessage}
                 disabled={sending}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs cursor-pointer shadow-md disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs cursor-pointer shadow-md disabled:opacity-50"
+                aria-label="Sesli Mesajı Gönder"
               >
-                {sending ? <Loader2 className="animate-spin" size={14} /> : <Check size={14} />}
+                {sending ? <Loader2 className="animate-spin" size={14} aria-hidden="true" /> : <Check size={14} aria-hidden="true" />}
                 <span>GÖNDER</span>
               </button>
             </div>
           </div>
         ) : (
-          /* Standard Text & Voice Input Form */
           <form onSubmit={handleSend} className="relative flex items-center gap-2">
             <input
               type="text"
@@ -386,7 +438,8 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Mesajınızı buraya yazın..."
               disabled={sending}
-              className="flex-1 h-10 px-4 text-xs rounded-xl bg-slate-900 border border-white/[0.08] text-slate-200 placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+              aria-label="Mesaj metni"
+              className="flex-1 h-10 px-4 text-xs rounded-xl bg-[#0b0f19] border border-white/[0.08] text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-sky-500 transition-colors"
             />
 
             {/* Voice Record Button */}
@@ -394,21 +447,21 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
               id="voice-record-button"
               type="button"
               onClick={startRecording}
-              className="size-10 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/[0.08] text-slate-300 hover:text-sky-400 flex items-center justify-center transition-colors cursor-pointer"
+              className="w-10 h-10 rounded-xl bg-[#0b0f19] hover:bg-[#161f33] border border-white/[0.08] text-slate-300 hover:text-sky-400 flex items-center justify-center transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0"
               title="Sesli Mesaj Kaydet"
               aria-label="Sesli Mesaj Kaydet"
             >
-              <Mic size={16} />
+              <Mic size={16} aria-hidden="true" />
             </button>
 
             {/* Send Button */}
             <button
               type="submit"
               disabled={!newMessage.trim() || sending}
-              className="size-10 rounded-xl bg-sky-600 hover:bg-sky-500 text-white flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40"
+              className="w-10 h-10 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-40 font-bold outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0"
               aria-label="Mesaj Gönder"
             >
-              {sending ? <Loader2 className="animate-spin" size={16} /> : <Send size={15} />}
+              {sending ? <Loader2 className="animate-spin text-slate-950" size={16} aria-hidden="true" /> : <Send size={15} aria-hidden="true" />}
             </button>
           </form>
         )}
@@ -416,4 +469,5 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser }: ChatB
     </div>
   );
 }
+
 

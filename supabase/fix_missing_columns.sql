@@ -64,8 +64,33 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='is_solved') THEN
     ALTER TABLE public.topics ADD COLUMN is_solved BOOLEAN DEFAULT false;
   END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='solution_comment_id') THEN
+    ALTER TABLE public.topics ADD COLUMN solution_comment_id UUID REFERENCES public.comments(id) ON DELETE SET NULL;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='solved_at') THEN
+    ALTER TABLE public.topics ADD COLUMN solved_at TIMESTAMPTZ DEFAULT NULL;
+  END IF;
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='topics' AND column_name='slug') THEN
     ALTER TABLE public.topics ADD COLUMN slug TEXT;
+  END IF;
+
+  -- Ensure Comments has parent_id and is_solution
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='comments' AND column_name='parent_id') THEN
+    ALTER TABLE public.comments ADD COLUMN parent_id UUID REFERENCES public.comments(id) ON DELETE CASCADE;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='comments' AND column_name='is_solution') THEN
+    ALTER TABLE public.comments ADD COLUMN is_solution BOOLEAN DEFAULT false;
+  END IF;
+
+  -- Ensure Messages has voice columns
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='messages' AND column_name='is_audio') THEN
+    ALTER TABLE public.messages ADD COLUMN is_audio BOOLEAN DEFAULT false;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='messages' AND column_name='audio_url') THEN
+    ALTER TABLE public.messages ADD COLUMN audio_url TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='messages' AND column_name='duration') THEN
+    ALTER TABLE public.messages ADD COLUMN duration NUMERIC DEFAULT 0;
   END IF;
 
   -- Cleanup redundant columns causing errors

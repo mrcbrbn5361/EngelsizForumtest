@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { 
   Home, 
@@ -24,7 +24,9 @@ import {
   MoveHorizontal, 
   Target, 
   RotateCcw,
-  Calculator
+  Calculator,
+  User,
+  LogOut
 } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
@@ -35,10 +37,12 @@ import { UserAvatar } from '@/components/ui/user-avatar';
 import { cn } from '@/lib/utils';
 
 /**
- * Accessible Navbar for EngelsizForum.
+ * Accessible, Responsive Navbar for EngelsizForum.
  */
 export function Navbar() {
-  const { user, profile, loading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { user, profile, loading, signOut } = useAuth();
   const { 
     fontSize, 
     highContrast, 
@@ -49,19 +53,37 @@ export function Navbar() {
     updateSettings, 
     resetSettings 
   } = useAccessibility();
+  
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = React.useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
   const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast.success('Başarıyla çıkış yapıldı.');
+      router.push('/');
+      router.refresh();
+    } catch (err) {
+      console.error('Sign out error:', err);
+      toast.error('Çıkış yapılırken bir sorun oluştu.');
+    }
+  };
 
   return (
     <nav 
       id="main-navigation" 
-      className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-[#090a0f]/90 backdrop-blur-md transition-colors" 
+      className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-[#090a0f]/95 backdrop-blur-md transition-colors" 
       role="navigation" 
       aria-label="Ana Navigasyon"
     >
@@ -87,8 +109,8 @@ export function Navbar() {
           className="flex items-center outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg p-0.5 group shrink-0 transition-opacity hover:opacity-90 min-w-0 select-none"
           aria-label="EngelsizForum Ana Sayfa"
         >
-          <div className="flex flex-col min-w-0 select-none pointer-events-none" style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}>
-            <span className="select-none text-base sm:text-lg lg:text-xl font-bold tracking-tight text-slate-100 leading-none truncate" suppressHydrationWarning>
+          <div className="flex flex-col min-w-0 select-none pointer-events-none" style={{ userSelect: 'none', WebkitUserSelect: 'none' }}>
+            <span className="select-none text-base sm:text-lg lg:text-xl font-bold tracking-tight text-slate-100 leading-none truncate">
               Engelsiz<span className="text-sky-400">Forum</span>
             </span>
             <span className="select-none text-[10px] font-medium tracking-wide text-slate-400 leading-tight mt-0.5 hidden md:inline">
@@ -96,6 +118,15 @@ export function Navbar() {
             </span>
           </div>
         </Link>
+
+        {/* Center Desktop Navigation Links */}
+        <div className="hidden lg:flex items-center gap-1">
+          <NavLink href="/" icon={<Home size={15} />} label="Ana Sayfa" />
+          <NavLink href="/discussions" icon={<MessageSquare size={15} />} label="Tartışmalar" />
+          <NavLink href="/communities" icon={<Users size={15} />} label="Topluluklar" />
+          <NavLink href="/hesaplama" icon={<Calculator size={15} />} label="Hesaplayıcılar" />
+          <NavLink href="/about" icon={<Info size={15} />} label="Hakkımızda" />
+        </div>
 
         {/* Right Header Action Items */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
@@ -105,7 +136,7 @@ export function Navbar() {
               <DropdownMenu.Trigger asChild>
                 <button
                   id="accessibility-quick-menu-button"
-                  className="flex items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 text-slate-300 hover:bg-[#161f33] hover:text-sky-400 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0"
+                  className="flex items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 text-slate-300 hover:bg-[#161f33] hover:text-sky-400 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0 cursor-pointer"
                   aria-label="Erişilebilirlik Araçlarını Aç"
                   title="Erişilebilirlik Menüsü"
                 >
@@ -115,7 +146,7 @@ export function Navbar() {
               <DropdownMenu.Portal>
                 <DropdownMenu.Content 
                   id="accessibility-quick-menu-content"
-                  className="z-[100] min-w-[280px] max-w-[92vw] bg-[#111726] border border-white/[0.08] p-3.5 rounded-xl shadow-xl animate-in fade-in zoom-in-95 duration-150 text-slate-100"
+                  className="z-[100] min-w-[280px] max-w-[92vw] bg-[#111726] border border-white/[0.08] p-3.5 rounded-xl shadow-2xl animate-in fade-in zoom-in-95 duration-150 text-slate-100"
                   align="end"
                   sideOffset={8}
                 >
@@ -134,7 +165,7 @@ export function Navbar() {
                           key={size}
                           onClick={() => updateSettings({ fontSize: size })}
                           className={cn(
-                            "rounded-md py-1.5 text-xs font-bold uppercase transition-colors border",
+                            "rounded-md py-1.5 text-xs font-bold uppercase transition-colors border cursor-pointer",
                             fontSize === size 
                               ? "bg-sky-500 text-slate-950 border-sky-500 shadow-xs" 
                               : "bg-[#0b0f19] text-slate-300 border-white/[0.08] hover:bg-[#161f33]"
@@ -188,7 +219,7 @@ export function Navbar() {
                   <div className="px-1 pt-1 flex flex-col gap-1.5">
                     <button
                       onClick={resetSettings}
-                      className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/[0.08] py-2 text-xs font-semibold text-slate-300 hover:bg-[#161f33] transition-colors"
+                      className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/[0.08] py-2 text-xs font-semibold text-slate-300 hover:bg-[#161f33] transition-colors cursor-pointer"
                     >
                       <RotateCcw size={13} /> Varsayılan Ayarlara Dön
                     </button>
@@ -227,93 +258,81 @@ export function Navbar() {
           </Link>
 
           {/* Auth State Controls */}
-          {!loading && (
-            user ? (
-              <div className="flex items-center gap-1 sm:gap-2">
-                <NotificationCenter />
-                {isStaff && (
-                  <Link
-                    href="/admin"
-                    id="navbar-admin-badge"
-                    className="hidden sm:inline-flex items-center gap-1 px-2 py-1 rounded-md bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold hover:bg-sky-500/20 transition-colors"
-                    aria-label={`${profile?.role} Yönetim Paneline Git`}
-                  >
-                    <Shield size={13} aria-hidden="true" />
-                    <span className="capitalize">{profile?.role}</span>
-                  </Link>
-                )}
-                
+          {loading ? (
+            <div className="h-8.5 w-8.5 sm:h-9 sm:w-9 animate-pulse bg-[#161f33] rounded-xl border border-white/[0.08]" aria-hidden="true" />
+          ) : user ? (
+            <div className="flex items-center gap-1 sm:gap-2">
+              <NotificationCenter />
+
+              {isStaff && (
                 <Link
-                  href="/profile"
-                  id="navbar-user-profile-link"
-                  className="flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-[#111726] p-1 sm:px-2.5 sm:py-1 text-xs font-semibold text-slate-200 transition-colors hover:border-sky-500/40 shadow-xs shrink-0 h-8.5 sm:h-9"
-                  aria-label="Profilim ve Hesap Ayarları"
+                  href="/admin"
+                  id="navbar-admin-badge"
+                  className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold hover:bg-sky-500/20 transition-colors"
+                  aria-label={`${profile?.role} Yönetim Paneline Git`}
                 >
-                  <UserAvatar 
-                    src={profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture}
-                    username={profile?.username}
-                    name={profile?.full_name || user.user_metadata?.full_name}
-                    size="sm"
-                  />
-                  <span className="hidden md:inline font-bold max-w-[90px] truncate">
-                    {profile?.username || profile?.full_name || 'Profil'}
-                  </span>
+                  <Shield size={13} aria-hidden="true" />
+                  <span className="capitalize">{profile?.role}</span>
                 </Link>
-
-                <button
-                  onClick={async () => {
-                    try {
-                      const { supabase } = await import('@/lib/supabase');
-                      await supabase.auth.signOut();
-                      window.location.href = '/';
-                    } catch (error) {
-                      console.error('Error signing out:', error);
-                      toast.error('Çıkış yapılırken bir hata oluştu.');
-                    }
-                  }}
-                  id="navbar-logout-button"
-                  className="hidden sm:flex items-center justify-center h-8.5 w-8.5 sm:h-9 sm:w-9 rounded-lg text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 transition-colors shrink-0"
-                  aria-label="Çıkış Yap"
-                  title="Oturumu Kapat"
-                >
-                  <LogIn className="rotate-180" size={17} />
-                </button>
-              </div>
-            ) : (
+              )}
+              
               <Link
-                href="/login"
-                id="navbar-login-button"
-                className="inline-flex items-center justify-center whitespace-nowrap shrink-0 h-8.5 sm:h-9 px-2.5 sm:px-3.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs sm:text-sm font-bold shadow-xs transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-sky-500"
-                aria-label="Giriş Yap veya Kayıt Ol"
+                href="/profile"
+                id="navbar-user-profile-link"
+                className="flex items-center gap-1.5 rounded-xl border border-white/[0.08] bg-[#111726] p-1 sm:px-2.5 sm:py-1 text-xs font-semibold text-slate-200 transition-colors hover:border-sky-500/40 shadow-xs shrink-0 h-8.5 sm:h-9 cursor-pointer"
+                aria-label="Profilim ve Hesap Ayarları"
               >
-                <LogIn size={14} aria-hidden="true" className="mr-1 sm:mr-1.5 shrink-0" />
-                <span className="whitespace-nowrap">Giriş Yap</span>
+                <UserAvatar 
+                  src={profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture}
+                  username={profile?.username}
+                  name={profile?.full_name || user.user_metadata?.full_name}
+                  size="sm"
+                />
+                <span className="hidden md:inline font-bold max-w-[90px] truncate">
+                  {profile?.username || profile?.full_name || 'Profil'}
+                </span>
               </Link>
-            )
-          )}
-          
-          {loading && (
-            <div className="h-8 w-8 animate-pulse bg-[#161f33] rounded-full ml-0.5" aria-hidden="true" />
+
+              <button
+                onClick={handleSignOut}
+                id="navbar-logout-button"
+                className="hidden sm:flex items-center justify-center h-8.5 w-8.5 sm:h-9 sm:w-9 rounded-xl border border-white/[0.08] bg-[#111726] text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/30 transition-colors shrink-0 cursor-pointer"
+                aria-label="Oturumu Kapat"
+                title="Oturumu Kapat"
+              >
+                <LogOut size={15} />
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              id="navbar-login-button"
+              className="inline-flex items-center justify-center whitespace-nowrap shrink-0 h-8.5 sm:h-9 px-3 sm:px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs sm:text-sm font-bold shadow-xs transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-sky-500"
+              aria-label="Giriş Yap veya Kayıt Ol"
+            >
+              <LogIn size={14} aria-hidden="true" className="mr-1.5 shrink-0" />
+              <span className="whitespace-nowrap">Giriş Yap</span>
+            </Link>
           )}
 
-          {/* Hamburger Menu Button with Radix Dialog (Available on Desktop & Mobile) */}
+          {/* Hamburger Menu Button with Radix Dialog */}
           <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
             <Dialog.Trigger asChild>
               <button
                 id="navbar-mobile-menu-trigger"
-                className="flex items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 bg-[#111726] hover:bg-[#161f33] text-slate-200 border border-white/[0.08] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0 ml-0.5 cursor-pointer"
+                className="flex items-center justify-center rounded-xl h-8.5 w-8.5 sm:h-9 sm:w-9 bg-[#111726] hover:bg-[#161f33] text-slate-200 border border-white/[0.08] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0 ml-0.5 cursor-pointer"
                 aria-label={isOpen ? "Menüyü Kapat" : "Menüyü Aç"}
                 title="Tüm Sayfalar ve Menü"
-                suppressHydrationWarning
               >
                 <Menu size={18} className="sm:w-5 sm:h-5" />
               </button>
             </Dialog.Trigger>
             <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm DialogOverlay" />
+              <Dialog.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm transition-opacity" />
               <Dialog.Content 
                 id="navbar-mobile-drawer"
-                className="fixed inset-y-0 right-0 z-50 w-[85vw] max-w-sm bg-[#0b0f19] p-0 shadow-2xl focus:outline-none focus:ring-0 DialogContentRight border-l border-white/[0.08] flex flex-col text-slate-100"
+                className="fixed inset-y-0 right-0 z-50 w-[85vw] max-w-sm bg-[#0b0f19] p-0 shadow-2xl focus:outline-none border-l border-white/[0.08] flex flex-col text-slate-100 animate-in slide-in-from-right duration-200"
+                onEscapeKeyDown={() => setIsOpen(false)}
               >
                 <Dialog.Title className="sr-only">Navigasyon Menüsü</Dialog.Title>
                 <Dialog.Description className="sr-only">Forum sayfalarına hızlı erişim menüsü.</Dialog.Description>
@@ -326,18 +345,16 @@ export function Navbar() {
                     className="flex items-center gap-2 outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg group select-none"
                     aria-label="EngelsizForum Ana Sayfa"
                   >
-                    <div className="flex flex-col min-w-0 select-none pointer-events-none" style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}>
-                      <span className="select-none text-lg font-black tracking-tight text-slate-100 uppercase leading-none" suppressHydrationWarning>
-                        engelsiz<span className="text-sky-400">forum</span>
-                      </span>
-                    </div>
+                    <span className="text-lg font-black tracking-tight text-slate-100 uppercase leading-none">
+                      engelsiz<span className="text-sky-400">forum</span>
+                    </span>
                   </Link>
                   <Dialog.Close asChild>
                     <button 
-                      className="rounded-lg p-2 hover:bg-[#161f33] text-slate-400 hover:text-slate-200 transition-colors h-9 w-9 flex items-center justify-center" 
+                      className="rounded-xl p-2 hover:bg-[#161f33] text-slate-400 hover:text-slate-200 transition-colors h-9 w-9 flex items-center justify-center border border-white/[0.08] cursor-pointer" 
                       aria-label="Menüyü Kapat"
                     >
-                      <X size={20} />
+                      <X size={18} />
                     </button>
                   </Dialog.Close>
                 </div>
@@ -413,24 +430,18 @@ export function Navbar() {
                             <p className="text-sm font-bold text-slate-100 truncate">
                               {profile?.full_name || profile?.username || user.email}
                             </p>
-                            <p className="text-xs text-slate-400">Profilimi Yönet</p>
+                            <p className="text-xs text-slate-400">Profilimi ve Tercihlerimi Yönet</p>
                           </div>
                         </Link>
 
                         <button
                           onClick={async () => {
-                            try {
-                              const { supabase } = await import('@/lib/supabase');
-                              await supabase.auth.signOut();
-                              window.location.href = '/';
-                            } catch (error) {
-                              console.error('Error signing out:', error);
-                              toast.error('Çıkış yapılırken bir hata oluştu.');
-                            }
+                            setIsOpen(false);
+                            await handleSignOut();
                           }}
-                          className="w-full flex items-center justify-center gap-2 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-colors border border-rose-500/20 px-3 py-2.5 text-xs font-bold min-h-[44px]"
+                          className="w-full flex items-center justify-center gap-2 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-colors border border-rose-500/20 px-3 py-2.5 text-xs font-bold min-h-[44px] cursor-pointer"
                         >
-                          <LogIn className="rotate-180" size={16} /> Oturumu Kapat
+                          <LogOut size={16} /> Oturumu Kapat
                         </button>
                       </div>
                     ) : (
@@ -493,6 +504,7 @@ function MobileNavLink({ href, icon, label, onClick }: { href: string; icon: Rea
     <Link
       href={href}
       onClick={onClick}
+      aria-current={isActive ? 'page' : undefined}
       className={cn(
         "flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition-colors outline-none min-h-[44px]",
         isActive 
@@ -519,11 +531,12 @@ function AccessibilityToggle({ icon, label, active, onClick }: { icon: React.Rea
         onClick();
       }}
       className={cn(
-        "flex w-full items-center justify-between px-2.5 py-2 rounded-lg transition-colors outline-none",
+        "flex w-full items-center justify-between px-2.5 py-2 rounded-lg transition-colors outline-none cursor-pointer",
         active 
           ? "bg-sky-500/10 text-sky-400 font-semibold border border-sky-500/20" 
           : "hover:bg-slate-800/80 text-slate-300"
       )}
+      aria-pressed={active}
     >
       <div className="flex items-center gap-2.5">
         <div className={cn(

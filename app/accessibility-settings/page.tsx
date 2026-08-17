@@ -22,7 +22,7 @@ export default function AccessibilitySettingsPage() {
 
   return (
     <SiteLayout>
-      <div className="flex-1 w-full bg-[#090A0F] text-slate-100" role="main">
+      <div className="flex-1 w-full bg-[#090A0F] text-slate-100">
         
         {/* --- HEADER --- */}
         <section className="relative py-10 md:py-14 border-b border-white/[0.08] bg-gradient-to-b from-sky-500/[0.04] via-transparent to-transparent">

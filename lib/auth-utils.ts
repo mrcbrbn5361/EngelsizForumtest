@@ -1,7 +1,63 @@
 /**
- * Utility functions for handling authentication errors and formatting user-friendly messages.
+ * Utility functions for handling authentication errors, validation, and session security.
  */
 
+export interface PasswordValidationResult {
+  isValid: boolean;
+  score: number; // 0 to 4
+  errors: string[];
+}
+
+/**
+ * Validates password strength according to security standards
+ */
+export function validatePasswordStrength(password: string): PasswordValidationResult {
+  const errors: string[] = [];
+  let score = 0;
+
+  if (!password || password.length < 8) {
+    errors.push('Şifre en az 8 karakter uzunluğunda olmalıdır.');
+  } else {
+    score += 1;
+  }
+
+  if (/[A-Z]/.test(password)) {
+    score += 1;
+  } else {
+    errors.push('En az bir büyük harf içermelidir.');
+  }
+
+  if (/[a-z]/.test(password)) {
+    score += 1;
+  } else {
+    errors.push('En az bir küçük harf içermelidir.');
+  }
+
+  if (/[0-9]/.test(password)) {
+    score += 1;
+  } else {
+    errors.push('En az bir rakam içermelidir.');
+  }
+
+  return {
+    isValid: errors.length === 0,
+    score: Math.min(score, 4),
+    errors,
+  };
+}
+
+/**
+ * Validates email format strictly
+ */
+export function isValidEmail(email: string): boolean {
+  if (!email) return false;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email.trim());
+}
+
+/**
+ * Formats authentication errors into user-friendly Turkish messages.
+ */
 export function formatAuthError(err: any, fallbackMessage: string = 'İşlem gerçekleştirilemedi. Lütfen bilgilerinizi kontrol edip tekrar deneyin.'): string {
   if (!err) return fallbackMessage;
 
@@ -35,27 +91,39 @@ export function formatAuthError(err: any, fallbackMessage: string = 'İşlem ger
 }
 
 function mapErrorMessage(msg: string, fallback: string): string {
-  if (msg.includes('Invalid login credentials')) {
+  const lower = msg.toLowerCase();
+
+  if (lower.includes('invalid login credentials') || lower.includes('invalid_grant')) {
     return 'E-posta adresi veya şifre hatalı. Lütfen bilgilerinizi kontrol edin.';
   }
-  if (msg.includes('Email not confirmed')) {
+  if (lower.includes('email not confirmed')) {
     return 'Lütfen e-posta adresinize gönderilen onaylama bağlantısına tıklayarak hesabınızı doğrulayın.';
   }
-  if (msg.includes('User already registered') || msg.includes('already exists') || msg.includes('unique constraint')) {
+  if (lower.includes('user already registered') || lower.includes('already exists') || lower.includes('unique constraint') || lower.includes('user_already_exists')) {
     return 'Bu e-posta adresi veya kullanıcı adı ile zaten kayıtlı bir hesap bulunmaktadır. Lütfen giriş yapın.';
   }
-  if (msg.includes('Password should be at least')) {
+  if (lower.includes('password should be at least')) {
     return 'Şifre en az 6 karakter uzunluğunda olmalıdır.';
   }
-  if (msg.includes('Signup requires a valid password')) {
+  if (lower.includes('signup requires a valid password')) {
     return 'Geçerli bir şifre girmeniz gerekmektedir.';
   }
-  if (msg.includes('Unable to validate email address') || msg.includes('invalid email')) {
+  if (lower.includes('unable to validate email address') || lower.includes('invalid email') || lower.includes('email is invalid')) {
     return 'Lütfen geçerli bir e-posta adresi girin.';
   }
-  if (msg.includes('Database error saving new user')) {
+  if (lower.includes('database error saving new user') || lower.includes('profile creation failed')) {
     return 'Kullanıcı profili oluşturulurken geçici bir sorun oluştu. Lütfen tekrar deneyin.';
+  }
+  if (lower.includes('rate limit') || lower.includes('too many requests') || lower.includes('over_email_send_rate_limit')) {
+    return 'Çok fazla istek yapıldı. Güvenliğiniz için lütfen birkaç dakika bekleyip tekrar deneyin.';
+  }
+  if (lower.includes('session expired') || lower.includes('token expired') || lower.includes('refresh_token_not_found') || lower.includes('invalid token')) {
+    return 'Oturum süreniz doldu. Lütfen tekrar giriş yapın.';
+  }
+  if (lower.includes('network') || lower.includes('fetch failed') || lower.includes('connection refused')) {
+    return 'Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edin.';
   }
 
   return msg;
 }
+

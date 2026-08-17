@@ -36,8 +36,38 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // refreshing the auth token
-  await supabase.auth.getUser();
+  // Refreshing the auth token safely
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const pathname = request.nextUrl.pathname;
+
+  // Protected routes that require authentication
+  const isProtectedRoute = pathname.startsWith('/messages') || 
+                           pathname.startsWith('/profile/edit') || 
+                           pathname.startsWith('/new-topic') || 
+                           pathname.startsWith('/notifications');
+
+  // Auth pages (login, register) that authenticated users shouldn't access
+  const isAuthRoute = pathname === '/login' || pathname === '/register' || pathname === '/auth';
+
+  if (!user && isProtectedRoute) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/login';
+    redirectUrl.searchParams.set('redirectTo', pathname);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (user && isAuthRoute) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/';
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Attach basic security headers to response
+  supabaseResponse.headers.set('X-Content-Type-Options', 'nosniff');
+  supabaseResponse.headers.set('X-Frame-Options', 'SAMEORIGIN');
+  supabaseResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
   return supabaseResponse;
 }
+

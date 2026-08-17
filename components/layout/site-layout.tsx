@@ -67,9 +67,9 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      <main className="flex-1 w-full">
+      <div className="flex-1 w-full">
         {children}
-      </main>
+      </div>
       <Footer />
     </div>
   );

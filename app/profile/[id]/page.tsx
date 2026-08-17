@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, use } from 'react';
+import React, { useState, useEffect, useMemo, use, useId } from 'react';
 import { Navbar } from '@/components/layout/navbar';
 import { Footer } from '@/components/layout/footer';
 import { supabase } from '@/lib/supabase';
@@ -8,7 +8,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { 
   User, Award, Sparkles, Zap, Flame, Star, 
   MessageSquare, BookOpen, Heart, Calendar, Loader2, ArrowLeft, Clock,
-  Plus, Edit, X
+  Plus, Edit, X, Send, AlertCircle
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
@@ -40,6 +40,13 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
   const [followLoading, setFollowLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+
+  const fullNameInputId = useId();
+  const usernameInputId = useId();
+  const bioInputId = useId();
+  const avatarInputId = useId();
+
   const [editForm, setEditForm] = useState({
     full_name: '',
     username: '',
@@ -112,17 +119,31 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
     fetchUserProfile();
   }, [userId]);
 
-  const handleUpdateProfile = async () => {
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!currentUser || !profile || updateLoading) return;
+    setEditError(null);
+
+    const cleanUsername = editForm.username.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+    if (editForm.username.trim() && cleanUsername !== editForm.username.trim().toLowerCase()) {
+      setEditError('Kullanıcı adı yalnızca İngilizce harfler, rakamlar ve alt çizgi (_) içerebilir.');
+      return;
+    }
+
+    if (editForm.username.trim().length > 0 && editForm.username.trim().length < 3) {
+      setEditError('Kullanıcı adı en az 3 karakter olmalıdır.');
+      return;
+    }
+
     setUpdateLoading(true);
     try {
       const { error } = await supabase
         .from('profiles')
         .update({
-          full_name: editForm.full_name,
-          username: editForm.username,
-          bio: editForm.bio,
-          avatar_url: editForm.avatar_url,
+          full_name: editForm.full_name.trim(),
+          username: cleanUsername || null,
+          bio: editForm.bio.trim() || null,
+          avatar_url: editForm.avatar_url.trim() || null,
           updated_at: new Date().toISOString()
         })
         .eq('id', currentUser.id);
@@ -131,17 +152,18 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
       setProfile(prev => prev ? { 
         ...prev, 
-        full_name: editForm.full_name,
-        username: editForm.username,
-        bio: editForm.bio,
-        avatar_url: editForm.avatar_url
+        full_name: editForm.full_name.trim(),
+        username: cleanUsername || null,
+        bio: editForm.bio.trim() || null,
+        avatar_url: editForm.avatar_url.trim() || null
       } : null);
       
       setIsEditing(false);
       toast.success('Profil başarıyla güncellendi.');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error updating profile:', err);
-      toast.error('Profil güncellenirken bir hata oluştu.');
+      setEditError(err?.message || 'Profil güncellenirken bir hata oluştu.');
+      toast.error('Profil güncellenemedi.');
     } finally {
       setUpdateLoading(false);
     }
@@ -434,15 +456,30 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               <button 
                 onClick={() => setIsEditing(false)}
                 className="p-1 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-lg transition-colors cursor-pointer"
+                aria-label="Kapat"
               >
                 <X size={16} />
               </button>
             </div>
 
-            <div className="space-y-3">
+            {editError && (
+              <div 
+                role="alert" 
+                aria-live="assertive"
+                className="flex items-start gap-2 p-3 rounded-xl bg-destructive/10 text-destructive border border-destructive/20 text-xs font-semibold"
+              >
+                <AlertCircle size={15} className="shrink-0 mt-0.5" />
+                <span>{editError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleUpdateProfile} className="space-y-3">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Ad Soyad</label>
+                <label htmlFor={fullNameInputId} className="text-xs font-semibold text-slate-300">
+                  Ad Soyad
+                </label>
                 <input
+                  id={fullNameInputId}
                   type="text"
                   value={editForm.full_name}
                   onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
@@ -452,8 +489,11 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Kullanıcı Adı</label>
+                <label htmlFor={usernameInputId} className="text-xs font-semibold text-slate-300">
+                  Kullanıcı Adı
+                </label>
                 <input
+                  id={usernameInputId}
                   type="text"
                   value={editForm.username}
                   onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
@@ -463,8 +503,11 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Biyografi</label>
+                <label htmlFor={bioInputId} className="text-xs font-semibold text-slate-300">
+                  Biyografi
+                </label>
                 <textarea
+                  id={bioInputId}
                   value={editForm.bio}
                   onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
                   className="w-full h-20 p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none resize-none"
@@ -475,9 +518,12 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">Avatar URL</label>
+                <label htmlFor={avatarInputId} className="text-xs font-semibold text-slate-300">
+                  Avatar URL
+                </label>
                 <input
-                  type="text"
+                  id={avatarInputId}
+                  type="url"
                   value={editForm.avatar_url}
                   onChange={(e) => setEditForm({ ...editForm, avatar_url: e.target.value })}
                   className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 text-slate-200 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
@@ -487,20 +533,21 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
               <div className="flex gap-2 pt-2">
                 <button
+                  type="button"
                   onClick={() => setIsEditing(false)}
                   className="flex-1 py-2 rounded-xl font-semibold text-xs bg-slate-800 text-slate-300 hover:bg-slate-700 transition-colors cursor-pointer"
                 >
                   İptal
                 </button>
                 <button
-                  onClick={handleUpdateProfile}
+                  type="submit"
                   disabled={updateLoading}
-                  className="flex-1 py-2 rounded-xl font-semibold text-xs bg-sky-600 hover:bg-sky-500 text-white transition-colors cursor-pointer disabled:opacity-50"
+                  className="flex-1 py-2 rounded-xl font-semibold text-xs bg-sky-600 hover:bg-sky-500 text-white transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5"
                 >
                   {updateLoading ? <Loader2 className="animate-spin mx-auto size-4" /> : "Kaydet"}
                 </button>
               </div>
-            </div>
+            </form>
           </motion.div>
         </div>
       )}
@@ -587,7 +634,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                   </div>
 
                   {currentUser && currentUser.id !== userId && (
-                    <div className="pt-2 flex justify-center md:justify-start">
+                    <div className="pt-2 flex flex-wrap gap-2 justify-center md:justify-start">
                       <button
                         onClick={handleFollowToggle}
                         disabled={followLoading}
@@ -607,6 +654,13 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                           </>
                         )}
                       </button>
+
+                      <Link
+                        href={`/messages?userId=${userId}`}
+                        className="h-8 px-4 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-1.5 bg-[#0b0f19] hover:bg-slate-800 text-sky-400 hover:text-sky-300 border border-sky-500/30 hover:border-sky-500/60"
+                      >
+                        <Send size={12} /> Mesaj Gönder
+                      </Link>
                     </div>
                   )}
 

@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
+import { SiteLayout } from '@/components/layout/site-layout';
 import { TopicEditor } from '@/components/forum/topic-editor';
 import { ArrowLeft, Save, Loader2, HelpCircle, Tag, Eye } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
@@ -12,6 +11,21 @@ import { generateUUID } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const PRESET_TAGS = ['[ÖTV 2026]', '[Emsal Karar]', '[Sağlık Raporu]', '[EKPSS 2026]', '[Evde Bakım]', '[SGK İtiraz]', '[Medikal & Cihaz]'];
+
+function slugify(text: string): string {
+  const trMap: { [key: string]: string } = {
+    'ç': 'c', 'Ç': 'c', 'ğ': 'g', 'Ğ': 'g', 'ı': 'i', 'İ': 'i', 'ö': 'o', 'Ö': 'o', 'ş': 's', 'Ş': 's', 'ü': 'u', 'Ü': 'u'
+  };
+  let str = text;
+  for (const key in trMap) {
+    str = str.replace(new RegExp(key, 'g'), trMap[key]);
+  }
+  return str.toLowerCase()
+    .replace(/[^-a-zA-Z0-9\s]+/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
+}
 
 function NewTopicForm() {
   const router = useRouter();
@@ -72,52 +86,32 @@ function NewTopicForm() {
     setLoading(true);
     try {
       const topicId = generateUUID();
-      
-      const slugify = (text: string) => {
-        const trMap: { [key: string]: string } = {
-          'ç': 'c', 'Ç': 'c', 'ğ': 'g', 'Ğ': 'g', 'ı': 'i', 'İ': 'i', 'ö': 'o', 'Ö': 'o', 'ş': 's', 'Ş': 's', 'ü': 'u', 'Ü': 'u'
-        };
-        for (const key in trMap) {
-          text = text.replace(new RegExp(key, 'g'), trMap[key]);
-        }
-        return text.toLowerCase()
-          .replace(/[^-a-zA-Z0-9\s]+/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/-+/g, '-')
-          .trim();
-      };
-
       const finalTitle = selectedTag ? `${selectedTag} ${title.trim()}` : title.trim();
       let slug = slugify(finalTitle);
       if (!slug) slug = topicId.substring(0, 8);
       
+      const payload = {
+        id: topicId,
+        title: finalTitle,
+        category_id: categoryId,
+        content: content.trim(),
+        author_id: user.id,
+        is_pinned: isPinned,
+        is_locked: isLocked,
+        is_solved: false,
+        slug: slug
+      };
+
       const { data, error } = await supabase
-        .from('threads')
-        .insert({
-          id: topicId,
-          title: finalTitle,
-          category_id: categoryId,
-          content: content.trim(),
-          author_id: user.id,
-          is_pinned: isPinned,
-          is_locked: isLocked,
-          is_solved: false,
-          slug: slug
-        })
+        .from('topics')
+        .insert(payload)
         .select()
         .single();
       
       if (error) {
-        await supabase.from('topics').insert({
-          id: topicId,
-          title: finalTitle,
-          category_id: categoryId,
-          content: content.trim(),
-          author_id: user.id,
-          is_pinned: isPinned,
-          is_locked: isLocked,
-          slug: slug
-        });
+        // Fallback for threads view/table
+        const { error: threadErr } = await supabase.from('threads').insert(payload);
+        if (threadErr) throw threadErr;
       }
       
       toast.success('Konunuz başarıyla yayınlandı!');
@@ -131,14 +125,14 @@ function NewTopicForm() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center space-y-4">
-        <h1 className="text-2xl font-bold text-slate-100">Giriş Yapılması Gerekiyor</h1>
-        <p className="text-xs text-slate-400 max-w-sm">
+      <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+        <h1 className="text-2xl font-bold text-foreground">Giriş Yapılması Gerekiyor</h1>
+        <p className="text-xs text-muted-foreground max-w-sm">
           Yeni bir konu veya tartışma başlatmak için lütfen platforma giriş yapın.
         </p>
         <button 
           onClick={() => router.push('/login')} 
-          className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-colors cursor-pointer"
+          className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs transition-colors cursor-pointer"
         >
           Giriş Yap
         </button>
@@ -147,18 +141,18 @@ function NewTopicForm() {
   }
 
   return (
-    <main className="flex-1 container mx-auto px-4 py-8 md:py-12 max-w-3xl space-y-6">
+    <div className="space-y-6">
       <button 
         onClick={() => router.back()} 
-        className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-sky-400 transition-colors cursor-pointer"
+        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer"
       >
         <ArrowLeft size={14} /> Geri Dön
       </button>
 
-      <div className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl backdrop-blur-md">
-        <header className="space-y-1.5 border-b border-white/[0.08] pb-4">
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">Yeni Konu Başlat</h1>
-          <p className="text-slate-400 text-xs sm:text-sm font-normal leading-relaxed">
+      <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
+        <header className="space-y-1.5 border-b border-border pb-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Yeni Konu Başlat</h1>
+          <p className="text-muted-foreground text-xs sm:text-sm font-normal leading-relaxed">
             Topluluk üyelerine soru sorun, mevzuat deneyimlerinizi aktarın veya emsal kararları paylaşın.
           </p>
         </header>
@@ -166,8 +160,8 @@ function NewTopicForm() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Preset Tag Selection */}
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-              <Tag size={13} className="text-sky-400" /> Hızlı Konu Etiketi
+            <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+              <Tag size={13} className="text-primary" /> Hızlı Konu Etiketi
             </label>
             <div className="flex flex-wrap gap-1.5">
               {PRESET_TAGS.map((tag) => (
@@ -177,8 +171,8 @@ function NewTopicForm() {
                   onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)}
                   className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all border cursor-pointer ${
                     selectedTag === tag 
-                      ? 'bg-sky-500/20 text-sky-400 border-sky-500/40 shadow-xs' 
-                      : 'bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border-white/[0.06]'
+                      ? 'bg-primary/20 text-primary border-primary/40 shadow-xs' 
+                      : 'bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border-border/60'
                   }`}
                 >
                   {tag}
@@ -188,7 +182,7 @@ function NewTopicForm() {
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="title" className="text-xs font-semibold text-slate-300">
+            <label htmlFor="title" className="text-xs font-semibold text-foreground">
               Konu Başlığı *
             </label>
             <input 
@@ -199,12 +193,12 @@ function NewTopicForm() {
               placeholder="Örn: 2026 ÖTV üst sınırı ve bayi fatura süreçleri deneyimlerim" 
               value={title} 
               onChange={e => setTitle(e.target.value)}
-              className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 text-xs sm:text-sm focus:ring-1 focus:ring-sky-500 outline-none placeholder:text-slate-500"
+              className="w-full p-2.5 rounded-xl border border-border bg-muted/40 text-foreground text-xs sm:text-sm focus:ring-1 focus:ring-primary outline-hidden placeholder:text-muted-foreground"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="category" className="text-xs font-semibold text-slate-300">
+            <label htmlFor="category" className="text-xs font-semibold text-foreground">
               Kategori / Topluluk *
             </label>
             <select 
@@ -213,21 +207,21 @@ function NewTopicForm() {
               disabled={loading}
               value={categoryId} 
               onChange={e => setCategoryId(e.target.value)}
-              className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/80 text-slate-200 text-xs sm:text-sm focus:ring-1 focus:ring-sky-500 outline-none cursor-pointer"
+              className="w-full p-2.5 rounded-xl border border-border bg-muted/40 text-foreground text-xs sm:text-sm focus:ring-1 focus:ring-primary outline-hidden cursor-pointer"
             >
               <option value="">Kategori Seçin...</option>
               {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                <option key={cat.id} value={cat.id}>{cat.name || cat.title}</option>
               ))}
             </select>
           </div>
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-foreground">
                 Konu Detayı (Markdown / Zengin Metin) *
               </label>
-              <span className="text-[11px] text-sky-400 font-normal flex items-center gap-1">
+              <span className="text-[11px] text-primary font-normal flex items-center gap-1">
                 <Eye size={12} /> Görsellerde otomatik AI alt-metin üretilir
               </span>
             </div>
@@ -235,14 +229,14 @@ function NewTopicForm() {
           </div>
 
           {/* Soru Konusu Checkbox */}
-          <div className="p-3.5 bg-slate-900/60 rounded-xl border border-white/[0.06] flex items-center justify-between">
+          <div className="p-3.5 bg-muted/40 rounded-xl border border-border flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-sky-500/10 text-sky-400 rounded-lg shrink-0">
+              <div className="p-2 bg-primary/10 text-primary rounded-lg shrink-0">
                 <HelpCircle size={16} />
               </div>
               <div>
-                <div className="text-xs font-semibold text-slate-200">Soru Konusu (Çözüm Bekliyor)</div>
-                <div className="text-[11px] text-slate-400">
+                <div className="text-xs font-semibold text-foreground">Soru Konusu (Çözüm Bekliyor)</div>
+                <div className="text-[11px] text-muted-foreground">
                   Doğru yanıt verildiğinde yanıtı &quot;Çözüldü&quot; olarak sabitleyebilirsiniz.
                 </div>
               </div>
@@ -251,27 +245,27 @@ function NewTopicForm() {
               type="checkbox"
               checked={isQuestion}
               onChange={e => setIsQuestion(e.target.checked)}
-              className="w-4 h-4 rounded text-sky-500 focus:ring-sky-500 bg-slate-800 border-slate-700 cursor-pointer"
+              className="w-4 h-4 rounded text-primary focus:ring-primary bg-muted border-border cursor-pointer accent-primary"
             />
           </div>
 
           {isStaff && (
-            <div className="p-3.5 bg-sky-500/5 rounded-xl border border-sky-500/20 flex gap-6 text-xs font-semibold">
-              <label className="flex items-center gap-2 cursor-pointer text-slate-200">
+            <div className="p-3.5 bg-primary/5 rounded-xl border border-primary/20 flex gap-6 text-xs font-semibold">
+              <label className="flex items-center gap-2 cursor-pointer text-foreground">
                 <input 
                   type="checkbox" 
                   checked={isPinned} 
                   onChange={e => setIsPinned(e.target.checked)}
-                  className="rounded text-sky-500 focus:ring-sky-500 cursor-pointer"
+                  className="rounded text-primary focus:ring-primary cursor-pointer accent-primary"
                 />
                 <span>Konuyu Sabitle</span>
               </label>
-              <label className="flex items-center gap-2 cursor-pointer text-slate-200">
+              <label className="flex items-center gap-2 cursor-pointer text-foreground">
                 <input 
                   type="checkbox" 
                   checked={isLocked} 
                   onChange={e => setIsLocked(e.target.checked)}
-                  className="rounded text-sky-500 focus:ring-sky-500 cursor-pointer"
+                  className="rounded text-primary focus:ring-primary cursor-pointer accent-primary"
                 />
                 <span>Konuyu Kilitle</span>
               </label>
@@ -281,29 +275,29 @@ function NewTopicForm() {
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-sm disabled:opacity-50"
+            className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-xs disabled:opacity-50"
           >
             {loading ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             <span>{loading ? 'Yayınlanıyor...' : 'Konuyu Yayınla'}</span>
           </button>
         </form>
       </div>
-    </main>
+    </div>
   );
 }
 
 export default function NewTopicPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
-      <Suspense fallback={
-        <div className="flex-1 flex items-center justify-center py-20">
-          <Loader2 size={32} className="animate-spin text-sky-400" />
-        </div>
-      }>
-        <NewTopicForm />
-      </Suspense>
-      <Footer />
-    </div>
+    <SiteLayout>
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-3xl">
+        <Suspense fallback={
+          <div className="flex-1 flex items-center justify-center py-20">
+            <Loader2 size={32} className="animate-spin text-primary" />
+          </div>
+        }>
+          <NewTopicForm />
+        </Suspense>
+      </div>
+    </SiteLayout>
   );
 }
