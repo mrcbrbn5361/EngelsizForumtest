@@ -8,8 +8,10 @@ import { ConversationList } from '@/components/messages/conversation-list';
 import { ChatBox } from '@/components/messages/chat-box';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase } from '@/lib/supabase';
-import { MessageSquare, Loader2, Menu, Sparkles } from 'lucide-react';
+import { MessageSquare, Loader2, Menu, Sparkles, Plus, Search } from 'lucide-react';
 import { toast } from 'sonner';
+import { generateUUID } from '@/lib/utils';
+import { UserAvatar } from '@/components/ui/user-avatar';
 
 export default function MessagesPage() {
   return (
@@ -43,25 +45,45 @@ function MessagesContent() {
   const [searchLoading, setSearchLoading] = useState(false);
 
   const initiateDirectConversation = async (targetId: string, currentConvs: any[]) => {
-    if (!user || targetId === user.id) {
-      if (targetId === user?.id) toast.info('Kendinize mesaj gönderemezsiniz.');
-      return;
-    }
+    if (!user || !targetId) return;
 
     try {
-      // 1. Fetch target user profile
-      const { data: otherProfile, error: profErr } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', targetId)
-        .maybeSingle();
+      // 1. Fetch target user profile by UUID or username
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(targetId);
+      let profQuery = supabase.from('profiles').select('*');
+      if (isUUID) {
+        profQuery = profQuery.eq('id', targetId);
+      } else {
+        profQuery = profQuery.eq('username', targetId);
+      }
+
+      let { data: otherProfile, error: profErr } = await profQuery.maybeSingle();
+
+      if (!otherProfile && isUUID) {
+        const { data: byUser } = await supabase.from('profiles').select('*').eq('username', targetId).maybeSingle();
+        if (byUser) otherProfile = byUser;
+      }
 
       if (profErr || !otherProfile) {
         toast.error('Kullanıcı profili bulunamadı.');
         return;
       }
 
-      // 2. Try to find existing conversation in DB
+      const resolvedTargetId = otherProfile.id;
+
+      if (resolvedTargetId === user.id) {
+        toast.info('Kendinize mesaj gönderemezsiniz.');
+        return;
+      }
+
+      // 2. Try to find existing conversation in current list or DB
+      const existingInList = currentConvs.find(c => c.other_user?.id === resolvedTargetId);
+      if (existingInList) {
+        setSelectedConvId(existingInList.id);
+        setShowListOnMobile(false);
+        return;
+      }
+
       const { data: myConvs } = await supabase
         .from('conversation_members')
         .select('conversation_id')
@@ -72,11 +94,23 @@ function MessagesContent() {
         const { data: commonMember } = await supabase
           .from('conversation_members')
           .select('conversation_id')
-          .eq('user_id', targetId)
+          .eq('user_id', resolvedTargetId)
           .in('conversation_id', cIds)
           .maybeSingle();
 
         if (commonMember) {
+          const matchedConv = currentConvs.find(c => c.id === commonMember.conversation_id);
+          if (!matchedConv) {
+            const newConvItem = {
+              id: commonMember.conversation_id,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              other_user: otherProfile,
+              last_message: null,
+              unread_count: 0
+            };
+            setConversations(prev => [newConvItem, ...prev]);
+          }
           setSelectedConvId(commonMember.conversation_id);
           setShowListOnMobile(false);
           return;
@@ -84,36 +118,40 @@ function MessagesContent() {
       }
 
       // 3. Create new conversation in Supabase
+      const newConvId = generateUUID();
       const { data: newConv, error: createErr } = await supabase
         .from('conversations')
         .insert({
+          id: newConvId,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         })
         .select()
-        .single();
+        .maybeSingle();
 
-      if (newConv) {
-        await supabase.from('conversation_members').insert([
-          { conversation_id: newConv.id, user_id: user.id },
-          { conversation_id: newConv.id, user_id: targetId }
-        ]);
+      const conversationId = newConv?.id || newConvId;
 
-        const newConvItem = {
-          ...newConv,
-          other_user: otherProfile,
-          last_message: null,
-          unread_count: 0
-        };
+      await supabase.from('conversation_members').insert([
+        { id: generateUUID(), conversation_id: conversationId, user_id: user.id, joined_at: new Date().toISOString() },
+        { id: generateUUID(), conversation_id: conversationId, user_id: resolvedTargetId, joined_at: new Date().toISOString() }
+      ]);
 
-        setConversations(prev => {
-          const exists = prev.some(c => c.id === newConv.id);
-          return exists ? prev : [newConvItem, ...prev];
-        });
-        setSelectedConvId(newConv.id);
-        setShowListOnMobile(false);
-        toast.success(`${otherProfile.full_name || otherProfile.username} ile sohbet açıldı.`);
-      }
+      const newConvItem = {
+        id: conversationId,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        other_user: otherProfile,
+        last_message: null,
+        unread_count: 0
+      };
+
+      setConversations(prev => {
+        const exists = prev.some(c => c.id === conversationId);
+        return exists ? prev : [newConvItem, ...prev];
+      });
+      setSelectedConvId(conversationId);
+      setShowListOnMobile(false);
+      toast.success(`${otherProfile.full_name || otherProfile.username} ile sohbet açıldı.`);
     } catch (err) {
       console.error('Error initiating direct conversation:', err);
       toast.error('Sohbet başlatılırken bir hata oluştu.');
@@ -166,9 +204,12 @@ function MessagesContent() {
 
         setConversations(processed);
 
-        // If targetUserId is present, open or create conversation
+        // If targetUserId is present in URL params, open or create conversation
         if (targetUserId) {
-          const existing = processed.find(c => c.other_user?.id === targetUserId);
+          const existing = processed.find(c => 
+            c.other_user?.id === targetUserId || 
+            c.other_user?.username?.toLowerCase() === targetUserId.toLowerCase()
+          );
           if (existing) {
             setSelectedConvId(existing.id);
             setShowListOnMobile(false);

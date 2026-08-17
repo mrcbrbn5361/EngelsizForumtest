@@ -7,25 +7,10 @@ import { TopicEditor } from '@/components/forum/topic-editor';
 import { ArrowLeft, Save, Loader2, HelpCircle, Tag, Eye } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import { generateUUID } from '@/lib/utils';
+import { generateUUID, generateUniqueSlug } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const PRESET_TAGS = ['[ÖTV 2026]', '[Emsal Karar]', '[Sağlık Raporu]', '[EKPSS 2026]', '[Evde Bakım]', '[SGK İtiraz]', '[Medikal & Cihaz]'];
-
-function slugify(text: string): string {
-  const trMap: { [key: string]: string } = {
-    'ç': 'c', 'Ç': 'c', 'ğ': 'g', 'Ğ': 'g', 'ı': 'i', 'İ': 'i', 'ö': 'o', 'Ö': 'o', 'ş': 's', 'Ş': 's', 'ü': 'u', 'Ü': 'u'
-  };
-  let str = text;
-  for (const key in trMap) {
-    str = str.replace(new RegExp(key, 'g'), trMap[key]);
-  }
-  return str.toLowerCase()
-    .replace(/[^-a-zA-Z0-9\s]+/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim();
-}
 
 function NewTopicForm() {
   const router = useRouter();
@@ -87,10 +72,9 @@ function NewTopicForm() {
     try {
       const topicId = generateUUID();
       const finalTitle = selectedTag ? `${selectedTag} ${title.trim()}` : title.trim();
-      let slug = slugify(finalTitle);
-      if (!slug) slug = topicId.substring(0, 8);
+      let slug = generateUniqueSlug(finalTitle);
       
-      const payload = {
+      const payload: any = {
         id: topicId,
         title: finalTitle,
         category_id: categoryId,
@@ -102,21 +86,59 @@ function NewTopicForm() {
         slug: slug
       };
 
-      const { data, error } = await supabase
-        .from('topics')
-        .insert(payload)
-        .select()
-        .single();
-      
-      if (error) {
-        // Fallback for threads view/table
-        const { error: threadErr } = await supabase.from('threads').insert(payload);
-        if (threadErr) throw threadErr;
+      let insertedTopic: any = null;
+      let lastError: any = null;
+
+      // Try inserting with unique slug, retry up to 3 times on any collision
+      for (let attempt = 0; attempt < 3; attempt++) {
+        if (attempt > 0) {
+          payload.slug = generateUniqueSlug(finalTitle, 8 + attempt * 2);
+        }
+
+        const { data, error } = await supabase
+          .from('topics')
+          .insert(payload)
+          .select()
+          .single();
+
+        if (!error && data) {
+          insertedTopic = data;
+          lastError = null;
+          break;
+        }
+
+        lastError = error;
+
+        // Check if error is unique slug violation
+        const isSlugCollision = error?.message?.includes('topics_slug_key') || 
+                                error?.message?.includes('duplicate key') || 
+                                error?.code === '23505';
+
+        if (!isSlugCollision) {
+          // Fallback to 'threads' table if schema differs
+          const { data: thData, error: threadErr } = await supabase
+            .from('threads')
+            .insert(payload)
+            .select()
+            .single();
+
+          if (!threadErr && thData) {
+            insertedTopic = thData;
+            lastError = null;
+            break;
+          }
+          if (threadErr) lastError = threadErr;
+        }
+      }
+
+      if (lastError && !insertedTopic) {
+        throw lastError;
       }
       
       toast.success('Konunuz başarıyla yayınlandı!');
-      router.push(`/discussions/${data?.id || topicId}`);
+      router.push(`/discussions/${insertedTopic?.id || topicId}`);
     } catch (err: any) {
+      console.error('Topic creation error:', err);
       toast.error('Tartışma yayınlanırken hata oluştu: ' + (err.message || 'Bilinmeyen hata'));
     } finally {
       setLoading(false);

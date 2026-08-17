@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Skeleton } from '@/components/ui/skeleton';
+import { slugify, generateShortId } from '@/lib/utils';
 
 interface Community {
   id: string;
@@ -205,22 +206,35 @@ export default function CommunitiesPage() {
     e.preventDefault();
     setCreating(true);
     try {
-      const slug = newCommunity.name.toLowerCase()
-        .replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's')
-        .replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c')
-        .replace(/[^a-z0-9]/g, '-');
-      const { error } = await supabase
-        .from('categories')
-        .insert([{ ...newCommunity, slug }]);
+      const baseSlug = slugify(newCommunity.name) || `topluluk-${generateShortId(4)}`;
+      let inserted = false;
+      let lastErr: any = null;
+
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const slug = attempt === 0 ? baseSlug : `${baseSlug}-${generateShortId(4)}`;
+        const { error } = await supabase
+          .from('categories')
+          .insert([{ ...newCommunity, slug }]);
+
+        if (!error) {
+          inserted = true;
+          break;
+        }
+        lastErr = error;
+        const isSlugViolation = error.message?.includes('categories_slug_key') || 
+                                error.message?.includes('duplicate key') || 
+                                error.code === '23505';
+        if (!isSlugViolation) break;
+      }
       
-      if (error) throw error;
+      if (!inserted && lastErr) throw lastErr;
       setShowCreateForm(false);
       setNewCommunity({ name: '', description: '', icon: 'users' });
       await fetchCommunities();
       toast.success('Yeni topluluk başarıyla oluşturuldu!');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error creating community:', err);
-      toast.error('Topluluk oluşturulurken hata oluştu.');
+      toast.error('Topluluk oluşturulurken hata: ' + (err?.message || 'Bilinmeyen hata'));
     } finally {
       setCreating(false);
     }

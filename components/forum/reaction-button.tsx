@@ -48,7 +48,10 @@ export function ReactionButton({ topicId, initialCount }: { topicId: string, ini
         setHasLiked(false);
       } else {
         // Like
-        await supabase.from('reactions').insert({ id: generateUUID(), topic_id: topicId, user_id: user.id, reaction_type: 'like' });
+        const { error } = await supabase.from('reactions').insert({ id: generateUUID(), topic_id: topicId, user_id: user.id, reaction_type: 'like' });
+        if (error && error.code !== '23505' && !error.message?.includes('duplicate key')) {
+          throw error;
+        }
         setCount(prev => prev + 1);
         setHasLiked(true);
       }

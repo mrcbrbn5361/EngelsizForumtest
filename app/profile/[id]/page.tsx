@@ -8,12 +8,13 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { 
   User, Award, Sparkles, Zap, Flame, Star, 
   MessageSquare, BookOpen, Heart, Calendar, Loader2, ArrowLeft, Clock,
-  Plus, Edit, X, Send, AlertCircle
+  Plus, Edit, X, Send, AlertCircle, Users, UserCheck, UserPlus
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { toast } from 'sonner';
+import { generateUUID } from '@/lib/utils';
 
 interface Badge {
   id: string;
@@ -32,10 +33,13 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
   const [loading, setLoading] = useState(true);
   const [loadingContent, setLoadingContent] = useState(false);
-  const [activeTab, setActiveTab] = useState<'opened' | 'replied' | 'liked'>('opened');
+  const [activeTab, setActiveTab] = useState<'opened' | 'replied' | 'liked' | 'followers' | 'following'>('opened');
   const [openedTopics, setOpenedTopics] = useState<any[]>([]);
   const [repliedTopics, setRepliedTopics] = useState<any[]>([]);
   const [likedTopics, setLikedTopics] = useState<any[]>([]);
+  const [followersList, setFollowersList] = useState<any[]>([]);
+  const [followingList, setFollowingList] = useState<any[]>([]);
+  const [myFollowedUserIds, setMyFollowedUserIds] = useState<Set<string>>(new Set());
   const [isFollowing, setIsFollowing] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -71,29 +75,43 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
     following_count: number;
   } | null>(null);
 
+  const targetUserId = profile?.id || userId;
+
   useEffect(() => {
     async function fetchUserProfile() {
       if (!userId) return;
       setLoading(true);
 
       try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .maybeSingle();
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(userId);
+        let profileQuery = supabase.from('profiles').select('*');
+        if (isUUID) {
+          profileQuery = profileQuery.eq('id', userId);
+        } else {
+          profileQuery = profileQuery.eq('username', userId);
+        }
+
+        let { data, error } = await profileQuery.maybeSingle();
+
+        // Fallback if not found by UUID/username
+        if (!data && isUUID) {
+          const { data: byUsername } = await supabase.from('profiles').select('*').eq('username', userId).maybeSingle();
+          if (byUsername) data = byUsername;
+        }
 
         if (error) throw error;
         if (data) {
+          const resolvedId = data.id;
+
           const { count: followers } = await supabase
             .from('follows')
             .select('*', { count: 'exact', head: true })
-            .eq('following_id', userId);
+            .eq('following_id', resolvedId);
           
           const { count: following } = await supabase
             .from('follows')
             .select('*', { count: 'exact', head: true })
-            .eq('follower_id', userId);
+            .eq('follower_id', resolvedId);
 
           const profileData = {
             ...data,
@@ -171,28 +189,43 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
   useEffect(() => {
     async function checkFollowStatus() {
-      if (!currentUser || !userId || currentUser.id === userId) return;
+      if (!currentUser || !targetUserId || currentUser.id === targetUserId) return;
       try {
         const { data } = await supabase
           .from('follows')
           .select('id')
           .eq('follower_id', currentUser.id)
-          .eq('following_id', userId)
+          .eq('following_id', targetUserId)
           .maybeSingle();
         
         if (data) setIsFollowing(true);
+
+        // Also fetch user's following IDs to show follow status in member lists
+        const { data: myFollows } = await supabase
+          .from('follows')
+          .select('following_id')
+          .eq('follower_id', currentUser.id);
+
+        if (myFollows) {
+          setMyFollowedUserIds(new Set(myFollows.map(f => f.following_id)));
+        }
       } catch (err) {
         console.error('Error checking follow status:', err);
       }
     }
     
-    if (userId) {
+    if (targetUserId) {
       checkFollowStatus();
     }
-  }, [userId, currentUser]);
+  }, [targetUserId, currentUser]);
 
   const handleFollowToggle = async () => {
-    if (!currentUser || !userId || followLoading) return;
+    if (!currentUser || !targetUserId || followLoading) return;
+    if (currentUser.id === targetUserId) {
+      toast.info('Kendinizi takip edemezsiniz.');
+      return;
+    }
+
     setFollowLoading(true);
     try {
       if (isFollowing) {
@@ -200,34 +233,49 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
           .from('follows')
           .delete()
           .eq('follower_id', currentUser.id)
-          .eq('following_id', userId);
+          .eq('following_id', targetUserId);
         
         if (error) throw error;
         setIsFollowing(false);
+        setMyFollowedUserIds(prev => {
+          const next = new Set(prev);
+          next.delete(targetUserId);
+          return next;
+        });
         setProfile(prev => prev ? { ...prev, followers_count: Math.max(0, prev.followers_count - 1) } : null);
         toast.success('Takip bırakıldı.');
       } else {
         const { error } = await supabase
           .from('follows')
           .insert({
+            id: generateUUID(),
             follower_id: currentUser.id,
-            following_id: userId
+            following_id: targetUserId,
+            created_at: new Date().toISOString()
           });
         
-        if (error) throw error;
+        if (error && error.code !== '23505') throw error;
         setIsFollowing(true);
+        setMyFollowedUserIds(prev => {
+          const next = new Set(prev);
+          next.add(targetUserId);
+          return next;
+        });
         setProfile(prev => prev ? { ...prev, followers_count: prev.followers_count + 1 } : null);
         toast.success('Kullanıcı takip ediliyor.');
 
         try {
+          const senderName = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'Bir üye';
           await supabase.from('notifications').insert({
-            recipient_id: userId,
+            id: generateUUID(),
+            recipient_id: targetUserId,
             sender_id: currentUser.id,
             type: 'follow',
             title: 'Yeni Takipçi',
-            body: `${currentUser.email?.split('@')[0]} sizi takip etmeye başladı.`,
-            content: `${currentUser.email?.split('@')[0]} sizi takip etmeye başladı.`,
-            data: { link: `/profile/${currentUser.id}` }
+            body: `${senderName} sizi takip etmeye başladı.`,
+            content: `${senderName} sizi takip etmeye başladı.`,
+            data: { link: `/profile/${currentUser.id}` },
+            created_at: new Date().toISOString()
           });
         } catch (notifErr) {
           console.warn('Could not send follow notification:', notifErr);
@@ -235,15 +283,83 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       }
     } catch (err) {
       console.error('Error toggling follow:', err);
-      toast.error('İşlem başarısız oldu.');
+      toast.error('İşlem gerçekleştirilemedi.');
     } finally {
       setFollowLoading(false);
     }
   };
 
+  const handleMemberFollowToggle = async (memberId: string) => {
+    if (!currentUser || !memberId || currentUser.id === memberId) return;
+    const isCurrentlyFollowing = myFollowedUserIds.has(memberId);
+
+    try {
+      if (isCurrentlyFollowing) {
+        const { error } = await supabase
+          .from('follows')
+          .delete()
+          .eq('follower_id', currentUser.id)
+          .eq('following_id', memberId);
+
+        if (error) throw error;
+        setMyFollowedUserIds(prev => {
+          const next = new Set(prev);
+          next.delete(memberId);
+          return next;
+        });
+        if (memberId === targetUserId) {
+          setIsFollowing(false);
+          setProfile(prev => prev ? { ...prev, followers_count: Math.max(0, prev.followers_count - 1) } : null);
+        }
+        toast.success('Takip bırakıldı.');
+      } else {
+        const { error } = await supabase
+          .from('follows')
+          .insert({
+            id: generateUUID(),
+            follower_id: currentUser.id,
+            following_id: memberId,
+            created_at: new Date().toISOString()
+          });
+
+        if (error && error.code !== '23505') throw error;
+        setMyFollowedUserIds(prev => {
+          const next = new Set(prev);
+          next.add(memberId);
+          return next;
+        });
+        if (memberId === targetUserId) {
+          setIsFollowing(true);
+          setProfile(prev => prev ? { ...prev, followers_count: prev.followers_count + 1 } : null);
+        }
+        toast.success('Kullanıcı takip ediliyor.');
+
+        try {
+          const senderName = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'Bir üye';
+          await supabase.from('notifications').insert({
+            id: generateUUID(),
+            recipient_id: memberId,
+            sender_id: currentUser.id,
+            type: 'follow',
+            title: 'Yeni Takipçi',
+            body: `${senderName} sizi takip etmeye başladı.`,
+            content: `${senderName} sizi takip etmeye başladı.`,
+            data: { link: `/profile/${currentUser.id}` },
+            created_at: new Date().toISOString()
+          });
+        } catch (notifErr) {
+          console.warn('Could not send follow notification:', notifErr);
+        }
+      }
+    } catch (err) {
+      console.error('Error toggling member follow:', err);
+      toast.error('İşlem başarısız oldu.');
+    }
+  };
+
   useEffect(() => {
     async function fetchUserActivity() {
-      if (!userId) return;
+      if (!targetUserId) return;
       setLoadingContent(true);
 
       try {
@@ -254,7 +370,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             author:profiles(username, avatar_url, full_name, role, level, xp, is_verified),
             category:categories(name, slug, description, icon, color)
           `)
-          .eq('author_id', userId)
+          .eq('author_id', targetUserId)
           .order('created_at', { ascending: false });
 
         if (!openedErr && opened) {
@@ -271,7 +387,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               category:categories(name, slug, description, icon, color)
             )
           `)
-          .eq('author_id', userId);
+          .eq('author_id', targetUserId);
 
         if (!commentsErr && commentsData) {
           const uniqueTopicsMap = new Map();
@@ -293,7 +409,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
               category:categories(name, slug, description, icon, color)
             )
           `)
-          .eq('user_id', userId)
+          .eq('user_id', targetUserId)
           .eq('reaction_type', 'like');
 
         if (!reactionsErr && reactionsData) {
@@ -305,6 +421,57 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
           });
           setLikedTopics(Array.from(uniqueLikesMap.values()));
         }
+
+        // Fetch Followers list
+        const { data: followsData } = await supabase
+          .from('follows')
+          .select('follower_id, created_at')
+          .eq('following_id', targetUserId)
+          .order('created_at', { ascending: false });
+
+        if (followsData && followsData.length > 0) {
+          const followerIds = followsData.map(f => f.follower_id);
+          const { data: followerProfiles } = await supabase
+            .from('profiles')
+            .select('id, username, full_name, avatar_url, role, level, xp, is_verified, bio, last_seen_at')
+            .in('id', followerIds);
+
+          if (followerProfiles) {
+            const profileMap = new Map(followerProfiles.map(p => [p.id, p]));
+            const enriched = followsData
+              .map(f => profileMap.get(f.follower_id))
+              .filter(Boolean);
+            setFollowersList(enriched);
+          }
+        } else {
+          setFollowersList([]);
+        }
+
+        // Fetch Following list
+        const { data: followingData } = await supabase
+          .from('follows')
+          .select('following_id, created_at')
+          .eq('follower_id', targetUserId)
+          .order('created_at', { ascending: false });
+
+        if (followingData && followingData.length > 0) {
+          const followingIds = followingData.map(f => f.following_id);
+          const { data: followingProfiles } = await supabase
+            .from('profiles')
+            .select('id, username, full_name, avatar_url, role, level, xp, is_verified, bio, last_seen_at')
+            .in('id', followingIds);
+
+          if (followingProfiles) {
+            const profileMap = new Map(followingProfiles.map(p => [p.id, p]));
+            const enriched = followingData
+              .map(f => profileMap.get(f.following_id))
+              .filter(Boolean);
+            setFollowingList(enriched);
+          }
+        } else {
+          setFollowingList([]);
+        }
+
       } catch (err) {
         console.error('Error fetching user activity:', err);
       } finally {
@@ -312,10 +479,10 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
       }
     }
 
-    if (userId) {
+    if (targetUserId) {
       fetchUserActivity();
     }
-  }, [userId]);
+  }, [targetUserId]);
 
   const badgesList = useMemo<Badge[]>(() => [
     {
@@ -613,9 +780,21 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                   <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 text-xs text-slate-400">
                     <span className="text-sky-400 font-mono">@{profile.username || 'isimsiz'}</span>
                     <span className="text-slate-600">•</span>
-                    <span className="text-slate-300">{profile.followers_count || 0} Takipçi</span>
+                    <button 
+                      type="button" 
+                      onClick={() => setActiveTab('followers')}
+                      className="text-slate-300 hover:text-sky-400 transition-colors cursor-pointer font-medium underline-offset-2 hover:underline"
+                    >
+                      {profile.followers_count || 0} Takipçi
+                    </button>
                     <span className="text-slate-600">•</span>
-                    <span className="text-slate-300">{profile.following_count || 0} Takip</span>
+                    <button 
+                      type="button" 
+                      onClick={() => setActiveTab('following')}
+                      className="text-slate-300 hover:text-sky-400 transition-colors cursor-pointer font-medium underline-offset-2 hover:underline"
+                    >
+                      {profile.following_count || 0} Takip
+                    </button>
                   </div>
 
                   <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-2 pt-1 w-full">
@@ -633,7 +812,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                     </div>
                   </div>
 
-                  {currentUser && currentUser.id !== userId && (
+                  {currentUser && currentUser.id !== targetUserId && (
                     <div className="pt-2 flex flex-wrap gap-2 justify-center md:justify-start">
                       <button
                         onClick={handleFollowToggle}
@@ -656,7 +835,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                       </button>
 
                       <Link
-                        href={`/messages?userId=${userId}`}
+                        href={`/messages?userId=${targetUserId}`}
                         className="h-8 px-4 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-1.5 bg-[#0b0f19] hover:bg-slate-800 text-sky-400 hover:text-sky-300 border border-sky-500/30 hover:border-sky-500/60"
                       >
                         <Send size={12} /> Mesaj Gönder
@@ -664,7 +843,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                     </div>
                   )}
 
-                  {currentUser && currentUser.id === userId && (
+                  {currentUser && currentUser.id === targetUserId && (
                     <div className="pt-2 flex justify-center md:justify-start">
                       <button
                         onClick={() => setIsEditing(true)}
@@ -711,7 +890,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                       : 'border-transparent text-slate-400 hover:text-slate-200'
                   }`}
                 >
-                  <MessageSquare size={13} /> Yanıtladığı Konular ({repliedTopics.length})
+                  <MessageSquare size={13} /> Yanıtladığı ({repliedTopics.length})
                 </button>
                 <button
                   onClick={() => setActiveTab('liked')}
@@ -721,7 +900,27 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                       : 'border-transparent text-slate-400 hover:text-slate-200'
                   }`}
                 >
-                  <Heart size={13} /> Beğendiği Konular ({likedTopics.length})
+                  <Heart size={13} /> Beğendiği ({likedTopics.length})
+                </button>
+                <button
+                  onClick={() => setActiveTab('followers')}
+                  className={`py-2 px-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                    activeTab === 'followers'
+                      ? 'border-sky-500 text-sky-400'
+                      : 'border-transparent text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <Users size={13} /> Takipçiler ({profile.followers_count || followersList.length})
+                </button>
+                <button
+                  onClick={() => setActiveTab('following')}
+                  className={`py-2 px-3 text-xs font-semibold border-b-2 transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                    activeTab === 'following'
+                      ? 'border-sky-500 text-sky-400'
+                      : 'border-transparent text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  <UserCheck size={13} /> Takip Edilenler ({profile.following_count || followingList.length})
                 </button>
               </div>
 
@@ -754,6 +953,42 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                         likedTopics.map(topic => <CompactTopicCard key={topic.id} topic={topic} />)
                       ) : (
                         <EmptyState message="Bu kullanıcı henüz hiçbir konuyu beğenmemiş." />
+                      )
+                    )}
+
+                    {activeTab === 'followers' && (
+                      followersList.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {followersList.map(member => (
+                            <MemberCard 
+                              key={member.id} 
+                              member={member} 
+                              currentUserId={currentUser?.id}
+                              isFollowing={myFollowedUserIds.has(member.id)}
+                              onFollowToggle={() => handleMemberFollowToggle(member.id)}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <EmptyState message="Henüz bu kullanıcıyı takip eden kimse yok." />
+                      )
+                    )}
+
+                    {activeTab === 'following' && (
+                      followingList.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {followingList.map(member => (
+                            <MemberCard 
+                              key={member.id} 
+                              member={member} 
+                              currentUserId={currentUser?.id}
+                              isFollowing={myFollowedUserIds.has(member.id)}
+                              onFollowToggle={() => handleMemberFollowToggle(member.id)}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <EmptyState message="Bu kullanıcı henüz kimseyi takip etmiyor." />
                       )
                     )}
                   </>
@@ -893,6 +1128,95 @@ function EmptyState({ message }: { message: string }) {
       <p className="text-xs text-slate-400">
         {message}
       </p>
+    </div>
+  );
+}
+
+function MemberCard({ 
+  member, 
+  currentUserId, 
+  isFollowing, 
+  onFollowToggle 
+}: { 
+  member: any; 
+  currentUserId?: string; 
+  isFollowing: boolean; 
+  onFollowToggle: () => void;
+}) {
+  const isMe = currentUserId === member.id;
+  const isOnline = member.last_seen_at && (new Date().getTime() - new Date(member.last_seen_at).getTime() < 5 * 60 * 1000);
+
+  return (
+    <div className="bg-[#111726]/80 p-4 rounded-xl border border-white/[0.06] hover:border-sky-500/40 transition-all flex flex-col justify-between gap-3 backdrop-blur-md">
+      <div className="flex items-start gap-3">
+        <Link href={`/profile/${member.id}`} className="shrink-0 relative group">
+          <UserAvatar 
+            src={member.avatar_url}
+            username={member.username}
+            name={member.full_name}
+            size="md"
+            className="size-11 rounded-xl border border-white/[0.08] group-hover:border-sky-500/60 transition-colors"
+          />
+          {isOnline && (
+            <span className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full bg-emerald-400 border-2 border-[#111726]" title="Çevrimiçi" />
+          )}
+        </Link>
+        <div className="min-w-0 flex-1 space-y-1">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <Link 
+              href={`/profile/${member.id}`}
+              className="text-xs font-bold text-slate-200 hover:text-sky-400 transition-colors truncate"
+            >
+              {member.full_name || member.username || 'Kullanıcı'}
+            </Link>
+            <span className="px-1.5 py-0.2 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[9px] font-semibold rounded">
+              {member.role === 'admin' ? 'Yönetici' : member.role === 'moderator' ? 'Mod' : 'Üye'}
+            </span>
+          </div>
+          <p className="text-[11px] text-sky-400 font-mono">@{member.username || 'isimsiz'}</p>
+          {member.bio && (
+            <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
+              {member.bio}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 pt-2 border-t border-white/[0.04]">
+        {currentUserId && !isMe && (
+          <>
+            <button
+              type="button"
+              onClick={onFollowToggle}
+              className={`flex-1 py-1.5 px-2.5 rounded-lg text-[11px] font-semibold transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                isFollowing 
+                  ? 'bg-slate-800 text-slate-300 hover:bg-rose-500/10 hover:text-rose-400 border border-white/[0.06]' 
+                  : 'bg-sky-600 hover:bg-sky-500 text-white'
+              }`}
+            >
+              {isFollowing ? (
+                <>
+                  <UserCheck size={12} /> Takip Ediliyor
+                </>
+              ) : (
+                <>
+                  <UserPlus size={12} /> Takip Et
+                </>
+              )}
+            </button>
+            <Link
+              href={`/messages?userId=${member.id}`}
+              className="py-1.5 px-2.5 rounded-lg text-[11px] font-semibold bg-[#0b0f19] hover:bg-slate-800 text-sky-400 border border-sky-500/30 hover:border-sky-500/60 transition-colors flex items-center gap-1"
+              title="Mesaj Gönder"
+            >
+              <Send size={11} /> Mesaj
+            </Link>
+          </>
+        )}
+        {isMe && (
+          <span className="text-[11px] text-slate-500 italic">Sizsiniz</span>
+        )}
+      </div>
     </div>
   );
 }

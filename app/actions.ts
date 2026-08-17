@@ -4,7 +4,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { supabaseServer } from '@/lib/supabase-server';
-import { generateUUID, slugify } from '@/lib/utils';
+import { generateUUID, slugify, generateUniqueSlug } from '@/lib/utils';
 
 /**
  * Creates an authenticated Supabase server client bound to request cookies.
@@ -62,10 +62,9 @@ export async function createTopicAction(formData: {
   }
 
   const topicId = generateUUID();
-  let slug = slugify(title);
-  if (!slug) slug = topicId.substring(0, 8);
+  let slug = generateUniqueSlug(title);
 
-  const payload = {
+  const payload: any = {
     id: topicId,
     title,
     category_id: categoryId,
@@ -78,26 +77,59 @@ export async function createTopicAction(formData: {
     views_count: 0
   };
 
-  const { data, error } = await supabase
-    .from('topics')
-    .insert(payload)
-    .select('id, slug')
-    .single();
+  let insertedTopic: any = null;
+  let lastError: any = null;
 
-  if (error) {
-    console.error('Error inserting topic:', error);
-    // Fallback to threads
-    const { error: threadErr } = await supabase.from('threads').insert(payload);
-    if (threadErr) {
-      return { success: false, error: error.message || 'Konu kaydedilemedi.' };
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) {
+      payload.slug = generateUniqueSlug(title, 8 + attempt * 2);
     }
+
+    const { data, error } = await supabase
+      .from('topics')
+      .insert(payload)
+      .select('id, slug')
+      .single();
+
+    if (!error && data) {
+      insertedTopic = data;
+      lastError = null;
+      break;
+    }
+
+    lastError = error;
+
+    const isSlugCollision = error?.message?.includes('topics_slug_key') || 
+                            error?.message?.includes('duplicate key') || 
+                            error?.code === '23505';
+
+    if (!isSlugCollision) {
+      // Fallback to threads
+      const { data: thData, error: threadErr } = await supabase
+        .from('threads')
+        .insert(payload)
+        .select('id, slug')
+        .single();
+
+      if (!threadErr && thData) {
+        insertedTopic = thData;
+        lastError = null;
+        break;
+      }
+      if (threadErr) lastError = threadErr;
+    }
+  }
+
+  if (lastError && !insertedTopic) {
+    console.error('Error inserting topic in createTopicAction:', lastError);
+    return { success: false, error: lastError.message || 'Konu kaydedilemedi.' };
   }
 
   revalidatePath('/discussions');
   revalidatePath(`/category/${categoryId}`);
   revalidatePath('/');
 
-  return { success: true, topicId: data?.id || topicId, slug };
+  return { success: true, topicId: insertedTopic?.id || topicId, slug: insertedTopic?.slug || payload.slug };
 }
 
 /**

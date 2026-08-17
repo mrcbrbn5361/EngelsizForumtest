@@ -18,6 +18,7 @@ import { UserAvatar } from '@/components/ui/user-avatar';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { expandSearchQuery, matchQueryWithText } from '@/lib/search-dictionary';
+import { generateUniqueSlug } from '@/lib/utils';
 
 const getCategoryIcon = (iconName: string) => {
   const cls = "size-3.5 shrink-0 text-sky-400";
@@ -113,36 +114,38 @@ function DiscussionsContent() {
     if (!user) return;
     setIsSubmitting(true);
     try {
-      const slugify = (text: string) => {
-        const trMap: Record<string, string> = {
-          'ç': 'c', 'Ç': 'c', 'ğ': 'g', 'Ğ': 'g', 'ı': 'i', 'I': 'i', 'İ': 'i',
-          'ö': 'o', 'Ö': 'o', 'ş': 's', 'Ş': 's', 'ü': 'u', 'Ü': 'u'
-        };
-        let str = text;
-        for (const key in trMap) {
-          str = str.replace(new RegExp(key, 'g'), trMap[key]);
-        }
-        return str.toLowerCase()
-          .replace(/[^-a-zA-Z0-9\s]+/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/-+/g, '-')
-          .trim() || `konu-${Date.now()}`;
-      };
+      let insertedTopic: any = null;
+      let lastError: any = null;
 
-      const topicSlug = slugify(newTopic.title);
-
-      const { data, error } = await supabase
-        .from('topics')
-        .insert([{
-          title: newTopic.title,
-          content: newTopic.content,
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const topicSlug = generateUniqueSlug(newTopic.title, 6 + attempt * 2);
+        const payload = {
+          title: newTopic.title.trim(),
+          content: newTopic.content.trim(),
           category_id: newTopic.category_id,
           author_id: user.id,
           slug: topicSlug
-        }])
-        .select();
+        };
 
-      if (error) throw error;
+        const { data, error } = await supabase
+          .from('topics')
+          .insert([payload])
+          .select();
+
+        if (!error && data && data.length > 0) {
+          insertedTopic = data[0];
+          lastError = null;
+          break;
+        }
+
+        lastError = error;
+        const isSlugCollision = error?.message?.includes('topics_slug_key') || 
+                                error?.message?.includes('duplicate key') || 
+                                error?.code === '23505';
+        if (!isSlugCollision) break;
+      }
+
+      if (lastError && !insertedTopic) throw lastError;
       
       toast.success('Konunuz başarıyla oluşturuldu!');
 

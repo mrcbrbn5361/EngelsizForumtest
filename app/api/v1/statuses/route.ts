@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseServer } from '@/lib/supabase-server';
 import { verifyMastodonRequest } from '@/lib/mastodon-auth';
 import { mapTopicToStatus, mapCommentToStatus } from '@/lib/mastodon-mappers';
+import { generateUniqueSlug } from '@/lib/utils';
 
 /**
  * Mastodon API: POST /api/v1/statuses
@@ -152,38 +153,37 @@ export async function POST(req: NextRequest) {
     const title = firstLine.length > 50 ? firstLine.substring(0, 47) + '...' : firstLine || 'Mobil Paylaşım';
     const content = statusText;
 
-    const slugify = (text: string) => {
-      const trMap: Record<string, string> = {
-        'ç': 'c', 'Ç': 'c', 'ğ': 'g', 'Ğ': 'g', 'ı': 'i', 'I': 'i', 'İ': 'i',
-        'ö': 'o', 'Ö': 'o', 'ş': 's', 'Ş': 's', 'ü': 'u', 'Ü': 'u'
-      };
-      let str = text;
-      for (const key in trMap) {
-        str = str.replace(new RegExp(key, 'g'), trMap[key]);
+    let newTopic: any = null;
+    let topicErr: any = null;
+
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const topicSlug = generateUniqueSlug(title, 6 + attempt * 2);
+      const { data, error } = await supabaseServer
+        .from('topics')
+        .insert({
+          author_id: profile.id,
+          category_id: categoryId,
+          title: title,
+          content: content,
+          slug: topicSlug
+        })
+        .select('*')
+        .single();
+
+      if (!error && data) {
+        newTopic = data;
+        topicErr = null;
+        break;
       }
-      return str.toLowerCase()
-        .replace(/[^-a-zA-Z0-9\s]+/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim() || `status-${Date.now()}`;
-    };
 
-    const topicSlug = slugify(title);
+      topicErr = error;
+      const isSlugCollision = error?.message?.includes('topics_slug_key') || 
+                              error?.message?.includes('duplicate key') || 
+                              error?.code === '23505';
+      if (!isSlugCollision) break;
+    }
 
-    // Create topic
-    const { data: newTopic, error: topicErr } = await supabaseServer
-      .from('topics')
-      .insert({
-        author_id: profile.id,
-        category_id: categoryId,
-        title: title,
-        content: content,
-        slug: topicSlug
-      })
-      .select('*')
-      .single();
-
-    if (topicErr) {
+    if (topicErr && !newTopic) {
       console.error('Error inserting topic via Mastodon API:', topicErr);
       return NextResponse.json({ error: 'Failed to create topic' }, { status: 500 });
     }

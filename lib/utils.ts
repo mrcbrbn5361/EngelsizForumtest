@@ -23,23 +23,61 @@ export function generateUUID(): string {
 }
 
 /**
+ * Generates a short, random alphanumeric identifier (e.g. for collision-resistant slugs).
+ */
+export function generateShortId(length = 6): string {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    const bytes = new Uint8Array(length);
+    crypto.getRandomValues(bytes);
+    for (let i = 0; i < length; i++) {
+      result += chars[bytes[i] % chars.length];
+    }
+    return result;
+  }
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+/**
  * Converts Turkish characters and special strings to a URL-friendly slug.
  */
-export function slugify(text: string): string {
+export function slugify(text: string, maxLength = 80): string {
   if (!text) return '';
   const trMap: { [key: string]: string } = {
-    'ç': 'c', 'Ç': 'c', 'ğ': 'g', 'Ğ': 'g', 'ı': 'i', 'İ': 'i',
+    'ç': 'c', 'Ç': 'c', 'ğ': 'g', 'Ğ': 'g', 'ı': 'i', 'I': 'i', 'İ': 'i',
     'ö': 'o', 'Ö': 'o', 'ş': 's', 'Ş': 's', 'ü': 'u', 'Ü': 'u'
   };
   let str = text;
   for (const key in trMap) {
     str = str.replace(new RegExp(key, 'g'), trMap[key]);
   }
-  return str.toLowerCase()
+  let slug = str.toLowerCase()
     .replace(/[^-a-zA-Z0-9\s]+/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
     .trim();
+
+  if (slug.length > maxLength) {
+    slug = slug.substring(0, maxLength).replace(/-+$/, '');
+  }
+  return slug;
+}
+
+/**
+ * Generates a unique, URL-safe slug with a short random token to prevent unique constraint collisions (e.g. topics_slug_key).
+ */
+export function generateUniqueSlug(text: string, suffixLength = 6): string {
+  const base = slugify(text, 60);
+  const suffix = generateShortId(suffixLength);
+  if (!base) {
+    return `konu-${suffix}`;
+  }
+  return `${base}-${suffix}`;
 }
 
 /**

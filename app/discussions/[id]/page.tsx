@@ -355,7 +355,14 @@ export default function DiscussionDetailPage() {
             reaction_type: 'like'
           });
         
-        if (error) throw error;
+        if (error) {
+          // If already liked (duplicate key violation), handle gracefully
+          if (error.code === '23505' || error.message?.includes('duplicate key')) {
+            setIsLiked(true);
+            return;
+          }
+          throw error;
+        }
         setIsLiked(true);
         setLikesCount(prev => prev + 1);
       }
@@ -464,9 +471,12 @@ export default function DiscussionDetailPage() {
         setIsBookmarked(false);
         toast.success('Yer işareti kaldırıldı.');
       } else {
-        await supabase
+        const { error: bmErr } = await supabase
           .from('bookmarks')
           .insert([{ user_id: user.id, topic_id: topic.id }]);
+        if (bmErr && bmErr.code !== '23505' && !bmErr.message?.includes('duplicate key')) {
+          throw bmErr;
+        }
         setIsBookmarked(true);
         toast.success('Tartışma kaydedildi.');
       }

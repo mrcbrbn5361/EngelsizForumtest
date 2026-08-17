@@ -261,6 +261,13 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         });
 
       if (insertErr) throw insertErr;
+
+      // Update conversation updated_at
+      supabase
+        .from('conversations')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', conversationId)
+        .then(() => {});
     } catch (err: any) {
       console.error('Error sending message:', err);
       toast.error('Mesaj gönderilemedi.');
