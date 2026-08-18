@@ -80,6 +80,14 @@ export const metadata: Metadata = {
     locale: 'tr_TR',
     images: [
       {
+        url: 'https://www.engelsizforum.com/og-image.jpg',
+        secureUrl: 'https://www.engelsizforum.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'EngelsizForum - Tam Erişilebilir Topluluk Platformu',
+        type: 'image/jpeg',
+      },
+      {
         url: 'https://www.engelsizforum.com/og-image.png',
         secureUrl: 'https://www.engelsizforum.com/og-image.png',
         width: 1200,
@@ -95,7 +103,7 @@ export const metadata: Metadata = {
     description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu.',
     site: '@engelsizforum',
     creator: '@engelsizforum',
-    images: ['https://www.engelsizforum.com/og-image.png'],
+    images: ['https://www.engelsizforum.com/og-image.jpg'],
   },
   formatDetection: {
     telephone: false,
@@ -155,10 +163,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta property="og:url" content="https://www.engelsizforum.com" />
         <meta property="og:title" content="EngelsizForum | Tam Erişilebilir Topluluk Platformu" />
         <meta property="og:description" content="Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu." />
-        <meta property="og:image" content="https://www.engelsizforum.com/og-image.png" />
-        <meta property="og:image:url" content="https://www.engelsizforum.com/og-image.png" />
-        <meta property="og:image:secure_url" content="https://www.engelsizforum.com/og-image.png" />
-        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image" content="https://www.engelsizforum.com/og-image.jpg" />
+        <meta property="og:image:url" content="https://www.engelsizforum.com/og-image.jpg" />
+        <meta property="og:image:secure_url" content="https://www.engelsizforum.com/og-image.jpg" />
+        <meta property="og:image:type" content="image/jpeg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="EngelsizForum - Tam Erişilebilir Topluluk Platformu" />
@@ -169,15 +177,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="twitter:creator" content="@engelsizforum" />
         <meta name="twitter:title" content="EngelsizForum | Tam Erişilebilir Topluluk Platformu" />
         <meta name="twitter:description" content="Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu." />
-        <meta name="twitter:image" content="https://www.engelsizforum.com/og-image.png" />
-        <meta name="twitter:image:src" content="https://www.engelsizforum.com/og-image.png" />
+        <meta name="twitter:image" content="https://www.engelsizforum.com/og-image.jpg" />
+        <meta name="twitter:image:src" content="https://www.engelsizforum.com/og-image.jpg" />
         <meta name="twitter:image:alt" content="EngelsizForum - Tam Erişilebilir Topluluk Platformu" />
         
         {/* Search Engine & Chat Scraper Fallbacks */}
         <meta itemProp="name" content="EngelsizForum | Tam Erişilebilir Topluluk Platformu" />
         <meta itemProp="description" content="Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu." />
-        <meta itemProp="image" content="https://www.engelsizforum.com/og-image.png" />
-        <link rel="image_src" href="https://www.engelsizforum.com/og-image.png" />
+        <meta itemProp="image" content="https://www.engelsizforum.com/og-image.jpg" />
+        <link rel="image_src" href="https://www.engelsizforum.com/og-image.jpg" />
         
         <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
