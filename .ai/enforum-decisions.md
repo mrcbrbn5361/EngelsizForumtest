@@ -39,3 +39,18 @@
 * **Karar:** Sosyal medya paylaşımlarında ve Google aramalarında kesin geçerlilik için OG görselleri dinamik/statik Sharp derleyicisi ile doğrudan gerçek JPEG (`image/jpeg`) ve PNG (`image/png`) binary dosyaları olarak `public/og-image-v2.jpg` ve `public/og-image-v2.png` konumlarında üretilir.
 * **Boyut:** `1200x630` piksel, tam sosyal medya kart uyumluluğu.
 * **Canonical URL:** `https://www.engelsizforum.com` mutlak URL'si kullanılır.
+
+---
+
+## 4. Yetkilendirme, Profil ve Gizlilik Kararları (Faz 3)
+
+### 4.1 Yetki ve Rol Yükseltme Koruması (Anti-Privilege Escalation)
+* **Karar:** İstemciden gelen hiçbir profil güncelleme isteğinde `role`, `is_verified`, `level`, `xp`, `account_status`, `suspended_until` alanları güncellenemez (`sanitizeProfileUpdatePayload` ve veritabanı trigger'ı `trg_prevent_profile_role_escalation`).
+* **Gerekçe:** Yetki yükseltme (Privilege Escalation) saldırılarına karşı hem uygulama katmanı hem de veritabanı seviyesinde çift katmanlı savunma.
+
+### 4.2 Kapsamlı (Scoped) Moderasyon ve Hesap Durumu
+* **Karar:** Kategori moderatörleri (`category_moderators`) yalnızca atandıkları kategori kapsamında (`has_category_permission`) işlem yapabilir; global yönetici yetkisi kazanamazlar. Askıya alınan (`suspended`) veya engellenen (`banned`) hesapların `is_account_active` fonksiyonu ile tüm yazma/düzenleme/reaksiyon eylemleri engellenir.
+
+### 4.3 Gizlilik ve Hassas Veri İzolasyonu
+* **Karar:** Kullanıcıların e-posta adresleri, bildirim tercihleri ve özel tercihler public profil sorgularında döndürülmez. Profil gizlilik seviyesi (`privacy_settings`) kullanıcının kendi yetki alanındadır.
+

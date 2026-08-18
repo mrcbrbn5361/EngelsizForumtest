@@ -51,10 +51,14 @@ export default function ProfileManagementPage() {
   const [bio, setBio] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
 
-  // Notification & Accessibility preferences local state
+  // Notification & Privacy preferences local state
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [browserNotifications, setBrowserNotifications] = useState(true);
   const [soundAlerts, setSoundAlerts] = useState(false);
+  const [isPublicProfile, setIsPublicProfile] = useState<'public' | 'members' | 'private'>('public');
+  const [showOnlineStatus, setShowOnlineStatus] = useState(true);
+  const [showActivityHistory, setShowActivityHistory] = useState(true);
+  const [allowDirectMessages, setAllowDirectMessages] = useState<'everyone' | 'members' | 'none'>('everyone');
 
   // Form UI state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,6 +85,12 @@ export default function ProfileManagementPage() {
       if (typeof notifPrefs.email === 'boolean') setEmailNotifications(notifPrefs.email);
       if (typeof notifPrefs.browser === 'boolean') setBrowserNotifications(notifPrefs.browser);
       if (typeof notifPrefs.sound === 'boolean') setSoundAlerts(notifPrefs.sound);
+
+      const privSettings = (profile as any).privacy_settings || {};
+      if (privSettings.profile_visibility) setIsPublicProfile(privSettings.profile_visibility);
+      if (typeof privSettings.show_online_status === 'boolean') setShowOnlineStatus(privSettings.show_online_status);
+      if (typeof privSettings.show_activity_history === 'boolean') setShowActivityHistory(privSettings.show_activity_history);
+      if (privSettings.allow_direct_messages) setAllowDirectMessages(privSettings.allow_direct_messages);
 
       setHasUnsavedChanges(false);
     }
@@ -142,8 +152,21 @@ export default function ProfileManagementPage() {
       const result = await updateProfileServerAction({
         username: cleanUsername,
         fullName: fullName.trim(),
+        avatarUrl: avatarUrl.trim() || undefined,
         bio: bio.trim(),
-        accessibilityPrefs: accessPrefs
+        accessibilityPrefs: accessPrefs,
+        privacySettings: {
+          profile_visibility: isPublicProfile,
+          show_online_status: showOnlineStatus,
+          show_activity_history: showActivityHistory,
+          allow_direct_messages: allowDirectMessages
+        },
+        notificationPrefs: {
+          email: emailNotifications,
+          browser: browserNotifications,
+          sound: soundAlerts,
+          digest_frequency: 'weekly'
+        }
       });
 
       if (!result.success) {
@@ -152,7 +175,7 @@ export default function ProfileManagementPage() {
 
       await refreshProfile();
       setHasUnsavedChanges(false);
-      setFormSuccess('Profiliniz ve tercihleriniz başarıyla güncellendi.');
+      setFormSuccess('Profiliniz, gizlilik ve bildirim tercihleriniz başarıyla güncellendi.');
       toast.success('Profil bilgileri kaydedildi.');
     } catch (err: any) {
       console.error('Profile save error:', err);
@@ -410,6 +433,63 @@ export default function ProfileManagementPage() {
                 active={browserNotifications}
                 onToggle={() => handleFieldChange(setBrowserNotifications, !browserNotifications)}
               />
+            </div>
+          </section>
+
+          {/* Card 4: Gizlilik ve Görünürlük */}
+          <section aria-labelledby="privacy-prefs-heading" className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 sm:p-6 backdrop-blur-md">
+            <h2 id="privacy-prefs-heading" className="text-xs font-bold uppercase tracking-wider text-sky-400 mb-4 flex items-center gap-2">
+              <Shield size={15} /> Gizlilik ve Görünürlük
+            </h2>
+
+            <div className="space-y-3">
+              {/* Profile Visibility Selector */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-[#0b0f19] border border-white/[0.06]">
+                <div>
+                  <p className="text-xs font-bold text-slate-200">Profil Görünürlüğü</p>
+                  <p className="text-[11px] text-slate-400">Profilinizin kimler tarafından görüntülenebileceği</p>
+                </div>
+                <div className="grid grid-cols-3 gap-1 sm:w-72">
+                  {[
+                    { id: 'public', label: 'Herkese Açık' },
+                    { id: 'members', label: 'Yalnızca Üyeler' },
+                    { id: 'private', label: 'Gizli' }
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleFieldChange(setIsPublicProfile, item.id as any)}
+                      className={cn(
+                        "py-1.5 px-2 text-[11px] font-bold rounded-lg border transition-colors truncate",
+                        isPublicProfile === item.id 
+                          ? "bg-sky-500 text-slate-950 border-sky-500 font-black" 
+                          : "bg-[#111726] text-slate-300 border-white/[0.08] hover:bg-[#161f33]"
+                      )}
+                      aria-pressed={isPublicProfile === item.id}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Toggles */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <PreferenceToggle
+                  icon={<Eye size={14} />}
+                  title="Çevrimiçi Durumu Göster"
+                  desc="Toplulukta aktif olduğunuz görünsün"
+                  active={showOnlineStatus}
+                  onToggle={() => handleFieldChange(setShowOnlineStatus, !showOnlineStatus)}
+                />
+                <PreferenceToggle
+                  icon={<Target size={14} />}
+                  title="Etkinlik Geçmişini Göster"
+                  desc="Açtığınız konular ve yanıtlar profilinizde listelensin"
+                  active={showActivityHistory}
+                  onToggle={() => handleFieldChange(setShowActivityHistory, !showActivityHistory)}
+                />
+              </div>
             </div>
           </section>
 

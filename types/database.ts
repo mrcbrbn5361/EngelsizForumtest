@@ -3,11 +3,41 @@ export type Profile = {
   username: string;
   full_name: string | null;
   avatar_url: string | null;
-  role: 'admin' | 'moderator' | 'user';
+  role: 'founder' | 'owner' | 'admin' | 'moderator' | 'expert' | 'verified' | 'support' | 'member' | 'user' | 'system' | string;
   level: number;
   xp: number;
   bio: string | null;
   is_verified: boolean;
+  account_status?: 'active' | 'suspended' | 'banned' | 'deleted';
+  status_reason?: string | null;
+  suspended_until?: string | null;
+  privacy_settings?: {
+    show_email?: boolean;
+    show_online_status?: boolean;
+    show_activity?: boolean;
+    allow_messages?: boolean;
+    profile_visibility?: 'public' | 'members' | 'private' | boolean;
+    show_activity_history?: boolean;
+    allow_direct_messages?: 'everyone' | 'members' | 'none' | boolean;
+    showEmail?: boolean;
+    showOnlineStatus?: boolean;
+    showActivity?: boolean;
+    allowMessages?: boolean;
+  } | null;
+  notification_prefs?: {
+    email_replies?: boolean;
+    email_mentions?: boolean;
+    email_digest?: boolean;
+    in_app_notifications?: boolean;
+    email?: boolean;
+    browser?: boolean;
+    sound?: boolean;
+    digest_frequency?: string;
+    emailReplies?: boolean;
+    emailMentions?: boolean;
+    emailDigest?: boolean;
+    inAppNotifications?: boolean;
+  } | null;
   accessibility_prefs: any | null;
   is_online?: boolean;
   last_seen?: string | null;
@@ -160,3 +190,23 @@ export type Attachment = {
   upload_id: string;
   created_at: string;
 };
+
+export type CategoryModerator = {
+  id: string;
+  category_id: string;
+  user_id: string;
+  assigned_by?: string | null;
+  created_at: string;
+  user?: Profile;
+};
+
+export type CommunityModerator = {
+  id: string;
+  community_id: string;
+  user_id: string;
+  role: 'owner' | 'moderator' | 'contributor';
+  assigned_by?: string | null;
+  created_at: string;
+  user?: Profile;
+};
+

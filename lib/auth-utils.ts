@@ -127,3 +127,16 @@ function mapErrorMessage(msg: string, fallback: string): string {
   return msg;
 }
 
+/**
+ * Sanitizes redirect URL to prevent Open Redirect attacks.
+ * Only allows relative paths starting with a single '/' and disallows protocol-relative URLs '//'.
+ */
+export function sanitizeRedirectUrl(url: string | null | undefined, defaultUrl: string = '/'): string {
+  if (!url || typeof url !== 'string') return defaultUrl;
+  const trimmed = url.trim();
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//') && !trimmed.includes('\\')) {
+    return trimmed;
+  }
+  return defaultUrl;
+}
+

@@ -5,6 +5,15 @@ import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { supabaseServer, getSupabaseServer } from '@/lib/supabase-server';
 import { generateUUID, slugify, generateUniqueSlug } from '@/lib/utils';
+import {
+  isStaff,
+  isAccountActive,
+  sanitizeProfileUpdatePayload,
+  sanitizeAccessibilityPrefs,
+  canModerateCategory,
+  PrivacySettings,
+  NotificationPreferences
+} from '@/lib/permissions';
 
 /**
  * Creates an authenticated Supabase server client bound to request cookies.
@@ -45,6 +54,17 @@ export async function createTopicAction(formData: {
 
   if (authError || !user) {
     return { success: false, error: 'Konu oluşturmak için lütfen oturum açın.' };
+  }
+
+  // Account status check
+  const { data: authorProfile } = await supabase
+    .from('profiles')
+    .select('account_status, role')
+    .eq('id', user.id)
+    .single();
+
+  if (!isAccountActive(authorProfile)) {
+    return { success: false, error: 'Hesabınız askıya alınmıştır veya kısıtlanmıştır.' };
   }
 
   const title = (formData.title || '').trim();
@@ -147,6 +167,17 @@ export async function createCommentAction(formData: {
     return { success: false, error: 'Yorum yazmak için lütfen oturum açın.' };
   }
 
+  // Account status check
+  const { data: authorProfile } = await supabase
+    .from('profiles')
+    .select('account_status, role')
+    .eq('id', user.id)
+    .single();
+
+  if (!isAccountActive(authorProfile)) {
+    return { success: false, error: 'Hesabınız askıya alınmıştır veya kısıtlanmıştır.' };
+  }
+
   const topicId = (formData.topicId || '').trim();
   const content = (formData.content || '').trim();
 
@@ -183,7 +214,7 @@ export async function createCommentAction(formData: {
 }
 
 /**
- * Server Action: Deletes a topic if the user is the author or a staff member.
+ * Server Action: Deletes a topic if the user is the author, global staff, or a scoped category moderator.
  */
 export async function deleteTopicAction(topicId: string) {
   const supabase = await getSupabaseServerClient();
@@ -193,24 +224,31 @@ export async function deleteTopicAction(topicId: string) {
     return { success: false, error: 'Bu işlem için yetkiniz bulunmuyor.' };
   }
 
-  // Check ownership or staff role
+  // Check ownership, category, or staff role
   const { data: topic } = await supabase
     .from('topics')
-    .select('author_id')
+    .select('author_id, category_id')
     .eq('id', topicId)
     .single();
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('role')
+    .select('role, account_status')
     .eq('id', user.id)
     .single();
 
-  const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
-  const isAuthor = topic?.author_id === user.id;
+  if (!isAccountActive(profile)) {
+    return { success: false, error: 'Hesabınız kısıtlanmıştır.' };
+  }
 
-  if (!isAuthor && !isStaff) {
-    return { success: false, error: 'Yalnızca konunun sahibi veya moderatörler silebilir.' };
+  const isGlobalStaff = isStaff(profile);
+  const isAuthor = topic?.author_id === user.id;
+  const isCategoryMod = topic?.category_id
+    ? await canModerateCategory(user.id, topic.category_id, profile?.role)
+    : false;
+
+  if (!isAuthor && !isGlobalStaff && !isCategoryMod) {
+    return { success: false, error: 'Yalnızca konunun sahibi veya yetkili moderatörler silebilir.' };
   }
 
   const { error } = await supabase.from('topics').delete().eq('id', topicId);
@@ -232,6 +270,16 @@ export async function toggleReactionAction(topicId: string, emoji = '👍') {
 
   if (authError || !user) {
     return { success: false, error: 'Beğenmek için giriş yapmalısınız.' };
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('account_status')
+    .eq('id', user.id)
+    .single();
+
+  if (!isAccountActive(profile)) {
+    return { success: false, error: 'Hesabınız askıya alınmıştır veya kısıtlanmıştır.' };
   }
 
   const { data: existing } = await supabase
@@ -256,13 +304,16 @@ export async function toggleReactionAction(topicId: string, emoji = '👍') {
 }
 
 /**
- * Server Action: Updates user profile details securely with validation.
+ * Server Action: Updates user profile details securely with validation and privilege protection.
  */
 export async function updateProfileServerAction(profileData: {
   username?: string;
   fullName?: string;
+  avatarUrl?: string;
   bio?: string;
   accessibilityPrefs?: any;
+  privacySettings?: PrivacySettings;
+  notificationPrefs?: NotificationPreferences;
 }) {
   const supabase = await getSupabaseServerClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -271,14 +322,42 @@ export async function updateProfileServerAction(profileData: {
     return { success: false, error: 'Profil güncellemek için oturum açmalısınız.' };
   }
 
+  // Account status check
+  const { data: currentProfile } = await supabase
+    .from('profiles')
+    .select('id, username, account_status')
+    .eq('id', user.id)
+    .single();
+
+  if (!isAccountActive(currentProfile)) {
+    return { success: false, error: 'Hesabınız askıya alınmıştır veya kısıtlanmıştır.' };
+  }
+
+  // Sanitize away any unauthorized / privilege escalation fields (role, xp, level, etc.)
+  const rawSanitized = sanitizeProfileUpdatePayload(profileData);
   const updates: any = {
+    ...rawSanitized,
     updated_at: new Date().toISOString()
   };
 
   if (profileData.username !== undefined) {
     const cleanUsername = profileData.username.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
     if (cleanUsername.length < 3) {
-      return { success: false, error: 'Kullanıcı adı en az 3 karakter olmalıdır.' };
+      return { success: false, error: 'Kullanıcı adı en az 3 karakter olmalı ve yalnızca harf, rakam ve alt çizgi içermelidir.' };
+    }
+    
+    // Check case-insensitive username collision
+    if (cleanUsername !== currentProfile?.username) {
+      const { data: existingUser } = await supabase
+        .from('profiles')
+        .select('id')
+        .ilike('username', cleanUsername)
+        .neq('id', user.id)
+        .maybeSingle();
+
+      if (existingUser) {
+        return { success: false, error: 'Bu kullanıcı adı zaten başka bir üye tarafından kullanılmaktadır.' };
+      }
     }
     updates.username = cleanUsername;
   }
@@ -287,12 +366,24 @@ export async function updateProfileServerAction(profileData: {
     updates.full_name = profileData.fullName.trim();
   }
 
+  if (profileData.avatarUrl !== undefined) {
+    updates.avatar_url = profileData.avatarUrl.trim();
+  }
+
   if (profileData.bio !== undefined) {
     updates.bio = profileData.bio.trim();
   }
 
   if (profileData.accessibilityPrefs !== undefined) {
-    updates.accessibility_prefs = profileData.accessibilityPrefs;
+    updates.accessibility_prefs = sanitizeAccessibilityPrefs(profileData.accessibilityPrefs);
+  }
+
+  if (profileData.privacySettings !== undefined) {
+    updates.privacy_settings = profileData.privacySettings;
+  }
+
+  if (profileData.notificationPrefs !== undefined) {
+    updates.notification_prefs = profileData.notificationPrefs;
   }
 
   const { error: updateError } = await supabase
@@ -307,6 +398,60 @@ export async function updateProfileServerAction(profileData: {
 
   revalidatePath('/profile');
   revalidatePath(`/profile/${user.id}`);
+  return { success: true };
+}
+
+/**
+ * Server Action: Updates user privacy preferences safely on server.
+ */
+export async function updatePrivacySettingsAction(privacySettings: PrivacySettings) {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Bu işlem için oturum açmalısınız.' };
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      privacy_settings: privacySettings,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', user.id);
+
+  if (error) {
+    return { success: false, error: error.message || 'Gizlilik ayarları güncellenemedi.' };
+  }
+
+  revalidatePath('/profile');
+  return { success: true };
+}
+
+/**
+ * Server Action: Updates user notification preferences safely on server.
+ */
+export async function updateNotificationPreferencesAction(notificationPrefs: NotificationPreferences) {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Bu işlem için oturum açmalısınız.' };
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      notification_prefs: notificationPrefs,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', user.id);
+
+  if (error) {
+    return { success: false, error: error.message || 'Bildirim tercihleri güncellenemedi.' };
+  }
+
+  revalidatePath('/profile');
   return { success: true };
 }
 

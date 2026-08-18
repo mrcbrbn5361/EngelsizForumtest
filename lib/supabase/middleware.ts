@@ -44,7 +44,11 @@ export async function updateSession(request: NextRequest) {
   // Protected routes that require authentication
   const isProtectedRoute = pathname.startsWith('/messages') || 
                            pathname.startsWith('/profile/edit') || 
+                           pathname.startsWith('/settings') ||
                            pathname.startsWith('/new-topic') || 
+                           pathname.startsWith('/discussions/new') ||
+                           pathname.startsWith('/admin') ||
+                           pathname.startsWith('/moderation') ||
                            pathname.startsWith('/notifications');
 
   // Auth pages (login, register) that authenticated users shouldn't access

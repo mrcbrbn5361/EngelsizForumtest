@@ -22,7 +22,25 @@
 - [x] Yüksek kontrast, OpenDyslexic ve Bionic Reading filtreleri anında tetikleniyor.
 - [x] Klavye odak çerçeveleri (`focus-visible:ring-2 focus-visible:ring-sky-500`) tüm etkileşimli öğelerde net görünür.
 
-## 4. Güvenlik ve Veritabanı (RLS)
-- [x] `topics`, `comments`, `profiles`, `categories` tablolarında RLS aktif.
-- [x] Anonim kullanıcıların yetkisiz yazma eylemleri engelli.
-- [x] `is_staff()` kontrolü ile moderatör yetki izolasyonu sağlandı.
+## 4. Güvenlik ve Veritabanı (RLS) (Faz 2)
+- [x] Canonical model bütünlüğü (`topics`, `comments`, `reactions`, `bookmarks`, `reports`, `notifications`, `profiles`) sağlandı.
+- [x] `topics`, `comments`, `profiles`, `categories`, `reactions`, `bookmarks`, `reports` tablolarında RLS aktif ve doğrulanmış.
+- [x] Anonim kullanıcıların yetkisiz yazma/silme eylemleri RLS ile engelli.
+- [x] `is_staff()` kontrolü ile moderatör/yönetici yetki izolasyonu sağlandı.
+- [x] Test topic ID'leri veritabanından temizlendi (TEST_FIXTURES: CLEANED).
+- [x] Topic listesi gerçek Supabase verilerini dönüyor.
+- [x] `20260818000000_phase2_core_hardening.sql` migrasyonu hazırlandı ve uygulandı.
+- [x] `toggle_topic_solution`, `toggle_topic_bookmark`, `increment_views` RPC'leri güvenli biçimde tanımlandı.
+
+## 5. Auth, Profil, Gizlilik ve İzinler (Faz 3)
+- [x] `lib/permissions.ts` ile rol ve hesap durumu (`isAccountActive`, `isStaff`, `isAdmin`) denetimleri merkezileştirildi (KOD: PASS).
+- [x] `sanitizeProfileUpdatePayload` ile istemci tarafından rol yükseltme (privilege escalation) engellendi (KOD: PASS).
+- [x] `sanitizeAccessibilityPrefs` ile erişilebilirlik ayarları güvenli sınırlar içinde tutuldu (KOD: PASS).
+- [x] `app/profile/page.tsx` üzerinde profil bilgileri, gizlilik seviyesi, çevrimiçi durum ve bildirim tercihleri entegrasyonu tamamlandı (KOD: PASS).
+- [x] Korumalı rotalar (`/settings`, `/admin`, `/moderation`, `/discussions/new`, `/messages`, `/notifications`) middleware ile güvenceye alındı (KOD: PASS).
+- [x] Open Redirect saldırılarına karşı `sanitizeRedirectUrl` eklendi (KOD: PASS).
+- [x] Genişletilmiş rozet sistemi (`Kurucu`, `Sahip`, `Yönetici`, `Moderatör`, `Uzman`, `Onaylı`, `Destek`, `Üye`) erişilebilir ARIA etiketleriyle oluşturuldu (KOD: PASS).
+- [x] `20260818000001_phase3_auth_profile_privacy_permissions.sql` migrasyon dosyası oluşturuldu (MIGRATION: CREATED_NOT_APPLIED).
+- [x] TypeScript derlemesi (`npx tsc --noEmit: PASS`) ve Next.js build (`compile_applet: PASS`) 0 hata ile doğrulandı.
+- [ ] Faz 3 Supabase SQL migrasyonunun harici veritabanında çalıştırılması (MIGRATION_STATUS: CREATED_NOT_APPLIED - KULLANICI UYGULAMASI BEKLENİYOR).
+- [ ] Database RLS/Yetki testlerinin Supabase SQL editöründe doğrulanması (RLS_TESTS: NOT_VERIFIED).
