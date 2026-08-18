@@ -259,15 +259,24 @@ async function main() {
 
   const ogJpg = await sharp(svgBannerBuffer)
     .resize(1200, 630)
-    .jpeg({ quality: 88, progressive: true })
+    .jpeg({ quality: 90, progressive: true })
     .toBuffer();
 
-  fs.writeFileSync(path.join(publicDir, 'og-image.png'), ogPng);
+  // Versioned V2 (bypasses any stale CDN cache)
+  fs.writeFileSync(path.join(publicDir, 'og-image-v2.jpg'), ogJpg);
+  fs.writeFileSync(path.join(publicDir, 'og-image-v2.png'), ogPng);
+  fs.writeFileSync(path.join(publicDir, 'twitter-image-v2.jpg'), ogJpg);
+  fs.writeFileSync(path.join(publicDir, 'twitter-image-v2.png'), ogPng);
+  fs.writeFileSync(path.join(publicDir, 'banner-v2.jpg'), ogJpg);
+  fs.writeFileSync(path.join(publicDir, 'banner-v2.png'), ogPng);
+
+  // Standard legacy paths (backward compatibility)
   fs.writeFileSync(path.join(publicDir, 'og-image.jpg'), ogJpg);
-  fs.writeFileSync(path.join(publicDir, 'banner.png'), ogPng);
+  fs.writeFileSync(path.join(publicDir, 'og-image.png'), ogPng);
   fs.writeFileSync(path.join(publicDir, 'banner.jpg'), ogJpg);
-  fs.writeFileSync(path.join(publicDir, 'twitter-image.png'), ogPng);
+  fs.writeFileSync(path.join(publicDir, 'banner.png'), ogPng);
   fs.writeFileSync(path.join(publicDir, 'twitter-image.jpg'), ogJpg);
+  fs.writeFileSync(path.join(publicDir, 'twitter-image.png'), ogPng);
 
   // 2. Logo Image (512x512)
   const logoPng = await sharp(svgLogoBuffer)
@@ -283,13 +292,15 @@ async function main() {
     .png({ quality: 100, palette: false })
     .toBuffer();
 
-  fs.writeFileSync(path.join(publicDir, 'favicon.ico'), favicon48Png);
+  const icoBuffer = createIcoFromPng(favicon48Png, 48, 48);
+  fs.writeFileSync(path.join(publicDir, 'favicon.ico'), icoBuffer);
   fs.writeFileSync(path.join(publicDir, 'favicon.png'), favicon48Png);
 
-  await sharp(svgLogoBuffer)
+  const faviconJpg = await sharp(svgLogoBuffer)
     .resize(512, 512)
     .jpeg({ quality: 95 })
-    .toFile(path.join(publicDir, 'favicon.jpg'));
+    .toBuffer();
+  fs.writeFileSync(path.join(publicDir, 'favicon.jpg'), faviconJpg);
 
   const icon192Png = await sharp(svgLogoBuffer)
     .resize(192, 192)

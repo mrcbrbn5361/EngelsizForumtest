@@ -28,6 +28,10 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
+const SITE_URL = 'https://www.engelsizforum.com';
+const OG_IMAGE_URL = `${SITE_URL}/og-image-v2.jpg`;
+const TWITTER_IMAGE_URL = `${SITE_URL}/twitter-image-v2.jpg`;
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -36,7 +40,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.engelsizforum.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
     template: '%s | EngelsizForum'
@@ -48,9 +52,9 @@ export const metadata: Metadata = {
   publisher: 'EngelsizForum',
   robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   alternates: {
-    canonical: 'https://www.engelsizforum.com',
+    canonical: `${SITE_URL}/`,
     languages: {
-      'tr-TR': 'https://www.engelsizforum.com',
+      'tr-TR': `${SITE_URL}/`,
     },
   },
   other: {
@@ -74,14 +78,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
     description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu.',
-    url: 'https://www.engelsizforum.com',
+    url: `${SITE_URL}/`,
     siteName: 'EngelsizForum',
     type: 'website',
     locale: 'tr_TR',
     images: [
       {
-        url: 'https://www.engelsizforum.com/og-image.jpg',
-        secureUrl: 'https://www.engelsizforum.com/og-image.jpg',
+        url: OG_IMAGE_URL,
+        secureUrl: OG_IMAGE_URL,
         width: 1200,
         height: 630,
         alt: 'EngelsizForum - Tam Erişilebilir Topluluk Platformu',
@@ -95,7 +99,7 @@ export const metadata: Metadata = {
     description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu.',
     site: '@engelsizforum',
     creator: '@engelsizforum',
-    images: ['https://www.engelsizforum.com/og-image.jpg'],
+    images: [TWITTER_IMAGE_URL],
   },
   formatDetection: {
     telephone: false,
@@ -110,10 +114,10 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://engelsizforum.com/#organization",
+      "@id": `${SITE_URL}/#organization`,
       "name": "EngelsizForum",
-      "url": "https://engelsizforum.com",
-      "logo": "https://engelsizforum.com/logo.png?v=2026",
+      "url": SITE_URL,
+      "logo": `${SITE_URL}/logo.png`,
       "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve forum platformu.",
       "sameAs": [
         "https://github.com/engelsizforum"
@@ -124,14 +128,14 @@ const jsonLd = {
     },
     {
       "@type": "WebSite",
-      "@id": "https://engelsizforum.com/#website",
-      "url": "https://engelsizforum.com",
+      "@id": `${SITE_URL}/#website`,
+      "url": SITE_URL,
       "name": "EngelsizForum",
       "description": "Tam Erişilebilir Topluluk ve Bilgi Paylaşım Platformu",
-      "publisher": { "@id": "https://engelsizforum.com/#organization" },
+      "publisher": { "@id": `${SITE_URL}/#organization` },
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://engelsizforum.com/search?q={search_term_string}",
+        "target": `${SITE_URL}/search?q={search_term_string}`,
         "query-input": "required name=search_term_string"
       },
       "inLanguage": "tr-TR"
