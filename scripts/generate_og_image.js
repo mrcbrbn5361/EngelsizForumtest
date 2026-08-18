@@ -251,15 +251,23 @@ async function main() {
   const svgBannerBuffer = Buffer.from(svgBanner);
   const svgLogoBuffer = Buffer.from(svgLogo);
 
-  // 1. OG Images (1200x630) - Truecolor 32-bit RGBA PNGs
+  // 1. OG Images (1200x630) - Optimized for WhatsApp (<300KB) and Discord
   const ogPng = await sharp(svgBannerBuffer)
     .resize(1200, 630)
-    .png({ quality: 100, palette: false, compressionLevel: 6 })
+    .png({ quality: 90, compressionLevel: 9, palette: true, effort: 10 })
+    .toBuffer();
+
+  const ogJpg = await sharp(svgBannerBuffer)
+    .resize(1200, 630)
+    .jpeg({ quality: 90, progressive: true })
     .toBuffer();
 
   fs.writeFileSync(path.join(publicDir, 'og-image.png'), ogPng);
+  fs.writeFileSync(path.join(publicDir, 'og-image.jpg'), ogJpg);
   fs.writeFileSync(path.join(publicDir, 'banner.png'), ogPng);
+  fs.writeFileSync(path.join(publicDir, 'banner.jpg'), ogJpg);
   fs.writeFileSync(path.join(publicDir, 'twitter-image.png'), ogPng);
+  fs.writeFileSync(path.join(publicDir, 'twitter-image.jpg'), ogJpg);
 
   // 2. Logo Image (512x512)
   const logoPng = await sharp(svgLogoBuffer)
