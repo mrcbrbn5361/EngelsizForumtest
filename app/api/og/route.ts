@@ -10,6 +10,7 @@ export async function GET() {
       return new NextResponse(imageBuffer, {
         headers: {
           'Content-Type': 'image/png',
+          'Access-Control-Allow-Origin': '*',
           'Cache-Control': 'public, max-age=31536000, immutable',
         },
       });

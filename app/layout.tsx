@@ -36,7 +36,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://engelsizforum.com'),
+  metadataBase: new URL('https://www.engelsizforum.com'),
   title: {
     default: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
     template: '%s | EngelsizForum'
@@ -48,9 +48,9 @@ export const metadata: Metadata = {
   publisher: 'EngelsizForum',
   robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   alternates: {
-    canonical: 'https://engelsizforum.com',
+    canonical: 'https://www.engelsizforum.com',
     languages: {
-      'tr-TR': 'https://engelsizforum.com',
+      'tr-TR': 'https://www.engelsizforum.com',
     },
   },
   other: {
@@ -61,26 +61,27 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.svg?v=2026', type: 'image/svg+xml' },
-      { url: '/favicon.ico?v=2026', sizes: 'any' },
-      { url: '/favicon.png?v=2026', type: 'image/png', sizes: '64x64' },
-      { url: '/icon.png?v=2026', type: 'image/png', sizes: '192x192' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon.png', type: 'image/png', sizes: '64x64' },
+      { url: '/icon.png', type: 'image/png', sizes: '192x192' },
     ],
     apple: [
-      { url: '/apple-icon.png?v=2026', sizes: '180x180', type: 'image/png' },
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
     ],
-    shortcut: ['/favicon.ico?v=2026'],
+    shortcut: ['/favicon.ico'],
   },
   openGraph: {
     title: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
     description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu.',
-    url: 'https://engelsizforum.com',
+    url: 'https://www.engelsizforum.com',
     siteName: 'EngelsizForum',
     type: 'website',
     locale: 'tr_TR',
     images: [
       {
-        url: 'https://engelsizforum.com/og-image.png?v=2026',
+        url: 'https://www.engelsizforum.com/og-image.png',
+        secureUrl: 'https://www.engelsizforum.com/og-image.png',
         width: 1200,
         height: 630,
         alt: 'EngelsizForum - Tam Erişilebilir Topluluk Platformu',
@@ -94,7 +95,7 @@ export const metadata: Metadata = {
     description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu.',
     site: '@engelsizforum',
     creator: '@engelsizforum',
-    images: ['https://engelsizforum.com/og-image.png?v=2026'],
+    images: ['https://www.engelsizforum.com/og-image.png'],
   },
   formatDetection: {
     telephone: false,
@@ -142,24 +143,42 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr" className={`dark ${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} h-full`} suppressHydrationWarning>
       <head>
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2026" />
-        <link rel="icon" href="/favicon.ico?v=2026" sizes="any" />
-        <link rel="icon" type="image/png" href="/favicon.png?v=2026" sizes="64x64" />
-        <link rel="icon" type="image/png" href="/icon.png?v=2026" sizes="192x192" />
-        <link rel="apple-touch-icon" href="/apple-icon.png?v=2026" sizes="180x180" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/png" href="/favicon.png" sizes="48x48" />
+        <link rel="icon" type="image/png" href="/icon.png" sizes="192x192" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" />
+        
+        {/* OpenGraph / WhatsApp / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="EngelsizForum" />
+        <meta property="og:url" content="https://www.engelsizforum.com" />
         <meta property="og:title" content="EngelsizForum | Tam Erişilebilir Topluluk Platformu" />
         <meta property="og:description" content="Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu." />
-        <meta property="og:image" content="https://engelsizforum.com/og-image.png?v=2026" />
-        <meta property="og:image:secure_url" content="https://engelsizforum.com/og-image.png?v=2026" />
+        <meta property="og:image" content="https://www.engelsizforum.com/og-image.png" />
+        <meta property="og:image:url" content="https://www.engelsizforum.com/og-image.png" />
+        <meta property="og:image:secure_url" content="https://www.engelsizforum.com/og-image.png" />
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="EngelsizForum - Tam Erişilebilir Topluluk Platformu" />
+        
+        {/* Twitter Card / Discord */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@engelsizforum" />
+        <meta name="twitter:creator" content="@engelsizforum" />
         <meta name="twitter:title" content="EngelsizForum | Tam Erişilebilir Topluluk Platformu" />
         <meta name="twitter:description" content="Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu." />
-        <meta name="twitter:image" content="https://engelsizforum.com/og-image.png?v=2026" />
+        <meta name="twitter:image" content="https://www.engelsizforum.com/og-image.png" />
+        <meta name="twitter:image:src" content="https://www.engelsizforum.com/og-image.png" />
+        <meta name="twitter:image:alt" content="EngelsizForum - Tam Erişilebilir Topluluk Platformu" />
+        
+        {/* Search Engine & Chat Scraper Fallbacks */}
+        <meta itemProp="name" content="EngelsizForum | Tam Erişilebilir Topluluk Platformu" />
+        <meta itemProp="description" content="Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu." />
+        <meta itemProp="image" content="https://www.engelsizforum.com/og-image.png" />
+        <link rel="image_src" href="https://www.engelsizforum.com/og-image.png" />
+        
         <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

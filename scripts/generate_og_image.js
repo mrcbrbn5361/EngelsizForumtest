@@ -295,6 +295,35 @@ async function main() {
     .toBuffer();
   fs.writeFileSync(path.join(publicDir, 'apple-icon.png'), apple180Png);
 
+  const svgFavicon = `
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fav-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="50%" stop-color="#0369a1"/>
+      <stop offset="100%" stop-color="#021024"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#fav-bg)" stroke="#38bdf8" stroke-width="1.5"/>
+  <g transform="translate(32, 34) scale(0.22)">
+    <path d="M -80 -70 C -80 -110, 80 -110, 80 -70 C 80 -30, 20 -30, -10 0 L -25 25 L -35 -10 C -65 -10, -80 -30, -80 -70 Z" 
+          fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+    <g transform="translate(0, -60)">
+      <circle cx="0" cy="-26" r="7" fill="#ffffff" />
+      <path d="M -13 -13 C -8 -20, 8 -20, 13 -13 C 10 -4, -10 -4, -13 -13 Z" fill="#ffffff" />
+      <circle cx="0" cy="26" r="7" fill="#ffffff" />
+      <path d="M -13 13 C -8 20, 8 20, 13 13 C 10 4, -10 4, -13 13 Z" fill="#ffffff" />
+      <circle cx="-26" cy="0" r="7" fill="#ffffff" />
+      <path d="M -13 -13 C -20 -8, -20 8, -13 13 C -4 10, -4 -10, -13 -13 Z" fill="#ffffff" />
+      <circle cx="26" cy="0" r="7" fill="#ffffff" />
+      <path d="M 13 -13 C 20 -8, 20 8, 13 13 C 4 10, 4 -10, 13 -13 Z" fill="#ffffff" />
+      <circle cx="0" cy="0" r="22" stroke="#38bdf8" stroke-width="4" stroke-dasharray="10 5" fill="none" />
+    </g>
+  </g>
+</svg>
+`;
+  fs.writeFileSync(path.join(publicDir, 'favicon.svg'), svgFavicon.trim());
+
   console.log('Blue OG Banner, Logo and Favicons generated successfully!');
 }
 
