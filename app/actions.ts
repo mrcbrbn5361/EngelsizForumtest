@@ -878,4 +878,143 @@ export async function getUserConversationsAction() {
   }
 }
 
+/**
+ * Server Action: Toggles bookmarking a topic for the authenticated user.
+ */
+export async function toggleBookmarkAction(topicId: string) {
+  if (!topicId) return { success: false, error: 'Geçersiz konu.' };
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Yer işareti eklemek için oturum açmalısınız.' };
+  }
+
+  try {
+    const { data: existing } = await supabase
+      .from('bookmarks')
+      .select('id')
+      .eq('topic_id', topicId)
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (existing) {
+      const { error: delErr } = await supabase.from('bookmarks').delete().eq('id', existing.id);
+      if (delErr) throw delErr;
+      revalidatePath(`/discussions/${topicId}`);
+      revalidatePath('/saved');
+      return { success: true, bookmarked: false };
+    } else {
+      const { error: insErr } = await supabase.from('bookmarks').insert({
+        id: generateUUID(),
+        user_id: user.id,
+        topic_id: topicId,
+        created_at: new Date().toISOString()
+      });
+      if (insErr) throw insErr;
+      revalidatePath(`/discussions/${topicId}`);
+      revalidatePath('/saved');
+      return { success: true, bookmarked: true };
+    }
+  } catch (err: any) {
+    console.error('Error toggling bookmark:', err);
+    return { success: false, error: err?.message || 'Yer işareti kaydedilemedi.' };
+  }
+}
+
+/**
+ * Server Action: Marks or unmarks a comment as the accepted solution.
+ */
+export async function toggleSolutionAction(topicId: string, commentId: string) {
+  if (!topicId || !commentId) return { success: false, error: 'Geçersiz parametreler.' };
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Bu işlem için oturum açmalısınız.' };
+  }
+
+  // Check if user is topic author or staff
+  const { data: topic } = await supabase
+    .from('topics')
+    .select('author_id, is_solved, solution_comment_id')
+    .eq('id', topicId)
+    .single();
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
+  const isAuthor = topic?.author_id === user.id;
+
+  if (!isAuthor && !isStaff) {
+    return { success: false, error: 'Yalnızca konunun sahibi veya moderatörler çözüm belirleyebilir.' };
+  }
+
+  try {
+    const isCurrentlySolution = topic?.solution_comment_id === commentId;
+
+    if (isCurrentlySolution) {
+      // Unmark solution
+      await supabase.from('comments').update({ is_solution: false }).eq('topic_id', topicId);
+      await supabase.from('topics').update({ is_solved: false, solution_comment_id: null, solved_at: null }).eq('id', topicId);
+    } else {
+      // Mark solution
+      await supabase.from('comments').update({ is_solution: false }).eq('topic_id', topicId);
+      await supabase.from('comments').update({ is_solution: true }).eq('id', commentId);
+      await supabase.from('topics').update({ is_solved: true, solution_comment_id: commentId, solved_at: new Date().toISOString() }).eq('id', topicId);
+    }
+
+    revalidatePath(`/discussions/${topicId}`);
+    return { success: true, isSolved: !isCurrentlySolution };
+  } catch (err: any) {
+    console.error('Error toggling solution:', err);
+    return { success: false, error: err?.message || 'Çözüm işaretlenemedi.' };
+  }
+}
+
+/**
+ * Server Action: Deletes a comment if the caller is the comment author or staff.
+ */
+export async function deleteCommentAction(commentId: string, topicId?: string) {
+  if (!commentId) return { success: false, error: 'Geçersiz yorum ID.' };
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Bu işlem için yetkiniz bulunmuyor.' };
+  }
+
+  const { data: comment } = await supabase
+    .from('comments')
+    .select('author_id, topic_id')
+    .eq('id', commentId)
+    .single();
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
+  const isAuthor = comment?.author_id === user.id;
+
+  if (!isAuthor && !isStaff) {
+    return { success: false, error: 'Yalnızca yorumun sahibi veya moderatörler silebilir.' };
+  }
+
+  const { error } = await supabase.from('comments').delete().eq('id', commentId);
+  if (error) return { success: false, error: error.message };
+
+  const targetTopicId = topicId || comment?.topic_id;
+  if (targetTopicId) {
+    revalidatePath(`/discussions/${targetTopicId}`);
+  }
+  return { success: true };
+}
+
 
