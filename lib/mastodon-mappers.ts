@@ -1,7 +1,7 @@
 export function mapProfileToAccount(profile: any, baseUrl: string) {
   if (!profile) return null;
 
-  const avatar = profile.avatar_url || `${baseUrl}/favicon.jpg`;
+  const avatar = profile.avatar_url || `${baseUrl}/icon.png`;
   const note = profile.bio ? `<p>${escapeHtml(profile.bio)}</p>` : '<p>EngelsizForum üyesi.</p>';
 
   return {
@@ -18,8 +18,8 @@ export function mapProfileToAccount(profile: any, baseUrl: string) {
     url: `${baseUrl}/profile/${profile.id}`,
     avatar: avatar,
     avatar_static: avatar,
-    header: `${baseUrl}/favicon.jpg`,
-    header_static: `${baseUrl}/favicon.jpg`,
+    header: `${baseUrl}/banner.png`,
+    header_static: `${baseUrl}/banner.png`,
     followers_count: 0,
     following_count: 0,
     statuses_count: 0,

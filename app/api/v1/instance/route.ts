@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
         status_count: topicsCount || 0,
         domain_count: 0
       },
-      thumbnail: `${baseUrl}/favicon.jpg`,
+      thumbnail: `${baseUrl}/og-image.png`,
       languages: ['tr'],
       registrations: true,
       approval_required: false,
