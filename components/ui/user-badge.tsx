@@ -4,7 +4,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Shield, Award, CheckCircle2, Crown, Sparkles, User, Zap } from 'lucide-react';
 
-export type UserRole = 'founder' | 'owner' | 'admin' | 'moderator' | 'expert' | 'verified' | 'support' | 'vip' | 'leader' | 'member' | 'user' | 'system' | string;
+export type UserRole = 'admin' | 'moderator' | 'vip' | 'leader' | 'user' | 'system' | string;
 
 interface UserBadgeProps {
   role?: UserRole | null;
@@ -24,17 +24,7 @@ export function UserRoleBadge({ role, size = 'sm', showLabel = true, className }
   let label = 'Üye';
   let ariaLabel = 'Rol: Standart Üye';
 
-  if (normalizedRole === 'founder' || normalizedRole === 'kurucu') {
-    bgClass = 'bg-amber-500/20 text-amber-300 border-amber-500/40 font-black';
-    icon = <Crown className="w-3 h-3 text-amber-300" aria-hidden="true" />;
-    label = 'KURUCU';
-    ariaLabel = 'Rol: Kurucu';
-  } else if (normalizedRole === 'owner' || normalizedRole === 'sahip') {
-    bgClass = 'bg-amber-500/15 text-amber-400 border-amber-500/30 font-black';
-    icon = <Crown className="w-3 h-3 text-amber-400" aria-hidden="true" />;
-    label = 'SAHİP';
-    ariaLabel = 'Rol: Sahip';
-  } else if (normalizedRole === 'admin' || normalizedRole === 'yönetici') {
+  if (normalizedRole === 'admin' || normalizedRole === 'yönetici') {
     bgClass = 'bg-rose-500/15 text-rose-400 border-rose-500/30 font-black';
     icon = <Shield className="w-3 h-3 text-rose-400" aria-hidden="true" />;
     label = 'YÖNETİCİ';
@@ -44,21 +34,6 @@ export function UserRoleBadge({ role, size = 'sm', showLabel = true, className }
     icon = <Zap className="w-3 h-3 text-sky-400" aria-hidden="true" />;
     label = 'MODERATÖR';
     ariaLabel = 'Rol: Moderatör';
-  } else if (normalizedRole === 'expert' || normalizedRole === 'uzman') {
-    bgClass = 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30 font-black';
-    icon = <Award className="w-3 h-3 text-cyan-400" aria-hidden="true" />;
-    label = 'UZMAN';
-    ariaLabel = 'Rol: Doğrulanmış Uzman';
-  } else if (normalizedRole === 'verified' || normalizedRole === 'onaylı') {
-    bgClass = 'bg-blue-500/15 text-blue-400 border-blue-500/30 font-black';
-    icon = <CheckCircle2 className="w-3 h-3 text-blue-400" aria-hidden="true" />;
-    label = 'ONAYLI';
-    ariaLabel = 'Rol: Onaylı Üye';
-  } else if (normalizedRole === 'support' || normalizedRole === 'destek') {
-    bgClass = 'bg-teal-500/15 text-teal-400 border-teal-500/30 font-black';
-    icon = <Shield className="w-3 h-3 text-teal-400" aria-hidden="true" />;
-    label = 'DESTEK';
-    ariaLabel = 'Rol: Destek Ekibi';
   } else if (normalizedRole === 'system' || normalizedRole === 'sistem') {
     bgClass = 'bg-purple-500/15 text-purple-400 border-purple-500/30 font-black';
     icon = <Shield className="w-3 h-3 text-purple-400" aria-hidden="true" />;

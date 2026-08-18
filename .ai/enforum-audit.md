@@ -1,47 +1,48 @@
-# EngelsizForum — Mevcut Sistem Denetimi ve Envanter Raporu (Phase 0 Audit)
+# Faz 0 — EngelsizForum Audit ve Kararlar
 
-**Denetim Tarihi:** 2026-08-18  
-**Denetleyen:** Google AI Studio Lead Architect  
-**Uygulama:** EngelsizForum (Next.js 15 App Router + Supabase PostgreSQL)  
-**Canlı Origin:** `https://www.engelsizforum.com`  
+## 1. Proje Envanteri
+- **Framework:** Next.js 15.4.9 (App Router), React 19.2.1
+- **Styling & UI:** Tailwind CSS v4, Radix UI primitives, Lucide React (ikonlar), shadcn/ui bileşenleri.
+- **Dependencies:** `@supabase/ssr`, `@supabase/supabase-js`, `motion`, `react-markdown`, `sharp`.
+- **API & Middleware:** Çok sayıda Mastodon-compatible endpoint (`/api/v1/*`), MCP entegrasyon endpointleri (`/api/mcp*`), yapay zeka endpointleri (`/api/yeterly*`). 
+- **Layouts:** `DashboardLayout` (geniş alanlarda finans/dashboard hissi veriyor), `SiteLayout`.
 
----
+## 2. Mevcut Ürün Özellikleri & Eksikler
 
-## 1. Proje ve Mimari Envanteri
+| Alan | Mevcut durum | Gerçek backend bağlantısı | Eksik/kırık nokta | Koruma/refactor kararı |
+| --- | --- | --- | --- | --- |
+| Auth | Var (Login/Register/OAuth) | Supabase Auth (Client/Server) | Auth callback ve hata senaryoları tam test edilmemiş. | Korunacak, Supabase SSR güncellenecek. |
+| Profil | Var | Kısmi (profiles tablosu) | Avatar upload, detaylı gizlilik kontrolleri eksik. | Refactor, RLS politikaları sıkılaştırılacak. |
+| Kategori | Var (`/categories`) | Zayıf | Admin paneli vs tam bağlı değil. | Sağlamlaştırılacak. |
+| Topic | Var (`/discussions`) | Kısmi | Status (solved vs), tam RLS ve view counter mock olabilir. | Canonical `topics` tablosuna bağlanacak. |
+| Comment | Var | Kısmi | Nested reply limiti ve editor özellikleri eksik. | Canonical `comments` ile sağlamlaştırılacak. |
+| Search | Var (`/search`) | Mock/Zayıf | Full-text search pg_trgm veya tsvector yok. | DB tabanlı PostgreSQL tsvector aranacak. |
+| Notification | Kısmi | Yok/Mock | Gerçek zamanlı bildirim ve okunma durumu. | `notifications` tablosuna eklenecek. |
+| Message/chat | Kısmi (`/messages`) | Kısmi | Uçtan uca testleri ve block/mute sistemi. | Realtime ve RLS ile yeniden tasarlanacak. |
+| Community | Var (`/communities`) | Kısmi | Public/Private izinleri, üyelik rolleri eksik. | RBAC / RLS ile desteklenecek. |
+| Report | Zayıf | Yok | Güvenli anonim raporlama ve moderasyon queue. | Eklenip tam modül yapılacak. |
+| SEO/OG | Kısmi | Dynamic `/api/og` | Binary format kontrolü eksik, canonical URL yok. | SEO audit sonrası düzeltilecek. |
 
-### 1.1 Temel Teknoloji Yığını
-* **Framework:** Next.js 15.5.23 (App Router)
-* **Dil / Tip Güvenliği:** TypeScript 5.8+ (Strict type checking)
-* **Stil & Tasarım:** Tailwind CSS v4 + `@tailwindcss/postcss` + Radix UI primitives + Lucide React
-* **Veritabanı / Auth / Storage:** Supabase (PostgreSQL 15+ ile RLS, pg_trgm, unaccent, full-text search)
-* **Erişilebilirlik:** WCAG 2.1 AAA / 2.2 AA hedefli semantik HTML, ARIA APG, Skip Link, Accessibility Toolbar, Bionic Reading, OpenDyslexic font desteği
-* **Medya / SEO:** Sharp tabanlı gerçek binary OG banner (1200x630 JPEG/PNG), SVG logo ve Windows ICO container favicon seti
+## 3. Supabase Denetimi ve Canonical Schema Kararı
+- Eski migrationlarda çok fazla "threads/posts" ve "topics/comments" çakışması veya dağınıklığı olduğu görülüyor (arşivlenen SQL dosyalarında tespit edildi).
+- **Karar:**
+  - Ana forum başlıkları: `topics`
+  - Yanıtlar: `comments` (iç içe `parent_id` ile desteklenecek)
+  - Kategoriler: `categories`
+  - Topluluklar: `communities` (Scoped yetkiler için)
+  - Tüm roller `profiles` tablosunda `role` ile tutulacak, ek yetkiler (community moderator vb.) ilişki tablolarıyla belirlenecek.
+  - Sadece RLS tabanlı güvenlik (Token bazlı IoT scriptleri kaldırılacak).
 
----
+## 4. Marka, Görsel Kimlik ve Vipcoin/Dashboard Hissiyatı
+- **Bulgular:** 
+  - Uygulamadaki `DashboardLayout` ve `dashboard` URL/bileşen isimlendirmeleri finans/crypto ürün hissi veriyor.
+  - IoT cihazlarıyla "Visitor Tracking" (Ziyaretçi takip tokenleri) gibi forum dışı/baskın öğeler var.
+  - Çok fazla Mastodon/Federation API kodları var, bu durum ana forum özelliklerini gölgeliyor.
+- **Eylem Planı:**
+  - `DashboardLayout` kaldırılacak, yerine `SiteLayout` veya `ForumLayout` (daha havadar, içerik odaklı, klasik forum layout'u) getirilecek.
+  - Kripto, finans metrikleri, gereksiz ziyaretçi cihaz entegrasyonları silinecek.
+  - Sadece erişilebilirlik, topluluk, bilgi paylaşımı ve dayanışma hissi veren **Sıcak Nötr (Warm Neutral)** bir tema oluşturulacak.
 
-## 2. Mevcut Sistem Denetim Tablosu
-
-| Alan | Gerçek durum | Kaynak dosya/tablo | Kullanıcıya etkisi | Risk | Karar |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Framework/runtime** | Next.js 15 App Router, Server Components + Client leaf components | `app/`, `package.json` | Hızlı SSR, sıfır hydration hatası, mükemmel SEO | Düşük | Korunuyor ve optimize ediliyor |
-| **Auth/session** | Supabase Auth (E-posta/şifre, OAuth adapters, handle_new_user trigger) | `components/providers/auth-provider.tsx`, `supabase/schema.sql` | Güvenli oturum, profil senkronizasyonu | Düşük | Oturum yenileme ve RLS senkronizasyonu sürdürülüyor |
-| **Profile/privacy** | `profiles` tablosu, rol (`user`/`moderator`/`admin`/`system`), XP, seviye, erişilebilirlik tercihleri | `app/profile/`, `supabase/schema.sql` | Kullanıcı profili, itibar puanı, özelleştirilmiş erişilebilirlik ayarları | Düşük | Yetki yükseltmeler RPC seviyesinde korunuyor |
-| **Categories/communities** | `categories` (hiyerarşik parent_id, slug, icon, renk) & `communities` | `app/category/`, `app/communities/`, `components/forum/` | Kategori gezintisi, alt forumlar, tanı grupları | Orta | Kategori ve topluluk listeleri dinamik Supabase verisine bağlı |
-| **Topics/comments** | `topics` ve `comments` canonical tabloları; `threads` ve `posts` compatibility view'ları | `supabase/schema.sql`, `app/discussions/` | Konu açma, yanıtlama, çözüm işaretleme, beğeni, sabitleme, kilitleme | Düşük | Canonical tablo olarak `topics` & `comments` kullanılıyor |
-| **Search/discovery** | PostgreSQL Full Text Search (`search_vector` generated tsvector, GIN index, `websearch_to_tsquery`) | `app/search/`, `app/api/search/`, `supabase/schema.sql` | Hızlı Türkçe kök ve typo-tolerant arama | Düşük | GIN indeksi ve çoklu filtreleme ile güçlendirildi |
-| **Notifications/messages** | `notifications` tablosu, NotificationCenter dropdown, `messages` tablosu | `components/ui/notification-center.tsx`, `app/messages/` | Yanıt, beğeni ve sistem duyuru bildirimleri | Düşük | Realtime ve polling destekli |
-| **Reports/moderation** | `reports` tablosu, `is_staff()` RLS fonksiyonu, ReportDialog modalı | `components/forum/report-button.tsx`, `app/admin/` | Kötüye kullanım bildirimi, moderatör kuyruğu | Düşük | Anonim/reporter gizliliği korunuyor |
-| **Supabase/RLS** | Tüm tablolarda `ALTER TABLE ... ENABLE ROW LEVEL SECURITY`, `is_staff()` helper | `supabase/schema.sql`, `supabase/migrations/` | Yetkisiz veri erişimini %100 engelleme | Düşük | Negative RLS testleri ile doğrulanmış |
-| **Branding/UI** | EngelsizForum özgü açık/koyu mavi-slate teması, sıfır Vipcoin/crypto kalıntısı | `components/layout/navbar.tsx`, `components/forum/` | Güvenli, sakin, profesyonel forum atmosferi | Düşük | Tamamen temizlendi ve standardize edildi |
-| **Accessibility** | Skip link, ARIA landmarks, klavye gezintisi, high contrast, dyslexic font, bionic reading | `components/accessibility/`, `components/layout/` | Engelli bireyler için tam bağımsız kullanım | Düşük | WCAG 2.1 AAA / 2.2 AA tam uyumlu |
-| **SEO/OG/favicon** | 1200x630 JPEG/PNG banner (`og-image-v2.jpg`), 512x512 PNG logo, ICO favicon, JSON-LD Organization/WebSite | `app/layout.tsx`, `public/`, `scripts/generate_og_image.js` | Mükemmel sosyal medya önizlemesi ve Google indexing | Düşük | `npm run verify:og` ile binary doğrulandı |
-| **Tests/build** | `next build` başarılı, `verify:og` binary magic byte testi PASS, typecheck PASS | `scripts/verify-og-image.mjs`, `package.json` | Sıfır derleme hatası, üretim kalitesi | Düşük | CI/CD dostu derleme adımları |
-
----
-
-## 3. Canlı Site ve Varlık Doğrulama Bulguları
-
-1. **Vipcoin & Crypto Tasarım Hissiyatı Analizi:** Kod tabanında coin, borsa grafikleri, token, neon gradient veya finans dashboard kalıntısı bulunmamaktadır. Renk paleti `#0b0f19` (Koyu lacivert-slate zemin), `#111726` (Kart zeminleri), `sky-400`/`sky-500` (Erişilebilir mavi vurgu) ve `emerald-400` (Çözüm/aktiflik yeşili) olarak dengelenmiştir.
-2. **OG Image Binary Doğrulaması:** `public/og-image-v2.jpg` (95.2 KB, JPEG 1200x630) ve `public/og-image-v2.png` (331.2 KB, PNG 1200x630) geçerli `FF D8 FF` ve `89 50 4E 47` magic byte'ları ile derleme anında otomatik üretilmektedir.
-3. **Favicon Seti:** Gerçek Windows ICO binary formatında `public/favicon.ico` ve modern tarayıcılar için `public/favicon.png` mevcuttur.
-4. **Canonical Host:** `https://www.engelsizforum.com` olarak tüm metadata ve alternates üzerinde tekleştirilmiştir.
+## 5. Uygulama Fazları Kararı
+Faz 0 tamamlanmıştır. Arşivdeki SQL'ler temizlenmiş ve ilerleme dosyaları `.ai` altına eklenmiştir.
+Sonraki adım **Faz 1 — Marka ve temel tasarım sistemi** olup `DashboardLayout` vb. bileşenlerin temizlenmesi ve gerçek forum arayüzüne geçilmesidir.
