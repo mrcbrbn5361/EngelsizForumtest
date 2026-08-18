@@ -170,7 +170,7 @@ export async function createCommentAction(formData: {
   // Account status check
   const { data: authorProfile } = await supabase
     .from('profiles')
-    .select('account_status, role')
+    .select('id, username, full_name, avatar_url, role, account_status, level, xp, is_verified')
     .eq('id', user.id)
     .single();
 
@@ -184,33 +184,121 @@ export async function createCommentAction(formData: {
   if (!topicId) {
     return { success: false, error: 'Geçersiz tartışma konusu.' };
   }
-  if (!content) {
-    return { success: false, error: 'Yorum içeriği boş bırakılamaz.' };
+  if (!content || content.length < 2) {
+    return { success: false, error: 'Yorum içeriği en az 2 karakter olmalıdır.' };
+  }
+  if (content.length > 15000) {
+    return { success: false, error: 'Yorum içeriği çok uzun (maksimum 15.000 karakter).' };
+  }
+
+  // Verify topic exists and check lock status
+  const { data: topic, error: topicFetchErr } = await supabase
+    .from('topics')
+    .select('id, title, author_id, is_locked')
+    .eq('id', topicId)
+    .maybeSingle();
+
+  if (topicFetchErr || !topic) {
+    return { success: false, error: 'Tartışma konusu bulunamadı.' };
+  }
+
+  if (topic.is_locked) {
+    return { success: false, error: 'Bu tartışma kilitlenmiştir, yeni yanıt kabul edilmemektedir.' };
   }
 
   const commentId = generateUUID();
-  const payload = {
+  const payload: any = {
     id: commentId,
     topic_id: topicId,
     author_id: user.id,
     content,
+    is_solution: false,
     parent_comment_id: formData.parentCommentId || null
   };
 
-  const { error: commentErr } = await supabase
-    .from('comments')
-    .insert(payload);
+  let insertedComment: any = null;
+  let commentInsertError: any = null;
 
-  if (commentErr) {
-    // Fallback for posts view
-    const { error: postErr } = await supabase.from('posts').insert(payload);
-    if (postErr) {
-      return { success: false, error: commentErr.message || 'Cevap gönderilemedi.' };
+  // Try inserting with parent_comment_id first
+  const { data: cData, error: cErr } = await supabase
+    .from('comments')
+    .insert([payload])
+    .select(`
+      id, topic_id, author_id, content, is_solution, created_at, updated_at,
+      author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified)
+    `)
+    .single();
+
+  if (!cErr && cData) {
+    insertedComment = cData;
+  } else {
+    // If parent_comment_id failed, try with parent_id column
+    commentInsertError = cErr;
+    const fallbackPayload = {
+      id: commentId,
+      topic_id: topicId,
+      author_id: user.id,
+      content,
+      is_solution: false,
+      parent_id: formData.parentCommentId || null
+    };
+
+    const { data: fbData, error: fbErr } = await supabase
+      .from('comments')
+      .insert([fallbackPayload])
+      .select(`
+        id, topic_id, author_id, content, is_solution, created_at, updated_at,
+        author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified)
+      `)
+      .single();
+
+    if (!fbErr && fbData) {
+      insertedComment = fbData;
+      commentInsertError = null;
+    } else {
+      commentInsertError = fbErr || cErr;
+    }
+  }
+
+  if (commentInsertError && !insertedComment) {
+    return { success: false, error: 'Cevap gönderilemedi: ' + (commentInsertError.message || 'Veritabanı hatası') };
+  }
+
+  // Send in-app notification to topic author if different from commenter
+  if (topic.author_id && topic.author_id !== user.id) {
+    try {
+      const commenterName = authorProfile?.username || authorProfile?.full_name || 'Bir üye';
+      await supabase
+        .from('notifications')
+        .insert([{
+          recipient_id: topic.author_id,
+          sender_id: user.id,
+          type: 'comment',
+          title: 'Yeni Yanıt',
+          body: `${commenterName} "${topic.title}" başlıklı konunuza yanıt verdi.`,
+          content: `${commenterName} "${topic.title}" başlıklı konunuza yanıt verdi.`,
+          data: { link: `/discussions/${topicId}`, topic_id: topicId }
+        }]);
+    } catch (notifErr) {
+      console.warn('Could not dispatch comment notification:', notifErr);
     }
   }
 
   revalidatePath(`/discussions/${topicId}`);
-  return { success: true, commentId };
+  revalidatePath('/discussions');
+  return { 
+    success: true, 
+    commentId, 
+    comment: insertedComment || {
+      id: commentId,
+      topic_id: topicId,
+      author_id: user.id,
+      content,
+      is_solution: false,
+      created_at: new Date().toISOString(),
+      author: authorProfile
+    }
+  };
 }
 
 /**
@@ -262,7 +350,409 @@ export async function deleteTopicAction(topicId: string) {
 }
 
 /**
- * Server Action: Toggles a topic reaction for the authenticated user.
+ * Server Action: Updates a topic with title, content, category, or tags.
+ */
+export async function updateTopicAction(formData: {
+  topicId: string;
+  title?: string;
+  content?: string;
+  categoryId?: string;
+  tags?: string[];
+}) {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Bu işlem için oturum açmalısınız.' };
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, account_status')
+    .eq('id', user.id)
+    .single();
+
+  if (!isAccountActive(profile)) {
+    return { success: false, error: 'Hesabınız kısıtlanmıştır.' };
+  }
+
+  const { data: topic } = await supabase
+    .from('topics')
+    .select('author_id, category_id, is_locked')
+    .eq('id', formData.topicId)
+    .single();
+
+  if (!topic) {
+    return { success: false, error: 'Konu bulunamadı.' };
+  }
+
+  const isGlobalStaff = isStaff(profile);
+  const isAuthor = topic.author_id === user.id;
+  const isCategoryMod = topic.category_id
+    ? await canModerateCategory(user.id, topic.category_id, profile?.role)
+    : false;
+
+  if (!isAuthor && !isGlobalStaff && !isCategoryMod) {
+    return { success: false, error: 'Konuyu düzenleme yetkiniz bulunmuyor.' };
+  }
+
+  if (topic.is_locked && !isGlobalStaff && !isCategoryMod) {
+    return { success: false, error: 'Kilitlenmiş konular düzenlenemez.' };
+  }
+
+  const updates: any = {
+    updated_at: new Date().toISOString()
+  };
+
+  if (formData.title !== undefined) {
+    const trimmedTitle = formData.title.trim();
+    if (trimmedTitle.length < 5) {
+      return { success: false, error: 'Başlık en az 5 karakter olmalıdır.' };
+    }
+    updates.title = trimmedTitle;
+  }
+
+  if (formData.content !== undefined) {
+    const trimmedContent = formData.content.trim();
+    if (trimmedContent.length < 10) {
+      return { success: false, error: 'İçerik en az 10 karakter olmalıdır.' };
+    }
+    updates.content = trimmedContent;
+  }
+
+  if (formData.categoryId !== undefined) {
+    updates.category_id = formData.categoryId;
+  }
+
+  if (formData.tags !== undefined) {
+    updates.tags = formData.tags;
+  }
+
+  const { error: updateErr } = await supabase
+    .from('topics')
+    .update(updates)
+    .eq('id', formData.topicId);
+
+  if (updateErr) {
+    return { success: false, error: updateErr.message || 'Konu güncellenemedi.' };
+  }
+
+  revalidatePath(`/discussions/${formData.topicId}`);
+  revalidatePath('/discussions');
+  revalidatePath('/');
+  return { success: true };
+}
+
+/**
+ * Server Action: Toggles topic pinned status (Staff or Category Moderator only).
+ */
+export async function togglePinTopicAction(topicId: string) {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Bu işlem için oturum açmalısınız.' };
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, account_status')
+    .eq('id', user.id)
+    .single();
+
+  if (!isAccountActive(profile)) {
+    return { success: false, error: 'Hesabınız kısıtlanmıştır.' };
+  }
+
+  const { data: topic } = await supabase
+    .from('topics')
+    .select('category_id, is_pinned')
+    .eq('id', topicId)
+    .single();
+
+  if (!topic) {
+    return { success: false, error: 'Konu bulunamadı.' };
+  }
+
+  const isGlobalStaff = isStaff(profile);
+  const isCategoryMod = topic.category_id
+    ? await canModerateCategory(user.id, topic.category_id, profile?.role)
+    : false;
+
+  if (!isGlobalStaff && !isCategoryMod) {
+    return { success: false, error: 'Yalnızca yetkili moderatörler konuyu sabitleyebilir.' };
+  }
+
+  const newPinned = !topic.is_pinned;
+  const { error } = await supabase
+    .from('topics')
+    .update({ is_pinned: newPinned, updated_at: new Date().toISOString() })
+    .eq('id', topicId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath(`/discussions/${topicId}`);
+  revalidatePath('/discussions');
+  revalidatePath('/');
+  return { success: true, isPinned: newPinned };
+}
+
+/**
+ * Server Action: Toggles topic locked status (Staff or Category Moderator only).
+ */
+export async function toggleLockTopicAction(topicId: string) {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Bu işlem için oturum açmalısınız.' };
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, account_status')
+    .eq('id', user.id)
+    .single();
+
+  if (!isAccountActive(profile)) {
+    return { success: false, error: 'Hesabınız kısıtlanmıştır.' };
+  }
+
+  const { data: topic } = await supabase
+    .from('topics')
+    .select('category_id, is_locked')
+    .eq('id', topicId)
+    .single();
+
+  if (!topic) {
+    return { success: false, error: 'Konu bulunamadı.' };
+  }
+
+  const isGlobalStaff = isStaff(profile);
+  const isCategoryMod = topic.category_id
+    ? await canModerateCategory(user.id, topic.category_id, profile?.role)
+    : false;
+
+  if (!isGlobalStaff && !isCategoryMod) {
+    return { success: false, error: 'Yalnızca yetkili moderatörler konuyu kilitleyebilir.' };
+  }
+
+  const newLocked = !topic.is_locked;
+  const { error } = await supabase
+    .from('topics')
+    .update({ is_locked: newLocked, updated_at: new Date().toISOString() })
+    .eq('id', topicId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath(`/discussions/${topicId}`);
+  revalidatePath('/discussions');
+  revalidatePath('/');
+  return { success: true, isLocked: newLocked };
+}
+
+/**
+ * Server Action: Updates a comment content.
+ */
+export async function updateCommentAction(formData: {
+  commentId: string;
+  content: string;
+  editReason?: string;
+}) {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Bu işlem için oturum açmalısınız.' };
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, account_status')
+    .eq('id', user.id)
+    .single();
+
+  if (!isAccountActive(profile)) {
+    return { success: false, error: 'Hesabınız kısıtlanmıştır.' };
+  }
+
+  const { data: comment } = await supabase
+    .from('comments')
+    .select('author_id, topic_id, edit_count')
+    .eq('id', formData.commentId)
+    .single();
+
+  if (!comment) {
+    return { success: false, error: 'Yorum bulunamadı.' };
+  }
+
+  const isGlobalStaff = isStaff(profile);
+  const isAuthor = comment.author_id === user.id;
+
+  if (!isAuthor && !isGlobalStaff) {
+    return { success: false, error: 'Yalnızca yorum sahibi veya moderatörler düzenleyebilir.' };
+  }
+
+  const trimmedContent = (formData.content || '').trim();
+  if (!trimmedContent) {
+    return { success: false, error: 'Yorum içeriği boş olamaz.' };
+  }
+
+  const updates: any = {
+    content: trimmedContent,
+    last_edited_at: new Date().toISOString(),
+    edit_count: (comment.edit_count || 0) + 1,
+    updated_at: new Date().toISOString()
+  };
+
+  if (formData.editReason) {
+    updates.edit_reason = formData.editReason.trim();
+  }
+
+  const { error } = await supabase
+    .from('comments')
+    .update(updates)
+    .eq('id', formData.commentId);
+
+  if (error) {
+    return { success: false, error: error.message || 'Yorum güncellenemedi.' };
+  }
+
+  revalidatePath(`/discussions/${comment.topic_id}`);
+  return { success: true };
+}
+
+/**
+ * Server Action: Deletes a comment if the user is author or staff/moderator.
+ */
+export async function deleteCommentAction(commentId: string, topicId?: string) {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Bu işlem için giriş yapmalısınız.' };
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, account_status')
+    .eq('id', user.id)
+    .single();
+
+  if (!isAccountActive(profile)) {
+    return { success: false, error: 'Hesabınız kısıtlanmıştır.' };
+  }
+
+  const { data: comment } = await supabase
+    .from('comments')
+    .select('author_id, topic_id')
+    .eq('id', commentId)
+    .single();
+
+  if (!comment) {
+    return { success: false, error: 'Yorum bulunamadı.' };
+  }
+
+  const isGlobalStaff = isStaff(profile);
+  const isAuthor = comment.author_id === user.id;
+
+  if (!isAuthor && !isGlobalStaff) {
+    return { success: false, error: 'Yalnızca yorum sahibi veya moderatörler silebilir.' };
+  }
+
+  const { error } = await supabase
+    .from('comments')
+    .delete()
+    .eq('id', commentId);
+
+  if (error) {
+    return { success: false, error: error.message || 'Yorum silinemedi.' };
+  }
+
+  revalidatePath(`/discussions/${comment.topic_id}`);
+  return { success: true };
+}
+
+/**
+ * Server Action: Marks a comment as the accepted solution for a topic.
+ * Allowed for the topic author, staff, or category moderator.
+ */
+export async function markAsSolutionAction(commentId: string, topicId: string) {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Bu işlem için oturum açmalısınız.' };
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, account_status')
+    .eq('id', user.id)
+    .single();
+
+  if (!isAccountActive(profile)) {
+    return { success: false, error: 'Hesabınız kısıtlanmıştır.' };
+  }
+
+  const { data: topic } = await supabase
+    .from('topics')
+    .select('author_id, category_id')
+    .eq('id', topicId)
+    .single();
+
+  if (!topic) {
+    return { success: false, error: 'Konu bulunamadı.' };
+  }
+
+  const isGlobalStaff = isStaff(profile);
+  const isAuthor = topic.author_id === user.id;
+  const isCategoryMod = topic.category_id
+    ? await canModerateCategory(user.id, topic.category_id, profile?.role)
+    : false;
+
+  if (!isAuthor && !isGlobalStaff && !isCategoryMod) {
+    return { success: false, error: 'Yalnızca konunun sahibi veya yetkili moderatörler çözüm belirleyebilir.' };
+  }
+
+  // Reset other comments' is_solution flag for this topic
+  await supabase
+    .from('comments')
+    .update({ is_solution: false })
+    .eq('topic_id', topicId);
+
+  // Set the chosen comment as solution
+  const { error: commentErr } = await supabase
+    .from('comments')
+    .update({ is_solution: true, updated_at: new Date().toISOString() })
+    .eq('id', commentId);
+
+  if (commentErr) {
+    return { success: false, error: commentErr.message || 'Yorum çözüm olarak işaretlenemedi.' };
+  }
+
+  // Update topic is_solved status
+  const { error: topicErr } = await supabase
+    .from('topics')
+    .update({ is_solved: true, updated_at: new Date().toISOString() })
+    .eq('id', topicId);
+
+  if (topicErr) {
+    return { success: false, error: topicErr.message || 'Konu durumu güncellenemedi.' };
+  }
+
+  revalidatePath(`/discussions/${topicId}`);
+  revalidatePath('/discussions');
+  revalidatePath('/');
+  return { success: true };
+}
+
+/**
+ * Server Action: Toggles a reaction for a topic or comment.
  */
 export async function toggleReactionAction(topicId: string, emoji = '👍') {
   const supabase = await getSupabaseServerClient();
@@ -296,6 +786,48 @@ export async function toggleReactionAction(topicId: string, emoji = '👍') {
     await supabase.from('reactions').insert({
       id: generateUUID(),
       topic_id: topicId,
+      user_id: user.id,
+      emoji
+    });
+    return { success: true, reacted: true };
+  }
+}
+
+/**
+ * Server Action: Toggles a reaction for a specific comment.
+ */
+export async function toggleCommentReactionAction(commentId: string, emoji = '👍') {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Beğenmek için giriş yapmalısınız.' };
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('account_status')
+    .eq('id', user.id)
+    .single();
+
+  if (!isAccountActive(profile)) {
+    return { success: false, error: 'Hesabınız askıya alınmıştır veya kısıtlanmıştır.' };
+  }
+
+  const { data: existing } = await supabase
+    .from('reactions')
+    .select('id')
+    .eq('comment_id', commentId)
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase.from('reactions').delete().eq('id', existing.id);
+    return { success: true, reacted: false };
+  } else {
+    await supabase.from('reactions').insert({
+      id: generateUUID(),
+      comment_id: commentId,
       user_id: user.id,
       emoji
     });
@@ -1121,45 +1653,5 @@ export async function toggleSolutionAction(topicId: string, commentId: string) {
   }
 }
 
-/**
- * Server Action: Deletes a comment if the caller is the comment author or staff.
- */
-export async function deleteCommentAction(commentId: string, topicId?: string) {
-  if (!commentId) return { success: false, error: 'Geçersiz yorum ID.' };
-  const supabase = await getSupabaseServerClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return { success: false, error: 'Bu işlem için yetkiniz bulunmuyor.' };
-  }
-
-  const { data: comment } = await supabase
-    .from('comments')
-    .select('author_id, topic_id')
-    .eq('id', commentId)
-    .single();
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
-
-  const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
-  const isAuthor = comment?.author_id === user.id;
-
-  if (!isAuthor && !isStaff) {
-    return { success: false, error: 'Yalnızca yorumun sahibi veya moderatörler silebilir.' };
-  }
-
-  const { error } = await supabase.from('comments').delete().eq('id', commentId);
-  if (error) return { success: false, error: error.message };
-
-  const targetTopicId = topicId || comment?.topic_id;
-  if (targetTopicId) {
-    revalidatePath(`/discussions/${targetTopicId}`);
-  }
-  return { success: true };
-}
 
 

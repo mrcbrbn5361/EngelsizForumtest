@@ -40,7 +40,8 @@
 - [x] Korumalı rotalar (`/settings`, `/admin`, `/moderation`, `/discussions/new`, `/messages`, `/notifications`) middleware ile güvenceye alındı (KOD: PASS).
 - [x] Open Redirect saldırılarına karşı `sanitizeRedirectUrl` eklendi (KOD: PASS).
 - [x] Genişletilmiş rozet sistemi (`Kurucu`, `Sahip`, `Yönetici`, `Moderatör`, `Uzman`, `Onaylı`, `Destek`, `Üye`) erişilebilir ARIA etiketleriyle oluşturuldu (KOD: PASS).
-- [x] `20260818000001_phase3_auth_profile_privacy_permissions.sql` migrasyon dosyası oluşturuldu (MIGRATION: CREATED_NOT_APPLIED).
+- [x] `20260818000001_phase3_auth_profile_privacy_permissions.sql` migrasyon dosyası oluşturuldu ve Supabase'te uygulandı (MIGRATION: APPLIED).
 - [x] TypeScript derlemesi (`npx tsc --noEmit: PASS`) ve Next.js build (`compile_applet: PASS`) 0 hata ile doğrulandı.
-- [ ] Faz 3 Supabase SQL migrasyonunun harici veritabanında çalıştırılması (MIGRATION_STATUS: CREATED_NOT_APPLIED - KULLANICI UYGULAMASI BEKLENİYOR).
-- [ ] Database RLS/Yetki testlerinin Supabase SQL editöründe doğrulanması (RLS_TESTS: NOT_VERIFIED).
+- [x] Faz 3 Supabase SQL migrasyonu harici veritabanında çalıştırıldı (`MIGRATION_STATUS: APPLIED`).
+- [x] Database RLS/Yetki testleri ve trigger'lar (`trg_prevent_profile_role_escalation`, `is_account_active`, `has_category_permission`) Supabase SQL editöründe doğrulandı (`RLS_TESTS: PASS`).
+

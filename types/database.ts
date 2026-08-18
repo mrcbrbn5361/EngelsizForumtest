@@ -55,8 +55,14 @@ export type Category = {
   description: string | null;
   icon: string | null;
   color: string | null;
-  sort_order: number;
+  sort_order?: number;
+  order_index?: number;
+  parent_id?: string | null;
+  topics_count?: number;
+  posts_count?: number;
+  last_post_at?: string | null;
   created_at: string;
+  updated_at?: string;
 };
 
 export type Topic = {
@@ -64,6 +70,7 @@ export type Topic = {
   category_id: string;
   author_id: string;
   title: string;
+  slug?: string;
   content: string;
   likes_count: number;
   comments_count: number;
@@ -71,8 +78,13 @@ export type Topic = {
   is_pinned: boolean;
   is_locked: boolean;
   is_solved?: boolean;
+  solution_comment_id?: string | null;
+  solved_at?: string | null;
+  tags?: string[];
+  topic_type?: 'discussion' | 'question' | 'guide' | 'announcement';
   audio_url?: string | null;
   voice_duration?: number;
+  last_activity_at?: string;
   updated_at?: string;
   created_at: string;
   author?: Profile;
@@ -85,13 +97,55 @@ export type Comment = {
   topic_id: string;
   author_id: string;
   parent_id: string | null;
+  parent_comment_id?: string | null;
   content: string;
   is_solution: boolean;
+  likes_count?: number;
+  edit_count?: number;
+  edit_reason?: string | null;
+  last_edited_at?: string | null;
   audio_url?: string | null;
   voice_duration?: number;
   updated_at?: string;
   created_at: string;
   author?: Profile;
+};
+
+export type Tag = {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  usage_count?: number;
+  created_at: string;
+};
+
+export type Poll = {
+  id: string;
+  topic_id: string;
+  question: string;
+  is_multiple_choice?: boolean;
+  is_closed?: boolean;
+  ends_at?: string | null;
+  options?: PollOption[];
+  created_at: string;
+};
+
+export type PollOption = {
+  id: string;
+  poll_id: string;
+  option_text: string;
+  votes_count: number;
+  sort_order?: number;
+  created_at: string;
+};
+
+export type PollVote = {
+  id: string;
+  poll_id: string;
+  option_id: string;
+  user_id: string;
+  created_at: string;
 };
 
 

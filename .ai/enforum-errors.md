@@ -22,7 +22,21 @@
 
 ---
 
-### Güncel Hata Durumu (Faz 3 Recovery Sonu):
+### Hata Kaydı: Phase 4 Duplicate Export & Accidental URL-Encoded Path (ÇÖZÜLDÜ)
+* **Kök Neden:** 
+  1. `app/actions.ts` dosyasında `deleteCommentAction` eyleminin iki farklı yerde (satır 544 ve 1571) declare edilmesi nedeniyle Webpack build hatası.
+  2. Dosya sisteminde `app/discussions/%5Bid%5D` adında URL-encoded kalıntı bir dizin oluşması nedeniyle TypeScript validator'ın modül çözümleme hatası vermesi.
+* **Uygulanan Çözüm:** 
+  1. `app/actions.ts` dosyasındaki eski kopya kaldırıldı, `deleteCommentAction(commentId: string, topicId?: string)` tek ve yetki denetimli fonksiyon olarak korundu.
+  2. URL-encoded `app/discussions/%5Bid%5D` dizini silindi, `.next` önbelleği temizlendi.
+* **Doğrulama Sonucu:** `npx tsc --noEmit: PASS`, `npm run lint: PASS`, `compile_applet: PASS` (0 Hata).
+
+---
+
+### Güncel Hata Durumu (Faz 4 Recovery 2 Tamamlandı):
+* **Çözülen Hatalar:** 
+  1. `sharp` bağımlılığı ve `scripts/generate_og_image.js` güvenli hale getirildi.
+  2. Yanlışlıkla oluşan boş `app/discussions/%5Bid%5D` kalıntı dizini kaldırıldı, `.next` temizlendi.
+* **Tip Denetimi & Derleme:** TypeScript (`npx tsc --noEmit: PASS`), ESLint (`npm run lint: PASS`) ve Next.js build (`compile_applet: PASS`).
 * **Blokaj Oluşturan Hata:** Yok (0 Hata).
-* **Tip Denetimi & Derleme:** TypeScript ve Next.js build 0 hata ile geçiyor (`compile_applet: PASS`, `lint_applet: PASS`).
-* **Faz 3 Öncesi Kalan Blocker:** Yok.
+* **Kalan Blocker:** Yok.

@@ -72,4 +72,4 @@
    - `is_account_active`, `has_category_permission` fonksiyonları.
    - `prevent_profile_role_escalation` tetikleyicisi.
    - RLS politikaları.
-   - **Migration Durumu:** `CREATED_NOT_APPLIED` (Yerel migrasyon dosyası hazırlandı, harici Supabase projesinde çalıştırılmayı bekliyor).
+   - **Migration Durumu:** `APPLIED` (Supabase SQL Editor üzerinde başarıyla uygulandı ve internal testlerle doğrulandı).

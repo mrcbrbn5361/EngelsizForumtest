@@ -1,7 +1,13 @@
 /* eslint-disable */
 const fs = require('fs');
 const path = require('path');
-const sharp = require('sharp');
+
+let sharp;
+try {
+  sharp = require('sharp');
+} catch (e) {
+  console.warn('Sharp module not loaded, will skip rasterization:', e.message);
+}
 
 const width = 1200;
 const height = 630;
@@ -251,68 +257,72 @@ async function main() {
   const svgBannerBuffer = Buffer.from(svgBanner);
   const svgLogoBuffer = Buffer.from(svgLogo);
 
-  // 1. OG Images (1200x630) - Standard 24-bit Truecolor PNG & Progressive JPEG
-  const ogPng = await sharp(svgBannerBuffer)
-    .resize(1200, 630)
-    .png({ quality: 90, compressionLevel: 8, palette: false })
-    .toBuffer();
+  if (sharp) {
+    // 1. OG Images (1200x630) - Standard 24-bit Truecolor PNG & Progressive JPEG
+    const ogPng = await sharp(svgBannerBuffer)
+      .resize(1200, 630)
+      .png({ quality: 90, compressionLevel: 8, palette: false })
+      .toBuffer();
 
-  const ogJpg = await sharp(svgBannerBuffer)
-    .resize(1200, 630)
-    .jpeg({ quality: 90, progressive: true })
-    .toBuffer();
+    const ogJpg = await sharp(svgBannerBuffer)
+      .resize(1200, 630)
+      .jpeg({ quality: 90, progressive: true })
+      .toBuffer();
 
-  // Versioned V2 (bypasses any stale CDN cache)
-  fs.writeFileSync(path.join(publicDir, 'og-image-v2.jpg'), ogJpg);
-  fs.writeFileSync(path.join(publicDir, 'og-image-v2.png'), ogPng);
-  fs.writeFileSync(path.join(publicDir, 'twitter-image-v2.jpg'), ogJpg);
-  fs.writeFileSync(path.join(publicDir, 'twitter-image-v2.png'), ogPng);
-  fs.writeFileSync(path.join(publicDir, 'banner-v2.jpg'), ogJpg);
-  fs.writeFileSync(path.join(publicDir, 'banner-v2.png'), ogPng);
+    // Versioned V2 (bypasses any stale CDN cache)
+    fs.writeFileSync(path.join(publicDir, 'og-image-v2.jpg'), ogJpg);
+    fs.writeFileSync(path.join(publicDir, 'og-image-v2.png'), ogPng);
+    fs.writeFileSync(path.join(publicDir, 'twitter-image-v2.jpg'), ogJpg);
+    fs.writeFileSync(path.join(publicDir, 'twitter-image-v2.png'), ogPng);
+    fs.writeFileSync(path.join(publicDir, 'banner-v2.jpg'), ogJpg);
+    fs.writeFileSync(path.join(publicDir, 'banner-v2.png'), ogPng);
 
-  // Standard legacy paths (backward compatibility)
-  fs.writeFileSync(path.join(publicDir, 'og-image.jpg'), ogJpg);
-  fs.writeFileSync(path.join(publicDir, 'og-image.png'), ogPng);
-  fs.writeFileSync(path.join(publicDir, 'banner.jpg'), ogJpg);
-  fs.writeFileSync(path.join(publicDir, 'banner.png'), ogPng);
-  fs.writeFileSync(path.join(publicDir, 'twitter-image.jpg'), ogJpg);
-  fs.writeFileSync(path.join(publicDir, 'twitter-image.png'), ogPng);
+    // Standard legacy paths (backward compatibility)
+    fs.writeFileSync(path.join(publicDir, 'og-image.jpg'), ogJpg);
+    fs.writeFileSync(path.join(publicDir, 'og-image.png'), ogPng);
+    fs.writeFileSync(path.join(publicDir, 'banner.jpg'), ogJpg);
+    fs.writeFileSync(path.join(publicDir, 'banner.png'), ogPng);
+    fs.writeFileSync(path.join(publicDir, 'twitter-image.jpg'), ogJpg);
+    fs.writeFileSync(path.join(publicDir, 'twitter-image.png'), ogPng);
 
-  // 2. Logo Image (512x512)
-  const logoPng = await sharp(svgLogoBuffer)
-    .resize(512, 512)
-    .png({ quality: 100, palette: false })
-    .toBuffer();
+    // 2. Logo Image (512x512)
+    const logoPng = await sharp(svgLogoBuffer)
+      .resize(512, 512)
+      .png({ quality: 100, palette: false })
+      .toBuffer();
 
-  fs.writeFileSync(path.join(publicDir, 'logo.png'), logoPng);
+    fs.writeFileSync(path.join(publicDir, 'logo.png'), logoPng);
 
-  // 3. Favicons
-  const favicon48Png = await sharp(svgLogoBuffer)
-    .resize(48, 48)
-    .png({ quality: 100, palette: false })
-    .toBuffer();
+    // 3. Favicons
+    const favicon48Png = await sharp(svgLogoBuffer)
+      .resize(48, 48)
+      .png({ quality: 100, palette: false })
+      .toBuffer();
 
-  const icoBuffer = createIcoFromPng(favicon48Png, 48, 48);
-  fs.writeFileSync(path.join(publicDir, 'favicon.ico'), icoBuffer);
-  fs.writeFileSync(path.join(publicDir, 'favicon.png'), favicon48Png);
+    const icoBuffer = createIcoFromPng(favicon48Png, 48, 48);
+    fs.writeFileSync(path.join(publicDir, 'favicon.ico'), icoBuffer);
+    fs.writeFileSync(path.join(publicDir, 'favicon.png'), favicon48Png);
 
-  const faviconJpg = await sharp(svgLogoBuffer)
-    .resize(512, 512)
-    .jpeg({ quality: 95 })
-    .toBuffer();
-  fs.writeFileSync(path.join(publicDir, 'favicon.jpg'), faviconJpg);
+    const faviconJpg = await sharp(svgLogoBuffer)
+      .resize(512, 512)
+      .jpeg({ quality: 95 })
+      .toBuffer();
+    fs.writeFileSync(path.join(publicDir, 'favicon.jpg'), faviconJpg);
 
-  const icon192Png = await sharp(svgLogoBuffer)
-    .resize(192, 192)
-    .png({ quality: 100, palette: false })
-    .toBuffer();
-  fs.writeFileSync(path.join(publicDir, 'icon.png'), icon192Png);
+    const icon192Png = await sharp(svgLogoBuffer)
+      .resize(192, 192)
+      .png({ quality: 100, palette: false })
+      .toBuffer();
+    fs.writeFileSync(path.join(publicDir, 'icon.png'), icon192Png);
 
-  const apple180Png = await sharp(svgLogoBuffer)
-    .resize(180, 180)
-    .png({ quality: 100, palette: false })
-    .toBuffer();
-  fs.writeFileSync(path.join(publicDir, 'apple-icon.png'), apple180Png);
+    const apple180Png = await sharp(svgLogoBuffer)
+      .resize(180, 180)
+      .png({ quality: 100, palette: false })
+      .toBuffer();
+    fs.writeFileSync(path.join(publicDir, 'apple-icon.png'), apple180Png);
+  } else {
+    console.log('Skipping raster generation as sharp is not installed, preserving existing public images.');
+  }
 
   const svgFavicon = `
 <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
