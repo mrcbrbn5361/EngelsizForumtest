@@ -114,16 +114,10 @@ export type Message = {
 
 export type VoiceMessage = {
   id: string;
-  user_id: string;
-  conversation_id?: string | null;
-  topic_id?: string | null;
-  comment_id?: string | null;
-  audio_url: string;
+  message_id: string;
+  storage_path: string;
   duration: number;
-  file_size?: number;
   mime_type?: string;
-  transcription?: string | null;
-  waveform?: number[];
   created_at: string;
 };
 

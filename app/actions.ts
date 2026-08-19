@@ -591,7 +591,7 @@ export async function sendMessageAction(params: {
     console.warn('Conversation member sync notice:', convErr);
   }
 
-  // 2. Insert message with canonical schema columns
+  // 2. Insert message with canonical schema columns only (no audio_url in messages table)
   const fullPayload: any = {
     id,
     conversation_id: conversationId,
@@ -602,59 +602,26 @@ export async function sendMessageAction(params: {
     updated_at: now,
   };
 
-  if (audioUrl) {
-    fullPayload.audio_url = audioUrl;
-    fullPayload.media_url = audioUrl;
-  }
-  if (duration) {
-    fullPayload.duration = duration;
-  }
-
-  let { data: inserted, error: insertError } = await serviceClient
+  const { data: inserted, error: insertError } = await serviceClient
     .from('messages')
     .insert(fullPayload)
     .select('*')
     .maybeSingle();
-
-  // If column error occurs on older tables without optional columns, retry preserving audio fields
-  if (insertError && (insertError.code === '42703' || insertError.message?.includes('column'))) {
-    const retryPayload: any = {
-      id,
-      conversation_id: conversationId,
-      sender_id: user.id,
-      content: content || (messageType === 'audio' ? '🎤 Sesli Mesaj' : ''),
-      message_type: messageType,
-      audio_url: audioUrl || null,
-      duration: duration || null,
-      created_at: now,
-    };
-    const { data: retryInserted, error: retryError } = await serviceClient
-      .from('messages')
-      .insert(retryPayload)
-      .select('*')
-      .maybeSingle();
-
-    if (!retryError) {
-      inserted = retryInserted || retryPayload;
-      insertError = null;
-    }
-  }
 
   if (insertError) {
     console.error('Error inserting message via server action:', insertError);
     return { success: false, error: insertError.message || 'Mesaj iletilemedi.' };
   }
 
-  // 2.1. If audioUrl is present, also safely record in voice_messages table if schema exists
+  // 2.1. If audioUrl is present, record in voice_messages table using exact existing schema columns
   if (audioUrl) {
     try {
       await serviceClient
         .from('voice_messages')
         .insert({
           id: generateUUID(),
-          user_id: user.id,
-          conversation_id: conversationId,
-          audio_url: audioUrl,
+          message_id: id,
+          storage_path: audioUrl,
           duration: duration || 1,
           mime_type: 'audio/webm',
           created_at: now,
@@ -820,7 +787,37 @@ export async function getConversationMessagesAction(conversationId: string) {
       return { success: false, error: fetchErr.message };
     }
 
-    return { success: true, messages: messages || [] };
+    const msgs = messages || [];
+    const audioMessageIds = msgs.filter(m => m.message_type === 'audio' || m.message_type === 'voice').map(m => m.id);
+
+    let voiceMap = new Map<string, any>();
+    if (audioMessageIds.length > 0) {
+      const { data: voiceRows } = await serviceClient
+        .from('voice_messages')
+        .select('*')
+        .in('message_id', audioMessageIds);
+
+      if (voiceRows) {
+        voiceRows.forEach(vm => {
+          voiceMap.set(vm.message_id, vm);
+        });
+      }
+    }
+
+    const enrichedMessages = msgs.map(m => {
+      const vm = voiceMap.get(m.id);
+      if (vm) {
+        return {
+          ...m,
+          audio_url: vm.storage_path,
+          media_url: vm.storage_path,
+          duration: vm.duration || m.duration,
+        };
+      }
+      return m;
+    });
+
+    return { success: true, messages: enrichedMessages };
   } catch (err: any) {
     console.error('Fatal error fetching conversation messages:', err);
     return { success: false, error: err?.message || 'Mesajlar alınamadı.' };
