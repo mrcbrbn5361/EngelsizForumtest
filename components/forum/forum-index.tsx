@@ -129,12 +129,19 @@ export function ForumIndex() {
 
       const newestMember = newestMemberData?.username || newestMemberData?.display_name || '';
 
-      // 4. Active / Recent Members
+      // 4. Online & Active Members (5-minute presence threshold)
+      const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+
+      const { count: onlineCountData } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .gte('last_seen_at', fiveMinutesAgo);
+
       const { data: activeMembersData } = await supabase
         .from('profiles')
         .select('id, username, display_name, full_name, avatar_url, role, updated_at, last_seen_at')
-        .order('updated_at', { ascending: false })
-        .limit(10);
+        .order('last_seen_at', { ascending: false, nullsFirst: false })
+        .limit(20);
 
       // 5. Top Contributors
       const { data: topContributorsData } = await supabase
@@ -154,6 +161,7 @@ export function ForumIndex() {
         totalMembers: totalMembers || 0,
         newestMember: newestMember,
         activeMembers: activeMembersData || [],
+        onlineCount: onlineCountData !== null && onlineCountData !== undefined ? onlineCountData : 0,
         topContributors: topContributorsData || [],
         trendingTags: trendingTags || []
       });

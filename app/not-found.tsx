@@ -2,6 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import { FileQuestion, Home, ArrowLeft } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default function NotFound() {
   return (
     <div className="flex flex-col min-h-[70vh] items-center justify-center p-6 text-center bg-[#090A0F] text-slate-100">

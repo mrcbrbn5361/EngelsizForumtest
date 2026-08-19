@@ -29,6 +29,7 @@ interface ForumIndexClientProps {
     todayTopics: number;
     todayComments: number;
     activeMembers: any[];
+    onlineCount?: number;
     topContributors: any[];
     trendingTags: any[];
   };
@@ -271,7 +272,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 { label: 'TOPLAM BAŞLIK', val: stats?.totalTopics !== undefined ? formatCompactNumber(stats.totalTopics) : '0', sub: `+${stats?.todayTopics || 0} Bugün`, accent: 'sky' },
                 { label: 'TOPLAM CEVAP', val: stats?.totalComments !== undefined ? formatCompactNumber(stats.totalComments) : '0', sub: `+${stats?.todayComments || 0} Bugün`, accent: 'slate' },
                 { label: 'TOPLAM ÜYE', val: stats?.totalMembers !== undefined ? formatCompactNumber(stats.totalMembers) : '0', sub: stats?.newestMember ? `@${stats.newestMember}` : 'Aktif', accent: 'slate' },
-                { label: 'ÇEVRİMİÇİ ÜYE', val: stats?.activeMembers ? stats.activeMembers.length.toString() : '0', sub: 'Canlı topluluk', accent: 'emerald', live: true }
+                { label: 'ÇEVRİMİÇİ ÜYE', val: (stats?.onlineCount !== undefined ? stats.onlineCount : onlineMembers.length).toString(), sub: 'Canlı topluluk', accent: 'emerald', live: true }
               ].map((stat, i) => (
                 <div key={i} className="bg-slate-800/80 border border-slate-700/80 rounded-lg p-3 sm:p-4 transition-all hover:border-slate-600 relative overflow-hidden min-w-0">
                   {stat.live && (
@@ -673,12 +674,12 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 </h3>
                 <span className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-                  {onlineMembers.length} Canlı
+                  {stats?.onlineCount !== undefined ? stats.onlineCount : onlineMembers.length} Canlı
                 </span>
               </div>
               {onlineMembers.length > 0 ? (
                 <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1 no-scrollbar">
-                  {onlineMembers.map(member => member.id ? (
+                  {onlineMembers.slice(0, 10).map(member => member.id ? (
                     <Link 
                       href={`/profile/${member.id}`} 
                       key={member.id} 

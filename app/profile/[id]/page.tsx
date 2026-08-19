@@ -687,12 +687,12 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                   src={profile.avatar_url}
                   username={profile.username}
                   name={profile.full_name}
-                  size="xl"
-                  className="size-20 rounded-2xl border border-sky-500/30 shrink-0"
+                  size="2xl"
+                  className="shrink-0"
                   badge={
-                    isOnline && (
-                      <span className="absolute bottom-0 right-0 size-3 rounded-full bg-emerald-400 border-2 border-[#111726]" title="Çevrimiçi" />
-                    )
+                    isOnline ? (
+                      <span className="absolute bottom-0 right-0 size-3.5 rounded-full bg-emerald-400 border-2 border-[#111726]" title="Çevrimiçi" />
+                    ) : null
                   }
                 />
 
@@ -1103,7 +1103,7 @@ function MemberCard({
             username={member.username}
             name={member.full_name}
             size="md"
-            className="size-11 rounded-xl border border-white/[0.08] group-hover:border-sky-500/60 transition-colors"
+            className="shrink-0 group-hover:opacity-90 transition-opacity"
           />
           {isOnline && (
             <span className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full bg-emerald-400 border-2 border-[#111726]" title="Çevrimiçi" />

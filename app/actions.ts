@@ -591,7 +591,7 @@ export async function sendMessageAction(params: {
     console.warn('Conversation member sync notice:', convErr);
   }
 
-  // 2. Insert message with resilience for optional schema columns
+  // 2. Insert message with canonical schema columns
   const fullPayload: any = {
     id,
     conversation_id: conversationId,
@@ -604,7 +604,7 @@ export async function sendMessageAction(params: {
 
   if (audioUrl) {
     fullPayload.audio_url = audioUrl;
-    fullPayload.is_voice_message = true;
+    fullPayload.media_url = audioUrl;
   }
   if (duration) {
     fullPayload.duration = duration;
@@ -616,23 +616,26 @@ export async function sendMessageAction(params: {
     .select('*')
     .maybeSingle();
 
-  // If column error occurs (e.g. is_voice_message or audio_url doesn't exist in older table versions)
+  // If column error occurs on older tables without optional columns, retry preserving audio fields
   if (insertError && (insertError.code === '42703' || insertError.message?.includes('column'))) {
-    const minimalPayload: any = {
+    const retryPayload: any = {
       id,
       conversation_id: conversationId,
       sender_id: user.id,
       content: content || (messageType === 'audio' ? '🎤 Sesli Mesaj' : ''),
+      message_type: messageType,
+      audio_url: audioUrl || null,
+      duration: duration || null,
       created_at: now,
     };
     const { data: retryInserted, error: retryError } = await serviceClient
       .from('messages')
-      .insert(minimalPayload)
+      .insert(retryPayload)
       .select('*')
       .maybeSingle();
 
     if (!retryError) {
-      inserted = retryInserted || minimalPayload;
+      inserted = retryInserted || retryPayload;
       insertError = null;
     }
   }
@@ -640,6 +643,25 @@ export async function sendMessageAction(params: {
   if (insertError) {
     console.error('Error inserting message via server action:', insertError);
     return { success: false, error: insertError.message || 'Mesaj iletilemedi.' };
+  }
+
+  // 2.1. If audioUrl is present, also safely record in voice_messages table if schema exists
+  if (audioUrl) {
+    try {
+      await serviceClient
+        .from('voice_messages')
+        .insert({
+          id: generateUUID(),
+          user_id: user.id,
+          conversation_id: conversationId,
+          audio_url: audioUrl,
+          duration: duration || 1,
+          mime_type: 'audio/webm',
+          created_at: now,
+        });
+    } catch (vmErr) {
+      console.warn('voice_messages table sync notice:', vmErr);
+    }
   }
 
   // 3. Update conversation updated_at

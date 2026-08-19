@@ -260,6 +260,25 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         });
       }
 
+      const optimisticMsg: Message = {
+        id: messageId,
+        conversation_id: conversationId,
+        sender_id: currentUserProfile.id,
+        content: '🎤 Sesli Mesaj',
+        message_type: 'audio',
+        audio_url: finalAudioUrl,
+        media_url: finalAudioUrl,
+        duration: recordingTime || 1,
+        created_at: new Date().toISOString(),
+      };
+
+      setMessages(prev => {
+        const exists = prev.some(m => m.id === messageId);
+        const updated = exists ? prev : [...prev, optimisticMsg];
+        saveToLocalCache(updated);
+        return updated;
+      });
+
       const res = await sendMessageAction({
         conversationId,
         content: '🎤 Sesli Mesaj',
@@ -275,8 +294,14 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
 
       if (res.message) {
         setMessages(prev => {
-          const exists = prev.some(m => m.id === res.message.id);
-          const updated = exists ? prev : [...prev, res.message];
+          const index = prev.findIndex(m => m.id === messageId || m.id === res.message.id);
+          if (index !== -1) {
+            const updated = [...prev];
+            updated[index] = { ...optimisticMsg, ...res.message, audio_url: res.message.audio_url || finalAudioUrl };
+            saveToLocalCache(updated);
+            return updated;
+          }
+          const updated = [...prev, res.message];
           saveToLocalCache(updated);
           return updated;
         });
@@ -438,7 +463,8 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         ) : (
           messages.map((msg) => {
             const isMe = msg.sender_id === currentUserProfile.id;
-            const isAudio = msg.message_type === 'audio' || msg.is_voice_message || !!msg.audio_url;
+            const audioSourceUrl = msg.audio_url || msg.media_url;
+            const isAudio = msg.message_type === 'audio' || msg.message_type === 'voice' || msg.is_voice_message || !!audioSourceUrl;
 
             return (
               <motion.div
@@ -448,9 +474,9 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
                 className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
               >
                 <div className="max-w-[85%] sm:max-w-[70%] space-y-1">
-                  {isAudio && msg.audio_url ? (
+                  {isAudio && audioSourceUrl ? (
                     <AudioMessagePlayer 
-                      audioUrl={msg.audio_url} 
+                      audioUrl={audioSourceUrl} 
                       duration={msg.duration || 0} 
                       isMe={isMe} 
                     />

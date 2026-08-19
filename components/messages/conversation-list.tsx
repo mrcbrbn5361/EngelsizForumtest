@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Profile } from '@/types/database';
 import { UserAvatar } from '@/components/ui/user-avatar';
-import { OnlineStatusDot } from '@/components/ui/user-badge';
+import { isUserOnline } from '@/lib/presence';
 import { formatDistanceToNow } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { MessageSquare, Search, Plus } from 'lucide-react';
@@ -131,13 +131,8 @@ export function ConversationList({ conversations, selectedId, onSelect, loading,
                     username={conv.other_user?.username}
                     name={displayName}
                     size="md"
-                    className="rounded-xl border border-white/[0.08]"
+                    isOnline={isUserOnline(conv.other_user?.last_seen_at)}
                   />
-                  {conv.other_user?.is_online && (
-                    <div className="absolute -bottom-0.5 -right-0.5">
-                      <OnlineStatusDot isOnline={true} size="sm" />
-                    </div>
-                  )}
                 </div>
                 
                 <div className="flex-1 min-w-0">

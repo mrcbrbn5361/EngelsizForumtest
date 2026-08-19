@@ -9,10 +9,11 @@ interface UserAvatarProps {
   src?: string | null;
   name?: string | null;
   username?: string | null;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   className?: string;
   badge?: React.ReactNode;
   isOnline?: boolean;
+  fit?: 'cover' | 'contain';
 }
 
 const sizeMap = {
@@ -21,9 +22,10 @@ const sizeMap = {
   md: 'w-10 h-10 text-xs',
   lg: 'w-12 h-12 text-sm',
   xl: 'w-16 h-16 text-base',
+  '2xl': 'w-20 h-20 text-lg',
 };
 
-export function UserAvatar({ src, name, username, size = 'md', className, badge, isOnline }: UserAvatarProps) {
+export function UserAvatar({ src, name, username, size = 'md', className, badge, isOnline, fit = 'cover' }: UserAvatarProps) {
   const [error, setError] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -53,7 +55,7 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge,
   const initials = getInitials();
 
   return (
-    <div className={cn("relative shrink-0 select-none", className)}>
+    <div className={cn("relative shrink-0 select-none inline-flex items-center justify-center", className)}>
       <div 
         role="img"
         aria-label={name || username || 'Kullanıcı Avatarı'}
@@ -67,9 +69,13 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge,
             src={effectiveSrc}
             alt={name || username || 'Kullanıcı'}
             fill
-            sizes="(max-width: 768px) 48px, 64px"
+            sizes="(max-width: 768px) 80px, 120px"
             unoptimized={effectiveSrc.includes('/svg') || effectiveSrc.includes('.svg') || effectiveSrc.includes('dicebear')}
-            className={cn("object-cover transition-opacity duration-300", error ? "opacity-0" : "opacity-100")}
+            className={cn(
+              "transition-opacity duration-300",
+              fit === 'contain' ? "object-contain object-center" : "object-cover object-center",
+              error ? "opacity-0" : "opacity-100"
+            )}
             onError={() => setError(true)}
             referrerPolicy="no-referrer"
           />
