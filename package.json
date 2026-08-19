@@ -4,9 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
-    "generate:assets": "node scripts/generate_og_image.js",
-    "verify:og": "node scripts/verify-og-image.mjs --local",
-    "build": "node scripts/generate_og_image.js && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "clean": "next clean"

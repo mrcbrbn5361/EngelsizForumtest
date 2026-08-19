@@ -87,9 +87,9 @@ export function TopicCard({ topic }: { topic: Topic }) {
         </h3>
 
         <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground pt-0.5">
-          {topic.author?.id || (topic as any).author_id || topic.author?.username ? (
+          {topic.author?.id || (topic as any).author_id ? (
             <Link 
-              href={`/profile/${topic.author?.id || (topic as any).author_id || topic.author?.username}`}
+              href={`/profile/${topic.author?.id || (topic as any).author_id}`}
               className="flex items-center gap-1.5 truncate max-w-[150px] relative z-10 hover:text-sky-400 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >

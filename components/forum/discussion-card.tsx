@@ -14,6 +14,7 @@ import { supabase } from '@/lib/supabase';
 import { useRole } from '@/hooks/use-role';
 import { toast } from 'sonner';
 import { formatCompactNumber } from '@/lib/utils';
+import { isUserOnline } from '@/lib/presence';
 
 interface DiscussionCardProps {
   topic: Topic;
@@ -159,7 +160,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
             username={topic.author?.username}
             name={topic.author?.full_name}
             size="sm"
-            isOnline={true}
+            isOnline={isUserOnline(topic.author?.last_seen_at)}
           />
           <div className="flex flex-col min-w-0 text-left">
             <span className="font-semibold text-slate-200 truncate max-w-[130px] sm:max-w-[200px] hover:underline text-left">

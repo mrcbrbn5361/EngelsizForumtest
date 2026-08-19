@@ -90,22 +90,39 @@ function CommentItem({
 
         <div className="flex gap-3 sm:gap-4">
           <div className="shrink-0">
-            <Link href={`/profile/${comment.author?.id || (comment as any).author_id || comment.author?.username || ''}`} className="block relative z-20 hover:opacity-80 transition-opacity">
-              <UserAvatar 
-                src={comment.author?.avatar_url}
-                username={comment.author?.username}
-                name={comment.author?.full_name}
-                size={depth > 0 ? "sm" : "md"}
-              />
-            </Link>
+            {comment.author?.id || (comment as any).author_id ? (
+              <Link href={`/profile/${comment.author?.id || (comment as any).author_id}`} className="block relative z-20 hover:opacity-80 transition-opacity">
+                <UserAvatar 
+                  src={comment.author?.avatar_url}
+                  username={comment.author?.username}
+                  name={comment.author?.full_name}
+                  size={depth > 0 ? "sm" : "md"}
+                />
+              </Link>
+            ) : (
+              <div className="block relative z-20">
+                <UserAvatar 
+                  src={comment.author?.avatar_url}
+                  username={comment.author?.username}
+                  name={comment.author?.full_name}
+                  size={depth > 0 ? "sm" : "md"}
+                />
+              </div>
+            )}
           </div>
 
           <div className="flex-1 min-w-0 space-y-2">
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
-                <Link href={`/profile/${comment.author?.id || (comment as any).author_id || comment.author?.username || ''}`} className="font-semibold text-foreground hover:text-sky-400 transition-colors">
-                  {comment.author?.full_name || comment.author?.username || 'Kullanıcı'}
-                </Link>
+                {comment.author?.id || (comment as any).author_id ? (
+                  <Link href={`/profile/${comment.author?.id || (comment as any).author_id}`} className="font-semibold text-foreground hover:text-sky-400 transition-colors">
+                    {comment.author?.full_name || comment.author?.username || 'Kullanıcı'}
+                  </Link>
+                ) : (
+                  <span className="font-semibold text-foreground">
+                    {comment.author?.full_name || comment.author?.username || 'Kullanıcı'}
+                  </span>
+                )}
                 {(comment.author?.role === 'admin' || comment.author?.role === 'moderator') && (
                   <span className="px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[9px] font-bold">
                     {comment.author.role === 'admin' ? 'Yönetici' : 'Moderatör'}
@@ -845,22 +862,41 @@ export default function DiscussionDetailPage() {
                 </h1>
 
                 <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-border/60 text-xs text-muted-foreground">
-                  <Link href={`/profile/${topic.author?.id || (topic as any).author_id || topic.author?.username || ''}`} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-                    <UserAvatar 
-                      src={topic.author?.avatar_url}
-                      username={topic.author?.username}
-                      name={topic.author?.full_name}
-                      size="sm"
-                    />
-                    <div className="flex flex-col text-left">
-                      <span className="font-semibold text-foreground hover:text-sky-400 transition-colors">
-                        {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
-                      </span>
-                      <span className="text-[10px] text-sky-400 font-bold">
-                        {topic.author?.role === 'admin' ? 'Yönetici' : topic.author?.role === 'moderator' ? 'Moderatör' : 'Topluluk Üyesi'}
-                      </span>
+                  {topic.author?.id || (topic as any).author_id ? (
+                    <Link href={`/profile/${topic.author?.id || (topic as any).author_id}`} className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+                      <UserAvatar 
+                        src={topic.author?.avatar_url}
+                        username={topic.author?.username}
+                        name={topic.author?.full_name}
+                        size="sm"
+                      />
+                      <div className="flex flex-col text-left">
+                        <span className="font-semibold text-foreground hover:text-sky-400 transition-colors">
+                          {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
+                        </span>
+                        <span className="text-[10px] text-sky-400 font-bold">
+                          {topic.author?.role === 'admin' ? 'Yönetici' : topic.author?.role === 'moderator' ? 'Moderatör' : 'Topluluk Üyesi'}
+                        </span>
+                      </div>
+                    </Link>
+                  ) : (
+                    <div className="flex items-center gap-2.5">
+                      <UserAvatar 
+                        src={topic.author?.avatar_url}
+                        username={topic.author?.username}
+                        name={topic.author?.full_name}
+                        size="sm"
+                      />
+                      <div className="flex flex-col text-left">
+                        <span className="font-semibold text-foreground">
+                          {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
+                        </span>
+                        <span className="text-[10px] text-sky-400 font-bold">
+                          {topic.author?.role === 'admin' ? 'Yönetici' : topic.author?.role === 'moderator' ? 'Moderatör' : 'Topluluk Üyesi'}
+                        </span>
+                      </div>
                     </div>
-                  </Link>
+                  )}
                   <div className="flex items-center gap-3 text-muted-foreground text-xs font-medium">
                     <div className="flex items-center gap-1">
                       <Calendar size={13} className="text-sky-400" />
@@ -1089,9 +1125,15 @@ export default function DiscussionDetailPage() {
                   size="lg"
                 />
                 <div>
-                  <Link href={`/profile/${topic.author?.id}`} className="text-sm font-bold text-foreground hover:text-sky-400 transition-colors block">
-                    @{topic.author?.username || 'isimsiz'}
-                  </Link>
+                  {topic.author?.id || (topic as any).author_id ? (
+                    <Link href={`/profile/${topic.author?.id || (topic as any).author_id}`} className="text-sm font-bold text-foreground hover:text-sky-400 transition-colors block">
+                      @{topic.author?.username || 'isimsiz'}
+                    </Link>
+                  ) : (
+                    <span className="text-sm font-bold text-foreground block">
+                      @{topic.author?.username || 'isimsiz'}
+                    </span>
+                  )}
                   <p className="text-[10px] font-bold text-sky-400 mt-0.5">
                     {topic.author?.role === 'admin' ? 'Site Yöneticisi' : topic.author?.role === 'moderator' ? 'Moderatör' : 'Topluluk Üyesi'}
                   </p>
@@ -1106,12 +1148,20 @@ export default function DiscussionDetailPage() {
                     <div className="text-[9px] font-bold text-muted-foreground uppercase">XP Puanı</div>
                   </div>
                 </div>
-                <Link 
-                  href={`/profile/${topic.author?.id}`}
-                  className="w-full py-2 flex items-center justify-center rounded-xl bg-muted hover:bg-muted/80 text-foreground border border-border transition-colors text-xs font-bold uppercase tracking-wider"
-                >
-                  Profili Görüntüle
-                </Link>
+                {topic.author?.id || (topic as any).author_id ? (
+                  <Link 
+                    href={`/profile/${topic.author?.id || (topic as any).author_id}`}
+                    className="w-full py-2 flex items-center justify-center rounded-xl bg-muted hover:bg-muted/80 text-foreground border border-border transition-colors text-xs font-bold uppercase tracking-wider"
+                  >
+                    Profili Görüntüle
+                  </Link>
+                ) : (
+                  <div 
+                    className="w-full py-2 flex items-center justify-center rounded-xl bg-muted/50 text-muted-foreground border border-border/50 text-xs font-bold uppercase tracking-wider"
+                  >
+                    Profil Yok
+                  </div>
+                )}
               </div>
             </section>
 

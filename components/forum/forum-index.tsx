@@ -34,7 +34,7 @@ export function ForumIndex() {
         .from('threads')
         .select(`
           *,
-          author:profiles(id, username, avatar_url, display_name, full_name, role),
+          author:profiles(id, username, avatar_url, display_name, full_name, role, last_seen_at),
           category:categories(id, name, slug)
         `)
         .order('is_pinned', { ascending: false })
@@ -49,7 +49,7 @@ export function ForumIndex() {
           .from('topics')
           .select(`
             *,
-            author:profiles(id, username, avatar_url, display_name, full_name, role),
+            author:profiles(id, username, avatar_url, display_name, full_name, role, last_seen_at),
             category:categories(id, name, slug)
           `)
           .order('is_pinned', { ascending: false })
@@ -132,7 +132,7 @@ export function ForumIndex() {
       // 4. Active / Recent Members
       const { data: activeMembersData } = await supabase
         .from('profiles')
-        .select('id, username, display_name, full_name, avatar_url, role, updated_at')
+        .select('id, username, display_name, full_name, avatar_url, role, updated_at, last_seen_at')
         .order('updated_at', { ascending: false })
         .limit(10);
 

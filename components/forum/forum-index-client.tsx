@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
 import { Topic, Category } from '@/types/database';
 import { cn, formatCompactNumber } from '@/lib/utils';
+import { isUserOnline } from '@/lib/presence';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { UserRoleBadge } from '@/components/ui/user-badge';
 
@@ -51,13 +52,13 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
   useEffect(() => {
     if (stats?.activeMembers && Array.isArray(stats.activeMembers)) {
       const formatted = stats.activeMembers
-        .filter((m: any) => m && typeof m === 'object' && m.id)
+        .filter((m: any) => m && typeof m === 'object' && m.id && isUserOnline(m.last_seen_at))
         .map((m: any) => ({
           id: m.id,
           username: m.username,
           name: m.full_name || m.username,
           avatar: m.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${m.username}`,
-          isOnline: true,
+          isOnline: isUserOnline(m.last_seen_at),
           role: m.role || 'user'
         }));
       setOnlineMembers(formatted);
@@ -562,9 +563,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                       )}
 
                       <div className="flex items-center justify-between gap-3 text-xs text-slate-400 border-t border-white/[0.05] pt-2.5">
-                        {topic.author?.id || (topic as any).author_id || topic.author?.username ? (
+                        {topic.author?.id || (topic as any).author_id ? (
                           <Link 
-                            href={`/profile/${topic.author?.id || (topic as any).author_id || topic.author?.username}`}
+                            href={`/profile/${topic.author?.id || (topic as any).author_id}`}
                             className="flex items-center gap-2 min-w-0 group/author hover:opacity-80 transition-opacity"
                             onClick={(e) => e.stopPropagation()}
                           >
@@ -573,7 +574,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                               username={topic.author?.username} 
                               name={topic.author?.full_name}
                               size="sm"
-                              isOnline={true}
+                              isOnline={isUserOnline((topic.author as any)?.last_seen_at)}
                             />
                             <span className="font-semibold text-slate-300 text-xs truncate group-hover/author:text-sky-400 transition-colors">
                               {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
@@ -587,7 +588,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                               username={topic.author?.username} 
                               name={topic.author?.full_name}
                               size="sm"
-                              isOnline={true}
+                              isOnline={isUserOnline((topic.author as any)?.last_seen_at)}
                             />
                             <span className="font-semibold text-slate-300 text-xs truncate">
                               {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
@@ -677,9 +678,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               </div>
               {onlineMembers.length > 0 ? (
                 <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1 no-scrollbar">
-                  {onlineMembers.map(member => (
+                  {onlineMembers.map(member => member.id ? (
                     <Link 
-                      href={`/profile`} 
+                      href={`/profile/${member.id}`} 
                       key={member.id} 
                       className="flex items-center gap-2.5 p-1.5 rounded-md hover:bg-[#161f33] transition-colors group"
                     >
@@ -688,7 +689,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                         username={member.username} 
                         name={member.name}
                         size="sm"
-                        isOnline={true}
+                        isOnline={member.isOnline}
                       />
                       <div className="min-w-0 flex-1">
                         <div className="font-bold text-xs text-slate-200 truncate group-hover:text-sky-400">
@@ -697,6 +698,25 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                       </div>
                       <UserRoleBadge role={member.role} size="xs" showLabel={false} />
                     </Link>
+                  ) : (
+                    <div 
+                      key={member.username || member.name} 
+                      className="flex items-center gap-2.5 p-1.5 rounded-md"
+                    >
+                      <UserAvatar 
+                        src={member.avatar} 
+                        username={member.username} 
+                        name={member.name}
+                        size="sm"
+                        isOnline={member.isOnline}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="font-bold text-xs text-slate-200 truncate">
+                          @{member.username}
+                        </div>
+                      </div>
+                      <UserRoleBadge role={member.role} size="xs" showLabel={false} />
+                    </div>
                   ))}
                 </div>
               ) : (
