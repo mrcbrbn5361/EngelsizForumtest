@@ -597,7 +597,6 @@ export async function sendMessageAction(params: {
     conversation_id: conversationId,
     sender_id: user.id,
     content: content || (messageType === 'audio' ? '🎤 Sesli Mesaj' : ''),
-    message_type: messageType,
     created_at: now,
     updated_at: now,
   };
