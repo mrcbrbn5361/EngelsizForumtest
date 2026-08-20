@@ -786,14 +786,14 @@ export async function getConversationMessagesAction(conversationId: string) {
     }
 
     const msgs = messages || [];
-    const audioMessageIds = msgs.filter(m => m.message_type === 'audio' || m.message_type === 'voice').map(m => m.id);
+    const messageIds = msgs.map(m => m.id);
 
     let voiceMap = new Map<string, any>();
-    if (audioMessageIds.length > 0) {
+    if (messageIds.length > 0) {
       const { data: voiceRows } = await serviceClient
         .from('voice_messages')
         .select('*')
-        .in('message_id', audioMessageIds);
+        .in('message_id', messageIds);
 
       if (voiceRows) {
         voiceRows.forEach(vm => {
@@ -810,6 +810,7 @@ export async function getConversationMessagesAction(conversationId: string) {
           audio_url: vm.storage_path,
           media_url: vm.storage_path,
           duration: vm.duration || m.duration,
+          is_voice_message: true,
         };
       }
       return m;
