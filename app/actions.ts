@@ -598,7 +598,6 @@ export async function sendMessageAction(params: {
     sender_id: user.id,
     content: content || (messageType === 'audio' ? '🎤 Sesli Mesaj' : ''),
     created_at: now,
-    updated_at: now,
   };
 
   const { data: inserted, error: insertError } = await serviceClient
