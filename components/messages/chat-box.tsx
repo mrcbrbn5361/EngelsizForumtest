@@ -134,6 +134,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [voiceLoadErrors, setVoiceLoadErrors] = useState<Record<string, boolean>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Voice Recording States
@@ -152,11 +153,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
   const fetchMessages = useCallback(async () => {
     if (!conversationId) return;
     setError(null);
-
-    // If we don't have cached messages, show loading spinner
-    if (messages.length === 0) {
-      setLoading(true);
-    }
+    setLoading(true);
 
     try {
       // 1. Try server action with service role fallback
@@ -226,7 +223,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       setLoading(false);
       setTimeout(() => scrollToBottom(false), 100);
     }
-  }, [conversationId, messages.length, scrollToBottom]);
+  }, [conversationId, scrollToBottom]);
 
   // When conversationId changes, load messages from Supabase
   useEffect(() => {
@@ -688,10 +685,39 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
                         duration={msg.voice?.duration || msg.duration || 0} 
                         isMe={isMe} 
                       />
-                    ) : (
-                      <div className={`flex items-center gap-2 p-3 rounded-2xl text-xs ${
+                    ) : voiceLoadErrors[msg.id] ? (
+                      <div className={`flex flex-col gap-2 p-3 rounded-2xl text-xs ${
                         isMe ? 'bg-sky-500/80 text-slate-950 font-medium' : 'bg-[#161f33] border border-white/[0.08] text-slate-300'
                       }`}>
+                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-destructive">
+                          <AlertCircle size={14} aria-hidden="true" />
+                          <span>Sesli mesaj yüklenemedi.</span>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setVoiceLoadErrors(prev => ({ ...prev, [msg.id]: false }));
+                            fetchMessages();
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-black/20 hover:bg-black/30 text-[10px] font-bold text-white inline-flex items-center gap-1 w-fit cursor-pointer"
+                        >
+                          <RefreshCw size={11} aria-hidden="true" />
+                          Tekrar Dene
+                        </button>
+                      </div>
+                    ) : (
+                      <div 
+                        className={`flex items-center gap-2 p-3 rounded-2xl text-xs cursor-pointer ${
+                          isMe ? 'bg-sky-500/80 text-slate-950 font-medium' : 'bg-[#161f33] border border-white/[0.08] text-slate-300'
+                        }`}
+                        onClick={() => {
+                          // Quick manual trigger to force reload or fail after 8s
+                          setTimeout(() => {
+                            if (!audioSourceUrl) {
+                              setVoiceLoadErrors(prev => ({ ...prev, [msg.id]: true }));
+                            }
+                          }, 8000);
+                        }}
+                      >
                         <Loader2 className="animate-spin text-sky-400 size-3.5 shrink-0" aria-hidden="true" />
                         <span className="text-[11px] font-medium">Sesli mesaj yükleniyor...</span>
                       </div>
