@@ -546,7 +546,7 @@ function resolveServerAudioUrl(storagePathOrUrl?: string | null, serviceClient?:
   try {
     const cleanPath = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed;
     if (serviceClient?.storage) {
-      const { data } = serviceClient.storage.from('forum-assets').getPublicUrl(cleanPath);
+      const { data } = serviceClient.storage.from('voice-messages').getPublicUrl(cleanPath);
       return data?.publicUrl || trimmed;
     }
     return trimmed;

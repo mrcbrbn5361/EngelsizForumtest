@@ -36,7 +36,7 @@ export function resolveAudioUrl(storagePathOrUrl?: string | null): string {
   }
   try {
     const cleanPath = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed;
-    const { data } = supabase.storage.from('forum-assets').getPublicUrl(cleanPath);
+    const { data } = supabase.storage.from('voice-messages').getPublicUrl(cleanPath);
     return data?.publicUrl || trimmed;
   } catch {
     return trimmed;
@@ -452,12 +452,12 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
     try {
       const messageId = generateUUID();
       const fileName = `voice_${conversationId}_${Date.now()}.webm`;
-      const filePath = `voice-messages/${fileName}`;
+      const filePath = fileName;
 
       let finalAudioUrl = '';
       try {
         const { error: uploadError } = await supabase.storage
-          .from('forum-assets')
+          .from('voice-messages')
           .upload(filePath, recordedAudioBlob, {
             contentType: 'audio/webm',
             upsert: true,
@@ -465,7 +465,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
 
         if (!uploadError) {
           const { data: publicUrlData } = supabase.storage
-            .from('forum-assets')
+            .from('voice-messages')
             .getPublicUrl(filePath);
           finalAudioUrl = publicUrlData.publicUrl;
         }
