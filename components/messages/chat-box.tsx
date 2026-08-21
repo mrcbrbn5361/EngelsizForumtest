@@ -4,8 +4,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { Message, Profile } from '@/types/database';
-import { Send, Loader2, User, Mic, MicOff, Square, Trash2, Check, AlertCircle, RefreshCw, ArrowLeft } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { Send, Loader2, User, Mic, Square, Trash2, Check, AlertCircle, RefreshCw, ArrowLeft } from 'lucide-react';
+import { motion } from 'motion/react';
 import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -20,6 +20,114 @@ interface ChatBoxProps {
   onBack?: () => void;
 }
 
+/**
+ * Resolves a storage path or URL into a fully-qualified browser playable audio URL.
+ */
+export function resolveAudioUrl(storagePathOrUrl?: string | null): string {
+  if (!storagePathOrUrl || typeof storagePathOrUrl !== 'string') return '';
+  const trimmed = storagePathOrUrl.trim();
+  if (
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('data:') ||
+    trimmed.startsWith('blob:')
+  ) {
+    return trimmed;
+  }
+  try {
+    const cleanPath = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed;
+    const { data } = supabase.storage.from('forum-assets').getPublicUrl(cleanPath);
+    return data?.publicUrl || trimmed;
+  } catch {
+    return trimmed;
+  }
+}
+
+/**
+ * Normalizes message object to guarantee voice metadata presence and correct structure.
+ */
+export function normalizeChatMessage(rawMsg: any): Message {
+  const vm = rawMsg.voice || null;
+  let audioUrl = '';
+  if (vm) {
+    audioUrl = resolveAudioUrl(vm.audio_url || vm.storage_path);
+  } else if (rawMsg.audio_url || rawMsg.media_url) {
+    audioUrl = resolveAudioUrl(rawMsg.audio_url || rawMsg.media_url);
+  }
+
+  const isVoice = Boolean(
+    vm ||
+    rawMsg.is_voice_message ||
+    rawMsg.message_type === 'audio' ||
+    rawMsg.message_type === 'voice' ||
+    audioUrl ||
+    rawMsg.content === '🎤 Sesli Mesaj' ||
+    rawMsg.content === 'Sesli Mesaj'
+  );
+
+  const duration = vm?.duration || rawMsg.duration || (isVoice ? 1 : 0);
+
+  return {
+    ...rawMsg,
+    message_type: isVoice ? 'audio' : (rawMsg.message_type || 'text'),
+    audio_url: audioUrl || rawMsg.audio_url || null,
+    media_url: audioUrl || rawMsg.media_url || null,
+    duration,
+    is_voice_message: isVoice,
+    voice: vm ? {
+      ...vm,
+      audio_url: audioUrl || vm.storage_path,
+    } : (isVoice && audioUrl ? {
+      id: rawMsg.id,
+      message_id: rawMsg.id,
+      storage_path: audioUrl,
+      duration,
+      mime_type: 'audio/webm',
+      audio_url: audioUrl,
+    } : null),
+  };
+}
+
+/**
+ * Canonical merge helper to ensure voice metadata and audio player state are never lost across realtime updates, refetches, or optimistic syncs.
+ */
+export function mergeMessagePreservingVoice(existingMsg: Message | null, incomingMsg: Message): Message {
+  const normalizedIncoming = normalizeChatMessage(incomingMsg);
+  if (!existingMsg) return normalizedIncoming;
+
+  const bestVoice = normalizedIncoming.voice || existingMsg.voice || null;
+  const bestAudioUrl = normalizedIncoming.audio_url || existingMsg.audio_url || bestVoice?.audio_url || (bestVoice?.storage_path ? resolveAudioUrl(bestVoice.storage_path) : null);
+  const bestMediaUrl = normalizedIncoming.media_url || existingMsg.media_url || bestAudioUrl;
+  const bestDuration = normalizedIncoming.duration || existingMsg.duration || bestVoice?.duration || 0;
+  const isVoice = Boolean(
+    bestVoice ||
+    normalizedIncoming.is_voice_message ||
+    existingMsg.is_voice_message ||
+    normalizedIncoming.message_type === 'audio' ||
+    existingMsg.message_type === 'audio' ||
+    bestAudioUrl ||
+    normalizedIncoming.content === '🎤 Sesli Mesaj' ||
+    existingMsg.content === '🎤 Sesli Mesaj' ||
+    normalizedIncoming.content === 'Sesli Mesaj' ||
+    existingMsg.content === 'Sesli Mesaj'
+  );
+
+  return {
+    ...existingMsg,
+    ...normalizedIncoming,
+    content: normalizedIncoming.content || existingMsg.content,
+    message_type: isVoice ? 'audio' : (normalizedIncoming.message_type || existingMsg.message_type || 'text'),
+    audio_url: bestAudioUrl,
+    media_url: bestMediaUrl,
+    duration: bestDuration,
+    is_voice_message: isVoice,
+    voice: bestVoice ? {
+      ...bestVoice,
+      audio_url: bestAudioUrl || bestVoice.audio_url || bestVoice.storage_path,
+    } : null,
+  };
+}
+
 export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack }: ChatBoxProps) {
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window !== 'undefined' && conversationId) {
@@ -27,7 +135,9 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         const cached = localStorage.getItem(`engelsiz_chat_${conversationId}`);
         if (cached) {
           const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.map(normalizeChatMessage);
+          }
         }
       } catch {}
     }
@@ -76,13 +186,19 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       // 1. Try server action with service role fallback
       const res = await getConversationMessagesAction(conversationId);
       if (res.success && Array.isArray(res.messages)) {
+        const normalized = res.messages.map(normalizeChatMessage);
         setMessages(prev => {
-          // Merge server messages with any temporary optimistic messages
-          const serverMap = new Map<string, Message>();
-          res.messages!.forEach((m: any) => serverMap.set(m.id, m));
+          const prevMap = new Map<string, Message>();
+          prev.forEach(m => prevMap.set(m.id, m));
 
-          const pending = prev.filter(m => m.id.startsWith('temp-') && !serverMap.has(m.id.replace('temp-', '')));
-          const combined = [...res.messages!, ...pending].sort(
+          const mergedServer = normalized.map(sm => {
+            const old = prevMap.get(sm.id) || prev.find(p => p.sender_id === sm.sender_id && p.content === sm.content && Math.abs(new Date(p.created_at).getTime() - new Date(sm.created_at).getTime()) < 15000);
+            return mergeMessagePreservingVoice(old || null, sm);
+          });
+
+          const serverIds = new Set(normalized.map(m => m.id));
+          const pending = prev.filter(m => (m.id.startsWith('temp-') || !serverIds.has(m.id)) && !mergedServer.some(sm => sm.id === m.id));
+          const combined = [...mergedServer, ...pending].sort(
             (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
           );
           saveToLocalCache(combined);
@@ -90,20 +206,48 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         });
       } else {
         // Fallback to client query
-        const { data, error: fetchErr } = await supabase
+        const { data: rawMessages, error: fetchErr } = await supabase
           .from('messages')
           .select('*')
           .eq('conversation_id', conversationId)
           .order('created_at', { ascending: true });
 
-        if (!fetchErr && data) {
-          setMessages(data);
-          saveToLocalCache(data);
+        if (!fetchErr && rawMessages) {
+          const messageIds = rawMessages.map(m => m.id);
+          let voiceMap = new Map<string, any>();
+          if (messageIds.length > 0) {
+            const { data: voiceRows } = await supabase
+              .from('voice_messages')
+              .select('*')
+              .in('message_id', messageIds);
+
+            if (voiceRows) {
+              voiceRows.forEach(vm => voiceMap.set(vm.message_id, vm));
+            }
+          }
+
+          const combined = rawMessages.map(m => {
+            const vm = voiceMap.get(m.id);
+            const resolved = vm ? resolveAudioUrl(vm.storage_path) : null;
+            return normalizeChatMessage({
+              ...m,
+              audio_url: resolved || m.audio_url,
+              media_url: resolved || m.media_url,
+              duration: vm?.duration || m.duration,
+              is_voice_message: Boolean(vm || m.is_voice_message),
+              voice: vm ? {
+                ...vm,
+                audio_url: resolved,
+              } : null,
+            });
+          });
+
+          setMessages(combined);
+          saveToLocalCache(combined);
         }
       }
     } catch (err: any) {
       console.error('Error fetching messages:', err);
-      // Keep cached messages if any
     } finally {
       setLoading(false);
       setTimeout(() => scrollToBottom(false), 100);
@@ -118,7 +262,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         if (cached) {
           const parsed = JSON.parse(cached);
           if (Array.isArray(parsed)) {
-            setMessages(parsed);
+            setMessages(parsed.map(normalizeChatMessage));
           }
         }
       } catch {}
@@ -135,17 +279,94 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
           table: 'messages',
           filter: `conversation_id=eq.${conversationId}`,
         },
-        (payload) => {
-          const newMsg = payload.new as Message;
+        async (payload) => {
+          const rawNew = payload.new as Message;
+          const newMsg = normalizeChatMessage(rawNew);
+
+          // If message is a voice message but doesn't have voice/audio_url yet, fetch its voice_messages row
+          if (newMsg.is_voice_message && (!newMsg.voice || !newMsg.audio_url)) {
+            try {
+              const { data: vmRow } = await supabase
+                .from('voice_messages')
+                .select('*')
+                .eq('message_id', newMsg.id)
+                .maybeSingle();
+
+              if (vmRow) {
+                const resolved = resolveAudioUrl(vmRow.storage_path);
+                newMsg.audio_url = resolved;
+                newMsg.media_url = resolved;
+                newMsg.duration = vmRow.duration;
+                newMsg.voice = {
+                  ...vmRow,
+                  audio_url: resolved,
+                };
+              }
+            } catch (err) {
+              console.warn('Realtime voice metadata fetch notice:', err);
+            }
+          }
+
           setMessages((prev) => {
-            const exists = prev.some(m => m.id === newMsg.id);
-            if (exists) return prev;
-            const withoutTemp = prev.filter(m => !(m.id.startsWith('temp-') && m.sender_id === newMsg.sender_id && m.content === newMsg.content));
-            const updated = [...withoutTemp, newMsg];
+            const existingIndex = prev.findIndex(m => m.id === newMsg.id || (m.id.startsWith('temp-') && m.sender_id === newMsg.sender_id && m.content === newMsg.content));
+            if (existingIndex !== -1) {
+              const old = prev[existingIndex];
+              const merged = mergeMessagePreservingVoice(old, newMsg);
+              const updated = [...prev];
+              updated[existingIndex] = merged;
+              const cleaned = updated.filter((m, idx) => idx === existingIndex || m.id !== old.id);
+              saveToLocalCache(cleaned);
+              return cleaned;
+            }
+
+            const withoutTemp = prev.filter(m => !(
+              (m.id.startsWith('temp-') && m.sender_id === newMsg.sender_id && m.content === newMsg.content) ||
+              (m.id === `temp-${newMsg.id}`)
+            ));
+
+            const matchingOpt = prev.find(m => 
+              (m.id.startsWith('temp-') && m.sender_id === newMsg.sender_id && m.content === newMsg.content) ||
+              m.id === newMsg.id
+            );
+
+            const finalMsg = mergeMessagePreservingVoice(matchingOpt || null, newMsg);
+
+            const updated = [...withoutTemp, finalMsg];
             saveToLocalCache(updated);
             return updated;
           });
           setTimeout(() => scrollToBottom(true), 50);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'voice_messages',
+        },
+        (payload) => {
+          const vmRow = payload.new as any;
+          if (!vmRow || !vmRow.message_id) return;
+          const resolved = resolveAudioUrl(vmRow.storage_path);
+          setMessages(prev => {
+            const index = prev.findIndex(m => m.id === vmRow.message_id);
+            if (index === -1) return prev;
+            const updated = [...prev];
+            updated[index] = {
+              ...updated[index],
+              audio_url: resolved,
+              media_url: resolved,
+              duration: vmRow.duration || updated[index].duration,
+              is_voice_message: true,
+              voice: {
+                ...vmRow,
+                audio_url: resolved,
+              },
+            };
+            saveToLocalCache(updated);
+            return updated;
+          });
         }
       )
       .subscribe();
@@ -269,6 +490,16 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         audio_url: finalAudioUrl,
         media_url: finalAudioUrl,
         duration: recordingTime || 1,
+        is_voice_message: true,
+        voice: {
+          id: messageId,
+          message_id: messageId,
+          storage_path: finalAudioUrl,
+          duration: recordingTime || 1,
+          mime_type: 'audio/webm',
+          created_at: new Date().toISOString(),
+          audio_url: finalAudioUrl,
+        },
         created_at: new Date().toISOString(),
       };
 
@@ -293,15 +524,23 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       }
 
       if (res.message) {
+        const normalizedServer = normalizeChatMessage(res.message);
         setMessages(prev => {
           const index = prev.findIndex(m => m.id === messageId || m.id === res.message.id);
           if (index !== -1) {
             const updated = [...prev];
-            updated[index] = { ...optimisticMsg, ...res.message, audio_url: res.message.audio_url || finalAudioUrl };
+            updated[index] = {
+              ...optimisticMsg,
+              ...normalizedServer,
+              audio_url: normalizedServer.audio_url || optimisticMsg.audio_url || finalAudioUrl,
+              media_url: normalizedServer.media_url || optimisticMsg.media_url || finalAudioUrl,
+              voice: normalizedServer.voice || optimisticMsg.voice,
+              duration: normalizedServer.duration || optimisticMsg.duration,
+            };
             saveToLocalCache(updated);
             return updated;
           }
-          const updated = [...prev, res.message];
+          const updated = [...prev, normalizedServer];
           saveToLocalCache(updated);
           return updated;
         });
@@ -463,8 +702,21 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         ) : (
           messages.map((msg) => {
             const isMe = msg.sender_id === currentUserProfile.id;
-            const audioSourceUrl = msg.audio_url || msg.media_url;
-            const isAudio = msg.message_type === 'audio' || msg.message_type === 'voice' || msg.is_voice_message || !!audioSourceUrl;
+            const isVoice = Boolean(
+              msg.voice ||
+              msg.is_voice_message ||
+              msg.message_type === 'audio' ||
+              msg.message_type === 'voice' ||
+              msg.audio_url ||
+              msg.media_url ||
+              msg.content === '🎤 Sesli Mesaj' ||
+              msg.content === 'Sesli Mesaj'
+            );
+
+            const audioSourceUrl = msg.voice?.audio_url ||
+              (msg.voice?.storage_path ? resolveAudioUrl(msg.voice.storage_path) : '') ||
+              (msg.audio_url ? resolveAudioUrl(msg.audio_url) : '') ||
+              (msg.media_url ? resolveAudioUrl(msg.media_url) : '');
 
             return (
               <motion.div
@@ -474,12 +726,21 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
                 className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}
               >
                 <div className="max-w-[85%] sm:max-w-[70%] space-y-1">
-                  {isAudio && audioSourceUrl ? (
-                    <AudioMessagePlayer 
-                      audioUrl={audioSourceUrl} 
-                      duration={msg.duration || 0} 
-                      isMe={isMe} 
-                    />
+                  {isVoice ? (
+                    audioSourceUrl ? (
+                      <AudioMessagePlayer 
+                        audioUrl={audioSourceUrl} 
+                        duration={msg.voice?.duration || msg.duration || 0} 
+                        isMe={isMe} 
+                      />
+                    ) : (
+                      <div className={`flex items-center gap-2 p-3 rounded-2xl text-xs ${
+                        isMe ? 'bg-sky-500/80 text-slate-950 font-medium' : 'bg-[#161f33] border border-white/[0.08] text-slate-300'
+                      }`}>
+                        <Loader2 className="animate-spin text-sky-400 size-3.5 shrink-0" aria-hidden="true" />
+                        <span className="text-[11px] font-medium">Sesli mesaj yükleniyor...</span>
+                      </div>
+                    )
                   ) : (
                     <div
                       className={`p-3 rounded-2xl text-xs leading-relaxed ${
@@ -598,5 +859,3 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
     </div>
   );
 }
-
-

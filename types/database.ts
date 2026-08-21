@@ -105,6 +105,7 @@ export type Message = {
   media_url?: string | null;
   duration?: number;
   is_voice_message?: boolean;
+  voice?: VoiceMessage | null;
   waveform?: number[];
   metadata?: any;
   read_at?: string | null;
@@ -118,7 +119,8 @@ export type VoiceMessage = {
   storage_path: string;
   duration: number;
   mime_type?: string;
-  created_at: string;
+  created_at?: string;
+  audio_url?: string | null;
 };
 
 

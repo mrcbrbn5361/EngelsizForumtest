@@ -19,6 +19,10 @@ export function AudioMessagePlayer({ audioUrl, duration = 0, isMe = false }: Aud
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    if (!audioUrl || typeof audioUrl !== 'string' || (!audioUrl.startsWith('http://') && !audioUrl.startsWith('https://') && !audioUrl.startsWith('blob:') && !audioUrl.startsWith('data:'))) {
+      setHasError(true);
+      return;
+    }
     setHasError(false);
     const audio = new Audio(audioUrl);
     audioRef.current = audio;

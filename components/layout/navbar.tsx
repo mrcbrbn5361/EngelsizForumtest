@@ -96,7 +96,7 @@ export function Navbar() {
           Rehber &amp; Topluluk
         </span>
         <span className="text-slate-300 text-[11px] sm:text-xs leading-snug">
-          EngelsizForum canlı ve erişilebilir bilgi paylaşım platformudur. Tüm modüller aktiftir.
+          EngelsizForum DEMO SÜRÜMÜDÜR. Canlı veriler ve tüm modüller aktiftir.
         </span>
       </div>
 

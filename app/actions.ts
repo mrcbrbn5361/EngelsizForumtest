@@ -530,6 +530,32 @@ export async function toggleFollowAction(targetUserId: string) {
 }
 
 /**
+ * Helper to resolve audio URL from storage path on server side
+ */
+function resolveServerAudioUrl(storagePathOrUrl?: string | null, serviceClient?: any): string {
+  if (!storagePathOrUrl) return '';
+  const trimmed = storagePathOrUrl.trim();
+  if (
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('data:') ||
+    trimmed.startsWith('blob:')
+  ) {
+    return trimmed;
+  }
+  try {
+    const cleanPath = trimmed.startsWith('/') ? trimmed.slice(1) : trimmed;
+    if (serviceClient?.storage) {
+      const { data } = serviceClient.storage.from('forum-assets').getPublicUrl(cleanPath);
+      return data?.publicUrl || trimmed;
+    }
+    return trimmed;
+  } catch {
+    return trimmed;
+  }
+}
+
+/**
  * Server Action: Sends a direct message with privilege fallback and recipient notification.
  */
 export async function sendMessageAction(params: {
@@ -611,19 +637,34 @@ export async function sendMessageAction(params: {
     return { success: false, error: insertError.message || 'Mesaj iletilemedi.' };
   }
 
+  let voiceRecord: any = null;
   // 2.1. If audioUrl is present, record in voice_messages table using exact existing schema columns
   if (audioUrl) {
     try {
-      await serviceClient
+      const voiceId = generateUUID();
+      const { data: vmInserted } = await serviceClient
         .from('voice_messages')
         .insert({
-          id: generateUUID(),
+          id: voiceId,
           message_id: id,
           storage_path: audioUrl,
           duration: duration || 1,
           mime_type: 'audio/webm',
           created_at: now,
-        });
+        })
+        .select('*')
+        .maybeSingle();
+
+      const resolvedUrl = resolveServerAudioUrl(audioUrl, serviceClient);
+      voiceRecord = {
+        id: vmInserted?.id || voiceId,
+        message_id: id,
+        storage_path: audioUrl,
+        duration: duration || 1,
+        mime_type: 'audio/webm',
+        created_at: now,
+        audio_url: resolvedUrl,
+      };
     } catch (vmErr) {
       console.warn('voice_messages table sync notice:', vmErr);
     }
@@ -672,7 +713,17 @@ export async function sendMessageAction(params: {
     console.warn('Could not generate message notification:', notifErr);
   }
 
-  return { success: true, message: inserted || fullPayload };
+  const resolvedAudioUrl = voiceRecord ? voiceRecord.audio_url : (audioUrl ? resolveServerAudioUrl(audioUrl, serviceClient) : null);
+  const enrichedMessage = {
+    ...(inserted || fullPayload),
+    audio_url: resolvedAudioUrl,
+    media_url: resolvedAudioUrl,
+    duration: duration || null,
+    is_voice_message: Boolean(audioUrl),
+    voice: voiceRecord,
+  };
+
+  return { success: true, message: enrichedMessage };
 }
 
 /**
@@ -805,12 +856,22 @@ export async function getConversationMessagesAction(conversationId: string) {
     const enrichedMessages = msgs.map(m => {
       const vm = voiceMap.get(m.id);
       if (vm) {
+        const resolvedAudioUrl = resolveServerAudioUrl(vm.storage_path, serviceClient);
         return {
           ...m,
-          audio_url: vm.storage_path,
-          media_url: vm.storage_path,
-          duration: vm.duration || m.duration,
+          audio_url: resolvedAudioUrl,
+          media_url: resolvedAudioUrl,
+          duration: vm.duration || m.duration || 1,
           is_voice_message: true,
+          voice: {
+            id: vm.id,
+            message_id: vm.message_id,
+            storage_path: vm.storage_path,
+            duration: vm.duration || 1,
+            mime_type: vm.mime_type || 'audio/webm',
+            created_at: vm.created_at,
+            audio_url: resolvedAudioUrl,
+          },
         };
       }
       return m;
