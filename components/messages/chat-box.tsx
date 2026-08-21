@@ -129,20 +129,7 @@ export function mergeMessagePreservingVoice(existingMsg: Message | null, incomin
 }
 
 export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack }: ChatBoxProps) {
-  const [messages, setMessages] = useState<Message[]>(() => {
-    if (typeof window !== 'undefined' && conversationId) {
-      try {
-        const cached = localStorage.getItem(`engelsiz_chat_${conversationId}`);
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed.map(normalizeChatMessage);
-          }
-        }
-      } catch {}
-    }
-    return [];
-  });
+  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
@@ -157,17 +144,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Helper to persist messages locally
-  const saveToLocalCache = useCallback((newMsgs: Message[]) => {
-    if (typeof window !== 'undefined' && conversationId && Array.isArray(newMsgs)) {
-      try {
-        localStorage.setItem(`engelsiz_chat_${conversationId}`, JSON.stringify(newMsgs));
-      } catch (e) {
-        console.warn('Cache write failed:', e);
-      }
-    }
-  }, [conversationId]);
 
   const scrollToBottom = useCallback((smooth = true) => {
     messagesEndRef.current?.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' });
@@ -201,7 +177,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
           const combined = [...mergedServer, ...pending].sort(
             (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
           );
-          saveToLocalCache(combined);
           return combined;
         });
       } else {
@@ -243,7 +218,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
           });
 
           setMessages(combined);
-          saveToLocalCache(combined);
         }
       }
     } catch (err: any) {
@@ -252,21 +226,11 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       setLoading(false);
       setTimeout(() => scrollToBottom(false), 100);
     }
-  }, [conversationId, messages.length, saveToLocalCache, scrollToBottom]);
+  }, [conversationId, messages.length, scrollToBottom]);
 
-  // When conversationId changes, load cache immediately
+  // When conversationId changes, load messages from Supabase
   useEffect(() => {
-    if (typeof window !== 'undefined' && conversationId) {
-      try {
-        const cached = localStorage.getItem(`engelsiz_chat_${conversationId}`);
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed)) {
-            setMessages(parsed.map(normalizeChatMessage));
-          }
-        }
-      } catch {}
-    }
+    setMessages([]);
     fetchMessages();
 
     const channel = supabase
@@ -315,7 +279,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
               const updated = [...prev];
               updated[existingIndex] = merged;
               const cleaned = updated.filter((m, idx) => idx === existingIndex || m.id !== old.id);
-              saveToLocalCache(cleaned);
               return cleaned;
             }
 
@@ -332,7 +295,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
             const finalMsg = mergeMessagePreservingVoice(matchingOpt || null, newMsg);
 
             const updated = [...withoutTemp, finalMsg];
-            saveToLocalCache(updated);
             return updated;
           });
           setTimeout(() => scrollToBottom(true), 50);
@@ -364,7 +326,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
                 audio_url: resolved,
               },
             };
-            saveToLocalCache(updated);
             return updated;
           });
         }
@@ -375,7 +336,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       supabase.removeChannel(channel);
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [conversationId, fetchMessages, saveToLocalCache, scrollToBottom]);
+  }, [conversationId, fetchMessages, scrollToBottom]);
 
   // Start Voice Recording
   const startRecording = async () => {
@@ -506,7 +467,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       setMessages(prev => {
         const exists = prev.some(m => m.id === messageId);
         const updated = exists ? prev : [...prev, optimisticMsg];
-        saveToLocalCache(updated);
         return updated;
       });
 
@@ -537,11 +497,9 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
               voice: normalizedServer.voice || optimisticMsg.voice,
               duration: normalizedServer.duration || optimisticMsg.duration,
             };
-            saveToLocalCache(updated);
             return updated;
           }
           const updated = [...prev, normalizedServer];
-          saveToLocalCache(updated);
           return updated;
         });
       }
@@ -575,10 +533,9 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       updated_at: new Date().toISOString(),
     };
 
-    // Optimistic UI update & immediate cache persist
+    // Optimistic UI update
     setMessages(prev => {
       const updated = [...prev, optimisticMessage];
-      saveToLocalCache(updated);
       return updated;
     });
     setNewMessage('');
@@ -601,7 +558,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       if (res.message) {
         setMessages(prev => {
           const replaced = prev.map(m => (m.id === tempId ? res.message : m));
-          saveToLocalCache(replaced);
           return replaced;
         });
       }
@@ -611,7 +567,6 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       // Rollback optimistic message
       setMessages(prev => {
         const rolledBack = prev.filter(m => m.id !== tempId);
-        saveToLocalCache(rolledBack);
         return rolledBack;
       });
       setNewMessage(textToSend);
