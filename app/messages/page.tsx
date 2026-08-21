@@ -49,6 +49,7 @@ function MessagesContent() {
     return [];
   });
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
+  const [initializedTarget, setInitializedTarget] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showListOnMobile, setShowListOnMobile] = useState(true);
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
@@ -163,8 +164,8 @@ function MessagesContent() {
           saveConversationsToCache(processed);
         }
 
-        // If targetUserId is present in URL params, open or create conversation
-        if (targetUserId) {
+        // If targetUserId is present in URL params and not yet initialized for this target
+        if (targetUserId && initializedTarget !== targetUserId) {
           const existing = (processed.length > 0 ? processed : conversations).find(c => 
             c.other_user?.id === targetUserId || 
             c.other_user?.username?.toLowerCase() === targetUserId.toLowerCase()
@@ -172,8 +173,10 @@ function MessagesContent() {
           if (existing) {
             setSelectedConvId(existing.id);
             setShowListOnMobile(false);
+            setInitializedTarget(targetUserId);
           } else {
             await initiateDirectConversation(targetUserId, processed);
+            setInitializedTarget(targetUserId);
           }
         }
       } catch (err) {

@@ -123,6 +123,7 @@ export function Navbar() {
         <div className="hidden lg:flex items-center gap-1">
           <NavLink href="/" icon={<Home size={15} />} label="Ana Sayfa" />
           <NavLink href="/discussions" icon={<MessageSquare size={15} />} label="Tartışmalar" />
+          <NavLink href="/messages" icon={<MessageSquare size={15} />} label="Mesajlar" />
           <NavLink href="/communities" icon={<Users size={15} />} label="Topluluklar" />
           <NavLink href="/hesaplama" icon={<Calculator size={15} />} label="Hesaplayıcılar" />
           <NavLink href="/about" icon={<Info size={15} />} label="Hakkımızda" />
@@ -369,6 +370,7 @@ export function Navbar() {
                     <div className="space-y-1">
                       <MobileNavLink href="/" icon={<Home size={18} />} label="Ana Sayfa" onClick={() => setIsOpen(false)} />
                       <MobileNavLink href="/discussions" icon={<MessageSquare size={18} />} label="Tartışmalar" onClick={() => setIsOpen(false)} />
+                      <MobileNavLink href="/messages" icon={<MessageSquare size={18} />} label="Mesajlar" onClick={() => setIsOpen(false)} />
                       <MobileNavLink href="/communities" icon={<Users size={18} />} label="Topluluklar" onClick={() => setIsOpen(false)} />
                       <MobileNavLink href="/hesaplama" icon={<Calculator size={18} />} label="Hak &amp; Maaş Hesaplama" onClick={() => setIsOpen(false)} />
                       <MobileNavLink href="/webmcp" icon={<Zap size={18} />} label="AI Agents &amp; MCP" onClick={() => setIsOpen(false)} />
