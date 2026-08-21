@@ -600,18 +600,22 @@ export async function sendMessageAction(params: {
 
     const { data: member } = await serviceClient
       .from('conversation_members')
-      .select('id')
+      .select('conversation_id')
       .eq('conversation_id', conversationId)
       .eq('user_id', user.id)
       .maybeSingle();
 
     if (!member) {
-      await serviceClient.from('conversation_members').insert({
-        id: generateUUID(),
+      const { error: memberInsertErr } = await serviceClient.from('conversation_members').insert({
         conversation_id: conversationId,
         user_id: user.id,
         joined_at: now,
       });
+
+      if (memberInsertErr && memberInsertErr.code !== '23505') {
+        console.error('Error ensuring conversation member:', memberInsertErr);
+        return { success: false, error: 'Sohbet üye kaydı başarısız oldu.' };
+      }
     }
   } catch (convErr) {
     console.warn('Conversation member sync notice:', convErr);
@@ -806,10 +810,27 @@ export async function createOrGetConversationAction(targetUserId: string) {
     return { success: false, error: 'Sohbet oluşturulamadı.' };
   }
 
-  await serviceClient.from('conversation_members').insert([
-    { id: generateUUID(), conversation_id: newConvId, user_id: user.id, joined_at: now },
-    { id: generateUUID(), conversation_id: newConvId, user_id: resolvedTargetId, joined_at: now },
-  ]);
+  const { error: memErr1 } = await serviceClient.from('conversation_members').insert({
+    conversation_id: newConvId,
+    user_id: user.id,
+    joined_at: now,
+  });
+
+  if (memErr1 && memErr1.code !== '23505') {
+    console.error('Error inserting sender member:', memErr1);
+    return { success: false, error: 'Sohbet katılımcısı eklenemedi.' };
+  }
+
+  const { error: memErr2 } = await serviceClient.from('conversation_members').insert({
+    conversation_id: newConvId,
+    user_id: resolvedTargetId,
+    joined_at: now,
+  });
+
+  if (memErr2 && memErr2.code !== '23505') {
+    console.error('Error inserting target member:', memErr2);
+    return { success: false, error: 'Sohbet katılımcısı eklenemedi.' };
+  }
 
   return { success: true, conversationId: newConvId, otherUser: otherProfile, isNew: true };
 }
