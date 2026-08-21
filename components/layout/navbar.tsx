@@ -123,7 +123,6 @@ export function Navbar() {
         <div className="hidden lg:flex items-center gap-1">
           <NavLink href="/" icon={<Home size={15} />} label="Ana Sayfa" />
           <NavLink href="/discussions" icon={<MessageSquare size={15} />} label="Tartışmalar" />
-          <NavLink href="/messages" icon={<MessageSquare size={15} />} label="Mesajlar" />
           <NavLink href="/communities" icon={<Users size={15} />} label="Topluluklar" />
           <NavLink href="/hesaplama" icon={<Calculator size={15} />} label="Hesaplayıcılar" />
           <NavLink href="/about" icon={<Info size={15} />} label="Hakkımızda" />
@@ -246,6 +245,22 @@ export function Navbar() {
               <Accessibility size={18} aria-hidden="true" className="sm:w-5 sm:h-5" />
             </button>
           )}
+
+          {/* Messages Icon-Only Button */}
+          <Link
+            href="/messages"
+            id="navbar-messages-icon-link"
+            className={cn(
+              "flex items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0 cursor-pointer",
+              pathname === '/messages' || pathname.startsWith('/messages/')
+                ? "bg-sky-500/15 text-sky-400 border border-sky-500/30"
+                : "text-slate-300 hover:bg-[#161f33] hover:text-sky-400"
+            )}
+            aria-label="Mesajlar"
+            title="Mesajlar"
+          >
+            <MessageSquare size={18} aria-hidden="true" className="sm:w-5 sm:h-5" />
+          </Link>
 
           {/* Search Button */}
           <Link
