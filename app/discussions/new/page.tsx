@@ -7,7 +7,7 @@ import { TopicEditor } from '@/components/forum/topic-editor';
 import { ArrowLeft, Save, Loader2, HelpCircle, Tag, Eye } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import { generateUUID, generateUniqueSlug } from '@/lib/utils';
+import { createTopicAction } from '@/app/actions';
 import { toast } from 'sonner';
 
 const PRESET_TAGS = ['[ÖTV 2026]', '[Emsal Karar]', '[Sağlık Raporu]', '[EKPSS 2026]', '[Evde Bakım]', '[SGK İtiraz]', '[Medikal & Cihaz]'];
@@ -70,73 +70,22 @@ function NewTopicForm() {
 
     setLoading(true);
     try {
-      const topicId = generateUUID();
       const finalTitle = selectedTag ? `${selectedTag} ${title.trim()}` : title.trim();
-      let slug = generateUniqueSlug(finalTitle);
-      
-      const payload: any = {
-        id: topicId,
+      const result = await createTopicAction({
         title: finalTitle,
-        category_id: categoryId,
+        categoryId,
         content: content.trim(),
-        author_id: user.id,
-        is_pinned: isPinned,
-        is_locked: isLocked,
-        is_solved: false,
-        slug: slug
-      };
+        tags: selectedTag ? [selectedTag] : [],
+        isPinned: isStaff ? isPinned : false,
+        isLocked: isStaff ? isLocked : false,
+      });
 
-      let insertedTopic: any = null;
-      let lastError: any = null;
-
-      // Try inserting with unique slug, retry up to 3 times on any collision
-      for (let attempt = 0; attempt < 3; attempt++) {
-        if (attempt > 0) {
-          payload.slug = generateUniqueSlug(finalTitle, 8 + attempt * 2);
-        }
-
-        const { data, error } = await supabase
-          .from('topics')
-          .insert(payload)
-          .select()
-          .single();
-
-        if (!error && data) {
-          insertedTopic = data;
-          lastError = null;
-          break;
-        }
-
-        lastError = error;
-
-        // Check if error is unique slug violation
-        const isSlugCollision = error?.message?.includes('topics_slug_key') || 
-                                error?.message?.includes('duplicate key') || 
-                                error?.code === '23505';
-
-        if (!isSlugCollision) {
-          // Fallback to 'threads' table if schema differs
-          const { data: thData, error: threadErr } = await supabase
-            .from('threads')
-            .insert(payload)
-            .select()
-            .single();
-
-          if (!threadErr && thData) {
-            insertedTopic = thData;
-            lastError = null;
-            break;
-          }
-          if (threadErr) lastError = threadErr;
-        }
+      if (!result.success || !result.topicId) {
+        throw new Error(result.error || 'Konu kaydedilemedi.');
       }
 
-      if (lastError && !insertedTopic) {
-        throw lastError;
-      }
-      
       toast.success('Konunuz başarıyla yayınlandı!');
-      router.push(`/discussions/${insertedTopic?.id || topicId}`);
+      router.push(`/discussions/${result.topicId}`);
     } catch (err: any) {
       console.error('Topic creation error:', err);
       toast.error('Tartışma yayınlanırken hata oluştu: ' + (err.message || 'Bilinmeyen hata'));
