@@ -80,8 +80,8 @@ export const metadata: Metadata = {
     locale: 'tr_TR',
     images: [
       {
-        url: 'https://www.engelsizforum.com/og-image.jpg',
-        secureUrl: 'https://www.engelsizforum.com/og-image.jpg',
+        url: '/og-image.jpg',
+        secureUrl: '/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'EngelsizForum - Tam Erişilebilir Topluluk Platformu',
@@ -95,7 +95,7 @@ export const metadata: Metadata = {
     description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu.',
     site: '@engelsizforum',
     creator: '@engelsizforum',
-    images: ['https://www.engelsizforum.com/og-image.jpg'],
+    images: ['/twitter-image.jpg'],
   },
   formatDetection: {
     telephone: false,
@@ -110,10 +110,10 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://engelsizforum.com/#organization",
+      "@id": "https://www.engelsizforum.com/#organization",
       "name": "EngelsizForum",
-      "url": "https://engelsizforum.com",
-      "logo": "https://engelsizforum.com/logo.png?v=2026",
+      "url": "https://www.engelsizforum.com",
+      "logo": "https://www.engelsizforum.com/logo.png",
       "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve forum platformu.",
       "sameAs": [
         "https://github.com/engelsizforum"
@@ -124,11 +124,11 @@ const jsonLd = {
     },
     {
       "@type": "WebSite",
-      "@id": "https://engelsizforum.com/#website",
-      "url": "https://engelsizforum.com",
+      "@id": "https://www.engelsizforum.com/#website",
+      "url": "https://www.engelsizforum.com",
       "name": "EngelsizForum",
       "description": "Tam Erişilebilir Topluluk ve Bilgi Paylaşım Platformu",
-      "publisher": { "@id": "https://engelsizforum.com/#organization" },
+      "publisher": { "@id": "https://www.engelsizforum.com/#organization" },
       "potentialAction": {
         "@type": "SearchAction",
         "target": "https://engelsizforum.com/search?q={search_term_string}",
