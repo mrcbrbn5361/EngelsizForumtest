@@ -18,7 +18,7 @@ import { UserAvatar } from '@/components/ui/user-avatar';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
 import { expandSearchQuery, matchQueryWithText } from '@/lib/search-dictionary';
-import { generateUniqueSlug } from '@/lib/utils';
+import { createTopicAction } from '@/app/actions';
 
 const getCategoryIcon = (iconName: string) => {
   const cls = "size-3.5 shrink-0 text-sky-400";
@@ -114,62 +114,14 @@ function DiscussionsContent() {
     if (!user) return;
     setIsSubmitting(true);
     try {
-      let insertedTopic: any = null;
-      let lastError: any = null;
-
-      for (let attempt = 0; attempt < 3; attempt++) {
-        const topicSlug = generateUniqueSlug(newTopic.title, 6 + attempt * 2);
-        const payload = {
-          title: newTopic.title.trim(),
-          content: newTopic.content.trim(),
-          category_id: newTopic.category_id,
-          author_id: user.id,
-          slug: topicSlug
-        };
-
-        const { data, error } = await supabase
-          .from('topics')
-          .insert([payload])
-          .select();
-
-        if (!error && data && data.length > 0) {
-          insertedTopic = data[0];
-          lastError = null;
-          break;
-        }
-
-        lastError = error;
-        const isSlugCollision = error?.message?.includes('topics_slug_key') || 
-                                error?.message?.includes('duplicate key') || 
-                                error?.code === '23505';
-        if (!isSlugCollision) break;
-      }
-
-      if (lastError && !insertedTopic) throw lastError;
-      
+      const result = await createTopicAction({
+        title: newTopic.title.trim(),
+        content: newTopic.content.trim(),
+        categoryId: newTopic.category_id,
+        tags: [],
+      });
+      if (!result.success) throw new Error(result.error || 'Konu oluşturulamadı.');
       toast.success('Konunuz başarıyla oluşturuldu!');
-
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('xp, level')
-          .eq('id', user.id)
-          .single();
-        
-        if (profile) {
-          const newXp = (profile.xp || 0) + 20;
-          const newLevel = Math.floor(newXp / 200) + 1;
-
-          await supabase
-            .from('profiles')
-            .update({ 
-              xp: newXp,
-              level: newLevel
-            })
-            .eq('id', user.id);
-        }
-      }
-
       setIsCreateModalOpen(false);
       setNewTopic({ title: '', content: '', category_id: '' });
       fetchInitialData();
