@@ -17,6 +17,18 @@ import { BionicMarkdown } from '@/components/ui/bionic-markdown';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { toast } from 'sonner';
+import {
+  createCommentAction,
+  deleteCommentAction,
+  incrementTopicViewAction,
+  deleteTopicAction,
+  markSolutionAction,
+  moderateTopicAction,
+  toggleBookmarkAction,
+  toggleReactionAction,
+  updateCommentAction,
+  updateTopicAction,
+} from '@/app/actions';
 
 const TextToSpeechControls = dynamic(
   () => import('@/components/ui/text-to-speech-controls').then(mod => mod.TextToSpeechControls),
@@ -278,25 +290,22 @@ export default function DiscussionDetailPage() {
     if (!user || !topic || !editTitle.trim() || !editContent.trim()) return;
     setIsUpdatingTopic(true);
     try {
-      const { error } = await supabase
-        .from('topics')
-        .update({
-          title: editTitle.trim(),
-          content: editContent.trim(),
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', id);
-
-      if (error) throw error;
+      const result = await updateTopicAction({
+        topicId: topic.id,
+        title: editTitle.trim(),
+        content: editContent.trim(),
+      });
+      if (!result.success) throw new Error(result.error || 'Konu güncellenemedi.');
       setTopic({
         ...topic,
         title: editTitle.trim(),
-        content: editContent.trim()
+        content: editContent.trim(),
+        updated_at: new Date().toISOString(),
       });
       setIsEditingTopic(false);
       toast.success('Tartışma güncellendi.');
     } catch (err: any) {
-      toast.error('Güncelleme başarısız: ' + err.message);
+      toast.error('Güncelleme başarısız: ' + (err.message || 'Bilinmeyen hata'));
     } finally {
       setIsUpdatingTopic(false);
     }
@@ -305,19 +314,12 @@ export default function DiscussionDetailPage() {
   const handleUpdateComment = async (commentId: string, content: string) => {
     if (!user || !content.trim()) return;
     try {
-      const { error } = await supabase
-        .from('comments')
-        .update({
-          content: content.trim(),
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', commentId);
-
-      if (error) throw error;
-      setComments(comments.map(c => c.id === commentId ? { ...c, content, updated_at: new Date().toISOString() } : c));
+      const result = await updateCommentAction({ commentId, content: content.trim() });
+      if (!result.success) throw new Error(result.error || 'Yorum güncellenemedi.');
+      setComments(comments.map(c => c.id === commentId ? { ...c, content: content.trim(), updated_at: new Date().toISOString() } : c));
       toast.success('Yorum güncellendi.');
     } catch (err: any) {
-      toast.error('Güncelleme başarısız: ' + err.message);
+      toast.error('Güncelleme başarısız: ' + (err.message || 'Bilinmeyen hata'));
       throw err;
     }
   };
@@ -353,65 +355,43 @@ export default function DiscussionDetailPage() {
     }
 
     try {
-      if (isLiked) {
-        const { error } = await supabase
-          .from('reactions')
-          .delete()
-          .eq('topic_id', topic.id)
-          .eq('user_id', user.id);
-        
-        if (error) throw error;
-        setIsLiked(false);
-        setLikesCount(prev => Math.max(0, prev - 1));
-      } else {
-        const { error } = await supabase
-          .from('reactions')
-          .insert({
-            topic_id: topic.id,
-            user_id: user.id,
-            reaction_type: 'like'
-          });
-        
-        if (error) throw error;
-        setIsLiked(true);
-        setLikesCount(prev => prev + 1);
-      }
+      const result = await toggleReactionAction(topic.id);
+      if (!result.success) throw new Error(result.error || 'Beğeni işlemi başarısız.');
+      const nextLiked = Boolean(result.reacted);
+      setIsLiked(nextLiked);
+      setLikesCount(prev => Math.max(0, prev + (nextLiked ? 1 : -1)));
     } catch (err: any) {
-      toast.error('İşlem başarısız: ' + err.message);
+      toast.error('İşlem başarısız: ' + (err.message || 'Bilinmeyen hata'));
     }
   };
 
   const deleteTopic = async () => {
     if (!confirm('Bu tartışmayı silmek istediğinize emin misiniz?') || !topic?.id) return;
-    const { error } = await supabase.from('topics').delete().eq('id', topic.id);
-    if (error) toast.error('Silme işlemi başarısız: ' + error.message);
+    const result = await deleteTopicAction(topic.id);
+    if (!result.success) toast.error('Silme işlemi başarısız: ' + (result.error || 'Bilinmeyen hata'));
     else router.push('/discussions');
   };
 
   const togglePin = async () => {
     if (!topic?.id) return;
-    const { error } = await supabase
-      .from('topics')
-      .update({ is_pinned: !topic.is_pinned })
-      .eq('id', topic.id);
-    if (error) toast.error('Hata: ' + error.message);
-    else setTopic({ ...topic, is_pinned: !topic.is_pinned });
+    const nextValue = !topic.is_pinned;
+    const result = await moderateTopicAction({ topicId: topic.id, isPinned: nextValue });
+    if (!result.success) toast.error('Hata: ' + (result.error || 'Moderasyon başarısız'));
+    else setTopic({ ...topic, is_pinned: nextValue });
   };
 
   const toggleLock = async () => {
     if (!topic?.id) return;
-    const { error } = await supabase
-      .from('topics')
-      .update({ is_locked: !topic.is_locked })
-      .eq('id', topic.id);
-    if (error) toast.error('Hata: ' + error.message);
-    else setTopic({ ...topic, is_locked: !topic.is_locked });
+    const nextValue = !topic.is_locked;
+    const result = await moderateTopicAction({ topicId: topic.id, isLocked: nextValue });
+    if (!result.success) toast.error('Hata: ' + (result.error || 'Moderasyon başarısız'));
+    else setTopic({ ...topic, is_locked: nextValue });
   };
 
   const deleteComment = async (commentId: string) => {
     if (!confirm('Bu yorumu silmek istediğinize emin misiniz?')) return;
-    const { error } = await supabase.from('comments').delete().eq('id', commentId);
-    if (error) toast.error('Silme işlemi başarısız: ' + error.message);
+    const result = await deleteCommentAction(commentId);
+    if (!result.success) toast.error('Silme işlemi başarısız: ' + (result.error || 'Bilinmeyen hata'));
     else setComments(comments.filter(c => c.id !== commentId));
   };
 
@@ -419,23 +399,8 @@ export default function DiscussionDetailPage() {
     if (!topic?.id || topic.author_id !== user?.id) return;
 
     try {
-      await supabase
-        .from('comments')
-        .update({ is_solution: false })
-        .eq('topic_id', topic.id);
-
-      const { error } = await supabase
-        .from('comments')
-        .update({ is_solution: true })
-        .eq('id', commentId);
-
-      if (error) throw error;
-
-      await supabase
-        .from('topics')
-        .update({ is_solved: true })
-        .eq('id', topic.id);
-
+      const result = await markSolutionAction(topic.id, commentId);
+      if (!result.success) throw new Error(result.error || 'Çözüm işaretlenemedi.');
       setComments(comments.map(c => ({
         ...c,
         is_solution: c.id === commentId
@@ -443,7 +408,7 @@ export default function DiscussionDetailPage() {
       setTopic({ ...topic, is_solved: true });
       toast.success('Çözüm olarak onaylandı!');
     } catch (err: any) {
-      toast.error('Hata: ' + err.message);
+      toast.error('Hata: ' + (err.message || 'Bilinmeyen hata'));
     }
   };
 
@@ -472,21 +437,10 @@ export default function DiscussionDetailPage() {
     }
     setIsBookmarking(true);
     try {
-      if (isBookmarked) {
-        await supabase
-          .from('bookmarks')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('topic_id', topic.id);
-        setIsBookmarked(false);
-        toast.success('Yer işareti kaldırıldı.');
-      } else {
-        await supabase
-          .from('bookmarks')
-          .insert([{ user_id: user.id, topic_id: topic.id }]);
-        setIsBookmarked(true);
-        toast.success('Tartışma kaydedildi.');
-      }
+      const result = await toggleBookmarkAction(topic.id);
+      if (!result.success) throw new Error(result.error || 'Kayıt işlemi başarısız.');
+      setIsBookmarked(Boolean(result.bookmarked));
+      toast.success(result.bookmarked ? 'Tartışma kaydedildi.' : 'Yer işareti kaldırıldı.');
     } catch (err) {
       console.error('Error toggling bookmark:', err);
       toast.error('İşlem başarısız oldu.');
@@ -516,16 +470,7 @@ export default function DiscussionDetailPage() {
       fetchSimilarTopics(topicData.category_id, topicData.id);
     }
     
-    const actualId = topicData.id;
-    supabase.rpc('increment_views', { topic_id: actualId }).then(({ error: viewError }) => {
-      if (viewError) {
-        supabase
-          .from('topics')
-          .update({ views_count: (topicData.views_count || 0) + 1 })
-          .eq('id', actualId)
-          .then(() => {});
-      }
-    });
+    void incrementTopicViewAction(topicData.id);
     return topicData;
   }, [fetchSimilarTopics]);
 
@@ -643,69 +588,18 @@ export default function DiscussionDetailPage() {
 
     setSending(true);
     try {
-      const insertData: any = {
-        topic_id: topic.id,
-        author_id: user.id,
+      const result = await createCommentAction({
+        topicId: topic.id,
         content: newComment.trim(),
-      };
-      
-      if (supportsParentId && replyToId) {
-        insertData.parent_id = replyToId;
-      }
-
-      const { data, error } = await supabase
-        .from('comments')
-        .insert(insertData)
-        .select('*, author:profiles(*)')
-        .single();
-
-      if (error) throw error;
-
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('xp, level')
-          .eq('id', user.id)
-          .single();
-        
-        if (profile) {
-          const newXp = (profile.xp || 0) + 10;
-          const newLevel = Math.floor(newXp / 200) + 1;
-          
-          await supabase
-            .from('profiles')
-            .update({ 
-              xp: newXp,
-              level: newLevel 
-            })
-            .eq('id', user.id);
-        }
-      }
-
-      if (topic && topic.author_id !== user.id) {
-        try {
-          await supabase
-            .from('notifications')
-            .insert([{
-              recipient_id: topic.author_id,
-              sender_id: user.id,
-              type: 'comment',
-              title: 'Yeni Yorum',
-              body: `${user.email?.split('@')[0]} başlığınıza yanıt verdi.`,
-              content: `${user.email?.split('@')[0]} başlığınıza yanıt verdi.`,
-              data: { link: `/discussions/${id}` }
-            }]);
-        } catch (notifErr) {
-          console.warn('Could not send comment notification:', notifErr);
-        }
-      }
-
-      setComments([...comments, data]);
+        parentCommentId: supportsParentId ? replyToId : null,
+      });
+      if (!result.success) throw new Error(result.error || 'Yorum gönderilemedi.');
+      await fetchComments(topic.id);
       setNewComment('');
       setReplyToId(null);
       toast.success('Yanıtınız başarıyla yayınlandı.');
     } catch (err: any) {
-      toast.error('Yorum gönderilemedi: ' + err.message);
+      toast.error('Yorum gönderilemedi: ' + (err.message || 'Bilinmeyen hata'));
     } finally {
       setSending(false);
     }
@@ -825,9 +719,9 @@ export default function DiscussionDetailPage() {
                     </button>
                   </div>
 
-                  {isStaff && (
+                  {(isStaff || user?.id === topic.author_id) && (
                     <div className="flex items-center gap-1">
-                      {(isStaff || user?.id === topic.author_id) && !isEditingTopic && (
+                      {!isEditingTopic && (
                         <button 
                           onClick={startEditingTopic} 
                           className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
