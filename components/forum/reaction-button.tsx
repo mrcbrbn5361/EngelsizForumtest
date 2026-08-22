@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
-import { generateUUID } from '@/lib/utils';
+import { toggleReactionAction } from '@/app/actions';
+import { toast } from 'sonner';
 
 export function ReactionButton({ topicId, initialCount }: { topicId: string, initialCount: number }) {
   const { user } = useAuth();
@@ -39,24 +40,19 @@ export function ReactionButton({ topicId, initialCount }: { topicId: string, ini
   }, [topicId, user]);
 
   const handleReaction = async () => {
-    if (!user) return;
+    if (!user) {
+      toast.error('Beğenmek için giriş yapmalısınız.');
+      return;
+    }
     try {
-      if (hasLiked) {
-        // Unlike
-        await supabase.from('reactions').delete().eq('topic_id', topicId).eq('user_id', user.id);
-        setCount(prev => Math.max(0, prev - 1));
-        setHasLiked(false);
-      } else {
-        // Like
-        const { error } = await supabase.from('reactions').insert({ id: generateUUID(), topic_id: topicId, user_id: user.id, reaction_type: 'like' });
-        if (error && error.code !== '23505' && !error.message?.includes('duplicate key')) {
-          throw error;
-        }
-        setCount(prev => prev + 1);
-        setHasLiked(true);
-      }
-    } catch (err) {
-      console.error(err);
+      const result = await toggleReactionAction(topicId);
+      if (!result.success) throw new Error(result.error || 'Beğeni işlemi başarısız.');
+      const nextLiked = Boolean(result.reacted);
+      setCount(prev => Math.max(0, prev + (nextLiked ? 1 : -1)));
+      setHasLiked(nextLiked);
+    } catch (err: any) {
+      console.error('Reaction failed:', err);
+      toast.error(err?.message || 'Beğeni işlemi başarısız.');
     }
   };
 

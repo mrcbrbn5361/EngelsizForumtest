@@ -3,9 +3,8 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { Flag, X, AlertTriangle, Loader2 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
-import { generateUUID } from '@/lib/utils';
+import { reportContentAction } from '@/app/actions';
 
 const REPORT_REASONS = [
   'Spam veya Reklam',
@@ -41,26 +40,16 @@ export function ReportButton({ topicId, commentId }: { topicId?: string; comment
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from('reports').insert({
-        id: generateUUID(),
-        topic_id: topicId || null,
-        comment_id: commentId || null,
-        target_type: commentId ? 'comment' : 'topic',
-        target_id: commentId || topicId,
-        reporter_id: user.id,
-        reason: finalReason,
-        status: 'pending'
+      const targetId = commentId || topicId;
+      const targetType = commentId ? 'comment' : 'topic';
+      if (!targetId) throw new Error('Bildirilecek içerik bulunamadı.');
+      const result = await reportContentAction({
+        targetId,
+        targetType,
+        reason: selectedReason,
+        description: customDetails.trim() || undefined,
       });
-
-      if (error) {
-        // Fallback for different report schema variants
-        await supabase.from('reports').insert({
-          id: generateUUID(),
-          topic_id: topicId || null,
-          reporter_id: user.id,
-          reason: finalReason
-        });
-      }
+      if (!result.success) throw new Error(result.error || 'Bildirim gönderilemedi.');
 
       toast.success('Bildiriminiz moderasyon ekibine iletildi. Teşekkür ederiz.');
       setIsOpen(false);
