@@ -1,20 +1,21 @@
 import { createBrowserClient } from '@supabase/ssr';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
-const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const rawKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const rawKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-export const supabaseUrl = (rawUrl && rawUrl.trim().length > 0) ? rawUrl : 'https://placeholder.supabase.co';
-export const supabaseAnonKey = (rawKey && rawKey.trim().length > 0) ? rawKey : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.placeholder';
+export const supabaseUrl = rawUrl.trim();
+export const supabaseAnonKey = rawKey.trim();
 
 /**
  * Utility boolean to check if Supabase is properly configured with live credentials
  */
 export const isSupabaseConfigured = Boolean(
-  rawUrl &&
-  rawKey &&
-  !rawUrl.includes('your-project-url') &&
-  !rawUrl.includes('placeholder.supabase.co') &&
-  rawKey !== 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.placeholder'
+  supabaseUrl &&
+  supabaseAnonKey &&
+  !supabaseUrl.includes('your-project-url') &&
+  !supabaseUrl.includes('placeholder.supabase.co') &&
+  supabaseAnonKey !== 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.placeholder'
 );
 
 /**
@@ -39,6 +40,12 @@ export async function checkSupabaseHealth(): Promise<{ ok: boolean; message: str
  * Centered Supabase SSR Browser Client
  * Initialized with @supabase/ssr to keep cookies in sync with Next.js middleware and server actions.
  */
-export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
+export const supabase: SupabaseClient = isSupabaseConfigured
+  ? createBrowserClient(supabaseUrl, supabaseAnonKey)
+  : (({
+      auth: { getUser: async () => ({ data: { user: null }, error: null }), getSession: async () => ({ data: { session: null }, error: null }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }) },
+      from: () => ({ select: () => ({ eq: () => ({ single: async () => ({ data: null, error: new Error('Supabase not configured') }), order: () => ({ limit: () => ({ single: async () => ({ data: null, error: new Error('Supabase not configured') }) }) }) }) }) })
+    } as unknown) as SupabaseClient);
+
 
 
