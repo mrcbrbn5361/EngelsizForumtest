@@ -39,6 +39,7 @@ import { useRole } from '@/hooks/use-role';
 import { Skeleton } from '@/components/ui/skeleton';
 import { generateUUID } from '@/lib/utils';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { getVisitorStatsAction } from '@/app/actions';
 
 export default function AdminDashboard() {
   const { profile, loading } = useAuth();
@@ -73,10 +74,10 @@ export default function AdminDashboard() {
       
       let visitors = { total_visitors: 0, active_visitors: 0 };
       try {
-        const res = await fetch('/api/visitor-stats', {
-          headers: { 'Authorization': 'Bearer engelsizforumteknofesttanitim' }
-        });
-        if (res.ok) visitors = await res.json();
+        const vRes = await getVisitorStatsAction();
+        if (vRes.success) {
+          visitors = { total_visitors: vRes.total_visitors, active_visitors: vRes.active_visitors };
+        }
       } catch (e) {
         console.error('Visitor stats error (non-blocking):', e);
       }

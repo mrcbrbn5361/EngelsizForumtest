@@ -52,27 +52,20 @@ export function PostComposer({ topicId, onSuccess, placeholder = 'Topluluğa bir
 
     setIsSubmitting(true);
     try {
-      // First try canonical 'comments' table
+      let finalContent = content.trim();
+      for (const img of images) {
+        finalContent += `\n\n![${img.alt}](${img.url})`;
+      }
+
       const { error: commentErr } = await supabase
         .from('comments')
         .insert({
           topic_id: topicId,
           author_id: user.id,
-          content: content.trim(),
+          content: finalContent,
         });
 
-      if (commentErr) {
-        // Fallback to 'posts' if table or schema requires it
-        const { error: postErr } = await supabase
-          .from('posts')
-          .insert({
-            topic_id: topicId,
-            author_id: user.id,
-            content: content.trim(),
-            image_meta: images,
-          });
-        if (postErr) throw postErr;
-      }
+      if (commentErr) throw commentErr;
 
       setContent('');
       setImages([]);

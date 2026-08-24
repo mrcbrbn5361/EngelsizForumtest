@@ -43,16 +43,8 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   const [isSyncingFromCloud, setIsSyncingFromCloud] = useState(false);
   const lastSyncedSettings = React.useRef<string>(JSON.stringify(defaultSettings));
 
-  // Initial load from local storage
+  // Initial load complete
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('accessibility_prefs');
-      if (saved) {
-        setSettings(JSON.parse(saved));
-      }
-    } catch (e) {
-      console.error('Failed to access or parse accessibility prefs', e);
-    }
     setIsInitialLoad(false);
   }, []);
 
@@ -85,7 +77,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     }
   }, [user]);
 
-  // Apply and Persist locally
+  // Apply settings to DOM and sync with Supabase if logged in
   useEffect(() => {
     if (isInitialLoad) return;
 
@@ -97,10 +89,8 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       root.classList.toggle('reduced-motion', settings.reducedMotion);
       root.classList.toggle('bionic-reading', settings.bionicReading);
       root.classList.toggle('focus-mode', settings.focusMode);
-
-      localStorage.setItem('accessibility_prefs', JSON.stringify(settings));
     } catch (e) {
-      console.warn('Could not persist accessibility settings to local storage', e);
+      console.warn('Could not apply accessibility settings', e);
     }
 
     // Sync with Supabase if logged in and settings actually changed
@@ -116,7 +106,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
         .then(({ error }) => {
           if (error) {
             console.error('Failed to sync prefs to Supabase:', error.message || 'Unknown error');
-            // We'll try again next time they actually change something
             lastSyncedSettings.current = currentSettingsStr;
           } else {
             lastSyncedSettings.current = currentSettingsStr;

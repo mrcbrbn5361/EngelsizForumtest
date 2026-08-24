@@ -1,14 +1,25 @@
 import { NextRequest } from 'next/server';
 import { supabaseServer } from './supabase-server';
+import crypto from 'crypto';
 
 export interface TokenPayload {
   userId: string;
   clientId: string;
   createdAt: number;
+  expiresAt: number;
+  scope: string;
 }
 
+const getSecret = () => {
+  const secret = process.env.MASTODON_TOKEN_SECRET;
+  if (!secret) {
+    throw new Error('MASTODON_TOKEN_SECRET environment variable is required (fail-closed)');
+  }
+  return secret;
+};
+
 /**
- * Extracts and decodes the stateless Mastodon access token from the Authorization header.
+ * Extracts and cryptographically verifies the stateless Mastodon access token from the Authorization header.
  */
 export function getPayloadFromRequest(req: NextRequest): TokenPayload | null {
   const authHeader = req.headers.get('Authorization') || req.headers.get('authorization');
@@ -22,19 +33,68 @@ export function getPayloadFromRequest(req: NextRequest): TokenPayload | null {
   }
 
   try {
-    const rawToken = token.substring(9); // strip 'ef_token_'
-    const cleanToken = rawToken.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonStr = Buffer.from(cleanToken, 'base64').toString('utf8');
-    const payload = JSON.parse(jsonStr) as TokenPayload;
-    
-    if (payload && payload.userId) {
-      return payload;
+    const raw = token.substring(9); // strip 'ef_token_'
+    const parts = raw.split('.');
+    if (parts.length !== 2) {
+      // Reject old unsigned tokens
+      return null;
     }
-  } catch (e) {
-    console.error('Error decoding mastodon auth token:', e);
-  }
 
-  return null;
+    const [payloadB64, signatureB64] = parts;
+    if (!payloadB64 || !signatureB64) {
+      return null;
+    }
+
+    const secret = getSecret();
+    const expectedSignature = crypto
+      .createHmac('sha256', secret)
+      .update(payloadB64)
+      .digest('base64url');
+
+    const sigBuffer = Buffer.from(signatureB64);
+    const expBuffer = Buffer.from(expectedSignature);
+    if (sigBuffer.length !== expBuffer.length || !crypto.timingSafeEqual(sigBuffer, expBuffer)) {
+      return null;
+    }
+
+    const jsonStr = Buffer.from(payloadB64.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8');
+    const payload = JSON.parse(jsonStr) as TokenPayload;
+
+    if (!payload || !payload.userId || typeof payload.createdAt !== 'number' || typeof payload.expiresAt !== 'number') {
+      return null;
+    }
+
+    // Mandatory expiration check
+    if (Date.now() > payload.expiresAt) {
+      return null;
+    }
+
+    // createdAt cannot be in the future
+    if (payload.createdAt > Date.now()) {
+      return null;
+    }
+
+    // expiresAt - createdAt max 30 days
+    const maxDuration = 30 * 24 * 60 * 60 * 1000;
+    if (payload.expiresAt - payload.createdAt > maxDuration) {
+      return null;
+    }
+
+    // Validate clientId and scope (strict allowlist, no includes)
+    if (!payload.clientId || typeof payload.clientId !== 'string') {
+      return null;
+    }
+
+    const validScopes = ['read', 'write', 'follow', 'read write', 'read write follow', 'write follow', 'read follow'];
+    if (!payload.scope || typeof payload.scope !== 'string' || !validScopes.includes(payload.scope)) {
+      return null;
+    }
+
+    return payload;
+  } catch (e) {
+    // Never log token or secret
+    return null;
+  }
 }
 
 /**
@@ -49,18 +109,17 @@ export async function verifyMastodonRequest(req: NextRequest) {
   try {
     const { data: profile, error } = await supabaseServer
       .from('profiles')
-      .select('*')
+      .select('id, username, full_name, avatar_url, role')
       .eq('id', payload.userId)
       .single();
 
     if (error || !profile) {
-      console.warn('Mastodon auth: profile not found or error for ID:', payload.userId, error);
       return null;
     }
 
     return profile;
   } catch (err) {
-    console.error('Exception in verifyMastodonRequest:', err);
     return null;
   }
 }
+

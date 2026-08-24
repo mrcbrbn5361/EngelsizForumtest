@@ -13,7 +13,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Skeleton } from '@/components/ui/skeleton';
-import { slugify, generateShortId } from '@/lib/utils';
+import { slugify, generateShortId, generateUUID } from '@/lib/utils';
+import { useAuth } from '@/components/providers/auth-provider';
 
 interface Community {
   id: string;
@@ -150,6 +151,7 @@ const FOCUS_GROUPS = [
 ];
 
 export default function CommunitiesPage() {
+  const { user } = useAuth();
   const [communities, setCommunities] = useState<Community[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -160,16 +162,32 @@ export default function CommunitiesPage() {
   const [joinedList, setJoinedList] = useState<string[]>([]);
   const [activeRulesCommunity, setActiveRulesCommunity] = useState<Community | null>(null);
 
+  // Fetch joined communities from Supabase community_members if user is logged in
   useEffect(() => {
-    const saved = localStorage.getItem('joined_communities');
-    if (saved) {
-      try {
-        setJoinedList(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to parse joined list:', e);
-      }
+    if (!user || !isSupabaseConfigured) {
+      setJoinedList([]);
+      return;
     }
-  }, []);
+    const fetchJoined = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('community_members')
+          .select('community_id')
+          .eq('user_id', user.id);
+        if (error) {
+          console.error('Failed to fetch user community members:', error);
+          toast.error('Topluluk üyelikleri yüklenemedi.');
+          setJoinedList([]);
+        } else if (data) {
+          setJoinedList(data.map((m: any) => m.community_id));
+        }
+      } catch (err) {
+        console.error('Failed to fetch user community members:', err);
+        setJoinedList([]);
+      }
+    };
+    fetchJoined();
+  }, [user]);
 
   const fetchCommunities = useCallback(async () => {
     if (!isSupabaseConfigured) {
@@ -261,21 +279,59 @@ export default function CommunitiesPage() {
     };
   };
 
-  const toggleJoin = (communityId: string, communityName: string, event: React.MouseEvent) => {
+  const toggleJoin = async (communityId: string, communityName: string, event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
     
-    let updated: string[];
+    if (!user) {
+      toast.error('Topluluklara katılmak için giriş yapmalısınız.');
+      return;
+    }
+
     const isJoined = joinedList.includes(communityId);
+    let updated: string[];
     if (isJoined) {
       updated = joinedList.filter(id => id !== communityId);
-      toast.success(`"${communityName}" topluluğundan ayrıldınız.`);
+      setJoinedList(updated);
+      try {
+        const { error } = await supabase
+          .from('community_members')
+          .delete()
+          .eq('community_id', communityId)
+          .eq('user_id', user.id);
+        if (error) {
+          setJoinedList(joinedList); // rollback
+          toast.error(`"${communityName}" topluluğundan ayrılma başarısız: ` + error.message);
+          return;
+        }
+        toast.success(`"${communityName}" topluluğundan ayrıldınız.`);
+      } catch (err: any) {
+        setJoinedList(joinedList); // rollback
+        console.warn('Could not delete community member remotely:', err);
+        toast.error(`"${communityName}" topluluğundan ayrılma sırasında hata oluştu.`);
+      }
     } else {
       updated = [...joinedList, communityId];
-      toast.success(`"${communityName}" topluluğuna katıldınız!`);
+      setJoinedList(updated);
+      try {
+        const { error } = await supabase
+          .from('community_members')
+          .insert({
+            community_id: communityId,
+            user_id: user.id
+          });
+        if (error) {
+          setJoinedList(joinedList); // rollback
+          toast.error(`"${communityName}" topluluğuna katılamadı: ` + error.message);
+          return;
+        }
+        toast.success(`"${communityName}" topluluğuna katıldınız!`);
+      } catch (err: any) {
+        setJoinedList(joinedList); // rollback
+        console.warn('Could not insert community member remotely:', err);
+        toast.error(`"${communityName}" topluluğuna katılma sırasında hata oluştu.`);
+      }
     }
-    setJoinedList(updated);
-    localStorage.setItem('joined_communities', JSON.stringify(updated));
   };
 
   const filteredAndGroupedCommunities = useMemo(() => {

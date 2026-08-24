@@ -75,6 +75,7 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
         code,
         user_id: actionUser?.id,
         client_id: currentClientId,
+        redirect_uri: targetRedirect,
         scope: currentScope,
         expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
       });

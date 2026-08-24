@@ -32,20 +32,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const fallbackProfile: Profile = {
-      id: authUser.id,
-      username: authUser.user_metadata?.username || authUser.email?.split('@')[0] || 'kullanici',
-      full_name: authUser.user_metadata?.full_name || authUser.user_metadata?.name || null,
-      avatar_url: authUser.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${authUser.id}`,
-      role: (authUser.user_metadata?.role as any) || 'user',
-      level: 1,
-      xp: 0,
-      bio: null,
-      is_verified: false,
-      accessibility_prefs: null,
-      updated_at: new Date().toISOString()
-    };
-
     const maxAttempts = 3;
     let lastErr: any = null;
 
@@ -61,11 +47,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           lastErr = error;
           const errMsg = error.message || String(error);
           if (errMsg.includes('Failed to fetch') || errMsg.includes('NetworkError') || errMsg.includes('TypeError')) {
-            console.warn('Network issue fetching profile from Supabase, using fallback profile');
-            setProfile(fallbackProfile);
+            console.warn('Network issue fetching profile from Supabase');
+            setProfile(null);
             return;
           }
         } else if (data) {
+          // Verify role from validated profile row
           setProfile(data);
           return;
         }
@@ -73,8 +60,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         lastErr = err;
         const errMsg = err?.message || String(err);
         if (errMsg.includes('Failed to fetch') || errMsg.includes('TypeError')) {
-          console.warn('Network exception while fetching profile, using fallback profile');
-          setProfile(fallbackProfile);
+          console.warn('Network exception while fetching profile');
+          setProfile(null);
           return;
         }
       }
@@ -84,7 +71,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    setProfile(fallbackProfile);
+    // If profile row doesn't exist or couldn't be fetched, keep profile null instead of generating synthetic fake role/XP/username
+    setProfile(null);
   }, []);
 
   useEffect(() => {

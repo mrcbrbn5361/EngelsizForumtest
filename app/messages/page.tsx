@@ -36,18 +36,7 @@ function MessagesContent() {
   const targetUserId = searchParams.get('userId');
 
   const { user, profile, loading: authLoading } = useAuth();
-  const [conversations, setConversations] = useState<any[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const cached = localStorage.getItem('engelsiz_conversations');
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        }
-      } catch {}
-    }
-    return [];
-  });
+  const [conversations, setConversations] = useState<any[]>([]);
   const [selectedConvId, setSelectedConvId] = useState<string | null>(null);
   const [initializedTarget, setInitializedTarget] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -56,16 +45,6 @@ function MessagesContent() {
   const [searchMemberQuery, setSearchMemberQuery] = useState('');
   const [searchedProfiles, setSearchedProfiles] = useState<any[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
-
-  const saveConversationsToCache = (convList: any[]) => {
-    if (typeof window !== 'undefined' && Array.isArray(convList)) {
-      try {
-        localStorage.setItem('engelsiz_conversations', JSON.stringify(convList));
-      } catch (e) {
-        console.warn('Conversations cache error:', e);
-      }
-    }
-  };
 
   const initiateDirectConversation = async (targetId: string, currentConvs: any[]) => {
     if (!user || !targetId) return;
@@ -92,7 +71,6 @@ function MessagesContent() {
       setConversations(prev => {
         const exists = prev.some(c => c.id === conversationId);
         const updated = exists ? prev : [newConvItem, ...prev];
-        saveConversationsToCache(updated);
         return updated;
       });
       setSelectedConvId(conversationId);
@@ -161,7 +139,6 @@ function MessagesContent() {
 
         if (processed.length > 0 || conversations.length === 0) {
           setConversations(processed);
-          saveConversationsToCache(processed);
         }
 
         // If targetUserId is present in URL params and not yet initialized for this target

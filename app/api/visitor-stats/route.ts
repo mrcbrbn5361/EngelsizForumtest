@@ -21,9 +21,9 @@ export async function GET(req: Request) {
   };
 
   const authHeader = req.headers.get('Authorization');
-  const expectedToken = process.env.VISITOR_API_TOKEN || "engelsizforumteknofesttanitim";
+  const expectedToken = process.env.VISITOR_API_TOKEN;
   
-  if (authHeader !== `Bearer ${expectedToken}`) {
+  if (!expectedToken || authHeader !== `Bearer ${expectedToken}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
   }
 
@@ -44,9 +44,9 @@ export async function POST(req: Request) {
   };
 
   const authHeader = req.headers.get('Authorization');
-  const expectedToken = process.env.VISITOR_API_TOKEN || "engelsizforumteknofesttanitim";
+  const expectedToken = process.env.VISITOR_API_TOKEN;
   
-  if (authHeader !== `Bearer ${expectedToken}`) {
+  if (!expectedToken || authHeader !== `Bearer ${expectedToken}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
   }
 

@@ -3,10 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   devIndicators: false,
-  allowedDevOrigins: ['*.run.app', 'localhost:3000'],
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  allowedDevOrigins: ['ais-dev-ix4syl6g7zxz77ys7mkpvf-91223103933.europe-west2.run.app', '*.run.app', 'localhost:3000'],
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',

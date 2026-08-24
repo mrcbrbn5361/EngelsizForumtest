@@ -217,15 +217,17 @@ export default function CommunityDetailPage() {
         }
         setTopics((topicsData as any || []).filter((t: any) => t.author));
 
-        // Check if user is joined from community_members or local storage
+        // Check if user is joined from community_members
         if (user) {
-          const { data: memberEntry } = await supabase
+          const { data: memberEntry, error: memberError } = await supabase
             .from('community_members')
-            .select('id')
+            .select('community_id')
             .eq('community_id', data.id)
             .eq('user_id', user.id)
             .maybeSingle();
-          if (memberEntry) {
+          if (memberError) {
+            console.warn('Error fetching community membership:', memberError);
+          } else if (memberEntry) {
             setIsJoined(true);
           }
         }
@@ -252,69 +254,53 @@ export default function CommunityDetailPage() {
     }
   }, [id, fetchCommunityData]);
 
-  useEffect(() => {
-    if (community?.id) {
-      const saved = localStorage.getItem('joined_communities');
-      if (saved) {
-        try {
-          const list = JSON.parse(saved);
-          if (list.includes(community.id)) {
-            setIsJoined(true);
-          }
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-  }, [community?.id]);
-
   const toggleJoin = async () => {
     if (!community) return;
-    
-    const saved = localStorage.getItem('joined_communities');
-    let list: string[] = [];
-    if (saved) {
-      try {
-        list = JSON.parse(saved);
-      } catch (e) {
-        console.error(e);
-      }
+    if (!user) {
+      toast.error('Topluluklara katılmak için giriş yapmalısınız.');
+      return;
     }
 
     if (isJoined) {
-      list = list.filter(itemId => itemId !== community.id);
       setIsJoined(false);
-      toast.success(`"${community.name}" topluluğundan ayrıldınız.`);
-      if (user) {
-        try {
-          await supabase
-            .from('community_members')
-            .delete()
-            .eq('community_id', community.id)
-            .eq('user_id', user.id);
-        } catch (err) {
-          console.warn('Could not delete community member remotely:', err);
+      try {
+        const { error } = await supabase
+          .from('community_members')
+          .delete()
+          .eq('community_id', community.id)
+          .eq('user_id', user.id);
+        if (error) {
+          setIsJoined(true); // rollback
+          toast.error(`"${community.name}" topluluğundan ayrılma başarısız: ` + error.message);
+          return;
         }
+        toast.success(`"${community.name}" topluluğundan ayrıldınız.`);
+      } catch (err: any) {
+        setIsJoined(true); // rollback
+        console.warn('Could not delete community member remotely:', err);
+        toast.error(`"${community.name}" topluluğundan ayrılma sırasında hata oluştu.`);
       }
     } else {
-      list.push(community.id);
       setIsJoined(true);
-      toast.success(`"${community.name}" topluluğuna katıldınız!`);
-      if (user) {
-        try {
-          await supabase
-            .from('community_members')
-            .insert({
-              id: generateUUID(),
-              community_id: community.id,
-              user_id: user.id
-            });
-        } catch (err) {
-          console.warn('Could not insert community member remotely:', err);
+      try {
+        const { error } = await supabase
+          .from('community_members')
+          .insert({
+            community_id: community.id,
+            user_id: user.id
+          });
+        if (error) {
+          setIsJoined(false); // rollback
+          toast.error(`"${community.name}" topluluğuna katılamadı: ` + error.message);
+          return;
         }
+        toast.success(`"${community.name}" topluluğuna katıldınız!`);
+      } catch (err: any) {
+        setIsJoined(false); // rollback
+        console.warn('Could not insert community member remotely:', err);
+        toast.error(`"${community.name}" topluluğuna katılma sırasında hata oluştu.`);
       }
     }
-    localStorage.setItem('joined_communities', JSON.stringify(list));
   };
 
   const handleSummarize = async (topicId: string) => {

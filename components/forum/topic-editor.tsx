@@ -40,41 +40,36 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
       return;
     }
 
+    if (!isSupabaseConfigured) {
+      toast.error('Supabase Storage yapılandırılmamış. Görsel yüklenemez.');
+      return;
+    }
+
     setIsUploading(true);
-    const useLocalFallback = !isSupabaseConfigured;
 
     try {
-      let imageUrl = '';
-      
-      if (!useLocalFallback) {
-        try {
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-          const filePath = `${user?.id || 'anonymous'}/${fileName}`;
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+      const filePath = `${user?.id || 'anonymous'}/${fileName}`;
 
-          const { error: uploadError } = await supabase.storage
-            .from('uploads')
-            .upload(filePath, file);
+      const { error: uploadError } = await supabase.storage
+        .from('uploads')
+        .upload(filePath, file);
 
-          if (uploadError) throw uploadError;
+      if (uploadError) throw uploadError;
 
-          const { data: { publicUrl } } = supabase.storage
-            .from('uploads')
-            .getPublicUrl(filePath);
-            
-          imageUrl = publicUrl;
-        } catch (supabaseErr: any) {
-          console.warn('Supabase upload failed, falling back to local base64:', supabaseErr);
-        }
-      }
+      const { data: { publicUrl } } = supabase.storage
+        .from('uploads')
+        .getPublicUrl(filePath);
+        
+      const imageUrl = publicUrl;
 
+      // Generate Alt Text using base64 for the API helper only, but URL stored is strictly Supabase Storage publicUrl
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = async () => {
         const fullBase64 = reader.result as string;
         const base64Data = fullBase64.split(',')[1];
-        
-        const finalImgUrl = imageUrl || fullBase64;
         
         try {
           const res = await fetch('/api/generate-alt-text', {
@@ -85,12 +80,12 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
           const data = await res.json();
           const altText = data.altText || 'Görsel betimlemesi';
 
-          const markdownImage = `\n![${altText}](${finalImgUrl})\n`;
+          const markdownImage = `\n![${altText}](${imageUrl})\n`;
           onChange(value + markdownImage);
           toast.success(`Görsel başarıyla yüklendi.\nAI Alt-Metni: "${altText.substring(0, 60)}..."`);
         } catch (err) {
           console.error('Alt-text generation failed:', err);
-          const markdownImage = `\n![Görsel](${finalImgUrl})\n`;
+          const markdownImage = `\n![Görsel](${imageUrl})\n`;
           onChange(value + markdownImage);
           toast.success('Görsel yüklendi.');
         } finally {
@@ -98,8 +93,8 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
         }
       };
     } catch (err: any) {
-      console.error('Upload failed:', err);
-      toast.error('Yükleme hatası: ' + err.message);
+      console.error('Supabase storage upload failed:', err);
+      toast.error('Görsel Supabase Storage\'a yüklenemedi: ' + (err.message || 'Bilinmeyen hata'));
       setIsUploading(false);
     }
   };
