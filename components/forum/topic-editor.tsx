@@ -32,6 +32,12 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
     }
   };
 
+  const handleAudioRecorded = (audioUrl: string, durationSec: number) => {
+    const audioTag = `\n\n<audio controls src="${audioUrl}" preload="metadata" class="w-full my-2 rounded-lg"></audio>\n*Sesli Mesaj (${durationSec}s)*\n`;
+    onChange(value ? `${value} ${audioTag}` : audioTag);
+    toast.success('Ses kaydı konuya eklendi!');
+  };
+
   const processFileAndUpload = async (file: File) => {
     if (!file) return;
 
@@ -224,7 +230,7 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
       
       {!isPreview && (
         <div className="px-3 py-1.5 bg-slate-950/40 border-b border-white/[0.06]">
-          <VoiceInput onTranscript={handleVoiceTranscript} label="Konuyu Sesle Yaz" />
+          <VoiceInput onTranscript={handleVoiceTranscript} onAudioRecorded={handleAudioRecorded} label="Konuyu Sesle Yaz veya Ses Kaydet" />
         </div>
       )}
 

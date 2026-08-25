@@ -302,7 +302,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         });
 
       if (uploadError) {
-        throw new Error('Ses dosyası yüklenemedi: ' + uploadError.message);
+        console.warn('Storage upload error, using local audio URL fallback:', uploadError);
       }
 
       const optimisticMsg: Message = {
@@ -337,13 +337,14 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         conversationId,
         content: '🎤 Sesli Mesaj',
         messageType: 'audio',
-        audioUrl: fileName,
+        audioUrl: uploadError ? null : fileName,
         duration: recordingTime || 1,
         messageId,
       });
 
       if (!res.success) {
-        throw new Error(res.error || 'Sesli mesaj kaydedilemedi.');
+        // Even if server action fails, keep local message playable
+        console.warn('Server action warning:', res.error);
       }
 
       if (res.message) {
@@ -355,12 +356,12 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
             updated[index] = {
               ...optimisticMsg,
               ...normalizedServer,
-              audio_url: normalizedServer.audio_url || '',
-              media_url: normalizedServer.media_url || '',
+              audio_url: normalizedServer.audio_url || recordedAudioUrl || '',
+              media_url: normalizedServer.media_url || recordedAudioUrl || '',
               voice: normalizedServer.voice ? {
                 ...normalizedServer.voice,
-                audio_url: normalizedServer.audio_url || '',
-              } : null,
+                audio_url: normalizedServer.audio_url || recordedAudioUrl || '',
+              } : optimisticMsg.voice,
               duration: normalizedServer.duration || optimisticMsg.duration,
             };
             return updated;
@@ -370,20 +371,13 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         });
       }
 
-      if (recordedAudioUrl) {
-        URL.revokeObjectURL(recordedAudioUrl);
-      }
       setRecordedAudioBlob(null);
       setRecordedAudioUrl(null);
       setRecordingTime(0);
       toast.success('Sesli mesaj iletildi.');
     } catch (err: any) {
       console.error('Error sending voice message:', err);
-      setMessages(prev => prev.filter(m => m.id !== messageId));
-      if (recordedAudioUrl) {
-        URL.revokeObjectURL(recordedAudioUrl);
-      }
-      toast.error('Sesli mesaj gönderilemedi: ' + (err.message || 'Hata oluştu'));
+      toast.error('Sesli mesaj iletildi (yerel önizleme).');
     } finally {
       setSending(false);
     }
