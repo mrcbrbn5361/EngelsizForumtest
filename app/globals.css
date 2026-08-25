@@ -55,9 +55,9 @@
 }
 
 html, body {
-  overflow-x: hidden;
-  max-width: 100vw;
-  width: 100%;
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
   background-color: #090a0f;
@@ -132,7 +132,34 @@ html {
 /* ACCESSIBILITY MODES */
 
 /* 1. High Contrast Mode (WCAG AAA) */
-.high-contrast {
+.high-contrast,
+.high-contrast body,
+.high-contrast html,
+.high-contrast div,
+.high-contrast section,
+.high-contrast header,
+.high-contrast footer,
+.high-contrast nav,
+.high-contrast aside,
+.high-contrast main,
+.high-contrast article,
+.high-contrast span,
+.high-contrast p,
+.high-contrast a,
+.high-contrast li,
+.high-contrast ul,
+.high-contrast ol,
+.high-contrast td,
+.high-contrast th,
+.high-contrast tr,
+.high-contrast table,
+.high-contrast label,
+.high-contrast .forum-card,
+.high-contrast .vibe-card,
+.high-contrast .vibe-badge {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
   --background: #000000 !important;
   --foreground: #ffffff !important;
   --card: #000000 !important;
@@ -148,25 +175,40 @@ html {
 .high-contrast h1, 
 .high-contrast h2, 
 .high-contrast h3, 
-.high-contrast p, 
-.high-contrast span,
-.high-contrast label,
-.high-contrast a {
-  color: #ffffff !important;
+.high-contrast h4, 
+.high-contrast h5, 
+.high-contrast h6 {
+  color: #ffff00 !important;
 }
 
-.high-contrast .forum-card,
-.high-contrast .vibe-card {
-  border: 2px solid #ffffff !important;
+.high-contrast a:hover,
+.high-contrast button:hover {
+  color: #ffff00 !important;
+  border-color: #ffff00 !important;
+}
+
+.high-contrast input,
+.high-contrast textarea,
+.high-contrast select,
+.high-contrast .vibe-input {
   background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
 }
 
+.high-contrast button,
 .high-contrast .vibe-button-primary,
-.high-contrast button {
+.high-contrast .vibe-button-secondary {
   background-color: #ffff00 !important;
   color: #000000 !important;
   border: 2px solid #ffffff !important;
   font-weight: 900 !important;
+}
+
+.high-contrast button *,
+.high-contrast .vibe-button-primary *,
+.high-contrast .vibe-button-secondary * {
+  color: #000000 !important;
 }
 
 /* 2. Dyslexic Font */

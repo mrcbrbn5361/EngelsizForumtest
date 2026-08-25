@@ -159,6 +159,10 @@ const jsonLd = {
       "@id": "https://engelsizforum.com/#person",
       "name": "EngelsizForum Ekibi",
       "url": "https://engelsizforum.com/about",
+      "sameAs": [
+        "https://www.linkedin.com/company/engelsizforum",
+        "https://www.linkedin.com/in/miracbirben"
+      ],
       "worksFor": { "@id": "https://engelsizforum.com/#organization" }
     },
     {

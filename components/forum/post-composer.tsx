@@ -123,6 +123,12 @@ export function PostComposer({ topicId, onSuccess, placeholder = 'Topluluğa bir
 
   return (
     <form onSubmit={handleSubmit} className="vibe-card p-4 sm:p-6 border-primary/10 shadow-lg space-y-4">
+      {!user && (
+        <div className="p-3 bg-muted/60 border border-border rounded-xl flex items-center justify-between gap-3">
+          <span className="text-xs text-muted-foreground font-medium">Yanıt yazabilmek ve tartışmalara katılmak için lütfen giriş yapın.</span>
+          <a href="/login" className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground font-bold text-xs shrink-0">Giriş Yap</a>
+        </div>
+      )}
       <div className="flex items-center justify-between mb-2">
         <label htmlFor="post-content" className="vibe-label">
           Yanıtınız

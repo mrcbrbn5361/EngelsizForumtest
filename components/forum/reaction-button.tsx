@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
+import { toast } from 'sonner';
 import { generateUUID } from '@/lib/utils';
 
 export function ReactionButton({ topicId, initialCount }: { topicId: string, initialCount: number }) {
@@ -39,7 +40,10 @@ export function ReactionButton({ topicId, initialCount }: { topicId: string, ini
   }, [topicId, user]);
 
   const handleReaction = async () => {
-    if (!user) return;
+    if (!user) {
+      toast.error('Beğenmek için lütfen giriş yapın.');
+      return;
+    }
     try {
       if (hasLiked) {
         // Unlike

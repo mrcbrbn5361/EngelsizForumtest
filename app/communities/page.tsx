@@ -416,7 +416,13 @@ export default function CommunitiesPage() {
               </p>
             </div>
             <button 
-              onClick={() => setShowCreateForm(!showCreateForm)}
+              onClick={() => {
+                if (!user) {
+                  toast.error('Topluluk kurmak için lütfen giriş yapın.');
+                  return;
+                }
+                setShowCreateForm(!showCreateForm);
+              }}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-500 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition whitespace-nowrap self-start lg:self-auto cursor-pointer"
               aria-expanded={showCreateForm}
             >
