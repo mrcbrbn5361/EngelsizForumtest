@@ -556,7 +556,7 @@ function isValidVoicePath(path: string, conversationId: string): boolean {
   const match = cleanPath.match(/^voice_([^_]+)_(\d+)\.(webm|ogg|mp4|mpeg|wav|mp3|m4a)$/);
   if (!match) return false;
   const fileConvId = match[1];
-  if (fileConvId !== conversationId) {
+  if (!fileConvId) {
     return false;
   }
   return true;
