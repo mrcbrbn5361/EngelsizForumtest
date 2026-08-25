@@ -1069,5 +1069,145 @@ export async function getVisitorStatsAction() {
   }
 }
 
+/**
+ * Server Action: Uploads voice message buffer via admin serviceClient (bypassing RLS) and records in DB.
+ */
+export async function sendVoiceMessageAction(params: {
+  conversationId: string;
+  audioBase64: string;
+  duration?: number;
+  messageId?: string;
+}) {
+  const { conversationId, audioBase64, duration = 1, messageId } = params;
+  if (!conversationId || !audioBase64) {
+    return { success: false, error: 'Eksik parametre.' };
+  }
+
+  const supabaseUserClient = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabaseUserClient.auth.getUser();
+
+  if (authError || !user) {
+    return { success: false, error: 'Giriş yapmalısınız.' };
+  }
+
+  const serviceClient = getSupabaseServer();
+  const id = messageId || generateUUID();
+  const now = new Date().toISOString();
+
+  // 1. Verify membership
+  try {
+    const { data: member } = await serviceClient
+      .from('conversation_members')
+      .select('conversation_id')
+      .eq('conversation_id', conversationId)
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (!member) {
+      return { success: false, error: 'Bu sohbete mesaj gönderme yetkiniz yok.' };
+    }
+  } catch (err: any) {
+    return { success: false, error: 'Üyelik doğrulanamadı.' };
+  }
+
+  // 2. Decode base64 and upload using serviceClient (bypassing RLS)
+  try {
+    const fileName = `voice_${conversationId}_${Date.now()}.webm`;
+    const base64Data = audioBase64.includes('base64,') ? audioBase64.split('base64,')[1] : audioBase64;
+    const buffer = Buffer.from(base64Data, 'base64');
+
+    await serviceClient.storage.createBucket('voice-messages', { public: true }).catch(() => {});
+
+    const { error: uploadErr } = await serviceClient.storage
+      .from('voice-messages')
+      .upload(fileName, buffer, {
+        contentType: 'audio/webm',
+        upsert: true,
+      });
+
+    if (uploadErr) {
+      console.error('Server storage upload error:', uploadErr);
+      return { success: false, error: 'Ses dosyası sunucuya yüklenemedi: ' + uploadErr.message };
+    }
+
+    // 3. Insert message
+    const { error: msgErr } = await serviceClient
+      .from('messages')
+      .insert({
+        id,
+        conversation_id: conversationId,
+        sender_id: user.id,
+        content: '🎤 Sesli Mesaj',
+        created_at: now,
+      });
+
+    if (msgErr) {
+      await serviceClient.storage.from('voice-messages').remove([fileName]).catch(() => {});
+      return { success: false, error: 'Mesaj kaydedilemedi: ' + msgErr.message };
+    }
+
+    // 4. Insert voice_messages record
+    const { data: vmInserted, error: vmErr } = await serviceClient
+      .from('voice_messages')
+      .insert({
+        id,
+        user_id: user.id,
+        conversation_id: conversationId,
+        audio_url: fileName,
+        duration,
+        file_size: buffer.length,
+        mime_type: 'audio/webm',
+        created_at: now,
+      })
+      .select('*')
+      .maybeSingle();
+
+    if (vmErr) {
+      await serviceClient.from('messages').delete().eq('id', id);
+      await serviceClient.storage.from('voice-messages').remove([fileName]).catch(() => {});
+      return { success: false, error: 'Sesli mesaj veritabanına kaydedilemedi: ' + vmErr.message };
+    }
+
+    const resolvedUrl = await resolveServerAudioUrl(fileName, serviceClient, conversationId);
+
+    const voiceRecord = {
+      id: vmInserted?.id || id,
+      user_id: user.id,
+      conversation_id: conversationId,
+      audio_url: resolvedUrl || `https://${process.env.SUPABASE_URL ? new URL(process.env.SUPABASE_URL).hostname : ''}/storage/v1/object/public/voice-messages/${fileName}`,
+      duration,
+      file_size: buffer.length,
+      mime_type: 'audio/webm',
+      created_at: now,
+    };
+
+    // 5. Update conversation updated_at
+    await serviceClient
+      .from('conversations')
+      .update({ updated_at: now })
+      .eq('id', conversationId);
+
+    const fullMessage: any = {
+      id,
+      conversation_id: conversationId,
+      sender_id: user.id,
+      content: '🎤 Sesli Mesaj',
+      created_at: now,
+      is_voice_message: true,
+      message_type: 'audio',
+      audio_url: voiceRecord.audio_url,
+      media_url: voiceRecord.audio_url,
+      duration,
+      voice: voiceRecord,
+    };
+
+    return { success: true, message: fullMessage };
+  } catch (err: any) {
+    console.error('Fatal error in sendVoiceMessageAction:', err);
+    return { success: false, error: err?.message || 'Sesli mesaj gönderilemedi.' };
+  }
+}
+
+
 
 

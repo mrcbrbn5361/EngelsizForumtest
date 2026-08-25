@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { generateUUID } from '@/lib/utils';
-import { sendMessageAction, getConversationMessagesAction } from '@/app/actions';
+import { sendMessageAction, getConversationMessagesAction, sendVoiceMessageAction } from '@/app/actions';
 import { AudioMessagePlayer } from './audio-message-player';
 
 interface ChatBoxProps {
@@ -305,18 +305,12 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
     const messageId = generateUUID();
     setSending(true);
     try {
-      const fileName = `voice_${conversationId}_${Date.now()}.webm`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('voice-messages')
-        .upload(fileName, recordedAudioBlob, {
-          contentType: 'audio/webm',
-          upsert: true,
-        });
-
-      if (uploadError) {
-        console.warn('Storage upload error, using local audio URL fallback:', uploadError);
-      }
+      const reader = new FileReader();
+      const audioBase64 = await new Promise<string>((resolve, reject) => {
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(recordedAudioBlob);
+      });
 
       const optimisticMsg: Message = {
         id: messageId,
@@ -346,18 +340,15 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
         return updated;
       });
 
-      const res = await sendMessageAction({
+      const res = await sendVoiceMessageAction({
         conversationId,
-        content: '🎤 Sesli Mesaj',
-        messageType: 'audio',
-        audioUrl: uploadError ? null : fileName,
+        audioBase64,
         duration: recordingTime || 1,
         messageId,
       });
 
       if (!res.success) {
-        // Even if server action fails, keep local message playable
-        console.warn('Server action warning:', res.error);
+        throw new Error(res.error || 'Sesli mesaj gönderilemedi.');
       }
 
       if (res.message) {
@@ -387,10 +378,11 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       setRecordedAudioBlob(null);
       setRecordedAudioUrl(null);
       setRecordingTime(0);
-      toast.success('Sesli mesaj iletildi.');
+      toast.success('Sesli mesaj başarıyla gönderildi.');
     } catch (err: any) {
       console.error('Error sending voice message:', err);
-      toast.error('Sesli mesaj iletildi (yerel önizleme).');
+      setMessages(prev => prev.filter(m => m.id !== messageId));
+      toast.error('Sesli mesaj gönderilemedi: ' + (err.message || 'Hata oluştu'));
     } finally {
       setSending(false);
     }
