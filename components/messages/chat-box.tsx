@@ -232,7 +232,15 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : MediaRecorder.isTypeSupported('audio/webm')
+        ? 'audio/webm'
+        : MediaRecorder.isTypeSupported('audio/mp4')
+        ? 'audio/mp4'
+        : '';
+
+      const mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
@@ -243,7 +251,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType || 'audio/webm' });
         const audioUrl = URL.createObjectURL(audioBlob);
         setRecordedAudioBlob(audioBlob);
         setRecordedAudioUrl(audioUrl);
@@ -579,21 +587,23 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
                         </button>
                       </div>
                     ) : (
-                      <div 
-                        className={`flex items-center gap-2 p-3 rounded-2xl text-xs cursor-pointer ${
-                          isMe ? 'bg-sky-500/80 text-slate-950 font-medium' : 'bg-[#161f33] border border-white/[0.08] text-slate-300'
-                        }`}
-                        onClick={() => {
-                          // Quick manual trigger to force reload or fail after 8s
-                          setTimeout(() => {
-                            if (!audioSourceUrl) {
-                              setVoiceLoadErrors(prev => ({ ...prev, [msg.id]: true }));
-                            }
-                          }, 8000);
-                        }}
-                      >
-                        <Loader2 className="animate-spin text-sky-400 size-3.5 shrink-0" aria-hidden="true" />
-                        <span className="text-[11px] font-medium">Sesli mesaj yükleniyor...</span>
+                      <div className={`flex flex-col gap-2 p-3 rounded-2xl text-xs ${
+                        isMe ? 'bg-sky-500/80 text-slate-950 font-medium' : 'bg-[#161f33] border border-white/[0.08] text-slate-300'
+                      }`}>
+                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-destructive">
+                          <AlertCircle size={14} aria-hidden="true" />
+                          <span>Sesli mesaj dosyası bulunamadı.</span>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setVoiceLoadErrors(prev => ({ ...prev, [msg.id]: false }));
+                            fetchMessages();
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-black/20 hover:bg-black/30 text-[10px] font-bold text-white inline-flex items-center gap-1 w-fit cursor-pointer"
+                        >
+                          <RefreshCw size={11} aria-hidden="true" />
+                          Tekrar Dene
+                        </button>
                       </div>
                     )
                   ) : (
