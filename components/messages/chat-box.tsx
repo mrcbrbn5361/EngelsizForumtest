@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured, supabaseUrl } from '@/lib/supabase';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { Message, Profile } from '@/types/database';
 import { Send, Loader2, User, Mic, Square, Trash2, Check, AlertCircle, RefreshCw, ArrowLeft } from 'lucide-react';
@@ -34,7 +34,12 @@ export function resolveAudioUrl(storagePathOrUrl?: string | null): string {
   ) {
     return trimmed;
   }
-  return '';
+  
+  if (isSupabaseConfigured && supabaseUrl) {
+    return `${supabaseUrl}/storage/v1/object/public/voice-messages/${trimmed}`;
+  }
+  
+  return trimmed;
 }
 
 /**

@@ -110,6 +110,13 @@ export function AudioMessagePlayer({ audioUrl, duration = 0, isMe = false }: Aud
       )}>
         <AlertCircle size={15} className="shrink-0" aria-hidden="true" />
         <span className="text-[11px] font-medium">Ses dosyası oynatılamadı</span>
+        <button 
+          type="button"
+          onClick={() => setHasError(false)}
+          className="ml-auto px-2 py-0.5 rounded bg-black/20 hover:bg-black/40 text-[10px] font-bold text-white cursor-pointer"
+        >
+          Yeniden Dene
+        </button>
       </div>
     );
   }
