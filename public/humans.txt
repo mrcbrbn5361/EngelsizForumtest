@@ -1,0 +1,9 @@
+/* TEAM */
+  Developer / Creator: EngelsizForum Core Team
+  Contact: destek@engelsizforum.com
+  Location: Istanbul, Turkey
+
+/* SITE */
+  Standards: WCAG 2.1 AAA, HTML5, CSS3, Next.js 15, TypeScript, Tailwind CSS
+  Components: React, Lucide Icons, Supabase
+  Software: EngelsizForum Platform

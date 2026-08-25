@@ -10,6 +10,7 @@ import { ShieldCheck, Sparkles, Volume2, BookOpen } from 'lucide-react';
 export default async function Home() {
   return (
     <SiteLayout>
+      <h1 className="sr-only">EngelsizForum - Tam Erişilebilir Topluluk ve Bilgi Paylaşım Platformu</h1>
       {/* 
         The ForumIndex component handles the main interactive forum area.
         It's designed to be the central hub of the application.
@@ -28,7 +29,7 @@ export default async function Home() {
               <span>Erişilebilir Topluluk Standardı</span>
             </div>
             <h2 id="about-title" className="text-xl sm:text-2xl font-black text-slate-100 tracking-tight">
-              Dijital Bariyerleri Birlikte Kaldırıyoruz
+              EngelsizForum Nedir ve Nasıl Çalışır?
             </h2>
             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-3xl">
               EngelsizForum, Türkiye&apos;nin <strong>WCAG 2.1 AAA</strong> standartlarını hedefleyen tam erişilebilir dijital topluluk platformudur. 
@@ -36,7 +37,9 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          <div className="space-y-4">
+            <h2 className="text-lg font-bold text-slate-100">Neden EngelsizForum Tercih Edilmelidir?</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             <div className="p-4 sm:p-5 bg-[#111726] rounded-xl border border-white/[0.08] shadow-xs space-y-2.5">
               <div className="h-8 w-8 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center">
                 <BookOpen size={18} />
@@ -68,6 +71,7 @@ export default async function Home() {
             </div>
           </div>
         </div>
+      </div>
       </section>
     </SiteLayout>
   );

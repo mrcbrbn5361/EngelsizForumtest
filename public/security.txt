@@ -1,0 +1,6 @@
+Contact: mailto:destek@engelsizforum.com
+Expires: 2027-12-31T23:59:59.000Z
+Canonical: https://www.engelsizforum.com/security.txt
+Preferred-Languages: tr, en
+Policy: https://www.engelsizforum.com/security
+Acknowledgments: https://www.engelsizforum.com/about

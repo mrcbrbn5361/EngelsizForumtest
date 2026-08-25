@@ -5,10 +5,12 @@ Disallow: /api/
 Disallow: /_next/
 Disallow: /static/
 
-# AI and LLM Bot Optimization (GEO)
+# AI and LLM Bot Optimization (GEO) & Explicitly Allowed AI Crawlers
 User-agent: GPTBot
 Allow: /
-Allow: /llms.txt
+
+User-agent: OAI-SearchBot
+Allow: /
 
 User-agent: ChatGPT-User
 Allow: /
@@ -16,11 +18,18 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
+User-agent: ClaudeBot
+Allow: /
+
 User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
 Allow: /
 
 User-agent: CCBot
 Allow: /
 
+Sitemap: https://www.engelsizforum.com/sitemap.xml
 Sitemap: https://engelsizforum.com/sitemap.xml
 Allow: /llms.txt

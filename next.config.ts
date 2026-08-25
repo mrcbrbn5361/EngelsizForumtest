@@ -97,6 +97,10 @@ const nextConfig: NextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(self), microphone=(self), geolocation=(), browsing-topics=()',
           },
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self' https: wss:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-ancestors 'self';",
+          },
         ],
       },
     ];

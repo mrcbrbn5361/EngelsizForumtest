@@ -339,8 +339,8 @@ export default function DisabilityCalculatorsPage() {
                         type="number"
                         min="0"
                         max="100"
-                        value={rate}
-                        onChange={(e) => updateRate(idx, parseInt(e.target.value) || 0)}
+                        value={rate === 0 ? '' : rate}
+                        onChange={(e) => updateRate(idx, e.target.value === '' ? 0 : Number(e.target.value))}
                         className="p-1.5 rounded-lg border border-white/[0.08] bg-slate-950 text-center font-bold text-slate-100 w-20 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                         aria-label={`${idx + 1}. engel oranı yüzdesi`}
                       />
@@ -480,8 +480,8 @@ export default function DisabilityCalculatorsPage() {
                   <span className="font-semibold text-xs text-slate-300">Aracın Vergiler Dahil Anahtar Teslim Liste Fiyatı (TL):</span>
                   <input 
                     type="number"
-                    value={carPrice}
-                    onChange={(e) => setCarPrice(Number(e.target.value) || 0)}
+                    value={carPrice === 0 ? '' : carPrice}
+                    onChange={(e) => setCarPrice(e.target.value === '' ? 0 : Number(e.target.value))}
                     className="w-full p-3 rounded-xl border border-white/[0.08] bg-slate-900/90 font-bold text-slate-100 text-sm focus:ring-1 focus:ring-sky-500 outline-none"
                     step="10000"
                   />
@@ -608,8 +608,8 @@ export default function DisabilityCalculatorsPage() {
                   <span className="font-semibold text-xs text-slate-300">Aylık Brüt Maaşınız (TL):</span>
                   <input 
                     type="number"
-                    value={grossSalary}
-                    onChange={(e) => setGrossSalary(Number(e.target.value) || 0)}
+                    value={grossSalary === 0 ? '' : grossSalary}
+                    onChange={(e) => setGrossSalary(e.target.value === '' ? 0 : Number(e.target.value))}
                     className="w-full p-3 rounded-xl border border-white/[0.08] bg-slate-900/90 font-bold text-slate-100 text-sm focus:ring-1 focus:ring-sky-500 outline-none"
                     step="1000"
                   />
@@ -702,8 +702,8 @@ export default function DisabilityCalculatorsPage() {
                     type="number"
                     min="1"
                     max="15"
-                    value={householdMembers}
-                    onChange={(e) => setHouseholdMembers(Number(e.target.value) || 1)}
+                    value={householdMembers === 0 ? '' : householdMembers}
+                    onChange={(e) => setHouseholdMembers(e.target.value === '' ? 0 : Number(e.target.value))}
                     className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 font-bold text-slate-100 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                   />
                 </label>
@@ -712,8 +712,8 @@ export default function DisabilityCalculatorsPage() {
                   <span className="font-semibold text-xs text-slate-300">Haneye Giren Toplam Aylık Net Gelir (TL):</span>
                   <input 
                     type="number"
-                    value={totalHouseholdIncome}
-                    onChange={(e) => setTotalHouseholdIncome(Number(e.target.value) || 0)}
+                    value={totalHouseholdIncome === 0 ? '' : totalHouseholdIncome}
+                    onChange={(e) => setTotalHouseholdIncome(e.target.value === '' ? 0 : Number(e.target.value))}
                     className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 font-bold text-slate-100 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                     step="1000"
                   />
@@ -840,8 +840,8 @@ export default function DisabilityCalculatorsPage() {
                     type="number"
                     min="1"
                     max="15"
-                    value={allowanceHouseholdMembers}
-                    onChange={(e) => setAllowanceHouseholdMembers(Number(e.target.value) || 1)}
+                    value={allowanceHouseholdMembers === 0 ? '' : allowanceHouseholdMembers}
+                    onChange={(e) => setAllowanceHouseholdMembers(e.target.value === '' ? 0 : Number(e.target.value))}
                     className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 font-bold text-slate-100 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                   />
                 </label>
@@ -850,8 +850,8 @@ export default function DisabilityCalculatorsPage() {
                   <span className="font-semibold text-xs text-slate-300">Haneye Giren Toplam Aylık Net Gelir (TL):</span>
                   <input 
                     type="number"
-                    value={allowanceHouseholdIncome}
-                    onChange={(e) => setAllowanceHouseholdIncome(Number(e.target.value) || 0)}
+                    value={allowanceHouseholdIncome === 0 ? '' : allowanceHouseholdIncome}
+                    onChange={(e) => setAllowanceHouseholdIncome(e.target.value === '' ? 0 : Number(e.target.value))}
                     className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 font-bold text-slate-100 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                     step="1000"
                   />
@@ -929,8 +929,8 @@ export default function DisabilityCalculatorsPage() {
                   <span className="font-semibold text-xs text-slate-300">Aylık Brüt Giydirilmiş Ücret (TL):</span>
                   <input 
                     type="number"
-                    value={severanceSalary}
-                    onChange={(e) => setSeveranceSalary(Number(e.target.value) || 0)}
+                    value={severanceSalary === 0 ? '' : severanceSalary}
+                    onChange={(e) => setSeveranceSalary(e.target.value === '' ? 0 : Number(e.target.value))}
                     className="w-full p-3 rounded-xl border border-white/[0.08] bg-slate-900/90 font-bold text-slate-100 text-sm focus:ring-1 focus:ring-sky-500 outline-none"
                     step="1000"
                   />
@@ -944,8 +944,8 @@ export default function DisabilityCalculatorsPage() {
                       type="number"
                       min="0"
                       max="50"
-                      value={workedYears}
-                      onChange={(e) => setWorkedYears(Number(e.target.value) || 0)}
+                      value={workedYears === 0 ? '' : workedYears}
+                      onChange={(e) => setWorkedYears(e.target.value === '' ? 0 : Number(e.target.value))}
                       className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 font-bold text-slate-100 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                     />
                   </label>
@@ -955,8 +955,8 @@ export default function DisabilityCalculatorsPage() {
                       type="number"
                       min="0"
                       max="11"
-                      value={workedMonths}
-                      onChange={(e) => setWorkedMonths(Number(e.target.value) || 0)}
+                      value={workedMonths === 0 ? '' : workedMonths}
+                      onChange={(e) => setWorkedMonths(e.target.value === '' ? 0 : Number(e.target.value))}
                       className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 font-bold text-slate-100 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                     />
                   </label>
@@ -1041,8 +1041,8 @@ export default function DisabilityCalculatorsPage() {
                     type="number"
                     min="1980"
                     max="2026"
-                    value={entryYear}
-                    onChange={(e) => setEntryYear(Number(e.target.value) || 2010)}
+                    value={entryYear === 0 ? '' : entryYear}
+                    onChange={(e) => setEntryYear(e.target.value === '' ? 0 : Number(e.target.value))}
                     className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 font-bold text-slate-100 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                   />
                 </label>
@@ -1077,8 +1077,8 @@ export default function DisabilityCalculatorsPage() {
                     type="number"
                     min="0"
                     max="12000"
-                    value={currentDays}
-                    onChange={(e) => setCurrentDays(Number(e.target.value) || 0)}
+                    value={currentDays === 0 ? '' : currentDays}
+                    onChange={(e) => setCurrentDays(e.target.value === '' ? 0 : Number(e.target.value))}
                     className="w-full p-2.5 rounded-xl border border-white/[0.08] bg-slate-900/90 font-bold text-slate-100 text-xs focus:ring-1 focus:ring-sky-500 outline-none"
                   />
                 </label>

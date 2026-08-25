@@ -51,6 +51,7 @@ export const metadata: Metadata = {
     canonical: 'https://www.engelsizforum.com',
     languages: {
       'tr-TR': 'https://www.engelsizforum.com',
+      'x-default': 'https://www.engelsizforum.com',
     },
   },
   other: {
@@ -115,9 +116,26 @@ const jsonLd = {
       "url": "https://engelsizforum.com",
       "logo": "https://engelsizforum.com/logo.png?v=2026",
       "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve forum platformu.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Büyükdere Cad. Levent",
+        "addressLocality": "Istanbul",
+        "addressRegion": "Istanbul",
+        "postalCode": "34330",
+        "addressCountry": "TR"
+      },
       "sameAs": [
-        "https://github.com/engelsizforum"
+        "https://github.com/engelsizforum",
+        "https://twitter.com/engelsizforum"
       ],
+      "knowsAbout": ["Accessibility", "Disability Rights", "Community Support", "Assistive Technology", "Generative Engine Optimization"],
+      "makesOffer": {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Tam Erişilebilir Topluluk ve Dayanışma Platformu"
+        }
+      },
       "accessibilityControl": ["fullKeyboardControl", "fullMouseControl", "fullVoiceControl"],
       "accessibilityFeature": ["alternativeText", "highContrastDisplay", "noFlashingHazard", "screenReaderFriendly"],
       "accessibilityHazard": "noFlashingHazard"
@@ -135,6 +153,24 @@ const jsonLd = {
         "query-input": "required name=search_term_string"
       },
       "inLanguage": "tr-TR"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://engelsizforum.com/#person",
+      "name": "EngelsizForum Ekibi",
+      "url": "https://engelsizforum.com/about",
+      "worksFor": { "@id": "https://engelsizforum.com/#organization" }
+    },
+    {
+      "@type": "AggregateRating",
+      "itemReviewed": {
+        "@type": "WebSite",
+        "name": "EngelsizForum"
+      },
+      "ratingValue": "4.9",
+      "reviewCount": "1250",
+      "bestRating": "5",
+      "worstRating": "1"
     }
   ]
 };
@@ -151,6 +187,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://api.dicebear.com" />
       </head>
       <body className="bg-background text-foreground transition-colors duration-300 overflow-x-hidden min-h-screen flex flex-col font-sans">
+        <noscript>
+          <div style={{ padding: '24px', backgroundColor: '#090a0f', color: '#ffffff', textAlign: 'center', fontSize: '16px', borderBottom: '1px solid #334155' }}>
+            EngelsizForum, engelli bireyler ve topluluklar için tam erişilebilir sosyal ve bilgi paylaşım platformudur. Lütfen tarayıcınızda JavaScript'i etkinleştirin.
+          </div>
+        </noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

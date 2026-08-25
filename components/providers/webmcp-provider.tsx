@@ -106,7 +106,6 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
       <div 
         id="webmcp-declarative-tools" 
         data-webmcp="enabled"
-        aria-hidden="true"
         className="sr-only absolute -top-9999px left-0 w-px h-px overflow-hidden opacity-0 pointer-events-none"
       >
         <form
