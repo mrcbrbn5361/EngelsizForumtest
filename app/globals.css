@@ -172,6 +172,24 @@ html {
   --ring: #ffff00 !important;
 }
 
+/* Force gradients and colored backgrounds to solid black with white/yellow contrast in high contrast mode */
+.high-contrast [class*="bg-gradient"],
+.high-contrast [class*="bg-sky-"],
+.high-contrast [class*="bg-blue-"],
+.high-contrast [class*="bg-indigo-"],
+.high-contrast [class*="bg-emerald-"],
+.high-contrast [class*="bg-amber-"],
+.high-contrast [class*="bg-purple-"],
+.high-contrast [class*="bg-rose-"],
+.high-contrast [class*="bg-slate-"],
+.high-contrast [class*="from-"],
+.high-contrast [class*="to-"] {
+  background-image: none !important;
+  background-color: #000000 !important;
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+}
+
 .high-contrast h1, 
 .high-contrast h2, 
 .high-contrast h3, 
@@ -209,6 +227,10 @@ html {
 .high-contrast .vibe-button-primary *,
 .high-contrast .vibe-button-secondary * {
   color: #000000 !important;
+}
+
+.high-contrast svg {
+  color: #ffff00 !important;
 }
 
 /* 2. Dyslexic Font */
