@@ -5,6 +5,23 @@ import { MCPServerEntry } from './mcp-directory';
 const SYNC_FILE_PATH = path.join(process.cwd(), 'lib', 'mcp-servers-synced.json');
 
 /**
+ * Filter ensuring only disability, accessibility, and assistive technology related MCPs are processed.
+ */
+function isDisabilityOrAccessibilityRelated(title: string, description: string = ''): boolean {
+  const text = `${title} ${description}`.toLowerCase();
+  const keywords = [
+    'engelli', 'engel', 'disabilit', 'accessibility', 'erişilebilir', 'erişilebilirlik',
+    'balthazard', 'çözger', 'ötv', 'muafiyet', 'sgk', 'medikal', 'protez', 'ortez',
+    'ram', 'özel eğitim', 'böp', 'otizm', 'dehb', 'disleksi', 'tîd', 'işaret dili',
+    'braille', 'ekran okuyucu', 'nvda', 'jaws', 'sesli betimleme', 'cimer', 'e-devlet',
+    'ekpss', 'evde bakım', 'emeklilik', 'rehabilitasyon', 'ftr', 'wcag', 'aria',
+    'yardımcı teknoloji', 'assistive', 'zihinsel', 'görme engelli', 'işitme engelli',
+    'bedensel engelli', 'tekerlekli sandalye', 'baston'
+  ];
+  return keywords.some(kw => text.includes(kw));
+}
+
+/**
  * Live Scraper for https://mcpservers.org/tr/all and https://mcpservers.org/tr/
  */
 export async function fetchLiveMCPServersFromSite(): Promise<MCPServerEntry[]> {
@@ -54,27 +71,21 @@ export async function fetchLiveMCPServersFromSite(): Promise<MCPServerEntry[]> {
  */
 function parseMCPServersFromHTML(html: string, sourceUrl: string): MCPServerEntry[] {
   const items: MCPServerEntry[] = [];
-
-  // Match links or card blocks containing MCP server details
-  // Look for card containers, anchors, or markdown-like links
-  const cardRegex = /<a[^>]*href=["']([^"']+)["'][^>]*>(.*?)<\/a>|<div[^>]*class=["'][^"']*(?:card|item|server|box)[^"']*["'][^>]*>(.*?)<\/div>/gis;
-  
-  // Extract all hrefs with github or mcp links
   const githubLinks = html.match(/https?:\/\/github\.com\/[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+/gi) || [];
   const uniqueGithubs = Array.from(new Set(githubLinks));
 
-  // Extract heading titles
   const headingRegex = /<h[234][^>]*>(.*?)<\/h[234]>/gi;
   let match: RegExpExecArray | null;
   const titles: string[] = [];
   while ((match = headingRegex.exec(html)) !== null) {
     const cleanTitle = match[1].replace(/<[^>]+>/g, '').trim();
     if (cleanTitle && cleanTitle.length > 2 && !cleanTitle.toLowerCase().includes('mcpservers') && !cleanTitle.toLowerCase().includes('kategori')) {
-      titles.push(cleanTitle);
+      if (isDisabilityOrAccessibilityRelated(cleanTitle)) {
+        titles.push(cleanTitle);
+      }
     }
   }
 
-  // Build real entries from extracted data
   titles.forEach((title, idx) => {
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const ghUrl = uniqueGithubs[idx] || (uniqueGithubs.length > 0 ? uniqueGithubs[idx % uniqueGithubs.length] : undefined);
@@ -83,7 +94,7 @@ function parseMCPServersFromHTML(html: string, sourceUrl: string): MCPServerEntr
       id: `live-mcporg-${slug || idx}`,
       name: `${title} (mcpservers.org)`,
       slug: slug || `mcp-server-${idx}`,
-      description: `${title} - mcpservers.org/tr/all canlı dizininden otomatik çekilen doğrulunmuş MCP sunucusu.`,
+      description: `${title} - mcpservers.org canlı dizininden filtrelenen engelli hakları ve erişilebilirlik MCP sunucusu.`,
       category: categorizeByTitle(title),
       agentTypes: ['ide', 'cli', 'web', 'extension'],
       protocol: 'stdio',
@@ -125,7 +136,7 @@ function categorizeByTitle(title: string): MCPServerEntry['category'] {
 }
 
 /**
- * Load synced JSON file if available
+ * Load synced JSON file if available, filtering out non-disability related servers
  */
 export function getSyncedJSONData(): MCPServerEntry[] {
   try {
@@ -133,25 +144,27 @@ export function getSyncedJSONData(): MCPServerEntry[] {
       const content = fs.readFileSync(SYNC_FILE_PATH, 'utf-8');
       const data = JSON.parse(content);
       if (Array.isArray(data.servers)) {
-        return data.servers.map((s: any, idx: number) => ({
-          id: s.id || `synced-${idx}`,
-          name: s.name.includes('(mcpservers.org)') ? s.name : `${s.name} (mcpservers.org)`,
-          slug: s.id || `mcp-server-${idx}`,
-          description: s.description || 'mcpservers.org/tr senkronize edilmiş sunucu.',
-          category: categorizeByTitle(s.name || ''),
-          agentTypes: ['ide', 'cli', 'web', 'extension'],
-          protocol: 'stdio',
-          endpointUrl: `https://mcpservers.org/tr/all`,
-          githubUrl: 'https://github.com/modelcontextprotocol/servers',
-          websiteUrl: 'https://mcpservers.org/tr/all',
-          starCount: 350 + idx * 45,
-          isOfficial: true,
-          syncStatus: 'synced',
-          lastSyncedAt: new Date().toISOString(),
-          tools: [
-            { name: s.coreCommand || `mcp_tool_${idx}`, description: s.description || 'Canlı MCP aracı' }
-          ]
-        }));
+        return data.servers
+          .filter((s: any) => isDisabilityOrAccessibilityRelated(s.name || '', s.description || ''))
+          .map((s: any, idx: number) => ({
+            id: s.id || `synced-${idx}`,
+            name: s.name.includes('(mcpservers.org)') ? s.name : `${s.name} (mcpservers.org)`,
+            slug: s.id || `mcp-server-${idx}`,
+            description: s.description || 'mcpservers.org senkronize edilmiş engelli hakları sunucusu.',
+            category: categorizeByTitle(s.name || ''),
+            agentTypes: ['ide', 'cli', 'web', 'extension'],
+            protocol: 'stdio',
+            endpointUrl: `https://mcpservers.org/tr/all`,
+            githubUrl: 'https://github.com/modelcontextprotocol/servers',
+            websiteUrl: 'https://mcpservers.org/tr/all',
+            starCount: 350 + idx * 45,
+            isOfficial: true,
+            syncStatus: 'synced',
+            lastSyncedAt: new Date().toISOString(),
+            tools: [
+              { name: s.coreCommand || `mcp_tool_${idx}`, description: s.description || 'Canlı MCP aracı' }
+            ]
+          }));
       }
     }
   } catch (err) {
