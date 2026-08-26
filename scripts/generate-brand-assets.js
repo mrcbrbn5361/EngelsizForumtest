@@ -141,29 +141,64 @@ async function generate() {
     .png()
     .toFile(path.join(publicDir, 'logo.png'));
 
-  // 4. favicon.jpg (128x128)
+  // 4. favicon.png (48x48) & favicon.jpg (128x128)
+  await sharp(Buffer.from(iconSvg))
+    .resize(48, 48)
+    .png()
+    .toFile(path.join(publicDir, 'favicon.png'));
+
   await sharp(Buffer.from(iconSvg))
     .resize(128, 128)
     .jpeg({ quality: 95 })
     .toFile(path.join(publicDir, 'favicon.jpg'));
 
-  // 5. banner.png (1200x630)
+  // 5. banner.png & banner-v2.png (1200x630)
   await sharp(Buffer.from(bannerSvg))
     .resize(1200, 630)
     .png()
     .toFile(path.join(publicDir, 'banner.png'));
 
-  // 6. og-image.png (1200x630)
+  await sharp(Buffer.from(bannerSvg))
+    .resize(1200, 630)
+    .png()
+    .toFile(path.join(publicDir, 'banner-v2.png'));
+
+  await sharp(Buffer.from(bannerSvg))
+    .resize(1200, 630)
+    .jpeg({ quality: 95 })
+    .toFile(path.join(publicDir, 'banner.jpg'));
+
+  // 6. og-image.png & og-image-v2.png (1200x630)
   await sharp(Buffer.from(bannerSvg))
     .resize(1200, 630)
     .png()
     .toFile(path.join(publicDir, 'og-image.png'));
 
-  // 7. twitter-image.png (1200x630)
+  await sharp(Buffer.from(bannerSvg))
+    .resize(1200, 630)
+    .png()
+    .toFile(path.join(publicDir, 'og-image-v2.png'));
+
+  await sharp(Buffer.from(bannerSvg))
+    .resize(1200, 630)
+    .jpeg({ quality: 95 })
+    .toFile(path.join(publicDir, 'og-image.jpg'));
+
+  // 7. twitter-image.png & twitter-image-v2.png (1200x630)
   await sharp(Buffer.from(bannerSvg))
     .resize(1200, 630)
     .png()
     .toFile(path.join(publicDir, 'twitter-image.png'));
+
+  await sharp(Buffer.from(bannerSvg))
+    .resize(1200, 630)
+    .png()
+    .toFile(path.join(publicDir, 'twitter-image-v2.png'));
+
+  await sharp(Buffer.from(bannerSvg))
+    .resize(1200, 630)
+    .jpeg({ quality: 95 })
+    .toFile(path.join(publicDir, 'twitter-image.jpg'));
 
   console.log('All brand assets successfully updated!');
 }
