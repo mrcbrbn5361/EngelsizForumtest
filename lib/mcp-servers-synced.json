@@ -1,8 +1,8 @@
 {
-  "lastSyncedAt": "2026-08-26T06:25:45.455845Z",
+  "lastSyncedAt": "2026-08-26T12:24:20.393983Z",
   "sourceUrl": "https://mcpservers.org/tr/all",
   "syncStatus": "SUCCESS",
-  "totalServers": 17,
+  "totalServers": 20,
   "standaloneSectionIntegrated": true,
   "engelsizForumSectionIntegrated": true,
   "coreCommandRegistryUpdated": true,
@@ -344,6 +344,66 @@
         {
           "name": "pop_ler_aramalar_status",
           "description": "Popüler Aramalar sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-directory",
+      "name": "Directory (mcpservers.org)",
+      "slug": "directory",
+      "description": "Directory - mcpservers.org onaylı canlı MCP sunucusu.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "directory_execute",
+      "tools": [
+        {
+          "name": "directory_execute",
+          "description": "Directory canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "directory_status",
+          "description": "Directory sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-learn",
+      "name": "Learn (mcpservers.org)",
+      "slug": "learn",
+      "description": "Learn - mcpservers.org onaylı canlı MCP sunucusu.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "learn_execute",
+      "tools": [
+        {
+          "name": "learn_execute",
+          "description": "Learn canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "learn_status",
+          "description": "Learn sunucu durumunu ve parametrelerini denetleme"
+        }
+      ]
+    },
+    {
+      "id": "live-mcporg-more",
+      "name": "More (mcpservers.org)",
+      "slug": "more",
+      "description": "More - mcpservers.org onaylı canlı MCP sunucusu.",
+      "category": "Erişilebilirlik & Mühendislik",
+      "status": "active",
+      "source": "https://mcpservers.org/tr/",
+      "coreCommand": "more_execute",
+      "tools": [
+        {
+          "name": "more_execute",
+          "description": "More canlı sunucusu üzerinde otonom sorgulama ve komut çalıştırma"
+        },
+        {
+          "name": "more_status",
+          "description": "More sunucu durumunu ve parametrelerini denetleme"
         }
       ]
     }
