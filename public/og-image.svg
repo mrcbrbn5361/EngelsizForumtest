@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090a0f" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <circle cx="1000" cy="100" r="250" fill="#38bdf8" opacity="0.08" filter="blur(60px)" />
+  <circle cx="200" cy="530" r="300" fill="#818cf8" opacity="0.08" filter="blur(80px)" />
+  <g transform="translate(140, 215)">
+    <circle cx="105" cy="100" r="85" fill="none" stroke="url(#glow)" stroke-width="14" opacity="0.9" />
+    <circle cx="105" cy="100" r="35" fill="#38bdf8" />
+  </g>
+  <text x="360" y="270" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="-1px">EngelsizForum</text>
+  <text x="360" y="345" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="500" fill="#38bdf8">Tam Erişilebilir Topluluk ve Haklar Platformu</text>
+  <text x="360" y="410" font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="400" fill="#94a3b8">Balthazard, ÖTV 2026, Emeklilik Hesaplama ve Yapay Zeka Destekli Asistanlar</text>
+  <rect x="360" y="460" width="220" height="48" rx="24" fill="#1e293b" stroke="#334155" stroke-width="2" />
+  <text x="470" y="490" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#38bdf8" text-anchor="middle">www.engelsizforum.com</text>
+</svg>

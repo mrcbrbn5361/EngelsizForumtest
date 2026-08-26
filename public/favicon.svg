@@ -1,25 +1,17 @@
-<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="fav-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0284c7"/>
-      <stop offset="50%" stop-color="#0369a1"/>
-      <stop offset="100%" stop-color="#021024"/>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="16" fill="url(#fav-bg)" stroke="#38bdf8" stroke-width="1.5"/>
-  <g transform="translate(32, 34) scale(0.22)">
-    <path d="M -80 -70 C -80 -110, 80 -110, 80 -70 C 80 -30, 20 -30, -10 0 L -25 25 L -35 -10 C -65 -10, -80 -30, -80 -70 Z" 
-          fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
-    <g transform="translate(0, -60)">
-      <circle cx="0" cy="-26" r="7" fill="#ffffff" />
-      <path d="M -13 -13 C -8 -20, 8 -20, 13 -13 C 10 -4, -10 -4, -13 -13 Z" fill="#ffffff" />
-      <circle cx="0" cy="26" r="7" fill="#ffffff" />
-      <path d="M -13 13 C -8 20, 8 20, 13 13 C 10 4, -10 4, -13 13 Z" fill="#ffffff" />
-      <circle cx="-26" cy="0" r="7" fill="#ffffff" />
-      <path d="M -13 -13 C -20 -8, -20 8, -13 13 C -4 10, -4 -10, -13 -13 Z" fill="#ffffff" />
-      <circle cx="26" cy="0" r="7" fill="#ffffff" />
-      <path d="M 13 -13 C 20 -8, 20 8, 13 13 C 4 10, 4 -10, 13 -13 Z" fill="#ffffff" />
-      <circle cx="0" cy="0" r="22" stroke="#38bdf8" stroke-width="4" stroke-dasharray="10 5" fill="none" />
-    </g>
-  </g>
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  <circle cx="256" cy="256" r="192" fill="none" stroke="url(#accentGrad)" stroke-width="16" opacity="0.3" />
+  <path d="M256 120c-75 0-136 61-136 136s61 136 136 136 136-61 136-136-61-136-136-136zm0 240c-57.4 0-104-46.6-104-104s46.6-104 104-104 104 46.6 104 104-46.6 104-104 104z" fill="url(#accentGrad)" />
+  <path d="M256 184c-39.8 0-72 32.2-72 72s32.2 72 72 72 72-32.2 72-72-32.2-72-72-72zm0 112c-22.1 0-40-17.9-40-40s17.9-40 40-40 40 17.9 40 40-17.9 40-40 40z" fill="#38bdf8" />
+  <circle cx="256" cy="256" r="24" fill="#ffffff" />
 </svg>

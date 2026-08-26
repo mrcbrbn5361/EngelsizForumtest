@@ -81,12 +81,12 @@ export const metadata: Metadata = {
     locale: 'tr_TR',
     images: [
       {
-        url: 'https://www.engelsizforum.com/og-image.jpg',
-        secureUrl: 'https://www.engelsizforum.com/og-image.jpg',
+        url: 'https://www.engelsizforum.com/og-image.svg',
+        secureUrl: 'https://www.engelsizforum.com/og-image.svg',
         width: 1200,
         height: 630,
         alt: 'EngelsizForum - Tam Erişilebilir Topluluk Platformu',
-        type: 'image/jpeg',
+        type: 'image/svg+xml',
       },
     ],
   },
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
     description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu.',
     site: '@engelsizforum',
     creator: '@engelsizforum',
-    images: ['https://www.engelsizforum.com/og-image.jpg'],
+    images: ['https://www.engelsizforum.com/og-image.svg'],
   },
   formatDetection: {
     telephone: false,
