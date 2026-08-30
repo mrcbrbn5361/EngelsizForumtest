@@ -165,24 +165,17 @@ export default function ProfileManagementPage() {
 
   if (authLoading || (!user && authLoading)) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#090a0f] text-slate-100">
-        <Navbar />
-        <main id="main-content" className="flex-1 flex flex-col items-center justify-center p-6" tabIndex={-1}>
-          <Loader2 className="animate-spin text-sky-400 size-10 mb-3" aria-hidden="true" />
-          <p className="text-xs text-slate-400 font-medium">Profil bilgileri yükleniyor...</p>
-        </main>
-        <Footer />
+      <div className="flex flex-col items-center justify-center p-12 min-h-[400px]">
+        <Loader2 className="animate-spin text-sky-400 size-10 mb-3" aria-hidden="true" />
+        <p className="text-xs text-slate-400 font-medium">Profil bilgileri yükleniyor...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090a0f] text-slate-100">
-      <Navbar />
-
-      <main id="main-content" className="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10" tabIndex={-1}>
-        {/* Header summary banner */}
-        <div className="bg-[#111726]/90 border border-white/[0.08] rounded-2xl p-5 sm:p-7 backdrop-blur-md mb-6 shadow-xl">
+    <div className="w-full max-w-4xl mx-auto py-2 sm:py-4">
+      {/* Header summary banner */}
+      <div className="bg-[#111726]/90 border border-white/[0.08] rounded-2xl p-5 sm:p-7 backdrop-blur-md mb-6 shadow-xl">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <UserAvatar
@@ -443,9 +436,6 @@ export default function ProfileManagementPage() {
             </button>
           </div>
         </form>
-      </main>
-
-      <Footer />
     </div>
   );
 }

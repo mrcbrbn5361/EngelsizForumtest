@@ -433,9 +433,8 @@ export default function WebMCPPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-8 space-y-8 overflow-x-hidden">
+    <div className="w-full space-y-8 py-2">
+      <div className="space-y-8 overflow-x-hidden">
         {/* Top Header */}
         <div className="space-y-4">
           <Link
@@ -1764,8 +1763,7 @@ export default function WebMCPPage() {
           )}
         </div>
       )}
-      </main>
-      <Footer />
+      </div>
     </div>
   );
 }

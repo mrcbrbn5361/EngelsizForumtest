@@ -17,13 +17,9 @@ import { UserAvatar } from '@/components/ui/user-avatar';
 export default function MessagesPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex flex-col bg-background">
-        <Navbar />
-        <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <Loader2 className="animate-spin text-sky-400 mb-2 size-7" />
-          <p className="text-xs text-slate-400">Mesajlar yükleniyor...</p>
-        </div>
-        <Footer />
+      <div className="flex flex-col items-center justify-center p-12 min-h-[400px]">
+        <Loader2 className="animate-spin text-sky-400 mb-2 size-7" />
+        <p className="text-xs text-slate-400">Mesajlar yükleniyor...</p>
       </div>
     }>
       <MessagesContent />
@@ -207,48 +203,38 @@ function MessagesContent() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
-        <Navbar />
-        <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <Loader2 className="animate-spin text-sky-400 mb-2 size-7" />
-          <p className="text-xs text-slate-400">Oturum kontrol ediliyor...</p>
-        </div>
-        <Footer />
+      <div className="flex flex-col items-center justify-center p-12 min-h-[400px]">
+        <Loader2 className="animate-spin text-sky-400 mb-2 size-7" />
+        <p className="text-xs text-slate-400">Oturum kontrol ediliyor...</p>
       </div>
     );
   }
 
   if (!user || !activeProfile) {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
-        <Navbar />
-        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center max-w-md mx-auto">
-          <div className="size-16 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-4">
-            <MessageSquare size={32} />
-          </div>
-          <h1 className="text-lg font-bold text-slate-100 mb-2">Özel Mesajlar</h1>
-          <p className="text-xs text-slate-400 mb-6 leading-relaxed">
-            Üyelerle doğrudan mesajlaşabilmek ve gelen mesajlarınızı görebilmek için lütfen giriş yapın.
-          </p>
-          <a
-            href="/login?redirect=/messages"
-            className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-colors shadow-lg"
-          >
-            Giriş Yap
-          </a>
+      <div className="flex flex-col items-center justify-center p-12 text-center max-w-md mx-auto min-h-[400px]">
+        <div className="size-16 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-4 mx-auto">
+          <MessageSquare size={32} />
         </div>
-        <Footer />
+        <h1 className="text-lg font-bold text-slate-100 mb-2">Özel Mesajlar</h1>
+        <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+          Üyelerle doğrudan mesajlaşabilmek ve gelen mesajlarınızı görebilmek için lütfen giriş yapın.
+        </p>
+        <a
+          href="/login?redirect=/messages"
+          className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-colors shadow-lg"
+        >
+          Giriş Yap
+        </a>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
-
+    <div className="w-full flex flex-col h-[calc(100vh-160px)] min-h-[500px]">
       {/* New Chat Modal */}
       {isNewChatModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div 
             onClick={() => setIsNewChatModalOpen(false)}
             className="absolute inset-0 bg-black/70 backdrop-blur-xs"
@@ -308,7 +294,7 @@ function MessagesContent() {
         </div>
       )}
 
-      <main className="flex-1 container mx-auto px-4 py-6 md:py-8 h-[calc(100vh-140px)] min-h-[500px] max-w-7xl flex flex-col">
+      <div className="flex-1 flex flex-col min-h-0 py-2">
         <div className="flex items-center justify-between gap-2.5 mb-4 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
@@ -380,9 +366,7 @@ function MessagesContent() {
             )}
           </div>
         </div>
-      </main>
-
-      <Footer />
+      </div>
     </div>
   );
 }

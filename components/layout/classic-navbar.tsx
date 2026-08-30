@@ -277,30 +277,16 @@ export default function ClassicNavbar() {
                 </div>
 
                 {/* 3. Direct Messages Button */}
-                <div className="relative" ref={msgRef}>
-                  <button 
-                    onClick={() => {
-                      const newState = !isMessagesOpen;
-                      closeAllDropdowns();
-                      setIsMessagesOpen(newState);
-                    }}
-                    className={`p-2 rounded-sm relative transition-colors focus:outline-none ${isMessagesOpen ? 'bg-white/10 text-white' : 'text-slate-300 hover:text-white hover:bg-white/10'}`} 
+                <div className="relative">
+                  <Link 
+                    href="/messages"
+                    className="p-2 rounded-sm relative block transition-colors focus:outline-none text-slate-300 hover:text-white hover:bg-white/10"
                     aria-label="Özel Mesajlar"
+                    title="Özel Mesajlar"
                   >
                     <Mail size={18} />
                     <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-sky-500 rounded-full border-2 border-[#0B0F19]"></span>
-                  </button>
-
-                  {isMessagesOpen && (
-                    <div className="absolute right-0 mt-2 bg-[#111726] border border-white/[0.08] shadow-2xl rounded-sm w-72 p-3 text-slate-200 z-50 animate-in fade-in duration-150">
-                      <h4 className="text-xs font-black text-slate-100 border-b border-white/[0.08] pb-1.5 mb-2 uppercase tracking-wide">ÖZEL MESAJLAR (DM)</h4>
-                      <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
-                        <div className="text-xs text-slate-400 p-3 text-center italic bg-white/[0.02] border border-white/[0.04] rounded">
-                          Hiç yeni mesajlaşma bulunamadı.
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  </Link>
                 </div>
 
                 <div className="h-6 w-[1px] bg-white/10 mx-1 hidden sm:block"></div>
