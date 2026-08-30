@@ -9,6 +9,8 @@ import { AccessibilityProvider } from '@/components/providers/accessibility-prov
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/providers/auth-provider';
 import { SkipNav } from '@/components/accessibility/skip-nav';
+import ClassicNavbar from '@/components/layout/classic-navbar';
+import Link from 'next/link';
 
 const headingFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -198,19 +200,14 @@ const jsonLd = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className={`dark ${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} h-full`} suppressHydrationWarning>
+    <html lang="tr" className="h-full" suppressHydrationWarning>
       <head>
         <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://api.dicebear.com" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://api.dicebear.com" />
       </head>
-      <body className="bg-background text-foreground transition-colors duration-300 overflow-x-hidden min-h-screen flex flex-col font-sans">
+      <body className="bg-[#eceff3] text-[#212529] overflow-x-hidden min-h-screen flex flex-col font-sans antialiased">
         <noscript>
-          <div style={{ padding: '24px', backgroundColor: '#090a0f', color: '#ffffff', textAlign: 'center', fontSize: '16px', borderBottom: '1px solid #334155' }}>
-            EngelsizForum, engelli bireyler ve topluluklar için tam erişilebilir sosyal ve bilgi paylaşım platformudur. Lütfen tarayıcınızda JavaScript'i etkinleştirin.
+          <div style={{ padding: '24px', backgroundColor: '#204060', color: '#ffffff', textAlign: 'center', fontSize: '16px' }}>
+            EngelsizForum, tam erişilebilir bir topluluk platformudur. Lütfen tarayıcınızda JavaScript'i etkinleştirin.
           </div>
         </noscript>
         <script
@@ -221,9 +218,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           <AccessibilityProvider>
             <WebMCPProvider>
-              <main id="main-content" className="flex-1 w-full flex flex-col outline-none" tabIndex={-1}>
-                {children}
-              </main>
+              <div className="flex flex-col min-h-screen">
+                <ClassicNavbar />
+                <main id="main-content" className="flex-1 w-full max-w-[1280px] mx-auto px-4 py-6 outline-none" tabIndex={-1}>
+                  {children}
+                </main>
+                <footer className="bg-[#204060] text-white/60 py-10 mt-10">
+                  <div className="max-w-[1280px] mx-auto px-4 text-center">
+                    <div className="text-xl font-bold text-white mb-4">ENGELSİZ<span className="font-light">FORUM</span></div>
+                    <p className="text-sm max-w-2xl mx-auto mb-6 text-white/80">
+                      Bariyersiz, tam erişilebilir ve yardımlaşma odaklı topluluk platformu. 
+                      Fikirler paylaşıldıkça engeller kalkar.
+                    </p>
+                    <div className="text-[12px] opacity-60">
+                      © 2026 EngelsizForum • Klasik Forum Yazılımı • <Link href="/yardim/erisilebilirlik" className="hover:underline text-white/80">Erişilebilirlik Bildirimi</Link>
+                    </div>
+                  </div>
+                </footer>
+              </div>
               <VisitorTracker />
               <Toaster position="top-right" richColors closeButton />
             </WebMCPProvider>

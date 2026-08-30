@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-heading: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  --font-sans: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   
   --color-background: var(--background);
@@ -16,267 +16,204 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  --color-accent-focus: #38bdf8;
 }
 
 :root {
-  --background: #090a0f;
-  --foreground: #f1f5f9;
-  --card: #111726;
-  --card-foreground: #f8fafc;
-  --primary: #38bdf8;
-  --primary-foreground: #090a0f;
-  --secondary: #161f33;
-  --secondary-foreground: #f8fafc;
-  --muted: #131b2e;
-  --muted-foreground: #94a3b8;
-  --border: rgba(255, 255, 255, 0.08);
-  --ring: #38bdf8;
-  --radius: 0.75rem;
-  
-  --success: #10b981;
-  --error: #ef4444;
-  --warning: #f59e0b;
-}
-
-.dark {
-  --background: #090a0f;
-  --foreground: #f1f5f9;
-  --card: #111726;
-  --card-foreground: #f8fafc;
-  --primary: #38bdf8;
-  --primary-foreground: #090a0f;
-  --secondary: #161f33;
-  --secondary-foreground: #f8fafc;
-  --muted: #131b2e;
-  --muted-foreground: #94a3b8;
-  --border: rgba(255, 255, 255, 0.08);
-  --ring: #38bdf8;
+  --background: #eceff3;
+  --foreground: #212529;
+  --card: #ffffff;
+  --card-foreground: #212529;
+  --primary: #204060;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f6f8;
+  --secondary-foreground: #495057;
+  --muted: #f8fafc;
+  --muted-foreground: #6c757d;
+  --border: #d8dee4;
+  --link: #18587a;
+  --link-hover: #0d3c56;
 }
 
 html, body {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
-  width: 100% !important;
-  -webkit-text-size-adjust: 100%;
-  text-rendering: optimizeLegibility;
-  background-color: #090a0f;
-  color: #f1f5f9;
-}
-
-/* Prevent text overflow and word breaks */
-p, h1, h2, h3, h4, h5, h6, span, a, li, blockquote, td, th {
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-img, video, canvas, svg, iframe {
-  max-width: 100%;
-  height: auto;
-}
-
-html {
-  font-family: var(--font-sans);
   background-color: var(--background);
   color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
 }
 
-/* HIGH VISIBILITY ACCESSIBLE FOCUS RING (WCAG AAA) */
+a {
+  color: var(--link);
+  text-decoration: none;
+  transition: color 0.1s ease;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* XenForo Style Blocks */
+.xf-block {
+  background: var(--card);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+  box-shadow: none;
+}
+
+.xf-block-header {
+  background: var(--primary);
+  color: #ffffff;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.xf-block-header a {
+  color: #ffffff;
+}
+
+/* Node List Style */
+.xf-node-row {
+  display: flex;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  transition: background 0.1s ease;
+}
+
+.xf-node-row:last-child {
+  border-bottom: none;
+}
+
+.xf-node-row:hover {
+  background: var(--muted);
+}
+
+.xf-node-icon {
+  width: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--link);
+}
+
+.xf-node-main {
+  flex: 1;
+  padding: 0 10px;
+}
+
+.xf-node-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.xf-node-description {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.xf-node-stats {
+  width: 140px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: right;
+  padding: 0 10px;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+
+.xf-node-lastPost {
+  width: 250px;
+  font-size: 12px;
+  padding: 0 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Postbit Styles */
+.xf-post {
+  display: flex;
+  border: 1px solid var(--border);
+  background: var(--card);
+  margin-bottom: 10px;
+}
+
+.xf-post-author {
+  width: 180px;
+  flex-shrink: 0;
+  background: #f8f9fa;
+  border-right: 1px solid var(--border);
+  padding: 15px;
+  text-align: center;
+}
+
+.xf-post-content {
+  flex: 1;
+  padding: 15px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.xf-post-body {
+  flex: 1;
+  font-size: 15px;
+  color: #212529;
+}
+
+.xf-post-signature {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+/* Sidebar Widgets */
+.xf-sidebar-block {
+  background: var(--card);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.xf-sidebar-header {
+  background: #f4f6f8;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Accessibility Modes */
+.high-contrast {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #000000;
+  --border: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --link: #ffff00;
+}
+
+.high-contrast * {
+  border-color: #ffffff !important;
+}
+
+/* Focus styles for AAA */
 *:focus-visible {
-  outline: 2px solid #38bdf8 !important;
+  outline: 3px solid #ff9800 !important;
   outline-offset: 2px !important;
-  border-radius: 4px;
-}
-
-/* Professional Corporate Forum Layout Utilities */
-.vibe-container {
-  @apply w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8;
-}
-
-.forum-card {
-  @apply bg-[#111726] border border-white/[0.08] rounded-xl shadow-xs transition-all duration-150;
-}
-
-.forum-card-hover {
-  @apply hover:border-sky-500/40 hover:shadow-md transition-all duration-150;
-}
-
-.vibe-badge {
-  @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-semibold bg-[#161f33] text-slate-200 border border-white/[0.08];
-}
-
-.vibe-button-primary {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-sky-500 px-4 py-2.5 text-xs sm:text-sm font-bold text-slate-950 transition-all hover:bg-sky-400 active:scale-[0.98] shadow-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap;
-}
-
-.vibe-button-secondary {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-[#161f33] px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-200 border border-white/[0.08] transition-all hover:bg-[#1a253d] hover:border-slate-700 active:scale-[0.98] cursor-pointer whitespace-nowrap;
-}
-
-.vibe-input {
-  @apply w-full rounded-lg border border-white/[0.08] bg-[#0b0f19] px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-colors outline-none h-10;
-}
-
-.vibe-input-pl-12 {
-  padding-left: 2.75rem !important;
-}
-
-.vibe-input-pr-20 {
-  padding-right: 5rem !important;
-}
-
-.vibe-input-search-full {
-  padding-left: 3rem !important;
-}
-
-/* ACCESSIBILITY MODES */
-
-/* 1. High Contrast Mode (WCAG AAA) */
-.high-contrast,
-.high-contrast body,
-.high-contrast html,
-.high-contrast div,
-.high-contrast section,
-.high-contrast header,
-.high-contrast footer,
-.high-contrast nav,
-.high-contrast aside,
-.high-contrast main,
-.high-contrast article,
-.high-contrast span,
-.high-contrast p,
-.high-contrast a,
-.high-contrast li,
-.high-contrast ul,
-.high-contrast ol,
-.high-contrast td,
-.high-contrast th,
-.high-contrast tr,
-.high-contrast table,
-.high-contrast label,
-.high-contrast .forum-card,
-.high-contrast .vibe-card,
-.high-contrast .vibe-badge {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border-color: #ffffff !important;
-  --background: #000000 !important;
-  --foreground: #ffffff !important;
-  --card: #000000 !important;
-  --card-foreground: #ffffff !important;
-  --primary: #ffff00 !important;
-  --primary-foreground: #000000 !important;
-  --muted: #111111 !important;
-  --muted-foreground: #ffffff !important;
-  --border: #ffffff !important;
-  --ring: #ffff00 !important;
-}
-
-/* Force gradients and colored backgrounds to solid black with white/yellow contrast in high contrast mode */
-.high-contrast [class*="bg-gradient"],
-.high-contrast [class*="bg-sky-"],
-.high-contrast [class*="bg-blue-"],
-.high-contrast [class*="bg-indigo-"],
-.high-contrast [class*="bg-emerald-"],
-.high-contrast [class*="bg-amber-"],
-.high-contrast [class*="bg-purple-"],
-.high-contrast [class*="bg-rose-"],
-.high-contrast [class*="bg-slate-"],
-.high-contrast [class*="from-"],
-.high-contrast [class*="to-"] {
-  background-image: none !important;
-  background-color: #000000 !important;
-  border-color: #ffffff !important;
-  color: #ffffff !important;
-}
-
-.high-contrast h1, 
-.high-contrast h2, 
-.high-contrast h3, 
-.high-contrast h4, 
-.high-contrast h5, 
-.high-contrast h6 {
-  color: #ffff00 !important;
-}
-
-.high-contrast a:hover,
-.high-contrast button:hover {
-  color: #ffff00 !important;
-  border-color: #ffff00 !important;
-}
-
-.high-contrast input,
-.high-contrast textarea,
-.high-contrast select,
-.high-contrast .vibe-input {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border: 2px solid #ffffff !important;
-}
-
-.high-contrast button,
-.high-contrast .vibe-button-primary,
-.high-contrast .vibe-button-secondary {
-  background-color: #ffff00 !important;
-  color: #000000 !important;
-  border: 2px solid #ffffff !important;
-  font-weight: 900 !important;
-}
-
-.high-contrast button *,
-.high-contrast .vibe-button-primary *,
-.high-contrast .vibe-button-secondary * {
-  color: #000000 !important;
-}
-
-.high-contrast svg {
-  color: #ffff00 !important;
-}
-
-/* 2. Dyslexic Font */
-.dyslexic-font {
-  font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
-}
-
-/* 3. Bionic Reading */
-.bionic-reading p, .bionic-reading span {
-  letter-spacing: 0.02em;
-  word-spacing: 0.12em;
-}
-
-/* 4. Font Scale */
-[data-font-size="sm"] { font-size: 0.875rem; }
-[data-font-size="md"] { font-size: 1rem; }
-[data-font-size="lg"] { font-size: 1.125rem; }
-[data-font-size="xl"] { font-size: 1.25rem; }
-
-/* 5. Reduced Motion */
-.reduced-motion * {
-  animation-duration: 0.001ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0.001ms !important;
-  scroll-behavior: auto !important;
-}
-
-/* Focus mode */
-.focus-mode .forum-card:not(:focus-within):not(:hover) {
-  opacity: 0.4;
-  filter: grayscale(0.8);
-}
-
-/* Skip link */
-.skip-link {
-  @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-sky-600 focus:text-white focus:rounded-lg focus:font-bold focus:shadow-xl;
-}
-
-/* Scrollbars */
-.no-scrollbar::-webkit-scrollbar,
-.scrollbar-hide::-webkit-scrollbar {
-  display: none !important;
-}
-
-.no-scrollbar,
-.scrollbar-hide {
-  -ms-overflow-style: none !important;
-  scrollbar-width: none !important;
 }

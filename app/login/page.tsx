@@ -1,311 +1,134 @@
 'use client';
 
-import React, { useState, useEffect, useId } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { SiteLayout } from '@/components/layout/site-layout';
 import { useAuth } from '@/components/providers/auth-provider';
-import { formatAuthError } from '@/lib/auth-utils';
-import { 
-  LogIn, Mail, Lock, AlertCircle, Loader2, Sparkles, 
-  HelpCircle, Eye, EyeOff, Check, UserPlus 
-} from 'lucide-react';
-import { motion } from 'motion/react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { Home, LogIn, Lock, Mail, Loader2 } from 'lucide-react';
 
-/**
- * Premium, WCAG 2.1 AA Compliant, Highly Accessible Login Page.
- */
 export default function LoginPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const emailId = useId();
-  const passwordId = useId();
-  const rememberMeId = useId();
-  const errorId = useId();
-
-  // Load Remembered Email
-  useEffect(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const savedEmail = localStorage.getItem('ef_remembered_email');
-        if (savedEmail) {
-          setEmail(savedEmail);
-          setRememberMe(true);
-        }
-      }
-    } catch (e) {}
-  }, []);
 
   // Redirect if logged in
   useEffect(() => {
     if (!authLoading && user) {
-      router.push('/discussions');
+      router.push('/');
     }
   }, [user, authLoading, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-
-    const cleanEmail = email.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(cleanEmail)) {
-      setError('Lütfen geçerli bir e-posta adresi giriniz (örnek: adiniz@domain.com).');
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Şifre en az 6 karakter olmalıdır.');
-      return;
-    }
-
     setLoading(true);
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email: cleanEmail, password });
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       
-      if (signInError) {
-        throw signInError;
-      }
+      if (signInError) throw signInError;
 
-      // Handle Remember Me
-      try {
-        if (rememberMe) {
-          localStorage.setItem('ef_remembered_email', cleanEmail);
-        } else {
-          localStorage.removeItem('ef_remembered_email');
-        }
-      } catch (e) {}
-
-      toast.success('Giriş başarılı! EngelsizForum\'a hoş geldiniz.');
-      router.push('/discussions');
+      toast.success('Giriş başarılı!');
+      router.push('/');
     } catch (err: any) {
-      console.error("Login Catch Error:", err);
-      setError(formatAuthError(err, 'Giriş yapılamadı. E-posta adresi veya şifrenizi kontrol edin.'));
+      toast.error('Giriş yapılamadı: ' + err.message);
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleLogin = async () => {
-    setLoading(true);
-    setError(null);
     try {
-      const redirectTo = `${window.location.origin}/auth/callback`;
-        
-      const { error: oAuthError } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
-      if (oAuthError) throw oAuthError;
+      if (error) throw error;
     } catch (err: any) {
-      console.error("Google Login Error:", err);
-      setError(formatAuthError(err, 'Google ile giriş yapılırken bir sorun oluştu.'));
-      setLoading(false);
+      toast.error('Google ile giriş hatası: ' + err.message);
     }
   };
 
   return (
-    <SiteLayout>
-      <div className="flex-1 min-h-[calc(100vh-140px)] flex items-center justify-center p-4 sm:p-6 bg-gradient-to-b from-muted/10 to-muted/30">
-        <main className="w-full max-w-lg">
-          <motion.div 
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-6 sm:p-10 border border-white/[0.08] shadow-2xl rounded-3xl bg-[#111726]/90 backdrop-blur-md relative overflow-hidden space-y-6 text-slate-100"
-          >
-            {/* Form Header */}
-            <header className="text-center space-y-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold uppercase tracking-wider rounded-lg">
-                <Sparkles size={11} className="fill-current" /> ENGELSİZ ERİŞİM SİSTEMİ
-              </span>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-100">
-                Tekrar Hoş Geldiniz
-              </h1>
-              <p className="text-xs text-slate-400 font-normal leading-relaxed">
-                Kapsayıcı, engelsiz ve güvenli bilgi paylaşım ağı.
-              </p>
-            </header>
+    <div className="flex flex-col gap-4">
+      {/* Breadcrumbs */}
+      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#6c757d] border-b border-[#d8dee4] mb-4">
+        <Link href="/" className="hover:text-[#18587a] flex items-center gap-1">
+          <Home size={12} />
+          Ana Sayfa
+        </Link>
+        <span className="opacity-50">/</span>
+        <span className="font-semibold text-[#212529]">Giriş Yap</span>
+      </div>
 
-            {/* Social Authentication */}
-            <div className="space-y-4">
-              <button
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={loading}
-                className="w-full flex items-center justify-center gap-3 bg-[#0b0f19] border border-white/[0.08] hover:border-sky-500/40 px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-200 hover:bg-white/[0.02] transition-all cursor-pointer outline-none"
-                aria-label="Google Hesabı ile Giriş Yap"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
-                Google ile Giriş Yap
-              </button>
-
-              <div className="relative py-1" aria-hidden="true">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-white/[0.08]"></div>
-                </div>
-                <div className="relative flex justify-center text-[10px] uppercase">
-                  <span className="bg-[#111726] px-3 text-slate-400 font-bold tracking-wider">VEYA E-POSTA İLE</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Error Message Section */}
-            {error && (
-              <div 
-                id={errorId}
-                role="alert" 
-                aria-live="assertive"
-                className="flex items-start gap-2.5 p-3.5 rounded-xl bg-destructive/10 text-destructive border border-destructive/20 font-bold text-xs leading-relaxed"
-              >
-                <AlertCircle size={16} className="shrink-0 mt-0.5" aria-hidden="true" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            {/* Standard Login Form */}
-            <form onSubmit={handleLogin} className="space-y-4" noValidate>
-              
-              {/* E-mail Input */}
-              <div className="space-y-1.5">
-                <label htmlFor={emailId} className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                  E-posta Adresi <span className="text-rose-400" aria-hidden="true">*</span>
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none z-10" size={16} aria-hidden="true" />
-                  <input
-                    id={emailId}
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-11 pl-10 pr-4 text-sm font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
-                    placeholder="ornek@adresiniz.com"
-                    autoComplete="email"
-                    aria-invalid={!!error && !email.includes('@')}
-                    aria-describedby={error ? errorId : undefined}
-                  />
-                </div>
+      <div className="max-w-xl mx-auto w-full mt-10">
+        <div className="xf-block rounded-sm overflow-hidden">
+          <div className="xf-block-header">
+            GİRİŞ YAP
+          </div>
+          
+          <div className="p-8 bg-white border-b border-[#d8dee4]">
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-bold text-[#204060] mb-1">E-posta veya Kullanıcı Adı:</label>
+                <input 
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full border border-[#d8dee4] p-2 text-sm focus:outline-none focus:border-[#18587a]"
+                  required
+                />
               </div>
 
-              {/* Password Input */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center px-0.5">
-                  <label htmlFor={passwordId} className="text-xs font-bold uppercase tracking-wider text-slate-300">
-                    Şifre <span className="text-rose-400" aria-hidden="true">*</span>
-                  </label>
-                  <Link 
-                    href="/auth/forgot-password" 
-                    className="text-[11px] font-bold text-sky-400 hover:text-sky-300 transition-colors outline-none"
-                  >
-                    Şifremi Unuttum?
-                  </Link>
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none z-10" size={16} aria-hidden="true" />
-                  <input
-                    id={passwordId}
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full h-11 pl-10 pr-10 text-sm font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
-                    placeholder="••••••••"
-                    autoComplete="current-password"
-                    aria-invalid={!!error && password.length < 6}
-                    aria-describedby={error ? errorId : undefined}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 cursor-pointer outline-none p-1"
-                    aria-label={showPassword ? "Şifreyi gizle" : "Şifreyi göster"}
-                  >
-                    {showPassword ? <EyeOff size={16} aria-hidden="true" /> : <Eye size={16} aria-hidden="true" />}
-                  </button>
-                </div>
+              <div>
+                <label className="block text-sm font-bold text-[#204060] mb-1">Şifre:</label>
+                <input 
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full border border-[#d8dee4] p-2 text-sm focus:outline-none focus:border-[#18587a]"
+                  required
+                />
               </div>
 
-              {/* Remember Me Toggle */}
-              <div className="flex items-center justify-between pt-1">
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    id={rememberMeId}
-                    role="checkbox"
-                    aria-checked={rememberMe}
-                    onClick={() => setRememberMe(!rememberMe)}
-                    className={`size-5 rounded-md border flex items-center justify-center transition-all cursor-pointer outline-none ${
-                      rememberMe 
-                        ? 'bg-sky-500 border-sky-500 text-slate-950' 
-                        : 'border-white/[0.12] hover:border-sky-500/40 bg-[#0b0f19]'
-                    }`}
-                    aria-label="Beni Hatırla"
-                  >
-                    {rememberMe && <Check size={12} className="stroke-[3]" />}
-                  </button>
-                  <label 
-                    onClick={() => setRememberMe(!rememberMe)} 
-                    className="text-xs font-bold text-slate-300 select-none cursor-pointer"
-                  >
-                    Beni Hatırla
-                  </label>
-                </div>
-
-                <div className="flex items-center gap-1 text-slate-400 text-[11px] font-semibold">
-                  <HelpCircle size={13} aria-hidden="true" />
-                  <span>GÜVENLİ GİRİŞ</span>
-                </div>
+              <div className="flex items-center gap-2 py-2">
+                 <input type="checkbox" id="remember" className="rounded" />
+                 <label htmlFor="remember" className="text-sm text-slate-600">Oturumu açık tut</label>
               </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full h-11 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-sky-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
-              >
-                {loading ? (
-                  <Loader2 className="animate-spin" size={16} aria-hidden="true" />
-                ) : (
-                  <LogIn size={16} aria-hidden="true" />
-                )}
-                {loading ? 'Giriş Yapılıyor...' : 'Sisteme Giriş Yap'}
-              </button>
+              <div className="flex flex-wrap items-center gap-4 pt-2">
+                <button 
+                  type="submit"
+                  disabled={loading}
+                  className="bg-[#204060] text-white px-8 py-2 rounded text-sm font-bold hover:bg-[#18587a] transition-colors border-b-2 border-black/20 active:translate-y-0.5 transition-transform flex items-center gap-2"
+                >
+                  {loading && <Loader2 size={16} className="animate-spin" />}
+                  Giriş Yap
+                </button>
+                <Link href="/register" className="text-sm text-[#18587a] hover:underline font-medium">
+                  Hala kayıtlı değil misiniz?
+                </Link>
+              </div>
             </form>
 
-            {/* Registration Promotion Section */}
-            <footer className="pt-4 border-t border-white/[0.08] text-center space-y-3">
-              <p className="text-xs text-slate-400 font-normal">
-                Henüz bir hesabınız yok mu?
-              </p>
-              <Link 
-                href="/register" 
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-sky-500/30 hover:border-sky-500 text-sky-400 hover:bg-sky-500/10 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer"
-              >
-                <UserPlus size={14} aria-hidden="true" /> Engelsiz Sihirbazla Kayıt Ol
-              </Link>
-            </footer>
-
-          </motion.div>
-        </main>
+            <div className="mt-8 pt-6 border-t border-[#d8dee4]">
+               <p className="text-xs text-slate-500 font-bold uppercase mb-4 text-center">Veya Şununla Giriş Yap</p>
+               <button 
+                onClick={handleGoogleLogin}
+                className="w-full border border-[#d8dee4] p-2 flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors text-sm font-semibold"
+               >
+                  <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="Google" />
+                  Google ile Giriş Yap
+               </button>
+            </div>
+          </div>
+        </div>
       </div>
-    </SiteLayout>
+    </div>
   );
 }
-

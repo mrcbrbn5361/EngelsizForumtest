@@ -1,78 +1,119 @@
-import React from 'react';
-import { SiteLayout } from '@/components/layout/site-layout';
-import { ForumIndex } from '@/components/forum/forum-index';
-import { ShieldCheck, Sparkles, Volume2, BookOpen } from 'lucide-react';
+import ClassicCategoryBlock from '@/components/forum/classic-category-block';
+import ClassicSidebar from '@/components/forum/classic-sidebar';
+import { supabaseServer } from '@/lib/supabase-server';
+import { formatDistanceToNow } from 'date-fns';
+import { tr } from 'date-fns/locale';
 
-/**
- * EngelsizForum Home Page (Server Component)
- * Optimized for WCAG 2.1 AAA accessibility and responsive design.
- */
 export default async function Home() {
+  // Fetch root categories
+  const { data: rootCategories, error: catError } = await supabaseServer
+    .from('categories')
+    .select('*')
+    .is('parent_id', null)
+    .order('created_at', { ascending: true });
+
+  if (catError) {
+    console.error('Error fetching root categories:', catError);
+  }
+
+  // Fetch all nodes (sub-categories)
+  const { data: allNodes, error: nodeError } = await supabaseServer
+    .from('categories')
+    .select('*')
+    .not('parent_id', 'is', null);
+
+  if (nodeError) {
+    console.error('Error fetching nodes:', nodeError);
+  }
+
+  // Fetch topics to calculate stats and get last post
+  const { data: allTopics, error: topicError } = await supabaseServer
+    .from('topics')
+    .select(`
+      *,
+      author:profiles(username, avatar_url)
+    `)
+    .order('created_at', { ascending: false });
+
+  if (topicError) {
+    console.error('Error fetching topics:', topicError);
+  }
+
+  // Map data to the structure expected by components
+  const categoriesWithNodes = (rootCategories || []).map(root => {
+    const nodes = (allNodes || [])
+      .filter(node => node.parent_id === root.id)
+      .map(node => {
+        // Calculate stats for this node
+        const nodeTopics = (allTopics || []).filter(t => t.category_id === node.id);
+        const lastTopic = nodeTopics[0];
+
+        return {
+          id: node.slug, // Use slug for routing
+          title: node.name,
+          description: node.description || '',
+          threadCount: nodeTopics.length.toLocaleString(),
+          messageCount: nodeTopics.length.toLocaleString(), // Placeholder until we have comment count
+          lastPost: lastTopic ? {
+            title: lastTopic.title,
+            author: lastTopic.author?.username || 'Anonim',
+            date: formatDistanceToNow(new Date(lastTopic.created_at), { addSuffix: true, locale: tr })
+          } : {
+            title: 'Henüz konu yok',
+            author: '-',
+            date: '-'
+          }
+        };
+      });
+
+    return {
+      title: root.name.toUpperCase(),
+      nodes: nodes
+    };
+  });
+
   return (
-    <SiteLayout>
-      <h1 className="sr-only">EngelsizForum - Tam Erişilebilir Topluluk ve Bilgi Paylaşım Platformu</h1>
-      {/* 
-        The ForumIndex component handles the main interactive forum area.
-        It's designed to be the central hub of the application.
-      */}
-      <ForumIndex />
+    <div className="flex flex-col lg:flex-row gap-5">
+      {/* Main Forum Content */}
+      <div className="flex-1 min-w-0">
+        <div className="mb-4 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-[#204060]">Forumlar</h1>
+          <button className="bg-[#204060] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#18587a] transition-colors border-b-2 border-black/20 active:translate-y-0.5 transition-transform">
+            Konu Aç
+          </button>
+        </div>
 
-      {/* SEO & Accessibility Information Section */}
-      <section 
-        className="bg-[#0b0f19] border-t border-white/[0.08] py-10 sm:py-14 px-3.5 sm:px-6 lg:px-8 overflow-hidden min-w-0" 
-        aria-labelledby="about-title"
-      >
-        <div className="vibe-container max-w-5xl space-y-8 sm:space-y-10">
-          <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold">
-              <Sparkles size={14} className="shrink-0" />
-              <span>Erişilebilir Topluluk Standardı</span>
-            </div>
-            <h2 id="about-title" className="text-xl sm:text-2xl font-black text-slate-100 tracking-tight">
-              EngelsizForum Nedir ve Nasıl Çalışır?
-            </h2>
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-3xl">
-              EngelsizForum, Türkiye&apos;nin <strong>WCAG 2.1 AAA</strong> standartlarını hedefleyen tam erişilebilir dijital topluluk platformudur. 
-              Ekran okuyucu kullanan, disleksiye sahip veya motor kısıtlılığı bulunan tüm bireyler için optimize edilmiş kapsayıcı bir ekosistemdir.
-            </p>
+        {categoriesWithNodes.length > 0 ? (
+          categoriesWithNodes.map((category) => (
+            <ClassicCategoryBlock 
+              key={category.title} 
+              title={category.title} 
+              nodes={category.nodes} 
+            />
+          ))
+        ) : (
+          <div className="xf-block p-8 text-center text-slate-500 italic">
+            Henüz kategori eklenmemiş.
           </div>
+        )}
 
-          <div className="space-y-4">
-            <h2 className="text-lg font-bold text-slate-100">Neden EngelsizForum Tercih Edilmelidir?</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-            <div className="p-4 sm:p-5 bg-[#111726] rounded-xl border border-white/[0.08] shadow-xs space-y-2.5">
-              <div className="h-8 w-8 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center">
-                <BookOpen size={18} />
-              </div>
-              <h3 className="text-sm font-bold text-slate-100">Akıllı Okuma Modları</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Biyonik Okuma ve OpenDyslexic yazı tipi desteği ile bilişsel yükü azaltıyor, okuma hızını ve odaklanmayı artırıyoruz.
-              </p>
+        {/* Legend */}
+        <div className="xf-block p-3 flex items-center gap-6 text-[11px] text-slate-500 uppercase tracking-wider font-semibold">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-white border border-[#d8dee4]"></div>
+            <span>Okunmamış mesaj yok</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-[#e8f0fe] border border-[#d8dee4] flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-[#18587a] rounded-full"></div>
             </div>
-
-            <div className="p-4 sm:p-5 bg-[#111726] rounded-xl border border-white/[0.08] shadow-xs space-y-2.5">
-              <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
-                <Volume2 size={18} />
-              </div>
-              <h3 className="text-sm font-bold text-slate-100">Sesli Etkileşim</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Web Speech API entegrasyonu ile sesle mesaj yazma ve sesli tartışma özeti desteği sunuyoruz.
-              </p>
-            </div>
-
-            <div className="p-4 sm:p-5 bg-[#111726] rounded-xl border border-white/[0.08] shadow-xs space-y-2.5 sm:col-span-2 lg:col-span-1">
-              <div className="h-8 w-8 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center">
-                <ShieldCheck size={18} />
-              </div>
-              <h3 className="text-sm font-bold text-slate-100">Güvenilir Bilgi (E-E-A-T)</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Paylaşılan mevzuat bilgileri ve hak rehberleri topluluk ve uzman denetiminden geçer.
-              </p>
-            </div>
+            <span>Okunmamış mesaj var</span>
           </div>
         </div>
       </div>
-      </section>
-    </SiteLayout>
+
+      {/* Right Sidebar */}
+      <ClassicSidebar />
+    </div>
   );
 }
