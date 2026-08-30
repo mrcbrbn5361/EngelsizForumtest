@@ -39,7 +39,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   return (
     <div className="flex flex-col gap-4">
       {/* Breadcrumbs */}
-      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#6c757d] border-b border-[#d8dee4] mb-4">
+      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#4b5563] border-b border-[#d8dee4] mb-4">
         <Link href="/" className="hover:text-[#18587a] flex items-center gap-1">
           <Home size={12} />
           Ana Sayfa
@@ -54,7 +54,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
         <div className="bg-[#204060] p-6 text-white flex flex-col md:flex-row gap-6 items-center md:items-start">
           {/* Avatar */}
           <div className="w-32 h-32 bg-slate-100 border-4 border-white/20 rounded-sm overflow-hidden shrink-0 flex items-center justify-center">
-             <UserIcon size={64} className="text-slate-400" />
+             <UserIcon size={64} className="text-slate-600" />
           </div>
 
           <div className="flex-1 text-center md:text-left">
@@ -92,8 +92,8 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
         {/* Profile Tabs */}
         <div className="bg-[#f5f5f5] border-t border-b border-[#d8dee4] flex px-4">
            <button className="px-4 py-3 text-sm font-bold border-b-2 border-[#18587a] text-[#18587a]">Aktivite Akışı</button>
-           <button className="px-4 py-3 text-sm font-bold text-[#6c757d] hover:bg-[#eceff3]">Mesajlar</button>
-           <button className="px-4 py-3 text-sm font-bold text-[#6c757d] hover:bg-[#eceff3]">Hakkında</button>
+           <button className="px-4 py-3 text-sm font-bold text-[#4b5563] hover:bg-[#eceff3]">Mesajlar</button>
+           <button className="px-4 py-3 text-sm font-bold text-[#4b5563] hover:bg-[#eceff3]">Hakkında</button>
         </div>
 
         <div className="p-6 bg-white flex flex-col lg:flex-row gap-8">
@@ -101,7 +101,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
            <div className="flex-1 space-y-6">
               <h3 className="text-lg font-bold text-[#204060] border-b border-[#d8dee4] pb-2">Son Aktiviteler</h3>
               <div className="space-y-4">
-                 <div className="p-10 text-center text-slate-500 italic bg-[#f8fafc] border border-dashed border-[#d8dee4] rounded">
+                 <div className="p-10 text-center text-slate-700 italic bg-[#f8fafc] border border-dashed border-[#d8dee4] rounded">
                     Bu üyenin son aktivitesi bulunmuyor.
                  </div>
               </div>
@@ -111,25 +111,25 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
            <div className="w-full lg:w-72 shrink-0 space-y-6">
               <div className="space-y-4">
                  <div>
-                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">İstatistikler</h4>
+                    <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">İstatistikler</h4>
                     <div className="space-y-2 text-sm">
                        <div className="flex justify-between py-1 border-b border-slate-100">
-                          <span className="text-slate-500">Mesajlar:</span>
+                          <span className="text-slate-700">Mesajlar:</span>
                           <span className="font-semibold">{(topicCount || 0) + (commentCount || 0)}</span>
                        </div>
                        <div className="flex justify-between py-1 border-b border-slate-100">
-                          <span className="text-slate-500">Beğeniler:</span>
+                          <span className="text-slate-700">Beğeniler:</span>
                           <span className="font-semibold">0</span>
                        </div>
                        <div className="flex justify-between py-1 border-b border-slate-100">
-                          <span className="text-slate-500">Puanlar:</span>
+                          <span className="text-slate-700">Puanlar:</span>
                           <span className="font-semibold">{profile.xp || 0}</span>
                        </div>
                     </div>
                  </div>
 
                  <div>
-                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Hakkında</h4>
+                    <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Hakkında</h4>
                     <p className="text-sm text-slate-600 leading-relaxed">
                        {profile.bio || 'Bu kullanıcı henüz hakkında bir bilgi paylaşmamış.'}
                     </p>

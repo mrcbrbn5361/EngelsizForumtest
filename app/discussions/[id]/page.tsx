@@ -63,33 +63,33 @@ async function DiscussionDetailView({ topic }: { topic: any }) {
   return (
     <div className="flex flex-col gap-4">
       {/* Breadcrumbs */}
-      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#6c757d] border-b border-[#d8dee4] mb-4">
-        <Link href="/" className="hover:text-[#18587a] flex items-center gap-1">
+      <div className="bg-[#0b0f19] px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-slate-400 border border-white/[0.08] rounded-sm mb-4">
+        <Link href="/" className="hover:text-sky-400 flex items-center gap-1">
           <Home size={12} />
           Ana Sayfa
         </Link>
         <span className="opacity-50">/</span>
-        <Link href="/" className="hover:text-[#18587a]">Forumlar</Link>
+        <Link href="/" className="hover:text-sky-400">Forumlar</Link>
         {topic.category && (
           <>
             <span className="opacity-50">/</span>
-            <Link href={`/category/${topic.category.slug}`} className="hover:text-[#18587a]">{topic.category.name}</Link>
+            <Link href={`/category/${topic.category.slug}`} className="hover:text-sky-400">{topic.category.name}</Link>
           </>
         )}
         <span className="opacity-50">/</span>
-        <span className="font-semibold text-[#212529]">{topic.title}</span>
+        <span className="font-semibold text-slate-200">{topic.title}</span>
       </div>
 
       {/* Thread Header */}
       <div className="mb-2">
-        <h1 className="text-2xl font-bold text-[#212529] mb-1">
+        <h1 className="text-2xl font-bold text-slate-100 mb-1">
           {topic.is_pinned && (
-            <span className="bg-red-600 text-white text-[11px] px-2 py-0.5 rounded-sm align-middle mr-2 uppercase">Sabit</span>
+            <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[11px] px-2 py-0.5 rounded-sm align-middle mr-2 uppercase font-black">Sabit</span>
           )}
           {topic.title}
         </h1>
-        <div className="flex items-center gap-2 text-[12px] text-slate-500">
-          <span>Konuyu başlatan: <span className="text-[#18587a] font-semibold">{topic.author?.username}</span></span>
+        <div className="flex items-center gap-2 text-[12px] text-slate-400">
+          <span>Konuyu başlatan: <span className="text-sky-400 font-semibold">{topic.author?.username}</span></span>
           <span>•</span>
           <span>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
         </div>
@@ -139,11 +139,11 @@ async function DiscussionDetailView({ topic }: { topic: any }) {
             <div className="xf-block-header">Hızlı Cevap</div>
             <div className="p-4">
               <textarea 
-                className="w-full border border-[#d8dee4] p-3 min-h-[150px] text-sm focus:outline-none focus:border-[#18587a] mb-3"
+                className="w-full bg-[#111726]/40 border border-white/[0.08] rounded p-3 min-h-[150px] text-sm focus:outline-none focus:border-sky-500 text-slate-200 placeholder:text-slate-500 mb-3"
                 placeholder="Mesajınızı buraya yazın..."
               ></textarea>
               <div className="flex justify-end">
-                <button className="bg-[#204060] text-white px-6 py-2 rounded text-sm font-bold hover:bg-[#18587a] transition-colors shadow-sm">
+                <button className="bg-sky-500 hover:bg-sky-400 text-slate-950 px-6 py-2 rounded-sm text-sm font-bold transition-all shadow-md">
                   Mesajı Gönder
                 </button>
               </div>
@@ -151,21 +151,21 @@ async function DiscussionDetailView({ topic }: { topic: any }) {
           </div>
 
           {/* Bottom Breadcrumbs */}
-          <div className="mt-6 bg-[#eceff3] px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#6c757d] border border-[#d8dee4] rounded-sm">
-            <Link href="/" className="hover:text-[#18587a] flex items-center gap-1">
+          <div className="mt-6 bg-[#0b0f19] px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-slate-400 border border-white/[0.08] rounded-sm">
+            <Link href="/" className="hover:text-sky-400 flex items-center gap-1">
               <Home size={12} />
               Ana Sayfa
             </Link>
             <span className="opacity-50">/</span>
-            <Link href="/" className="hover:text-[#18587a]">Forumlar</Link>
+            <Link href="/" className="hover:text-sky-400">Forumlar</Link>
             {topic.category && (
               <>
                 <span className="opacity-50">/</span>
-                <Link href={`/category/${topic.category.slug}`} className="hover:text-[#18587a]">{topic.category.name}</Link>
+                <Link href={`/category/${topic.category.slug}`} className="hover:text-sky-400">{topic.category.name}</Link>
               </>
             )}
             <span className="opacity-50">/</span>
-            <span className="font-semibold text-[#212529]">{topic.title}</span>
+            <span className="font-semibold text-slate-200">{topic.title}</span>
           </div>
         </div>
 

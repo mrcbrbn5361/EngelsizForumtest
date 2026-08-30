@@ -204,9 +204,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
       </head>
-      <body className="bg-[#eceff3] text-[#212529] overflow-x-hidden min-h-screen flex flex-col font-sans antialiased">
+      <body className="bg-background text-foreground overflow-x-hidden min-h-screen flex flex-col font-sans antialiased">
         <noscript>
-          <div style={{ padding: '24px', backgroundColor: '#204060', color: '#ffffff', textAlign: 'center', fontSize: '16px' }}>
+          <div style={{ padding: '24px', backgroundColor: '#0b0f19', color: '#ffffff', textAlign: 'center', fontSize: '16px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
             EngelsizForum, tam erişilebilir bir topluluk platformudur. Lütfen tarayıcınızda JavaScript'i etkinleştirin.
           </div>
         </noscript>
@@ -223,15 +223,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <main id="main-content" className="flex-1 w-full max-w-[1280px] mx-auto px-4 py-6 outline-none" tabIndex={-1}>
                   {children}
                 </main>
-                <footer className="bg-[#204060] text-white/60 py-10 mt-10">
+                <footer className="bg-[#0b0f19] text-slate-400 border-t border-white/[0.08] py-10 mt-10">
                   <div className="max-w-[1280px] mx-auto px-4 text-center">
-                    <div className="text-xl font-bold text-white mb-4">ENGELSİZ<span className="font-light">FORUM</span></div>
-                    <p className="text-sm max-w-2xl mx-auto mb-6 text-white/80">
+                    <div className="text-xl font-bold text-sky-400 mb-4">ENGELSİZ<span className="text-white font-light">FORUM</span></div>
+                    <p className="text-sm max-w-2xl mx-auto mb-6 text-slate-400">
                       Bariyersiz, tam erişilebilir ve yardımlaşma odaklı topluluk platformu. 
                       Fikirler paylaşıldıkça engeller kalkar.
                     </p>
-                    <div className="text-[12px] opacity-60">
-                      © 2026 EngelsizForum • Klasik Forum Yazılımı • <Link href="/yardim/erisilebilirlik" className="hover:underline text-white/80">Erişilebilirlik Bildirimi</Link>
+                    <div className="text-[12px] text-slate-500">
+                      © 2026 EngelsizForum • Klasik Forum Yazılımı • <Link href="/yardim/erisilebilirlik" className="hover:underline text-sky-400">Erişilebilirlik Bildirimi</Link>
                     </div>
                   </div>
                 </footer>

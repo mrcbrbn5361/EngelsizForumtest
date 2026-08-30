@@ -63,7 +63,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   return (
     <div className="flex flex-col gap-4">
       {/* Breadcrumbs */}
-      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#6c757d] border-b border-[#d8dee4] mb-4">
+      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#4b5563] border-b border-[#d8dee4] mb-4">
         <Link href="/" className="hover:text-[#18587a] flex items-center gap-1">
           <Home size={12} />
           Ana Sayfa
@@ -103,7 +103,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                   <ClassicThreadRow key={topic.id} topic={topic} />
                 ))
               ) : (
-                <div className="p-10 text-center text-slate-500 italic bg-white">
+                <div className="p-10 text-center text-slate-700 italic bg-white">
                   Bu kategoride henüz konu açılmamış.
                 </div>
               )}
@@ -111,7 +111,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </div>
 
           {/* Bottom Breadcrumbs */}
-          <div className="mt-6 bg-[#eceff3] px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#6c757d] border border-[#d8dee4] rounded-sm">
+          <div className="mt-6 bg-[#eceff3] px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#4b5563] border border-[#d8dee4] rounded-sm">
             <Link href="/" className="hover:text-[#18587a] flex items-center gap-1">
               <Home size={12} />
               Ana Sayfa

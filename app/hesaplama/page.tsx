@@ -104,7 +104,7 @@ export default function DisabilityCalculatorsPage() {
   return (
     <div className="flex flex-col gap-4">
       {/* Breadcrumbs */}
-      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#6c757d] border-b border-[#d8dee4] mb-4">
+      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#4b5563] border-b border-[#d8dee4] mb-4">
         <Link href="/" className="hover:text-[#18587a] flex items-center gap-1">
           <Home size={12} />
           Ana Sayfa
@@ -129,7 +129,7 @@ export default function DisabilityCalculatorsPage() {
                            : 'text-[#212529] hover:bg-[#f8fafc]'
                         }`}
                      >
-                        <tab.icon size={16} className={activeTab === tab.id ? 'text-[#18587a]' : 'text-slate-400'} />
+                        <tab.icon size={16} className={activeTab === tab.id ? 'text-[#18587a]' : 'text-slate-600'} />
                         {tab.label}
                      </button>
                   ))}
@@ -187,9 +187,9 @@ export default function DisabilityCalculatorsPage() {
                         </div>
 
                         <div className="mt-8 p-6 bg-[#f8fafc] border border-[#d8dee4] rounded text-center">
-                           <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">HESAPLANAN ENGEL ORANI</h4>
+                           <h4 className="text-xs font-bold text-slate-700 uppercase tracking-widest mb-1">HESAPLANAN ENGEL ORANI</h4>
                            <div className="text-5xl font-black text-[#18587a]">%{balthazardResult}</div>
-                           <p className="mt-4 text-xs text-slate-500 leading-relaxed">
+                           <p className="mt-4 text-xs text-slate-700 leading-relaxed">
                               Bu hesaplama bilgilendirme amaçlıdır. Nihai karar sağlık kurulları tarafından verilir.
                            </p>
                         </div>
@@ -262,7 +262,7 @@ export default function DisabilityCalculatorsPage() {
                   )}
 
                   {activeTab !== 'balthazard' && activeTab !== 'otv' && (
-                     <div className="p-10 text-center text-slate-500 italic bg-[#f8fafc] border border-dashed border-[#d8dee4] rounded">
+                     <div className="p-10 text-center text-slate-700 italic bg-[#f8fafc] border border-dashed border-[#d8dee4] rounded">
                         Bu hesaplama modülü şu an tasarım aşamasındadır. Çok yakında hizmetinizde olacaktır.
                      </div>
                   )}

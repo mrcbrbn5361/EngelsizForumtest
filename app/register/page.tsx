@@ -53,7 +53,7 @@ export default function RegisterPage() {
   return (
     <div className="flex flex-col gap-4">
       {/* Breadcrumbs */}
-      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#6c757d] border-b border-[#d8dee4] mb-4">
+      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#4b5563] border-b border-[#d8dee4] mb-4">
         <Link href="/" className="hover:text-[#18587a] flex items-center gap-1">
           <Home size={12} />
           Ana Sayfa

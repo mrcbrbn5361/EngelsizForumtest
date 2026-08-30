@@ -77,35 +77,36 @@ export default async function Home() {
       {/* Main Forum Content */}
       <div className="flex-1 min-w-0">
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-[#204060]">Forumlar</h1>
-          <button className="bg-[#204060] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#18587a] transition-colors border-b-2 border-black/20 active:translate-y-0.5 transition-transform">
+          <h1 className="text-xl font-extrabold text-sky-400 uppercase tracking-wide">Forumlar</h1>
+          <button className="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-1.5 rounded-sm text-sm font-bold transition-all hover:shadow-lg hover:shadow-sky-500/10 active:translate-y-0.5">
             Konu Aç
           </button>
         </div>
 
         {categoriesWithNodes.length > 0 ? (
           categoriesWithNodes.map((category) => (
-            <ClassicCategoryBlock 
-              key={category.title} 
-              title={category.title} 
-              nodes={category.nodes} 
-            />
+            <div key={category.title} className="mb-5">
+              <ClassicCategoryBlock 
+                title={category.title} 
+                nodes={category.nodes} 
+              />
+            </div>
           ))
         ) : (
-          <div className="xf-block p-8 text-center text-slate-500 italic">
+          <div className="xf-block p-8 text-center text-slate-400 italic rounded-sm">
             Henüz kategori eklenmemiş.
           </div>
         )}
 
         {/* Legend */}
-        <div className="xf-block p-3 flex items-center gap-6 text-[11px] text-slate-500 uppercase tracking-wider font-semibold">
+        <div className="xf-block p-3 flex items-center gap-6 text-[11px] text-slate-400 uppercase tracking-wider font-semibold rounded-sm">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-white border border-[#d8dee4]"></div>
+            <div className="w-3 h-3 bg-slate-900 border border-white/[0.08]"></div>
             <span>Okunmamış mesaj yok</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-[#e8f0fe] border border-[#d8dee4] flex items-center justify-center">
-              <div className="w-1.5 h-1.5 bg-[#18587a] rounded-full"></div>
+            <div className="w-3 h-3 bg-sky-950/40 border border-white/[0.08] flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-sky-400 rounded-full"></div>
             </div>
             <span>Okunmamış mesaj var</span>
           </div>

@@ -34,24 +34,24 @@ export function ClassicNodeRow({
 
       {/* Main Content */}
       <div className="xf-node-main">
-        <Link href={`/category/${id}`} className="xf-node-title text-[#18587a] hover:underline">
+        <Link href={`/category/${id}`} className="xf-node-title text-sky-400 hover:text-sky-300 hover:underline">
           {title}
         </Link>
-        <div className="xf-node-description">
+        <div className="xf-node-description text-slate-400">
           {description}
         </div>
       </div>
 
       {/* Stats */}
-      <div className="xf-node-stats hidden md:flex">
+      <div className="xf-node-stats hidden md:flex text-slate-400">
         <dl className="flex flex-col gap-0.5">
           <div className="flex justify-between gap-4">
             <dt>Konular:</dt>
-            <dd className="font-mono">{threadCount}</dd>
+            <dd className="font-mono text-slate-200">{threadCount}</dd>
           </div>
           <div className="flex justify-between gap-4">
             <dt>Mesajlar:</dt>
-            <dd className="font-mono">{messageCount}</dd>
+            <dd className="font-mono text-slate-200">{messageCount}</dd>
           </div>
         </dl>
       </div>
@@ -59,15 +59,17 @@ export function ClassicNodeRow({
       {/* Last Post Info */}
       <div className="xf-node-lastPost hidden lg:flex">
         <div className="flex gap-3 items-center">
-          <div className="w-9 h-9 bg-slate-200 rounded shrink-0 border border-slate-300"></div>
+          <div className="w-9 h-9 bg-slate-800 rounded shrink-0 border border-white/[0.08] flex items-center justify-center text-sky-400 font-bold uppercase text-xs">
+            {lastPost.author.substring(0, 2)}
+          </div>
           <div className="flex flex-col min-w-0">
-            <Link href={`/threads/latest`} className="text-[#18587a] font-semibold truncate hover:underline text-[13px]">
+            <Link href={`/threads/latest`} className="text-sky-400 hover:text-sky-300 font-semibold truncate hover:underline text-[13px]">
               {lastPost.title}
             </Link>
-            <div className="flex items-center gap-1.5 text-slate-500 text-[11px]">
-              <span className="font-medium text-[#18587a]">{lastPost.author}</span>
+            <div className="flex items-center gap-1.5 text-slate-400 text-[11px]">
+              <span className="font-medium text-sky-400">{lastPost.author}</span>
               <span>•</span>
-              <span>{lastPost.date}</span>
+              <span className="text-slate-500">{lastPost.date}</span>
             </div>
           </div>
         </div>
