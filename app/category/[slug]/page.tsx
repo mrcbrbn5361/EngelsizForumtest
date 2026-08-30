@@ -63,35 +63,35 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   return (
     <div className="flex flex-col gap-4">
       {/* Breadcrumbs */}
-      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#4b5563] border-b border-[#d8dee4] mb-4">
-        <Link href="/" className="hover:text-[#18587a] flex items-center gap-1">
+      <div className="bg-[#0b0f19] px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-slate-400 border border-white/[0.08] rounded-sm mb-4">
+        <Link href="/" className="hover:text-sky-400 flex items-center gap-1">
           <Home size={12} />
           Ana Sayfa
         </Link>
         <span className="opacity-50">/</span>
-        <Link href="/" className="hover:text-[#18587a]">Forumlar</Link>
+        <Link href="/" className="hover:text-sky-400">Forumlar</Link>
         {parentCategory && (
           <>
             <span className="opacity-50">/</span>
-            <Link href={`/category/${parentCategory.slug}`} className="hover:text-[#18587a]">{parentCategory.name}</Link>
+            <Link href={`/category/${parentCategory.slug}`} className="hover:text-sky-400">{parentCategory.name}</Link>
           </>
         )}
         <span className="opacity-50">/</span>
-        <span className="font-semibold text-[#212529]">{category.name}</span>
+        <span className="font-semibold text-slate-200">{category.name}</span>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-5">
         <div className="flex-1 min-w-0">
           <div className="mb-4 flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-[#204060]">{category.name}</h1>
-            <button className="bg-[#204060] text-white px-4 py-1.5 rounded text-sm font-bold hover:bg-[#18587a] transition-colors border-b-2 border-black/20 active:translate-y-0.5 transition-transform">
+            <h1 className="text-xl font-extrabold text-sky-400 uppercase tracking-wide">{category.name}</h1>
+            <Link href="/discussions/new" className="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-1.5 rounded-sm text-sm font-bold transition-all hover:shadow-lg hover:shadow-sky-500/10">
               Yeni Konu Aç
-            </button>
+            </Link>
           </div>
 
-          <div className="xf-block rounded-sm overflow-hidden">
-            <div className="xf-block-header">
-              <div className="flex items-center gap-2">
+          <div className="xf-block rounded-sm overflow-hidden border border-white/[0.08]">
+            <div className="xf-block-header bg-[#111726] border-b border-white/[0.08]">
+              <div className="flex items-center gap-2 text-slate-100">
                 <MessageSquare size={14} />
                 KONULAR
               </div>
@@ -103,7 +103,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                   <ClassicThreadRow key={topic.id} topic={topic} />
                 ))
               ) : (
-                <div className="p-10 text-center text-slate-700 italic bg-white">
+                <div className="p-10 text-center text-slate-400 italic bg-[#111726]/60">
                   Bu kategoride henüz konu açılmamış.
                 </div>
               )}
@@ -111,21 +111,21 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </div>
 
           {/* Bottom Breadcrumbs */}
-          <div className="mt-6 bg-[#eceff3] px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#4b5563] border border-[#d8dee4] rounded-sm">
-            <Link href="/" className="hover:text-[#18587a] flex items-center gap-1">
+          <div className="mt-6 bg-[#0b0f19] px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-slate-400 border border-white/[0.08] rounded-sm">
+            <Link href="/" className="hover:text-sky-400 flex items-center gap-1">
               <Home size={12} />
               Ana Sayfa
             </Link>
             <span className="opacity-50">/</span>
-            <Link href="/" className="hover:text-[#18587a]">Forumlar</Link>
+            <Link href="/" className="hover:text-sky-400">Forumlar</Link>
             {parentCategory && (
               <>
                 <span className="opacity-50">/</span>
-                <Link href={`/category/${parentCategory.slug}`} className="hover:text-[#18587a]">{parentCategory.name}</Link>
+                <Link href={`/category/${parentCategory.slug}`} className="hover:text-sky-400">{parentCategory.name}</Link>
               </>
             )}
             <span className="opacity-50">/</span>
-            <span className="font-semibold text-[#212529]">{category.name}</span>
+            <span className="font-semibold text-slate-200">{category.name}</span>
           </div>
         </div>
 

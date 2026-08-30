@@ -23,7 +23,7 @@
   --foreground: #f1f5f9;
   --card: #111726;
   --card-foreground: #f1f5f9;
-  --primary: #111726;
+  --primary: #1e293b;
   --primary-foreground: #ffffff;
   --secondary: #0b0f19;
   --secondary-foreground: #cbd5e1;
@@ -141,26 +141,30 @@ a:hover {
   color: var(--muted-foreground);
 }
 
-.xf-node-stats {
-  width: 140px;
-  font-size: 12px;
-  color: var(--muted-foreground);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: right;
-  padding: 0 10px;
-  border-left: 1px solid var(--border);
-  border-right: 1px solid var(--border);
+@media (min-width: 768px) {
+  .xf-node-stats {
+    width: 140px;
+    font-size: 12px;
+    color: var(--muted-foreground);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: right;
+    padding: 0 10px;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
 }
 
-.xf-node-lastPost {
-  width: 250px;
-  font-size: 12px;
-  padding: 0 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+@media (min-width: 1024px) {
+  .xf-node-lastPost {
+    width: 250px;
+    font-size: 12px;
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 
 /* Postbit Styles */
