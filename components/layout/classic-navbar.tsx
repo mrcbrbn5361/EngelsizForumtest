@@ -319,7 +319,7 @@ export default function ClassicNavbar() {
                         <span className="block text-sm font-bold text-slate-100 truncate">{profile?.username || 'Üye'}</span>
                       </div>
                       <Link 
-                        href={`/profile/${profile?.username}`} 
+                        href={`/profile/${profile?.id || user?.id}`} 
                         onClick={() => setIsProfileOpen(false)}
                         className="block px-4 py-2.5 text-xs font-bold hover:bg-white/[0.04] border-b border-white/[0.04]"
                       >

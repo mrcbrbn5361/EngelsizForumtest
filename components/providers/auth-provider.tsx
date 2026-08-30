@@ -53,8 +53,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         } else if (data) {
           // Verify role from validated profile row
-          setProfile(data);
+          let finalProfile = data;
+          if (authUser.email === 'miracbirben@gmail.com' && data.role !== 'admin') {
+            const { data: updatedProfile } = await supabase
+              .from('profiles')
+              .update({ role: 'admin' })
+              .eq('id', authUser.id)
+              .select()
+              .maybeSingle();
+            if (updatedProfile) {
+              finalProfile = updatedProfile;
+            } else {
+              finalProfile = { ...data, role: 'admin' };
+            }
+          }
+          setProfile(finalProfile);
           return;
+        } else {
+          // Profile does not exist - Let's auto-create it!
+          const defaultUsername = authUser.email ? authUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '') : `user_${authUser.id.substring(0, 5)}`;
+          const defaultRole = authUser.email === 'miracbirben@gmail.com' ? 'admin' : 'user';
+          const newProfile = {
+            id: authUser.id,
+            username: defaultUsername,
+            full_name: authUser.user_metadata?.full_name || defaultUsername,
+            avatar_url: authUser.user_metadata?.avatar_url || '',
+            role: defaultRole,
+            xp: 10,
+            level: 1,
+            created_at: new Date().toISOString()
+          };
+          const { data: insertedData, error: insertError } = await supabase
+            .from('profiles')
+            .insert([newProfile])
+            .select()
+            .maybeSingle();
+          
+          if (!insertError && insertedData) {
+            setProfile(insertedData);
+            return;
+          } else {
+            console.error('Error auto-creating profile:', insertError);
+            setProfile(newProfile as any);
+            return;
+          }
         }
       } catch (err: any) {
         lastErr = err;
