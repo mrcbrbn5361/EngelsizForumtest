@@ -7,8 +7,10 @@ import {
   ChevronRight, CheckCircle2, Users, ArrowLeft
 } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/components/providers/auth-provider';
 
 export default function AboutPage() {
+  const { user } = useAuth();
   return (
     <SiteLayout>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-10">
@@ -140,14 +142,23 @@ export default function AboutPage() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            {!user ? (
+              <Link 
+                href="/register" 
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-sky-500 hover:bg-sky-400 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition-colors whitespace-nowrap"
+              >
+                Ücretsiz Kayıt Ol
+              </Link>
+            ) : (
+              <Link 
+                href="/" 
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-sky-500 hover:bg-sky-400 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition-colors whitespace-nowrap"
+              >
+                Forumlar Ana Sayfasına Git
+              </Link>
+            )}
             <Link 
-              href="/register" 
-              className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-sky-500 hover:bg-sky-400 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition-colors whitespace-nowrap"
-            >
-              Ücretsiz Kayıt Ol
-            </Link>
-            <Link 
-              href="/discussions" 
+              href="/" 
               className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-muted hover:bg-muted/80 border border-border px-5 py-2.5 text-xs font-bold text-foreground transition-colors whitespace-nowrap"
             >
               Tartışmaları İncele

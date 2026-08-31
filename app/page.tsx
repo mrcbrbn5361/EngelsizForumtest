@@ -77,10 +77,10 @@ export default async function Home() {
       {/* Main Forum Content */}
       <div className="flex-1 min-w-0">
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-xl font-extrabold text-sky-400 uppercase tracking-wide">Forumlar</h1>
-          <button className="bg-sky-500 hover:bg-sky-400 text-slate-950 px-4 py-1.5 rounded-sm text-sm font-bold transition-all hover:shadow-lg hover:shadow-sky-500/10 active:translate-y-0.5">
-            Konu Aç
-          </button>
+          <h1 className="text-xl font-black text-[#185886] uppercase tracking-wide">Forumlar</h1>
+          <a href="/discussions/new" className="bg-[#185886] hover:bg-[#104f75] text-white px-4 py-2 rounded-sm text-xs font-black uppercase transition-all shadow-md">
+            Yeni Konu Aç
+          </a>
         </div>
 
         {categoriesWithNodes.length > 0 ? (
@@ -99,14 +99,14 @@ export default async function Home() {
         )}
 
         {/* Legend */}
-        <div className="xf-block p-3 flex items-center gap-6 text-[11px] text-slate-400 uppercase tracking-wider font-semibold rounded-sm">
+        <div className="xf-block p-3 flex flex-wrap items-center gap-6 text-[11px] text-slate-500 uppercase tracking-wider font-semibold rounded-sm border border-slate-200 bg-white">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-slate-900 border border-white/[0.08]"></div>
+            <div className="w-3 h-3 bg-slate-200 border border-slate-300"></div>
             <span>Okunmamış mesaj yok</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-sky-950/40 border border-white/[0.08] flex items-center justify-center">
-              <div className="w-1.5 h-1.5 bg-sky-400 rounded-full"></div>
+            <div className="w-3 h-3 bg-[#eef2f7] border border-[#cbd5e1] flex items-center justify-center">
+              <div className="w-1.5 h-1.5 bg-[#185886] rounded-full"></div>
             </div>
             <span>Okunmamış mesaj var</span>
           </div>

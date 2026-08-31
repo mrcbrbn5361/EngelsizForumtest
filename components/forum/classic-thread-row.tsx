@@ -31,10 +31,10 @@ export default function ClassicThreadRow({ topic }: ClassicThreadRowProps) {
   const authorId = topic.author?.id || '#';
 
   return (
-    <div className="flex bg-[#111726]/60 border-b border-white/[0.08] hover:bg-white/[0.02] transition-all duration-200 p-3 items-center min-h-[60px]">
+    <div className="flex bg-white border-b border-[#e2e8f0] hover:bg-[#f8fafc] transition-all duration-200 p-3 items-center min-h-[60px]">
       {/* Author Avatar */}
       <div className="w-12 shrink-0 hidden sm:block">
-        <div className="w-10 h-10 bg-slate-800 rounded-full border border-white/[0.08] flex items-center justify-center text-sky-400 font-bold uppercase text-xs">
+        <div className="w-10 h-10 bg-[#eef2f7] rounded-full border border-[#cbd5e1] flex items-center justify-center text-[#185886] font-bold uppercase text-xs">
           {authorName.substring(0, 2)}
         </div>
       </div>
@@ -42,44 +42,44 @@ export default function ClassicThreadRow({ topic }: ClassicThreadRowProps) {
       {/* Thread Info */}
       <div className="flex-1 min-w-0 pr-4">
         <div className="flex items-center gap-1.5 mb-0.5">
-          {topic.is_pinned && <Pin size={12} className="text-emerald-400 shrink-0" />}
-          {topic.is_locked && <Lock size={12} className="text-slate-500 shrink-0" />}
-          <Link href={`/discussions/${topic.id}`} className="text-sky-400 hover:text-sky-300 font-semibold hover:underline text-[15px] truncate block">
+          {topic.is_pinned && <Pin size={12} className="text-emerald-600 shrink-0" />}
+          {topic.is_locked && <Lock size={12} className="text-slate-400 shrink-0" />}
+          <Link href={`/discussions/${topic.id}`} className="text-[#185886] hover:text-[#104f75] font-bold hover:underline text-[15px] truncate block">
             {topic.title}
           </Link>
         </div>
-        <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-          <Link href={`/profile/${authorId}`} className="hover:underline font-medium text-sky-400">
+        <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+          <Link href={`/profile/${authorId}`} className="hover:underline font-bold text-[#0066a2]">
             {authorName}
           </Link>
-          <span className="text-slate-600">•</span>
+          <span className="text-slate-300">•</span>
           <span>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="hidden md:flex w-32 shrink-0 flex-col justify-center text-center px-2 border-l border-r border-white/[0.08]">
-        <div className="text-[12px] font-mono text-slate-400">
-          <span className="text-slate-500 mr-1">C:</span>
-          <span className="font-semibold text-slate-200">{topic.replyCount}</span>
+      <div className="hidden md:flex w-32 shrink-0 flex-col justify-center text-center px-2 border-l border-r border-[#e2e8f0]">
+        <div className="text-[12px] font-mono text-slate-500">
+          <span className="text-slate-400 mr-1">Cevap:</span>
+          <span className="font-bold text-slate-700">{topic.replyCount}</span>
         </div>
-        <div className="text-[12px] font-mono text-slate-400">
-          <span className="text-slate-500 mr-1">G:</span>
-          <span className="font-semibold text-slate-200">{topic.viewCount}</span>
+        <div className="text-[12px] font-mono text-slate-500">
+          <span className="text-slate-400 mr-1">Gör:</span>
+          <span className="font-bold text-slate-700">{topic.viewCount}</span>
         </div>
       </div>
 
       {/* Last Post */}
       <div className="hidden lg:flex w-48 shrink-0 flex-col justify-center pl-4 text-[12px]">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-slate-800 rounded shrink-0 border border-white/[0.08] flex items-center justify-center text-sky-400 font-bold text-[10px] uppercase">
+          <div className="w-7 h-7 bg-[#eef2f7] rounded shrink-0 border border-[#cbd5e1] flex items-center justify-center text-[#185886] font-bold text-[10px] uppercase">
             {(topic.lastReply?.author || authorName).substring(0, 2)}
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="font-semibold text-sky-400 truncate">
+            <span className="font-bold text-[#0066a2] truncate">
               {topic.lastReply?.author || authorName}
             </span>
-            <span className="text-slate-500 text-[10px]">
+            <span className="text-slate-400 text-[10px]">
               {topic.lastReply?.date || formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}
             </span>
           </div>

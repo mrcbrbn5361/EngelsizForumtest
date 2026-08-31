@@ -19,19 +19,19 @@
 }
 
 :root {
-  --background: #090A0F;
-  --foreground: #f1f5f9;
-  --card: #111726;
-  --card-foreground: #f1f5f9;
-  --primary: #1e293b;
+  --background: #f4f6f9;
+  --foreground: #1d2430;
+  --card: #ffffff;
+  --card-foreground: #1d2430;
+  --primary: #185886;
   --primary-foreground: #ffffff;
-  --secondary: #0b0f19;
-  --secondary-foreground: #cbd5e1;
-  --muted: #0b0f19;
-  --muted-foreground: #94a3b8;
-  --border: rgba(255, 255, 255, 0.08);
-  --link: #38bdf8;
-  --link-hover: #7dd3fc;
+  --secondary: #eef2f7;
+  --secondary-foreground: #3a475d;
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  --border: #dcdfe4;
+  --link: #0066a2;
+  --link-hover: #104f75;
 }
 
 html, body {
@@ -274,7 +274,26 @@ html[data-font-size="xl"] {
 }
 
 /* Bulletproof High Contrast Mode for WCAG AAA compliance */
-.high-contrast, .high-contrast * {
+.high-contrast,
+.high-contrast body,
+.high-contrast div,
+.high-contrast section,
+.high-contrast p,
+.high-contrast span:not(.high-contrast-link-text),
+.high-contrast li,
+.high-contrast ul,
+.high-contrast ol,
+.high-contrast h1,
+.high-contrast h2,
+.high-contrast h3,
+.high-contrast h4,
+.high-contrast h5,
+.high-contrast h6,
+.high-contrast article,
+.high-contrast main,
+.high-contrast header,
+.high-contrast footer,
+.high-contrast aside {
   background-color: #000000 !important;
   color: #ffffff !important;
   border-color: #ffffff !important;
@@ -284,16 +303,23 @@ html[data-font-size="xl"] {
 }
 
 .high-contrast a, 
-.high-contrast a *, 
+.high-contrast a *,
+.high-contrast a span,
 .high-contrast button, 
-.high-contrast button * {
+.high-contrast button *,
+.high-contrast [role="button"],
+.high-contrast [role="button"] * {
+  background-color: #000000 !important;
   color: #ffff00 !important;
+  border-color: #ffff00 !important;
   text-decoration: underline !important;
 }
 
 .high-contrast a:hover, 
-.high-contrast button:hover {
-  background-color: #ffffff !important;
+.high-contrast a:hover *,
+.high-contrast button:hover,
+.high-contrast button:hover * {
+  background-color: #ffff00 !important;
   color: #000000 !important;
   text-decoration: none !important;
 }

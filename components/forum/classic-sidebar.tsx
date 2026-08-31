@@ -80,66 +80,66 @@ export default function ClassicSidebar() {
   }, []);
 
   const getRoleStyle = (role: string) => {
-    if (role === 'admin') return 'text-red-400 font-bold hover:text-red-300 hover:underline';
-    if (role === 'moderator') return 'text-emerald-400 font-bold hover:text-emerald-300 hover:underline';
-    if (role === 'uzman') return 'text-sky-400 font-bold hover:text-sky-300 hover:underline';
-    return 'text-slate-300 hover:text-white hover:underline';
+    if (role === 'admin') return 'text-red-600 font-bold hover:text-red-700 hover:underline';
+    if (role === 'moderator') return 'text-emerald-700 font-bold hover:text-emerald-800 hover:underline';
+    if (role === 'uzman') return 'text-[#185886] font-bold hover:text-[#104f75] hover:underline';
+    return 'text-slate-600 hover:text-slate-900 hover:underline';
   };
 
   return (
     <aside className="w-full lg:w-[300px] flex flex-col gap-5 shrink-0">
       
       {/* Search Widget - Mobile/Tablet Fallback */}
-      <div className="xf-sidebar-block md:hidden border border-white/[0.08] rounded-sm">
+      <div className="xf-sidebar-block border border-slate-200 bg-white rounded-sm shadow-xs md:hidden">
         <div className="p-3">
           <form action="/search" method="GET" className="relative">
             <input 
               type="text" 
               name="q"
               placeholder="Forumda ara..." 
-              className="w-full bg-[#111726]/60 border border-white/[0.08] rounded px-3 py-2 text-sm focus:outline-none focus:border-sky-500 text-slate-200 placeholder:text-slate-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded px-3 py-2 text-sm focus:outline-none focus:border-[#185886] text-slate-800 placeholder:text-slate-400"
             />
           </form>
         </div>
       </div>
 
       {/* Calculator Robots Widget */}
-      <div className="xf-sidebar-block border border-white/[0.08] rounded-sm">
-        <div className="xf-sidebar-header flex items-center gap-2 bg-[#111726] border-b border-white/[0.08] text-slate-200 font-extrabold uppercase text-[12px] tracking-wider py-2.5 px-3">
-          <Calculator size={14} className="text-sky-400" />
+      <div className="xf-sidebar-block border border-slate-200 bg-white rounded-sm shadow-xs">
+        <div className="xf-sidebar-header flex items-center gap-2 bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[12px] tracking-wider py-2.5 px-3">
+          <Calculator size={14} className="text-[#185886]" />
           HESAPLAMA ROBOTLARI
         </div>
-        <div className="p-3 flex flex-col gap-2.5 bg-[#111726]/40">
+        <div className="p-3 flex flex-col gap-2.5 bg-white">
           <Link href="/hesaplama" className="flex items-center justify-between text-[13px] group">
-            <span className="font-semibold text-sky-400 group-hover:text-sky-300 group-hover:underline">ÖTV 2026 Muafiyet Hesapla</span>
+            <span className="font-bold text-[#185886] group-hover:text-[#104f75] group-hover:underline">ÖTV 2026 Muafiyet Hesapla</span>
             <ChevronRight size={14} className="text-slate-400" />
           </Link>
-          <div className="h-[1px] bg-white/[0.08]"></div>
+          <div className="h-[1px] bg-slate-100"></div>
           <Link href="/hesaplama" className="flex items-center justify-between text-[13px] group">
-            <span className="font-semibold text-sky-400 group-hover:text-sky-300 group-hover:underline">Balthazard Formülü Robotu</span>
+            <span className="font-bold text-[#185886] group-hover:text-[#104f75] group-hover:underline">Balthazard Formülü Robotu</span>
             <ChevronRight size={14} className="text-slate-400" />
           </Link>
-          <div className="h-[1px] bg-white/[0.08]"></div>
+          <div className="h-[1px] bg-slate-100"></div>
           <Link href="/hesaplama" className="flex items-center justify-between text-[13px] group">
-            <span className="font-semibold text-sky-400 group-hover:text-sky-300 group-hover:underline">Engelli Emeklilik Sorgulama</span>
+            <span className="font-bold text-[#185886] group-hover:text-[#104f75] group-hover:underline">Engelli Emeklilik Sorgulama</span>
             <ChevronRight size={14} className="text-slate-400" />
           </Link>
         </div>
       </div>
 
       {/* Online/Active Registered Users Widget */}
-      <div className="xf-sidebar-block border border-white/[0.08] rounded-sm">
-        <div className="xf-sidebar-header flex items-center gap-2 bg-[#111726] border-b border-white/[0.08] text-slate-200 font-extrabold uppercase text-[12px] tracking-wider py-2.5 px-3">
-          <Users size={14} className="text-sky-400" />
+      <div className="xf-sidebar-block border border-slate-200 bg-white rounded-sm shadow-xs">
+        <div className="xf-sidebar-header flex items-center gap-2 bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[12px] tracking-wider py-2.5 px-3">
+          <Users size={14} className="text-[#185886]" />
           KAYITLI ÜYELERİMİZ
         </div>
-        <div className="p-3 bg-[#111726]/40">
+        <div className="p-3 bg-white">
           {loading ? (
             <div className="text-[13px] text-slate-400 italic">Yükleniyor...</div>
           ) : realUsers.length > 0 ? (
             <>
-              <div className="text-[13px] mb-3 text-slate-300">
-                Kayıtlı Toplam: <span className="font-bold text-slate-100">{stats.users}</span> Üye
+              <div className="text-[13px] mb-3 text-slate-600 font-semibold">
+                Kayıtlı Toplam: <span className="font-bold text-slate-800">{stats.users}</span> Üye
               </div>
               <div className="flex flex-wrap gap-x-2 gap-y-1 text-[13px]">
                 {realUsers.map((p, idx) => (
@@ -147,7 +147,7 @@ export default function ClassicSidebar() {
                     <Link href={`/profile/${p.username}`} className={getRoleStyle(p.role)}>
                       {p.username}
                     </Link>
-                    {idx < realUsers.length - 1 && <span className="text-slate-600 ml-1">,</span>}
+                    {idx < realUsers.length - 1 && <span className="text-slate-400 ml-1">,</span>}
                   </span>
                 ))}
               </div>
@@ -161,31 +161,31 @@ export default function ClassicSidebar() {
       </div>
 
       {/* Statistics Widget */}
-      <div className="xf-sidebar-block border border-white/[0.08] rounded-sm">
-        <div className="xf-sidebar-header flex items-center gap-2 bg-[#111726] border-b border-white/[0.08] text-slate-200 font-extrabold uppercase text-[12px] tracking-wider py-2.5 px-3">
-          <BarChart3 size={14} className="text-sky-400" />
+      <div className="xf-sidebar-block border border-slate-200 bg-white rounded-sm shadow-xs">
+        <div className="xf-sidebar-header flex items-center gap-2 bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[12px] tracking-wider py-2.5 px-3">
+          <BarChart3 size={14} className="text-[#185886]" />
           FORUM İSTATİSTİKLERİ
         </div>
-        <div className="p-3 flex flex-col gap-2.5 bg-[#111726]/40">
+        <div className="p-3 flex flex-col gap-2.5 bg-white">
           {loading ? (
             <div className="text-[13px] text-slate-400 italic font-medium">Yükleniyor...</div>
           ) : (
             <>
               <div className="flex justify-between text-[13px]">
-                <span className="text-slate-300 font-medium">Konular:</span>
-                <span className="font-mono font-bold text-slate-100">{stats.topics.toLocaleString()}</span>
+                <span className="text-slate-500 font-medium">Konular:</span>
+                <span className="font-mono font-bold text-slate-800">{stats.topics.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-[13px]">
-                <span className="text-slate-300 font-medium">Mesajlar:</span>
-                <span className="font-mono font-bold text-slate-100">{(stats.topics + stats.comments).toLocaleString()}</span>
+                <span className="text-slate-500 font-medium">Mesajlar:</span>
+                <span className="font-mono font-bold text-slate-800">{(stats.topics + stats.comments).toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-[13px]">
-                <span className="text-slate-300 font-medium">Üyeler:</span>
-                <span className="font-mono font-bold text-slate-100">{stats.users.toLocaleString()}</span>
+                <span className="text-slate-500 font-medium">Üyeler:</span>
+                <span className="font-mono font-bold text-slate-800">{stats.users.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-[13px]">
-                <span className="text-slate-300 font-medium">Son Üye:</span>
-                <Link href={`/profile/${stats.latestUser}`} className="font-bold text-sky-400 hover:text-sky-300 hover:underline">
+                <span className="text-slate-500 font-medium">Son Üye:</span>
+                <Link href={`/profile/${stats.latestUser}`} className="font-bold text-[#185886] hover:text-[#104f75] hover:underline">
                   {stats.latestUser}
                 </Link>
               </div>

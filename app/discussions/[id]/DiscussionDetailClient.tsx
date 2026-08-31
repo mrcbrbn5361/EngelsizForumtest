@@ -330,6 +330,120 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
     'ÜYE': 'bg-slate-800 text-slate-300 border border-white/[0.08]'
   };
 
+  // Unified markdown, BBCode [QUOTE], and math equation parser
+  const renderPostContent = (text: string): React.ReactNode => {
+    if (!text) return null;
+
+    // Regex for BBCode quotes [QUOTE="Username"]content[/QUOTE]
+    const quoteRegex = /\[QUOTE="([^"]*)"\]([\s\S]*?)\[\/QUOTE\]/g;
+
+    const formatTextChunk = (chunk: string) => {
+      return chunk.split('\n').map((line, lineIdx) => {
+        // Markdown Headers
+        if (line.startsWith('### ')) {
+          return (
+            <h3 key={lineIdx} className="text-sm font-extrabold text-sky-400 mt-3 mb-1.5 uppercase tracking-wide">
+              {line.substring(4)}
+            </h3>
+          );
+        }
+        if (line.startsWith('## ')) {
+          return (
+            <h2 key={lineIdx} className="text-base font-extrabold text-sky-400 mt-4 mb-2 uppercase tracking-wide border-b border-white/[0.05] pb-1">
+              {line.substring(3)}
+            </h2>
+          );
+        }
+        if (line.startsWith('# ')) {
+          return (
+            <h1 key={lineIdx} className="text-lg font-extrabold text-sky-400 mt-5 mb-2 uppercase tracking-wide border-b border-white/[0.08] pb-1">
+              {line.substring(2)}
+            </h1>
+          );
+        }
+
+        // Beautiful Math Formulas rendering
+        if (line.includes('\\text') || line.includes('\\frac') || line.includes('\\times') || line.includes('\\\\')) {
+          const displayMath = line
+            .replace(/\\\\/g, '\\')
+            .replace(/\\text{([^}]+)}/g, '$1')
+            .replace(/\\times/g, ' × ')
+            .replace(/\\frac{([^}]+)}{([^}]+)}/g, '($1 / $2)');
+
+          return (
+            <div key={lineIdx} className="my-3 p-3.5 bg-sky-950/20 border border-sky-500/25 rounded-sm font-mono text-center text-xs sm:text-sm text-sky-300 font-bold select-all tracking-wide">
+              {displayMath}
+            </div>
+          );
+        }
+
+        // Inline bold parsing **bold**
+        let elements: React.ReactNode[] = [];
+        let lastIdx = 0;
+        const boldRegex = /\*\*([^*]+)\*\*/g;
+        let match;
+
+        while ((match = boldRegex.exec(line)) !== null) {
+          if (match.index > lastIdx) {
+            elements.push(line.substring(lastIdx, match.index));
+          }
+          elements.push(<strong key={match.index} className="font-extrabold text-white">{match[1]}</strong>);
+          lastIdx = boldRegex.lastIndex;
+        }
+
+        if (lastIdx < line.length) {
+          elements.push(line.substring(lastIdx));
+        }
+
+        return (
+          <p key={lineIdx} className="min-h-[1.25rem] leading-relaxed text-slate-200">
+            {elements.length > 0 ? elements : line}
+          </p>
+        );
+      });
+    };
+
+    const parts: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = quoteRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(
+          <React.Fragment key={`text-${lastIndex}`}>
+            {formatTextChunk(text.substring(lastIndex, match.index))}
+          </React.Fragment>
+        );
+      }
+
+      const author = match[1];
+      const quoteBody = match[2];
+
+      parts.push(
+        <div key={`quote-${match.index}`} className="bg-[#111726]/80 border-l-[3px] border-sky-400 p-3.5 my-3 rounded-sm text-xs text-slate-300 select-text">
+          <div className="font-extrabold text-sky-400 mb-1.5 flex items-center gap-1.5 uppercase tracking-wide text-[10px]">
+            <Quote size={11} className="text-sky-400" /> {author} dedi ki:
+          </div>
+          <div className="italic text-slate-300 leading-relaxed pl-1">
+            {renderPostContent(quoteBody)}
+          </div>
+        </div>
+      );
+
+      lastIndex = quoteRegex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      parts.push(
+        <React.Fragment key={`text-${lastIndex}`}>
+          {formatTextChunk(text.substring(lastIndex))}
+        </React.Fragment>
+      );
+    }
+
+    return <div className="space-y-1.5 select-text">{parts}</div>;
+  };
+
   return (
     <div className="flex flex-col gap-4">
       {/* Breadcrumbs */}
@@ -435,8 +549,8 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                 <span className="font-mono text-slate-500 font-bold">#1</span>
               </div>
 
-              <div className="xf-post-body leading-relaxed text-slate-200 text-xs sm:text-sm whitespace-pre-wrap flex-1 min-h-[100px]">
-                {topic.content}
+              <div className="xf-post-body leading-relaxed text-slate-200 text-xs sm:text-sm flex-1 min-h-[100px]">
+                {renderPostContent(topic.content)}
               </div>
 
               <div className="mt-6 pt-4 flex items-center justify-between border-t border-white/[0.04]">
@@ -556,8 +670,8 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                       <span className="font-mono text-slate-500 font-bold">#{index + 2}</span>
                     </div>
 
-                    <div className="xf-post-body leading-relaxed text-slate-200 text-xs sm:text-sm whitespace-pre-wrap flex-1 min-h-[80px]">
-                      {comment.content}
+                    <div className="xf-post-body leading-relaxed text-slate-200 text-xs sm:text-sm flex-1 min-h-[80px]">
+                      {renderPostContent(comment.content)}
                     </div>
 
                     <div className="mt-6 pt-4 flex items-center justify-between border-t border-white/[0.04]">

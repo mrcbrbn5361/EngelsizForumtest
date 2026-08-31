@@ -3,8 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Navbar } from './navbar';
-import { Footer } from './footer';
 import { 
   Home, 
   MessageSquare, 
@@ -85,7 +83,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   };
   
   return (
-    <div className="flex flex-col min-h-screen bg-[#090a0f] text-slate-100 selection:bg-sky-500/20 selection:text-sky-300">
+    <div className="flex-1 w-full flex flex-col">
       {/* Skip to Main Content Link for WCAG AAA */}
       <a 
         href="#main-content" 
@@ -94,14 +92,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         İçeriğe Atla
       </a>
 
-      <Navbar />
-
-      <div className="flex flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 gap-6">
+      <div className="flex flex-1 w-full gap-6">
         {/* Accessible Left Sidebar (Desktop) */}
         <aside 
           role="complementary" 
           aria-label="Sol Gezinti Menüsü" 
-          className="hidden lg:flex w-64 p-4 flex-col gap-6 sticky top-20 h-[calc(100vh-6rem)] overflow-y-auto bg-[#111726]/80 border border-white/[0.08] rounded-2xl backdrop-blur-md shrink-0 shadow-lg"
+          className="hidden lg:flex w-64 p-4 flex-col gap-6 sticky top-[80px] h-[calc(100vh-8rem)] overflow-y-auto bg-[#111726]/80 border border-white/[0.08] rounded-sm backdrop-blur-md shrink-0 shadow-lg"
         >
           {/* Main Links */}
           <nav className="flex flex-col gap-1" aria-label="Ana Menü">
@@ -166,8 +162,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
-
-      <Footer />
     </div>
   );
 }
