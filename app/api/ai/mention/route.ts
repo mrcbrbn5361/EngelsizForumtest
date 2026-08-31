@@ -2,29 +2,45 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateContentWithRetry } from "@/lib/gemini";
 import { getSupabaseServer } from "@/lib/supabase-server";
 
-const ENGELSIZ_AI_BOT_ID = "11111111-1111-1111-1111-111111111111";
+const ENGELSIZ_AI_BOT_EMAIL = "engelsizai@engelsizforum.internal";
+let cachedBotId: string | null = "88888888-8888-8888-8888-888888888888";
 
 async function ensureEngelsizAiProfile(supabase: any) {
   try {
-    const { data } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('id', ENGELSIZ_AI_BOT_ID)
-      .maybeSingle();
+    const { data: listData } = await supabase.auth.admin.listUsers();
+    const existing = listData?.users?.find((u: any) => u.email === ENGELSIZ_AI_BOT_EMAIL);
 
-    if (!data) {
-      await supabase.from('profiles').upsert([{
-        id: ENGELSIZ_AI_BOT_ID,
-        username: 'EngelsizAI',
-        full_name: 'Engelsiz AI Asistanı',
-        role: 'moderator',
-        level: 10,
-        xp: 9999,
-        avatar_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80'
-      }]);
+    let botId = cachedBotId;
+    if (existing) {
+      botId = existing.id;
+      cachedBotId = botId;
+    } else {
+      const { data: created } = await supabase.auth.admin.createUser({
+        email: ENGELSIZ_AI_BOT_EMAIL,
+        password: 'SecureBotPassword12345!',
+        email_confirm: true,
+        user_metadata: { username: 'EngelsizAI', full_name: 'Engelsiz AI Asistanı' }
+      });
+      if (created?.user) {
+        botId = created.user.id;
+        cachedBotId = botId;
+      }
     }
+
+    await supabase.from('profiles').upsert([{
+      id: botId,
+      username: 'EngelsizAI',
+      full_name: 'Engelsiz AI Asistanı',
+      role: 'moderator',
+      level: 10,
+      xp: 9999,
+      avatar_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80'
+    }], { onConflict: 'id' });
+
+    return botId;
   } catch (err) {
-    console.error("Error ensuring EngelsizAI profile:", err);
+    console.error("Error ensuring EngelsizAI profile/user:", err);
+    return cachedBotId || "88888888-8888-8888-8888-888888888888";
   }
 }
 
@@ -38,7 +54,7 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = getSupabaseServer();
-    await ensureEngelsizAiProfile(supabase);
+    const botId = await ensureEngelsizAiProfile(supabase);
 
     const promptText = `
 Konu Başlığı: ${topicTitle || 'Belirtilmemiş'}
@@ -68,7 +84,7 @@ GÜVENLİK KURALLARI (PROMPT INJECTION KORUMASI):
 
     const aiCommentRow = {
       topic_id: topicId,
-      author_id: ENGELSIZ_AI_BOT_ID,
+      author_id: botId,
       content: aiResponseText,
       is_solution: false,
       created_at: new Date().toISOString()
@@ -101,12 +117,12 @@ GÜVENLİK KURALLARI (PROMPT INJECTION KORUMASI):
         .update({ comments_count: (currentTopic.comments_count || 0) + 1 })
         .eq('id', topicId);
 
-      if (currentTopic.author_id && currentTopic.author_id !== ENGELSIZ_AI_BOT_ID) {
+      if (currentTopic.author_id && currentTopic.author_id !== botId) {
         try {
           await supabase.from('notifications').insert([{
             user_id: currentTopic.author_id,
             recipient_id: currentTopic.author_id,
-            sender_id: ENGELSIZ_AI_BOT_ID,
+            sender_id: botId,
             type: 'comment',
             content: `EngelsizAI "${topicTitle}" konunuza analiz ve yanıt ekledi.`,
             is_read: false,
