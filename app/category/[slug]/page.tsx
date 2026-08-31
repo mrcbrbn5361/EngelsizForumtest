@@ -13,7 +13,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     .from('categories')
     .select('*')
     .eq('slug', slug)
-    .single();
+    .maybeSingle();
 
   if (catError || !category) {
     notFound();
@@ -26,7 +26,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       .from('categories')
       .select('name, slug')
       .eq('id', category.parent_id)
-      .single();
+      .maybeSingle();
     parentCategory = parent;
   }
 

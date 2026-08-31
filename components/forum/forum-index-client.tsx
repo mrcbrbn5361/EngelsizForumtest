@@ -125,28 +125,28 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
         name: "Haklar, Mevzuat ve İstihdam",
         description: "Engelli hakları, yasal süreçler, SGK, ÖTV muafiyeti ve istihdam rehberleri.",
         icon: "Scale",
-        slugs: ['sosyal-haklar', 'engelli-haklari', 'sgk', 'otv', 'istihdam']
+        slugs: ['sosyal-haklar', 'engelli-haklari', 'sgk', 'otv', 'istihdam', 'haklar-ve-mevzuat']
       },
       {
         id: "sec-2",
         name: "Sağlık Kurulu Raporları ve Medikal",
         description: "Sağlık kurulu oranları, Balthazard formülü, medikal cihaz ve protez süreçleri.",
         icon: "HeartPulse",
-        slugs: ['saglik', 'araclar', 'egitim']
+        slugs: ['saglik', 'araclar', 'egitim', 'saglik-ve-medikal']
       },
       {
         id: "sec-3",
         name: "Erişilebilirlik ve Yardımcı Teknolojiler",
         description: "Ekran okuyucular, dijital erişilebilirlik araçları ve yapay zeka rehberleri.",
         icon: "Eye",
-        slugs: ['teknoloji', 'yazilim', 'yapay-zeka']
+        slugs: ['teknoloji', 'yazilim', 'yapay-zeka', 'erisilebilirlik-ve-teknoloji']
       },
       {
         id: "sec-4",
         name: "Sosyal Yaşam, EKPSS ve Duyurular",
         description: "Günlük sohbetler, spor, sanat, EKPSS sınav hazırlığı ve resmi duyurular.",
         icon: "GraduationCap",
-        slugs: ['gunluk-yasam', 'ekpss', 'kamu-duyurulari']
+        slugs: ['gunluk-yasam', 'ekpss', 'kamu-duyurulari', 'sosyal-yasam-ve-dayanisma']
       }
     ];
 
@@ -424,7 +424,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                                 <div className="min-w-0 flex-1">
                                   <div className="flex items-center gap-2 mb-0.5">
                                     <Link 
-                                      href={`/discussions?kategori=${subforum.slug}`} 
+                                      href={`/category/${subforum.slug}`} 
                                       className="font-bold text-xs sm:text-sm text-slate-100 hover:text-sky-400 transition-colors truncate"
                                     >
                                       {subforum.name}

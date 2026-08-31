@@ -60,16 +60,16 @@ export function ClassicNodeRow({
       <div className="xf-node-lastPost hidden lg:flex">
         <div className="flex gap-3 items-center">
           <div className="w-9 h-9 bg-slate-800 rounded shrink-0 border border-white/[0.08] flex items-center justify-center text-sky-400 font-bold uppercase text-xs">
-            {lastPost.author.substring(0, 2)}
+            {(lastPost?.author || '-').substring(0, 2)}
           </div>
           <div className="flex flex-col min-w-0">
             <Link href={`/threads/latest`} className="text-sky-400 hover:text-sky-300 font-semibold truncate hover:underline text-[13px]">
-              {lastPost.title}
+              {lastPost?.title || 'Henüz konu yok'}
             </Link>
             <div className="flex items-center gap-1.5 text-slate-400 text-[11px]">
-              <span className="font-medium text-sky-400">{lastPost.author}</span>
+              <span className="font-medium text-sky-400">{lastPost?.author || '-'}</span>
               <span>•</span>
-              <span className="text-slate-500">{lastPost.date}</span>
+              <span className="text-slate-500">{lastPost?.date || '-'}</span>
             </div>
           </div>
         </div>
