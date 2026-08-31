@@ -134,6 +134,12 @@ export default function ClassicNavbar() {
             <Link href="/help" className="px-4 h-full flex items-center text-slate-300 hover:text-white hover:bg-white/[0.02] transition-all text-sm font-semibold">
               Yardım / SSS
             </Link>
+            {profile && (profile.role === 'admin' || profile.role === 'moderator') && (
+              <Link href="/admin" className="px-4 h-full flex items-center text-amber-400 hover:text-amber-300 hover:bg-white/[0.02] transition-all text-sm font-extrabold uppercase tracking-wide gap-1 bg-amber-500/5 border-b-[3px] border-amber-500/40">
+                <ShieldAlert size={14} />
+                Yönetim
+              </Link>
+            )}
           </nav>
 
           {/* Controls: Search, A11y, Messages, Profile */}
@@ -393,37 +399,47 @@ export default function ClassicNavbar() {
               </button>
             </form>
 
-            {/* Mobile Navigation Links */}
-            <div className="flex flex-col gap-3 text-sm font-bold text-slate-200">
-              <Link 
-                href="/" 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2.5 rounded bg-white/[0.03] hover:bg-white/[0.08]"
-              >
-                Forumlar
-              </Link>
-              <Link 
-                href="/hesaplama" 
-                onClick={() => setIsMobileMenuOpenOpen(false)}
-                className="p-2.5 rounded bg-white/[0.03] hover:bg-white/[0.08] text-sky-400"
-              >
-                Hesaplama Robotları
-              </Link>
-              <Link 
-                href="/about" 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2.5 rounded bg-white/[0.03] hover:bg-white/[0.08]"
-              >
-                Hakkımızda
-              </Link>
-              <Link 
-                href="/help" 
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2.5 rounded bg-white/[0.03] hover:bg-white/[0.08]"
-              >
-                Yardım / SSS
-              </Link>
-            </div>
+             {/* Mobile Navigation Links */}
+             <div className="flex flex-col gap-3 text-sm font-bold text-slate-200">
+               <Link 
+                 href="/" 
+                 onClick={() => setIsMobileMenuOpen(false)}
+                 className="p-2.5 rounded bg-white/[0.03] hover:bg-white/[0.08]"
+               >
+                 Forumlar
+               </Link>
+               <Link 
+                 href="/hesaplama" 
+                 onClick={() => setIsMobileMenuOpen(false)}
+                 className="p-2.5 rounded bg-white/[0.03] hover:bg-white/[0.08] text-sky-400"
+               >
+                 Hesaplama Robotları
+               </Link>
+               <Link 
+                 href="/about" 
+                 onClick={() => setIsMobileMenuOpen(false)}
+                 className="p-2.5 rounded bg-white/[0.03] hover:bg-white/[0.08]"
+               >
+                 Hakkımızda
+               </Link>
+               <Link 
+                 href="/help" 
+                 onClick={() => setIsMobileMenuOpen(false)}
+                 className="p-2.5 rounded bg-white/[0.03] hover:bg-white/[0.08]"
+               >
+                 Yardım / SSS
+               </Link>
+               {profile && (profile.role === 'admin' || profile.role === 'moderator') && (
+                 <Link 
+                   href="/admin" 
+                   onClick={() => setIsMobileMenuOpen(false)}
+                   className="p-2.5 rounded bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-extrabold flex items-center gap-2 border border-amber-500/20"
+                 >
+                   <ShieldAlert size={15} />
+                   Yönetim Paneli
+                 </Link>
+               )}
+             </div>
             
             {/* If unregistered user, show register in mobile drawer */}
             {!user && (

@@ -10,7 +10,7 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   const { id } = await params;
 
   // Try to fetch profile by UUID or username
-  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
   
   let query = supabaseServer.from('profiles').select('*');
   if (isUUID) {
@@ -39,69 +39,69 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   return (
     <div className="flex flex-col gap-4">
       {/* Breadcrumbs */}
-      <div className="bg-[#eceff3] -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-[#4b5563] border-b border-[#d8dee4] mb-4">
-        <Link href="/" className="hover:text-[#18587a] flex items-center gap-1">
+      <div className="bg-[#111726]/60 -mx-4 px-4 py-2 flex flex-wrap items-center gap-2 text-[12px] text-slate-400 border-b border-white/[0.08] mb-4">
+        <Link href="/" className="hover:text-sky-400 flex items-center gap-1 transition-colors">
           <Home size={12} />
           Ana Sayfa
         </Link>
         <span className="opacity-50">/</span>
-        <Link href="/" className="hover:text-[#18587a]">Üyeler</Link>
+        <Link href="/" className="hover:text-sky-400 transition-colors">Üyeler</Link>
         <span className="opacity-50">/</span>
-        <span className="font-semibold text-[#212529]">{profile.username}</span>
+        <span className="font-semibold text-slate-200">{profile.username}</span>
       </div>
 
-      <div className="xf-block rounded-sm overflow-hidden mb-6">
-        <div className="bg-[#204060] p-6 text-white flex flex-col md:flex-row gap-6 items-center md:items-start">
+      <div className="xf-block border border-white/[0.08] rounded-sm overflow-hidden mb-6 bg-[#111726]/40">
+        <div className="bg-[#111726]/90 p-6 text-slate-100 border-b border-white/[0.08] flex flex-col md:flex-row gap-6 items-center md:items-start">
           {/* Avatar */}
-          <div className="w-32 h-32 bg-slate-100 border-4 border-white/20 rounded-sm overflow-hidden shrink-0 flex items-center justify-center">
-             <UserIcon size={64} className="text-slate-600" />
+          <div className="w-32 h-32 bg-slate-900 border-4 border-white/[0.08] rounded-sm overflow-hidden shrink-0 flex items-center justify-center">
+             <UserIcon size={64} className="text-slate-500" />
           </div>
 
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-3xl font-bold mb-1">{profile.full_name || profile.username}</h1>
-            <div className="text-blue-200 font-semibold mb-4 uppercase text-xs tracking-wider">
-               {profile.role === 'admin' ? 'Yönetici' : 'Üye'}
+            <h1 className="text-3xl font-extrabold mb-1 text-slate-100 tracking-tight">{profile.full_name || profile.username}</h1>
+            <div className="text-sky-400 font-bold mb-4 uppercase text-xs tracking-wider">
+               {profile.role === 'admin' ? 'Yönetici / Admin' : profile.role === 'moderator' ? 'Moderator' : 'Üye'}
             </div>
 
             <div className="flex flex-wrap justify-center md:justify-start gap-6 text-sm">
                <div className="flex flex-col">
-                  <span className="text-blue-200 text-[11px] uppercase font-bold">Kayıt Tarihi</span>
-                  <span className="font-semibold">{format(new Date(profile.created_at), 'd MMMM yyyy', { locale: tr })}</span>
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Kayıt Tarihi</span>
+                  <span className="font-bold text-slate-200">{format(new Date(profile.created_at), 'd MMMM yyyy', { locale: tr })}</span>
                </div>
                <div className="flex flex-col">
-                  <span className="text-blue-200 text-[11px] uppercase font-bold">Mesajlar</span>
-                  <span className="font-semibold">{(topicCount || 0) + (commentCount || 0)}</span>
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Mesajlar</span>
+                  <span className="font-bold text-slate-200">{(topicCount || 0) + (commentCount || 0)}</span>
                </div>
                <div className="flex flex-col">
-                  <span className="text-blue-200 text-[11px] uppercase font-bold">Çözüm Sayısı</span>
-                  <span className="font-semibold">0</span>
+                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">XP Puanı</span>
+                  <span className="font-bold text-slate-200">{profile.xp || 10}</span>
                </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-2 shrink-0 w-full md:w-auto">
-             <button className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded text-sm font-bold transition-colors border border-white/20 text-center">
+          <div className="flex flex-col sm:flex-row md:flex-col gap-2 shrink-0 w-full md:w-auto">
+             <button className="bg-sky-500 hover:bg-sky-400 text-slate-950 px-5 py-2 rounded-sm text-xs font-black uppercase transition-all shadow-sm">
                 Takip Et
              </button>
-             <button className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded text-sm font-bold transition-colors border border-white/20 text-center">
+             <button className="bg-white/[0.04] hover:bg-white/[0.1] text-slate-200 px-5 py-2 rounded-sm text-xs font-bold uppercase transition-all border border-white/[0.08]">
                 Mesaj Gönder
              </button>
           </div>
         </div>
 
         {/* Profile Tabs */}
-        <div className="bg-[#f5f5f5] border-t border-b border-[#d8dee4] flex px-4">
-           <button className="px-4 py-3 text-sm font-bold border-b-2 border-[#18587a] text-[#18587a]">Aktivite Akışı</button>
-           <button className="px-4 py-3 text-sm font-bold text-[#4b5563] hover:bg-[#eceff3]">Mesajlar</button>
-           <button className="px-4 py-3 text-sm font-bold text-[#4b5563] hover:bg-[#eceff3]">Hakkında</button>
+        <div className="bg-[#111726]/40 border-b border-white/[0.08] flex px-4">
+           <button className="px-4 py-3 text-xs font-extrabold uppercase tracking-wider border-b-2 border-sky-400 text-sky-400">Aktivite Akışı</button>
+           <button className="px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-slate-200 hover:bg-white/[0.02]">Mesajlar</button>
+           <button className="px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-slate-200 hover:bg-white/[0.02]">Hakkında</button>
         </div>
 
-        <div className="p-6 bg-white flex flex-col lg:flex-row gap-8">
+        <div className="p-6 flex flex-col lg:flex-row gap-8">
            {/* Left Column: Activity */}
            <div className="flex-1 space-y-6">
-              <h3 className="text-lg font-bold text-[#204060] border-b border-[#d8dee4] pb-2">Son Aktiviteler</h3>
+              <h3 className="text-sm font-extrabold text-sky-400 uppercase tracking-wider border-b border-white/[0.08] pb-2">Son Aktiviteler</h3>
               <div className="space-y-4">
-                 <div className="p-10 text-center text-slate-700 italic bg-[#f8fafc] border border-dashed border-[#d8dee4] rounded">
+                 <div className="p-10 text-center text-slate-400 italic bg-[#111726]/20 border border-dashed border-white/[0.08] rounded-sm text-xs">
                     Bu üyenin son aktivitesi bulunmuyor.
                  </div>
               </div>
@@ -109,28 +109,28 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
 
            {/* Right Column: Sidebar Stats */}
            <div className="w-full lg:w-72 shrink-0 space-y-6">
-              <div className="space-y-4">
+              <div className="space-y-6">
                  <div>
-                    <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">İstatistikler</h4>
-                    <div className="space-y-2 text-sm">
-                       <div className="flex justify-between py-1 border-b border-slate-100">
-                          <span className="text-slate-700">Mesajlar:</span>
-                          <span className="font-semibold">{(topicCount || 0) + (commentCount || 0)}</span>
+                    <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">İstatistikler</h4>
+                    <div className="space-y-2 text-xs">
+                       <div className="flex justify-between py-2 border-b border-white/[0.04]">
+                          <span className="text-slate-400 font-medium">Toplam Mesajlar:</span>
+                          <span className="font-mono font-bold text-slate-200">{(topicCount || 0) + (commentCount || 0)}</span>
                        </div>
-                       <div className="flex justify-between py-1 border-b border-slate-100">
-                          <span className="text-slate-700">Beğeniler:</span>
-                          <span className="font-semibold">0</span>
+                       <div className="flex justify-between py-2 border-b border-white/[0.04]">
+                          <span className="text-slate-400 font-medium">Beğeniler:</span>
+                          <span className="font-mono font-bold text-slate-200">0</span>
                        </div>
-                       <div className="flex justify-between py-1 border-b border-slate-100">
-                          <span className="text-slate-700">Puanlar:</span>
-                          <span className="font-semibold">{profile.xp || 0}</span>
+                       <div className="flex justify-between py-2 border-b border-white/[0.04]">
+                          <span className="text-slate-400 font-medium">İtibar Puanı:</span>
+                          <span className="font-mono font-bold text-slate-200">{profile.xp || 10}</span>
                        </div>
                     </div>
                  </div>
 
                  <div>
-                    <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Hakkında</h4>
-                    <p className="text-sm text-slate-600 leading-relaxed">
+                    <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">Hakkında</h4>
+                    <p className="text-xs text-slate-300 leading-relaxed font-medium bg-[#111726]/10 p-3 rounded-sm border border-white/[0.04]">
                        {profile.bio || 'Bu kullanıcı henüz hakkında bir bilgi paylaşmamış.'}
                     </p>
                  </div>

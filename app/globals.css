@@ -222,19 +222,92 @@ a:hover {
   color: var(--foreground);
 }
 
-/* Accessibility Modes */
-.high-contrast {
-  --background: #000000;
-  --foreground: #ffffff;
-  --card: #000000;
-  --border: #ffffff;
-  --primary: #ffffff;
-  --primary-foreground: #000000;
-  --link: #ffff00;
+/* Accessibility Modes & Overrides */
+html[data-font-size="sm"] {
+  font-size: 12px !important;
+}
+html[data-font-size="md"] {
+  font-size: 14px !important;
+}
+html[data-font-size="lg"] {
+  font-size: 16px !important;
+}
+html[data-font-size="xl"] {
+  font-size: 18px !important;
 }
 
-.high-contrast * {
+.dyslexic-font, .dyslexic-font * {
+  font-family: 'Atkinson Hyperlegible', 'Comic Sans MS', 'Courier New', sans-serif !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.25em !important;
+  line-height: 1.75 !important;
+}
+
+.reduced-motion, .reduced-motion * {
+  transition: none !important;
+  animation: none !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
+.bionic-reading, .bionic-reading * {
+  letter-spacing: 0.03em !important;
+  word-spacing: 0.12em !important;
+  line-height: 1.7 !important;
+}
+
+.focus-mode aside, 
+.focus-mode footer, 
+.focus-mode .vibe-quick-tools,
+.focus-mode .xf-sidebar-block {
+  display: none !important;
+}
+
+.focus-mode main {
+  max-width: 850px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+}
+
+/* Bulletproof High Contrast Mode for WCAG AAA compliance */
+.high-contrast, .high-contrast * {
+  background-color: #000000 !important;
+  color: #ffffff !important;
   border-color: #ffffff !important;
+  box-shadow: none !important;
+  background-image: none !important;
+  text-shadow: none !important;
+}
+
+.high-contrast a, 
+.high-contrast a *, 
+.high-contrast button, 
+.high-contrast button * {
+  color: #ffff00 !important;
+  text-decoration: underline !important;
+}
+
+.high-contrast a:hover, 
+.high-contrast button:hover {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  text-decoration: none !important;
+}
+
+.high-contrast input, 
+.high-contrast textarea, 
+.high-contrast select {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
+
+.high-contrast svg {
+  stroke: currentColor !important;
 }
 
 /* Focus styles for AAA */

@@ -170,97 +170,102 @@ CREATE TABLE IF NOT EXISTS public.follows (
 -- ---------------------------------------------------------------------
 
 -- Sync topics & threads
-CREATE OR REPLACE FUNCTION public.sync_topics_to_threads()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO public.threads (id, category_id, author_id, title, slug, content, is_pinned, is_locked, is_solved, views_count, created_at, updated_at)
-    VALUES (NEW.id, NEW.category_id, NEW.author_id, NEW.title, NEW.slug, NEW.content, NEW.is_pinned, NEW.is_locked, NEW.is_solved, NEW.views_count, NEW.created_at, NEW.updated_at)
-    ON CONFLICT (id) DO UPDATE SET
-        category_id = EXCLUDED.category_id,
-        author_id = EXCLUDED.author_id,
-        title = EXCLUDED.title,
-        slug = EXCLUDED.slug,
-        content = EXCLUDED.content,
-        is_pinned = EXCLUDED.is_pinned,
-        is_locked = EXCLUDED.is_locked,
-        is_solved = EXCLUDED.is_solved,
-        views_count = EXCLUDED.views_count,
-        updated_at = EXCLUDED.updated_at;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- Since threads is a view, we only need an INSTEAD OF trigger on public.threads to redirect write/update/delete operations to public.topics.
+-- No AFTER triggers are needed on topics to sync to threads view because the view dynamically reflects topics table anyway.
 
 CREATE OR REPLACE FUNCTION public.sync_threads_to_topics()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.topics (id, category_id, author_id, title, slug, content, is_pinned, is_locked, is_solved, views_count, created_at, updated_at)
-    VALUES (NEW.id, NEW.category_id, NEW.author_id, NEW.title, NEW.slug, NEW.content, NEW.is_pinned, NEW.is_locked, NEW.is_solved, NEW.views_count, NEW.created_at, NEW.updated_at)
-    ON CONFLICT (id) DO UPDATE SET
-        category_id = EXCLUDED.category_id,
-        author_id = EXCLUDED.author_id,
-        title = EXCLUDED.title,
-        slug = EXCLUDED.slug,
-        content = EXCLUDED.content,
-        is_pinned = EXCLUDED.is_pinned,
-        is_locked = EXCLUDED.is_locked,
-        is_solved = EXCLUDED.is_solved,
-        views_count = EXCLUDED.views_count,
-        updated_at = EXCLUDED.updated_at;
-    RETURN NEW;
+    IF (TG_OP = 'INSERT') THEN
+        INSERT INTO public.topics (id, category_id, author_id, title, slug, content, is_pinned, is_locked, is_solved, views_count, created_at, updated_at)
+        VALUES (COALESCE(NEW.id, gen_random_uuid()), NEW.category_id, NEW.author_id, NEW.title, NEW.slug, NEW.content, NEW.is_pinned, NEW.is_locked, NEW.is_solved, NEW.views_count, COALESCE(NEW.created_at, NOW()), COALESCE(NEW.updated_at, NOW()))
+        ON CONFLICT (id) DO UPDATE SET
+            category_id = EXCLUDED.category_id,
+            author_id = EXCLUDED.author_id,
+            title = EXCLUDED.title,
+            slug = EXCLUDED.slug,
+            content = EXCLUDED.content,
+            is_pinned = EXCLUDED.is_pinned,
+            is_locked = EXCLUDED.is_locked,
+            is_solved = EXCLUDED.is_solved,
+            views_count = EXCLUDED.views_count,
+            updated_at = EXCLUDED.updated_at;
+        RETURN NEW;
+    ELSIF (TG_OP = 'UPDATE') THEN
+        UPDATE public.topics SET
+            category_id = NEW.category_id,
+            author_id = NEW.author_id,
+            title = NEW.title,
+            slug = NEW.slug,
+            content = NEW.content,
+            is_pinned = NEW.is_pinned,
+            is_locked = NEW.is_locked,
+            is_solved = NEW.is_solved,
+            views_count = NEW.views_count,
+            updated_at = COALESCE(NEW.updated_at, NOW())
+        WHERE id = OLD.id;
+        RETURN NEW;
+    ELSIF (TG_OP = 'DELETE') THEN
+        DELETE FROM public.topics WHERE id = OLD.id;
+        RETURN OLD;
+    END IF;
+    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+-- Cleanup any previous AFTER triggers that fail on views
 DROP TRIGGER IF EXISTS trg_sync_topics_to_threads ON public.topics;
-CREATE TRIGGER trg_sync_topics_to_threads
-AFTER INSERT OR UPDATE ON public.topics
-FOR EACH ROW EXECUTE FUNCTION public.sync_topics_to_threads();
-
 DROP TRIGGER IF EXISTS trg_sync_threads_to_topics ON public.threads;
+
+-- Create INSTEAD OF trigger for write support on the threads view
 CREATE TRIGGER trg_sync_threads_to_topics
-AFTER INSERT OR UPDATE ON public.threads
+INSTEAD OF INSERT OR UPDATE OR DELETE ON public.threads
 FOR EACH ROW EXECUTE FUNCTION public.sync_threads_to_topics();
 
+
 -- Sync comments & posts
-CREATE OR REPLACE FUNCTION public.sync_comments_to_posts()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO public.posts (id, topic_id, thread_id, author_id, content, is_solution, created_at, updated_at)
-    VALUES (NEW.id, NEW.topic_id, NEW.thread_id, NEW.author_id, NEW.content, NEW.is_solution, NEW.created_at, NEW.updated_at)
-    ON CONFLICT (id) DO UPDATE SET
-        topic_id = EXCLUDED.topic_id,
-        thread_id = EXCLUDED.thread_id,
-        author_id = EXCLUDED.author_id,
-        content = EXCLUDED.content,
-        is_solution = EXCLUDED.is_solution,
-        updated_at = EXCLUDED.updated_at;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+-- Since posts is a view, we only need an INSTEAD OF trigger on public.posts to redirect write/update/delete operations to public.comments.
+-- No AFTER triggers are needed on comments to sync to posts view because the view dynamically reflects comments table anyway.
 
 CREATE OR REPLACE FUNCTION public.sync_posts_to_comments()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.comments (id, topic_id, thread_id, author_id, content, is_solution, created_at, updated_at)
-    VALUES (NEW.id, NEW.topic_id, NEW.thread_id, NEW.author_id, NEW.content, NEW.is_solution, NEW.created_at, NEW.updated_at)
-    ON CONFLICT (id) DO UPDATE SET
-        topic_id = EXCLUDED.topic_id,
-        thread_id = EXCLUDED.thread_id,
-        author_id = EXCLUDED.author_id,
-        content = EXCLUDED.content,
-        is_solution = EXCLUDED.is_solution,
-        updated_at = EXCLUDED.updated_at;
-    RETURN NEW;
+    IF (TG_OP = 'INSERT') THEN
+        INSERT INTO public.comments (id, topic_id, thread_id, author_id, content, is_solution, created_at, updated_at)
+        VALUES (COALESCE(NEW.id, gen_random_uuid()), NEW.topic_id, NEW.thread_id, NEW.author_id, NEW.content, NEW.is_solution, COALESCE(NEW.created_at, NOW()), COALESCE(NEW.updated_at, NOW()))
+        ON CONFLICT (id) DO UPDATE SET
+            topic_id = EXCLUDED.topic_id,
+            thread_id = EXCLUDED.thread_id,
+            author_id = EXCLUDED.author_id,
+            content = EXCLUDED.content,
+            is_solution = EXCLUDED.is_solution,
+            updated_at = EXCLUDED.updated_at;
+        RETURN NEW;
+    ELSIF (TG_OP = 'UPDATE') THEN
+        UPDATE public.comments SET
+            topic_id = NEW.topic_id,
+            thread_id = NEW.thread_id,
+            author_id = NEW.author_id,
+            content = NEW.content,
+            is_solution = NEW.is_solution,
+            updated_at = COALESCE(NEW.updated_at, NOW())
+        WHERE id = OLD.id;
+        RETURN NEW;
+    ELSIF (TG_OP = 'DELETE') THEN
+        DELETE FROM public.comments WHERE id = OLD.id;
+        RETURN OLD;
+    END IF;
+    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+-- Cleanup any previous AFTER triggers that fail on views
 DROP TRIGGER IF EXISTS trg_sync_comments_to_posts ON public.comments;
-CREATE TRIGGER trg_sync_comments_to_posts
-AFTER INSERT OR UPDATE ON public.comments
-FOR EACH ROW EXECUTE FUNCTION public.sync_comments_to_posts();
-
 DROP TRIGGER IF EXISTS trg_sync_posts_to_comments ON public.posts;
+
+-- Create INSTEAD OF trigger for write support on the posts view
 CREATE TRIGGER trg_sync_posts_to_comments
-AFTER INSERT OR UPDATE ON public.posts
+INSTEAD OF INSERT OR UPDATE OR DELETE ON public.posts
 FOR EACH ROW EXECUTE FUNCTION public.sync_posts_to_comments();
 
 
@@ -271,9 +276,7 @@ FOR EACH ROW EXECUTE FUNCTION public.sync_posts_to_comments();
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.topics ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.threads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.conversations ENABLE ROW LEVEL SECURITY;
@@ -306,16 +309,6 @@ CREATE POLICY "Authors or staff can delete topics" ON public.topics FOR DELETE U
     auth.uid() = author_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('moderator', 'admin'))
 );
 
--- Threads Policies
-CREATE POLICY "Threads are viewable by everyone" ON public.threads FOR SELECT USING (true);
-CREATE POLICY "Logged in users can create threads" ON public.threads FOR INSERT WITH CHECK (auth.uid() = author_id);
-CREATE POLICY "Authors or staff can update threads" ON public.threads FOR UPDATE USING (
-    auth.uid() = author_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('moderator', 'admin'))
-);
-CREATE POLICY "Authors or staff can delete threads" ON public.threads FOR DELETE USING (
-    auth.uid() = author_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('moderator', 'admin'))
-);
-
 -- Comments Policies
 CREATE POLICY "Comments are viewable by everyone" ON public.comments FOR SELECT USING (true);
 CREATE POLICY "Logged in users can create comments" ON public.comments FOR INSERT WITH CHECK (auth.uid() = author_id);
@@ -323,16 +316,6 @@ CREATE POLICY "Authors or staff can update comments" ON public.comments FOR UPDA
     auth.uid() = author_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('moderator', 'admin'))
 );
 CREATE POLICY "Authors or staff can delete comments" ON public.comments FOR DELETE USING (
-    auth.uid() = author_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('moderator', 'admin'))
-);
-
--- Posts Policies
-CREATE POLICY "Posts are viewable by everyone" ON public.posts FOR SELECT USING (true);
-CREATE POLICY "Logged in users can create posts" ON public.posts FOR INSERT WITH CHECK (auth.uid() = author_id);
-CREATE POLICY "Authors or staff can update posts" ON public.posts FOR UPDATE USING (
-    auth.uid() = author_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('moderator', 'admin'))
-);
-CREATE POLICY "Authors or staff can delete posts" ON public.posts FOR DELETE USING (
     auth.uid() = author_id OR EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('moderator', 'admin'))
 );
 

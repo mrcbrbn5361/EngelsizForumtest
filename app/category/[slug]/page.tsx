@@ -56,7 +56,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     return {
       ...topic,
       replyCount: count || 0,
-      viewCount: Math.floor(Math.random() * 1000) // Placeholder for views as it's not in schema
+      viewCount: topic.views_count || 0
     };
   }));
 
