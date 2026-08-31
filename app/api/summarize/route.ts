@@ -76,26 +76,7 @@ export async function POST(req: NextRequest) {
       console.warn("[Yeterly AI Warning] Fallback triggered due to:", yeterlyError.message);
     }
 
-    // 2. Try Gemini API as a secondary fallback
-    try {
-      const response = await generateContentWithRetry({
-        contents: `Aşağıdaki forum tartışmasını veya metnini Türkçe olarak özetle. Özet kısa (en fazla 2-3 cümle), net, anlaşılır ve özellikle ekran okuyucu kullanan engelli bireyler için seslendirildiğinde rahat anlaşılacak akıcı bir dilde olmalıdır. Sadece özet metnini döndür, ek açıklama ekleme.\n\n${textToSummarize}`,
-      });
-      
-      if (response && response.text) {
-        const geminiSummary = response.text.trim();
-        return NextResponse.json({ 
-          text: geminiSummary,
-          summary: geminiSummary,
-          source: 'gemini',
-          model: 'gemini-flash'
-        });
-      }
-    } catch (geminiError: any) {
-      console.warn("[Gemini AI Summarize Warning] Falling back to local extractor...", geminiError);
-    }
-
-    // 3. Fallback to local smart semantic summary
+    // 2. Fallback to local smart semantic summary (No Gemini fallback as Gemini is strictly for EngelsizAI chat)
     const fallbackText = fallbackSummary(rawContent, title);
     return NextResponse.json({ 
       text: fallbackText,
