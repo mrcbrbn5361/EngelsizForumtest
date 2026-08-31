@@ -341,3 +341,84 @@ html[data-font-size="xl"] {
   outline: 3px solid #ff9800 !important;
   outline-offset: 2px !important;
 }
+
+/* Custom Header & Navigation High-Contrast Color Restorations (Fixes global anchor overrides and visibility) */
+.classic-nav-logo {
+  color: #ffffff !important;
+  font-weight: 900 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.classic-nav-logo:hover {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.classic-nav-link {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+}
+.classic-nav-link:hover {
+  color: #ffffff !important;
+  background-color: rgba(0, 0, 0, 0.25) !important;
+  text-decoration: none !important;
+}
+.classic-nav-link-active {
+  color: #ffffff !important;
+  background-color: rgba(0, 0, 0, 0.35) !important;
+  border-bottom: 3px solid #facc15 !important; /* amber-400 crisp accent */
+}
+
+.classic-subnav-link {
+  color: #1e293b !important; /* slate-800 */
+  font-weight: 700 !important;
+}
+.classic-subnav-link:hover {
+  color: #004b75 !important;
+  text-decoration: underline !important;
+}
+
+.classic-btn-login {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  font-weight: 700 !important;
+}
+.classic-btn-login:hover {
+  background-color: rgba(0, 0, 0, 0.35) !important;
+  text-decoration: none !important;
+}
+
+.classic-btn-register {
+  color: #020617 !important; /* slate-950 */
+  background-color: #facc15 !important; /* amber-400 high-visibility yellow */
+  font-weight: 900 !important;
+}
+.classic-btn-register:hover {
+  background-color: #fde047 !important;
+  text-decoration: none !important;
+}
+
+.classic-nav-admin {
+  color: #fef08a !important; /* yellow-200 */
+  border-bottom: 3px solid #facc15 !important; /* amber-400 */
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  font-weight: 800 !important;
+}
+.classic-nav-admin:hover {
+  color: #ffffff !important;
+  background-color: rgba(0, 0, 0, 0.45) !important;
+  text-decoration: none !important;
+}
+
+.classic-search-input {
+  background-color: #ffffff !important;
+  color: #0f172a !important; /* slate-900 */
+  border: 1px solid #cbd5e1 !important;
+  font-weight: 600 !important;
+}
+.classic-search-input::placeholder {
+  color: #64748b !important; /* slate-500 */
+}
+
+

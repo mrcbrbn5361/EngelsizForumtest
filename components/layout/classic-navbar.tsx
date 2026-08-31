@@ -115,27 +115,27 @@ export default function ClassicNavbar() {
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
-            <Link href="/" className="text-xl font-black tracking-tight hover:text-sky-200 transition-colors shrink-0">
+            <Link href="/" className="classic-nav-logo text-xl font-black tracking-tight hover:text-sky-200 transition-colors shrink-0">
               ENGELSİZ<span className="text-sky-300 font-light">FORUM</span>
             </Link>
           </div>
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center h-full gap-1">
-            <Link href="/" className="px-4 h-full flex items-center border-b-[3px] border-sky-300 bg-white/10 font-bold text-white text-sm">
+            <Link href="/" className="classic-nav-link classic-nav-link-active px-4 h-full flex items-center border-b-[3px] border-sky-300 bg-white/10 font-bold text-white text-sm">
               Forumlar
             </Link>
-            <Link href="/hesaplama" className="px-4 h-full flex items-center text-sky-100 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-semibold">
+            <Link href="/hesaplama" className="classic-nav-link px-4 h-full flex items-center text-sky-100 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-semibold">
               Hesaplamalar
             </Link>
-            <Link href="/about" className="px-4 h-full flex items-center text-sky-100 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-semibold">
+            <Link href="/about" className="classic-nav-link px-4 h-full flex items-center text-sky-100 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-semibold">
               Hakkımızda
             </Link>
-            <Link href="/help" className="px-4 h-full flex items-center text-sky-100 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-semibold">
+            <Link href="/help" className="classic-nav-link px-4 h-full flex items-center text-sky-100 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-semibold">
               Yardım / SSS
             </Link>
             {profile && (profile.role === 'admin' || profile.role === 'moderator') && (
-              <Link href="/admin" className="px-4 h-full flex items-center text-amber-200 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-extrabold uppercase tracking-wide gap-1 bg-amber-500/10 border-b-[3px] border-amber-400">
+              <Link href="/admin" className="classic-nav-admin px-4 h-full flex items-center text-amber-200 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-extrabold uppercase tracking-wide gap-1 bg-amber-500/10 border-b-[3px] border-amber-400">
                 <ShieldAlert size={14} />
                 Yönetim
               </Link>
@@ -152,9 +152,9 @@ export default function ClassicNavbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Forumda ara..." 
-                className="bg-sky-950/40 border border-sky-400/20 rounded-sm px-3 py-1.5 text-xs focus:outline-none focus:bg-sky-950/60 focus:border-sky-300 transition-all w-[130px] lg:w-[180px] placeholder:text-sky-200 text-white"
+                className="classic-search-input rounded-sm px-3 py-1.5 text-xs focus:outline-none transition-all w-[130px] lg:w-[180px]"
               />
-              <button type="submit" className="absolute right-2 text-sky-200 hover:text-white" aria-label="Ara">
+              <button type="submit" className="absolute right-2 text-slate-500 hover:text-slate-800" aria-label="Ara">
                 <Search size={13} />
               </button>
             </form>
@@ -350,11 +350,11 @@ export default function ClassicNavbar() {
               </div>
             ) : (
               <div className="flex items-center gap-2 shrink-0">
-                <Link href="/login" className="flex items-center gap-1 px-3 py-1.5 rounded-sm bg-white/10 hover:bg-white/20 border border-white/20 text-[11px] font-bold transition-colors text-white uppercase whitespace-nowrap">
+                <Link href="/login" className="classic-btn-login flex items-center gap-1 px-3 py-1.5 rounded-sm bg-white/10 hover:bg-white/20 border border-white/20 text-[11px] font-bold transition-colors text-white uppercase whitespace-nowrap">
                   <LogIn size={13} />
                   Giriş Yap
                 </Link>
-                <Link href="/register" className="hidden sm:flex items-center gap-1 px-3.5 py-1.5 rounded-sm bg-sky-400 hover:bg-sky-300 text-slate-950 text-[11px] font-black transition-colors uppercase whitespace-nowrap">
+                <Link href="/register" className="classic-btn-register hidden sm:flex items-center gap-1 px-3.5 py-1.5 rounded-sm bg-sky-400 hover:bg-sky-300 text-slate-950 text-[11px] font-black transition-colors uppercase whitespace-nowrap">
                   <UserPlus size={13} />
                   Kayıt Ol
                 </Link>
@@ -368,13 +368,13 @@ export default function ClassicNavbar() {
       <div className="bg-[#eef2f7] border-b border-slate-200">
         <div className="max-w-[1280px] mx-auto px-4 flex items-center h-[38px] overflow-x-auto no-scrollbar justify-between">
           <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-[13px] font-bold text-slate-700 whitespace-nowrap py-1">
-            <Link href="/" className="hover:text-[#0066a2] hover:underline transition-colors">Yeni Mesajlar</Link>
-            <Link href="/search" className="hover:text-[#0066a2] hover:underline transition-colors flex items-center gap-1">
+            <Link href="/" className="classic-subnav-link hover:text-[#0066a2] hover:underline transition-colors">Yeni Mesajlar</Link>
+            <Link href="/search" className="classic-subnav-link hover:text-[#0066a2] hover:underline transition-colors flex items-center gap-1">
               <Search size={12} />
               Forumda Ara
             </Link>
-            <Link href="/hesaplama" className="hover:text-[#0066a2] hover:underline transition-colors">Popüler Konular</Link>
-            <Link href="/hesaplama" className="hover:text-[#0066a2] hover:underline transition-colors text-[#0066a2] font-extrabold">
+            <Link href="/hesaplama" className="classic-subnav-link hover:text-[#0066a2] hover:underline transition-colors">Popüler Konular</Link>
+            <Link href="/hesaplama" className="classic-subnav-link hover:text-[#0066a2] hover:underline transition-colors text-[#0066a2] font-extrabold">
               Hesaplama Robotları
             </Link>
           </div>

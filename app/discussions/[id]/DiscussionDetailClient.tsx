@@ -271,20 +271,12 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
     // Increment view count securely once on mount
     async function incrementViews() {
       try {
-        const { error } = await supabase.rpc('increment_topic_views', { topic_row_id: topic.id });
-        if (error) {
-          // Fallback update if RPC fails
-          await supabase
-            .from('topics')
-            .update({ views_count: (topic.views_count || 0) + 1 })
-            .eq('id', topic.id);
-        }
-      } catch (e) {
-        // Fallback update if RPC does not exist
         await supabase
           .from('topics')
           .update({ views_count: (topic.views_count || 0) + 1 })
           .eq('id', topic.id);
+      } catch (e) {
+        console.error("Error incrementing views:", e);
       }
       
       setTopic(prev => ({ ...prev, views_count: (prev.views_count || 0) + 1 }));
@@ -342,15 +334,19 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
         // Send push notification to topic author
         if (topic.author_id !== user.id) {
-          await supabase.from('notifications').insert([{
-            recipient_id: topic.author_id,
-            sender_id: user.id,
-            type: 'like',
-            title: 'Konunuz beğenildi!',
-            body: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuzu beğendi.`,
-            is_read: false,
-            created_at: new Date().toISOString()
-          }]);
+          try {
+            await supabase.from('notifications').insert([{
+              user_id: topic.author_id,
+              recipient_id: topic.author_id,
+              sender_id: user.id,
+              type: 'like',
+              content: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuzu beğendi.`,
+              is_read: false,
+              created_at: new Date().toISOString()
+            }]);
+          } catch (notifErr) {
+            console.warn("Notification insert warning:", notifErr);
+          }
         }
       }
     } catch (err) {
@@ -365,14 +361,15 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
       alert('Cevap yazmak için lütfen giriş yapın.');
       return;
     }
-    if (!replyContent.trim()) return;
+    const currentReplyText = replyContent.trim();
+    if (!currentReplyText) return;
 
     setSubmitting(true);
     try {
       const newCommentRow = {
         topic_id: topic.id,
         author_id: user.id,
-        content: replyContent.trim(),
+        content: currentReplyText,
         is_solution: false,
         created_at: new Date().toISOString()
       };
@@ -422,15 +419,45 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
         // Notify topic author
         if (topic.author_id !== user.id) {
-          await supabase.from('notifications').insert([{
-            recipient_id: topic.author_id,
-            sender_id: user.id,
-            type: 'comment',
-            title: 'Yeni cevap yazıldı!',
-            body: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuza cevap yazdı.`,
-            is_read: false,
-            created_at: new Date().toISOString()
-          }]);
+          try {
+            await supabase.from('notifications').insert([{
+              user_id: topic.author_id,
+              recipient_id: topic.author_id,
+              sender_id: user.id,
+              type: 'comment',
+              content: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuza cevap yazdı.`,
+              is_read: false,
+              created_at: new Date().toISOString()
+            }]);
+          } catch (notifErr) {
+            console.warn("Notification insert warning:", notifErr);
+          }
+        }
+
+        // Check if @EngelsizAI is mentioned
+        if (/@engelsizai/i.test(currentReplyText)) {
+          toast.success("EngelsizAI etiketlendi! Konu analiz ediliyor ve yanıt hazırlanıyor...");
+          try {
+            const aiRes = await fetch('/api/ai/mention', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                topicId: topic.id,
+                topicTitle: topic.title,
+                topicContent: topic.content,
+                userPrompt: currentReplyText,
+                userId: user.id
+              })
+            });
+            const aiData = await aiRes.json();
+            if (aiData.success && aiData.comment) {
+              setComments(prev => [...prev, aiData.comment as CommentData]);
+              setTopic(prev => ({ ...prev, comments_count: (prev.comments_count || 0) + 1 }));
+              toast.success("EngelsizAI konuyu yanıtladı!");
+            }
+          } catch (aiCallErr) {
+            console.error("Failed to fetch EngelsizAI mention response:", aiCallErr);
+          }
         }
       }
     } catch (err) {
