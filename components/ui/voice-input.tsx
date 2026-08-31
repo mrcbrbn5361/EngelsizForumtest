@@ -35,6 +35,7 @@ export function VoiceInput({
   className = '',
 }: VoiceInputProps) {
   const [isListening, setIsListening] = useState(false);
+  const [sttTimeLeft, setSttTimeLeft] = useState(30);
   const [isRecordingAudio, setIsRecordingAudio] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -46,6 +47,7 @@ export function VoiceInput({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const sttTimerRef = useRef<NodeJS.Timeout | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -58,8 +60,27 @@ export function VoiceInput({
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
+      if (sttTimerRef.current) clearInterval(sttTimerRef.current);
+      if (recognitionRef.current) {
+        try { recognitionRef.current.abort(); } catch {}
+      }
     };
   }, []);
+
+  const stopSpeechRecognition = () => {
+    if (sttTimerRef.current) {
+      clearInterval(sttTimerRef.current);
+      sttTimerRef.current = null;
+    }
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+        recognitionRef.current.abort();
+      } catch {}
+    }
+    setIsListening(false);
+    setStatusAnnouncement('Ses dinleme durduruldu.');
+  };
 
   // Speech-to-Text handler
   const toggleSpeechRecognition = () => {
@@ -73,11 +94,7 @@ export function VoiceInput({
     }
 
     if (isListening) {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-      setIsListening(false);
-      setStatusAnnouncement('Ses dinleme durduruldu.');
+      stopSpeechRecognition();
       return;
     }
 
@@ -89,8 +106,21 @@ export function VoiceInput({
 
       recognition.onstart = () => {
         setIsListening(true);
-        setStatusAnnouncement('Dinleniyor... Lütfen konuşun.');
-        toast.info('Mikrofon aktif. Konuşmanız metne dönüştürülüyor...');
+        setSttTimeLeft(30);
+        setStatusAnnouncement('Dinleniyor... Lütfen konuşun (30 sn kota).');
+        toast.info('Mikrofon aktif. 30 saniye süre kotası başladı...');
+
+        if (sttTimerRef.current) clearInterval(sttTimerRef.current);
+        sttTimerRef.current = setInterval(() => {
+          setSttTimeLeft((prev) => {
+            if (prev <= 1) {
+              stopSpeechRecognition();
+              toast.warning('30 saniyelik sesli yazma süre kotanız doldu.');
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
       };
 
       recognition.onresult = (event: SpeechRecognitionEvent) => {
@@ -106,20 +136,20 @@ export function VoiceInput({
 
       recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', event.error);
-        setIsListening(false);
+        stopSpeechRecognition();
         setStatusAnnouncement(`Ses tanıma hatası: ${event.error}`);
         toast.error('Mikrofon erişiminde bir sorun oluştu.');
       };
 
       recognition.onend = () => {
-        setIsListening(false);
-        setStatusAnnouncement('Ses tanıma sonlandı.');
+        stopSpeechRecognition();
       };
 
       recognitionRef.current = recognition;
       recognition.start();
     } catch (err) {
       console.error('Failed to start speech recognition:', err);
+      stopSpeechRecognition();
       toast.error('Ses tanıma başlatılamadı.');
     }
   };
@@ -225,6 +255,12 @@ export function VoiceInput({
           <span className="text-xs font-mono bg-red-500/20 text-red-400 px-2.5 py-1 rounded-full border border-red-500/40 animate-pulse flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
             Kayıt: {formatTime(recordingTime)}
+          </span>
+        )}
+        {isListening && (
+          <span className="text-xs font-mono bg-amber-500/20 text-amber-300 px-2.5 py-1 rounded-full border border-amber-500/40 animate-pulse flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+            Dinleniyor (Kota: {sttTimeLeft}s)
           </span>
         )}
       </div>

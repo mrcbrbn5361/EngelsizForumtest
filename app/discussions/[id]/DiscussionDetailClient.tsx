@@ -17,6 +17,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { VoiceInput } from '@/components/accessibility/voice-input';
+import { base64ToBlobUrl } from '@/lib/utils';
 
 interface ProfileData {
   id: string;
@@ -163,7 +164,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
       const data = await response.json();
 
       if (data.success && data.audio_base64) {
-        const audioSrc = `data:audio/mp3;base64,${data.audio_base64}`;
+        const audioSrc = base64ToBlobUrl(data.audio_base64);
         const audio = new Audio(audioSrc);
         audioElementRef.current = audio;
         audio.play();

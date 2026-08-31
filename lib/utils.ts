@@ -114,3 +114,23 @@ export function sanitizeSnippet(text: string, maxLength = 200): string {
   if (stripped.length <= maxLength) return stripped;
   return stripped.substring(0, maxLength) + '...';
 }
+
+/**
+ * Converts a base64 audio string to a blob URL to comply with CSP media-src policies.
+ */
+export function base64ToBlobUrl(base64: string, mimeType = 'audio/mp3'): string {
+  try {
+    const binaryString = atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const blob = new Blob([bytes], { type: mimeType });
+    return URL.createObjectURL(blob);
+  } catch (e) {
+    console.error('Error creating blob from base64:', e);
+    return `data:${mimeType};base64,${base64}`;
+  }
+}
+

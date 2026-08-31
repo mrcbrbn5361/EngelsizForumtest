@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { base64ToBlobUrl } from '@/lib/utils';
 
 export interface TTSBoundary {
   charIndex: number;
@@ -169,7 +170,7 @@ export function useTTS() {
 
       if (data && (data.audio_base64 || data.audio_url)) {
         // High quality Yeterly voice synthesized successfully
-        const audioUrl = data.audio_url || `data:audio/mpeg;base64,${data.audio_base64}`;
+        const audioUrl = data.audio_url || (data.audio_base64 ? base64ToBlobUrl(data.audio_base64, 'audio/mpeg') : '');
         const audio = new Audio(audioUrl);
         audioPlayerRef.current = audio;
         isYeterlyPlayingRef.current = true;

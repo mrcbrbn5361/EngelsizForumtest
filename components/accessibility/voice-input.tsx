@@ -17,8 +17,10 @@ interface VoiceInputProps {
  */
 export function VoiceInput({ onTranscript, lang = 'tr-TR', label = 'Sesle Yaz' }: VoiceInputProps) {
   const [isListening, setIsListening] = useState(false);
+  const [sttTimeLeft, setSttTimeLeft] = useState(30);
   const [isSupported, setIsSupported] = useState(true);
   const [recognition, setRecognition] = useState<any>(null);
+  const timerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -35,13 +37,13 @@ export function VoiceInput({ onTranscript, lang = 'tr-TR', label = 'Sesle Yaz' }
     recognitionInstance.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       onTranscript(transcript);
-      setIsListening(false);
+      stopListening();
       toast.success('Ses başarıyla metne dönüştürüldü.');
     };
 
     recognitionInstance.onerror = (event: any) => {
       console.error('Speech recognition error', event.error);
-      setIsListening(false);
+      stopListening();
       if (event.error === 'not-allowed') {
         toast.error('Mikrofon erişimi reddedildi.');
       } else {
@@ -50,23 +52,59 @@ export function VoiceInput({ onTranscript, lang = 'tr-TR', label = 'Sesle Yaz' }
     };
 
     recognitionInstance.onend = () => {
-      setIsListening(false);
+      stopListening();
     };
 
     setRecognition(recognitionInstance);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (recognitionInstance) {
+        try { recognitionInstance.abort(); } catch {}
+      }
+    };
   }, [lang, onTranscript]);
+
+  const stopListening = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    if (recognition) {
+      try {
+        recognition.stop();
+        recognition.abort();
+      } catch {}
+    }
+    setIsListening(false);
+  };
 
   const toggleListening = useCallback(() => {
     if (!recognition) return;
 
     if (isListening) {
-      recognition.stop();
+      stopListening();
     } else {
       try {
         recognition.start();
         setIsListening(true);
+        setSttTimeLeft(30);
+        toast.info('Sesle yazma başladı (30 saniye süre kotası).');
+
+        if (timerRef.current) clearInterval(timerRef.current);
+        timerRef.current = setInterval(() => {
+          setSttTimeLeft((prev) => {
+            if (prev <= 1) {
+              stopListening();
+              toast.warning('30 saniyelik sesli yazma süre kotanız doldu.');
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
       } catch (e) {
         console.error('Recognition start error', e);
+        stopListening();
       }
     }
   }, [recognition, isListening]);
@@ -94,7 +132,7 @@ export function VoiceInput({ onTranscript, lang = 'tr-TR', label = 'Sesle Yaz' }
               className="flex items-center gap-2"
             >
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span className="text-[10px] font-black uppercase tracking-tighter sm:inline hidden">Dinleniyor...</span>
+              <span className="text-[10px] font-black uppercase tracking-tighter sm:inline hidden">Dinleniyor ({sttTimeLeft}s)</span>
             </motion.div>
           ) : (
             <motion.div

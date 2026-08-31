@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
+import { base64ToBlobUrl } from '@/lib/utils';
 
 interface Message {
   id: string;
@@ -128,7 +129,7 @@ export function EngelsizAI() {
       const data = await response.json();
 
       if (data.success && data.audio_base64) {
-        const audioSrc = `data:audio/mp3;base64,${data.audio_base64}`;
+        const audioSrc = base64ToBlobUrl(data.audio_base64);
         const audio = new Audio(audioSrc);
         setAudioElement(audio);
         audio.play();
