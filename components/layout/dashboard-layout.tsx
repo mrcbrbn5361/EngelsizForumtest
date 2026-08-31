@@ -99,20 +99,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           aria-label="Sol Gezinti Menüsü" 
           className="hidden lg:flex w-64 p-4 flex-col gap-6 sticky top-[80px] h-[calc(100vh-8rem)] overflow-y-auto bg-[#111726]/80 border border-white/[0.08] rounded-sm backdrop-blur-md shrink-0 shadow-lg"
         >
-          {/* Main Links */}
-          <nav className="flex flex-col gap-1" aria-label="Ana Menü">
-            <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-              Platform Gezintisi
-            </p>
-            <NavItem href="/" icon={Home} label="Ana Sayfa" />
-            <NavItem href="/discussions" icon={MessageSquare} label="Tartışmalar" />
-            <NavItem href="/communities" icon={Users} label="Topluluklar" />
-            <NavItem href="/hesaplama" icon={Calculator} label="Hesaplayıcılar" />
-            <NavItem href="/about" icon={Info} label="Hakkımızda" />
-          </nav>
-
-          <div className="border-t border-white/[0.08]" />
-
           {/* Communities / Categories */}
           <nav className="flex flex-col gap-1" aria-label="Popüler Topluluklar">
             <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between">

@@ -2,14 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
+import { SiteLayout } from '@/components/layout/site-layout';
 import { useAuth } from '@/components/providers/auth-provider';
 import {
   Bot, Sparkles, CheckCircle2, ArrowLeft, ShieldCheck, Terminal,
   Layers, Globe, Monitor, Newspaper, Code2, RefreshCw, Cpu,
   Search, Scale, DollarSign, Activity, Palette, Copy, Check,
-  Lock, LogIn, ExternalLink, Play, Zap, Database, Sliders, Smartphone, Wrench, FileCode, Download
+  Lock, LogIn, ExternalLink, Play, Zap, Database, Sliders, Smartphone, Wrench, FileCode, Download, Home
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { initWebMCPPolyfill, registerEngelsizForumWebMCPTools } from '@/lib/webmcp';
@@ -433,164 +432,108 @@ export default function WebMCPPage() {
   };
 
   return (
-    <div className="w-full space-y-8 py-2">
-      <div className="space-y-8 overflow-x-hidden">
-        {/* Top Header */}
-        <div className="space-y-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors font-medium"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Ana sayfaya dön
+    <SiteLayout>
+      <div className="flex flex-col gap-4">
+        {/* Breadcrumb Navigation - XenForo Style */}
+        <div className="bg-[#eef2f7] -mx-4 px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border-b border-slate-200 mb-2">
+          <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 transition-colors">
+            <Home size={12} />
+            Ana Sayfa
           </Link>
+          <span className="opacity-50">/</span>
+          <span className="font-bold text-slate-800">Yapay Zeka (AI) Ajanları ve Evrensel MCP Modülü</span>
+        </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20">
-              <Sparkles className="w-3.5 h-3.5 text-sky-400 animate-pulse" />
-              W3C Chrome WebMCP 1.1 ve Remote MCP standardı
+        {/* Hero Welcome Message */}
+        <div className="p-5 bg-white border border-slate-200 rounded-sm shadow-xs space-y-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-sm bg-[#eef2f7] text-[#185886] border border-slate-300 text-[11px] font-bold uppercase tracking-wider">
+              <Sparkles size={12} className="text-[#185886]" />
+              W3C Chrome WebMCP 1.1 &amp; Remote MCP
             </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              26 Evrensel ajan aracı ve otomatik senkronizasyon
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-sm bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold uppercase tracking-wider">
+              <CheckCircle2 size={12} />
+              26 Evrensel Ajan Aracı
             </span>
           </div>
-
+          
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight">
                 Yapay Zeka (AI) Ajanları ve Evrensel MCP Modülü
               </h1>
-              <p className="text-sm text-muted-foreground max-w-3xl leading-relaxed mt-1 font-normal">
-                IDE (Cursor, VS Code, Windsurf), CLI (Claude Code, Aider), Web (Gemini, Claude, ChatGPT) ve eklenti tabanlı tüm yapay zeka ajanları için canlı haber, mevzuat, finans, hukuk ve erişilebilirlik entegrasyonu.
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                Cursor, VS Code, Windsurf, Claude Code, Aider ve diğer tüm AI ajanları için canlı mevzuat, hesap makineleri ve tam erişilebilirlik entegrasyon hub&apos;ı.
               </p>
             </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={handleTriggerSync}
-                disabled={isSyncing}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card hover:bg-muted text-foreground text-xs font-semibold transition-colors shadow-xs border border-border cursor-pointer disabled:opacity-50"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-sky-400' : ''}`} />
-                {isSyncing ? 'Senkronize ediliyor...' : 'Tüm dizini senkronize et'}
-              </button>
-            </div>
+            
+            <button
+              onClick={handleTriggerSync}
+              disabled={isSyncing}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-sm bg-[#185886] hover:bg-[#12466b] text-white text-xs font-black uppercase tracking-wider shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+              {isSyncing ? 'Eşleniyor...' : 'Tüm Dizini Eşle'}
+            </button>
           </div>
         </div>
 
         {/* Authenticated User Status Bar / Auth Notice */}
         {!user && !authLoading ? (
-          <div className="bg-card/85 border border-border/80 backdrop-blur-md rounded-2xl p-6 space-y-4 shadow-xs">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400">
-                  <Lock className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-base sm:text-lg text-foreground">
-                    Oturum açarak tüm MCP araçlarını ve ajan entegrasyonlarını kilitsiz kullanın
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-0.5 font-normal">
-                    Giriş yapan tüm kullanıcılar 26 canlı yapay zeka ajan aracını, özel API anahtarlarını, IDE/CLI konfigürasyonlarını ve canlı test konsolunu sınırsız kullanabilir.
-                  </p>
-                </div>
+          <div className="bg-amber-50 border border-amber-200 rounded-sm p-4 text-xs font-semibold text-amber-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <Lock className="w-5 h-5 text-amber-600 shrink-0" />
+              <div>
+                <strong className="text-amber-900 block font-bold text-sm">Sınırsız Ajan Entegrasyonu İçin Oturum Açın</strong>
+                Oturum açarak canlı test konsolunu ve tüm 26 ajan aracı konfigürasyonlarını kilitsiz ve sınırsız kullanabilirsiniz.
               </div>
-
-              <Link
-                href="/login"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs shadow-xs transition-colors shrink-0"
-              >
-                <LogIn className="w-4 h-4" />
-                Giriş yap / Üye ol
-              </Link>
             </div>
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-sm bg-[#f2930d] hover:bg-[#d5800a] text-white text-xs font-black uppercase tracking-wider transition-colors shadow-xs shrink-0 whitespace-nowrap"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              Giriş Yap / Üye Ol
+            </Link>
           </div>
         ) : (
-          <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-emerald-400">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-sm p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-emerald-800">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Oturum açıldı ({user?.email}): Tüm 26 MCP ajan aracı, IDE/CLI konfigürasyonları ve canlı test konsolu aktif.</span>
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Oturum açıldı ({user?.email}): Tüm 26 MCP ajan aracı, canlı test konsolu ve entegrasyonlar aktif.</span>
             </div>
-            <span className="font-mono bg-emerald-500/20 px-2.5 py-1 rounded-full text-[11px] text-emerald-300">
+            <span className="font-mono bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-sm text-[11px]">
               Sunucu adresi: https://www.engelsizforum.com/mcp
             </span>
           </div>
         )}
 
         {/* Primary Navigation Tabs */}
-        <div className="flex border-b border-border overflow-x-auto gap-2">
-          <button
-            onClick={() => setActiveTab('tools')}
-            className={`flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
-              activeTab === 'tools'
-                ? 'border-sky-500 text-sky-400 bg-sky-500/5'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Zap className="w-4 h-4" />
-            Aktif MCP Araçları Konsolu (26 Araç)
-          </button>
-
-          <button
-            onClick={() => setActiveTab('directory')}
-            className={`flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
-              activeTab === 'directory'
-                ? 'border-sky-500 text-sky-400 bg-sky-500/5'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Database className="w-4 h-4" />
-            MCP Sunucu Dizin Kütüphanesi
-          </button>
-
-          <button
-            onClick={() => setActiveTab('guides')}
-            className={`flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
-              activeTab === 'guides'
-                ? 'border-sky-500 text-sky-400 bg-sky-500/5'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <FileCode className="w-4 h-4" />
-            Eğitim Kılavuzları ve Örnek Promptlar
-          </button>
-
-          <button
-            onClick={() => setActiveTab('configs')}
-            className={`flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
-              activeTab === 'configs'
-                ? 'border-sky-500 text-sky-400 bg-sky-500/5'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Sliders className="w-4 h-4" />
-            IDE, CLI ve Web Ajan Yapılandırmaları
-          </button>
-
-          <button
-            onClick={() => setActiveTab('webmcp')}
-            className={`flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
-              activeTab === 'webmcp'
-                ? 'border-sky-500 text-sky-400 bg-sky-500/5'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <Globe className="w-4 h-4" />
-            Chrome WebMCP 1.1 Canlı Denetçi
-          </button>
-
-          <button
-            onClick={() => setActiveTab('sync')}
-            className={`flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition-colors cursor-pointer ${
-              activeTab === 'sync'
-                ? 'border-sky-500 text-sky-400 bg-sky-500/5'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <RefreshCw className="w-4 h-4" />
-            Otomatik Senkronizasyon (Auto-Sync)
-          </button>
+        <div className="flex border-b border-slate-200 overflow-x-auto gap-1">
+          {[
+            { id: 'tools', label: 'MCP Konsolu', icon: <Zap className="w-3.5 h-3.5" /> },
+            { id: 'directory', label: 'Sunucu Dizini', icon: <Database className="w-3.5 h-3.5" /> },
+            { id: 'guides', label: 'Eğitim Kılavuzları', icon: <FileCode className="w-3.5 h-3.5" /> },
+            { id: 'configs', label: 'Ajan Yapılandırmaları', icon: <Sliders className="w-3.5 h-3.5" /> },
+            { id: 'webmcp', label: 'Chrome WebMCP Canlı', icon: <Globe className="w-3.5 h-3.5" /> },
+            { id: 'sync', label: 'Otomatik Senkronizasyon', icon: <RefreshCw className="w-3.5 h-3.5" /> },
+          ].map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-black uppercase tracking-wider border-t-2 border-x transition-colors whitespace-nowrap cursor-pointer rounded-t-sm ${
+                  isActive
+                    ? 'border-t-[#f2930d] border-x-slate-200 bg-white text-[#185886]'
+                    : 'border-t-transparent border-x-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                {tab.icon}
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
       {/* TAB 1: TOOLS TESTER */}
@@ -1467,22 +1410,23 @@ export default function WebMCPPage() {
             </div>
 
             {/* Filter Pills */}
-            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border">
+            <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-slate-200">
               {[
-                { id: 'all', label: 'Tüm kılavuzlar (26 Araç)' },
+                { id: 'all', label: 'Tüm Kılavuzlar' },
                 { id: 'accessibility', label: 'Erişilebilirlik ve Haklar' },
-                { id: 'engineering', label: 'Veritabanları ve Mühendislik' },
+                { id: 'libraries', label: '♿ Engel Grupları & Kütüphaneler' },
+                { id: 'engineering', label: 'Veritabanları & Mühendislik' },
                 { id: 'dev', label: 'Git ve Kodlama' },
-                { id: 'web', label: 'Web Otomasyon ve Arama' },
-                { id: 'utilities', label: 'İş Birliği ve Verimlilik' },
+                { id: 'web', label: 'Web Otomasyon & Arama' },
+                { id: 'utilities', label: 'İş Birliği & Verimlilik' },
               ].map((pill) => (
                 <button
                   key={pill.id}
                   onClick={() => setGuideCategoryFilter(pill.id)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors border cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition-colors border cursor-pointer ${
                     guideCategoryFilter === pill.id
-                      ? 'bg-sky-500 text-white border-sky-500 shadow-xs'
-                      : 'bg-muted/50 hover:bg-muted text-muted-foreground border-border'
+                      ? 'bg-[#185886] text-white border-[#185886] shadow-xs'
+                      : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'
                   }`}
                 >
                   {pill.label}
@@ -1583,6 +1527,51 @@ export default function WebMCPPage() {
                 recommendedPrompt: 'Arka plan #ffffff ve metin rengi #737373 olan bir düğmenin WCAG AA kontrast uyumluluğunu denetle.',
                 presetParams: { codeSnippet: '<button style="background:#ffffff; color:#737373">Tıkla</button>' },
                 tips: 'Görme engelli ve az gören kullanıcılar için renk zıtlığı denetimi yapar.',
+              },
+              {
+                id: 'react_aria_visual_accessibility',
+                category: 'libraries',
+                name: 'Görme Engelli & Az Gören: Adobe React Aria',
+                desc: 'Görme engelliler için tam klavye navigasyonu, WAI-ARIA ekran okuyucu landmarkları ve odak yönetimi sunan kütüphane.',
+                recommendedPrompt: 'Görme engelli bireyler için React Aria kullanarak ekran okuyucu uyumlu bir buton ve menü şablonu oluştur.',
+                presetParams: { topic: 'React Aria button screen reader template' },
+                tips: 'Tüm butonlar ve etkileşimli elemanlar için aria-live, aria-describedby ve doğru etiketleme sağlar.',
+              },
+              {
+                id: 'react_speech_stt_recognition',
+                category: 'libraries',
+                name: 'Görme & Fiziksel Engeli: Voice Command & Speech Recognition',
+                desc: 'Klavye veya ekran kullanamayan bireyler için Türkçe ses tanıma, dikte ve sesli forum yönetimi kütüphanesi.',
+                recommendedPrompt: 'EngelsizForum için react-speech-recognition kütüphanesi ile Türkçe sesli komut ve form doldurma örneği yaz.',
+                presetParams: { topic: 'React speech recognition Turkish dictation sample' },
+                tips: 'Kullanıcının konuşmasını gerçek zamanlı olarak metne (STT) dönüştürerek metin kutularına ekler.',
+              },
+              {
+                id: 'focus_trap_motor_disabilities',
+                category: 'libraries',
+                name: 'Ortopedik & İnce Motor Engeli: Focus Trap & Hotkeys Hook',
+                desc: 'Fare kullanamayan, sadece klavye yön tuşları veya anahtarlar (switch) kullanan bireyler için odak kilitleyici kütüphane.',
+                recommendedPrompt: 'İnce motor engelli kullanıcılar için açılır modallarda klavye odağını kilitleyen focus-trap-react örneği oluştur.',
+                presetParams: { topic: 'focus-trap-react keyboard accessibility modal' },
+                tips: 'Açılır pencerelerde odağın (focus) dışarıdaki elemanlara kaçmasını engeller ve ESC tuşu ile pencereyi kapatır.',
+              },
+              {
+                id: 'bionic_reading_cognitive_adhd',
+                category: 'libraries',
+                name: 'Zihinsel, Disleksi & DEHB: Biyonik Okuma & Dyslexic Font',
+                desc: 'Disleksi, DEHB ve dikkat dağınıklığı yaşayan bireyler için kelime köklerini vurgulayan biyonik okuma ve OpenDyslexic yazı karakteri entegrasyonu.',
+                recommendedPrompt: 'Zihinsel engelli ve disleksili bireylerin okumasını kolaylaştıran Bionic Reading (Biyonik Okuma) algoritmasını çalıştır.',
+                presetParams: { topic: 'Bionic Reading text highlighter algorithm' },
+                tips: 'Yapay zeka ile kelimelerin ilk %40-50 kısmını kalınlaştırarak okuma hızını ve kelime takibini artırır.',
+              },
+              {
+                id: 'hearing_impaired_subtitle_transcriptor',
+                category: 'libraries',
+                name: 'İşitme Engeli: Speech-to-Text Alt Yazı & Ses Çizgisi',
+                desc: 'İşitme engelli bireyler için sesli mesajların veya videoların anlık olarak yazıya dökülmesi ve görsel transkript üretimi.',
+                recommendedPrompt: 'Gönderilerdeki ses kayıtlarını yazıya döken (Speech-to-Text) ve alt yazı olarak sunan ses oynatıcı bileşeni yaz.',
+                presetParams: { topic: 'Audio voice message speech to text subtitle component' },
+                tips: 'Sesli mesajların altına otomatik Türkçe deşifre yerleştirerek işitme engellilerin bilgiye erişimini sağlar.',
               },
             ] as Array<{
               id: string;
@@ -1764,6 +1753,6 @@ export default function WebMCPPage() {
         </div>
       )}
       </div>
-    </div>
+    </SiteLayout>
   );
 }

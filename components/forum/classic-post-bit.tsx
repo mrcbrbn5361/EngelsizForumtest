@@ -1,7 +1,9 @@
 'use client';
 
-import { ThumbsUp, Quote, Flag, MessageSquare, ExternalLink, ShieldCheck } from 'lucide-react';
+import { ThumbsUp, Quote, Flag, MessageSquare, ExternalLink, ShieldCheck, Volume2 } from 'lucide-react';
 import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
+import { base64ToBlobUrl } from '@/lib/utils';
 
 interface ClassicPostBitProps {
   id: string;
@@ -18,6 +20,76 @@ interface ClassicPostBitProps {
   date: string;
   postNumber: string;
   signature?: string;
+}
+
+function AudioPlayer({ base64 }: { base64: string }) {
+  const [blobUrl, setBlobUrl] = useState<string>('');
+  
+  useEffect(() => {
+    if (!base64) return;
+    try {
+      const match = base64.match(/^data:([^;]+);base64,(.+)$/);
+      if (match) {
+        const mimeType = match[1];
+        const rawBase64 = match[2];
+        const url = base64ToBlobUrl(rawBase64, mimeType);
+        setBlobUrl(url);
+        return () => {
+          URL.revokeObjectURL(url);
+        };
+      } else {
+        const url = base64ToBlobUrl(base64, 'audio/webm');
+        setBlobUrl(url);
+        return () => {
+          URL.revokeObjectURL(url);
+        };
+      }
+    } catch (e) {
+      console.error('Error creating Blob URL for discussion audio:', e);
+    }
+  }, [base64]);
+
+  if (!blobUrl) {
+    return <span className="text-xs text-slate-500 italic block my-2">Ses yükleniyor...</span>;
+  }
+
+  return (
+    <div className="my-3 p-3 rounded-lg bg-slate-950/80 border border-amber-500/30 flex flex-col sm:flex-row items-center gap-3 max-w-md shadow-inner">
+      <div className="flex items-center gap-2">
+        <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400">
+          <Volume2 size={16} className="animate-pulse" />
+        </div>
+        <span className="text-xs font-bold text-amber-200 shrink-0">Sesli Mesaj</span>
+      </div>
+      <audio controls src={blobUrl} className="w-full h-8 max-w-xs accent-amber-500 text-xs" />
+    </div>
+  );
+}
+
+function renderPostContent(text: string) {
+  if (!text) return null;
+
+  const parts = [];
+  let currentIndex = 0;
+  const regex = /\[AUDIO\](data:audio\/[a-zA-Z0-9-+/;.,=_]+)/g;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    const matchIndex = match.index;
+    if (matchIndex > currentIndex) {
+      parts.push(<span key={`text-${currentIndex}`}>{text.substring(currentIndex, matchIndex)}</span>);
+    }
+
+    const base64Data = match[1];
+    parts.push(<AudioPlayer key={`audio-${matchIndex}`} base64={base64Data} />);
+    currentIndex = regex.lastIndex;
+  }
+
+  if (currentIndex < text.length) {
+    parts.push(<span key="text-end">{text.substring(currentIndex)}</span>);
+  }
+
+  return parts.length > 0 ? parts : text;
 }
 
 export default function ClassicPostBit({ 
@@ -117,7 +189,7 @@ export default function ClassicPostBit({
 
         {/* Post Body */}
         <div className="xf-post-body leading-relaxed text-slate-200">
-          {content}
+          {renderPostContent(content)}
         </div>
 
         {/* Signature */}

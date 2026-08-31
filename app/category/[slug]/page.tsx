@@ -84,8 +84,11 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         <div className="flex-1 min-w-0">
           <div className="mb-4 flex items-center justify-between">
             <h1 className="text-xl font-black text-[#185886] uppercase tracking-wide">{category.name}</h1>
-            <Link href="/discussions/new" className="bg-[#185886] hover:bg-[#104f75] text-white px-4 py-2 rounded-sm text-xs font-black uppercase transition-all shadow-md">
-              Yeni Konu Aç
+            <Link 
+              href="/discussions/new" 
+              className="bg-[#f2930d] hover:bg-[#d5800a] text-white px-4.5 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5"
+            >
+              <span>Yeni Konu Aç</span>
             </Link>
           </div>
 

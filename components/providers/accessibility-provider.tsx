@@ -14,6 +14,9 @@ interface AccessibilitySettings {
   reducedMotion: boolean;
   bionicReading: boolean;
   focusMode: boolean;
+  colorBlindness: 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia' | 'achromatopsia';
+  largeCursor: boolean;
+  audioGuide: boolean;
 }
 
 interface AccessibilityContextType extends AccessibilitySettings {
@@ -28,6 +31,9 @@ const defaultSettings: AccessibilitySettings = {
   reducedMotion: false,
   bionicReading: false,
   focusMode: false,
+  colorBlindness: 'none',
+  largeCursor: false,
+  audioGuide: false,
 };
 
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
@@ -89,6 +95,13 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       root.classList.toggle('reduced-motion', settings.reducedMotion);
       root.classList.toggle('bionic-reading', settings.bionicReading);
       root.classList.toggle('focus-mode', settings.focusMode);
+      root.classList.toggle('large-cursor', settings.largeCursor);
+
+      // Color blindness filters
+      root.classList.remove('protanopia', 'deuteranopia', 'tritanopia', 'achromatopsia');
+      if (settings.colorBlindness && settings.colorBlindness !== 'none') {
+        root.classList.add(settings.colorBlindness);
+      }
     } catch (e) {
       console.warn('Could not apply accessibility settings', e);
     }
@@ -114,6 +127,64 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     }
   }, [settings, user, isInitialLoad, isSyncingFromCloud]);
 
+  // Audio Guide (Hover & Focus TTS Screen-Reader Mode)
+  useEffect(() => {
+    if (isInitialLoad || !settings.audioGuide) return;
+
+    let lastText = '';
+    let speechTimeout: NodeJS.Timeout;
+
+    const handleHoverFocus = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (!target) return;
+
+      const interactive = target.closest('button, a, h1, h2, h3, h4, h5, h6, [role="button"], label, p, input, textarea');
+      if (!interactive) return;
+
+      let text = '';
+      if (interactive.tagName === 'INPUT' || interactive.tagName === 'TEXTAREA') {
+        text = (interactive as HTMLInputElement).placeholder || interactive.getAttribute('aria-label') || '';
+      } else {
+        text = interactive.getAttribute('aria-label') || interactive.textContent || '';
+      }
+      
+      const trimmed = text.trim().substring(0, 150);
+      if (trimmed && trimmed !== lastText) {
+        lastText = trimmed;
+        clearTimeout(speechTimeout);
+        speechTimeout = setTimeout(() => {
+          if (typeof window !== 'undefined' && window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(trimmed);
+            utterance.lang = 'tr-TR';
+            window.speechSynthesis.speak(utterance);
+          }
+        }, 150);
+      }
+    };
+
+    const handleMouseLeave = () => {
+      lastText = '';
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+
+    document.addEventListener('mouseover', handleHoverFocus);
+    document.addEventListener('focusin', handleHoverFocus);
+    document.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      document.removeEventListener('mouseover', handleHoverFocus);
+      document.removeEventListener('focusin', handleHoverFocus);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      clearTimeout(speechTimeout);
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [settings.audioGuide, isInitialLoad]);
+
   const updateSettings = (newSettings: Partial<AccessibilitySettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
   };
@@ -127,6 +198,24 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       <div className={`accessibility-wrapper min-h-screen ${accessibilityClasses}`}>
         <RouteAnnouncer />
         {children}
+        
+        {/* Hidden SVG Filters for Color Blindness Accommodation */}
+        <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
+          <defs>
+            <filter id="protanopia">
+              <feColorMatrix type="matrix" values="0.567, 0.433, 0, 0, 0, 0.558, 0.442, 0, 0, 0, 0, 0.242, 0.758, 0, 0, 0, 0, 0, 1, 0" />
+            </filter>
+            <filter id="deuteranopia">
+              <feColorMatrix type="matrix" values="0.625, 0.375, 0, 0, 0, 0.7, 0.3, 0, 0, 0, 0, 0.3, 0.7, 0, 0, 0, 0, 0, 1, 0" />
+            </filter>
+            <filter id="tritanopia">
+              <feColorMatrix type="matrix" values="0.95, 0.05, 0, 0, 0, 0, 0.433, 0.567, 0, 0, 0, 0.475, 0.525, 0, 0, 0, 0, 0, 1, 0" />
+            </filter>
+            <filter id="achromatopsia">
+              <feColorMatrix type="matrix" values="0.299, 0.587, 0.114, 0, 0, 0.299, 0.587, 0.114, 0, 0, 0.299, 0.587, 0.114, 0, 0, 0, 0, 0, 1, 0" />
+            </filter>
+          </defs>
+        </svg>
       </div>
     </AccessibilityContext.Provider>
   );

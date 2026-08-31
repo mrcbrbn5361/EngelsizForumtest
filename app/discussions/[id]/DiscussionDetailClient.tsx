@@ -196,9 +196,23 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
   // Voice Recording (Voice Message) functions
   const startRecording = async () => {
     try {
+      if (typeof window === 'undefined' || !navigator?.mediaDevices?.getUserMedia) {
+        toast.error('Tarayıcınız ses kaydını desteklemiyor.');
+        return;
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       audioChunksRef.current = [];
-      const mediaRecorder = new MediaRecorder(stream);
+
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : MediaRecorder.isTypeSupported('audio/webm')
+        ? 'audio/webm'
+        : MediaRecorder.isTypeSupported('audio/mp4')
+        ? 'audio/mp4'
+        : '';
+      
+      const mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
       
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -207,7 +221,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
       };
 
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType || 'audio/webm' });
         const reader = new FileReader();
         reader.readAsDataURL(audioBlob);
         reader.onloadend = () => {

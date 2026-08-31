@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { 
   Search, 
   Bell, 
@@ -26,6 +26,7 @@ import {
 import { useAuth } from '@/components/providers/auth-provider';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
 import { supabase } from '@/lib/supabase';
+import { cn } from '@/lib/utils';
 
 export default function ClassicNavbar() {
   const { user, profile } = useAuth();
@@ -40,6 +41,7 @@ export default function ClassicNavbar() {
   } = useAccessibility();
   
   const router = useRouter();
+  const pathname = usePathname();
 
   // Active UI States
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -115,27 +117,67 @@ export default function ClassicNavbar() {
             >
               {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
-            <Link href="/" className="classic-nav-logo text-xl font-black tracking-tight hover:text-sky-200 transition-colors shrink-0">
+            <Link href="/" className="classic-nav-logo text-base sm:text-lg md:text-xl font-black tracking-tight hover:text-sky-200 transition-colors shrink min-w-0 truncate select-none">
               ENGELSİZ<span className="text-sky-300 font-light">FORUM</span>
             </Link>
           </div>
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center h-full gap-1">
-            <Link href="/" className="classic-nav-link classic-nav-link-active px-4 h-full flex items-center border-b-[3px] border-sky-300 bg-white/10 font-bold text-white text-sm">
+            <Link 
+              href="/" 
+              className={cn(
+                "classic-nav-link px-4 h-full flex items-center text-sm transition-all",
+                pathname === '/' 
+                  ? "border-b-[3px] border-sky-300 bg-white/10 font-bold text-white" 
+                  : "text-sky-100 hover:text-white hover:bg-white/[0.05] font-semibold"
+              )}
+            >
               Forumlar
             </Link>
-            <Link href="/hesaplama" className="classic-nav-link px-4 h-full flex items-center text-sky-100 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-semibold">
+            <Link 
+              href="/hesaplama" 
+              className={cn(
+                "classic-nav-link px-4 h-full flex items-center text-sm transition-all",
+                pathname === '/hesaplama' 
+                  ? "border-b-[3px] border-sky-300 bg-white/10 font-bold text-white" 
+                  : "text-sky-100 hover:text-white hover:bg-white/[0.05] font-semibold"
+              )}
+            >
               Hesaplamalar
             </Link>
-            <Link href="/about" className="classic-nav-link px-4 h-full flex items-center text-sky-100 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-semibold">
+            <Link 
+              href="/about" 
+              className={cn(
+                "classic-nav-link px-4 h-full flex items-center text-sm transition-all",
+                pathname === '/about' 
+                  ? "border-b-[3px] border-sky-300 bg-white/10 font-bold text-white" 
+                  : "text-sky-100 hover:text-white hover:bg-white/[0.05] font-semibold"
+              )}
+            >
               Hakkımızda
             </Link>
-            <Link href="/help" className="classic-nav-link px-4 h-full flex items-center text-sky-100 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-semibold">
+            <Link 
+              href="/help" 
+              className={cn(
+                "classic-nav-link px-4 h-full flex items-center text-sm transition-all",
+                pathname === '/help' 
+                  ? "border-b-[3px] border-sky-300 bg-white/10 font-bold text-white" 
+                  : "text-sky-100 hover:text-white hover:bg-white/[0.05] font-semibold"
+              )}
+            >
               Yardım / SSS
             </Link>
             {profile && (profile.role === 'admin' || profile.role === 'moderator') && (
-              <Link href="/admin" className="classic-nav-admin px-4 h-full flex items-center text-amber-200 hover:text-white hover:bg-white/[0.05] transition-all text-sm font-extrabold uppercase tracking-wide gap-1 bg-amber-500/10 border-b-[3px] border-amber-400">
+              <Link 
+                href="/admin" 
+                className={cn(
+                  "classic-nav-admin px-4 h-full flex items-center transition-all text-sm font-extrabold uppercase tracking-wide gap-1 bg-amber-500/10 border-b-[3px]",
+                  pathname.startsWith('/admin') 
+                    ? "border-amber-400 text-white bg-amber-500/20" 
+                    : "border-transparent text-amber-200 hover:text-white hover:bg-white/[0.05]"
+                )}
+              >
                 <ShieldAlert size={14} />
                 Yönetim
               </Link>
@@ -160,97 +202,24 @@ export default function ClassicNavbar() {
             </form>
 
             {/* 1. Accessibility Panel Button */}
-            <div className="relative" ref={a11yRef}>
+            <div className="relative">
               <button
                 onClick={() => {
-                  const newState = !isAccessibilityOpen;
-                  closeAllDropdowns();
-                  setIsAccessibilityOpen(newState);
+                  const panel = document.getElementById("floating-accessibility-panel");
+                  if (!panel) {
+                    // Panel is closed, trigger toggle button to open it
+                    document.getElementById("floating-accessibility-toggle-btn")?.click();
+                  } else {
+                    // Already open, scroll it into view and focus
+                    panel.scrollIntoView({ behavior: 'smooth' });
+                  }
                 }}
-                className={`p-2 rounded-sm transition-colors focus:outline-none ${isAccessibilityOpen ? 'bg-sky-400 text-slate-950 font-bold' : 'text-sky-100 hover:text-white hover:bg-white/10'}`}
+                className="p-2 rounded-sm text-sky-100 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
                 aria-label="Erişilebilirlik Paneli"
                 title="Erişilebilirlik Ayarları"
               >
                 <Accessibility size={18} />
               </button>
-
-              {/* Accessibility Dropdown menu */}
-              {isAccessibilityOpen && (
-                <div className="absolute right-0 mt-2 bg-white border border-slate-200 shadow-2xl rounded-sm w-[280px] p-4 text-slate-800 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
-                  <h3 className="text-xs font-black text-[#185886] uppercase tracking-widest mb-3 flex items-center gap-2 border-b border-slate-100 pb-1.5">
-                    <Accessibility size={14} />
-                    ERİŞİLEBİLİRLİK AYARLARI
-                  </h3>
-                  
-                  <div className="flex flex-col gap-3 text-xs font-semibold">
-                    {/* Contrast Mode */}
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-2 text-slate-700">
-                        <Eye size={14} className="text-[#185886]" />
-                        Yüksek Kontrast Modu
-                      </span>
-                      <button 
-                        onClick={() => updateSettings({ highContrast: !highContrast })}
-                        className={`w-9 h-5 rounded-full p-0.5 transition-colors focus:outline-none ${highContrast ? 'bg-emerald-500' : 'bg-slate-300'}`}
-                      >
-                        <div className={`w-4 h-4 bg-white rounded-full transition-transform ${highContrast ? 'translate-x-4' : 'translate-x-0'}`} />
-                      </button>
-                    </div>
-
-                    {/* Dyslexic Font */}
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-2 text-slate-700">
-                        <Type size={14} className="text-[#185886]" />
-                        Disleksi Dostu Yazı Tipi
-                      </span>
-                      <button 
-                        onClick={() => updateSettings({ dyslexicFont: !dyslexicFont })}
-                        className={`w-9 h-5 rounded-full p-0.5 transition-colors focus:outline-none ${dyslexicFont ? 'bg-emerald-500' : 'bg-slate-300'}`}
-                      >
-                        <div className={`w-4 h-4 bg-white rounded-full transition-transform ${dyslexicFont ? 'translate-x-4' : 'translate-x-0'}`} />
-                      </button>
-                    </div>
-
-                    {/* Bionic Reading */}
-                    <div className="flex items-center justify-between">
-                      <span className="flex items-center gap-2 text-slate-700">
-                        <Sparkles size={14} className="text-[#185886]" />
-                        Biyonik Okuma (Bionic)
-                      </span>
-                      <button 
-                        onClick={() => updateSettings({ bionicReading: !bionicReading })}
-                        className={`w-9 h-5 rounded-full p-0.5 transition-colors focus:outline-none ${bionicReading ? 'bg-emerald-500' : 'bg-slate-300'}`}
-                      >
-                        <div className={`w-4 h-4 bg-white rounded-full transition-transform ${bionicReading ? 'translate-x-4' : 'translate-x-0'}`} />
-                      </button>
-                    </div>
-
-                    {/* Font Sizing Controls */}
-                    <div className="border-t border-slate-100 pt-2.5 mt-1">
-                      <span className="text-slate-500 block mb-2 text-[11px] uppercase tracking-wider font-bold">Yazı Boyutu Ayarı</span>
-                      <div className="grid grid-cols-4 gap-1.5">
-                        {(['sm', 'md', 'lg', 'xl'] as const).map((size) => (
-                          <button
-                            key={size}
-                            onClick={() => updateSettings({ fontSize: size })}
-                            className={`py-1 text-center border rounded-sm text-[11px] font-bold uppercase transition-all ${fontSize === size ? 'bg-[#185886] text-white border-[#185886] font-extrabold' : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'}`}
-                          >
-                            {size === 'md' ? 'NORM' : size.toUpperCase()}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Reset button */}
-                    <button 
-                      onClick={resetSettings}
-                      className="mt-2 text-center text-slate-500 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 border border-slate-200 py-1.5 rounded-sm transition-all"
-                    >
-                      Ayarları Sıfırla
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
 
             {user ? (
@@ -286,12 +255,12 @@ export default function ClassicNavbar() {
                 <div className="relative">
                   <Link 
                     href="/messages"
-                    className="p-2 rounded-sm relative block transition-colors focus:outline-none text-sky-100 hover:text-white hover:bg-white/10"
+                    className="p-2 rounded-sm relative block transition-colors focus:outline-none text-amber-300 hover:text-white hover:bg-white/10"
                     aria-label="Özel Mesajlar"
                     title="Özel Mesajlar"
                   >
                     <Mail size={18} />
-                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-sky-300 rounded-full border-2 border-[#185886]"></span>
+                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-amber-400 animate-pulse rounded-full border-2 border-[#185886]"></span>
                   </Link>
                 </div>
 
@@ -325,7 +294,7 @@ export default function ClassicNavbar() {
                         <span className="block text-sm font-extrabold text-[#185886] truncate">@{profile?.username || 'Üye'}</span>
                       </div>
                       <Link 
-                        href={`/profile/${profile?.username || profile?.id || user?.id}`} 
+                        href={`/profile/${profile?.id || user?.id}`} 
                         onClick={() => setIsProfileOpen(false)}
                         className="block px-4 py-2.5 text-xs font-bold hover:bg-slate-50 border-b border-slate-100 text-slate-700"
                       >
@@ -462,7 +431,7 @@ export default function ClassicNavbar() {
                 <>
                   <div className="h-[1px] bg-slate-100 my-1"></div>
                   <Link 
-                    href={`/profile/${profile.username || profile.id || user.id}`} 
+                    href={`/profile/${profile.id || user.id}`} 
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="p-2.5 rounded bg-slate-50 hover:bg-slate-100 text-[#185886]"
                   >

@@ -17,6 +17,7 @@ export default function ClassicSidebar() {
     comments: 0,
     users: 0,
     latestUser: 'Sistem',
+    latestUserId: '',
   });
   const [realUsers, setRealUsers] = useState<ActiveProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,7 +48,7 @@ export default function ClassicSidebar() {
         // Fetch latest profile
         const { data: latestProfile } = await supabase
           .from('profiles')
-          .select('username')
+          .select('id, username')
           .order('created_at', { ascending: false })
           .limit(1)
           .maybeSingle();
@@ -64,6 +65,7 @@ export default function ClassicSidebar() {
           comments: commentCount || 0,
           users: profileCount || 0,
           latestUser: latestProfile?.username || 'Sistem',
+          latestUserId: latestProfile?.id || '',
         });
 
         if (profilesList) {
@@ -144,7 +146,7 @@ export default function ClassicSidebar() {
               <div className="flex flex-wrap gap-x-2 gap-y-1 text-[13px]">
                 {realUsers.map((p, idx) => (
                   <span key={p.id} className="inline-flex items-center">
-                    <Link href={`/profile/${p.username}`} className={getRoleStyle(p.role)}>
+                    <Link href={`/profile/${p.id}`} className={getRoleStyle(p.role)}>
                       {p.username}
                     </Link>
                     {idx < realUsers.length - 1 && <span className="text-slate-400 ml-1">,</span>}
@@ -185,9 +187,13 @@ export default function ClassicSidebar() {
               </div>
               <div className="flex justify-between text-[13px]">
                 <span className="text-slate-500 font-medium">Son Üye:</span>
-                <Link href={`/profile/${stats.latestUser}`} className="font-bold text-[#185886] hover:text-[#104f75] hover:underline">
-                  {stats.latestUser}
-                </Link>
+                {stats.latestUserId ? (
+                  <Link href={`/profile/${stats.latestUserId}`} className="font-bold text-[#185886] hover:text-[#104f75] hover:underline">
+                    {stats.latestUser}
+                  </Link>
+                ) : (
+                  <span className="font-bold text-[#185886]">{stats.latestUser}</span>
+                )}
               </div>
             </>
           )}

@@ -182,10 +182,10 @@ export default function AdminDashboard() {
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
             <Tabs.List className="flex gap-1.5 p-1 bg-card/85 border border-border/80 rounded-xl w-max sm:w-fit backdrop-blur-md">
               <TabButton value="overview" icon={<TrendingUp size={16} />} label="Genel Bakış" />
-              <TabButton value="mcp" icon={<Bot size={16} />} label="WebMCP & Yapay Zeka" />
-              <TabButton value="analiz" icon={<Radio size={16} />} label="Trafik ve IoT" />
+              {isAdmin && <TabButton value="mcp" icon={<Bot size={16} />} label="WebMCP & Yapay Zeka" />}
+              {isAdmin && <TabButton value="analiz" icon={<Radio size={16} />} label="Trafik ve IoT" />}
               <TabButton value="categories" icon={<FolderTree size={16} />} label="Kategoriler" />
-              <TabButton value="users" icon={<Users size={16} />} label="Üyeler" />
+              {isAdmin && <TabButton value="users" icon={<Users size={16} />} label="Üyeler" />}
               <TabButton value="moderation" icon={<MessageSquare size={16} />} label="Moderasyon" />
             </Tabs.List>
           </div>
@@ -206,7 +206,9 @@ export default function AdminDashboard() {
                     <h3 className="text-base font-bold text-foreground">Son Kayıt Olan Üyeler</h3>
                     <p className="text-xs text-muted-foreground font-normal">Platforma katılan en yeni 5 üye</p>
                   </div>
-                  <button onClick={() => setActiveTab('users')} className="text-xs font-semibold text-sky-400 hover:text-sky-300 transition-colors cursor-pointer">Tümünü İncele</button>
+                  {isAdmin && (
+                    <button onClick={() => setActiveTab('users')} className="text-xs font-semibold text-sky-400 hover:text-sky-300 transition-colors cursor-pointer">Tümünü İncele</button>
+                  )}
                 </div>
                 <div className="space-y-2.5">
                   {usersList.slice(0, 5).map((u) => (
@@ -232,33 +234,63 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-border/80 p-6 bg-card/85 backdrop-blur-md shadow-xs flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 text-sky-400 text-xs font-semibold mb-2">
-                    <Sparkles size={14} /> WebMCP Model Context Protocol
+              {!isAdmin ? (
+                <div className="rounded-2xl border border-border/80 p-6 bg-card/85 backdrop-blur-md shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold mb-2">
+                      <Shield size={14} /> Moderatör Denetim Masası
+                    </div>
+                    <h3 className="text-base font-bold text-foreground">Topluluk Düzeni ve Kuralları</h3>
+                    <p className="text-xs text-muted-foreground font-normal leading-relaxed mt-1">
+                      EngelsizForum topluluk kalitesini korumak için, kurallara uymayan paylaşımları moderasyon sekmesinden kilitleyebilir veya silebilirsiniz. Hak ihlali bildirimlerini gözden geçirin.
+                    </p>
                   </div>
-                  <h3 className="text-base font-bold text-foreground">Yapay Zeka Ajan Entegrasyonları</h3>
-                  <p className="text-xs text-muted-foreground font-normal leading-relaxed mt-1">
-                    EngelsizForum, 26 adet canlı MCP aracıyla Claude, Cursor, ChatGPT, Gemini ve özel donanım istemcilerine erişilebilirlik ve mevzuat verisi sağlar.
-                  </p>
+                  <div className="grid grid-cols-2 gap-3 my-4">
+                    <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
+                      <span className="text-[10px] font-medium text-muted-foreground">Yetki Seviyesi</span>
+                      <p className="text-xs font-mono font-semibold text-foreground mt-0.5">Forum Moderatörü</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
+                      <span className="text-[10px] font-medium text-muted-foreground">Görev</span>
+                      <p className="text-xs font-mono font-semibold text-emerald-400 mt-0.5">Topluluk Düzeni</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => setActiveTab('moderation')}
+                    className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                  >
+                    <MessageSquare size={15} /> Moderasyon Konsolunu Aç
+                  </button>
                 </div>
-                <div className="grid grid-cols-2 gap-3 my-4">
-                  <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
-                    <span className="text-[10px] font-medium text-muted-foreground">Protokol</span>
-                    <p className="text-xs font-mono font-semibold text-foreground mt-0.5">MCP 2024-11-05</p>
+              ) : (
+                <div className="rounded-2xl border border-border/80 p-6 bg-card/85 backdrop-blur-md shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-2 text-sky-400 text-xs font-semibold mb-2">
+                      <Sparkles size={14} /> WebMCP Model Context Protocol
+                    </div>
+                    <h3 className="text-base font-bold text-foreground">Yapay Zeka Ajan Entegrasyonları</h3>
+                    <p className="text-xs text-muted-foreground font-normal leading-relaxed mt-1">
+                      EngelsizForum, 26 adet canlı MCP aracıyla Claude, Cursor, ChatGPT, Gemini ve özel donanım istemcilerine erişilebilirlik ve mevzuat verisi sağlar.
+                    </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
-                    <span className="text-[10px] font-medium text-muted-foreground">Durum</span>
-                    <p className="text-xs font-mono font-semibold text-emerald-400 mt-0.5">200 OK / Aktif</p>
+                  <div className="grid grid-cols-2 gap-3 my-4">
+                    <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
+                      <span className="text-[10px] font-medium text-muted-foreground">Protokol</span>
+                      <p className="text-xs font-mono font-semibold text-foreground mt-0.5">MCP 2024-11-05</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-muted/40 border border-border/60">
+                      <span className="text-[10px] font-medium text-muted-foreground">Durum</span>
+                      <p className="text-xs font-mono font-semibold text-emerald-400 mt-0.5">200 OK / Aktif</p>
+                    </div>
                   </div>
+                  <button 
+                    onClick={() => setActiveTab('mcp')}
+                    className="w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                  >
+                    <Bot size={15} /> WebMCP Konsolunu Aç
+                  </button>
                 </div>
-                <button 
-                  onClick={() => setActiveTab('mcp')}
-                  className="w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-                >
-                  <Bot size={15} /> WebMCP Konsolunu Aç
-                </button>
-              </div>
+              )}
             </div>
           </Tabs.Content>
 

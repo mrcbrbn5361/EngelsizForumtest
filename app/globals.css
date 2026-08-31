@@ -273,6 +273,25 @@ html[data-font-size="xl"] {
   padding-right: 12px !important;
 }
 
+/* Color Blindness Accommodation Filters */
+.protanopia {
+  filter: url(#protanopia) !important;
+}
+.deuteranopia {
+  filter: url(#deuteranopia) !important;
+}
+.tritanopia {
+  filter: url(#tritanopia) !important;
+}
+.achromatopsia {
+  filter: url(#achromatopsia) !important;
+}
+
+/* Motor & Visual Large High-Contrast Cursor */
+.large-cursor, .large-cursor * {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="black" stroke="white" stroke-width="2"><path d="M3 3l10 17 3-7 7-3z"/></svg>'), auto !important;
+}
+
 /* Bulletproof High Contrast Mode for WCAG AAA compliance */
 .high-contrast,
 .high-contrast body,

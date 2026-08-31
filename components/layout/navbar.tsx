@@ -106,7 +106,7 @@ export function Navbar() {
         <Link 
           href="/" 
           id="navbar-brand-logo"
-          className="flex items-center outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg p-0.5 group shrink-0 transition-opacity hover:opacity-90 min-w-0 select-none"
+          className="flex items-center outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-lg p-0.5 group shrink min-w-0 transition-opacity hover:opacity-90 select-none"
           aria-label="EngelsizForum Ana Sayfa"
         >
           <div className="flex flex-col min-w-0 select-none pointer-events-none" style={{ userSelect: 'none', WebkitUserSelect: 'none' }}>
@@ -131,116 +131,22 @@ export function Navbar() {
         {/* Right Header Action Items */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Accessibility Quick Menu */}
-          {mounted ? (
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger asChild>
-                <button
-                  id="accessibility-quick-menu-button"
-                  className="flex items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 text-slate-300 hover:bg-[#161f33] hover:text-sky-400 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0 cursor-pointer"
-                  aria-label="Erişilebilirlik Araçlarını Aç"
-                  title="Erişilebilirlik Menüsü"
-                >
-                  <Accessibility size={18} aria-hidden="true" className="sm:w-5 sm:h-5" />
-                </button>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content 
-                  id="accessibility-quick-menu-content"
-                  className="z-[100] min-w-[280px] max-w-[92vw] bg-[#111726] border border-white/[0.08] p-3.5 rounded-xl shadow-2xl animate-in fade-in zoom-in-95 duration-150 text-slate-100"
-                  align="end"
-                  sideOffset={8}
-                >
-                  <DropdownMenu.Label className="px-2 py-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-white/[0.08] mb-2">
-                    Erişilebilirlik Tercihleri
-                  </DropdownMenu.Label>
-                  
-                  {/* Font Size Selector */}
-                  <div className="px-2 py-2 space-y-1.5">
-                    <label className="flex items-center gap-2 text-xs font-semibold text-slate-300">
-                      <Type size={14} className="text-sky-400" /> Metin Boyutu
-                    </label>
-                    <div className="grid grid-cols-4 gap-1 pt-1">
-                      {(['sm', 'md', 'lg', 'xl'] as const).map((size) => (
-                        <button
-                          key={size}
-                          onClick={() => updateSettings({ fontSize: size })}
-                          className={cn(
-                            "rounded-md py-1.5 text-xs font-bold uppercase transition-colors border cursor-pointer",
-                            fontSize === size 
-                              ? "bg-sky-500 text-slate-950 border-sky-500 shadow-xs" 
-                              : "bg-[#0b0f19] text-slate-300 border-white/[0.08] hover:bg-[#161f33]"
-                          )}
-                          aria-pressed={fontSize === size}
-                        >
-                          {size}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <DropdownMenu.Separator className="h-px bg-white/[0.08] my-2" />
-
-                  {/* Accessibility Toggles */}
-                  <div className="space-y-1">
-                    <AccessibilityToggle 
-                      icon={<Zap size={15} />} 
-                      label="Biyonik Okuma" 
-                      active={bionicReading} 
-                      onClick={() => updateSettings({ bionicReading: !bionicReading })} 
-                    />
-                    <AccessibilityToggle 
-                      icon={<Eye size={15} />} 
-                      label="Yüksek Kontrast" 
-                      active={highContrast} 
-                      onClick={() => updateSettings({ highContrast: !highContrast })} 
-                    />
-                    <AccessibilityToggle 
-                      icon={<Contrast size={15} />} 
-                      label="Disleksi Fontu" 
-                      active={dyslexicFont} 
-                      onClick={() => updateSettings({ dyslexicFont: !dyslexicFont })} 
-                    />
-                    <AccessibilityToggle 
-                      icon={<MoveHorizontal size={15} />} 
-                      label="Hareketi Azalt" 
-                      active={reducedMotion} 
-                      onClick={() => updateSettings({ reducedMotion: !reducedMotion })} 
-                    />
-                    <AccessibilityToggle 
-                      icon={<Target size={15} />} 
-                      label="Odak Modu" 
-                      active={focusMode} 
-                      onClick={() => updateSettings({ focusMode: !focusMode })} 
-                    />
-                  </div>
-
-                  <DropdownMenu.Separator className="h-px bg-white/[0.08] my-2" />
-
-                  <div className="px-1 pt-1 flex flex-col gap-1.5">
-                    <button
-                      onClick={resetSettings}
-                      className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/[0.08] py-2 text-xs font-semibold text-slate-300 hover:bg-[#161f33] transition-colors cursor-pointer"
-                    >
-                      <RotateCcw size={13} /> Varsayılan Ayarlara Dön
-                    </button>
-
-                    <DropdownMenu.Item asChild>
-                      <Link 
-                        href="/accessibility"
-                        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:bg-[#161f33] hover:text-slate-200 outline-none cursor-pointer transition-colors"
-                      >
-                        <Info size={13} />
-                        Erişilebilirlik Raporu &amp; Standartlar
-                      </Link>
-                    </DropdownMenu.Item>
-                  </div>
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Root>
-          ) : (
+          {mounted && (
             <button
-              className="flex items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 text-slate-400 hover:bg-[#161f33] transition-colors outline-none shrink-0"
+              id="accessibility-quick-menu-button"
+              onClick={() => {
+                const panel = document.getElementById("floating-accessibility-panel");
+                if (!panel) {
+                  // Panel is closed, trigger toggle button to open it
+                  document.getElementById("floating-accessibility-toggle-btn")?.click();
+                } else {
+                  // Already open, scroll it into view and focus
+                  panel.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="flex items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 text-slate-300 hover:bg-[#161f33] hover:text-sky-400 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0 cursor-pointer"
               aria-label="Erişilebilirlik Araçlarını Aç"
+              title="Erişilebilirlik Menüsü"
             >
               <Accessibility size={18} aria-hidden="true" className="sm:w-5 sm:h-5" />
             </button>

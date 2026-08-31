@@ -4,102 +4,112 @@ import React from 'react';
 import { SiteLayout } from '@/components/layout/site-layout';
 import { 
   Target, Sparkles, ShieldCheck,
-  ChevronRight, CheckCircle2, Users, ArrowLeft
+  ChevronRight, CheckCircle2, Users, ArrowLeft, Home
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
 
 export default function AboutPage() {
   const { user } = useAuth();
+  
   return (
     <SiteLayout>
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-10">
-        
-        {/* Breadcrumb Navigation */}
-        <nav aria-label="Erişim yolu" className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Link href="/" className="hover:text-sky-400 transition-colors">Ana Sayfa</Link>
-          <ChevronRight size={14} className="text-muted-foreground/40" />
-          <span className="text-foreground font-medium">Hakkımızda</span>
-        </nav>
+      <div className="flex flex-col gap-4">
+        {/* Breadcrumb Navigation - XenForo Style */}
+        <div className="bg-[#eef2f7] -mx-4 px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border-b border-slate-200 mb-2">
+          <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 transition-colors">
+            <Home size={12} />
+            Ana Sayfa
+          </Link>
+          <span className="opacity-50">/</span>
+          <span className="font-bold text-slate-800">Hakkımızda</span>
+        </div>
 
-        {/* Hero Header */}
-        <header className="space-y-4 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-semibold">
-            <Sparkles size={14} className="text-sky-400" />
+        {/* Hero Welcome Message */}
+        <div className="p-5 bg-white border border-slate-200 rounded-sm shadow-xs space-y-3">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-sm bg-[#eef2f7] text-[#185886] border border-slate-300 text-[11px] font-bold uppercase tracking-wider">
+            <Sparkles size={12} className="text-[#185886]" />
             <span>Engelsiz Topluluk Ekosistemi</span>
           </div>
           
-          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight text-foreground leading-[1.2]">
-            Bariyersiz Bilgi, <br className="hidden sm:inline" />
-            <span className="text-sky-400">Eşit ve Güvenilir Topluluk.</span>
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight">
+            Bariyersiz Bilgi, Eşit ve Güvenilir Topluluk.
           </h1>
           
-          <p className="text-sm sm:text-base text-muted-foreground font-normal leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
             EngelsizForum, engelli bireylerin haklarını öğrenmesi, mevzuat ve sağlık kurulu raporu süreçlerini çözmesi, medikal ve teknolojik donanımlarda akran deneyimlerine ulaşması amacıyla geliştirilmiş tam erişilebilir bilgi ve dayanışma platformudur.
           </p>
-        </header>
+        </div>
 
-        {/* Core Pillars Section */}
-        <section aria-labelledby="mission-heading" className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Mission Statement */}
-          <div className="lg:col-span-7 bg-card/85 border border-border/80 rounded-2xl p-6 sm:p-8 backdrop-blur-md flex flex-col justify-between space-y-6 shadow-xs">
-            <div className="space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
-                <Target size={20} />
+        {/* Core Pillars Block */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+          
+          {/* Mission Block */}
+          <div className="lg:col-span-7 xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-sm flex flex-col justify-between">
+            <div>
+              <div className="xf-block-header bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-black uppercase text-[12px] tracking-wider py-2.5 px-3 flex items-center gap-2">
+                <Target size={14} className="text-white/80" />
+                Misyonumuz ve Temel Amacımız
               </div>
-              <h2 id="mission-heading" className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Misyonumuz ve Temel Amacımız</h2>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-normal">
-                Engellilerin sosyal hayatta, çalışma yaşamında ve yasal hak arama süreçlerinde karşılaştığı bilgi karmaşasını ortadan kaldırmak. Güncel mevzuatları, Balthazard hesaplamalarını, ÖTV muafiyet kurallarını ve erişilebilirlik teknolojilerini açık ve herkes için anlaşılır kılmaktır.
-              </p>
+              <div className="p-4 sm:p-5 space-y-3 text-slate-700">
+                <p className="text-xs sm:text-sm leading-relaxed font-normal">
+                  Engellilerin sosyal hayatta, çalışma yaşamında ve yasal hak arama süreçlerinde karşılaştığı bilgi karmaşasını ortadan kaldırmak. Güncel mevzuatları, Balthazard hesaplamalarını, ÖTV muafiyet kurallarını ve erişilebilirlik teknolojilerini açık ve herkes için anlaşılır kılmaktır.
+                </p>
+              </div>
             </div>
 
-            <div className="pt-2 flex flex-wrap gap-2">
-              <span className="px-3 py-1 bg-muted rounded-xl text-xs font-semibold text-foreground border border-border">
+            <div className="p-4 bg-slate-50 border-t border-slate-150 flex flex-wrap gap-2">
+              <span className="px-2.5 py-1 bg-white rounded-sm text-[11px] font-bold text-slate-600 border border-slate-200">
                 WCAG 2.2 AAA Uyumu
               </span>
-              <span className="px-3 py-1 bg-muted rounded-xl text-xs font-semibold text-foreground border border-border">
+              <span className="px-2.5 py-1 bg-white rounded-sm text-[11px] font-bold text-slate-600 border border-slate-200">
                 Resmi Mevzuat Taraması
               </span>
-              <span className="px-3 py-1 bg-muted rounded-xl text-xs font-semibold text-foreground border border-border">
+              <span className="px-2.5 py-1 bg-white rounded-sm text-[11px] font-bold text-slate-600 border border-slate-200">
                 Akran Dayanışması
               </span>
             </div>
           </div>
 
-          {/* Values & Principles */}
+          {/* Principles Block */}
           <div className="lg:col-span-5 flex flex-col gap-4">
-            <div className="bg-card/85 border border-border/80 rounded-2xl p-6 backdrop-blur-md space-y-3 shadow-xs">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                <ShieldCheck size={18} />
+            
+            {/* Standard 1 */}
+            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-sm flex-1">
+              <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[11px] tracking-wider py-2 px-3 flex items-center gap-1.5">
+                <ShieldCheck size={13} />
+                Doğrulanmış ve Güncel Bilgi
               </div>
-              <h3 className="text-base font-bold text-foreground">Doğrulanmış ve Güncel Bilgi</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-normal">
+              <div className="p-4 text-xs text-slate-600 leading-relaxed font-normal">
                 Resmi Gazete kararları, SGK duyuruları ve güncel yönetmelik değişiklikleri uzman moderatörler ve yapay zeka arama motorları ile sürekli doğrulanır.
-              </p>
-            </div>
-
-            <div className="bg-card/85 border border-border/80 rounded-2xl p-6 backdrop-blur-md space-y-3 shadow-xs">
-              <div className="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
-                <Users size={18} />
               </div>
-              <h3 className="text-base font-bold text-foreground">Kapsayıcı ve Güvenli Alan</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-normal">
-                Her engel grubunun özel ihtiyaçlarına saygı duyan, ayrımcılığa sıfır tolerans gösteren ve katılımcıların deneyimlerini güvenle paylaşabileceği bir ortam.
-              </p>
             </div>
-          </div>
-        </section>
 
-        {/* Technical Standards */}
-        <section aria-labelledby="standards-heading" className="space-y-4">
-          <div className="space-y-1">
-            <h2 id="standards-heading" className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Platform Mimarisi &amp; Teknik Standartlar</h2>
-            <p className="text-xs sm:text-sm text-muted-foreground font-normal">
-              EngelsizForum en modern web teknolojileri ve uluslararası erişilebilirlik yönergeleriyle inşa edilmiştir.
-            </p>
+            {/* Standard 2 */}
+            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-sm flex-1">
+              <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[11px] tracking-wider py-2 px-3 flex items-center gap-1.5">
+                <Users size={13} />
+                Kapsayıcı ve Güvenli Alan
+              </div>
+              <div className="p-4 text-xs text-slate-600 leading-relaxed font-normal">
+                Her engel grubunun özel ihtiyaçlarına saygı duyan, ayrımcılığa sıfır tolerans gösteren ve katılımcıların deneyimlerini güvenle paylaşabileceği bir ortam.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Technical Standards Block */}
+        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-sm">
+          <div className="xf-block-header bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-black uppercase text-[12px] tracking-wider py-2.5 px-3">
+            PLATFORM MİMARİSİ &amp; TEKNİK STANDARTLAR
+          </div>
+          
+          <div className="p-4 bg-slate-50 border-b border-slate-200 text-xs text-slate-600">
+            EngelsizForum en modern web teknolojileri ve uluslararası erişilebilirlik yönergeleriyle inşa edilmiştir.
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
             {[
               { 
                 title: 'Ekran Okuyucu Desteği', 
@@ -118,61 +128,63 @@ export default function AboutPage() {
                 desc: 'Klavye kısayolları, tek elle kontrol ve sıfır yatay kaydırma garantili mobil altyapı.' 
               }
             ].map((item, idx) => (
-              <div key={idx} className="p-5 rounded-2xl border border-border/80 bg-card/85 backdrop-blur-md space-y-2 hover:border-sky-500/40 transition-all shadow-xs">
-                <div className="flex items-center gap-2 text-sky-400 font-semibold text-xs">
-                  <CheckCircle2 size={15} />
+              <div key={idx} className="p-4.5 bg-white space-y-2">
+                <div className="flex items-center gap-1.5 text-slate-500 font-bold text-[10px] uppercase tracking-wider">
+                  <CheckCircle2 size={12} className="text-[#185886]" />
                   <span>Standart {idx + 1}</span>
                 </div>
-                <h3 className="font-bold text-sm text-foreground">{item.title}</h3>
-                <p className="text-xs text-muted-foreground font-normal leading-relaxed">{item.desc}</p>
+                <h3 className="font-extrabold text-xs text-[#185886] uppercase tracking-wide">{item.title}</h3>
+                <p className="text-xs text-slate-600 leading-relaxed font-normal">{item.desc}</p>
               </div>
             ))}
           </div>
-        </section>
+        </div>
 
-        {/* Call to Action */}
-        <section className="bg-card/90 border border-border/80 rounded-2xl p-6 sm:p-10 text-center space-y-5 backdrop-blur-md shadow-xs">
-          <div className="space-y-2 max-w-xl mx-auto">
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-              Dayanışmamıza Katılın
-            </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
+        {/* Call to Action Block */}
+        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-sm">
+          <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[12px] tracking-wider py-2.5 px-3 flex items-center gap-2">
+            <Sparkles size={14} className="text-[#f2930d]" />
+            Dayanışmamıza Katılın
+          </div>
+          
+          <div className="p-6 text-center space-y-4 max-w-xl mx-auto">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
               Sorularınızı sorun, edindiğiniz hak ve rapor deneyimlerinizi paylaşarak binlerce engelli bireye rehberlik edin.
             </p>
-          </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            {!user ? (
-              <Link 
-                href="/register" 
-                className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-sky-500 hover:bg-sky-400 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition-colors whitespace-nowrap"
-              >
-                Ücretsiz Kayıt Ol
-              </Link>
-            ) : (
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1.5">
+              {!user ? (
+                <Link 
+                  href="/register" 
+                  className="w-full sm:w-auto inline-flex items-center justify-center rounded-sm bg-[#f2930d] hover:bg-[#d5800a] text-white px-5 py-2 text-xs font-black uppercase tracking-wider shadow-xs transition-colors whitespace-nowrap"
+                >
+                  Ücretsiz Kayıt Ol
+                </Link>
+              ) : (
+                <Link 
+                  href="/" 
+                  className="w-full sm:w-auto inline-flex items-center justify-center rounded-sm bg-[#185886] hover:bg-[#12466b] text-white px-5 py-2 text-xs font-black uppercase tracking-wider shadow-xs transition-colors whitespace-nowrap"
+                >
+                  Forumlar Ana Sayfasına Git
+                </Link>
+              )}
               <Link 
                 href="/" 
-                className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-sky-500 hover:bg-sky-400 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition-colors whitespace-nowrap"
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-sm bg-[#eef2f7] hover:bg-slate-200 text-slate-700 border border-slate-300 px-5 py-2 text-xs font-black uppercase tracking-wider transition-colors whitespace-nowrap"
               >
-                Forumlar Ana Sayfasına Git
+                Tartışmaları İncele
               </Link>
-            )}
-            <Link 
-              href="/" 
-              className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl bg-muted hover:bg-muted/80 border border-border px-5 py-2.5 text-xs font-bold text-foreground transition-colors whitespace-nowrap"
-            >
-              Tartışmaları İncele
-            </Link>
+            </div>
           </div>
-        </section>
+        </div>
 
         {/* Back Link */}
         <div className="pt-2">
           <Link 
             href="/" 
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-card border border-border/80 px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-white border border-slate-300 px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-50 hover:border-slate-400 transition-colors"
           >
-            <ArrowLeft size={14} />
+            <ArrowLeft size={13} />
             <span>Ana Sayfaya Dön</span>
           </Link>
         </div>

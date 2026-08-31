@@ -97,7 +97,7 @@ export function UserNav() {
 
           <DropdownMenu.Item asChild>
             <Link
-              href="/profile"
+              href={`/profile/${profile.id}`}
               className="flex items-center gap-2 px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:bg-[#161f33] hover:text-white outline-none cursor-pointer transition-colors"
             >
               <User size={14} className="text-sky-400" />

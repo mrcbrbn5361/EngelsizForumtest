@@ -215,7 +215,7 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* WebMCP Status Badge & Information Trigger */}
-      <div className="fixed bottom-4 left-4 z-40 flex items-center gap-2">
+      <div className="fixed bottom-4 left-20 sm:bottom-6 sm:left-24 z-40 flex items-center gap-2">
         <button
           onClick={() => setShowInfoModal(true)}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

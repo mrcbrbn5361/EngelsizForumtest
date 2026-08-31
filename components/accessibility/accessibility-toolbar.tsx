@@ -9,7 +9,9 @@ import {
   RotateCcw,
   X,
   MousePointer2,
-  Accessibility
+  Accessibility,
+  Palette,
+  Volume2
 } from 'lucide-react';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
 import { motion, AnimatePresence } from 'motion/react';
@@ -26,6 +28,9 @@ export function AccessibilityToolbar() {
     reducedMotion, 
     bionicReading, 
     focusMode,
+    colorBlindness,
+    largeCursor,
+    audioGuide,
     updateSettings,
     resetSettings 
   } = useAccessibility();
@@ -132,7 +137,39 @@ export function AccessibilityToolbar() {
                   onClick={() => updateSettings({ focusMode: !focusMode })}
                   description="Aktif olmayan öğeleri soluklaştır"
                 />
+                <A11yToggle 
+                  icon={<MousePointer2 size={16} className="rotate-90 scale-125" />}
+                  label="Büyük İmleç"
+                  active={largeCursor}
+                  onClick={() => updateSettings({ largeCursor: !largeCursor })}
+                  description="Büyük ve yüksek kontrastlı fare imleci"
+                />
+                <A11yToggle 
+                  icon={<Volume2 size={16} />}
+                  label="Sesli Kılavuz"
+                  active={audioGuide}
+                  onClick={() => updateSettings({ audioGuide: !audioGuide })}
+                  description="Gezindiğiniz öğeleri sesli okur"
+                />
               </div>
+
+              {/* Color Blindness Selector */}
+              <section className="border-t border-slate-100 dark:border-slate-800 pt-3">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 mb-2">
+                  <Palette size={14} className="text-indigo-600 dark:text-indigo-400" /> Renk Körlüğü Filtresi
+                </label>
+                <select
+                  value={colorBlindness}
+                  onChange={(e) => updateSettings({ colorBlindness: e.target.value as any })}
+                  className="w-full h-9 rounded-lg px-2 text-xs bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 outline-none focus:border-indigo-500 cursor-pointer"
+                >
+                  <option value="none">Normal Renkler</option>
+                  <option value="protanopia">Protanopi (Kırmızı Göremezlik)</option>
+                  <option value="deuteranopia">Deuteranopi (Yeşil Göremezlik)</option>
+                  <option value="tritanopia">Tritanopi (Mavi Göremezlik)</option>
+                  <option value="achromatopsia">Akromatopsi (Tam Renk Körlüğü)</option>
+                </select>
+              </section>
             </div>
             
             <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] font-semibold text-slate-400 dark:text-slate-500 text-center">
