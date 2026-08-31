@@ -40,6 +40,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { generateUUID } from '@/lib/utils';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { getVisitorStatsAction } from '@/app/actions';
+import { ClientDate } from '@/components/ui/client-date';
 
 export default function AdminDashboard() {
   const { profile, loading } = useAuth();
@@ -784,7 +785,7 @@ function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[10px] font-semibold text-sky-400">@{topic.author?.username || 'isimsiz'}</span>
-                  <span className="text-[10px] text-muted-foreground">• {new Date(topic.created_at).toLocaleDateString('tr-TR')}</span>
+                  <span className="text-[10px] text-muted-foreground">• <ClientDate dateString={topic.created_at} /></span>
                   {topic.is_locked && (
                     <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[9px] font-semibold">
                       Kilitli

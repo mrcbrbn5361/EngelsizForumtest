@@ -8,6 +8,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { Notification } from '@/types/database';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { ClientDate } from '@/components/ui/client-date';
 import { toast } from 'sonner';
 
 export function NotificationCenter() {
@@ -303,7 +304,7 @@ export function NotificationCenter() {
                                 {n.title}
                               </span>
                               <span className="text-[10px] text-slate-500 font-mono shrink-0">
-                                {new Date(n.created_at).toLocaleDateString('tr-TR')}
+                                <ClientDate dateString={n.created_at} />
                               </span>
                             </div>
                             <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">

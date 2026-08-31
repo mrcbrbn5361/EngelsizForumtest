@@ -13,6 +13,7 @@ import { UserRoleBadge } from '@/components/ui/user-badge';
 import { supabase } from '@/lib/supabase';
 import { useRole } from '@/hooks/use-role';
 import { toast } from 'sonner';
+import { ClientDate } from '@/components/ui/client-date';
 import { formatCompactNumber } from '@/lib/utils';
 import { isUserOnline } from '@/lib/presence';
 
@@ -179,7 +180,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
           )}
           <div className="flex items-center gap-1.5 whitespace-nowrap">
             <Calendar size={12} className="text-[#185886]" aria-hidden="true" />
-            <time dateTime={topic.created_at}>{new Date(topic.created_at).toLocaleDateString('tr-TR')}</time>
+            <time dateTime={topic.created_at}><ClientDate dateString={topic.created_at} /></time>
           </div>
           <div className="flex items-center gap-1.5 whitespace-nowrap px-2 py-0.5 rounded-md bg-slate-50 text-slate-600 border border-slate-200 font-bold">
             <MessageSquare size={12} className="text-[#185886]" aria-hidden="true" />

@@ -10,6 +10,7 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { cn, formatCompactNumber } from '@/lib/utils';
 import { toast } from 'sonner';
 import { expandSearchQuery } from '@/lib/search-dictionary';
+import { ClientDate } from '@/components/ui/client-date';
 
 function SearchContent() {
   const searchParams = useSearchParams();
@@ -323,7 +324,7 @@ function SearchContent() {
                             {topic.category?.name || 'Genel'}
                           </span>
                           <span className="text-[11px] text-muted-foreground">
-                            {new Date(topic.created_at).toLocaleDateString('tr-TR')}
+                            <ClientDate dateString={topic.created_at} />
                           </span>
                         </div>
                         <h3 className="text-sm sm:text-base font-bold text-foreground group-hover:text-[#185886] group-hover:underline transition-colors tracking-tight leading-snug line-clamp-2">
