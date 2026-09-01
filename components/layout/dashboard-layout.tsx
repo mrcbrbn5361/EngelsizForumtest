@@ -92,53 +92,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         İçeriğe Atla
       </a>
 
-      <div className="flex flex-1 w-full gap-6">
-        {/* Accessible Left Sidebar (Desktop) */}
-        <aside 
-          role="complementary" 
-          aria-label="Sol Gezinti Menüsü" 
-          className="hidden lg:flex w-64 p-4 flex-col gap-6 sticky top-[80px] h-[calc(100vh-8rem)] overflow-y-auto bg-[#111726]/80 border border-white/[0.08] rounded-sm backdrop-blur-md shrink-0 shadow-lg"
-        >
-          {/* Communities / Categories */}
-          <nav className="flex flex-col gap-1" aria-label="Popüler Topluluklar">
-            <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between">
-              <span>Topluluklar</span>
-              <Link href="/communities" className="text-sky-400 hover:underline normal-case text-[11px] font-normal">Tümü</Link>
-            </p>
-            {sidebarCategories.map((cat) => {
-              const catHref = `/communities/${cat.slug || cat.id}`;
-              const isCatActive = pathname === catHref;
-              return (
-                <Link 
-                  key={cat.id || cat.slug}
-                  href={catHref} 
-                  aria-current={isCatActive ? 'page' : undefined}
-                  className={cn(
-                    "flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors outline-none",
-                    isCatActive
-                      ? "bg-sky-500/10 text-sky-400 font-bold border border-sky-500/20"
-                      : "text-slate-300 hover:bg-[#161f33] hover:text-white border border-transparent"
-                  )}
-                  aria-label={`${cat.name} topluluğu`}
-                >
-                  <span className="h-2 w-2 rounded-full bg-sky-400 shrink-0" aria-hidden="true" />
-                  <span className="truncate">{cat.name}</span>
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* User Account / Navigation */}
-          {user && (
-            <div className="mt-auto pt-4 border-t border-white/[0.08]">
-              <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                Hesabım
-              </p>
-              <NavItem href="/profile" icon={User} label="Profilim & Ayarlar" />
-            </div>
-          )}
-        </aside>
-
+      <div className="flex flex-1 w-full">
         {/* Main Content Landmark */}
         <main 
           id="main-content" 
