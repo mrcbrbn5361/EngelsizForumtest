@@ -28,16 +28,16 @@ export function NotificationCenter() {
       let { data, error: fetchErr } = await supabase
         .from('notifications')
         .select('*')
-        .eq('recipient_id', user.id)
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(20);
 
-      // Fallback if schema uses user_id instead of recipient_id
-      if (fetchErr && (fetchErr.code === '42703' || fetchErr.message?.includes('recipient_id'))) {
+      // Fallback if schema uses recipient_id instead of user_id
+      if (fetchErr && (fetchErr.code === '42703' || fetchErr.message?.includes('user_id'))) {
         const retry = await supabase
           .from('notifications')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('recipient_id', user.id)
           .order('created_at', { ascending: false })
           .limit(20);
         data = retry.data;
@@ -137,13 +137,13 @@ export function NotificationCenter() {
       let { error: updateErr } = await supabase
         .from('notifications')
         .update({ is_read: true, read_at: new Date().toISOString() })
-        .eq('recipient_id', user.id);
+        .eq('user_id', user.id);
       
-      if (updateErr && (updateErr.code === '42703' || updateErr.message?.includes('recipient_id'))) {
+      if (updateErr && (updateErr.code === '42703' || updateErr.message?.includes('user_id'))) {
         await supabase
           .from('notifications')
           .update({ is_read: true, read_at: new Date().toISOString() })
-          .eq('user_id', user.id);
+          .eq('recipient_id', user.id);
       }
       toast.success('Tüm bildirimler okundu olarak işaretlendi.');
     } catch (err) {

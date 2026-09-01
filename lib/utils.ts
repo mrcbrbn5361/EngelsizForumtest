@@ -120,16 +120,38 @@ export function sanitizeSnippet(text: string, maxLength = 200): string {
  */
 export function base64ToBlobUrl(base64: string, mimeType = 'audio/mp3'): string {
   try {
-    const binaryString = atob(base64);
+    let cleanBase64 = base64;
+    let cleanMimeType = mimeType;
+
+    // Standardize possible double or single nested data-urls
+    while (cleanBase64.includes(';base64,')) {
+      const parts = cleanBase64.split(';base64,');
+      const header = parts[0];
+      cleanBase64 = parts[1];
+      
+      const mimeMatch = header.match(/^data:(.+)$/);
+      if (mimeMatch) {
+        cleanMimeType = mimeMatch[1];
+      }
+    }
+
+    // Clean any whitespace or extra characters from the base64 string
+    cleanBase64 = cleanBase64.trim();
+
+    const binaryString = atob(cleanBase64);
     const len = binaryString.length;
     const bytes = new Uint8Array(len);
     for (let i = 0; i < len; i++) {
       bytes[i] = binaryString.charCodeAt(i);
     }
-    const blob = new Blob([bytes], { type: mimeType });
+    const blob = new Blob([bytes], { type: cleanMimeType });
     return URL.createObjectURL(blob);
   } catch (e) {
     console.error('Error creating blob from base64:', e);
+    // If it still fails, return the original or a formatted data URI as a fallback
+    if (base64.startsWith('data:')) {
+      return base64;
+    }
     return `data:${mimeType};base64,${base64}`;
   }
 }

@@ -18,6 +18,32 @@ import { tr } from 'date-fns/locale';
 import { toast } from 'sonner';
 import { VoiceInput } from '@/components/accessibility/voice-input';
 import { base64ToBlobUrl } from '@/lib/utils';
+import { createNotificationAction } from '@/app/actions';
+
+function DiscussionAudioPlayer({ base64 }: { base64: string }) {
+  const [blobUrl, setBlobUrl] = useState<string>('');
+
+  useEffect(() => {
+    if (!base64) return;
+    try {
+      const url = base64ToBlobUrl(base64, 'audio/webm');
+      setBlobUrl(url);
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    } catch (e) {
+      console.error('Error creating Blob URL for discussion audio:', e);
+    }
+  }, [base64]);
+
+  if (!blobUrl) {
+    return <span className="text-xs text-slate-500 italic block my-2">Ses yükleniyor...</span>;
+  }
+
+  return (
+    <audio controls src={blobUrl} className="w-full h-8 outline-none" />
+  );
+}
 
 interface ProfileData {
   id: string;
@@ -349,19 +375,12 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
         // Send push notification to topic author
         if (topic.author_id !== user.id) {
-          try {
-            await supabase.from('notifications').insert([{
-              user_id: topic.author_id,
-              recipient_id: topic.author_id,
-              sender_id: user.id,
-              type: 'like',
-              content: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuzu beğendi.`,
-              is_read: false,
-              created_at: new Date().toISOString()
-            }]);
-          } catch (notifErr) {
-            console.warn("Notification insert warning:", notifErr);
-          }
+          createNotificationAction({
+            recipientId: topic.author_id,
+            type: 'like',
+            content: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuzu beğendi.`,
+            data: { link: `/discussions/${topic.id}` }
+          }).catch(notifErr => console.warn("Notification insert warning:", notifErr));
         }
       }
     } catch (err) {
@@ -434,19 +453,12 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
         // Notify topic author
         if (topic.author_id !== user.id) {
-          try {
-            await supabase.from('notifications').insert([{
-              user_id: topic.author_id,
-              recipient_id: topic.author_id,
-              sender_id: user.id,
-              type: 'comment',
-              content: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuza cevap yazdı.`,
-              is_read: false,
-              created_at: new Date().toISOString()
-            }]);
-          } catch (notifErr) {
-            console.warn("Notification insert warning:", notifErr);
-          }
+          createNotificationAction({
+            recipientId: topic.author_id,
+            type: 'comment',
+            content: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuza cevap yazdı.`,
+            data: { link: `/discussions/${topic.id}` }
+          }).catch(notifErr => console.warn("Notification insert warning:", notifErr));
         }
 
         // Check if @EngelsizAI is mentioned
@@ -546,6 +558,9 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
   const renderPostContent = (text: string): React.ReactNode => {
     if (!text) return null;
 
+    // Preprocess legacy HTML audio tags with base64 data URIs to safe [AUDIO] tags
+    const processedText = text.replace(/<audio[^>]+src=["'](data:audio\/[^"']+)["'][^>]*>(?:<\/audio>)?/g, '\n\n[AUDIO]$1[/AUDIO]\n\n');
+
     // Regex for BBCode quotes [QUOTE="Username"]content[/QUOTE]
     const quoteRegex = /\[QUOTE="([^"]*)"\]([\s\S]*?)\[\/QUOTE\]/g;
 
@@ -563,7 +578,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Sesli Mesaj</p>
-                  <audio controls src={audioUrl} className="w-full h-8 outline-none" />
+                  <DiscussionAudioPlayer base64={audioUrl} />
                 </div>
               </div>
             );
@@ -638,11 +653,11 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
     let lastIndex = 0;
     let match;
 
-    while ((match = quoteRegex.exec(text)) !== null) {
+    while ((match = quoteRegex.exec(processedText)) !== null) {
       if (match.index > lastIndex) {
         parts.push(
           <React.Fragment key={`text-${lastIndex}`}>
-            {formatTextChunk(text.substring(lastIndex, match.index))}
+            {formatTextChunk(processedText.substring(lastIndex, match.index))}
           </React.Fragment>
         );
       }
@@ -664,10 +679,10 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
       lastIndex = quoteRegex.lastIndex;
     }
 
-    if (lastIndex < text.length) {
+    if (lastIndex < processedText.length) {
       parts.push(
         <React.Fragment key={`text-${lastIndex}`}>
-          {formatTextChunk(text.substring(lastIndex))}
+          {formatTextChunk(processedText.substring(lastIndex))}
         </React.Fragment>
       );
     }
@@ -714,7 +729,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
           <div className="flex items-center gap-2 text-[11px] sm:text-[12px] text-slate-500 flex-wrap">
             <span>Konuyu başlatan: <span className="text-[#185886] hover:underline font-bold">@{topic.author?.username || 'Anonim'}</span></span>
             <span>•</span>
-            <span>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
+            <span suppressHydrationWarning>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
             <span>•</span>
             <span className="font-mono text-slate-500 font-bold">Okunma: {topic.views_count || 1}</span>
           </div>
@@ -818,7 +833,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
             {/* Content Column */}
             <div className="xf-post-content flex-1 p-4 sm:p-5 flex flex-col bg-white">
               <div className="flex items-center justify-between pb-2 mb-4 border-b border-slate-100 text-[11px] text-slate-500 font-medium">
-                <time>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</time>
+                <time suppressHydrationWarning>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</time>
                 <span className="font-mono text-slate-500 font-bold">#1</span>
               </div>
 
@@ -945,7 +960,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   <div className="xf-post-content flex-1 p-4 sm:p-5 flex flex-col bg-white">
                     <div className="flex items-center justify-between pb-2 mb-4 border-b border-slate-100 text-[11px] text-slate-500 font-medium">
                       <div className="flex items-center gap-2">
-                        <time>{formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: tr })}</time>
+                        <time suppressHydrationWarning>{formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: tr })}</time>
                         {comment.is_solution && (
                           <span className="inline-flex items-center gap-1.5 text-emerald-800 font-extrabold uppercase text-[9px] tracking-wider bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-sm">
                             <CheckCircle2 size={10} /> EN İYİ CEVAP / ÇÖZÜM

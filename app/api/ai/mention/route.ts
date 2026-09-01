@@ -121,7 +121,6 @@ GÜVENLİK KURALLARI (PROMPT INJECTION KORUMASI):
         try {
           await supabase.from('notifications').insert([{
             user_id: currentTopic.author_id,
-            recipient_id: currentTopic.author_id,
             sender_id: botId,
             type: 'comment',
             content: `EngelsizAI "${topicTitle}" konunuza analiz ve yanıt ekledi.`,

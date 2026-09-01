@@ -33,7 +33,7 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
   };
 
   const handleAudioRecorded = (audioUrl: string, durationSec: number) => {
-    const audioTag = `\n\n<audio controls src="${audioUrl}" preload="metadata" class="w-full my-2 rounded-lg"></audio>\n*Sesli Mesaj (${durationSec}s)*\n`;
+    const audioTag = `\n\n[AUDIO]${audioUrl}[/AUDIO]\n*Sesli Mesaj (${durationSec}s)*\n`;
     onChange(value ? `${value} ${audioTag}` : audioTag);
     toast.success('Ses kaydı konuya eklendi!');
   };

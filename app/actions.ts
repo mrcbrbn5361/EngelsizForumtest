@@ -518,7 +518,7 @@ export async function toggleFollowAction(targetUserId: string) {
 
       await serviceClient.from('notifications').insert({
         id: generateUUID(),
-        recipient_id: targetUserId,
+        user_id: targetUserId,
         sender_id: user.id,
         type: 'follow',
         title: 'Yeni Takipçi',
@@ -747,7 +747,7 @@ export async function sendMessageAction(params: {
         if (!other?.user_id) continue;
         await serviceClient.from('notifications').insert({
           id: generateUUID(),
-          recipient_id: other.user_id,
+          user_id: other.user_id,
           sender_id: user.id,
           type: 'message',
           title: 'Yeni Doğrudan Mesaj',
@@ -1207,6 +1207,56 @@ export async function sendVoiceMessageAction(params: {
     return { success: false, error: err?.message || 'Sesli mesaj gönderilemedi.' };
   }
 }
+
+/**
+ * Server Action: Securely creates a notification using the serviceClient to bypass RLS policies
+ */
+export async function createNotificationAction(payload: {
+  recipientId: string;
+  type: string;
+  content: string;
+  data?: any;
+}) {
+  try {
+    const supabase = await getSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return { success: false, error: 'Oturum açmanız gerekiyor.' };
+    }
+
+    const serviceClient = getSupabaseServer();
+
+    const { data: senderProfile } = await serviceClient
+      .from('profiles')
+      .select('full_name, username')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    const senderName = senderProfile?.full_name || senderProfile?.username || user.email?.split('@')[0] || 'Bir üye';
+
+    const { error } = await serviceClient.from('notifications').insert({
+      id: generateUUID(),
+      user_id: payload.recipientId,
+      sender_id: user.id,
+      type: payload.type,
+      content: payload.content,
+      is_read: false,
+      data: payload.data || {},
+      created_at: new Date().toISOString()
+    });
+
+    if (error) {
+      console.error('Error inserting notification via serviceClient:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.error('Fatal error in createNotificationAction:', err);
+    return { success: false, error: err?.message || 'Bildirim gönderilemedi.' };
+  }
+}
+
 
 
 

@@ -141,7 +141,7 @@ export function PostComposer({ topicId, onSuccess, placeholder = 'Topluluğa bir
         <VoiceInput 
           onTranscript={(text) => setContent(prev => prev + (prev ? ' ' : '') + text)} 
           onAudioRecorded={(audioUrl, durationSec) => {
-            const audioTag = `\n\n<audio controls src="${audioUrl}" preload="metadata" class="w-full my-2 rounded-lg"></audio>\n*Sesli Yanıt (${durationSec}s)*\n`;
+            const audioTag = `\n\n[AUDIO]${audioUrl}[/AUDIO]\n*Sesli Yanıt (${durationSec}s)*\n`;
             setContent(prev => prev ? `${prev} ${audioTag}` : audioTag);
             toast.success('Sesli yanıt eklendi!');
           }}

@@ -28,22 +28,11 @@ function AudioPlayer({ base64 }: { base64: string }) {
   useEffect(() => {
     if (!base64) return;
     try {
-      const match = base64.match(/^data:([^;]+);base64,(.+)$/);
-      if (match) {
-        const mimeType = match[1];
-        const rawBase64 = match[2];
-        const url = base64ToBlobUrl(rawBase64, mimeType);
-        setBlobUrl(url);
-        return () => {
-          URL.revokeObjectURL(url);
-        };
-      } else {
-        const url = base64ToBlobUrl(base64, 'audio/webm');
-        setBlobUrl(url);
-        return () => {
-          URL.revokeObjectURL(url);
-        };
-      }
+      const url = base64ToBlobUrl(base64, 'audio/webm');
+      setBlobUrl(url);
+      return () => {
+        URL.revokeObjectURL(url);
+      };
     } catch (e) {
       console.error('Error creating Blob URL for discussion audio:', e);
     }
@@ -69,15 +58,18 @@ function AudioPlayer({ base64 }: { base64: string }) {
 function renderPostContent(text: string) {
   if (!text) return null;
 
+  // Preprocess HTML audio tags to [AUDIO] format
+  const processedText = text.replace(/<audio[^>]+src=["'](data:audio\/[^"']+)["'][^]*>(?:<\/audio>)?/g, '[AUDIO]$1');
+
   const parts = [];
   let currentIndex = 0;
   const regex = /\[AUDIO\](data:audio\/[a-zA-Z0-9-+/;.,=_]+)/g;
   let match;
 
-  while ((match = regex.exec(text)) !== null) {
+  while ((match = regex.exec(processedText)) !== null) {
     const matchIndex = match.index;
     if (matchIndex > currentIndex) {
-      parts.push(<span key={`text-${currentIndex}`}>{text.substring(currentIndex, matchIndex)}</span>);
+      parts.push(<span key={`text-${currentIndex}`}>{processedText.substring(currentIndex, matchIndex)}</span>);
     }
 
     const base64Data = match[1];
@@ -85,11 +77,11 @@ function renderPostContent(text: string) {
     currentIndex = regex.lastIndex;
   }
 
-  if (currentIndex < text.length) {
-    parts.push(<span key="text-end">{text.substring(currentIndex)}</span>);
+  if (currentIndex < processedText.length) {
+    parts.push(<span key="text-end">{processedText.substring(currentIndex)}</span>);
   }
 
-  return parts.length > 0 ? parts : text;
+  return parts.length > 0 ? parts : processedText;
 }
 
 export default function ClassicPostBit({ 
