@@ -1,16 +1,15 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
-import { SiteLayout } from '@/components/layout/site-layout';
-import { Search, Filter, ArrowRight, Loader2, Mic, Sparkles, ChevronRight, X, AlertCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { Search, Filter, Loader2, Mic, Sparkles, ChevronRight, X, Home, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import { cn, formatCompactNumber } from '@/lib/utils';
 import { toast } from 'sonner';
-import { expandSearchQuery } from '@/lib/search-dictionary';
-import { ClientDate } from '@/components/ui/client-date';
+import { expandSearchQuery, matchQueryWithText } from '@/lib/search-dictionary';
+import ClassicSidebar from '@/components/forum/classic-sidebar';
+import { formatDistanceToNow } from 'date-fns';
+import { tr } from 'date-fns/locale';
 
 function SearchContent() {
   const searchParams = useSearchParams();
@@ -25,27 +24,19 @@ function SearchContent() {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [showFilters, setShowFilters] = useState(Boolean(initialCat));
   const [expandedTermsUsed, setExpandedTermsUsed] = useState<string[]>([]);
   const [searched, setSearched] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
-      if (!isSupabaseConfigured) {
-        setCategories([]);
-        return;
-      }
-
+      if (!isSupabaseConfigured) return;
       try {
         const { data, error } = await supabase.from('categories').select('*').order('name');
         if (data && data.length > 0) {
           setCategories(data);
-        } else {
-          setCategories([]);
         }
       } catch (err) {
         console.error('Error fetching search categories:', err);
-        setCategories([]);
       }
     };
     fetchCategories();
@@ -63,10 +54,8 @@ function SearchContent() {
     setSearched(true);
 
     if (!isSupabaseConfigured) {
-      setTimeout(() => {
-        setResults([]);
-        setLoading(false);
-      }, 300);
+      setResults([]);
+      setLoading(false);
       return;
     }
 
@@ -74,11 +63,11 @@ function SearchContent() {
       let queryBuilder = supabase
         .from('topics')
         .select(`
-          id, title, content, author_id, category_id, views_count, created_at, updated_at, slug, comments_count,
-          category:categories(id, name, slug, color, icon),
-          author:profiles(id, username, avatar_url, full_name, role, level, xp, is_verified)
+          id, title, content, author_id, category_id, views_count, comments_count, created_at, updated_at, slug,
+          category:categories(id, name, slug),
+          author:profiles(id, username, avatar_url, full_name, role)
         `)
-        .limit(30);
+        .limit(50);
 
       if (trimmed) {
         const terms = expandSearchQuery(trimmed).slice(0, 8);
@@ -98,33 +87,51 @@ function SearchContent() {
         if (isUuid) {
           queryBuilder = queryBuilder.eq('category_id', catId);
         } else {
-          const matchedCat = categories.find(c => c.slug === catId || c.id === catId);
-          if (matchedCat) {
-            queryBuilder = queryBuilder.eq('category_id', matchedCat.id);
+          const matched = categories.find(c => c.slug === catId);
+          if (matched) {
+            queryBuilder = queryBuilder.eq('category_id', matched.id);
           }
         }
       }
-            
+
       const { data, error } = await queryBuilder.order('created_at', { ascending: false });
-      if (error) throw error;
-      setResults((data as any || []).filter((t: any) => t.author));
+
+      if (error) {
+        console.error('Search error:', error);
+        toast.error('Arama sırasında bir hata oluştu.');
+        setResults([]);
+      } else {
+        setResults(data || []);
+      }
     } catch (err) {
-      console.error('Search error:', err);
+      console.error('Search crash:', err);
+      toast.error('Arama servisine ulaşılamadı.');
       setResults([]);
     } finally {
       setLoading(false);
     }
   }, [categories]);
 
-  // Initial trigger from URL params
+  const updateUrl = (q: string, cat: string) => {
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (cat) params.set('category', cat);
+    router.replace(`/search?${params.toString()}`);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateUrl(query, categoryId);
+    performSearch(query, categoryId);
+  };
+
   useEffect(() => {
     if (initialQ || initialCat) {
       performSearch(initialQ, initialCat);
     }
-  }, [initialQ, initialCat, performSearch]);
+  }, []);
 
   const startVoiceSearch = () => {
-    if (typeof window === 'undefined') return;
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       toast.error('Tarayıcınız ses tanımayı desteklemiyor.');
       return;
@@ -133,249 +140,208 @@ function SearchContent() {
     const recognition = new SpeechRecognition();
     recognition.lang = 'tr-TR';
     
-    recognition.onstart = () => setIsListening(true);
+    recognition.onstart = () => {
+      setIsListening(true);
+      toast.info("Ses dinleniyor, lütfen konuşun...");
+    };
     recognition.onend = () => setIsListening(false);
     
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       setQuery(transcript);
+      toast.success(`Aranan: "${transcript}"`);
       performSearch(transcript, categoryId);
       updateUrl(transcript, categoryId);
     };
     recognition.start();
   };
 
-  const updateUrl = (q: string, cat: string) => {
-    const params = new URLSearchParams();
-    if (q) params.set('q', q);
-    if (cat) params.set('category', cat);
-    const queryString = params.toString();
-    router.replace(`/search${queryString ? `?${queryString}` : ''}`, { scroll: false });
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    performSearch(query, categoryId);
-    updateUrl(query, categoryId);
-  };
-
-  const clearSearch = () => {
-    setQuery('');
-    setCategoryId('');
-    setResults([]);
-    setExpandedTermsUsed([]);
-    setSearched(false);
-    router.replace('/search', { scroll: false });
-  };
-
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-6">
-      <nav aria-label="Erişim yolu" className="flex items-center gap-1.5 text-xs text-muted-foreground">
-        <Link href="/" className="hover:text-[#185886] hover:underline transition-colors">Ana Sayfa</Link>
-        <ChevronRight size={13} className="text-muted-foreground/60" aria-hidden="true" />
-        <span className="text-foreground font-bold">Arama</span>
-      </nav>
+    <div className="flex flex-col gap-4">
+      {/* XenForo Breadcrumbs */}
+      <div className="bg-[#eef2f7] px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm mb-2">
+        <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 font-semibold">
+          <Home size={12} />
+          Ana Sayfa
+        </Link>
+        <span className="opacity-50">/</span>
+        <Link href="/discussions" className="hover:text-[#185886] hover:underline font-semibold">Forumlar</Link>
+        <span className="opacity-50">/</span>
+        <span className="font-bold text-slate-800">Arama</span>
+      </div>
 
-      <header className="space-y-4">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-slate-100 text-[#185886] border border-slate-200 text-xs font-semibold">
-            <Sparkles size={12} aria-hidden="true" /> Akıllı Arama &amp; Filtreleme
-          </div>
-          <h1 className="text-2xl md:text-3xl font-black text-[#185886] tracking-tight">
-            Topluluk İçinde Arayın
-          </h1>
-          <p className="text-muted-foreground text-xs sm:text-sm">
-            Mevzuat, haklar, ÖTV, rapor oranları veya genel konularda binlerce deneyim arasında arama yapın.
-          </p>
-        </div>
-
-        <form onSubmit={handleSearch} className="w-full space-y-3" role="search" aria-label="Forum arama formu">
-          <div className="flex flex-col sm:flex-row gap-2 items-stretch">
-            <div className="relative flex-1 min-w-0">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none z-10" size={16} aria-hidden="true" />
-              <input 
-                type="search" 
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Başlık, mevzuat maddesi veya konu ara..." 
-                className="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 bg-card text-foreground text-xs sm:text-sm focus:ring-1 focus:ring-[#185886] outline-none placeholder:text-muted-foreground"
-                aria-label="Arama sorgusu"
-                autoFocus
-              />
-              {query && (
-                <button
-                  type="button"
-                  onClick={() => setQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                  aria-label="Arama metnini temizle"
-                >
-                  <X size={14} />
-                </button>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <button 
-                type="button"
-                onClick={() => setShowFilters(!showFilters)}
-                className={cn(
-                  "h-10 px-3 rounded-xl transition-all border text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer",
-                  showFilters ? 'bg-[#185886] text-white border-[#185886]' : 'bg-card hover:bg-muted text-foreground border-border/80'
-                )}
-                aria-expanded={showFilters}
-                aria-controls="search-filters-panel"
-                title="Filtreleri göster veya gizle"
-              >
-                <Filter size={13} aria-hidden="true" />
-                <span>Filtrele</span>
-              </button>
-
-              <button 
-                type="button"
-                onClick={startVoiceSearch}
-                className={cn(
-                  "h-10 w-10 rounded-xl transition-all border flex items-center justify-center cursor-pointer",
-                  isListening ? 'bg-rose-600 text-white animate-pulse border-rose-500' : 'bg-card hover:bg-muted text-foreground border-border/80'
-                )}
-                aria-label={isListening ? "Ses dinleniyor, durdurmak için tıklayın" : "Sesli arama başlat"}
-                title="Sesli Ara"
-              >
-                <Mic size={14} aria-hidden="true" />
-              </button>
-
-              <button 
-                type="submit"
-                disabled={loading}
-                className="h-10 px-4 rounded-xl bg-[#185886] hover:bg-[#104f75] text-white text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
-              >
-                {loading ? <Loader2 size={14} className="animate-spin" aria-hidden="true" /> : 'Ara'}
-              </button>
-            </div>
+      <div className="flex flex-col lg:flex-row gap-5">
+        {/* Main Search Column */}
+        <div className="flex-1 min-w-0 space-y-4">
+          
+          {/* Header */}
+          <div className="border-b border-slate-200 pb-3">
+            <h1 className="text-xl font-black text-[#185886] uppercase tracking-wide flex items-center gap-2">
+              <Search size={20} className="text-[#185886]" />
+              FORUMDA ARA
+            </h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Mevzuat maddesi, başlık veya anahtar kelimelere göre gelişmiş forum araması
+            </p>
           </div>
 
-          <AnimatePresence>
-            {showFilters && (
-              <motion.div
-                id="search-filters-panel"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="p-3.5 bg-card border border-slate-200 rounded-xl flex flex-col gap-1.5 mt-1 backdrop-blur-md">
-                  <label htmlFor="search-category-select" className="text-[11px] font-semibold text-foreground">
-                    Kategoriye Göre Sınırla
-                  </label>
-                  <select 
-                    id="search-category-select"
-                    value={categoryId}
-                    onChange={(e) => {
-                      setCategoryId(e.target.value);
-                      performSearch(query, e.target.value);
-                      updateUrl(query, e.target.value);
-                    }}
-                    className="w-full h-9 bg-slate-50 border border-slate-200 rounded-lg px-3 text-xs font-medium text-foreground outline-none focus:ring-1 focus:ring-[#185886] cursor-pointer"
-                  >
-                    <option value="">Tüm Kategoriler</option>
-                    {categories.map(c => (
-                      <option key={c.id || c.slug} value={c.slug || c.id}>{c.name}</option>
-                    ))}
-                  </select>
+          {/* Search Form Box */}
+          <div className="xf-block border border-slate-200 rounded-sm bg-white p-4 shadow-sm">
+            <form onSubmit={handleSearchSubmit} className="space-y-3">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="relative flex-1">
+                  <Search size={14} className="absolute left-3 top-3 text-slate-400" />
+                  <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Konularda veya mesajlarda ara..."
+                    className="w-full h-9 pl-9 pr-8 bg-slate-50 border border-slate-300 rounded-sm text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#185886] outline-none font-medium"
+                  />
+                  {query && (
+                    <button
+                      type="button"
+                      onClick={() => setQuery('')}
+                      className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </form>
-      </header>
 
-      <section className="space-y-4" aria-label="Arama Sonuçları">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-          <h2 className="text-xs font-semibold text-muted-foreground" aria-live="polite">
-            {loading ? 'Aranıyor...' : `${results.length} Sonuç Bulundu`}
-          </h2>
-          {!loading && expandedTermsUsed.length > 1 && (
-            <div className="flex flex-wrap items-center gap-1.5 text-xs text-[#185886] bg-slate-50 px-2.5 py-0.5 rounded-md border border-slate-200">
-              <Sparkles size={11} className="shrink-0" aria-hidden="true" />
-              <span className="font-medium text-[11px]">Eş Anlamlı Taraması:</span>
-              <span className="text-[11px] text-muted-foreground">{expandedTermsUsed.join(", ")}</span>
+                <select
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  className="h-9 bg-slate-50 border border-slate-300 rounded-sm px-3 text-xs font-semibold text-slate-700 focus:border-[#185886] outline-none cursor-pointer sm:w-48"
+                  aria-label="Kategoriye göre filtrele"
+                >
+                  <option value="">Tüm Forumlar</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.slug || cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={startVoiceSearch}
+                    className={`h-9 px-3 border border-slate-300 rounded-sm flex items-center justify-center transition-colors ${
+                      isListening ? 'bg-rose-600 text-white' : 'bg-slate-50 hover:bg-slate-100 text-slate-600'
+                    }`}
+                    title="Sesli Ara"
+                  >
+                    <Mic size={14} />
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="h-9 px-6 bg-[#185886] hover:bg-[#104f75] text-white text-xs font-black uppercase tracking-wider rounded-sm transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  >
+                    {loading ? <Loader2 size={14} className="animate-spin" /> : 'Ara'}
+                  </button>
+                </div>
+              </div>
+
+              {expandedTermsUsed.length > 1 && (
+                <div className="flex items-center gap-1.5 text-[11px] text-[#185886] bg-sky-50 p-2 rounded-sm border border-sky-100 font-semibold">
+                  <Sparkles size={12} className="text-amber-500" />
+                  <span>Eş Anlamlı Genişletme:</span>
+                  <span className="text-slate-600 font-normal">{expandedTermsUsed.join(', ')}</span>
+                </div>
+              )}
+            </form>
+          </div>
+
+          {/* Results Block */}
+          {searched && (
+            <div className="xf-block border border-slate-200 rounded-sm bg-white shadow-sm overflow-hidden">
+              <div className="xf-block-header bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 py-3 px-4 flex items-center justify-between text-[#185886] font-black text-xs uppercase tracking-wider">
+                <div className="flex items-center gap-2">
+                  <MessageSquare size={13} />
+                  <span>ARAMA SONUÇLARI ({results.length})</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col divide-y divide-slate-100">
+                {loading ? (
+                  <div className="p-10 text-center text-slate-500 flex flex-col items-center justify-center gap-2">
+                    <Loader2 size={24} className="animate-spin text-[#185886]" />
+                    <span className="text-xs font-medium">Sonuçlar taranıyor...</span>
+                  </div>
+                ) : results.length > 0 ? (
+                  results.map((topic) => (
+                    <article key={topic.id} className="p-4 hover:bg-[#f8fafc] transition-colors">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        {topic.category && (
+                          <Link 
+                            href={`/category/${topic.category.slug}`}
+                            className="text-[10px] px-1.5 py-0.5 rounded-sm bg-[#eef2f7] text-[#185886] border border-[#cbd5e1] font-bold uppercase tracking-wider hover:underline"
+                          >
+                            {topic.category.name}
+                          </Link>
+                        )}
+                        <Link 
+                          href={`/discussions/${topic.id}`}
+                          className="font-bold text-sm text-[#185886] hover:underline"
+                        >
+                          {topic.title}
+                        </Link>
+                      </div>
+
+                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-2">
+                        {topic.content?.replace(/[#*`_\[\]]/g, '')}
+                      </p>
+
+                      <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium">
+                        <span>Yazar: <span className="font-bold text-slate-600">@{topic.author?.username || 'Anonim'}</span></span>
+                        <span>•</span>
+                        <span>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
+                        <span>•</span>
+                        <span>{topic.comments_count || 0} Cevap</span>
+                        <span>•</span>
+                        <span>{topic.views_count || 0} Görüntülenme</span>
+                      </div>
+                    </article>
+                  ))
+                ) : (
+                  <div className="p-10 text-center text-slate-500 italic text-xs bg-slate-50/50">
+                    "{query}" için arama kriterlerinize uygun hiçbir sonuç bulunamadı.
+                  </div>
+                )}
+              </div>
             </div>
           )}
+
+          {/* Bottom Breadcrumbs */}
+          <div className="bg-[#eef2f7] px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm mt-4">
+            <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 font-semibold">
+              <Home size={12} />
+              Ana Sayfa
+            </Link>
+            <span className="opacity-50">/</span>
+            <Link href="/discussions" className="hover:text-[#185886] hover:underline font-semibold">Forumlar</Link>
+            <span className="opacity-50">/</span>
+            <span className="font-bold text-slate-800">Arama</span>
+          </div>
         </div>
 
-        <div className="space-y-3">
-          <AnimatePresence mode="popLayout">
-            {results.length > 0 ? (
-              results.map((topic, index) => (
-                <motion.div
-                  key={topic.id}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.02 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                >
-                  <Link 
-                    href={`/discussions/${topic.id}`}
-                    className="block p-4 sm:p-5 rounded-2xl bg-card border border-slate-200 hover:border-[#185886] transition-all group shadow-sm"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="space-y-1.5 min-w-0 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="px-2 py-0.5 rounded-md bg-[#eef2f7] text-[#185886] border border-[#cbd5e1] text-[10px] font-medium">
-                            {topic.category?.name || 'Genel'}
-                          </span>
-                          <span className="text-[11px] text-muted-foreground">
-                            <ClientDate dateString={topic.created_at} />
-                          </span>
-                        </div>
-                        <h3 className="text-sm sm:text-base font-bold text-foreground group-hover:text-[#185886] group-hover:underline transition-colors tracking-tight leading-snug line-clamp-2">
-                          {topic.title}
-                        </h3>
-                        {topic.content && (
-                          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed font-normal">
-                            {topic.content}
-                          </p>
-                        )}
-                      </div>
-                      <div className="p-2 rounded-xl bg-slate-50 text-slate-500 group-hover:bg-[#185886] group-hover:text-white transition-all shrink-0 flex items-center justify-center size-7 border border-slate-200">
-                        <ArrowRight size={13} aria-hidden="true" />
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))
-            ) : !loading && searched && (
-              <div className="text-center py-16 bg-card rounded-2xl border border-dashed border-slate-200 px-6 space-y-2" role="status">
-                <Search size={36} className="mx-auto text-muted-foreground/60 mb-2" aria-hidden="true" />
-                <h3 className="text-sm font-semibold text-foreground">Sonuç Bulunamadı</h3>
-                <p className="text-xs text-muted-foreground max-w-sm mx-auto leading-relaxed">
-                  Aradığınız kriterlere uygun bir içerik bulunamadı. Lütfen farklı anahtar kelimeler kullanarak tekrar deneyin.
-                </p>
-                <button
-                  type="button"
-                  onClick={clearSearch}
-                  className="mt-2 inline-flex items-center gap-1 text-xs text-[#185886] hover:underline cursor-pointer font-bold"
-                >
-                  Aramayı Temizle
-                </button>
-              </div>
-            )}
-          </AnimatePresence>
-        </div>
-      </section>
+        {/* Right Sidebar */}
+        <ClassicSidebar />
+      </div>
     </div>
   );
 }
 
 export default function SearchPage() {
   return (
-    <SiteLayout>
-      <Suspense fallback={
-        <div className="w-full max-w-5xl mx-auto px-4 py-16 flex items-center justify-center">
-          <Loader2 className="animate-spin text-[#185886]" size={32} />
-        </div>
-      }>
-        <SearchContent />
-      </Suspense>
-    </SiteLayout>
+    <Suspense fallback={
+      <div className="p-12 text-center flex flex-col items-center justify-center gap-3">
+        <Loader2 size={24} className="animate-spin text-[#185886]" />
+        <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Yükleniyor...</span>
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
   );
 }

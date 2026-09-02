@@ -30,8 +30,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     parentCategory = parent;
   }
 
-  // Fetch topics in this category with reply counts
-  // Note: We'll fetch topics and then count comments separately or use a join if possible
+  // Fetch topics in this category with reply and view counts
   const { data: topics, error: topicError } = await supabaseServer
     .from('topics')
     .select(`
@@ -46,18 +45,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     console.error('Error fetching topics:', topicError);
   }
 
-  // For each topic, fetch comment count (this could be optimized with a custom RPC)
-  const topicsWithStats = await Promise.all((topics || []).map(async (topic) => {
-    const { count } = await supabaseServer
-      .from('comments')
-      .select('*', { count: 'exact', head: true })
-      .eq('topic_id', topic.id);
-    
-    return {
-      ...topic,
-      replyCount: count || 0,
-      viewCount: topic.views_count || 0
-    };
+  const topicsWithStats = (topics || []).map((topic) => ({
+    ...topic,
+    replyCount: topic.comments_count || 0,
+    viewCount: topic.views_count || 0
   }));
 
   return (

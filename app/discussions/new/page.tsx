@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { SiteLayout } from '@/components/layout/site-layout';
 import { TopicEditor } from '@/components/forum/topic-editor';
-import { ArrowLeft, Save, Loader2, HelpCircle, Tag, Eye } from 'lucide-react';
+import { Home, ArrowLeft, Save, Loader2, Tag, Pin, Lock, MessageSquare } from 'lucide-react';
+import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { generateUUID, generateUniqueSlug } from '@/lib/utils';
+import ClassicSidebar from '@/components/forum/classic-sidebar';
 import { toast } from 'sonner';
 
 const PRESET_TAGS = ['[ÖTV 2026]', '[Emsal Karar]', '[Sağlık Raporu]', '[EKPSS 2026]', '[Evde Bakım]', '[SGK İtiraz]', '[Medikal & Cihaz]'];
@@ -21,7 +22,6 @@ function NewTopicForm() {
   const [categoryId, setCategoryId] = useState(searchParams?.get('category_id') || searchParams?.get('kategori') || '');
   const [content, setContent] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('');
-  const [isQuestion, setIsQuestion] = useState(true);
   const [isPinned, setIsPinned] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
@@ -37,13 +37,16 @@ function NewTopicForm() {
         const { data, error } = await supabase.from('categories').select('*').order('name');
         if (data && data.length > 0) {
           setCategories(data);
+          if (!categoryId && data[0]) {
+            setCategoryId(data[0].id);
+          }
         }
       } catch (err) {
         console.error('Error in category fetch:', err);
       }
     };
     fetchCategories();
-  }, []);
+  }, [categoryId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,60 +86,23 @@ function NewTopicForm() {
         is_pinned: isPinned,
         is_locked: isLocked,
         is_solved: false,
-        slug: slug
+        slug: slug,
+        views_count: 1,
+        comments_count: 0
       };
 
-      let insertedTopic: any = null;
-      let lastError: any = null;
+      const { data, error } = await supabase
+        .from('topics')
+        .insert(payload)
+        .select()
+        .maybeSingle();
 
-      // Try inserting with unique slug, retry up to 3 times on any collision
-      for (let attempt = 0; attempt < 3; attempt++) {
-        if (attempt > 0) {
-          payload.slug = generateUniqueSlug(finalTitle, 8 + attempt * 2);
-        }
-
-        const { data, error } = await supabase
-          .from('topics')
-          .insert(payload)
-          .select()
-          .single();
-
-        if (!error && data) {
-          insertedTopic = data;
-          lastError = null;
-          break;
-        }
-
-        lastError = error;
-
-        // Check if error is unique slug violation
-        const isSlugCollision = error?.message?.includes('topics_slug_key') || 
-                                error?.message?.includes('duplicate key') || 
-                                error?.code === '23505';
-
-        if (!isSlugCollision) {
-          // Fallback to 'threads' table if schema differs
-          const { data: thData, error: threadErr } = await supabase
-            .from('threads')
-            .insert(payload)
-            .select()
-            .single();
-
-          if (!threadErr && thData) {
-            insertedTopic = thData;
-            lastError = null;
-            break;
-          }
-          if (threadErr) lastError = threadErr;
-        }
-      }
-
-      if (lastError && !insertedTopic) {
-        throw lastError;
+      if (error) {
+        throw error;
       }
       
       toast.success('Konunuz başarıyla yayınlandı!');
-      router.push(`/discussions/${insertedTopic?.id || topicId}`);
+      router.push(`/discussions/${data?.id || topicId}`);
     } catch (err: any) {
       console.error('Topic creation error:', err);
       toast.error('Tartışma yayınlanırken hata oluştu: ' + (err.message || 'Bilinmeyen hata'));
@@ -147,14 +113,14 @@ function NewTopicForm() {
 
   if (!user) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
-        <h1 className="text-2xl font-bold text-foreground">Giriş Yapılması Gerekiyor</h1>
-        <p className="text-xs text-muted-foreground max-w-sm">
-          Yeni bir konu veya tartışma başlatmak için lütfen platforma giriş yapın.
+      <div className="xf-block border border-slate-200 rounded-sm bg-white p-12 text-center max-w-lg mx-auto my-8 shadow-sm">
+        <h1 className="text-lg font-black text-[#185886] uppercase tracking-wide mb-2">Giriş Yapılması Gerekiyor</h1>
+        <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+          Yeni bir konu açmak ve toplulukla etkileşime geçmek için lütfen hesabınıza giriş yapın.
         </p>
         <button 
           onClick={() => router.push('/login')} 
-          className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs transition-colors cursor-pointer"
+          className="px-6 py-2 rounded-sm bg-[#185886] hover:bg-[#104f75] text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-2xs cursor-pointer"
         >
           Giriş Yap
         </button>
@@ -163,146 +129,177 @@ function NewTopicForm() {
   }
 
   return (
-    <div className="space-y-6">
-      <button 
-        onClick={() => router.back()} 
-        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-      >
-        <ArrowLeft size={14} /> Geri Dön
-      </button>
+    <div className="flex flex-col gap-4">
+      {/* XenForo Breadcrumbs */}
+      <div className="bg-[#eef2f7] px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm mb-2">
+        <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 font-semibold">
+          <Home size={12} />
+          Ana Sayfa
+        </Link>
+        <span className="opacity-50">/</span>
+        <Link href="/discussions" className="hover:text-[#185886] hover:underline font-semibold">Forumlar</Link>
+        <span className="opacity-50">/</span>
+        <span className="font-bold text-slate-800">Yeni Konu Aç</span>
+      </div>
 
-      <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl">
-        <header className="space-y-1.5 border-b border-border pb-4">
-          <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Yeni Konu Başlat</h1>
-          <p className="text-muted-foreground text-xs sm:text-sm font-normal leading-relaxed">
-            Topluluk üyelerine soru sorun, mevzuat deneyimlerinizi aktarın veya emsal kararları paylaşın.
-          </p>
-        </header>
+      <div className="flex flex-col lg:flex-row gap-5">
+        {/* Main Form Column */}
+        <div className="flex-1 min-w-0">
+          <div className="xf-block border border-slate-200 rounded-sm bg-white shadow-sm overflow-hidden">
+            {/* Header */}
+            <div className="xf-block-header bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 py-3 px-4 flex items-center justify-between">
+              <h1 className="text-sm font-black text-[#185886] uppercase tracking-wide flex items-center gap-2">
+                <MessageSquare size={14} />
+                YENİ KONU BAŞLAT
+              </h1>
+              <span className="text-[11px] text-slate-500 font-medium">Lütfen forum kurallarına uygun başlıklar seçiniz.</span>
+            </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Preset Tag Selection */}
-          <div className="space-y-2">
-            <label className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-              <Tag size={13} className="text-primary" /> Hızlı Konu Etiketi
-            </label>
-            <div className="flex flex-wrap gap-1.5">
-              {PRESET_TAGS.map((tag) => (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all border cursor-pointer ${
-                    selectedTag === tag 
-                      ? 'bg-primary/20 text-primary border-primary/40 shadow-xs' 
-                      : 'bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border-border/60'
-                  }`}
+            <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-5">
+              {/* Category Select */}
+              <div className="space-y-1">
+                <label htmlFor="category" className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Forum Kategorisi *
+                </label>
+                <select
+                  id="category"
+                  required
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  className="w-full h-9 bg-slate-50 border border-slate-300 rounded-sm px-3 text-xs font-semibold text-slate-800 outline-none focus:border-[#185886]"
                 >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label htmlFor="title" className="text-xs font-semibold text-foreground">
-              Konu Başlığı *
-            </label>
-            <input 
-              id="title"
-              type="text" 
-              required 
-              disabled={loading}
-              placeholder="Örn: 2026 ÖTV üst sınırı ve bayi fatura süreçleri deneyimlerim" 
-              value={title} 
-              onChange={e => setTitle(e.target.value)}
-              className="w-full p-2.5 rounded-xl border border-border bg-muted/40 text-foreground text-xs sm:text-sm focus:ring-1 focus:ring-primary outline-hidden placeholder:text-muted-foreground"
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label htmlFor="category" className="text-xs font-semibold text-foreground">
-              Kategori / Topluluk *
-            </label>
-            <select 
-              id="category"
-              required 
-              disabled={loading}
-              value={categoryId} 
-              onChange={e => setCategoryId(e.target.value)}
-              className="w-full p-2.5 rounded-xl border border-border bg-muted/40 text-foreground text-xs sm:text-sm focus:ring-1 focus:ring-primary outline-hidden cursor-pointer"
-            >
-              <option value="">Kategori Seçin...</option>
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name || cat.title}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-foreground">
-                Konu Detayı (Markdown / Zengin Metin) *
-              </label>
-              <span className="text-[11px] text-primary font-normal flex items-center gap-1">
-                <Eye size={12} /> Görsellerde otomatik AI alt-metin üretilir
-              </span>
-            </div>
-            <TopicEditor value={content} onChange={setContent} />
-          </div>
-
-          {/* Soru Konusu Checkbox */}
-          <div className="p-3.5 bg-muted/40 rounded-xl border border-border flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 text-primary rounded-lg shrink-0">
-                <HelpCircle size={16} />
+                  <option value="" disabled>Bir Kategori Seçin</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
               </div>
-              <div>
-                <div className="text-xs font-semibold text-foreground">Soru Konusu (Çözüm Bekliyor)</div>
-                <div className="text-[11px] text-muted-foreground">
-                  Doğru yanıt verildiğinde yanıtı &quot;Çözüldü&quot; olarak sabitleyebilirsiniz.
+
+              {/* Preset Tags */}
+              <div className="space-y-1.5">
+                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <Tag size={12} className="text-[#185886]" /> Konu Ön Eki (Opsiyonel)
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {PRESET_TAGS.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)}
+                      className={`px-2.5 py-1 rounded-sm text-[11px] font-bold transition-all border cursor-pointer ${
+                        selectedTag === tag 
+                          ? 'bg-[#185886] text-white border-[#185886] shadow-2xs' 
+                          : 'bg-[#eef2f7] hover:bg-slate-200 text-slate-700 border-slate-300'
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
                 </div>
               </div>
-            </div>
-            <input 
-              type="checkbox"
-              checked={isQuestion}
-              onChange={e => setIsQuestion(e.target.checked)}
-              className="w-4 h-4 rounded text-primary focus:ring-primary bg-muted border-border cursor-pointer accent-primary"
-            />
+
+              {/* Title */}
+              <div className="space-y-1">
+                <label htmlFor="title" className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Konu Başlığı *
+                </label>
+                <input 
+                  id="title"
+                  type="text" 
+                  required 
+                  disabled={loading}
+                  placeholder="Örn: 2026 ÖTV üst sınırı ve bayi fatura süreçleri deneyimlerim" 
+                  value={title} 
+                  onChange={e => setTitle(e.target.value)}
+                  className="w-full h-9 px-3 rounded-sm border border-slate-300 bg-slate-50 text-slate-800 text-xs sm:text-sm font-medium focus:border-[#185886] focus:bg-white outline-none"
+                />
+              </div>
+
+              {/* Topic Content / Editor */}
+              <div className="space-y-1">
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Mesaj İçeriği *
+                </label>
+                <TopicEditor 
+                  value={content}
+                  onChange={setContent}
+                  placeholder="Sorunuzu, tecrübenizi veya mevzuat detaylarını detaylıca açıklayınız..."
+                />
+              </div>
+
+              {/* Staff Moderation Options */}
+              {isStaff && (
+                <div className="p-3 bg-slate-50 border border-slate-200 rounded-sm flex flex-wrap items-center gap-6 text-xs text-slate-700 font-semibold">
+                  <span className="text-[11px] font-black uppercase text-[#185886] tracking-wider">Yönetici Seçenekleri:</span>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={isPinned} 
+                      onChange={e => setIsPinned(e.target.checked)}
+                      className="rounded-sm border-slate-300 text-[#185886] focus:ring-[#185886]"
+                    />
+                    <Pin size={13} className="text-emerald-700" />
+                    <span>Sabitle</span>
+                  </label>
+                  <label className="flex items-center gap-1.5 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={isLocked} 
+                      onChange={e => setIsLocked(e.target.checked)}
+                      className="rounded-sm border-slate-300 text-[#185886] focus:ring-[#185886]"
+                    />
+                    <Lock size={13} className="text-amber-700" />
+                    <span>Yoruma Kilitle</span>
+                  </label>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+                <button 
+                  type="button" 
+                  onClick={() => router.back()}
+                  className="px-4 py-2 border border-slate-300 bg-white hover:bg-slate-50 text-slate-600 font-bold text-xs uppercase tracking-wider rounded-sm transition-colors cursor-pointer"
+                >
+                  İptal
+                </button>
+
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="px-6 py-2.5 bg-[#f2930d] hover:bg-[#d5800a] text-white font-black text-xs uppercase tracking-wider rounded-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" />
+                      <span>Yayınlanıyor...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save size={14} />
+                      <span>Konuyu Yayınla</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
 
-          {isStaff && (
-            <div className="p-3.5 bg-primary/5 rounded-xl border border-primary/20 flex gap-6 text-xs font-semibold">
-              <label className="flex items-center gap-2 cursor-pointer text-foreground">
-                <input 
-                  type="checkbox" 
-                  checked={isPinned} 
-                  onChange={e => setIsPinned(e.target.checked)}
-                  className="rounded text-primary focus:ring-primary cursor-pointer accent-primary"
-                />
-                <span>Konuyu Sabitle</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer text-foreground">
-                <input 
-                  type="checkbox" 
-                  checked={isLocked} 
-                  onChange={e => setIsLocked(e.target.checked)}
-                  className="rounded text-primary focus:ring-primary cursor-pointer accent-primary"
-                />
-                <span>Konuyu Kilitle</span>
-              </label>
-            </div>
-          )}
+          {/* Bottom Breadcrumbs */}
+          <div className="bg-[#eef2f7] px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm mt-4">
+            <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 font-semibold">
+              <Home size={12} />
+              Ana Sayfa
+            </Link>
+            <span className="opacity-50">/</span>
+            <Link href="/discussions" className="hover:text-[#185886] hover:underline font-semibold">Forumlar</Link>
+            <span className="opacity-50">/</span>
+            <span className="font-bold text-slate-800">Yeni Konu Aç</span>
+          </div>
+        </div>
 
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-xs disabled:opacity-50"
-          >
-            {loading ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
-            <span>{loading ? 'Yayınlanıyor...' : 'Konuyu Yayınla'}</span>
-          </button>
-        </form>
+        {/* Right Sidebar */}
+        <ClassicSidebar />
       </div>
     </div>
   );
@@ -310,16 +307,13 @@ function NewTopicForm() {
 
 export default function NewTopicPage() {
   return (
-    <SiteLayout>
-      <div className="container mx-auto px-4 py-8 md:py-12 max-w-3xl">
-        <Suspense fallback={
-          <div className="flex-1 flex items-center justify-center py-20">
-            <Loader2 size={32} className="animate-spin text-primary" />
-          </div>
-        }>
-          <NewTopicForm />
-        </Suspense>
+    <Suspense fallback={
+      <div className="p-12 text-center flex flex-col items-center justify-center gap-3">
+        <Loader2 size={24} className="animate-spin text-[#185886]" />
+        <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Yükleniyor...</span>
       </div>
-    </SiteLayout>
+    }>
+      <NewTopicForm />
+    </Suspense>
   );
 }
