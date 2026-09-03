@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 44" width="250" height="44">
+  <!-- Buton Gövdesi (Kullanıcının 1. Görselindeki Yeşil #00875a) -->
+  <rect width="250" height="44" rx="4" fill="#00875a"/>
+  <!-- Sol Rozet (2. Görseldeki Logo Teması) -->
+  <g transform="translate(12, 8)">
+    <rect width="28" height="28" rx="3" fill="#185886" stroke="#ffffff" stroke-opacity="0.3" stroke-width="1"/>
+    <!-- EF Monogram & Cyan Nokta -->
+    <path d="M5 6h12v3H9v3h6v3H9v4h9v3H5V6z" fill="#FFFFFF"/>
+    <circle cx="21" cy="7.5" r="2.2" fill="#38BDF8"/>
+    <path d="M18 11h5v2.5h-3v7h-2V11z" fill="#7DD3FC"/>
+  </g>
+  <!-- Buton Metni -->
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14">
+    <text x="50" y="27" fill="#FFFFFF" font-weight="700">EngelsizForum</text>
+    <text x="148" y="27" fill="#E2E8F0" font-weight="400"> ile Giriş Yap</text>
+  </g>
+</svg>

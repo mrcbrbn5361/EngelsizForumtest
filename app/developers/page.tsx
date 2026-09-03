@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { SiteLayout } from '@/components/layout/site-layout';
 import { createClient } from '@/lib/supabase/client';
+import { EngelsizForumLogo, EngelsizForumLoginButton } from '@/components/ui/engelsizforum-brand';
 
 interface OAuthApp {
   client_id: string;
@@ -47,8 +48,15 @@ export default function DeveloperPortalPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [apps, setApps] = useState<OAuthApp[]>([]);
-  const [activeTab, setActiveTab] = useState<'apps' | 'docs' | 'rest' | 'console' | 'webmcp'>('apps');
+  const [activeTab, setActiveTab] = useState<'apps' | 'docs' | 'button' | 'rest' | 'console' | 'webmcp'>('apps');
   const [selectedDocLang, setSelectedDocLang] = useState<'nextauth' | 'nodejs' | 'python' | 'php'>('nextauth');
+
+  // Logolu Giriş Butonu Generator State
+  const [btnTheme, setBtnTheme] = useState<'green' | 'blue' | 'dark' | 'white'>('green');
+  const [btnSize, setBtnSize] = useState<'sm' | 'md' | 'lg'>('md');
+  const [btnLayout, setBtnLayout] = useState<'split' | 'solid' | 'badge'>('split');
+  const [btnAppClientId, setBtnAppClientId] = useState<string>('');
+  const [btnCodeType, setBtnCodeType] = useState<'html' | 'react' | 'svg' | 'logo'>('html');
 
   // Canlı API Test Konsolu State
   const [consoleEndpoint, setConsoleEndpoint] = useState<'balthazard' | 'discussions' | 'userinfo' | 'openid' | 'webmcp'>('balthazard');
@@ -144,6 +152,7 @@ export default function DeveloperPortalPage() {
   const [formLogoUrl, setFormLogoUrl] = useState('');
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<{ message: string; details?: string; hint?: string } | null>(null);
 
   // Kopyalama geri bildirimi
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
@@ -158,19 +167,35 @@ export default function DeveloperPortalPage() {
   const loadData = async () => {
     try {
       setLoading(true);
+      setLoadError(null);
       const supabase = createClient();
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       setUser(currentUser);
 
       if (currentUser) {
         const res = await fetch('/api/developer/apps');
+        const data = await res.json().catch(() => ({}));
         if (res.ok) {
-          const data = await res.json();
-          setApps(data.apps || []);
+          const loadedApps = data.apps || [];
+          setApps(loadedApps);
+          if (loadedApps.length > 0) {
+            setBtnAppClientId(loadedApps[0].client_id);
+          }
+          setLoadError(null);
+        } else {
+          setLoadError({
+            message: data.message || 'Uygulamalar listelenirken bir hata oluştu.',
+            details: data.details,
+            hint: data.hint,
+          });
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Veri yükleme hatası:', err);
+      setLoadError({
+        message: 'Sunucuya bağlanırken bir hata oluştu.',
+        details: err?.message,
+      });
     } finally {
       setLoading(false);
     }
@@ -404,6 +429,18 @@ export default function DeveloperPortalPage() {
           </button>
 
           <button
+            onClick={() => setActiveTab('button')}
+            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer rounded-t-sm flex items-center gap-1.5 ${
+              activeTab === 'button'
+                ? 'bg-white text-[#185886] border-t-2 border-t-[#185886] border-x border-slate-300 -mb-1 pb-2.5 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <LogIn size={13} className="text-[#00875a]" />
+            <span>Logolu Giriş Butonu &amp; Logo</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('rest')}
             className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer rounded-t-sm flex items-center gap-1.5 ${
               activeTab === 'rest'
@@ -465,6 +502,53 @@ export default function DeveloperPortalPage() {
             ) : loading ? (
               <div className="xf-block border border-slate-200 rounded-sm p-8 text-center text-xs text-slate-500 bg-white">
                 Uygulama listesi yükleniyor...
+              </div>
+            ) : loadError ? (
+              <div className="xf-block border border-amber-300 rounded-sm overflow-hidden bg-amber-50/40 shadow-xs">
+                <div className="bg-amber-100/80 border-b border-amber-200 text-amber-900 font-bold text-xs uppercase py-2 px-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle size={14} className="text-amber-700" />
+                    <span>Veritabanı / Şema Uyarısı</span>
+                  </div>
+                  <button
+                    onClick={() => loadData()}
+                    className="text-[11px] font-bold text-[#185886] hover:underline cursor-pointer flex items-center gap-1"
+                  >
+                    <RefreshCw size={12} />
+                    <span>Tekrar Dene</span>
+                  </button>
+                </div>
+                <div className="p-5 space-y-3 text-xs text-slate-700">
+                  <div className="font-semibold text-amber-950 flex items-center gap-2">
+                    <span>{loadError.message}</span>
+                  </div>
+                  {loadError.details && (
+                    <div className="p-2.5 bg-slate-900 text-amber-300 rounded-sm font-mono text-[11px] break-all border border-slate-800">
+                      Hata Detayı: {loadError.details}
+                    </div>
+                  )}
+                  <p className="text-slate-600 leading-relaxed">
+                    {loadError.hint || 'Supabase projenizde `oauth_clients` tablosu eksik veya gerekli izinler tanımlanmamış. Lütfen aşağıdaki güncel SQL şemasını Supabase SQL Editöründe çalıştırarak veritabanınızı güncelleyin.'}
+                  </p>
+                  <div className="pt-2 flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={() => loadData()}
+                      className="inline-flex items-center gap-1.5 rounded-sm bg-[#185886] hover:bg-[#12466b] text-white px-3.5 py-1.5 text-xs font-bold shadow-xs cursor-pointer"
+                    >
+                      <RefreshCw size={12} />
+                      <span>Bağlantıyı Yeniden Kontrol Et</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setActiveTab('docs');
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded-sm bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3.5 py-1.5 text-xs font-semibold cursor-pointer"
+                    >
+                      <Code2 size={12} />
+                      <span>Dokümantasyon &amp; Kurulum</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             ) : apps.length === 0 ? (
               <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
@@ -608,6 +692,26 @@ export default function DeveloperPortalPage() {
         {/* TAB 2: OAUTH 2.0 INTEGRATION GUIDE */}
         {activeTab === 'docs' && (
           <div className="space-y-4">
+            {/* Quick Action: Logolu Giriş Butonu Banner */}
+            <div className="p-3 bg-emerald-50/80 border border-emerald-200 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-sm bg-[#00875a] flex items-center justify-center text-white shrink-0 font-bold shadow-2xs">
+                  <LogIn size={15} />
+                </div>
+                <div>
+                  <div className="font-bold text-emerald-950">Resmi &ldquo;EngelsizForum ile Giriş Yap&rdquo; Butonunu Kullanın</div>
+                  <div className="text-emerald-800 text-[11px]">Standart yeşil stil ve 2. görseldeki resmi kurumsal logomuz ile hazır buton kodunu hemen kopyalayabilirsiniz.</div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveTab('button')}
+                className="px-3 py-1.5 bg-[#00875a] hover:bg-[#00744e] text-white font-bold rounded-xs text-xs whitespace-nowrap cursor-pointer transition-colors shadow-2xs self-start sm:self-auto"
+              >
+                Logolu Buton Kılavuzu &rarr;
+              </button>
+            </div>
+
             {/* Endpoints Table */}
             <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
               <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-bold text-xs uppercase py-2 px-3">
@@ -820,6 +924,485 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $result = json_decode(curl_exec($ch), true);`}
                   </pre>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: LOGOLU GİRİŞ BUTONU & MARKA KILAVUZU */}
+        {activeTab === 'button' && (
+          <div className="space-y-5">
+            {/* Header Block */}
+            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-bold text-xs uppercase py-2.5 px-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <LogIn size={14} className="text-emerald-300" />
+                  <span>Resmi &ldquo;EngelsizForum ile Giriş Yap&rdquo; Logolu Buton Kılavuzu</span>
+                </div>
+                <span className="text-[11px] font-normal text-white/80 bg-white/10 px-2 py-0.5 rounded-sm border border-white/20">
+                  Marka &amp; UI Standartları
+                </span>
+              </div>
+
+              <div className="p-4 sm:p-5 space-y-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-[#f8fafc] border border-slate-200 rounded-sm">
+                  <div className="space-y-1 max-w-2xl text-xs sm:text-sm text-slate-700">
+                    <div className="font-bold text-slate-900 flex items-center gap-2">
+                      <Sparkles size={16} className="text-amber-500 shrink-0" />
+                      <span>Logosuz Düz Butondan &rarr; Resmi Kurumsal Logolu Giriş Butonuna Geçiş</span>
+                    </div>
+                    <p className="text-slate-600 text-xs leading-relaxed">
+                      Standart jenerik dünya ikonu yerine, EngelsizForum&apos;un tescilli resmi logosunu (lacivert zemin, kalın beyaz yazı ve camgöbeği noktalı <strong>İ</strong>) taşıyan butonları kullanarak kullanıcılarınızda güven oluşturun.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0 p-2 bg-white rounded-sm border border-slate-200 shadow-2xs">
+                    <div className="text-center">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Önceki (Jenerik)</span>
+                      <div className="bg-[#00875a] text-white px-2.5 py-1 text-[11px] font-semibold rounded-xs flex items-center gap-1 opacity-70">
+                        <Globe size={11} />
+                        <span>Giriş Yap</span>
+                      </div>
+                    </div>
+                    <span className="text-slate-300 font-bold">&rarr;</span>
+                    <div className="text-center">
+                      <span className="text-[10px] font-bold text-emerald-700 uppercase block mb-1">Yeni (Resmi Logolu)</span>
+                      <div className="bg-[#00875a] text-white px-2.5 py-1 text-[11px] font-bold rounded-xs flex items-center gap-1.5 shadow-xs">
+                        <div className="w-3.5 h-3.5 rounded-xs bg-[#185886] flex items-center justify-center text-[9px] font-black leading-none">
+                          E
+                        </div>
+                        <span>EngelsizForum</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* İnteraktif Buton Yapılandırıcı */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-2">
+                  {/* Sol Sütun: Ayarlar */}
+                  <div className="lg:col-span-5 space-y-4 bg-slate-50/70 p-4 border border-slate-200 rounded-sm">
+                    <h3 className="text-xs font-black text-[#185886] uppercase tracking-wide border-b border-slate-200 pb-2">
+                      1. Buton Tasarımını Özelleştirin
+                    </h3>
+
+                    {/* Tema Seçimi */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-700 block">Tema &amp; Renk Paleti:</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setBtnTheme('green')}
+                          className={`p-2 rounded-sm border text-left flex items-center gap-2 cursor-pointer transition-all ${
+                            btnTheme === 'green'
+                              ? 'border-[#00875a] bg-emerald-50 text-emerald-950 font-bold ring-1 ring-[#00875a]'
+                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="w-3.5 h-3.5 rounded-full bg-[#00875a] shrink-0"></span>
+                          <span className="text-xs">Yeşil (Kullanıcı Stili)</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setBtnTheme('blue')}
+                          className={`p-2 rounded-sm border text-left flex items-center gap-2 cursor-pointer transition-all ${
+                            btnTheme === 'blue'
+                              ? 'border-[#185886] bg-sky-50 text-sky-950 font-bold ring-1 ring-[#185886]'
+                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="w-3.5 h-3.5 rounded-full bg-[#185886] shrink-0"></span>
+                          <span className="text-xs">Klasik Lacivert</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setBtnTheme('dark')}
+                          className={`p-2 rounded-sm border text-left flex items-center gap-2 cursor-pointer transition-all ${
+                            btnTheme === 'dark'
+                              ? 'border-slate-800 bg-slate-100 text-slate-950 font-bold ring-1 ring-slate-800'
+                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="w-3.5 h-3.5 rounded-full bg-[#0f172a] shrink-0"></span>
+                          <span className="text-xs">Gece Modu (Koyu)</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setBtnTheme('white')}
+                          className={`p-2 rounded-sm border text-left flex items-center gap-2 cursor-pointer transition-all ${
+                            btnTheme === 'white'
+                              ? 'border-slate-400 bg-white text-slate-950 font-bold ring-1 ring-slate-400'
+                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="w-3.5 h-3.5 rounded-full bg-white border border-slate-400 shrink-0"></span>
+                          <span className="text-xs">Beyaz (Açık Çerçeveli)</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Boyut Seçimi */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-700 block">Buton Boyutu:</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {(['sm', 'md', 'lg'] as const).map((sz) => (
+                          <button
+                            key={sz}
+                            type="button"
+                            onClick={() => setBtnSize(sz)}
+                            className={`py-1.5 px-2 rounded-sm border text-center text-xs cursor-pointer transition-all ${
+                              btnSize === sz
+                                ? 'border-[#185886] bg-white text-[#185886] font-bold ring-1 ring-[#185886]'
+                                : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                            }`}
+                          >
+                            {sz === 'sm' ? 'Küçük (36px)' : sz === 'md' ? 'Standart (44px)' : 'Büyük (52px)'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Logo Düzeni */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-700 block">Logo Düzeni:</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setBtnLayout('split')}
+                          className={`p-2 rounded-sm border text-left text-xs cursor-pointer transition-all ${
+                            btnLayout === 'split'
+                              ? 'border-[#185886] bg-white text-[#185886] font-bold ring-1 ring-[#185886]'
+                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="block font-bold">Logo Rozeti + Metin</span>
+                          <span className="text-[10px] text-slate-500 font-normal">Kompakt kurumsal rozet</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setBtnLayout('badge')}
+                          className={`p-2 rounded-sm border text-left text-xs cursor-pointer transition-all ${
+                            btnLayout === 'badge'
+                              ? 'border-[#185886] bg-white text-[#185886] font-bold ring-1 ring-[#185886]'
+                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                          }`}
+                        >
+                          <span className="block font-bold">Tam Wordmark Logo</span>
+                          <span className="text-[10px] text-slate-500 font-normal">2. Görseldeki tam logo</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Kayıtlı Uygulama Seçimi */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-slate-700 block">Yetkilendirilecek Uygulamanız:</label>
+                      {apps.length > 0 ? (
+                        <select
+                          value={btnAppClientId}
+                          onChange={(e) => setBtnAppClientId(e.target.value)}
+                          className="w-full text-xs p-2 bg-white border border-slate-300 rounded-sm focus:outline-none focus:border-[#185886]"
+                        >
+                          {apps.map((app) => (
+                            <option key={app.client_id} value={app.client_id}>
+                              {app.client_name} ({app.client_id.substring(0, 16)}...)
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type="text"
+                          value={btnAppClientId || 'YOUR_CLIENT_ID'}
+                          onChange={(e) => setBtnAppClientId(e.target.value)}
+                          placeholder="client_id giriniz"
+                          className="w-full text-xs p-2 bg-white border border-slate-300 rounded-sm font-mono focus:outline-none focus:border-[#185886]"
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Sağ Sütun: Canlı Önizleme & Kod Kopyalama */}
+                  <div className="lg:col-span-7 space-y-4">
+                    {/* Canlı Önizleme Kartı */}
+                    <div className="p-6 bg-[#fcf8fb] border border-slate-200 rounded-sm flex flex-col items-center justify-center gap-4 text-center">
+                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                        Canlı Buton Önizlemesi
+                      </span>
+
+                      <div className="p-4 flex items-center justify-center">
+                        <EngelsizForumLoginButton
+                          theme={btnTheme}
+                          size={btnSize}
+                          layout={btnLayout}
+                          clientId={btnAppClientId || 'YOUR_CLIENT_ID'}
+                        />
+                      </div>
+
+                      <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+                        <a
+                          href={`/oauth/authorize?client_id=${encodeURIComponent(btnAppClientId || 'YOUR_CLIENT_ID')}&redirect_uri=http://localhost:3000/api/auth/callback/engelsizforum&response_type=code&scope=read&state=preview_test`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 text-xs text-[#185886] hover:underline font-bold"
+                        >
+                          <ExternalLink size={13} />
+                          <span>Onay Ekranını Test Et (Canlı Logo Önizleme)</span>
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Kod Kopyalama Sekmeleri */}
+                    <div className="border border-slate-200 rounded-sm overflow-hidden bg-white">
+                      <div className="bg-[#1e293b] text-white p-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setBtnCodeType('html')}
+                            className={`px-2.5 py-1 rounded-sm font-bold uppercase text-[11px] cursor-pointer transition-colors ${
+                              btnCodeType === 'html' ? 'bg-[#00875a] text-white' : 'text-slate-300 hover:bg-slate-700'
+                            }`}
+                          >
+                            HTML &amp; CSS
+                          </button>
+                          <button
+                            onClick={() => setBtnCodeType('react')}
+                            className={`px-2.5 py-1 rounded-sm font-bold uppercase text-[11px] cursor-pointer transition-colors ${
+                              btnCodeType === 'react' ? 'bg-[#00875a] text-white' : 'text-slate-300 hover:bg-slate-700'
+                            }`}
+                          >
+                            React / Next.js
+                          </button>
+                          <button
+                            onClick={() => setBtnCodeType('svg')}
+                            className={`px-2.5 py-1 rounded-sm font-bold uppercase text-[11px] cursor-pointer transition-colors ${
+                              btnCodeType === 'svg' ? 'bg-[#00875a] text-white' : 'text-slate-300 hover:bg-slate-700'
+                            }`}
+                          >
+                            Doğrudan İmaj (SVG Link)
+                          </button>
+                          <button
+                            onClick={() => setBtnCodeType('logo')}
+                            className={`px-2.5 py-1 rounded-sm font-bold uppercase text-[11px] cursor-pointer transition-colors ${
+                              btnCodeType === 'logo' ? 'bg-[#00875a] text-white' : 'text-slate-300 hover:bg-slate-700'
+                            }`}
+                          >
+                            Resmi Logo (Image 2 SVG)
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            let snippet = '';
+                            const curClientId = btnAppClientId || 'YOUR_CLIENT_ID';
+                            const bgColor = btnTheme === 'green' ? '#00875a' : btnTheme === 'blue' ? '#185886' : btnTheme === 'dark' ? '#0f172a' : '#ffffff';
+                            const textColor = btnTheme === 'white' ? '#0f172a' : '#ffffff';
+                            const borderColor = btnTheme === 'green' ? '#006644' : btnTheme === 'blue' ? '#12466b' : btnTheme === 'dark' ? '#1e293b' : '#cbd5e1';
+
+                            if (btnCodeType === 'html') {
+                              snippet = `<!-- EngelsizForum ile Giriş Yap - Logolu Resmi Buton -->
+<a href="https://engelsizforum.com/api/oauth/authorize?client_id=${curClientId}&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=read&state=xyz"
+   style="display:inline-flex;align-items:center;gap:10px;background:${bgColor};color:${textColor};padding:10px 16px;border-radius:4px;text-decoration:none;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;font-weight:700;border:1px solid ${borderColor};box-shadow:0 1px 2px rgba(0,0,0,0.06);transition:opacity 0.15s ease;"
+   onmouseover="this.style.opacity='0.92'"
+   onmouseout="this.style.opacity='1'">
+  <!-- EngelsizForum Resmi Logo Rozeti -->
+  <span style="display:inline-flex;align-items:center;justify-content:center;background:#185886;width:28px;height:28px;border-radius:3px;border:1px solid rgba(255,255,255,0.25);">
+    <svg viewBox="0 0 32 32" width="20" height="20" fill="none">
+      <path d="M6 8h14v3.5H10v3.5h7v3.5h-7V23h10V26H6V8z" fill="#FFFFFF"/>
+      <circle cx="24" cy="9.5" r="2.5" fill="#38BDF8"/>
+      <path d="M21 14h6v3h-3.5v9H21V14z" fill="#7DD3FC"/>
+    </svg>
+  </span>
+  <span>EngelsizForum <span style="font-weight:400;opacity:0.9;">ile Giriş Yap</span></span>
+</a>`;
+                            } else if (btnCodeType === 'react') {
+                              snippet = `// React / Next.js Bileşeni
+import React from 'react';
+
+export function LoginWithEngelsizForum() {
+  const authUrl = "https://engelsizforum.com/api/oauth/authorize?client_id=${curClientId}&redirect_uri=" + 
+    encodeURIComponent(window.location.origin + "/api/auth/callback/engelsizforum") + 
+    "&response_type=code&scope=read&state=ef_state";
+
+  return (
+    <a
+      href={authUrl}
+      className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded bg-[${bgColor}] hover:opacity-90 text-[${textColor}] font-bold text-sm border border-[${borderColor}] shadow-xs transition-all select-none"
+    >
+      <div className="w-7 h-7 rounded bg-[#185886] flex items-center justify-center border border-white/20">
+        <svg viewBox="0 0 32 32" className="w-5 h-5" fill="none">
+          <path d="M6 8h14v3.5H10v3.5h7v3.5h-7V23h10V26H6V8z" fill="#FFFFFF" />
+          <circle cx="24" cy="9.5" r="2.5" fill="#38BDF8" />
+          <path d="M21 14h6v3h-3.5v9H21V14z" fill="#7DD3FC" />
+        </svg>
+      </div>
+      <span>EngelsizForum <span className="font-normal opacity-90">ile Giriş Yap</span></span>
+    </a>
+  );
+}`;
+                            } else if (btnCodeType === 'svg') {
+                              snippet = `<!-- Hosted Dinamik SVG Buton (Tek Satır) -->
+<a href="https://engelsizforum.com/api/oauth/authorize?client_id=${curClientId}&redirect_uri=YOUR_REDIRECT_URI&response_type=code">
+  <img src="https://engelsizforum.com/api/brand/button?theme=${btnTheme}&text=full" alt="EngelsizForum ile Giriş Yap" width="250" height="44" />
+</a>`;
+                            } else {
+                              snippet = `<!-- EngelsizForum Resmi Logosu (Image 2 Vektör) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 196 36" width="196" height="36">
+  <rect width="196" height="36" rx="3" fill="#185886"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+    <text x="12" y="25.5" fill="#FFFFFF" font-size="21" font-weight="900" letter-spacing="-0.3px">ENGELS</text>
+    <text x="100.5" y="25.5" fill="#FFFFFF" font-size="21" font-weight="900">I</text>
+    <circle cx="104.5" cy="10.5" r="2.5" fill="#38BDF8"/>
+    <text x="110.5" y="25.5" fill="#FFFFFF" font-size="21" font-weight="900" letter-spacing="-0.3px">Z</text>
+    <text x="126" y="25.5" fill="#7DD3FC" font-size="21" font-weight="300" letter-spacing="0.4px">FORUM</text>
+  </g>
+</svg>`;
+                            }
+
+                            copyToClipboard(snippet, 'btn-snippet');
+                          }}
+                          className="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-white rounded-xs font-bold text-[11px] flex items-center gap-1 cursor-pointer"
+                        >
+                          {copiedKey === 'btn-snippet' ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                          <span>Kodu Kopyala</span>
+                        </button>
+                      </div>
+
+                      <div className="p-3 bg-[#0f172a] text-slate-200 font-mono text-[11px] overflow-x-auto max-h-[220px]">
+                        {btnCodeType === 'html' && (
+                          <pre className="leading-relaxed">
+{`<!-- EngelsizForum ile Giriş Yap - Logolu Resmi Buton -->
+<a href="https://engelsizforum.com/api/oauth/authorize?client_id=${btnAppClientId || 'YOUR_CLIENT_ID'}&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=read&state=xyz"
+   style="display:inline-flex;align-items:center;gap:10px;background:${btnTheme === 'green' ? '#00875a' : btnTheme === 'blue' ? '#185886' : btnTheme === 'dark' ? '#0f172a' : '#ffffff'};color:${btnTheme === 'white' ? '#0f172a' : '#ffffff'};padding:10px 16px;border-radius:4px;text-decoration:none;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;font-weight:700;border:1px solid ${btnTheme === 'green' ? '#006644' : btnTheme === 'blue' ? '#12466b' : btnTheme === 'dark' ? '#1e293b' : '#cbd5e1'};box-shadow:0 1px 2px rgba(0,0,0,0.06);"
+   onmouseover="this.style.opacity='0.92'"
+   onmouseout="this.style.opacity='1'">
+  <span style="display:inline-flex;align-items:center;justify-content:center;background:#185886;width:28px;height:28px;border-radius:3px;border:1px solid rgba(255,255,255,0.25);">
+    <svg viewBox="0 0 32 32" width="20" height="20" fill="none">
+      <path d="M6 8h14v3.5H10v3.5h7v3.5h-7V23h10V26H6V8z" fill="#FFFFFF"/>
+      <circle cx="24" cy="9.5" r="2.5" fill="#38BDF8"/>
+      <path d="M21 14h6v3h-3.5v9H21V14z" fill="#7DD3FC"/>
+    </svg>
+  </span>
+  <span>EngelsizForum <span style="font-weight:400;opacity:0.9;">ile Giriş Yap</span></span>
+</a>`}
+                          </pre>
+                        )}
+
+                        {btnCodeType === 'react' && (
+                          <pre className="leading-relaxed">
+{`// React / Next.js Bileşeni
+import React from 'react';
+
+export function LoginWithEngelsizForum() {
+  const authUrl = "https://engelsizforum.com/api/oauth/authorize?client_id=${btnAppClientId || 'YOUR_CLIENT_ID'}&redirect_uri=" + 
+    encodeURIComponent(window.location.origin + "/api/auth/callback/engelsizforum") + 
+    "&response_type=code&scope=read&state=ef_state";
+
+  return (
+    <a
+      href={authUrl}
+      className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded bg-[${btnTheme === 'green' ? '#00875a' : btnTheme === 'blue' ? '#185886' : btnTheme === 'dark' ? '#0f172a' : '#ffffff'}] text-white font-bold text-sm shadow-xs transition-all"
+    >
+      <div className="w-7 h-7 rounded bg-[#185886] flex items-center justify-center border border-white/20">
+        <svg viewBox="0 0 32 32" className="w-5 h-5" fill="none">
+          <path d="M6 8h14v3.5H10v3.5h7v3.5h-7V23h10V26H6V8z" fill="#FFFFFF" />
+          <circle cx="24" cy="9.5" r="2.5" fill="#38BDF8" />
+          <path d="M21 14h6v3h-3.5v9H21V14z" fill="#7DD3FC" />
+        </svg>
+      </div>
+      <span>EngelsizForum <span className="font-normal opacity-90">ile Giriş Yap</span></span>
+    </a>
+  );
+}`}
+                          </pre>
+                        )}
+
+                        {btnCodeType === 'svg' && (
+                          <pre className="leading-relaxed">
+{`<!-- Hosted Dinamik SVG Buton (Tek Satır, Her Yerde Çalışır) -->
+<a href="https://engelsizforum.com/api/oauth/authorize?client_id=${btnAppClientId || 'YOUR_CLIENT_ID'}&redirect_uri=YOUR_REDIRECT_URI&response_type=code">
+  <img src="https://engelsizforum.com/api/brand/button?theme=${btnTheme}&text=full" alt="EngelsizForum ile Giriş Yap" width="250" height="44" />
+</a>`}
+                          </pre>
+                        )}
+
+                        {btnCodeType === 'logo' && (
+                          <pre className="leading-relaxed">
+{`<!-- EngelsizForum Resmi Logo Wordmark (2. Görseldeki Orijinal Vektör) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 196 36" width="196" height="36">
+  <rect width="196" height="36" rx="3" fill="#185886"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+    <text x="12" y="25.5" fill="#FFFFFF" font-size="21" font-weight="900" letter-spacing="-0.3px">ENGELS</text>
+    <text x="100.5" y="25.5" fill="#FFFFFF" font-size="21" font-weight="900">I</text>
+    <circle cx="104.5" cy="10.5" r="2.5" fill="#38BDF8"/>
+    <text x="110.5" y="25.5" fill="#FFFFFF" font-size="21" font-weight="900" letter-spacing="-0.3px">Z</text>
+    <text x="126" y="25.5" fill="#7DD3FC" font-size="21" font-weight="300" letter-spacing="0.4px">FORUM</text>
+  </g>
+</svg>`}
+                          </pre>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Marka Varlıkları İndirme / CDN Bölümü */}
+                <div className="pt-3 border-t border-slate-200">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2">
+                    Doğrudan İndirilebilir Varlıklar &amp; CDN Linkleri
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="p-3 bg-white border border-slate-200 rounded-sm flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <EngelsizForumLogo size="sm" showBackground={true} />
+                        <div>
+                          <div className="text-xs font-bold text-slate-800">Resmi Logo (Image 2)</div>
+                          <div className="text-[10px] text-slate-500">196x36 SVG Vektör</div>
+                        </div>
+                      </div>
+                      <a
+                        href="/brand/engelsizforum-logo.svg"
+                        download="engelsizforum-logo.svg"
+                        className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xs text-[10px] font-bold"
+                      >
+                        İndir
+                      </a>
+                    </div>
+
+                    <div className="p-3 bg-white border border-slate-200 rounded-sm flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-[#00875a] rounded-xs flex items-center justify-center text-white text-[10px] font-bold">
+                          SVG
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-slate-800">Yeşil Logolu Buton</div>
+                          <div className="text-[10px] text-slate-500">250x44 SVG Vektör</div>
+                        </div>
+                      </div>
+                      <a
+                        href="/brand/btn-login-green.svg"
+                        download="btn-login-green.svg"
+                        className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xs text-[10px] font-bold"
+                      >
+                        İndir
+                      </a>
+                    </div>
+
+                    <div className="p-3 bg-white border border-slate-200 rounded-sm flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-[#185886] rounded-xs flex items-center justify-center text-white text-[10px] font-bold">
+                          SVG
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-slate-800">Lacivert Logolu Buton</div>
+                          <div className="text-[10px] text-slate-500">260x44 SVG Vektör</div>
+                        </div>
+                      </div>
+                      <a
+                        href="/brand/btn-login-blue.svg"
+                        download="btn-login-blue.svg"
+                        className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xs text-[10px] font-bold"
+                      >
+                        İndir
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

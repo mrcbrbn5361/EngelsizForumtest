@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 196 36" width="196" height="36">
+  <rect width="196" height="36" rx="3" fill="#185886"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
+    <!-- ENGELS (Beyaz, Kalın) -->
+    <text x="12" y="25.5" fill="#FFFFFF" font-size="21" font-weight="900" letter-spacing="-0.3px">ENGELS</text>
+    <!-- I (Beyaz, Kalın) -->
+    <text x="100.5" y="25.5" fill="#FFFFFF" font-size="21" font-weight="900">I</text>
+    <!-- Cyan Nokta -->
+    <circle cx="104.5" cy="10.5" r="2.5" fill="#38BDF8"/>
+    <!-- Z (Beyaz, Kalın) -->
+    <text x="110.5" y="25.5" fill="#FFFFFF" font-size="21" font-weight="900" letter-spacing="-0.3px">Z</text>
+    <!-- FORUM (Açık Camgöbeği, İnce/Hafif) -->
+    <text x="126" y="25.5" fill="#7DD3FC" font-size="21" font-weight="300" letter-spacing="0.4px">FORUM</text>
+  </g>
+</svg>

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { supabaseServer as adminSupabase } from '@/lib/supabase-server';
 import { generateAuthorizationCode } from '@/lib/oauth/crypto';
 import { Shield, Check, X, Info, AlertTriangle, ExternalLink } from 'lucide-react';
+import { EngelsizForumLogo } from '@/components/ui/engelsizforum-brand';
 
 export const dynamic = 'force-dynamic';
 
@@ -190,12 +191,14 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4 w-full" style={{ fontFamily: 'sans-serif' }}>
       <div className="bg-white border-2 border-[#bdc9c6] rounded-[2.5rem] max-w-lg w-full shadow-2xl overflow-hidden">
-        <div className="bg-[#005c55]/5 p-8 text-center border-b border-[#bdc9c6]">
-          <div className="bg-[#005c55]/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Shield className="w-8 h-8 text-[#005c55]" />
+        <div className="bg-[#185886] p-6 text-center border-b border-[#12466b] text-white">
+          <div className="flex justify-center mb-3">
+            <EngelsizForumLogo size="lg" showBackground={false} />
           </div>
-          <h1 className="text-2xl font-black text-[#1c1b1d]">EngelsizForum ile Giriş Yap</h1>
-          <p className="text-xs text-[#3e4947] font-bold uppercase tracking-wider mt-1">Uygulama Yetkilendirme İsteği</p>
+          <h1 className="text-xl font-black text-white tracking-tight">EngelsizForum ile Giriş Yap</h1>
+          <p className="text-xs text-sky-200 font-semibold uppercase tracking-wider mt-1">
+            OAuth 2.0 Güvenli Kimlik Doğrulama
+          </p>
         </div>
 
         <div className="p-8 space-y-6">

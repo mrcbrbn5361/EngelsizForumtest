@@ -55,7 +55,12 @@ export async function GET() {
     if (dbError) {
       console.error('[Developer API] Fetch apps error:', dbError);
       return NextResponse.json(
-        { error: 'database_error', message: 'Uygulamalar listelenirken bir hata oluştu.' },
+        { 
+          error: 'database_error', 
+          message: 'Uygulamalar listelenirken bir hata oluştu.',
+          details: dbError.message,
+          hint: 'Supabase SQL Editöründe supabase_oauth_schema.sql kodunu çalıştırarak oauth_clients tablosunu ve izinlerini güncelleyebilirsiniz.'
+        },
         { status: 500 }
       );
     }
