@@ -196,7 +196,7 @@ export default function WebMCPPage() {
 
   // Sync state
   const [isSyncing, setIsSyncing] = useState(false);
-  const [lastSyncResult, setLastSyncResult] = useState<any>(null);
+  const [lastSyncResult, setLastSyncResult] = useState<unknown>(null);
 
   // Copy state tracker
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
@@ -1744,7 +1744,7 @@ export default function WebMCPPage() {
             </button>
           </div>
 
-          {lastSyncResult && (
+          {Boolean(lastSyncResult) && (
             <div className="p-4 rounded-xl bg-background border border-border text-foreground font-mono text-xs space-y-2">
               <p className="text-emerald-400 font-semibold">// Son Senkronizasyon Raporu:</p>
               <pre className="text-muted-foreground overflow-x-auto">{JSON.stringify(lastSyncResult, null, 2)}</pre>
