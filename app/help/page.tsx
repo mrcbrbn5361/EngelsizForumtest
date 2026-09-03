@@ -1,6 +1,9 @@
 import { SiteLayout } from '@/components/layout/site-layout';
 import Link from 'next/link';
-import { BookOpen, User, ShieldAlert, FileText, ArrowLeft, Mail, Search, MessageSquare, HelpCircle } from 'lucide-react';
+import { 
+  BookOpen, User, ShieldAlert, FileText, ArrowLeft, Mail, 
+  MessageSquare, HelpCircle, Home, CheckCircle2, Info
+} from 'lucide-react';
 
 export default function HelpPage() {
   return (
@@ -19,7 +22,7 @@ export default function HelpPage() {
                     "name": "Erişilebilirlik panelini nasıl açarım?",
                     "acceptedAnswer": {
                       "@type": "Answer",
-                      "text": "Ekranın sol alt köşesinde bulunan veya klavyeden 'Tab' tuşuyla gezilebilen erişilebilirlik ikonuna tıklayarak renk kontrastı, font boyutu ve biyonik okuma gibi özellikleri yönetebilirsiniz."
+                      "text": "Ekranın sol alt köşesinde bulunan veya klavyeden 'Tab' tuşuyla gezilebilen erişilebilirlik butonuna tıklayarak renk kontrastı, font boyutu ve biyonik okuma gibi özellikleri yönetebilirsiniz."
                     }
                   },
                   {
@@ -64,7 +67,7 @@ export default function HelpPage() {
                   {
                     "@type": "HowToStep",
                     "name": "Erişilebilirlik Menüsünü Açın",
-                    "text": "Ekranın sol alt köşesindeki erişilebilirlik ikonuna tıklayın ya da klavyeden Tab tuşu ile odaklanıp Enter tuşuna basın.",
+                    "text": "Ekranın sol alt köşesindeki erişilebilirlik butonuna tıklayın ya da klavyeden Tab tuşu ile odaklanıp Enter tuşuna basın.",
                     "url": "https://engelsizforum.com/help#step1"
                   },
                   {
@@ -104,126 +107,156 @@ export default function HelpPage() {
         }}
       />
 
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-10">
-        
-        {/* Header Hero */}
-        <header className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-semibold">
-            <HelpCircle size={14} className="text-sky-400" />
-            <span>Rehber ve Destek Kütüphanesi</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-            Yardım ve Bilgi Merkezi
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed font-normal">
-            Platform araçları, ekran okuyucu uyumluluğu, Balthazard ve ÖTV hesaplayıcıları ve sesli navigasyon yönergeleri hakkında tüm detaylara buradan ulaşabilirsiniz.
-          </p>
-        </header>
+      <div className="flex flex-col gap-4">
+        {/* Breadcrumb Navigation - XenForo Style */}
+        <div className="bg-[#eef2f7] -mx-4 px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border-b border-slate-200 mb-1">
+          <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 transition-colors">
+            <Home size={12} />
+            Ana Sayfa
+          </Link>
+          <span className="opacity-50">/</span>
+          <span className="font-bold text-slate-800">Yardım ve Bilgi Merkezi</span>
+        </div>
 
-        {/* Core Help Guides */}
-        <section aria-labelledby="guides-heading" className="space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-border/60">
-            <h2 id="guides-heading" className="text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
-              <BookOpen size={18} className="text-sky-400" />
+        {/* XenForo Main Header Block */}
+        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+          <div className="xf-block-header bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-black uppercase text-[12px] tracking-wider py-2.5 px-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <HelpCircle size={15} className="text-white/90" />
+              <span>Yardım ve Bilgi Merkezi</span>
+            </div>
+            <span className="text-[11px] font-normal text-white/80 bg-white/10 px-2 py-0.5 rounded-sm border border-white/20">
+              Rehber &amp; Destek Kütüphanesi
+            </span>
+          </div>
+
+          <div className="p-4 sm:p-5 bg-white space-y-2 text-slate-700">
+            <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+              Engelsiz Topluluk Rehberi &amp; Kullanıcı Desteği
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              Platform araçları, ekran okuyucu uyumluluğu, Balthazard ve ÖTV hesaplayıcıları, mevzuat danışmanlığı ve sesli navigasyon yönergeleri hakkında tüm detaylara buradan ulaşabilirsiniz.
+            </p>
+          </div>
+        </div>
+
+        {/* Core Help Guides - XenForo Node Grid Style */}
+        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+          <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[11px] tracking-wider py-2 px-3 flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <BookOpen size={13} />
               <span>Temel Kullanım Rehberleri</span>
-            </h2>
-            <span className="text-xs text-muted-foreground font-medium">4 Kategori</span>
+            </div>
+            <span className="text-slate-500 font-bold text-[10px]">4 Kategori</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200">
             {[
               { 
-                icon: <BookOpen size={20} className="text-sky-400" />, 
+                icon: <BookOpen size={18} className="text-[#185886]" />, 
                 title: 'Erişilebilirlik ve Biyonik Okuma', 
+                badge: 'WCAG AAA',
                 text: 'Sol alt panelden Biyonik Okuma, Disleksi yazı tipi, kontrast modları ve klavye kısayollarını nasıl kişiselleştireceğinizi öğrenin.' 
               },
               { 
-                icon: <User size={20} className="text-sky-400" />, 
+                icon: <User size={18} className="text-[#185886]" />, 
                 title: 'Hesap ve Profil Yönetimi', 
+                badge: 'Kullanıcı Rehberi',
                 text: 'Profil düzenleme, takma ad seçimi, uzmanlık rozetleri ve güvenli oturum ayarlarını yapılandırma rehberi.' 
               },
               { 
-                icon: <ShieldAlert size={20} className="text-emerald-400" />, 
+                icon: <ShieldAlert size={18} className="text-[#185886]" />, 
                 title: 'Topluluk İlkeleri ve Güvenlik', 
+                badge: 'Moderasyon',
                 text: 'Dayanışma kültürü, saygılı iletişim kuralları, moderasyon süreçleri ve spam koruma mekanizmaları.' 
               },
               { 
-                icon: <FileText size={20} className="text-sky-400" />, 
+                icon: <FileText size={18} className="text-[#185886]" />, 
                 title: 'Mevzuat ve Hesaplama Araçları', 
+                badge: '2026 Mevzuatı',
                 text: 'ÖTV muafiyetli araç limiti, Balthazard formülü ve Engelli Sağlık Kurulu Raporu değerlendirme modüllerinin kullanımı.' 
               },
             ].map((item, index) => (
               <div 
                 key={index} 
-                className="bg-card/85 backdrop-blur-md border border-border/80 rounded-2xl p-5 sm:p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-500/40 shadow-xs"
+                className="p-4 sm:p-5 bg-white hover:bg-[#f8fafc] transition-colors border-b border-slate-200 last:border-b-0 flex gap-3.5"
               >
-                <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center mb-4">
+                <div className="w-9 h-9 rounded-sm bg-[#eef2f7] border border-slate-300 flex items-center justify-center shrink-0">
                   {item.icon}
                 </div>
-                <h3 className="text-base font-bold text-foreground mb-2">{item.title}</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-normal">
-                  {item.text}
-                </p>
+                <div className="space-y-1 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <h2 className="text-xs sm:text-sm font-bold text-[#185886] hover:underline cursor-pointer">
+                      {item.title}
+                    </h2>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 bg-[#eef2f7] text-slate-600 rounded-sm border border-slate-300 shrink-0">
+                      {item.badge}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                    {item.text}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
-        </section>
+        </div>
 
-        {/* Step by Step Guide (How-To) */}
-        <section aria-labelledby="step-guide-heading" className="bg-card/80 border border-border/80 rounded-2xl p-6 sm:p-8 backdrop-blur-md space-y-6">
-          <div className="space-y-1">
-            <h2 id="step-guide-heading" className="text-lg sm:text-xl font-bold text-foreground">
-              Erişilebilirlik Araçlarını 3 Adımda Etkinleştirin
-            </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground font-normal">
-              Ekran okuyucu kullanıyor veya metinleri daha kolay okumak istiyorsanız aşağıdaki adımları takip edebilirsiniz.
-            </p>
+        {/* Step by Step Guide - XenForo Notice / Process Style */}
+        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+          <div className="xf-block-header bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-black uppercase text-[12px] tracking-wider py-2.5 px-3 flex items-center gap-2">
+            <Info size={14} className="text-white/90" />
+            <span>Erişilebilirlik Araçlarını 3 Adımda Etkinleştirin</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-2">
+          <div className="p-3 bg-slate-50 border-b border-slate-200 text-xs text-slate-600">
+            Ekran okuyucu kullanıyor veya metinleri daha kolay okumak istiyorsanız aşağıdaki adımları uygulayabilirsiniz:
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+            <div className="p-4 bg-white space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-bold flex items-center justify-center">1</span>
-                <h4 className="text-xs sm:text-sm font-bold text-foreground">Menüyü Açın</h4>
+                <span className="w-5 h-5 rounded-sm bg-[#185886] text-white text-[11px] font-black flex items-center justify-center">1</span>
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Menüyü Açın</h3>
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed font-normal">
-                Ekranın sol altındaki erişilebilirlik butonuna tıklayın veya klavyeden Tab ile odaklanıp Enter&apos;a basın.
+              <p className="text-xs text-slate-600 leading-relaxed pl-7">
+                Ekranın sol altındaki erişilebilirlik butonuna tıklayın veya klavyeden <kbd className="px-1 py-0.5 bg-slate-100 border border-slate-300 rounded-sm text-[10px] font-mono">Tab</kbd> ile odaklanıp <kbd className="px-1 py-0.5 bg-slate-100 border border-slate-300 rounded-sm text-[10px] font-mono">Enter</kbd>&apos;a basın.
               </p>
             </div>
 
-            <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-2">
+            <div className="p-4 bg-white space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-bold flex items-center justify-center">2</span>
-                <h4 className="text-xs sm:text-sm font-bold text-foreground">Modunuzu Seçin</h4>
+                <span className="w-5 h-5 rounded-sm bg-[#185886] text-white text-[11px] font-black flex items-center justify-center">2</span>
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Modunuzu Seçin</h3>
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed font-normal">
+              <p className="text-xs text-slate-600 leading-relaxed pl-7">
                 Biyonik Okuma, Yüksek Kontrast, Disleksi Yazı Tipi veya Sesli Metin Okuma özelliklerinden dilediğinizi açın.
               </p>
             </div>
 
-            <div className="p-4 rounded-xl bg-muted/40 border border-border/60 space-y-2">
+            <div className="p-4 bg-white space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold flex items-center justify-center">3</span>
-                <h4 className="text-xs sm:text-sm font-bold text-foreground">Otomatik Kaydetme</h4>
+                <span className="w-5 h-5 rounded-sm bg-[#2e7d32] text-white text-[11px] font-black flex items-center justify-center">3</span>
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wide">Otomatik Kaydetme</h3>
               </div>
-              <p className="text-xs text-muted-foreground leading-relaxed font-normal">
-                Yaptığınız ayarlar tarayıcınıza kaydedilir, sonraki tüm ziyaretlerinizde aynı tercihleriniz geçerli kalır.
+              <p className="text-xs text-slate-600 leading-relaxed pl-7">
+                Yaptığınız tercihler tarayıcınıza kaydedilir, sonraki tüm ziyaretlerinizde aynı tercihleriniz otomatik olarak geçerli kalır.
               </p>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* FAQ List */}
-        <section aria-labelledby="faq-heading" className="space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-border/60">
-            <h2 id="faq-heading" className="text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
-              <MessageSquare size={18} className="text-sky-400" />
-              <span>Sıkça Sorulan Sorular</span>
-            </h2>
-            <span className="text-xs text-muted-foreground font-medium">Güncel Yanıtlar</span>
+        {/* FAQ List - XenForo Collapsible / Structured Q&A Style */}
+        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+          <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[11px] tracking-wider py-2 px-3 flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <MessageSquare size={13} />
+              <span>Sıkça Sorulan Sorular (S.S.S.)</span>
+            </div>
+            <span className="text-slate-500 font-bold text-[10px]">Resmi Bilgiler</span>
           </div>
-          
-          <div className="bg-card/80 border border-border/80 rounded-2xl p-4 sm:p-6 space-y-3 backdrop-blur-md">
+
+          <div className="divide-y divide-slate-200">
             {[
               { 
                 q: "EngelsizForum tamamen ücretsiz mi?", 
@@ -242,56 +275,69 @@ export default function HelpPage() {
                 a: "Evet. Hesaplama algoritmaları Resmi Gazete'de yayımlanan güncel Engelli Sağlık Kurulu Raporu Yönetmeliği ve Gelir İdaresi Başkanlığı limitlerine göre periyodik olarak güncellenmektedir."
               }
             ].map((item, index) => (
-              <div key={index} className="space-y-2 p-4 bg-muted/30 rounded-xl border border-border/60">
-                <h3 className="text-xs sm:text-sm font-bold text-foreground flex items-start gap-2">
-                  <span className="text-sky-400 font-extrabold shrink-0">S:</span>
-                  <span>{item.q}</span>
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed pl-5 font-normal">
-                  {item.a}
-                </p>
+              <div key={index} className="p-4 bg-white hover:bg-[#f8fafc] transition-colors">
+                <div className="flex items-start gap-2.5">
+                  <span className="px-1.5 py-0.5 rounded-sm bg-[#eef2f7] text-[#185886] border border-slate-300 text-[11px] font-black shrink-0 mt-0.5">
+                    SORU
+                  </span>
+                  <div className="space-y-1.5 flex-1">
+                    <h3 className="text-xs sm:text-sm font-bold text-slate-900">
+                      {item.q}
+                    </h3>
+                    <p className="text-xs text-slate-600 leading-relaxed pl-0 font-normal">
+                      {item.a}
+                    </p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
-        </section>
+        </div>
 
-        {/* Contact & Support Section */}
-        <section className="bg-card/90 border border-sky-500/20 p-6 sm:p-8 rounded-2xl space-y-4 backdrop-blur-md shadow-xs">
-          <div className="max-w-2xl space-y-2">
-            <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
-              <Mail size={20} className="text-sky-400" />
-              <span>Doğrudan Destek ve Geri Bildirim</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
-              Aradığınız konuyu bulamadınız mı veya bir erişilebilirlik aksaklığı mı fark ettiniz? Destek ekibimize doğrudan ulaşabilirsiniz.
-            </p>
+        {/* Contact & Support Section - XenForo Notice Style */}
+        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+          <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-black uppercase text-[12px] tracking-wider py-2.5 px-3 flex items-center gap-2">
+            <Mail size={14} className="text-white/90" />
+            <span>Doğrudan Destek ve Geri Bildirim</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <a 
-              href="mailto:miracbirben@engelsizforum.com" 
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 hover:bg-sky-400 px-5 py-2.5 text-xs font-bold text-white transition-colors cursor-pointer shadow-xs"
-            >
-              <Mail size={14} />
-              <span>miracbirben@engelsizforum.com</span>
-            </a>
+          <div className="p-4 sm:p-5 bg-[#fbfcfd] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1 max-w-2xl">
+              <h4 className="text-xs sm:text-sm font-bold text-slate-900">
+                Aradığınız konuyu bulamadınız mı veya bir erişilebilirlik aksaklığı mı fark ettiniz?
+              </h4>
+              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                Destek ekibimiz tüm soru, öneri ve teknik hata bildirimlerinize en geç 24 saat içinde yanıt vermektedir.
+              </p>
+            </div>
 
-            <Link 
-              href="/discussions/new" 
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-muted hover:bg-muted/80 border border-border px-5 py-2.5 text-xs font-bold text-foreground transition-colors"
-            >
-              <span>Toplulukta Soru Sor</span>
-            </Link>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <a 
+                href="mailto:miracbirben@engelsizforum.com" 
+                className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-[#185886] hover:bg-[#12466b] text-white px-4 py-2 text-xs font-bold uppercase tracking-wide transition-colors shadow-xs"
+              >
+                <Mail size={13} />
+                <span>E-posta Gönder</span>
+              </a>
+
+              <Link 
+                href="/discussions/new" 
+                className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-[#f2930d] hover:bg-[#d5800a] text-white px-4 py-2 text-xs font-bold uppercase tracking-wide transition-colors shadow-xs"
+              >
+                <MessageSquare size={13} />
+                <span>Toplulukta Soru Sor</span>
+              </Link>
+            </div>
           </div>
-        </section>
+        </div>
 
         {/* Back Link */}
-        <div className="pt-2">
+        <div className="pt-1">
           <Link 
             href="/" 
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-card border border-border/80 px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-white border border-slate-300 px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-xs"
           >
-            <ArrowLeft size={14} />
+            <ArrowLeft size={13} />
             <span>Ana Sayfaya Dön</span>
           </Link>
         </div>

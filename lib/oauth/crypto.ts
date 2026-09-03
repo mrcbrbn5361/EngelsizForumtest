@@ -72,6 +72,20 @@ export function generateAuthorizationCode(): string {
 }
 
 /**
+ * Generates a cryptographically random client ID (e.g. ef_client_...).
+ */
+export function generateClientId(): string {
+  return `ef_client_${crypto.randomBytes(16).toString('hex')}`;
+}
+
+/**
+ * Generates a cryptographically secure client secret (e.g. ef_sec_...).
+ */
+export function generateClientSecret(): string {
+  return `ef_sec_${crypto.randomBytes(24).toString('hex')}`;
+}
+
+/**
  * Base64URL encoder conforming to RFC 7515 / RFC 7519.
  */
 function base64UrlEncode(strOrBuffer: string | Buffer): string {

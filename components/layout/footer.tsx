@@ -1,141 +1,220 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { MessageSquare, Users, Info, Shield, HelpCircle, Mail, MapPin, Calculator, Heart } from 'lucide-react';
+import { 
+  Calculator, 
+  Car, 
+  Calendar, 
+  Code2, 
+  ShieldCheck, 
+  HelpCircle, 
+  Mail, 
+  MapPin, 
+  ChevronUp, 
+  Globe, 
+  Sparkles,
+  HeartHandshake,
+  Activity,
+  FileText
+} from 'lucide-react';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
+  const scrollToTop = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <footer id="main-footer" className="border-t border-white/[0.08] bg-[#090a0f] text-slate-200 w-full mt-auto" role="contentinfo">
-      <div className="vibe-container py-12 md:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
-          {/* Brand Column */}
-          <div className="space-y-4 text-left">
-            <Link href="/" className="inline-flex items-center group select-none" aria-label="EngelsizForum Ana Sayfa">
-              <div className="flex flex-col min-w-0 select-none pointer-events-none" style={{ userSelect: 'none', WebkitUserSelect: 'none', MozUserSelect: 'none' }}>
-                <div className="text-xl font-bold tracking-tight text-slate-100">
-                  Engelsiz<span className="text-sky-400">Forum</span>
-                </div>
-              </div>
+    <footer id="xf-site-footer" className="w-full bg-[#0e273c] text-slate-200 border-t-2 border-[#185886] mt-auto text-xs" role="contentinfo">
+      
+      {/* XenForo Classic Top Navigation Bar */}
+      <div className="bg-[#123652] border-b border-[#1b4d73] py-2 px-4">
+        <div className="max-w-[1280px] mx-auto flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-sky-100">
+          
+          {/* Quick links left */}
+          <div className="flex flex-wrap items-center gap-3 sm:gap-5">
+            <Link href="/about" className="hover:text-white transition-colors">
+              Bize Ulaşın
             </Link>
-            <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-sm">
-              Türkiye&apos;nin erişilebilir, yapay zeka destekli kapsayıcı topluluk platformu. Engelli bireyler ve aileleri için güncel mevzuat, dayanışma ve rehberlik alanı.
-            </p>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#111726] border border-white/[0.08] text-slate-300 text-xs font-semibold">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              Canlı Prototip &amp; Demo Sürümü
-            </div>
+            <span className="text-white/20 select-none">•</span>
+            <Link href="/terms" className="hover:text-white transition-colors">
+              Şartlar &amp; Kurallar
+            </Link>
+            <span className="text-white/20 select-none">•</span>
+            <Link href="/privacy" className="hover:text-white transition-colors">
+              Gizlilik Politikası
+            </Link>
+            <span className="text-white/20 select-none">•</span>
+            <Link href="/help" className="hover:text-white transition-colors">
+              Yardım / SSS
+            </Link>
+            <span className="text-white/20 select-none">•</span>
+            <Link href="/developers" className="text-amber-300 hover:text-amber-200 font-extrabold flex items-center gap-1 transition-colors">
+              <Code2 size={13} />
+              Geliştirici Portalı (API)
+            </Link>
           </div>
 
-          {/* Platform Links */}
-          <div className="space-y-3.5 text-left">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-100">
-              Topluluk &amp; Platform
-            </h3>
-            <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-400">
-              <li>
-                <Link href="/discussions" className="hover:text-sky-400 transition-colors inline-flex items-center gap-2">
-                  <MessageSquare size={15} className="text-slate-400" /> Tartışma Başlıkları
-                </Link>
-              </li>
-              <li>
-                <Link href="/communities" className="hover:text-sky-400 transition-colors inline-flex items-center gap-2">
-                  <Users size={15} className="text-slate-400" /> İlgi &amp; Tanı Toplulukları
-                </Link>
-              </li>
-              <li>
-                <Link href="/hesaplama" className="hover:text-sky-400 transition-colors inline-flex items-center gap-2">
-                  <Calculator size={15} className="text-slate-400" /> Hak &amp; Maaş Hesaplama
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-sky-400 transition-colors inline-flex items-center gap-2">
-                  <Info size={15} className="text-slate-400" /> Hakkımızda &amp; Misyon
-                </Link>
-              </li>
-              <li>
-                <Link href="/brand" className="hover:text-sky-400 transition-colors inline-flex items-center gap-2">
-                  <Shield size={15} className="text-slate-400" /> Marka &amp; Görseller
-                </Link>
-              </li>
-              <li>
-                <Link href="/help" className="hover:text-sky-400 transition-colors inline-flex items-center gap-2">
-                  <HelpCircle size={15} className="text-slate-400" /> Yardım Merkezi &amp; SSS
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Legal / Safety */}
-          <div className="space-y-3.5 text-left">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-100">
-              Erişilebilirlik &amp; Hukuk
-            </h3>
-            <ul className="space-y-2.5 text-xs sm:text-sm font-medium text-slate-400">
-              <li>
-                <Link href="/accessibility" className="hover:text-sky-400 transition-colors inline-flex items-center gap-2">
-                  <Shield size={15} className="text-slate-400" /> Erişilebilirlik Beyanı (WCAG 2.1)
-                </Link>
-              </li>
-              <li>
-                <Link href="/security" className="hover:text-sky-400 transition-colors inline-flex items-center gap-2">
-                  <Shield size={15} className="text-slate-400" /> Bilgi Güvenliği Politikası
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy" className="hover:text-sky-400 transition-colors inline-flex items-center gap-2">
-                  <Shield size={15} className="text-slate-400" /> KVKK &amp; Gizlilik Politikası
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="hover:text-sky-400 transition-colors inline-flex items-center gap-2">
-                  <Info size={15} className="text-slate-400" /> Kullanım &amp; Topluluk Şartları
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div className="space-y-3.5 text-left">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-100">
-              İletişim &amp; Destek
-            </h3>
-            <ul className="space-y-3 text-xs sm:text-sm font-medium text-slate-400">
-              <li className="flex items-start gap-2.5">
-                <MapPin size={16} className="text-sky-400 shrink-0 mt-0.5" />
-                <span className="text-xs sm:text-sm">Bağcılar / İstanbul, Türkiye</span>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <Mail size={16} className="text-sky-400 shrink-0" />
-                <a href="mailto:miracbirben@engelsizforum.com" className="hover:text-sky-400 transition-colors text-xs sm:text-sm break-all">
-                  miracbirben@engelsizforum.com
-                </a>
-              </li>
-              <li className="pt-1">
-                <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                  <span>Erişilebilirlik önceliği ile tasarlandı</span>
-                  <Heart size={13} className="text-rose-500 fill-rose-500 inline" />
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="pt-6 border-t border-white/[0.08] flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
-          <div className="text-xs text-slate-400 font-medium">
-            © {currentYear} EngelsizForum. Tüm hakları saklıdır.
-          </div>
-          <div className="flex items-center gap-4 text-xs text-slate-400">
-            <span className="inline-flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              Sistem Aktif
-            </span>
-            <span className="hidden sm:inline">•</span>
-            <span className="text-slate-500">v1.4.0</span>
+          {/* Quick links right (Home & Back to Top) */}
+          <div className="flex items-center gap-3 ml-auto">
+            <Link href="/" className="hover:text-white transition-colors">
+              Ana Sayfa
+            </Link>
+            <button 
+              onClick={scrollToTop}
+              className="flex items-center gap-1 px-2 py-0.5 bg-black/20 hover:bg-black/35 text-sky-200 hover:text-white rounded-xs transition-colors cursor-pointer border border-white/10"
+              aria-label="Sayfa Başına Dön"
+              title="Sayfanın En Üstüne Çık"
+            >
+              <ChevronUp size={13} />
+              <span>Üste Dön</span>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Main 4-Column Section */}
+      <div className="max-w-[1280px] mx-auto px-4 py-8 sm:py-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          
+          {/* Column 1: About EngelsizForum */}
+          <div className="space-y-3">
+            <div className="text-base font-black tracking-tight text-white flex items-center gap-1.5 select-none">
+              <span>ENGELSİZ</span>
+              <span className="text-sky-400 font-light">FORUM</span>
+            </div>
+            <p className="text-slate-300 text-xs leading-relaxed">
+              Türkiye&apos;nin ilk ve tek tam erişilebilir (%100 WCAG 2.1 AAA), açık veri ve hak temelli engelli dayanışma platformu. Balthazard, ÖTV 2026 ve erken emeklilik robotları ile hak kaybını önler.
+            </p>
+            <div className="pt-1 flex items-center gap-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xs bg-[#091a27] border border-[#1b4d73] text-[11px] text-emerald-400 font-bold">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Tüm Servisler Operasyonel</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Column 2: Legal & Calculations */}
+          <div className="space-y-2.5">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-sky-300 pb-1 border-b border-[#1b4d73]">
+              Hesaplama Robotları
+            </h4>
+            <ul className="space-y-2 text-xs text-slate-300">
+              <li>
+                <Link href="/hesaplama" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                  <Calculator size={13} className="text-sky-400 shrink-0" />
+                  <span>Balthazard Özür Oranı Hesabı</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/hesaplama" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                  <Car size={13} className="text-emerald-400 shrink-0" />
+                  <span>2026 ÖTV Muafiyet Üst Limiti (2.24M ₺)</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/hesaplama" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                  <Calendar size={13} className="text-amber-400 shrink-0" />
+                  <span>Erken Emeklilik ve Prim Günü Sorgu</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/help" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                  <FileText size={13} className="text-slate-400 shrink-0" />
+                  <span>Sağlık Kurulu Raporu Kılavuzu</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3: Developers & Standards */}
+          <div className="space-y-2.5">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-sky-300 pb-1 border-b border-[#1b4d73]">
+              Geliştirici &amp; Açık Standartlar
+            </h4>
+            <ul className="space-y-2 text-xs text-slate-300">
+              <li>
+                <Link href="/developers" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                  <Code2 size={13} className="text-sky-400 shrink-0" />
+                  <span>OAuth 2.0 İstemci Yönetimi (RFC 6749)</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/developers" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                  <Activity size={13} className="text-sky-400 shrink-0" />
+                  <span>REST API Başvuru Dokümantasyonu</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/developers" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                  <Sparkles size={13} className="text-amber-400 shrink-0" />
+                  <span>WebMCP Model Context Protocol Entegrasyonu</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/yardim/erisilebilirlik" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                  <ShieldCheck size={13} className="text-emerald-400 shrink-0" />
+                  <span>Erişilebilirlik Bildirimi (WCAG 2.1 AAA)</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Contact & Community */}
+          <div className="space-y-2.5">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-sky-300 pb-1 border-b border-[#1b4d73]">
+              İletişim &amp; Topluluk
+            </h4>
+            <ul className="space-y-2.5 text-xs text-slate-300">
+              <li className="flex items-start gap-2">
+                <MapPin size={14} className="text-sky-400 shrink-0 mt-0.5" />
+                <span>Bağcılar / İstanbul, Türkiye</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Mail size={14} className="text-sky-400 shrink-0" />
+                <a href="mailto:miracbirben@engelsizforum.com" className="hover:text-sky-300 transition-colors font-medium break-all">
+                  miracbirben@engelsizforum.com
+                </a>
+              </li>
+              <li className="pt-1 text-[11px] text-slate-400 leading-normal">
+                Nefret söylemine ve ayrımcılığa sıfır tolerans ilkesiyle yönetilmektedir.
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      {/* XenForo Classic Bottom Copyright Bar */}
+      <div className="bg-[#081724] border-t border-[#123652] py-3 px-4">
+        <div className="max-w-[1280px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5 text-[11px] text-slate-400">
+          
+          <div className="text-center sm:text-left">
+            Forum Yazılımı: <strong>XenForo® Tarzı EngelsizForum Motoru</strong> © {currentYear} EngelsizForum. Tüm hakları saklıdır.
+          </div>
+
+          <div className="flex items-center gap-4 text-slate-400">
+            <span className="flex items-center gap-1 text-sky-300 font-bold">
+              <Globe size={12} />
+              Türkçe (TR)
+            </span>
+            <span>•</span>
+            <span className="text-slate-300 font-semibold">
+              WCAG 2.1 Level AAA
+            </span>
+            <span>•</span>
+            <span className="text-slate-500 font-mono text-[10px]">
+              v2.4.0-oauth
+            </span>
+          </div>
+
+        </div>
+      </div>
+
     </footer>
   );
 }

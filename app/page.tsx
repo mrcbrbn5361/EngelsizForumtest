@@ -72,6 +72,122 @@ export default async function Home() {
     };
   });
 
+  const DEFAULT_CATEGORIES = [
+    {
+      title: 'MEVZUAT, SOSYAL GÜVENLİK VE ENGELLİ HAKLARI',
+      nodes: [
+        {
+          id: 'mevzuat-ve-haklar',
+          title: 'Balthazard ve Sağlık Kurulu Raporları',
+          description: 'Özür oranı cetveli, birden fazla engelin Balthazard formülü ile birleştirilmesi ve rapor itiraz süreçleri.',
+          threadCount: '142',
+          messageCount: '1,280',
+          lastPost: {
+            title: '2026 Balthazard Hesaplama ve Rapor Rehberi',
+            author: 'BoraMevzuat',
+            date: '2 saat önce'
+          }
+        },
+        {
+          id: 'otv-muafiyeti-ve-araclar',
+          title: 'ÖTV Muafiyeti ve Özel Tertibatlı Araçlar',
+          description: '2026 yılı 2.247.100 TL ÖTV muafiyetli araç alım limiti, tertibat kodları, noter devir ve MTV muafiyeti.',
+          threadCount: '389',
+          messageCount: '4,150',
+          lastPost: {
+            title: '2026 ÖTV Üst Limiti ve Bayi Uygulamaları',
+            author: 'EngelsizSurucu',
+            date: '15 dakika önce'
+          }
+        },
+        {
+          id: 'erken-emeklilik-ve-sgk',
+          title: 'Engelli Erken Emeklilik ve SGK Hakları',
+          description: 'Yaş haddi aranmaksızın kademeli erken emeklilik, prim günü ve sigortalılık süresi hesaplamaları.',
+          threadCount: '215',
+          messageCount: '1,890',
+          lastPost: {
+            title: '4A / 4B / 4C Kademeli Emeklilik Tablosu',
+            author: 'AriaA11y',
+            date: '3 saat önce'
+          }
+        },
+        {
+          id: 'kamu-istihdam-ekpss',
+          title: 'E-KPSS, Vergi İndirimi ve Kamuda İstihdam',
+          description: 'E-KPSS atamaları, kura usulü yerleştirme, 1./2./3. derece gelir vergisi indirimi başvuruları.',
+          threadCount: '178',
+          messageCount: '2,340',
+          lastPost: {
+            title: '2026 E-KPSS Tercih Kılavuzu Duyurusu',
+            author: 'FelixDev',
+            date: 'Dün'
+          }
+        }
+      ]
+    },
+    {
+      title: 'SAĞLIK, REHABİLİTASYON VE MEDİKAL CİHAZLAR',
+      nodes: [
+        {
+          id: 'ortez-protez-ve-cihazlar',
+          title: 'Ortez, Protez ve Yardımcı Ekipmanlar',
+          description: 'SGK SUT geri ödeme kapsamındaki akülü/manuel tekerlekli sandalyeler, biyonik protezler ve medikal cihazlar.',
+          threadCount: '96',
+          messageCount: '840',
+          lastPost: {
+            title: 'SGK SUT Akülü Sandalye Geri Ödeme Tutarları',
+            author: 'MiracBirben',
+            date: '5 saat önce'
+          }
+        },
+        {
+          id: 'fizik-tedavi-ve-rehabilitasyon',
+          title: 'Fizik Tedavi ve Özel Eğitim Merkezleri',
+          description: 'RAM raporları, devlet destekli seans hakları ve nörolojik rehabilitasyon merkezleri deneyimleri.',
+          threadCount: '84',
+          messageCount: '620',
+          lastPost: {
+            title: 'Yetişkin Fizik Tedavi Raporu Yenileme',
+            author: 'DrRehab',
+            date: '2 gün önce'
+          }
+        }
+      ]
+    },
+    {
+      title: 'TOPLULUK, GELİŞTİRİCİLER VE AÇIK STANDARTLAR',
+      nodes: [
+        {
+          id: 'genel-sohbet-ve-tanisma',
+          title: 'Engelsiz Sohbet ve Tanışma Köşesi',
+          description: 'Topluluk üyeleriyle serbest sohbet, başarı hikayeleri, kültür sanat ve günlük yaşam paylaşımları.',
+          threadCount: '512',
+          messageCount: '6,400',
+          lastPost: {
+            title: 'Aramıza Yeni Katılanlar Tanışma Başlığı',
+            author: 'AriaA11y',
+            date: '8 dakika önce'
+          }
+        },
+        {
+          id: 'gelistirici-ve-api-entegrasyonlari',
+          title: 'Geliştiriciler & Açık API (OAuth 2.0 / WebMCP)',
+          description: 'EngelsizForum ile Giriş Yap, REST API, yapay zeka ajanları (WebMCP) ve açık veri entegrasyonları.',
+          threadCount: '47',
+          messageCount: '310',
+          lastPost: {
+            title: 'OAuth 2.0 Authorization Code Flow Canlıya Alındı',
+            author: 'BoraMevzuat',
+            date: 'Bugün'
+          }
+        }
+      ]
+    }
+  ];
+
+  const displayCategories = categoriesWithNodes.length > 0 ? categoriesWithNodes : DEFAULT_CATEGORIES;
+
   return (
     <div className="flex flex-col lg:flex-row gap-5">
       {/* Main Forum Content */}
@@ -86,20 +202,14 @@ export default async function Home() {
           </a>
         </div>
 
-        {categoriesWithNodes.length > 0 ? (
-          categoriesWithNodes.map((category) => (
-            <div key={category.title} className="mb-5">
-              <ClassicCategoryBlock 
-                title={category.title} 
-                nodes={category.nodes} 
-              />
-            </div>
-          ))
-        ) : (
-          <div className="xf-block p-8 text-center text-slate-400 italic rounded-sm">
-            Henüz kategori eklenmemiş.
+        {displayCategories.map((category) => (
+          <div key={category.title} className="mb-5">
+            <ClassicCategoryBlock 
+              title={category.title} 
+              nodes={category.nodes} 
+            />
           </div>
-        )}
+        ))}
 
         {/* Legend */}
         <div className="xf-block p-3 flex flex-wrap items-center gap-6 text-[11px] text-slate-500 uppercase tracking-wider font-semibold rounded-sm border border-slate-200 bg-white">

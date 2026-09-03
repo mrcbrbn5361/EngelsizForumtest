@@ -140,37 +140,42 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Call to Action Block */}
-        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-sm">
-          <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[12px] tracking-wider py-2.5 px-3 flex items-center gap-2">
+        {/* Call to Action Block - XenForo Notice Style */}
+        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+          <div className="xf-block-header bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-black uppercase text-[12px] tracking-wider py-2.5 px-3 flex items-center gap-2">
             <Sparkles size={14} className="text-[#f2930d]" />
-            Dayanışmamıza Katılın
+            <span>DAYANIŞMAMIZA KATILIN</span>
           </div>
           
-          <div className="p-6 text-center space-y-4 max-w-xl mx-auto">
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-              Sorularınızı sorun, edindiğiniz hak ve rapor deneyimlerinizi paylaşarak binlerce engelli bireye rehberlik edin.
-            </p>
+          <div className="p-4 sm:p-5 bg-[#fbfcfd] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="space-y-1 max-w-2xl">
+              <h2 className="text-xs sm:text-sm font-bold text-slate-900">
+                Sorularınızı sorun, edindiğiniz mevzuat ve rapor deneyimlerinizi paylaşın
+              </h2>
+              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                EngelsizForum&apos;a katılarak hak arama ve sosyal güvenlik süreçlerinde binlerce engelli bireye rehberlik edebilir, doğru bilgiye birlikte ulaşabilirsiniz.
+              </p>
+            </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1.5">
+            <div className="flex flex-wrap items-center gap-2 shrink-0 w-full sm:w-auto">
               {!user ? (
                 <Link 
                   href="/register" 
-                  className="w-full sm:w-auto inline-flex items-center justify-center rounded-sm bg-[#f2930d] hover:bg-[#d5800a] text-white px-5 py-2 text-xs font-black uppercase tracking-wider shadow-xs transition-colors whitespace-nowrap"
+                  className="w-full sm:w-auto inline-flex items-center justify-center rounded-sm bg-[#f2930d] hover:bg-[#d5800a] text-white px-4 py-2 text-xs font-black uppercase tracking-wider shadow-xs transition-colors whitespace-nowrap"
                 >
                   Ücretsiz Kayıt Ol
                 </Link>
               ) : (
                 <Link 
                   href="/" 
-                  className="w-full sm:w-auto inline-flex items-center justify-center rounded-sm bg-[#185886] hover:bg-[#12466b] text-white px-5 py-2 text-xs font-black uppercase tracking-wider shadow-xs transition-colors whitespace-nowrap"
+                  className="w-full sm:w-auto inline-flex items-center justify-center rounded-sm bg-[#185886] hover:bg-[#12466b] text-white px-4 py-2 text-xs font-black uppercase tracking-wider shadow-xs transition-colors whitespace-nowrap"
                 >
                   Forumlar Ana Sayfasına Git
                 </Link>
               )}
               <Link 
                 href="/" 
-                className="w-full sm:w-auto inline-flex items-center justify-center rounded-sm bg-[#eef2f7] hover:bg-slate-200 text-slate-700 border border-slate-300 px-5 py-2 text-xs font-black uppercase tracking-wider transition-colors whitespace-nowrap"
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-sm bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors whitespace-nowrap shadow-xs"
               >
                 Tartışmaları İncele
               </Link>
@@ -179,10 +184,10 @@ export default function AboutPage() {
         </div>
 
         {/* Back Link */}
-        <div className="pt-2">
+        <div className="pt-1">
           <Link 
             href="/" 
-            className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-white border border-slate-300 px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 hover:bg-slate-50 hover:border-slate-400 transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-white border border-slate-300 px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-xs"
           >
             <ArrowLeft size={13} />
             <span>Ana Sayfaya Dön</span>

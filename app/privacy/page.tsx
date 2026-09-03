@@ -1,5 +1,6 @@
 import { SiteLayout } from '@/components/layout/site-layout';
 import Link from 'next/link';
+import { ShieldCheck, Lock, Home, ArrowLeft, Eye, Database, FileText } from 'lucide-react';
 
 export default function PrivacyPage() {
   return (
@@ -21,7 +22,7 @@ export default function PrivacyPage() {
               },
               {
                 "@type": "Question",
-                "name": "Hesabımı nasıl silebilim?",
+                "name": "Hesabımı nasıl silebilirim?",
                 "acceptedAnswer": {
                   "@type": "Answer",
                   "text": "Profil ayarlarınızdan veya destek ekibimizle iletişime geçerek hesabınızı ve tüm verilerinizi kalıcı olarak silebilirsiniz."
@@ -31,107 +32,128 @@ export default function PrivacyPage() {
           })
         }}
       />
-      <div className="container mx-auto px-4 py-10 md:py-16 max-w-5xl">
-        <header className="mb-12 text-center">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 text-xs font-bold uppercase tracking-wider mb-4">
-            🔒 Güvenlik & Gizlilik
-          </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground mb-4">Gizlilik Politikası</h1>
-          <p className="text-base text-muted-foreground leading-relaxed max-w-2xl mx-auto font-normal">
-            Verilerinizin güvenliği, gizliliği ve haklarınız EngelsizForum koruması altındadır.
-          </p>
-        </header>
-        
-        {/* Key Takeaways Section */}
-        <section className="mb-12">
-          <div className="bg-card border border-border/80 rounded-2xl p-6 md:p-8 shadow-xs overflow-hidden relative">
-            <h2 className="text-lg font-bold mb-6 flex items-center gap-2 text-foreground tracking-tight">
-              💡 Temel İlkelerimiz
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 relative z-10">
-              <div className="space-y-2 p-4 bg-muted/20 border border-border/60 rounded-xl">
-                <div className="font-bold text-sky-400 text-xs uppercase tracking-wider">GİZLİLİK</div>
-                <p className="text-xs text-muted-foreground leading-relaxed font-normal">Verileriniz bizimle güvende, üçüncü taraflara satılmaz veya paylaşılmaz.</p>
-              </div>
-              <div className="space-y-2 p-4 bg-muted/20 border border-border/60 rounded-xl">
-                <div className="font-bold text-sky-400 text-xs uppercase tracking-wider">KONTROL</div>
-                <p className="text-xs text-muted-foreground leading-relaxed font-normal">Verileriniz üzerinde tam kontrole sahipsiniz, istediğiniz zaman silebilirsiniz.</p>
-              </div>
-              <div className="space-y-2 p-4 bg-muted/20 border border-border/60 rounded-xl">
-                <div className="font-bold text-sky-400 text-xs uppercase tracking-wider">ŞEFFAFLIK</div>
-                <p className="text-xs text-muted-foreground leading-relaxed font-normal">Hangi veriyi neden topladığımızı açıkça ve sade dille belirtiyoruz.</p>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        <div className="space-y-8 text-muted-foreground">
-          <div className="bg-muted/20 border border-border/60 rounded-2xl p-6 mb-8">
-            <p className="text-sm leading-relaxed font-normal text-foreground">
-              EngelsizForum olarak gizliliğinize önem veriyoruz. Bu politika, platformumuzu kullanırken verilerinizin nasıl işlendiğini açıklar. 
-              Daha fazla bilgi için <Link href="/about" className="text-sky-400 hover:underline font-bold">Hakkımızda</Link> sayfamızı da inceleyebilirsiniz.
+      <div className="flex flex-col gap-4">
+        {/* Breadcrumb Navigation - XenForo Style */}
+        <div className="bg-[#eef2f7] -mx-4 px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border-b border-slate-200 mb-1">
+          <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 transition-colors">
+            <Home size={12} />
+            Ana Sayfa
+          </Link>
+          <span className="opacity-50">/</span>
+          <span className="font-bold text-slate-800">Gizlilik Politikası</span>
+        </div>
+
+        {/* XenForo Header Block */}
+        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+          <div className="xf-block-header bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-black uppercase text-[12px] tracking-wider py-2.5 px-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Lock size={14} className="text-white/90" />
+              <span>GİZLİLİK POLİTİKASI &amp; KİŞİSEL VERİLERİN KORUNMASI</span>
+            </div>
+            <span className="text-[11px] font-normal text-white/80 bg-white/10 px-2 py-0.5 rounded-sm border border-white/20">
+              KVKK &amp; GDPR Uyumlu
+            </span>
+          </div>
+
+          <div className="p-4 sm:p-5 bg-white space-y-2 text-slate-700">
+            <h1 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+              Verilerinizin Güvenliği ve Mahremiyeti Güvencemiz Altındadır
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              EngelsizForum olarak üyelerimizin mahremiyetine en yüksek hassasiyeti gösteriyoruz. Bu sayfa, platformumuzda toplanan verilerin mahiyetini, kullanım sınırlarını ve haklarınızı şeffaf biçimde açıklar.
             </p>
           </div>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="p-6 bg-card border border-border/80 rounded-2xl space-y-2">
-              <h2 className="text-base font-bold text-foreground">1. Toplanan Veriler</h2>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-normal">
-                Hesap oluştururken verdiğiniz e-posta adresi, kullanıcı adı ve profil bilgileri güvenli bir şekilde saklanır.
-              </p>
-            </div>
+        </div>
 
-            <div className="p-6 bg-card border border-border/80 rounded-2xl space-y-2">
-              <h2 className="text-base font-bold text-foreground">2. Veri Kullanımı</h2>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-normal">
-                Verileriniz yalnızca platform içindeki deneyiminizi iyileştirmek, topluluk etkileşimlerini yönetmek ve size bildirim göndermek için kullanılır.
-              </p>
-            </div>
-
-            <div className="p-6 bg-card border border-border/80 rounded-2xl space-y-2">
-              <h2 className="text-base font-bold text-foreground">3. Çerezler</h2>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-normal">
-                Oturum tercihlerinizi hatırlamak ve erişilebilirlik ayarlarınızı kaydetmek için temel çerezler kullanmaktayız.
-              </p>
-            </div>
-
-            <div className="p-6 bg-card border border-border/80 rounded-2xl space-y-2">
-              <h2 className="text-base font-bold text-foreground">4. İletişim</h2>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-normal">
-                Gizlilikle ilgili sorularınız için bizimle <a href="mailto:miracbirben@engelsizforum.com" className="text-sky-400 font-bold hover:underline">miracbirben@engelsizforum.com</a> üzerinden iletişime geçebilirsiniz.
-              </p>
-            </div>
+        {/* Core Principles - XenForo Node Grid */}
+        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+          <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[11px] tracking-wider py-2 px-3 flex items-center gap-1.5">
+            <ShieldCheck size={13} />
+            <span>Temel Gizlilik İlkelerimiz</span>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-border/60">
-            <h2 className="text-xl font-extrabold mb-6 text-foreground tracking-tight">Daha Fazla Bilgi</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Link href="/about" className="bg-card border border-border/80 p-6 rounded-2xl block group transition-all hover:border-sky-500/40">
-                <h3 className="font-bold text-base mb-1 text-foreground group-hover:text-sky-400 transition-colors tracking-tight">Hakkımızda</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed font-normal">Misyonumuz, vizyonumuz ve topluluk hedeflerimiz hakkında bilgi edinin.</p>
-              </Link>
-              <Link href="/discussions" className="bg-card border border-border/80 p-6 rounded-2xl block group transition-all hover:border-sky-500/40">
-                <h3 className="font-bold text-base mb-1 text-foreground group-hover:text-sky-400 transition-colors tracking-tight">Tartışmalar</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed font-normal">Tüm kategorilerdeki güncel konuları inceleyin ve yardımlaşın.</p>
-              </Link>
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-200">
+            <div className="p-4 bg-white space-y-1.5">
+              <div className="flex items-center gap-1.5 text-[#185886] font-bold text-xs uppercase tracking-wide">
+                <Eye size={14} />
+                <span>Sıfır Reklam Takibi</span>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                Verileriniz asla reklam hedeflemesi amacıyla kullanılmaz, üçüncü şahıslara veya veri simsarlarına satılmaz.
+              </p>
             </div>
-          </div>
 
-          <div className="mt-8 pt-6 flex flex-col sm:flex-row gap-3">
-            <Link 
-              href="/" 
-              className="inline-flex items-center justify-center rounded-xl bg-card border border-border/80 px-5 py-2.5 text-xs font-bold text-foreground transition hover:bg-muted"
-            >
-              Ana Sayfaya Dön
-            </Link>
-            <Link 
-              href="/discussions" 
-              className="inline-flex items-center justify-center rounded-xl bg-sky-500 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-sky-400"
-            >
-              Tartışmaları Keşfet
-            </Link>
+            <div className="p-4 bg-white space-y-1.5">
+              <div className="flex items-center gap-1.5 text-[#185886] font-bold text-xs uppercase tracking-wide">
+                <Database size={14} />
+                <span>Tam Veri Kontrolü</span>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                Hesap ayarlarınızdan verilerinizi dışa aktarabilir veya üyeliğinizi tüm verilerinizle birlikte tek tıkla kalıcı olarak silebilirsiniz.
+              </p>
+            </div>
+
+            <div className="p-4 bg-white space-y-1.5">
+              <div className="flex items-center gap-1.5 text-[#185886] font-bold text-xs uppercase tracking-wide">
+                <FileText size={14} />
+                <span>Açık ve Sade Şeffaflık</span>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                Karmaşık hukuk jargonu yerine her kullanıcımızın kolayca anlayabileceği sade ve açık bir dil kullanıyoruz.
+              </p>
+            </div>
           </div>
         </div>
+
+        {/* Detailed Articles - XenForo Section Block */}
+        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+          <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[11px] tracking-wider py-2 px-3">
+            Detaylı Bilgilendirme Maddeleri
+          </div>
+
+          <div className="divide-y divide-slate-200">
+            <div className="p-4 bg-white space-y-1">
+              <h2 className="text-xs sm:text-sm font-bold text-slate-900">1. Toplanan Kişisel Veriler</h2>
+              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                Hesap oluştururken belirlediğiniz kullanıcı adı, e-posta adresi ve isteğe bağlı profil bilgileriniz güvenli bir şekilde saklanır. Sağlık raporu ve engel oranı verileri tamamen anonimleştirilmiş formüllerde işlenir ve kimliğinizle ilişkilendirilmez.
+              </p>
+            </div>
+
+            <div className="p-4 bg-white space-y-1">
+              <h2 className="text-xs sm:text-sm font-bold text-slate-900">2. Verilerin İşlenme Amacı</h2>
+              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                Toplanan veriler yalnızca topluluk etkileşimlerini sürdürmek, tartışma bildirimlerini iletmek ve tercih ettiğiniz erişilebilirlik profilini sonraki girişlerinizde hatırlamak için kullanılır.
+              </p>
+            </div>
+
+            <div className="p-4 bg-white space-y-1">
+              <h2 className="text-xs sm:text-sm font-bold text-slate-900">3. Çerez ve Yerel Depolama Kullanımı</h2>
+              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                Platformumuz oturum sürekliliği ve erişilebilirlik tercihleri (yüksek kontrast, biyonik okuma, disleksi fontu) için minimum düzeyde birinci taraf çerezleri ve yerel depolama (localStorage) mekanizmalarını kullanır.
+              </p>
+            </div>
+
+            <div className="p-4 bg-white space-y-1">
+              <h2 className="text-xs sm:text-sm font-bold text-slate-900">4. İletişim ve Hak Arama</h2>
+              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                Gizlilik politikamız ve kişisel verilerinizle ilgili her türlü soru veya talep için <a href="mailto:miracbirben@engelsizforum.com" className="text-[#0066a2] font-bold hover:underline">miracbirben@engelsizforum.com</a> e-posta adresi üzerinden moderatör ekibimize ulaşabilirsiniz.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Back Link */}
+        <div className="pt-1">
+          <Link 
+            href="/" 
+            className="inline-flex items-center justify-center gap-1.5 rounded-sm bg-white border border-slate-300 px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-colors shadow-xs"
+          >
+            <ArrowLeft size={13} />
+            <span>Ana Sayfaya Dön</span>
+          </Link>
+        </div>
+
       </div>
     </SiteLayout>
   );

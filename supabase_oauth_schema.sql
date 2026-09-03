@@ -12,10 +12,18 @@ CREATE TABLE IF NOT EXISTS public.oauth_clients (
     redirect_uris TEXT[] NOT NULL,
     description TEXT,
     logo_url TEXT,
+    owner_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     is_trusted BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Var olan eski tablolarda eksik kolon varsa güvenle ekle
+ALTER TABLE public.oauth_clients ADD COLUMN IF NOT EXISTS owner_id UUID REFERENCES auth.users(id) ON DELETE CASCADE;
+ALTER TABLE public.oauth_clients ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE public.oauth_clients ADD COLUMN IF NOT EXISTS logo_url TEXT;
+ALTER TABLE public.oauth_clients ADD COLUMN IF NOT EXISTS is_trusted BOOLEAN DEFAULT FALSE;
+CREATE INDEX IF NOT EXISTS idx_oauth_clients_owner_id ON public.oauth_clients(owner_id);
 
 -- 2. GEÇİCİ YETKİLENDİRME KODLARI (OAUTH CODES)
 -- Tek kullanımlık ve 5 dakika geçerli kodlar. 

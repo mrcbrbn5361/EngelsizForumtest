@@ -26,7 +26,8 @@ import {
   RotateCcw,
   Calculator,
   User,
-  LogOut
+  LogOut,
+  Code2
 } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
@@ -354,6 +355,20 @@ export function Navbar() {
                               {profile?.full_name || profile?.username || user.email}
                             </p>
                             <p className="text-xs text-slate-400">Profilimi ve Tercihlerimi Yönet</p>
+                          </div>
+                        </Link>
+
+                        <Link 
+                          href="/developers" 
+                          onClick={() => setIsOpen(false)}
+                          className="flex items-center gap-3 p-2.5 rounded-xl border border-white/[0.08] bg-[#111726] hover:bg-[#161f33] transition-colors"
+                        >
+                          <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400">
+                            <Code2 size={16} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-slate-100">Geliştirici Portalı</p>
+                            <p className="text-xs text-slate-400">OAuth 2.0 &amp; API Entegrasyonu</p>
                           </div>
                         </Link>
 

@@ -99,19 +99,19 @@ export default function ClassicNavbar() {
   };
 
   return (
-    <header className="w-full flex flex-col shadow-md sticky top-0 z-50">
+    <header className="w-full flex flex-col shadow-xs sticky top-0 z-50">
       {/* Primary Navigation Bar */}
       <div className="bg-[#185886] text-white border-b border-[#104f75]">
-        <div className="max-w-[1280px] mx-auto px-4 flex items-center justify-between h-[58px]">
+        <div className="max-w-[1280px] mx-auto px-3 sm:px-4 flex items-center justify-between h-[48px] sm:h-[54px] md:h-[58px]">
           
           {/* Logo & Mobile Menu Button */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button 
               onClick={() => {
                 setIsMobileMenuOpen(!isMobileMenuOpen);
                 closeAllDropdowns();
               }}
-              className="md:hidden p-2 text-sky-100 hover:text-white hover:bg-white/10 rounded-sm focus:outline-none" 
+              className="md:hidden p-1.5 text-sky-100 hover:text-white hover:bg-white/10 rounded-sm focus:outline-none cursor-pointer" 
               aria-label="Navigasyon Menüsü"
               aria-expanded={isMobileMenuOpen}
             >
@@ -307,6 +307,13 @@ export default function ClassicNavbar() {
                       >
                         HESAP AYARLARI
                       </Link>
+                      <Link 
+                        href="/developers" 
+                        onClick={() => setIsProfileOpen(false)}
+                        className="block px-4 py-2.5 text-xs font-bold hover:bg-slate-50 border-b border-slate-100 text-[#0066a2]"
+                      >
+                        GELİŞTİRİCİ PORTALI (API)
+                      </Link>
                       <button 
                         onClick={handleSignOut}
                         className="w-full text-left px-4 py-2.5 text-xs font-black hover:bg-rose-50 text-rose-600 uppercase"
@@ -333,10 +340,10 @@ export default function ClassicNavbar() {
         </div>
       </div>
 
-      {/* Sub-Navigation Bar - XenForo styled light bar */}
-      <div className="bg-[#eef2f7] border-b border-slate-200">
-        <div className="max-w-[1280px] mx-auto px-4 flex items-center h-[38px] overflow-x-auto no-scrollbar justify-between">
-          <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-[13px] font-bold text-slate-700 whitespace-nowrap py-1">
+      {/* Sub-Navigation Bar - XenForo styled light bar (Desktop Only to save mobile screen height) */}
+      <div className="hidden md:block bg-[#eef2f7] border-b border-slate-200">
+        <div className="max-w-[1280px] mx-auto px-4 flex items-center h-[36px] overflow-x-auto no-scrollbar justify-between">
+          <div className="flex items-center gap-4 lg:gap-6 text-xs font-bold text-slate-700 whitespace-nowrap py-1">
             <Link href="/" className="classic-subnav-link hover:text-[#0066a2] hover:underline transition-colors">Yeni Mesajlar</Link>
             <Link href="/search" className="classic-subnav-link hover:text-[#0066a2] hover:underline transition-colors flex items-center gap-1">
               <Search size={12} />
@@ -346,32 +353,41 @@ export default function ClassicNavbar() {
             <Link href="/hesaplama" className="classic-subnav-link hover:text-[#0066a2] hover:underline transition-colors text-[#0066a2] font-extrabold">
               Hesaplama Robotları
             </Link>
+            <Link href="/developers" className="classic-subnav-link hover:text-[#0066a2] hover:underline transition-colors text-slate-600">
+              Geliştirici Portalı (API)
+            </Link>
           </div>
         </div>
       </div>
 
       {/* Mobile Drawer Overlay / Navigation menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[58px] bg-slate-900/60 backdrop-blur-sm z-40" onClick={() => setIsMobileMenuOpen(false)}>
-          <div className="bg-white border-b border-slate-200 p-4 flex flex-col gap-4 animate-in slide-in-from-top-4 duration-200 text-slate-800" onClick={(e) => e.stopPropagation()}>
+        <div 
+          className="md:hidden fixed inset-0 top-[48px] sm:top-[54px] bg-slate-900/60 backdrop-blur-xs z-40" 
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          <div 
+            className="bg-white border-b border-slate-200 p-3.5 flex flex-col gap-3 max-h-[calc(100vh-50px)] overflow-y-auto animate-in slide-in-from-top-2 duration-150 text-slate-800 shadow-xl" 
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Search Input for Mobile */}
-            <form onSubmit={handleSearchSubmit} className="flex items-center relative w-full mb-2">
+            <form onSubmit={handleSearchSubmit} className="flex items-center relative w-full">
               <input 
                 type="text" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Forumda ara..." 
-                className="bg-slate-50 border border-slate-200 rounded-sm px-3 py-2 text-sm focus:outline-none focus:bg-white focus:border-[#185886] w-full placeholder:text-slate-400 text-slate-800"
+                className="bg-slate-50 border border-slate-200 rounded-sm px-3 py-1.5 text-xs focus:outline-none focus:bg-white focus:border-[#185886] w-full placeholder:text-slate-400 text-slate-800"
               />
-              <button type="submit" className="absolute right-3 text-slate-400" aria-label="Ara">
-                <Search size={16} />
+              <button type="submit" className="absolute right-2.5 text-slate-400 cursor-pointer" aria-label="Ara">
+                <Search size={14} />
               </button>
             </form>
 
             {/* Mobile User Section if Logged In */}
             {user && profile && (
-              <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-100 rounded-sm mb-1">
-                <div className="w-10 h-10 bg-[#eef2f7] rounded-full flex-shrink-0 border border-[#cbd5e1] flex items-center justify-center overflow-hidden">
+              <div className="flex items-center gap-2.5 p-2.5 bg-slate-50 border border-slate-100 rounded-sm">
+                <div className="w-8 h-8 bg-[#eef2f7] rounded-full flex-shrink-0 border border-[#cbd5e1] flex items-center justify-center overflow-hidden">
                    {profile.avatar_url ? (
                      <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
                    ) : (
@@ -379,39 +395,49 @@ export default function ClassicNavbar() {
                    )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="font-extrabold text-sm text-[#185886] truncate">@{profile.username}</div>
-                  <div className="text-[11px] text-slate-500 font-bold">XP: {profile.xp || 0} • Seviye {profile.level || 1}</div>
+                  <div className="font-extrabold text-xs text-[#185886] truncate">@{profile.username}</div>
+                  <div className="text-[10px] text-slate-500 font-bold">XP: {profile.xp || 0} • Seviye {profile.level || 1}</div>
                 </div>
               </div>
             )}
 
             {/* Mobile Navigation Links */}
-            <div className="flex flex-col gap-2.5 text-sm font-bold text-slate-700">
+            <div className="flex flex-col gap-1.5 text-xs font-bold text-slate-700">
               <Link 
                 href="/" 
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2.5 rounded bg-slate-50 hover:bg-slate-100"
+                className="p-2 rounded-sm bg-slate-50 hover:bg-slate-100 flex items-center justify-between"
               >
-                Forumlar
+                <span>Forumlar &amp; Başlıklar</span>
+                <span className="text-[10px] text-slate-400">&rarr;</span>
               </Link>
               <Link 
                 href="/hesaplama" 
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2.5 rounded bg-slate-50 hover:bg-slate-100 text-[#0066a2]"
+                className="p-2 rounded-sm bg-sky-50 text-[#0066a2] hover:bg-sky-100 flex items-center justify-between"
               >
-                Hesaplama Robotları
+                <span>Hesaplama Robotları (Balthazard / ÖTV)</span>
+                <span className="text-[10px] px-1 bg-[#185886] text-white rounded-xs font-extrabold">2026</span>
+              </Link>
+              <Link 
+                href="/developers" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 rounded-sm bg-slate-50 hover:bg-slate-100 text-emerald-800 flex items-center justify-between"
+              >
+                <span>Geliştirici Portalı (OAuth 2.0 / REST API)</span>
+                <span className="text-[10px] px-1 bg-emerald-600 text-white rounded-xs font-bold">API</span>
               </Link>
               <Link 
                 href="/about" 
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2.5 rounded bg-slate-50 hover:bg-slate-100"
+                className="p-2 rounded-sm bg-slate-50 hover:bg-slate-100"
               >
                 Hakkımızda
               </Link>
               <Link 
                 href="/help" 
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2.5 rounded bg-slate-50 hover:bg-slate-100"
+                className="p-2 rounded-sm bg-slate-50 hover:bg-slate-100"
               >
                 Yardım / SSS
               </Link>
@@ -420,34 +446,34 @@ export default function ClassicNavbar() {
                 <Link 
                   href="/admin" 
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2.5 rounded bg-amber-50 hover:bg-amber-100 text-amber-800 font-extrabold flex items-center gap-2 border border-amber-200"
+                  className="p-2 rounded-sm bg-amber-50 hover:bg-amber-100 text-amber-800 font-extrabold flex items-center gap-2 border border-amber-200"
                 >
-                  <ShieldAlert size={15} />
-                  Yönetim Paneli (Özel Sekme)
+                  <ShieldAlert size={14} />
+                  Yönetim Paneli
                 </Link>
               )}
 
               {user && profile && (
                 <>
-                  <div className="h-[1px] bg-slate-100 my-1"></div>
+                  <div className="h-[1px] bg-slate-100 my-0.5"></div>
                   <Link 
                     href={`/profile/${profile.id || user.id}`} 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-2.5 rounded bg-slate-50 hover:bg-slate-100 text-[#185886]"
+                    className="p-2 rounded-sm bg-slate-50 hover:bg-slate-100 text-[#185886]"
                   >
                     Profilim
                   </Link>
                   <Link 
                     href="/profile" 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-2.5 rounded bg-slate-50 hover:bg-slate-100"
+                    className="p-2 rounded-sm bg-slate-50 hover:bg-slate-100"
                   >
                     Hesap Ayarları
                   </Link>
                   <Link 
                     href="/messages" 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-2.5 rounded bg-slate-50 hover:bg-slate-100"
+                    className="p-2 rounded-sm bg-slate-50 hover:bg-slate-100"
                   >
                     Mesajlarım
                   </Link>
@@ -456,7 +482,7 @@ export default function ClassicNavbar() {
                       handleSignOut();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full text-left p-2.5 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-sm uppercase mt-1"
+                    className="w-full text-left p-2 rounded-sm bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs uppercase mt-0.5 cursor-pointer"
                   >
                     Çıkış Yap
                   </button>
@@ -466,18 +492,18 @@ export default function ClassicNavbar() {
             
             {/* If unregistered user, show register in mobile drawer */}
             {!user && (
-              <div className="flex flex-col gap-2 mt-2 border-t border-slate-100 pt-3">
+              <div className="flex gap-2 mt-1 border-t border-slate-100 pt-2.5">
                 <Link 
                   href="/login" 
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full text-center py-2.5 rounded bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200 font-bold text-xs uppercase"
+                  className="flex-1 text-center py-2 rounded-sm bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold text-xs uppercase"
                 >
                   Giriş Yap
                 </Link>
                 <Link 
                   href="/register" 
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-full text-center py-2.5 rounded bg-[#185886] hover:bg-[#104f75] text-white font-black text-xs uppercase"
+                  className="flex-1 text-center py-2 rounded-sm bg-[#185886] hover:bg-[#104f75] text-white font-black text-xs uppercase shadow-xs"
                 >
                   Kayıt Ol
                 </Link>
@@ -489,6 +515,3 @@ export default function ClassicNavbar() {
     </header>
   );
 }
-
-// Typo fix support helper
-function setIsMobileMenuOpenOpen(val: boolean) {}

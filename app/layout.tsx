@@ -13,6 +13,7 @@ import ClassicNavbar from '@/components/layout/classic-navbar';
 import Link from 'next/link';
 import { AccessibilityToolbar } from '@/components/accessibility/accessibility-toolbar';
 import { EngelsizAI } from '@/components/layout/engelsiz-ai';
+import { Footer } from '@/components/layout/footer';
 
 const headingFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -225,18 +226,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <main id="main-content" className="flex-1 w-full max-w-[1280px] mx-auto px-4 py-6 outline-none" tabIndex={-1}>
                   {children}
                 </main>
-                <footer className="bg-[#0b0f19] text-slate-400 border-t border-white/[0.08] py-10 mt-10">
-                  <div className="max-w-[1280px] mx-auto px-4 text-center">
-                    <div className="text-xl font-bold text-sky-400 mb-4">ENGELSİZ<span className="text-white font-light">FORUM</span></div>
-                    <p className="text-sm max-w-2xl mx-auto mb-6 text-slate-400">
-                      Bariyersiz, tam erişilebilir ve yardımlaşma odaklı topluluk platformu. 
-                      Fikirler paylaşıldıkça engeller kalkar.
-                    </p>
-                    <div className="text-[12px] text-slate-500">
-                      © 2026 EngelsizForum • Klasik Forum Yazılımı • <Link href="/yardim/erisilebilirlik" className="hover:underline text-sky-400">Erişilebilirlik Bildirimi</Link>
-                    </div>
-                  </div>
-                </footer>
+                <Footer />
               </div>
               <VisitorTracker />
               <AccessibilityToolbar />
