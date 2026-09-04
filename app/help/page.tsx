@@ -22,7 +22,7 @@ export default function HelpPage() {
                     "name": "Erişilebilirlik panelini nasıl açarım?",
                     "acceptedAnswer": {
                       "@type": "Answer",
-                      "text": "Ekranın sol alt köşesinde bulunan veya klavyeden 'Tab' tuşuyla gezilebilen erişilebilirlik butonuna tıklayarak renk kontrastı, font boyutu ve biyonik okuma gibi özellikleri yönetebilirsiniz."
+                      "text": "Üst menü çubuğunda bulunan veya klavyeden 'Tab' tuşuyla gezilebilen erişilebilirlik butonuna tıklayarak renk kontrastı, font boyutu ve biyonik okuma gibi özellikleri yönetebilirsiniz."
                     }
                   },
                   {
@@ -54,7 +54,7 @@ export default function HelpPage() {
                     "name": "Ekran okuyucu kullanırken sorun yaşıyorum, ne yapmalıyım?",
                     "acceptedAnswer": {
                       "@type": "Answer",
-                      "text": "Platformumuz NVDA, JAWS ve VoiceOver ekran okuyucularıyla tam uyumlu çalışacak şekilde tasarlanmıştır. Sorun yaşarsanız, sol alttaki erişilebilirlik menüsünden ilgili profili optimize edebilir veya bizimle iletişime geçebilirsiniz."
+                      "text": "Platformumuz NVDA, JAWS ve VoiceOver ekran okuyucularıyla tam uyumlu çalışacak şekilde tasarlanmıştır. Sorun yaşarsanız, üst menüdeki erişilebilirlik panelinden ilgili profili optimize edebilir veya bizimle iletişime geçebilirsiniz."
                     }
                   }
                 ]
@@ -67,7 +67,7 @@ export default function HelpPage() {
                   {
                     "@type": "HowToStep",
                     "name": "Erişilebilirlik Menüsünü Açın",
-                    "text": "Ekranın sol alt köşesindeki erişilebilirlik butonuna tıklayın ya da klavyeden Tab tuşu ile odaklanıp Enter tuşuna basın.",
+                    "text": "Üst menü çubuğundaki (Navbar) erişilebilirlik butonuna tıklayın ya da klavyeden Tab tuşu ile odaklanıp Enter tuşuna basın.",
                     "url": "https://engelsizforum.com/help#step1"
                   },
                   {

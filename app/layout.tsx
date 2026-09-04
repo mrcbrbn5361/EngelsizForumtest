@@ -175,17 +175,6 @@ const jsonLd = {
         "https://www.linkedin.com/in/miracbirben"
       ],
       "worksFor": { "@id": "https://engelsizforum.com/#organization" }
-    },
-    {
-      "@type": "AggregateRating",
-      "itemReviewed": {
-        "@type": "WebSite",
-        "name": "EngelsizForum"
-      },
-      "ratingValue": "4.9",
-      "reviewCount": "1250",
-      "bestRating": "5",
-      "worstRating": "1"
     }
   ]
 };
