@@ -37,6 +37,11 @@ export function Footer() {
           
           {/* Quick links left */}
           <div className="flex flex-wrap items-center gap-3 sm:gap-5">
+            <Link href="/hesaplama" className="hover:text-white transition-colors text-sky-200 font-extrabold flex items-center gap-1">
+              <Calculator size={13} />
+              Engelli Hesaplama Araçları
+            </Link>
+            <span className="text-white/20 select-none">•</span>
             <Link href="/about" className="hover:text-white transition-colors">
               Bize Ulaşın
             </Link>
@@ -101,23 +106,29 @@ export function Footer() {
           {/* Column 2: Legal & Calculations */}
           <div className="space-y-2.5">
             <h4 className="text-xs font-extrabold uppercase tracking-wider text-sky-300 pb-1 border-b border-[#1b4d73]">
-              Hesaplama Robotları
+              Hesaplama Robotları &amp; Haklar
             </h4>
             <ul className="space-y-2 text-xs text-slate-300">
               <li>
-                <Link href="/hesaplama" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                <Link href="/hesaplama" className="hover:text-sky-300 transition-colors flex items-center gap-1.5 font-bold text-sky-200">
+                  <Calculator size={13} className="text-sky-400 shrink-0" />
+                  <span>Engelli Hesaplama Araçları (Tümü)</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/hesaplama/balthazard" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
                   <Calculator size={13} className="text-sky-400 shrink-0" />
                   <span>Balthazard Özür Oranı Hesabı</span>
                 </Link>
               </li>
               <li>
-                <Link href="/hesaplama" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                <Link href="/hesaplama/otv" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
                   <Car size={13} className="text-emerald-400 shrink-0" />
-                  <span>2026 ÖTV Muafiyet Üst Limiti (2.24M ₺)</span>
+                  <span>2026 ÖTV Muafiyet Üst Limiti (2.29M ₺)</span>
                 </Link>
               </li>
               <li>
-                <Link href="/hesaplama" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
+                <Link href="/hesaplama/erken-emeklilik" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
                   <Calendar size={13} className="text-amber-400 shrink-0" />
                   <span>Erken Emeklilik ve Prim Günü Sorgu</span>
                 </Link>

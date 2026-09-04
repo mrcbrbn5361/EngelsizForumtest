@@ -10,7 +10,6 @@ import { AuthProvider } from '@/components/providers/auth-provider';
 import { SkipNav } from '@/components/accessibility/skip-nav';
 import ClassicNavbar from '@/components/layout/classic-navbar';
 import Link from 'next/link';
-import { AccessibilityToolbar } from '@/components/accessibility/accessibility-toolbar';
 import { EngelsizAI } from '@/components/layout/engelsiz-ai';
 import { Footer } from '@/components/layout/footer';
 
@@ -219,7 +218,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Footer />
               </div>
               <VisitorTracker />
-              <AccessibilityToolbar />
               <EngelsizAI />
               <Toaster position="top-right" richColors closeButton />
             </WebMCPProvider>

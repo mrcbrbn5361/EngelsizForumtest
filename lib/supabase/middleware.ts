@@ -65,7 +65,6 @@ export async function updateSession(request: NextRequest) {
 
   // Attach basic security headers to response
   supabaseResponse.headers.set('X-Content-Type-Options', 'nosniff');
-  supabaseResponse.headers.set('X-Frame-Options', 'SAMEORIGIN');
   supabaseResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
   return supabaseResponse;

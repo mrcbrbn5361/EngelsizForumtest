@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>2026 Engelli ÖTV İndirimli Sıfır Araç Hesaplama Aracı | engelsizforum.com</title>
+  <meta name="description" content="2026 yılı güncel mevzuatı ve ÖTV muafiyet üst sınırına tam uyumlu sıfır araç fiyatı ve vergi muafiyeti hesaplama motoru.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f5fa',
+              100: '#e1ecf5',
+              600: '#204060',
+              700: '#183450',
+              800: '#12253a',
+              900: '#0c1927'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; font-size: 12pt; }
+      .print-shadow-none { box-shadow: none !important; border: 1px solid #ccc !important; }
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+<body class="h-full font-sans text-slate-800 antialiased selection:bg-brand-600 selection:text-white pb-12">
+
+  <!-- Üst Başlık / Navigasyon -->
+  <header class="bg-brand-700 text-white shadow-md border-b border-brand-800 sticky top-0 z-30">
+    <div class="max-w-4xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/20 text-white font-bold text-xl shadow-inner">
+          🚗
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold leading-tight tracking-tight">engelsizforum.com</h1>
+          <p class="text-xs text-brand-100 font-medium">2026 Engelli ÖTV İndirimli Araç Fiyat Hesaplama</p>
+        </div>
+      </div>
+      <button onclick="window.print()" class="no-print hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-white/10 hover:bg-white/20 rounded-md border border-white/20 transition-colors" title="Raporu Yazdır veya PDF Olarak Kaydet">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+        </svg>
+        <span>Yazdır / PDF</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 pt-6 space-y-6">
+
+    <!-- 2026 Yasal Limit Banner -->
+    <section class="bg-blue-50 border-l-4 border-blue-600 p-4 sm:p-5 rounded-r-xl shadow-sm text-blue-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3" aria-label="2026 Yılı ÖTV Muafiyet Üst Limiti Bilgisi">
+      <div class="flex items-start gap-3">
+        <div class="text-blue-600 shrink-0 mt-0.5" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-xs sm:text-sm font-bold tracking-tight uppercase text-blue-900">2026 Yılı Resmi ÖTV Muafiyeti Üst Satış Limiti</h2>
+          <p class="text-xs sm:text-sm text-blue-800 mt-0.5">
+            Mevzuat gereği vergiler dahil anahtar teslim satış fiyatı azami 
+            <span class="font-extrabold text-blue-950 underline underline-offset-2">2.290.200 TL</span> olan araçlar istisna kapsamındadır.
+          </p>
+        </div>
+      </div>
+      <div class="self-end sm:self-center shrink-0">
+        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-200/80 text-blue-900 border border-blue-300">
+          2026 Üst Sınır: 2.290.200 ₺
+        </span>
+      </div>
+    </section>
+
+    <!-- HESAPLAMA GİRDİ FORMU KARTI -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden print-shadow-none">
+      <div class="border-b border-slate-100 bg-slate-50/80 px-5 py-4">
+        <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+          Araç ve Fiyat Bilgilerini Giriniz
+        </h2>
+        <p class="text-xs text-slate-500 mt-0.5">Distribütör veya bayi tarafından açıklanan anahtar teslim fiyatını ve motor tipini seçiniz.</p>
+      </div>
+
+      <div class="p-5 sm:p-6 space-y-5">
+
+        <!-- 1. Fiyat Girişi -->
+        <div>
+          <label for="price-input" class="block text-xs sm:text-sm font-bold text-slate-800 mb-1.5">
+            Aracın Güncel Liste Satış Fiyatı (KDV + ÖTV Dahil Anahtar Teslim):
+          </label>
+          <div class="relative rounded-xl shadow-inner">
+            <input type="text" 
+                   id="price-input" 
+                   inputmode="numeric" 
+                   placeholder="Örn: 1.850.000" 
+                   class="w-full pl-4 pr-12 py-3 sm:py-3.5 bg-slate-50 focus:bg-white border-2 border-slate-300 focus:border-brand-600 focus:ring-0 rounded-xl text-lg sm:text-xl font-extrabold text-slate-900 transition-all placeholder:text-slate-400 placeholder:font-normal"
+                   autocomplete="off">
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-500 font-bold text-lg">
+              ₺
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <button type="button" class="quick-price-btn px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md text-xs font-semibold transition" data-price="1200000">1.200.000 ₺</button>
+            <button type="button" class="quick-price-btn px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md text-xs font-semibold transition" data-price="1500000">1.500.000 ₺</button>
+            <button type="button" class="quick-price-btn px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md text-xs font-semibold transition" data-price="1850000">1.850.000 ₺</button>
+            <button type="button" class="quick-price-btn px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md text-xs font-semibold transition" data-price="2250000">2.250.000 ₺</button>
+            <button type="button" class="quick-price-btn px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-md text-xs font-semibold transition" data-price="2350000">2.350.000 ₺ (Limit Aşımı)</button>
+          </div>
+        </div>
+
+        <!-- 2. Motor Tipi ve Hacmi Seçimi -->
+        <div>
+          <label for="engine-type-select" class="block text-xs sm:text-sm font-bold text-slate-800 mb-1.5">
+            Motor Tipi ve Hacmi (2026 ÖTV Tarifesi):
+          </label>
+          <select id="engine-type-select" class="w-full px-4 py-3 bg-slate-50 focus:bg-white border-2 border-slate-300 focus:border-brand-600 focus:ring-0 rounded-xl text-sm sm:text-base font-semibold text-slate-900 transition-all cursor-pointer">
+            <option value="80" selected>1600 cm³'e kadar Benzin / Dizel (%80 Standart ÖTV Dilimi)</option>
+            <option value="70">1600 cm³'e kadar Benzin / Dizel (%70 Düşük Matrah Dilimi)</option>
+            <option value="60">1600 cm³'e kadar Benzin / Dizel (%60 Düşük Matrah Dilimi)</option>
+            <option value="50">1600 cm³'e kadar Benzin / Dizel (%50 Taban Dilim)</option>
+            <option value="80_HEV">Hibrit (HEV / MHEV) - 1600 cm³ ve Altı (%80 ÖTV)</option>
+            <option value="30_PHEV">Plug-in Hibrit (PHEV - Karbon Emisyonu ≤ 25g/km, Menzil ≥ 70km) (%30 Teşvikli ÖTV)</option>
+            <option value="60_PHEV">Plug-in Hibrit (PHEV - 1600 cm³ altı genel dilim) (%60 ÖTV)</option>
+            <option value="10_EV">Tam Elektrikli (EV - 160 kW altı & Düşük Matrah) (%10 ÖTV)</option>
+            <option value="40_EV">Tam Elektrikli (EV - 160 kW altı & Yüksek Matrah) (%40 ÖTV)</option>
+            <option value="50_EV">Tam Elektrikli (EV - 160 kW üzeri) (%50 ÖTV)</option>
+          </select>
+          <p class="text-xs text-slate-500 mt-1.5">
+            * 2026 piyasa fiyatları doğrultusunda 1.6 altı sıfır binek otomobillerin neredeyse tamamı <strong>%80 ÖTV</strong> dilimindedir.
+          </p>
+        </div>
+
+        <!-- Üst Limit Aşım Uyarısı (Dinamik) -->
+        <div id="limit-exceeded-alert" class="hidden bg-rose-50 border-2 border-rose-500 rounded-xl p-4 sm:p-5 text-rose-900 animate-fade-in" role="alert">
+          <div class="flex items-start gap-3">
+            <div class="text-rose-600 shrink-0 mt-0.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="space-y-1">
+              <h3 class="text-sm font-bold text-rose-950 uppercase tracking-tight">2026 Yılı Yasal İstisna Limiti Aşıldı!</h3>
+              <p class="text-sm text-rose-900 leading-relaxed font-semibold">
+                Girdiğiniz tutar 2026 yılı ÖTV istisna üst limitini (<span class="underline">2.290.200 TL</span>) aşmaktadır. Kanun gereği bu tutarın üzerindeki araçlar ÖTV muafiyetiyle satın alınamaz.
+              </p>
+              <p class="text-xs text-rose-800">
+                Aracın vergisiz ham fiyatı ne kadar uygun olursa olsun, nihai liste satış fiyatının yasal tavanı geçmemesi zorunludur.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- HESAPLAMA SONUÇLARI KARTI -->
+    <section id="result-card" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden print-shadow-none" aria-live="polite">
+
+      <!-- Sonuç Header: Net Ödenecek Tutar & Vergi Avantajı -->
+      <div class="bg-gradient-to-r from-brand-700 to-brand-800 text-white p-5 sm:p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 items-center">
+          <div>
+            <span class="text-xs font-semibold uppercase tracking-wider text-brand-100 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Engelli Bireyin Ödeyeceği Tutar:
+            </span>
+            <div id="final-payable-price" class="text-3xl sm:text-4xl font-extrabold tracking-tight mt-1 text-emerald-300">
+              0 ₺
+            </div>
+            <p class="text-xs text-brand-100 mt-1">ÖTV'den tamamen muaf (%20 KDV dahil ödenecek tutar)</p>
+          </div>
+
+          <div class="sm:border-l sm:border-white/20 sm:pl-6">
+            <span class="text-xs font-semibold uppercase tracking-wider text-brand-100">
+              Sağlanan Toplam Vergi Avantajı:
+            </span>
+            <div id="total-tax-savings" class="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1 text-white">
+              0 ₺
+            </div>
+            <p id="savings-percentage-label" class="text-xs text-brand-100 mt-1">Liste fiyatına göre net indirim oranı: %0</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fiyat ve Vergi Detay Dökümü -->
+      <div class="p-5 sm:p-6 space-y-5">
+        <h3 class="text-sm font-bold text-slate-900 uppercase tracking-tight flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+          </svg>
+          2026 Matematiksel Geriye Dönük Ters Hesap Dökümü
+        </h3>
+
+        <div class="overflow-hidden border border-slate-200 rounded-xl">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <tbody class="divide-y divide-slate-200">
+              <tr class="bg-slate-50/70">
+                <td class="py-3 px-4 text-slate-600 font-medium">1. Liste Satış Fiyatı (Anahtar Teslim):</td>
+                <td id="breakdown-list-price" class="py-3 px-4 font-bold text-slate-900 text-right">0 ₺</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 text-slate-600 font-medium">2. KDV Hariç Satış Fiyatı (Liste / 1.20):</td>
+                <td id="breakdown-kdv-haric" class="py-3 px-4 font-semibold text-slate-800 text-right">0 ₺</td>
+              </tr>
+              <tr class="bg-slate-50/70">
+                <td class="py-3 px-4 text-slate-600 font-medium">
+                  3. Fabrika Çıkış / Ham Bedel 
+                  <span id="breakdown-otv-rate-tag" class="ml-1 text-xs px-2 py-0.5 rounded bg-brand-100 text-brand-700 font-bold">%80 ÖTV</span>:
+                </td>
+                <td id="breakdown-raw-price" class="py-3 px-4 font-bold text-slate-900 text-right">0 ₺</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 text-slate-600 font-medium">4. Normalde Alınacak ÖTV Tutarı:</td>
+                <td id="breakdown-normal-otv" class="py-3 px-4 font-semibold text-rose-600 text-right">0 ₺</td>
+              </tr>
+              <tr class="bg-slate-50/70">
+                <td class="py-3 px-4 text-slate-600 font-medium">5. Engellinin Ödeyeceği KDV Tutarı (Ham Fiyat × %20):</td>
+                <td id="breakdown-disabled-kdv" class="py-3 px-4 font-semibold text-slate-800 text-right">0 ₺</td>
+              </tr>
+              <tr class="bg-emerald-50 text-emerald-950 font-bold border-t-2 border-emerald-300">
+                <td class="py-3.5 px-4 text-sm sm:text-base">Nihai Engelli Araç Bedeli:</td>
+                <td id="breakdown-final-price" class="py-3.5 px-4 text-sm sm:text-base text-right text-emerald-700">0 ₺</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Formül Açıklaması -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-1 leading-relaxed">
+          <p class="font-bold text-slate-800">Formül Uygulama Esası:</p>
+          <p>• KDV Hariç Tutar = <code>Liste Fiyatı / 1.20</code></p>
+          <p>• Ham Fabrika Fiyatı = <code>KDV Hariç Tutar / (1 + ÖTV Oranı)</code></p>
+          <p>• Engelli Bireyin Ödeyeceği Tutar = <code>Ham Fiyat × 1.20</code> (ÖTV sıfırlanır, yalnızca ham fiyat üzerinden %20 KDV ödenir).</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3 ADET ZORUNLU YASAL BİLGİLENDİRME BLOKLARI -->
+    <section class="space-y-4" aria-label="Önemli Yasal Mevzuat Bilgileri">
+      <h2 class="text-sm font-bold text-slate-900 uppercase tracking-tight flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        2026 Yılı Engelli Araç Alımında Temel Yasal Kurallar
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <!-- Kural 1: %90 ve Üzeri Raporlar -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-3">
+          <div class="space-y-2">
+            <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
+              1
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 leading-snug">%90 ve Üzeri Raporlar</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Herhangi bir tertibat şartı aranmaksızın 1. derece yakınlar tarafından kullanılabilir. Rapor sahibinin sürücü belgesi bulunması gerekmez; araç tescili engelli birey adına yapılır.
+            </p>
+          </div>
+          <span class="inline-block text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+            Akraba Kullanımına Uygun
+          </span>
+        </div>
+
+        <!-- Kural 2: Ortopedik Engelliler -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-3">
+          <div class="space-y-2">
+            <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm">
+              2
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 leading-snug">Ortopedik Engelliler</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Oran %90'ın altında olsa dahi 'özel tertibatlı / otomatik vitesli araç kullanır' ibareli heyet raporu ve ehliyet koduyla yararlanabilir. Araçta tertibat varsa yalnızca hak sahibi kullanabilir.
+            </p>
+          </div>
+          <span class="inline-block text-[11px] font-semibold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">
+            Oran Şartı Aranmaz
+          </span>
+        </div>
+
+        <!-- Kural 3: 5 Yıl Satış Yasağı -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-3">
+          <div class="space-y-2">
+            <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-sm">
+              3
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 leading-snug">5 Yıl Satış Yasağı</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              ÖTV muafiyetiyle alınan araçlar 5 yıl dolmadan satılamaz veya devredilemez. 5 yıl dolmadan satılırsa muaf olunan ÖTV tutarı tahsil edilir. Ancak başka bir engelliye devirde ÖTV ödenmez.
+            </p>
+          </div>
+          <span class="inline-block text-[11px] font-semibold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
+            5 Yıl Hak Mahrumiyeti
+          </span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Mevzuat Referansı & Footer -->
+    <footer class="text-center text-xs text-slate-500 pt-6 space-y-2">
+      <p>Bu hesaplama aracı 4760 sayılı Özel Tüketim Vergisi Kanunu (II) Sayılı Liste Uygulama Genel Tebliği ve 2026 yılı Gelir İdaresi Başkanlığı limitlerine göre hazırlanmıştır.</p>
+      <p class="font-medium text-slate-600">© 2026 engelsizforum.com — Tüm Hakları Saklıdır.</p>
+    </footer>
+
+  </main>
+
+  <!-- JAVASCRIPT HESAPLAMA MOTORU (VANILLA JS) -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 2026 Yılı Resmi ÖTV Üst Sınırı (TL)
+      const OTV_LIMIT_2026 = 2290200;
+
+      // Elementler
+      const priceInput = document.getElementById('price-input');
+      const engineSelect = document.getElementById('engine-type-select');
+      const limitAlert = document.getElementById('limit-exceeded-alert');
+      const payablePriceEl = document.getElementById('final-payable-price');
+      const savingsEl = document.getElementById('total-tax-savings');
+      const savingsPercentageLabel = document.getElementById('savings-percentage-label');
+
+      // Breakdown Elementleri
+      const breakdownListPrice = document.getElementById('breakdown-list-price');
+      const breakdownKdvHaric = document.getElementById('breakdown-kdv-haric');
+      const breakdownRawPrice = document.getElementById('breakdown-raw-price');
+      const breakdownOtvRateTag = document.getElementById('breakdown-otv-rate-tag');
+      const breakdownNormalOtv = document.getElementById('breakdown-normal-otv');
+      const breakdownDisabledKdv = document.getElementById('breakdown-disabled-kdv');
+      const breakdownFinalPrice = document.getElementById('breakdown-final-price');
+      const quickBtns = document.querySelectorAll('.quick-price-btn');
+
+      /**
+       * Sayıyı Türkçe para birimi formatına dönüştürür
+       * @param {number} num
+       * @returns {string}
+       */
+      function formatCurrency(num) {
+        if (isNaN(num) || num <= 0) return '0 ₺';
+        return Math.round(num).toLocaleString('tr-TR') + ' ₺';
+      }
+
+      /**
+       * Girdiden sadece sayıları alır
+       * @param {string} str
+       * @returns {number}
+       */
+      function parseNumericValue(str) {
+        if (!str) return 0;
+        const cleanStr = str.replace(/[^\d]/g, '');
+        const val = parseInt(cleanStr, 10);
+        return isNaN(val) ? 0 : val;
+      }
+
+      /**
+       * Seçilen motor tipine göre ÖTV oranını döndürür
+       * @param {string} val
+       * @returns {number}
+       */
+      function getOtvRate(val) {
+        switch (val) {
+          case '80':
+          case '80_HEV':
+            return 80;
+          case '70':
+            return 70;
+          case '60':
+          case '60_PHEV':
+            return 60;
+          case '50':
+          case '50_EV':
+            return 50;
+          case '40_EV':
+            return 40;
+          case '30_PHEV':
+            return 30;
+          case '10_EV':
+            return 10;
+          default:
+            return 80;
+        }
+      }
+
+      /**
+       * 2026 Mevzuatına göre ÖTV ve Engelli İndirimi Hesaplamasını Yapar
+       */
+      function calculateOtvDiscount() {
+        const listPrice = parseNumericValue(priceInput.value);
+        const engineVal = engineSelect.value;
+        const otvRate = getOtvRate(engineVal);
+
+        // 1. 2026 Üst Limit Denetimi
+        if (listPrice > OTV_LIMIT_2026) {
+          limitAlert.classList.remove('hidden');
+        } else {
+          limitAlert.classList.add('hidden');
+        }
+
+        if (listPrice <= 0) {
+          payablePriceEl.textContent = '0 ₺';
+          savingsEl.textContent = '0 ₺';
+          savingsPercentageLabel.textContent = 'Liste fiyatına göre net indirim oranı: %0';
+          breakdownListPrice.textContent = '0 ₺';
+          breakdownKdvHaric.textContent = '0 ₺';
+          breakdownRawPrice.textContent = '0 ₺';
+          breakdownOtvRateTag.textContent = `%${otvRate} ÖTV`;
+          breakdownNormalOtv.textContent = '0 ₺';
+          breakdownDisabledKdv.textContent = '0 ₺';
+          breakdownFinalPrice.textContent = '0 ₺';
+          return;
+        }
+
+        // 2. Ters Hesaplama Formülü:
+        // A) KDV Hariç Satış Fiyatı: Liste Fiyatı / 1.20
+        const kdvHaricFiyat = listPrice / 1.20;
+
+        // B) Ham Fabrika Fiyatı: KDV Hariç Fiyat / (1 + (ÖTV / 100))
+        const hamFiyat = kdvHaricFiyat / (1 + (otvRate / 100));
+
+        // C) Normal Araçtaki ÖTV Tutarı: Ham Fiyat * (ÖTV / 100)
+        const normalOtvTutari = hamFiyat * (otvRate / 100);
+
+        // D) Engelli Bireyin Ödeyeceği Tutar: Ham Fiyat * 1.20 (%20 KDV eklenir)
+        const engelliOdenecekTutar = hamFiyat * 1.20;
+
+        // E) Engellinin Ödeyeceği KDV Tutarı: Ham Fiyat * 0.20
+        const engelliKdvTutari = hamFiyat * 0.20;
+
+        // F) Sağlanan Toplam Vergi Avantajı: Liste Fiyatı - Engelli Ödeyecek Tutar
+        const vergiAvantaji = listPrice - engelliOdenecekTutar;
+
+        // İndirim Yüzdesi
+        const indirimYuzdesi = ((vergiAvantaji / listPrice) * 100).toFixed(1);
+
+        // Arayüzü Güncelle
+        payablePriceEl.textContent = formatCurrency(engelliOdenecekTutar);
+        savingsEl.textContent = formatCurrency(vergiAvantaji);
+        savingsPercentageLabel.textContent = `Liste fiyatına göre net indirim oranı: %${indirimYuzdesi}`;
+
+        // Breakdown Güncelle
+        breakdownListPrice.textContent = formatCurrency(listPrice);
+        breakdownKdvHaric.textContent = formatCurrency(kdvHaricFiyat);
+        breakdownRawPrice.textContent = formatCurrency(hamFiyat);
+        breakdownOtvRateTag.textContent = `%${otvRate} ÖTV`;
+        breakdownNormalOtv.textContent = formatCurrency(normalOtvTutari);
+        breakdownDisabledKdv.textContent = formatCurrency(engelliKdvTutari);
+        breakdownFinalPrice.textContent = formatCurrency(engelliOdenecekTutar);
+      }
+
+      // Input Formatlama ve Dinamik Hesaplama
+      priceInput.addEventListener('input', function () {
+        const numericVal = parseNumericValue(this.value);
+        if (numericVal > 0) {
+          this.value = numericVal.toLocaleString('tr-TR');
+        } else {
+          this.value = '';
+        }
+        calculateOtvDiscount();
+      });
+
+      engineSelect.addEventListener('change', calculateOtvDiscount);
+
+      // Hızlı Fiyat Butonları
+      quickBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+          const price = parseInt(this.getAttribute('data-price'), 10);
+          priceInput.value = price.toLocaleString('tr-TR');
+          calculateOtvDiscount();
+        });
+      });
+
+      // Başlangıç Değeri (1.850.000 TL)
+      priceInput.value = (1850000).toLocaleString('tr-TR');
+      calculateOtvDiscount();
+
+    })();
+  </script>
+</body>
+</html>

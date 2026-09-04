@@ -5,3 +5,7 @@ coverage/
 *.log
 .env*
 !.env.example
+.env*.local
+*.zip
+*.tar.gz
+.backups/

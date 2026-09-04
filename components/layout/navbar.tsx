@@ -33,6 +33,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
+import { AccessibilityMenu } from '@/components/accessibility/accessibility-menu';
 import { NotificationCenter } from '@/components/ui/notification-center';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { cn } from '@/lib/utils';
@@ -56,16 +57,32 @@ export function Navbar() {
   } = useAccessibility();
   
   const [isOpen, setIsOpen] = useState(false);
+  const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const a11yRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Close mobile drawer on route change
+  // Close mobile drawer and a11y menu on route change
   useEffect(() => {
     setIsOpen(false);
+    setIsAccessibilityOpen(false);
   }, [pathname]);
+
+  // Click outside for accessibility menu
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (a11yRef.current && !a11yRef.current.contains(event.target as Node)) {
+        setIsAccessibilityOpen(false);
+      }
+    }
+    if (isAccessibilityOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isAccessibilityOpen]);
 
   const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
 
@@ -125,7 +142,7 @@ export function Navbar() {
           <NavLink href="/" icon={<Home size={15} />} label="Ana Sayfa" />
           <NavLink href="/discussions" icon={<MessageSquare size={15} />} label="Tartışmalar" />
           <NavLink href="/communities" icon={<Users size={15} />} label="Topluluklar" />
-          <NavLink href="/hesaplama" icon={<Calculator size={15} />} label="Hesaplayıcılar" />
+          <NavLink href="/hesaplama" icon={<Calculator size={15} />} label="Hesaplama Araçları" />
           <NavLink href="/about" icon={<Info size={15} />} label="Hakkımızda" />
         </div>
 
@@ -133,24 +150,30 @@ export function Navbar() {
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           {/* Accessibility Quick Menu */}
           {mounted && (
-            <button
-              id="accessibility-quick-menu-button"
-              onClick={() => {
-                const panel = document.getElementById("floating-accessibility-panel");
-                if (!panel) {
-                  // Panel is closed, trigger toggle button to open it
-                  document.getElementById("floating-accessibility-toggle-btn")?.click();
-                } else {
-                  // Already open, scroll it into view and focus
-                  panel.scrollIntoView({ behavior: 'smooth' });
-                }
-              }}
-              className="flex items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 text-slate-300 hover:bg-[#161f33] hover:text-sky-400 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0 cursor-pointer"
-              aria-label="Erişilebilirlik Araçlarını Aç"
-              title="Erişilebilirlik Menüsü"
-            >
-              <Accessibility size={18} aria-hidden="true" className="sm:w-5 sm:h-5" />
-            </button>
+            <div className="relative" ref={a11yRef}>
+              <button
+                id="accessibility-quick-menu-button"
+                onClick={() => {
+                  setIsAccessibilityOpen(!isAccessibilityOpen);
+                }}
+                className={cn(
+                  "flex items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0 cursor-pointer",
+                  isAccessibilityOpen
+                    ? "bg-indigo-600/20 text-indigo-400 border border-indigo-500/40"
+                    : "text-slate-300 hover:bg-[#161f33] hover:text-sky-400"
+                )}
+                aria-label="Erişilebilirlik Araçlarını Aç"
+                title="Erişilebilirlik Menüsü"
+                aria-expanded={isAccessibilityOpen}
+              >
+                <Accessibility size={18} aria-hidden="true" className="sm:w-5 sm:h-5" />
+              </button>
+
+              <AccessibilityMenu
+                isOpen={isAccessibilityOpen}
+                onClose={() => setIsAccessibilityOpen(false)}
+              />
+            </div>
           )}
 
           {/* Messages Icon-Only Button */}
@@ -308,6 +331,20 @@ export function Navbar() {
                     <div className="space-y-1">
                       <MobileNavLink href="/about" icon={<Info size={18} />} label="Hakkımızda" onClick={() => setIsOpen(false)} />
                       <MobileNavLink href="/help" icon={<AlertCircle size={18} />} label="Yardım &amp; Rehber" onClick={() => setIsOpen(false)} />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setIsAccessibilityOpen(true);
+                        }}
+                        className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-300 hover:bg-indigo-950/40 hover:text-indigo-400 text-sm font-medium transition-colors cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Accessibility size={18} className="text-indigo-400" />
+                          <span>Erişilebilirlik Menüsü</span>
+                        </div>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-indigo-600 text-white rounded">WCAG AAA</span>
+                      </button>
                       <MobileNavLink href="/accessibility" icon={<Accessibility size={18} />} label="Erişilebilirlik Beyanı" onClick={() => setIsOpen(false)} />
                       <MobileNavLink href="/security" icon={<Shield size={18} />} label="Güvenlik Politikası" onClick={() => setIsOpen(false)} />
                     </div>

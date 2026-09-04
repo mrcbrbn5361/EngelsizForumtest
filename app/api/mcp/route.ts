@@ -1503,52 +1503,51 @@ export async function GET(req: NextRequest) {
     const messageEndpoint = `${protocol}://${host}/api/mcp/messages?sessionId=${sessionId}`;
 
     const signal = req.signal;
-    let intervalId: any = null;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    let isTerminated = false;
+
+    const cleanup = () => {
+      isTerminated = true;
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    };
+
+    if (signal) {
+      signal.addEventListener('abort', cleanup, { once: true });
+    }
 
     const stream = new ReadableStream({
       start(controller) {
+        if (isTerminated || signal?.aborted) return;
         const encoder = new TextEncoder();
-        // Emit 'endpoint' SSE event
-        controller.enqueue(encoder.encode(`event: endpoint\ndata: ${messageEndpoint}\n\n`));
 
-        // Periodically emit keep-alive heartbeats to keep the connection open and prevent timeout/race errors
+        try {
+          // Emit 'endpoint' SSE event
+          controller.enqueue(encoder.encode(`event: endpoint\ndata: ${messageEndpoint}\n\n`));
+        } catch (_) {
+          cleanup();
+          return;
+        }
+
+        // Periodically emit keep-alive heartbeats to keep the connection open
         intervalId = setInterval(() => {
-          if (signal?.aborted) {
-            if (intervalId) {
-              clearInterval(intervalId);
-              intervalId = null;
-            }
-            try {
-              controller.close();
-            } catch (_) {}
+          if (isTerminated || signal?.aborted) {
+            cleanup();
             return;
           }
           try {
             controller.enqueue(encoder.encode(`: keep-alive\n\n`));
           } catch (_) {
-            if (intervalId) {
-              clearInterval(intervalId);
-              intervalId = null;
-            }
+            cleanup();
           }
         }, 15000);
       },
       cancel() {
-        if (intervalId) {
-          clearInterval(intervalId);
-          intervalId = null;
-        }
+        cleanup();
       },
     });
-
-    if (signal) {
-      signal.addEventListener('abort', () => {
-        if (intervalId) {
-          clearInterval(intervalId);
-          intervalId = null;
-        }
-      });
-    }
 
     return new Response(stream, {
       headers: {

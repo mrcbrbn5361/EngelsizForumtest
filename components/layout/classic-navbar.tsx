@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
+import { AccessibilityMenu } from '@/components/accessibility/accessibility-menu';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
@@ -139,12 +140,12 @@ export default function ClassicNavbar() {
               href="/hesaplama" 
               className={cn(
                 "classic-nav-link px-4 h-full flex items-center text-sm transition-all",
-                pathname === '/hesaplama' 
+                pathname?.startsWith('/hesaplama') 
                   ? "border-b-[3px] border-sky-300 bg-white/10 font-bold text-white" 
                   : "text-sky-100 hover:text-white hover:bg-white/[0.05] font-semibold"
               )}
             >
-              Hesaplamalar
+              Hesaplama Araçları
             </Link>
             <Link 
               href="/about" 
@@ -202,24 +203,27 @@ export default function ClassicNavbar() {
             </form>
 
             {/* 1. Accessibility Panel Button */}
-            <div className="relative">
+            <div className="relative" ref={a11yRef}>
               <button
                 onClick={() => {
-                  const panel = document.getElementById("floating-accessibility-panel");
-                  if (!panel) {
-                    // Panel is closed, trigger toggle button to open it
-                    document.getElementById("floating-accessibility-toggle-btn")?.click();
-                  } else {
-                    // Already open, scroll it into view and focus
-                    panel.scrollIntoView({ behavior: 'smooth' });
-                  }
+                  const newState = !isAccessibilityOpen;
+                  closeAllDropdowns();
+                  setIsAccessibilityOpen(newState);
                 }}
-                className="p-2 rounded-sm text-sky-100 hover:text-white hover:bg-white/10 transition-colors focus:outline-none"
+                className={`p-2 rounded-sm text-sky-100 hover:text-white transition-colors focus:outline-none cursor-pointer ${
+                  isAccessibilityOpen ? 'bg-white/20 text-white ring-1 ring-white/30' : 'hover:bg-white/10'
+                }`}
                 aria-label="Erişilebilirlik Paneli"
                 title="Erişilebilirlik Ayarları"
+                aria-expanded={isAccessibilityOpen}
               >
                 <Accessibility size={18} />
               </button>
+
+              <AccessibilityMenu
+                isOpen={isAccessibilityOpen}
+                onClose={() => setIsAccessibilityOpen(false)}
+              />
             </div>
 
             {user ? (
@@ -351,7 +355,7 @@ export default function ClassicNavbar() {
             </Link>
             <Link href="/hesaplama" className="classic-subnav-link hover:text-[#0066a2] hover:underline transition-colors">Popüler Konular</Link>
             <Link href="/hesaplama" className="classic-subnav-link hover:text-[#0066a2] hover:underline transition-colors text-[#0066a2] font-extrabold">
-              Hesaplama Robotları
+              Hesaplama Araçları
             </Link>
             <Link href="/developers" className="classic-subnav-link hover:text-[#0066a2] hover:underline transition-colors text-slate-600">
               Geliştirici Portalı (API)
@@ -416,7 +420,7 @@ export default function ClassicNavbar() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="p-2 rounded-sm bg-sky-50 text-[#0066a2] hover:bg-sky-100 flex items-center justify-between"
               >
-                <span>Hesaplama Robotları (Balthazard / ÖTV)</span>
+                <span>Hesaplama Araçları (Balthazard / ÖTV / Haklar)</span>
                 <span className="text-[10px] px-1 bg-[#185886] text-white rounded-xs font-extrabold">2026</span>
               </Link>
               <Link 
@@ -441,6 +445,20 @@ export default function ClassicNavbar() {
               >
                 Yardım / SSS
               </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsAccessibilityOpen(true);
+                }}
+                className="p-2 rounded-sm bg-indigo-50/80 hover:bg-indigo-100 text-indigo-900 flex items-center justify-between font-bold text-left transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-1.5">
+                  <Accessibility size={14} className="text-indigo-600" />
+                  <span>Erişilebilirlik Menüsü</span>
+                </span>
+                <span className="text-[10px] px-1.5 py-0.5 bg-indigo-600 text-white rounded-xs font-bold">AAA</span>
+              </button>
               
               {profile && (profile.role === 'admin' || profile.role === 'moderator') && (
                 <Link 

@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   devIndicators: false,
   generateEtags: true,
-  allowedDevOrigins: ['ais-dev-ix4syl6g7zxz77ys7mkpvf-91223103933.europe-west2.run.app', '*.run.app', 'localhost:3000'],
+  allowedDevOrigins: ['ais-dev-ix4syl6g7zxz77ys7mkpvf-91223103933.europe-west2.run.app', '*.run.app', 'ai.studio', '*.ai.studio', '*.google.com', 'localhost:3000', '127.0.0.1:3000'],
   images: {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
@@ -83,10 +83,6 @@ const nextConfig: NextConfig = {
             value: 'nosniff',
           },
           {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
-          },
-          {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
           },
@@ -104,7 +100,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self' https: wss:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; media-src 'self' https: blob:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-ancestors 'self';",
+            value: "default-src 'self' https: wss:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; media-src 'self' https: blob:; font-src 'self' data: https:; connect-src 'self' https: wss:; frame-ancestors 'self' https://ai.studio https://*.google.com https://*.run.app;",
           },
         ],
       },

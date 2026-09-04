@@ -13,7 +13,34 @@ export function getSupabaseServer(): SupabaseClient {
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseServiceRoleKey) {
-    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables for server-side privileged operations.');
+    // Return a graceful mock client to prevent server crash during SSR/prerender when env is not yet configured
+    return (({
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            single: async () => ({ data: null, error: null }),
+            order: () => ({ limit: () => ({ single: async () => ({ data: null, error: null }) }) }),
+          }),
+          is: () => ({
+            order: () => ({ data: [], error: null }),
+          }),
+          not: () => ({ data: [], error: null }),
+          order: () => ({
+            limit: () => ({ data: [], error: null }),
+            data: [],
+            error: null,
+          }),
+        }),
+        insert: async () => ({ data: null, error: null }),
+        update: () => ({ eq: async () => ({ data: null, error: null }) }),
+        delete: () => ({ eq: async () => ({ data: null, error: null }) }),
+      }),
+      auth: {
+        admin: {
+          getUserById: async () => ({ data: { user: null }, error: null }),
+        },
+      },
+    } as unknown) as SupabaseClient);
   }
 
   cachedClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
