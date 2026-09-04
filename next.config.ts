@@ -42,6 +42,10 @@ const nextConfig: NextConfig = {
         source: '/.well-known/nodeinfo',
         destination: '/api/well-known/nodeinfo',
       },
+      {
+        source: '/.well-known/openid-configuration',
+        destination: '/api/well-known/openid-configuration',
+      },
     ];
   },
   async headers() {

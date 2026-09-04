@@ -1502,13 +1502,53 @@ export async function GET(req: NextRequest) {
     const protocol = host.includes('localhost') ? 'http' : 'https';
     const messageEndpoint = `${protocol}://${host}/api/mcp/messages?sessionId=${sessionId}`;
 
+    const signal = req.signal;
+    let intervalId: any = null;
+
     const stream = new ReadableStream({
       start(controller) {
         const encoder = new TextEncoder();
         // Emit 'endpoint' SSE event
         controller.enqueue(encoder.encode(`event: endpoint\ndata: ${messageEndpoint}\n\n`));
+
+        // Periodically emit keep-alive heartbeats to keep the connection open and prevent timeout/race errors
+        intervalId = setInterval(() => {
+          if (signal?.aborted) {
+            if (intervalId) {
+              clearInterval(intervalId);
+              intervalId = null;
+            }
+            try {
+              controller.close();
+            } catch (_) {}
+            return;
+          }
+          try {
+            controller.enqueue(encoder.encode(`: keep-alive\n\n`));
+          } catch (_) {
+            if (intervalId) {
+              clearInterval(intervalId);
+              intervalId = null;
+            }
+          }
+        }, 15000);
+      },
+      cancel() {
+        if (intervalId) {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
       },
     });
+
+    if (signal) {
+      signal.addEventListener('abort', () => {
+        if (intervalId) {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
+      });
+    }
 
     return new Response(stream, {
       headers: {

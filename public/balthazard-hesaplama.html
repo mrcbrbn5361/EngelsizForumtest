@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>2026 Balthazard Formülü ve Engelli Hakları Hesaplama Aracı | engelsizforum.com</title>
+  <meta name="description" content="Sağlık Bakanlığı e-Rapor altyapısı ve 2026 mevzuatına tam uyumlu Balthazard Formülü hesaplama aracı. 65 yaş kuralı, derece ve engelli hakları dökümü.">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f5fa',
+              100: '#e1ecf5',
+              600: '#204060',
+              700: '#183450',
+              800: '#12253a',
+              900: '#0c1927'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; font-size: 12pt; }
+      .print-shadow-none { box-shadow: none !important; border: 1px solid #ccc !important; }
+    }
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+<body class="h-full font-sans text-slate-800 antialiased selection:bg-brand-600 selection:text-white pb-12">
+
+  <!-- Üst Başlık / Navigasyon -->
+  <header class="bg-brand-700 text-white shadow-md border-b border-brand-800 sticky top-0 z-30">
+    <div class="max-w-4xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/20 text-white font-bold text-xl shadow-inner">
+          ♿
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold leading-tight tracking-tight">engelsizforum.com</h1>
+          <p class="text-xs text-brand-100 font-medium">2026 Balthazard ve Engelli Hakları Hesaplama Aracı</p>
+        </div>
+      </div>
+      <button onclick="window.print()" class="no-print hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-white/10 hover:bg-white/20 rounded-md border border-white/20 transition-colors" title="Raporu Yazdır veya PDF Kaydet">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+        </svg>
+        <span>Yazdır / PDF</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 pt-6 space-y-6">
+
+    <!-- 1. 18 Yaş Altı Zorunlu Mevzuat Uyarısı (ÇÖZ-GER) -->
+    <section class="bg-amber-50 border-l-4 border-amber-500 p-4 sm:p-5 rounded-r-xl shadow-sm text-amber-900" aria-label="18 Yaş Altı Mevzuat Uyarısı">
+      <div class="flex items-start gap-3">
+        <div class="text-amber-600 shrink-0 mt-0.5" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="space-y-1">
+          <h2 class="text-sm font-bold tracking-tight text-amber-900 uppercase">Önemli Yasal Bilgilendirme: 18 Yaş Altı ÇÖZ-GER Kuralı</h2>
+          <p class="text-sm leading-relaxed text-amber-800">
+            <strong>18 yaş altı çocuklar için sağlık kurullarında oran hesabı ve Balthazard formülü uygulanmaz.</strong> 
+            20 Şubat 2019 tarihli mevzuat gereği çocuklar için oran yerine <strong>ÇÖZ-GER</strong> (Çocuklar İçin Özel Gereksinim Raporu) düzenlenir.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hesaplama Kartı -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden print-shadow-none">
+      <div class="border-b border-slate-100 bg-slate-50/70 px-5 py-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Engel Oranlarını Giriniz</h2>
+          <p class="text-xs text-slate-500">Sağlık kurulu muayenesinde her branş için verilen %1 ile %99 arasındaki oranlar</p>
+        </div>
+        <button id="add-rate-btn" type="button" class="no-print inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-brand-600 hover:bg-brand-700 active:bg-brand-800 rounded-lg shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-brand-600 focus:ring-offset-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          Yeni Oran Ekle
+        </button>
+      </div>
+
+      <div class="p-5 sm:p-6 space-y-5">
+        <!-- Dinamik Oran Giriş Alanı -->
+        <div id="rates-container" class="space-y-3" role="list" aria-label="Girilen Oranlar Listesi">
+          <!-- Dinamik Satırlar JS Tarafından Buraya Eklenecek -->
+        </div>
+
+        <!-- 65 Yaş Kuralı ve Seçenekler -->
+        <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <label class="relative flex items-center gap-3 cursor-pointer select-none group">
+            <input type="checkbox" id="age65-checkbox" class="w-5 h-5 rounded border-slate-300 text-brand-600 focus:ring-brand-600 transition cursor-pointer">
+            <div>
+              <span class="text-sm font-semibold text-slate-800 group-hover:text-brand-700 transition">Birey 65 yaş ve üzerinde mi?</span>
+              <p class="text-xs text-slate-500">Yönetmelik Ek-2 Genel Esaslar gereği tüm oranların Balthazard toplamına %10 yaşlılık payı eklenir.</p>
+            </div>
+          </label>
+
+          <button id="reset-btn" type="button" class="no-print text-xs font-semibold text-slate-500 hover:text-red-600 transition flex items-center gap-1 self-end sm:self-auto py-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Tümünü Temizle
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SONUÇ ALANI -->
+    <section id="result-section" class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden print-shadow-none" aria-live="polite">
+      <!-- Sonuç Başlığı -->
+      <div class="bg-gradient-to-r from-brand-700 to-brand-800 text-white p-5 sm:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-medium uppercase tracking-wider text-brand-100">Balthazard Hesaplama Sonucu (2026)</span>
+            <div class="flex items-baseline gap-3 mt-1">
+              <span id="final-rounded-rate" class="text-4xl sm:text-5xl font-extrabold tracking-tight">%0</span>
+              <span id="final-exact-rate" class="text-sm font-medium text-brand-100">(Hesaplanan Net: %0.00)</span>
+            </div>
+          </div>
+          <div id="degree-badge-container" class="self-start sm:self-center">
+            <!-- Derece Rozeti -->
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/20">
+              Oran Girilmedi
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sonuç Detayları ve Haklar -->
+      <div class="p-5 sm:p-6 space-y-6">
+
+        <!-- Dinamik Haklar Listesi -->
+        <div class="space-y-3">
+          <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            2026 Yılı Güncel Hak ve Derece Değerlendirmesi
+          </h3>
+          <div id="rights-content" class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm leading-relaxed text-slate-700">
+            Lütfen hesaplama yapmak için yukarıdaki kutucuklara en az bir engel oranı giriniz.
+          </div>
+        </div>
+
+        <!-- Özel Tertibat / Ortopedik Sabit Bilgilendirme Kutusu -->
+        <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-4 text-blue-900 flex items-start gap-3">
+          <div class="text-blue-600 shrink-0 mt-0.5" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="space-y-1">
+            <h4 class="text-xs font-bold tracking-tight text-blue-950 uppercase">Özel Tertibat / Ortopedik İstisna Notu (2026 Mevzuatı)</h4>
+            <p class="text-xs sm:text-sm text-blue-800 leading-relaxed">
+              Ortopedik engellerde (kol/bacak hareket kısıtlılığı ve özel tertibat/otomatik vites şartı bulunan hekim raporlarında) 
+              <strong>%90 oranı aranmaksızın</strong> ÖTV muafiyetinden yararlanılabilir.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2026 Resmi Tanım Vurgusu: Tam Bağımlı / Kısmi Bağımlı -->
+        <div class="border-t border-slate-100 pt-4 text-xs text-slate-500 space-y-1">
+          <p><strong>Mevzuat Terminolojisi:</strong> 20 Şubat 2019 tarihli Resmî Gazete düzenlemesiyle mülga "Ağır Engelli" tanımı yerine <strong>"Tam Bağımlı"</strong> ve <strong>"Kısmi Bağımlı"</strong> değerlendirmesi esas alınmaktadır. Evde bakım maaşı için kurul tarafından "Tam Bağımlı" kararı verilmesi gerekmektedir.</p>
+        </div>
+
+        <!-- Adım Adım Matematiksel Hesap Dökümü -->
+        <div id="calculation-steps-container" class="hidden pt-4 border-t border-slate-100">
+          <button id="toggle-steps-btn" type="button" class="text-xs font-semibold text-brand-600 hover:text-brand-800 flex items-center gap-1 focus:outline-none">
+            <svg id="steps-chevron" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+            <span>Matematiksel Hesaplama Adımlarını ve Formül Dökümünü İncele</span>
+          </button>
+          <div id="steps-body" class="hidden mt-3 bg-slate-900 text-slate-200 rounded-xl p-4 font-mono text-xs overflow-x-auto leading-relaxed space-y-1.5 shadow-inner">
+            <!-- Adımlar dinamik dolacak -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Mevzuat Referansları ve Açıklamalar -->
+    <footer class="text-center text-xs text-slate-500 pt-4 space-y-2">
+      <p>Bu hesaplama motoru, 20 Şubat 2019 tarihli ve 30692 sayılı Resmî Gazete'de yayımlanan <em>"Erişkinler İçin Engellilik Değerlendirmesi Hakkında Yönetmelik"</em> Ek-2 hükümlerine ve Gelir İdaresi Başkanlığı 2026 rehberine göre hazırlanmıştır.</p>
+      <p class="font-medium text-slate-600">© 2026 engelsizforum.com — Tüm Hakları Saklıdır.</p>
+    </footer>
+
+  </main>
+
+  <!-- JAVASCRIPT HESAPLAMA MOTORU (VANILLA JS) -->
+  <script>
+    (function () {
+      'use strict';
+
+      // Element Seçicileri
+      const container = document.getElementById('rates-container');
+      const addBtn = document.getElementById('add-rate-btn');
+      const resetBtn = document.getElementById('reset-btn');
+      const age65Checkbox = document.getElementById('age65-checkbox');
+      const finalRoundedRateEl = document.getElementById('final-rounded-rate');
+      const finalExactRateEl = document.getElementById('final-exact-rate');
+      const degreeBadgeContainer = document.getElementById('degree-badge-container');
+      const rightsContentEl = document.getElementById('rights-content');
+      const calculationStepsContainer = document.getElementById('calculation-steps-container');
+      const toggleStepsBtn = document.getElementById('toggle-steps-btn');
+      const stepsBody = document.getElementById('steps-body');
+      const stepsChevron = document.getElementById('steps-chevron');
+
+      let rowCounter = 0;
+
+      /**
+       * Yeni bir oran giriş satırı oluşturur.
+       * @param {number|string} initialValue - Başlangıç değeri
+       * @param {string} label - Branş veya açıklama metni
+       */
+      function createRateRow(initialValue = '', label = '') {
+        rowCounter++;
+        const rowId = 'rate-row-' + rowCounter;
+
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'rate-row flex items-center gap-2 sm:gap-3 p-2 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-200 transition-all focus-within:border-brand-600 focus-within:ring-1 focus-within:ring-brand-600';
+        rowDiv.id = rowId;
+        rowDiv.setAttribute('role', 'listitem');
+
+        rowDiv.innerHTML = `
+          <div class="flex-1 flex items-center gap-2 min-w-0">
+            <span class="text-xs font-bold text-slate-400 w-5 text-center shrink-0 row-index">1</span>
+            <input type="text" 
+                   class="rate-desc w-full bg-transparent text-xs sm:text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none truncate" 
+                   placeholder="Branş / Teşhis (Örn: Ortopedi, Göz, Kardiyoloji)" 
+                   value="${label}"
+                   aria-label="Branş veya Teşhis Adı">
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <span class="text-sm font-semibold text-slate-500">%</span>
+            <input type="number" 
+                   min="1" 
+                   max="99" 
+                   step="1"
+                   inputmode="numeric"
+                   class="rate-input w-16 sm:w-20 px-2 py-1.5 text-center font-bold text-slate-900 bg-white border border-slate-300 rounded-lg text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-brand-600 focus:border-brand-600 shadow-inner" 
+                   placeholder="Oran" 
+                   value="${initialValue}"
+                   aria-label="Engel Oranı">
+          </div>
+          <button type="button" 
+                  class="remove-row-btn p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition shrink-0" 
+                  title="Satırı Kaldır" 
+                  aria-label="Bu Satırı Kaldır">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        `;
+
+        // Event Listener'lar
+        const input = rowDiv.querySelector('.rate-input');
+        const removeBtn = rowDiv.querySelector('.remove-row-btn');
+
+        input.addEventListener('input', function () {
+          // Sınırlandırma (1 - 99)
+          let val = parseInt(this.value, 10);
+          if (isNaN(val)) {
+            // Boş bırakılabilir
+          } else if (val > 99) {
+            this.value = 99;
+          } else if (val < 0) {
+            this.value = 1;
+          }
+          calculateBalthazard();
+        });
+
+        removeBtn.addEventListener('click', function () {
+          const rows = container.querySelectorAll('.rate-row');
+          if (rows.length <= 1) {
+            // Tek satır kaldıysa silme, sadece temizle
+            input.value = '';
+            rowDiv.querySelector('.rate-desc').value = '';
+          } else {
+            rowDiv.remove();
+          }
+          updateRowIndexes();
+          calculateBalthazard();
+        });
+
+        container.appendChild(rowDiv);
+        updateRowIndexes();
+      }
+
+      /**
+       * Satır numaralarını günceller
+       */
+      function updateRowIndexes() {
+        const rows = container.querySelectorAll('.rate-row');
+        rows.forEach((row, idx) => {
+          const indexSpan = row.querySelector('.row-index');
+          if (indexSpan) indexSpan.textContent = (idx + 1);
+        });
+      }
+
+      /**
+       * Balthazard formülünü 2026 mevzuat kurallarına göre çalıştırır
+       */
+      function calculateBalthazard() {
+        const rows = container.querySelectorAll('.rate-row');
+        const validRates = [];
+
+        rows.forEach(row => {
+          const input = row.querySelector('.rate-input');
+          const descInput = row.querySelector('.rate-desc');
+          const val = parseFloat(input.value);
+          if (!isNaN(val) && val > 0 && val < 100) {
+            validRates.push({
+              rate: val,
+              desc: descInput ? descInput.value.trim() : ''
+            });
+          }
+        });
+
+        const isAge65 = age65Checkbox.checked;
+
+        // Hiç oran girilmediyse sıfırla
+        if (validRates.length === 0) {
+          finalRoundedRateEl.textContent = '%0';
+          finalExactRateEl.textContent = '(Hesaplanan Net: %0.00)';
+          degreeBadgeContainer.innerHTML = `
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-white/20 text-white border border-white/20">
+              Oran Girilmedi
+            </span>
+          `;
+          rightsContentEl.innerHTML = `Lütfen hesaplama yapmak için yukarıdaki kutucuklara en az bir engel oranı giriniz.`;
+          calculationStepsContainer.classList.add('hidden');
+          stepsBody.innerHTML = '';
+          return;
+        }
+
+        // 1. KURAL: Girilen tüm oranlar büyükten küçüğe sıralanır
+        validRates.sort((a, b) => b.rate - a.rate);
+
+        const steps = [];
+        steps.push(`1. Girilen oranlar büyükten küçüğe sıralandı: [ ${validRates.map(r => '%' + r.rate).join(', ')} ]`);
+
+        // 2. KURAL: Balthazard Formülü Uygulanışı
+        // Toplam = A + [B * (100 - A) / 100]
+        let currentTotal = validRates[0].rate;
+        steps.push(`2. En yüksek oran taban alındı: A = %${currentTotal}`);
+
+        for (let i = 1; i < validRates.length; i++) {
+          const nextRate = validRates[i].rate;
+          const remainingCapacity = 100 - currentTotal;
+          const addedAmount = (nextRate * remainingCapacity) / 100;
+          const previousTotal = currentTotal;
+          currentTotal = previousTotal + addedAmount;
+
+          steps.push(`   Adım ${i}: A=%${previousTotal.toFixed(2)}, B=%${nextRate}`);
+          steps.push(`   Formül: ${previousTotal.toFixed(2)} + [${nextRate} × (100 - ${previousTotal.toFixed(2)}) / 100] = %${currentTotal.toFixed(4)}`);
+        }
+
+        let rawBaseTotal = currentTotal;
+
+        // 3. KURAL: 65 Yaş Kuralı (Yönetmelik Ek-2 Genel Esaslar)
+        // İşaretliyse, tüm oranlar birleştirildikten sonra elde edilen toplama Balthazard yöntemiyle %10 yaşlılık payı eklenir:
+        // [Nihai = Sonuç + (10 * (100 - Sonuç) / 100)]
+        if (isAge65) {
+          const ageCapacity = 100 - currentTotal;
+          const ageAdded = (10 * ageCapacity) / 100;
+          const beforeAge = currentTotal;
+          currentTotal = beforeAge + ageAdded;
+
+          steps.push(`3. 65 Yaş ve Üzeri Kuralı Uygulandı (+%10 Balthazard Yaşlılık Payı):`);
+          steps.push(`   Formül: ${beforeAge.toFixed(4)} + [10 × (100 - ${beforeAge.toFixed(4)}) / 100] = %${currentTotal.toFixed(4)}`);
+        }
+
+        // 4. KURAL: Yuvarlama Kuralı
+        // Nihai oran virgülden sonra 0.50 ve üzerinde ise yukarı, 0.49 ve altında ise aşağı tam sayıya yuvarlanır.
+        const exactRate = currentTotal;
+        const roundedRate = Math.round(exactRate);
+
+        steps.push(`4. Resmi Yuvarlama:`);
+        steps.push(`   Net Sonuç: %${exactRate.toFixed(4)}`);
+        steps.push(`   Virgülden sonra 0.50 ve üzeri yukarı, 0.49 ve altı aşağı tam sayıya yuvarlanır.`);
+        steps.push(`   Nihai Resmi Oran: %${roundedRate}`);
+
+        // Arayüzü Güncelle
+        finalRoundedRateEl.textContent = `%${roundedRate}`;
+        finalExactRateEl.textContent = `(Hesaplanan Net: %${exactRate.toFixed(2)})`;
+
+        // Derece ve Hak Değerlendirmesi
+        renderRightsAndDegree(roundedRate);
+
+        // Adım Dökümünü Güncelle
+        calculationStepsContainer.classList.remove('hidden');
+        stepsBody.innerHTML = steps.map(s => `<div>${s}</div>`).join('');
+      }
+
+      /**
+       * 2026 Mevzuatına göre Derece Rozetini ve Haklar Listesini Günceller
+       * @param {number} rate - Yuvarlanmış nihai engel oranı
+       */
+      function renderRightsAndDegree(rate) {
+        let badgeHtml = '';
+        let rightsHtml = '';
+
+        if (rate >= 80) {
+          badgeHtml = `
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-emerald-500 text-white shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+              1. Derece Engelli (%${rate})
+            </span>
+          `;
+
+          rightsHtml = `
+            <div class="space-y-3">
+              <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-950 font-semibold text-sm">
+                1. Derece Engellilik (%80 ve Üzeri)
+              </div>
+              <ul class="space-y-2 text-slate-700 list-disc list-inside">
+                <li><strong>2026 Yılı 1. Derece Gelir Vergisi İndirimi:</strong> Ücretli çalışanlar ve serbest meslek erbabı için en üst dilimden vergi indirimi uygulanır.</li>
+                <li><strong>Evde Bakım Yardımı:</strong> Sağlık kurulu raporunda <em>"Tam Bağımlı"</em> kararı verilmesi ve hane geliri kriterinin sağlanması durumunda Aile ve Sosyal Hizmetler Bakanlığı evde bakım aylığı hakkı doğar.</li>
+                <li><strong>ÖTV İstisnalı Sıfır Araç Alımı:</strong> Oranınız <strong>%90 ve üzerinde</strong> ise herhangi bir özel tertibat şartı aranmaksızın genel ÖTV istisnasıyla 2026 limitleri dahilinde 1. dereceye kadar akrabaların da kullanabileceği sıfır araç alım hakkı sağlanır. (%80 - %89 arasında ortopedik kısıtlılık yoksa araç hakkı bulunmaz).</li>
+                <li><strong>Maluliyet / Erken Emeklilik:</strong> SGK 5510 sayılı Kanun kapsamında malulen emeklilik veya vergi indirimiyle yaş şartı aranmaksızın erken emeklilik başvurusu yapılabilir.</li>
+                <li><strong>Engelli Kimlik Kartı & Sosyal Haklar:</strong> Şehir içi toplu taşımadan ücretsiz yararlanma, TCDD demiryollarında ücretsiz, THY yurt içi uçuşlarda %20 indirim, su faturası ve internet indirimleri, emlak vergisi muafiyeti (tek konut için 200 m²'ye kadar).</li>
+                <li><strong>EKPSS / Engelli Kontenjanı:</strong> Engelli Kamu Personeli Seçme Sınavı veya özel sektör %3 engelli istihdam kotasından faydalanma imkânı.</li>
+              </ul>
+            </div>
+          `;
+        } else if (rate >= 60) {
+          badgeHtml = `
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-blue-600 text-white shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-white"></span>
+              2. Derece Engelli (%${rate})
+            </span>
+          `;
+
+          rightsHtml = `
+            <div class="space-y-3">
+              <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-950 font-semibold text-sm">
+                2. Derece Engellilik (%60 - %79 Arası)
+              </div>
+              <ul class="space-y-2 text-slate-700 list-disc list-inside">
+                <li><strong>2026 Yılı 2. Derece Gelir Vergisi İndirimi:</strong> Bordrolu çalışanlar veya vergi mükellefleri için 2. derece sakatlık indirimi uygulanır.</li>
+                <li><strong>Maluliyet ve Engelli Erken Emeklilik:</strong> SGK 5510 sayılı Kanun kapsamında çalışma gücünün en az %60'ını kaybettiği tespit edilenler maluliyet incelemesine başvurabilir; ayrıca kademeli erken emeklilik imkânı doğar.</li>
+                <li><strong>Evde Bakım Değerlendirmesi:</strong> Sağlık kurulunca <em>"Tam Bağımlı"</em> ibaresi verilmediği müddetçe sadece orana dayalı evde bakım maaşı bağlanmaz.</li>
+                <li><strong>EKPSS / Engelli Memur Kontenjanı:</strong> EKPSS ve kura ile engelli memur alımlarına ve engelli işçi kadrolarına başvuru hakkı.</li>
+                <li><strong>Engelli Kimlik Kartı & Ulaşım İndirimleri:</strong> e-Devlet üzerinden kimlik kartı, şehir içi belediye otobüsleri, metro ve vapurlarda ücretsiz ulaşım; su faturalarında indirim.</li>
+              </ul>
+            </div>
+          `;
+        } else if (rate >= 40) {
+          badgeHtml = `
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-indigo-600 text-white shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-white"></span>
+              3. Derece Engelli (%${rate})
+            </span>
+          `;
+
+          rightsHtml = `
+            <div class="space-y-3">
+              <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-950 font-semibold text-sm">
+                3. Derece Engellilik (%40 - %59 Arası)
+              </div>
+              <ul class="space-y-2 text-slate-700 list-disc list-inside">
+                <li><strong>2026 Yılı 3. Derece Gelir Vergisi İndirimi:</strong> 193 sayılı Gelir Vergisi Kanunu uyarınca 3. derece engellilik indirimi.</li>
+                <li><strong>Engelli Erken Emeklilik Hakkı:</strong> İşe giriş tarihine göre prim gün sayısı ve sigortalılık süresi şartlarını tamamlayarak yaş beklemeksizin engelli erken emekliliği.</li>
+                <li><strong>EKPSS ve İstihdam:</strong> Engelli Kamu Personeli Seçme Sınavı'na (EKPSS) girme hakkı ve İŞKUR engelli kadrolarına kayıt hakkı.</li>
+                <li><strong>Engelli Kimlik Kartı:</strong> e-Devlet üzerinden Aile ve Sosyal Hizmetler Bakanlığı Engelli Kimlik Kartı alma hakkı.</li>
+                <li><strong>Sosyal ve Belediye İndirimleri:</strong> Şehir içi toplu taşıma araçlarından ücretsiz yararlanma, su faturası indirimi (belediye tarifelerine göre %30-%50 arası), GSM ve sabit internet engelli tarifeleri, müze ve ören yerlerine ücretsiz giriş.</li>
+              </ul>
+            </div>
+          `;
+        } else {
+          badgeHtml = `
+            <span class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500 text-white shadow-sm">
+              Taban Oran Altı (%${rate})
+            </span>
+          `;
+
+          rightsHtml = `
+            <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 space-y-2">
+              <p class="font-semibold text-sm">Mevzuat gereği engelli kimlik kartı ve yasal haklardan yararlanmak için asgari taban oran %40'tır.</p>
+              <p class="text-xs leading-relaxed text-amber-800">
+                Hesaplanan oranınız %40'ın altında kaldığı için Gelir Vergisi indirimi, EKPSS, Engelli Kimlik Kartı, erken emeklilik ve ücretsiz toplu taşıma gibi kanuni haklardan yararlanılamaz.
+                <br><em>İstisna:</em> Yalnızca ortopedik engeli olup hekim raporunda özel tertibat/otomatik vites şartı belirlenenler, ÖTV muafiyeti açısından %40 şartı aranmaksızın değerlendirilebilir.
+              </p>
+            </div>
+          `;
+        }
+
+        degreeBadgeContainer.innerHTML = badgeHtml;
+        rightsContentEl.innerHTML = rightsHtml;
+      }
+
+      // Event Listeners
+      addBtn.addEventListener('click', () => {
+        createRateRow('', '');
+      });
+
+      resetBtn.addEventListener('click', () => {
+        container.innerHTML = '';
+        age65Checkbox.checked = false;
+        createRateRow('', '1. Branş');
+        createRateRow('', '2. Branş');
+        calculateBalthazard();
+      });
+
+      age65Checkbox.addEventListener('change', calculateBalthazard);
+
+      // Adım dökümü aç/kapa
+      toggleStepsBtn.addEventListener('click', () => {
+        const isHidden = stepsBody.classList.contains('hidden');
+        if (isHidden) {
+          stepsBody.classList.remove('hidden');
+          stepsChevron.classList.add('rotate-180');
+        } else {
+          stepsBody.classList.add('hidden');
+          stepsChevron.classList.remove('rotate-180');
+        }
+      });
+
+      // İlk Başlangıç: 2 Satır Ekleyerek Hazırla
+      createRateRow('', '1. Branş');
+      createRateRow('', '2. Branş');
+      calculateBalthazard();
+
+    })();
+  </script>
+</body>
+</html>

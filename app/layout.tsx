@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { headers } from 'next/headers';
 import VisitorTracker from '@/components/layout/visitor-tracker';
 import { Plus_Jakarta_Sans, Atkinson_Hyperlegible, JetBrains_Mono } from 'next/font/google';
 import Script from 'next/script';
@@ -42,17 +41,8 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  let baseUrl = 'https://www.engelsizforum.com';
-  try {
-    const headersList = await headers();
-    const host = headersList.get('host');
-    if (host && !host.includes('localhost') && !host.includes('127.0.0.1')) {
-      const protocol = host.includes('run.app') || host.includes('vercel.app') || host.includes('engelsizforum.com') ? 'https' : 'http';
-      baseUrl = `${protocol}://${host}`;
-    }
-  } catch (e) {
-    // Fallback during static pre-rendering
-  }
+  const isDev = process.env.NODE_ENV === 'development';
+  const baseUrl = isDev ? 'http://localhost:3000' : 'https://www.engelsizforum.com';
 
   const ogImageUrl = `${baseUrl}/og-image.png?v=3`;
 
