@@ -184,6 +184,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="tr" className="h-full" suppressHydrationWarning>
       <head>
         <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1868964903102165"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="bg-background text-foreground overflow-x-hidden min-h-screen flex flex-col font-sans antialiased">
         <noscript>
