@@ -206,6 +206,8 @@ export function Footer() {
           
           <div className="text-center sm:text-left">
             Forum Yazılımı: <strong>XenForo® Tarzı EngelsizForum Motoru</strong> © {currentYear} EngelsizForum. Tüm hakları saklıdır.
+            <span className="mx-2 text-slate-600">|</span>
+            Sponsor: <a href="https://goldhost.com.tr" target="_blank" rel="noopener noreferrer" className="hover:text-white text-sky-400 font-bold hover:underline" id="sponsor-link">goldhost.com.tr</a>
           </div>
 
           <div className="flex items-center gap-4 text-slate-400">
