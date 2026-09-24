@@ -34,9 +34,11 @@ export function ClassicNodeRow({
 
       {/* Main Content */}
       <div className="xf-node-main">
-        <Link href={`/category/${id}`} className="xf-node-title text-[#185886] hover:text-[#104f75] font-bold hover:underline">
-          {title}
-        </Link>
+        <h3 className="m-0 leading-snug">
+          <Link href={`/category/${id}`} className="xf-node-title text-[#185886] hover:text-[#104f75] font-bold text-sm hover:underline">
+            {title}
+          </Link>
+        </h3>
         <div className="xf-node-description text-slate-500 leading-relaxed mt-0.5">
           {description}
         </div>
@@ -86,9 +88,9 @@ interface ClassicCategoryBlockProps {
 export default function ClassicCategoryBlock({ title, nodes }: ClassicCategoryBlockProps) {
   return (
     <section className="xf-block rounded-sm overflow-hidden">
-      <div className="xf-block-header">
-        <Link href="#" className="hover:underline">{title}</Link>
-      </div>
+      <h2 className="xf-block-header text-[13px] font-black uppercase tracking-wider text-white m-0">
+        <span>{title}</span>
+      </h2>
       <div className="flex flex-col">
         {nodes.map((node) => (
           <ClassicNodeRow key={node.id} {...node} />

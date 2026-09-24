@@ -283,7 +283,7 @@ export default function ClassicNavbar() {
                   >
                     <div className="w-8 h-8 bg-sky-900 rounded-full flex-shrink-0 border border-white/20 flex items-center justify-center overflow-hidden">
                        {profile?.avatar_url ? (
-                         <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+                         <img src={profile.avatar_url} alt={profile.username ? `${profile.username} profil resmi` : 'Kullanıcı profil resmi'} className="w-full h-full object-cover" />
                        ) : (
                          <span className="text-[11px] text-sky-200 font-bold uppercase">{profile?.username?.substring(0, 2) || 'Ü'}</span>
                        )}
@@ -393,7 +393,7 @@ export default function ClassicNavbar() {
               <div className="flex items-center gap-2.5 p-2.5 bg-slate-50 border border-slate-100 rounded-sm">
                 <div className="w-8 h-8 bg-[#eef2f7] rounded-full flex-shrink-0 border border-[#cbd5e1] flex items-center justify-center overflow-hidden">
                    {profile.avatar_url ? (
-                     <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+                     <img src={profile.avatar_url} alt={profile.username ? `${profile.username} profil resmi` : 'Kullanıcı profil resmi'} className="w-full h-full object-cover" />
                    ) : (
                      <span className="text-xs text-[#185886] font-bold uppercase">{profile.username?.substring(0, 2) || 'Ü'}</span>
                    )}

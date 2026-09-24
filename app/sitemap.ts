@@ -81,6 +81,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const identifier = cat.slug || cat.id;
         if (identifier) {
           sitemapEntries.push({
+            url: `${BASE_URL}/category/${identifier}`,
+            lastModified: parseSafeDate(cat.updated_at || cat.created_at, currentDate),
+            changeFrequency: 'weekly',
+            priority: 0.8,
+          });
+          sitemapEntries.push({
             url: `${BASE_URL}/communities/${identifier}`,
             lastModified: parseSafeDate(cat.updated_at || cat.created_at, currentDate),
             changeFrequency: 'weekly',

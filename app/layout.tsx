@@ -40,19 +40,31 @@ export const viewport: Viewport = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const isDev = process.env.NODE_ENV === 'development';
-  const baseUrl = isDev ? 'http://localhost:3000' : 'https://www.engelsizforum.com';
-
+  const baseUrl = 'https://engelsizforum.com';
   const ogImageUrl = `${baseUrl}/og-image.png?v=3`;
 
   return {
     metadataBase: new URL(baseUrl),
     title: {
-      default: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
-      template: '%s | EngelsizForum'
+      default: 'Engelsiz Forum | Engelli Hakları, Balthazard, ÖTV & Topluluk Platformu',
+      template: '%s | Engelsiz Forum'
     },
-    description: 'Bariyersiz, tam erişilebilir ve yapay zeka destekli forum platformu. Balthazard, ÖTV 2026 ve Emeklilik hesaplama araçlarıyla engelli topluluk rehberi.',
-    keywords: ['engelsiz forum', 'erişilebilirlik', 'accessibility', 'topluluk', 'yardımlaşma', 'bariyersiz iletişim', 'engelli hakları', 'erişilebilir web', 'GEO optimization', 'generative engine optimization', 'Türkiye engelli platformu', 'biyonik okuma', 'disleksi dostu', 'ÖTV 2026 hesaplama', 'Balthazard hesaplama'],
+    description: 'Türkiye\'nin ilk tam erişilebilir (WCAG AAA) engelli topluluk platformu. Balthazard formülü, 2026 ÖTV muafiyeti, engelli erken emeklilik ve mevzuat rehberi.',
+    keywords: [
+      'engelsiz forum',
+      'engelli hakları',
+      'balthazard hesaplama',
+      'ötv 2026 hesaplama',
+      'engelli erken emeklilik',
+      'özür oranı cetveli',
+      'sağlık kurulu raporu',
+      'erişilebilirlik',
+      'topluluk',
+      'yardımlaşma',
+      'bariyersiz forum',
+      'evde bakım maaşı',
+      'engelli araç alımı'
+    ],
     authors: [{ name: 'EngelsizForum Ekibi' }],
     creator: 'EngelsizForum',
     publisher: 'EngelsizForum',
@@ -83,10 +95,10 @@ export async function generateMetadata(): Promise<Metadata> {
       shortcut: ['/favicon.ico'],
     },
     openGraph: {
-      title: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
-      description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu.',
+      title: 'Engelsiz Forum | Engelli Hakları, Balthazard, ÖTV & Topluluk Platformu',
+      description: 'Türkiye\'nin ilk tam erişilebilir (WCAG AAA) engelli topluluk platformu. Balthazard formülü, 2026 ÖTV muafiyeti, engelli erken emeklilik ve mevzuat rehberi.',
       url: baseUrl,
-      siteName: 'EngelsizForum',
+      siteName: 'Engelsiz Forum',
       type: 'website',
       locale: 'tr_TR',
       images: [
@@ -95,15 +107,15 @@ export async function generateMetadata(): Promise<Metadata> {
           secureUrl: ogImageUrl,
           width: 1200,
           height: 630,
-          alt: 'EngelsizForum - Tam Erişilebilir Topluluk Platformu',
+          alt: 'Engelsiz Forum - Tam Erişilebilir Topluluk Platformu',
           type: 'image/png',
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'EngelsizForum | Tam Erişilebilir Topluluk Platformu',
-      description: 'Herkes için bariyersiz, tam erişilebilir, yapay zeka destekli topluluk ve dayanışma platformu.',
+      title: 'Engelsiz Forum | Engelli Hakları, Balthazard, ÖTV & Topluluk Platformu',
+      description: 'Türkiye\'nin ilk tam erişilebilir (WCAG AAA) engelli topluluk platformu. Balthazard formülü, 2026 ÖTV muafiyeti, engelli erken emeklilik ve mevzuat rehberi.',
       site: '@engelsizforum',
       creator: '@engelsizforum',
       images: [ogImageUrl],
@@ -124,9 +136,15 @@ const jsonLd = {
       "@type": "Organization",
       "@id": "https://engelsizforum.com/#organization",
       "name": "EngelsizForum",
+      "alternateName": "Engelsiz Forum",
       "url": "https://engelsizforum.com",
-      "logo": "https://engelsizforum.com/logo.png?v=2026",
-      "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve forum platformu.",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://engelsizforum.com/icon.png",
+        "width": 192,
+        "height": 192
+      },
+      "description": "Engelli bireyler için tam erişilebilir, kapsayıcı bir topluluk ve mevzuat danışma platformu.",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "Büyükdere Cad. Levent",
@@ -139,7 +157,7 @@ const jsonLd = {
         "https://github.com/engelsizforum",
         "https://twitter.com/engelsizforum"
       ],
-      "knowsAbout": ["Accessibility", "Disability Rights", "Community Support", "Assistive Technology", "Generative Engine Optimization"],
+      "knowsAbout": ["Accessibility", "Disability Rights", "Community Support", "Assistive Technology", "Generative Engine Optimization", "Balthazard Formula", "ÖTV Exemption 2026"],
       "makesOffer": {
         "@type": "Offer",
         "itemOffered": {
@@ -155,15 +173,32 @@ const jsonLd = {
       "@type": "WebSite",
       "@id": "https://engelsizforum.com/#website",
       "url": "https://engelsizforum.com",
-      "name": "EngelsizForum",
-      "description": "Tam Erişilebilir Topluluk ve Bilgi Paylaşım Platformu",
+      "name": "Engelsiz Forum",
+      "description": "Tam Erişilebilir Engelli Topluluğu, Hakları ve Hesaplama Platformu",
       "publisher": { "@id": "https://engelsizforum.com/#organization" },
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://engelsizforum.com/search?q={search_term_string}",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://engelsizforum.com/search?q={search_term_string}"
+        },
         "query-input": "required name=search_term_string"
       },
       "inLanguage": "tr-TR"
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://engelsizforum.com/#webapplication",
+      "name": "Engelsiz Forum",
+      "url": "https://engelsizforum.com",
+      "applicationCategory": "CommunityApplication",
+      "operatingSystem": "All",
+      "description": "Engelli bireyler için tam erişilebilir forum, mevzuat danışma ve resmi Balthazard / ÖTV hesaplama robotları.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "TRY"
+      }
     },
     {
       "@type": "Person",

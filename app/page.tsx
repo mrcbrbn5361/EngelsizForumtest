@@ -192,11 +192,18 @@ export default async function Home() {
     <div className="flex flex-col lg:flex-row gap-5">
       {/* Main Forum Content */}
       <div className="flex-1 min-w-0">
-        <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-xl font-black text-[#185886] uppercase tracking-wide">Forumlar</h1>
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-black text-[#185886] tracking-tight uppercase">
+              Engelsiz Forum - Topluluk ve Engelli Hakları
+            </h1>
+            <p className="text-xs text-slate-500 mt-1 max-w-2xl leading-relaxed">
+              Türkiye&apos;nin tam erişilebilir engelli topluluğu: Sağlık kurulu Balthazard hesaplama, 2026 ÖTV muafiyeti, erken emeklilik ve güncel mevzuat paylaşımları.
+            </p>
+          </div>
           <a 
             href="/discussions/new" 
-            className="bg-[#f2930d] hover:bg-[#d5800a] text-white px-4.5 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5"
+            className="bg-[#f2930d] hover:bg-[#d5800a] text-white px-4.5 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto"
           >
             <span>Yeni Konu Aç</span>
           </a>

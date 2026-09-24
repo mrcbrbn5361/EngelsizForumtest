@@ -41,13 +41,13 @@ export default function ClassicThreadRow({ topic }: ClassicThreadRowProps) {
 
       {/* Thread Info */}
       <div className="flex-1 min-w-0 pr-4">
-        <div className="flex items-center gap-1.5 mb-0.5">
-          {topic.is_pinned && <Pin size={12} className="text-emerald-600 shrink-0" />}
-          {topic.is_locked && <Lock size={12} className="text-slate-400 shrink-0" />}
-          <Link href={`/discussions/${topic.id}`} className="text-[#185886] hover:text-[#104f75] font-bold hover:underline text-[15px] truncate block">
+        <h3 className="flex items-center gap-1.5 mb-0.5 m-0 font-bold text-[15px]">
+          {topic.is_pinned && <Pin size={12} className="text-emerald-600 shrink-0" aria-label="Sabit Konu" />}
+          {topic.is_locked && <Lock size={12} className="text-slate-400 shrink-0" aria-label="Kilitli Konu" />}
+          <Link href={`/discussions/${topic.id}`} className="text-[#185886] hover:text-[#104f75] hover:underline truncate block">
             {topic.title}
           </Link>
-        </div>
+        </h3>
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
           <Link href={`/profile/${authorId}`} className="hover:underline font-bold text-[#0066a2]">
             {authorName}

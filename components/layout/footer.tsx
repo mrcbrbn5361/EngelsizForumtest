@@ -88,10 +88,10 @@ export function Footer() {
           
           {/* Column 1: About EngelsizForum */}
           <div className="space-y-3">
-            <div className="text-base font-black tracking-tight text-white flex items-center gap-1.5 select-none">
+            <h3 className="text-base font-black tracking-tight text-white flex items-center gap-1.5 select-none m-0">
               <span>ENGELSİZ</span>
               <span className="text-sky-400 font-light">FORUM</span>
-            </div>
+            </h3>
             <p className="text-slate-300 text-xs leading-relaxed">
               Türkiye&apos;nin ilk ve tek tam erişilebilir (%100 WCAG 2.1 AAA), açık veri ve hak temelli engelli dayanışma platformu. Balthazard, ÖTV 2026 ve erken emeklilik robotları ile hak kaybını önler.
             </p>
@@ -105,9 +105,9 @@ export function Footer() {
 
           {/* Column 2: Legal & Calculations */}
           <div className="space-y-2.5">
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-sky-300 pb-1 border-b border-[#1b4d73]">
+            <h3 className="text-xs font-extrabold uppercase tracking-wider text-sky-300 pb-1 border-b border-[#1b4d73] m-0">
               Hesaplama Robotları &amp; Haklar
-            </h4>
+            </h3>
             <ul className="space-y-2 text-xs text-slate-300">
               <li>
                 <Link href="/hesaplama" className="hover:text-sky-300 transition-colors flex items-center gap-1.5 font-bold text-sky-200">
@@ -144,9 +144,9 @@ export function Footer() {
 
           {/* Column 3: Developers & Standards */}
           <div className="space-y-2.5">
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-sky-300 pb-1 border-b border-[#1b4d73]">
+            <h3 className="text-xs font-extrabold uppercase tracking-wider text-sky-300 pb-1 border-b border-[#1b4d73] m-0">
               Geliştirici &amp; Açık Standartlar
-            </h4>
+            </h3>
             <ul className="space-y-2 text-xs text-slate-300">
               <li>
                 <Link href="/developers" className="hover:text-sky-300 transition-colors flex items-center gap-1.5">
@@ -177,9 +177,9 @@ export function Footer() {
 
           {/* Column 4: Contact & Community */}
           <div className="space-y-2.5">
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-sky-300 pb-1 border-b border-[#1b4d73]">
+            <h3 className="text-xs font-extrabold uppercase tracking-wider text-sky-300 pb-1 border-b border-[#1b4d73] m-0">
               İletişim &amp; Topluluk
-            </h4>
+            </h3>
             <ul className="space-y-2.5 text-xs text-slate-300">
               <li className="flex items-start gap-2">
                 <MapPin size={14} className="text-sky-400 shrink-0 mt-0.5" />

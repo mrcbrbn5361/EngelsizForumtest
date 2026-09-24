@@ -143,10 +143,10 @@ export default function ClassicSidebar() {
 
       {/* Calculator Robots Widget */}
       <div className="xf-sidebar-block border border-slate-200 bg-white rounded-sm shadow-xs">
-        <div className="xf-sidebar-header flex items-center gap-2 bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[12px] tracking-wider py-2.5 px-3">
+        <h2 className="xf-sidebar-header flex items-center gap-2 bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[12px] tracking-wider py-2.5 px-3 m-0">
           <Calculator size={14} className="text-[#185886]" />
           HESAPLAMA ROBOTLARI
-        </div>
+        </h2>
         <div className="p-3 flex flex-col gap-2.5 bg-white">
           <Link href="/hesaplama" className="flex items-center justify-between text-[13px] group">
             <span className="font-bold text-[#185886] group-hover:text-[#104f75] group-hover:underline">ÖTV 2026 Muafiyet Hesapla</span>
@@ -167,10 +167,10 @@ export default function ClassicSidebar() {
 
       {/* Online/Active Registered Users Widget */}
       <div className="xf-sidebar-block border border-slate-200 bg-white rounded-sm shadow-xs">
-        <div className="xf-sidebar-header flex items-center gap-2 bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[12px] tracking-wider py-2.5 px-3">
+        <h2 className="xf-sidebar-header flex items-center gap-2 bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[12px] tracking-wider py-2.5 px-3 m-0">
           <Users size={14} className="text-[#185886]" />
           KAYITLI ÜYELERİMİZ
-        </div>
+        </h2>
         <div className="p-3 bg-white">
           {loading ? (
             <div className="text-[13px] text-slate-400 italic">Yükleniyor...</div>
@@ -200,10 +200,10 @@ export default function ClassicSidebar() {
 
       {/* Statistics Widget */}
       <div className="xf-sidebar-block border border-slate-200 bg-white rounded-sm shadow-xs">
-        <div className="xf-sidebar-header flex items-center gap-2 bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[12px] tracking-wider py-2.5 px-3">
+        <h2 className="xf-sidebar-header flex items-center gap-2 bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-black uppercase text-[12px] tracking-wider py-2.5 px-3 m-0">
           <BarChart3 size={14} className="text-[#185886]" />
           FORUM İSTATİSTİKLERİ
-        </div>
+        </h2>
         <div className="p-3 flex flex-col gap-2.5 bg-white">
           {loading ? (
             <div className="text-[13px] text-slate-400 italic font-medium">Yükleniyor...</div>

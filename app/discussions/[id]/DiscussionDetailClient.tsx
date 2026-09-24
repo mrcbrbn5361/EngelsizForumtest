@@ -588,23 +588,23 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
         // Markdown Headers
         if (line.startsWith('### ')) {
           return (
-            <h3 key={lineIdx} className="text-sm font-extrabold text-[#185886] mt-3 mb-1.5 uppercase tracking-wide">
+            <h4 key={lineIdx} className="text-sm font-extrabold text-[#185886] mt-3 mb-1.5 uppercase tracking-wide">
               {line.substring(4)}
-            </h3>
+            </h4>
           );
         }
         if (line.startsWith('## ')) {
           return (
-            <h2 key={lineIdx} className="text-base font-extrabold text-[#185886] mt-4 mb-2 uppercase tracking-wide border-b border-slate-200 pb-1">
+            <h3 key={lineIdx} className="text-base font-extrabold text-[#185886] mt-4 mb-2 uppercase tracking-wide border-b border-slate-200 pb-1">
               {line.substring(3)}
-            </h2>
+            </h3>
           );
         }
         if (line.startsWith('# ')) {
           return (
-            <h1 key={lineIdx} className="text-lg font-extrabold text-[#185886] mt-5 mb-2 uppercase tracking-wide border-b border-slate-200 pb-1">
+            <h2 key={lineIdx} className="text-lg font-extrabold text-[#185886] mt-5 mb-2 uppercase tracking-wide border-b border-slate-200 pb-1">
               {line.substring(2)}
-            </h1>
+            </h2>
           );
         }
 
@@ -1021,7 +1021,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
           {/* Quick Reply Form */}
           <div className="xf-block border border-slate-200 bg-white rounded-sm shadow-sm mt-6">
-            <div className="xf-block-header bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-extrabold uppercase text-[12px] tracking-wider py-2.5 px-3">Hızlı Cevap Yaz</div>
+            <h2 className="xf-block-header bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-extrabold uppercase text-[12px] tracking-wider py-2.5 px-3 m-0">Hızlı Cevap Yaz</h2>
             <div className="p-4 bg-white">
               {user ? (
                 <form onSubmit={handleReplySubmit}>

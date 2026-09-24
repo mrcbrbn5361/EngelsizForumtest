@@ -1,9 +1,50 @@
+import type { Metadata } from 'next';
 import { supabaseServer } from '@/lib/supabase-server';
 import { notFound } from 'next/navigation';
 import ClassicThreadRow from '@/components/forum/classic-thread-row';
 import ClassicSidebar from '@/components/forum/classic-sidebar';
 import Link from 'next/link';
 import { ChevronRight, Home, MessageSquare } from 'lucide-react';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const { data: category } = await supabaseServer
+    .from('categories')
+    .select('name, description')
+    .eq('slug', slug)
+    .maybeSingle();
+
+  if (!category) {
+    return {
+      title: 'Kategori Bulunamadı | Engelsiz Forum',
+      description: 'Aradığınız forum kategorisi bulunamadı veya taşınmış olabilir.',
+    };
+  }
+
+  const title = `${category.name} | Engelsiz Forum`;
+  const description = category.description 
+    ? `${category.description.substring(0, 150)} - Engelsiz Forum topluluk tartışmaları.`
+    : `${category.name} kategorisi altındaki tüm konular, engelli hakları ve mevzuat paylaşımları.`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `https://engelsizforum.com/category/${slug}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url: `https://engelsizforum.com/category/${slug}`,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  };
+}
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -84,12 +125,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </div>
 
           <div className="xf-block rounded-sm overflow-hidden border border-slate-200 bg-white shadow-sm">
-            <div className="xf-block-header bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 py-3 px-4">
+            <h2 className="xf-block-header bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 py-3 px-4 m-0">
               <div className="flex items-center gap-2 text-[#185886] font-black text-sm">
                 <MessageSquare size={14} />
                 KONULAR
               </div>
-            </div>
+            </h2>
             
             <div className="flex flex-col">
               {topicsWithStats.length > 0 ? (
