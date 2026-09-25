@@ -2,9 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Navbar } from './navbar';
-import { Footer } from './footer';
-import { Calculator, Car, Calendar, ShieldCheck, ArrowRight, Sparkles } from 'lucide-react';
+import { Calculator, Car, Calendar, ShieldCheck, Sparkles } from 'lucide-react';
 
 export function SiteLayout({ children }: { children: React.ReactNode }) {
   return (

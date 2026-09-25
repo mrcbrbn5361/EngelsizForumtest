@@ -1,6 +1,6 @@
 'use client';
 
-import { MessageSquare, MessageCircle } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 
 interface ClassicNodeRowProps {
@@ -87,7 +87,7 @@ interface ClassicCategoryBlockProps {
 
 export default function ClassicCategoryBlock({ title, nodes }: ClassicCategoryBlockProps) {
   return (
-    <section className="xf-block rounded-sm overflow-hidden">
+    <section className="xf-block rounded-sm overflow-hidden border border-slate-200 bg-white">
       <h2 className="xf-block-header text-[13px] font-black uppercase tracking-wider text-white m-0">
         <span>{title}</span>
       </h2>

@@ -185,16 +185,22 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     };
   }, [settings.audioGuide, isInitialLoad]);
 
-  const updateSettings = (newSettings: Partial<AccessibilitySettings>) => {
+  const updateSettings = React.useCallback((newSettings: Partial<AccessibilitySettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
-  };
+  }, []);
 
-  const resetSettings = () => setSettings(defaultSettings);
+  const resetSettings = React.useCallback(() => setSettings(defaultSettings), []);
 
   const accessibilityClasses = !isInitialLoad && settings.highContrast ? 'dark contrast-more' : '';
 
+  const contextValue = React.useMemo(() => ({
+    ...settings,
+    updateSettings,
+    resetSettings
+  }), [settings, updateSettings, resetSettings]);
+
   return (
-    <AccessibilityContext.Provider value={{ ...settings, updateSettings, resetSettings }}>
+    <AccessibilityContext.Provider value={contextValue}>
       <div className={`accessibility-wrapper min-h-screen ${accessibilityClasses}`}>
         <RouteAnnouncer />
         {children}

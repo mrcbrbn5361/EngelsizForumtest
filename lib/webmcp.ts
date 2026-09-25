@@ -111,11 +111,22 @@ function syncDeclarativeDOMForm(tool: WebMCPToolDefinition) {
 
     const props = tool.inputSchema?.properties || tool.parameters || {};
     Object.entries(props).forEach(([paramName, paramConfig]) => {
+      const inputId = `webmcp-input-${tool.name}-${paramName}`;
+      const paramDesc = paramConfig.description || paramName;
+
+      const label = document.createElement('label');
+      label.htmlFor = inputId;
+      label.className = 'sr-only';
+      label.textContent = paramDesc;
+      form.appendChild(label);
+
       const input = document.createElement('input');
+      input.id = inputId;
       input.type = 'text';
       input.name = paramName;
-      input.setAttribute('toolparamdescription', paramConfig.description || paramName);
-      input.setAttribute('data-toolparamdescription', paramConfig.description || paramName);
+      input.setAttribute('aria-label', paramDesc);
+      input.setAttribute('toolparamdescription', paramDesc);
+      input.setAttribute('data-toolparamdescription', paramDesc);
       form.appendChild(input);
     });
 

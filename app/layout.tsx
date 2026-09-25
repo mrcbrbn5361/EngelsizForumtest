@@ -9,7 +9,6 @@ import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/providers/auth-provider';
 import { SkipNav } from '@/components/accessibility/skip-nav';
 import ClassicNavbar from '@/components/layout/classic-navbar';
-import Link from 'next/link';
 import { EngelsizAI } from '@/components/layout/engelsiz-ai';
 import { Footer } from '@/components/layout/footer';
 
@@ -218,22 +217,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr" className="h-full" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://vtmozdquvamjeniwhonm.supabase.co" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://vtmozdquvamjeniwhonm.supabase.co" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1868964903102165"
-          crossOrigin="anonymous"
-        />
+        <link rel="alternate" type="application/json" title="AI Catalog" href="/ai-catalog.json" />
       </head>
       <body className="bg-background text-foreground overflow-x-hidden min-h-screen flex flex-col font-sans antialiased">
         <noscript>
           <div style={{ padding: '24px', backgroundColor: '#0b0f19', color: '#ffffff', textAlign: 'center', fontSize: '16px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            EngelsizForum, tam erişilebilir bir topluluk platformudur. Lütfen tarayıcınızda JavaScript'i etkinleştirin.
+            EngelsizForum, tam erişilebilir bir topluluk platformudur. Lütfen tarayıcınızda JavaScript&apos;i etkinleştirin.
           </div>
         </noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1868964903102165"
+          crossOrigin="anonymous"
+          strategy="lazyOnload"
         />
         <SkipNav />
         <AuthProvider>

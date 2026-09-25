@@ -44,35 +44,19 @@ export default function ClassicSidebar() {
       }
 
       try {
-        // Fetch real topics count
-        const { count: topicCount } = await supabase
-          .from('topics')
-          .select('*', { count: 'exact', head: true });
+        const [topicsRes, commentsRes, profilesCountRes, latestProfileRes, profilesListRes] = await Promise.all([
+          supabase.from('topics').select('*', { count: 'exact', head: true }),
+          supabase.from('comments').select('*', { count: 'exact', head: true }),
+          supabase.from('profiles').select('*', { count: 'exact', head: true }),
+          supabase.from('profiles').select('id, username').order('created_at', { ascending: false }).limit(1).maybeSingle(),
+          supabase.from('profiles').select('id, username, role').order('created_at', { ascending: false }).limit(12)
+        ]);
 
-        // Fetch real comments count
-        const { count: commentCount } = await supabase
-          .from('comments')
-          .select('*', { count: 'exact', head: true });
-
-        // Fetch real profiles count
-        const { count: profileCount } = await supabase
-          .from('profiles')
-          .select('*', { count: 'exact', head: true });
-
-        // Fetch latest profile
-        const { data: latestProfile } = await supabase
-          .from('profiles')
-          .select('id, username')
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-
-        // Fetch registered real profiles list
-        const { data: profilesList } = await supabase
-          .from('profiles')
-          .select('id, username, role')
-          .order('created_at', { ascending: false })
-          .limit(12);
+        const topicCount = topicsRes.count;
+        const commentCount = commentsRes.count;
+        const profileCount = profilesCountRes.count;
+        const latestProfile = latestProfileRes.data;
+        const profilesList = profilesListRes.data;
 
         setStats({
           topics: topicCount || 1482,
@@ -118,10 +102,10 @@ export default function ClassicSidebar() {
   }, []);
 
   const getRoleStyle = (role: string) => {
-    if (role === 'admin') return 'text-red-600 font-bold hover:text-red-700 hover:underline';
-    if (role === 'moderator') return 'text-emerald-700 font-bold hover:text-emerald-800 hover:underline';
+    if (role === 'admin') return 'text-red-700 font-bold hover:text-red-800 hover:underline';
+    if (role === 'moderator') return 'text-emerald-800 font-bold hover:text-emerald-900 hover:underline';
     if (role === 'uzman') return 'text-[#185886] font-bold hover:text-[#104f75] hover:underline';
-    return 'text-slate-600 hover:text-slate-900 hover:underline';
+    return 'text-slate-700 font-medium hover:text-slate-900 hover:underline';
   };
 
   return (
@@ -147,18 +131,18 @@ export default function ClassicSidebar() {
           <Calculator size={14} className="text-[#185886]" />
           HESAPLAMA ROBOTLARI
         </h2>
-        <div className="p-3 flex flex-col gap-2.5 bg-white">
-          <Link href="/hesaplama" className="flex items-center justify-between text-[13px] group">
+        <div className="p-3 flex flex-col gap-1.5 bg-white">
+          <Link href="/hesaplama" className="flex items-center justify-between text-[13px] py-1.5 min-h-[36px] group">
             <span className="font-bold text-[#185886] group-hover:text-[#104f75] group-hover:underline">ÖTV 2026 Muafiyet Hesapla</span>
             <ChevronRight size={14} className="text-slate-400" />
           </Link>
           <div className="h-[1px] bg-slate-100"></div>
-          <Link href="/hesaplama" className="flex items-center justify-between text-[13px] group">
+          <Link href="/hesaplama" className="flex items-center justify-between text-[13px] py-1.5 min-h-[36px] group">
             <span className="font-bold text-[#185886] group-hover:text-[#104f75] group-hover:underline">Balthazard Formülü Robotu</span>
             <ChevronRight size={14} className="text-slate-400" />
           </Link>
           <div className="h-[1px] bg-slate-100"></div>
-          <Link href="/hesaplama" className="flex items-center justify-between text-[13px] group">
+          <Link href="/hesaplama" className="flex items-center justify-between text-[13px] py-1.5 min-h-[36px] group">
             <span className="font-bold text-[#185886] group-hover:text-[#104f75] group-hover:underline">Engelli Emeklilik Sorgulama</span>
             <ChevronRight size={14} className="text-slate-400" />
           </Link>
@@ -176,17 +160,18 @@ export default function ClassicSidebar() {
             <div className="text-[13px] text-slate-400 italic">Yükleniyor...</div>
           ) : realUsers.length > 0 ? (
             <>
-              <div className="text-[13px] mb-3 text-slate-600 font-semibold">
-                Kayıtlı Toplam: <span className="font-bold text-slate-800">{stats.users}</span> Üye
+              <div className="text-[13px] mb-3 text-slate-700 font-semibold">
+                Kayıtlı Toplam: <span className="font-bold text-slate-900">{stats.users}</span> Üye
               </div>
-              <div className="flex flex-wrap gap-x-2 gap-y-1 text-[13px]">
-                {realUsers.map((p, idx) => (
-                  <span key={p.id} className="inline-flex items-center">
-                    <Link href={`/profile/${p.id}`} className={getRoleStyle(p.role)}>
-                      {p.username}
-                    </Link>
-                    {idx < realUsers.length - 1 && <span className="text-slate-400 ml-1">,</span>}
-                  </span>
+              <div className="flex flex-wrap gap-2 text-[12px]">
+                {realUsers.map((p) => (
+                  <Link 
+                    key={p.id}
+                    href={`/profile/${p.id}`} 
+                    className={`inline-flex items-center px-2.5 py-1.5 rounded-sm bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors min-h-[36px] ${getRoleStyle(p.role)}`}
+                  >
+                    {p.username}
+                  </Link>
                 ))}
               </div>
             </>

@@ -165,9 +165,9 @@ export default function HesaplamaNav({
                 {/* Ana Hub Bağlantısı */}
                 <Link
                   href="/hesaplama"
-                  className={`shrink-0 lg:shrink flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold transition-all rounded lg:rounded-none whitespace-nowrap lg:whitespace-normal ${
+                  className={`shrink-0 lg:shrink flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold transition-all rounded lg:rounded-none whitespace-nowrap lg:whitespace-normal min-h-[36px] ${
                     isHubPage
-                      ? 'bg-[#185886] text-white border-l-0 lg:border-l-4 lg:border-[#124d77] shadow-2xs'
+                      ? 'bg-[#185886] text-white border-l-0 lg:border-l-4 lg:border-[#124d77] shadow-2xs font-bold'
                       : 'text-slate-700 hover:bg-slate-50 hover:text-[#185886]'
                   }`}
                 >
@@ -191,7 +191,7 @@ export default function HesaplamaNav({
                     <Link
                       key={tool.id}
                       href={tool.href}
-                      className={`shrink-0 lg:shrink flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold transition-all rounded lg:rounded-none whitespace-nowrap lg:whitespace-normal ${
+                      className={`shrink-0 lg:shrink flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold transition-all rounded lg:rounded-none whitespace-nowrap lg:whitespace-normal min-h-[36px] ${
                         isActive
                           ? 'bg-[#185886] text-white border-l-0 lg:border-l-4 lg:border-[#124d77] shadow-2xs font-bold'
                           : 'text-slate-700 hover:bg-slate-50 hover:text-[#185886]'

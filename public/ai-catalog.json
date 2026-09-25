@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "name": "EngelsizForum",
+  "description": "Engelli bireyler için tam erişilebilir topluluk, mevzuat danışma ve resmi hesaplama robotları platformu.",
+  "homepage": "https://engelsizforum.com",
+  "provider": {
+    "name": "EngelsizForum",
+    "url": "https://engelsizforum.com",
+    "email": "miracbirben@engelsizforum.com"
+  },
+  "capabilities": [
+    "mcp",
+    "webmcp",
+    "rest-api",
+    "oauth2",
+    "accessibility"
+  ],
+  "endpoints": {
+    "mcp": "https://engelsizforum.com/api/mcp",
+    "webmcp": "https://engelsizforum.com/webmcp",
+    "oauth_authorize": "https://engelsizforum.com/api/oauth/authorize",
+    "oauth_token": "https://engelsizforum.com/api/oauth/token",
+    "llms_txt": "https://engelsizforum.com/llms.txt"
+  },
+  "tools": [
+    {
+      "name": "engelsizforum_search",
+      "description": "EngelsizForum üzerindeki konuları, mevzuatı, ÖTV 2026 şartlarını ve sağlık raporu rehberlerini arar.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Aranacak kelime veya konu (ör. ÖTV 2026, EKPSS, Balthazard)"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "engelsizforum_balthazard_calc",
+      "description": "Birden fazla engel oranını resmi Balthazard formülü ile birleştirerek toplam engel oranını hesaplar.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "rates": {
+            "type": "array",
+            "items": { "type": "number" },
+            "description": "Engel oranları dizisi (ör. [40, 20, 10])"
+          }
+        },
+        "required": ["rates"]
+      }
+    },
+    {
+      "name": "engelsizforum_disability_rights_guide",
+      "description": "Rapor oranına ve engel grubuna göre engelli bireylere tanınan tüm resmi hakları sorgular.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reportPercentage": {
+            "type": "number",
+            "description": "Rapor engel oranı (ör. 40, 70, 90)"
+          }
+        },
+        "required": ["reportPercentage"]
+      }
+    },
+    {
+      "name": "engelsizforum_legislation_lookup",
+      "description": "Türkiye ÖTV, Emeklilik, Evde Bakım ve EKPSS engelli mevzuat maddelerini verir.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Mevzuat kategorisi: otv_2026 | emeklilik | evde_bakim | ekpss | ram_egitim"
+          }
+        },
+        "required": ["category"]
+      }
+    },
+    {
+      "name": "engelsizforum_accessibility_toggle",
+      "description": "EngelsizForum WCAG 2.1 AAA erişilebilirlik tercihlerini (yüksek kontrast, disleksi fontu, biyonik okuma) değiştirir.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "feature": {
+            "type": "string",
+            "description": "Değiştirilecek özellik: highContrast | dyslexicFont | bionicReading"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Aktif (true) veya pasif (false) olma durumu"
+          }
+        },
+        "required": ["feature", "enabled"]
+      }
+    }
+  ]
+}

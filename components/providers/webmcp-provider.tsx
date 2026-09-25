@@ -117,9 +117,12 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
           action="/search"
           method="GET"
         >
+          <label htmlFor="webmcp-search-query" className="sr-only">Aranacak kelime veya konu</label>
           <input
+            id="webmcp-search-query"
             type="text"
             name="query"
+            aria-label="Aranacak kelime veya konu (ör. ÖTV 2026, EKPSS, Balthazard)"
             toolparamdescription="Aranacak kelime veya konu (ör. ÖTV 2026, EKPSS, Balthazard)"
             data-toolparamdescription="Aranacak kelime veya konu (ör. ÖTV 2026, EKPSS, Balthazard)"
             required
@@ -136,9 +139,12 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
           action="/hesaplayicilar/balthazard"
           method="POST"
         >
+          <label htmlFor="webmcp-balthazard-rates" className="sr-only">Engel oranları dizisi</label>
           <input
+            id="webmcp-balthazard-rates"
             type="text"
             name="rates"
+            aria-label="Engel oranları dizisi (ör. 40,20,10)"
             toolparamdescription="Engel oranları dizisi (ör. 40,20,10)"
             data-toolparamdescription="Engel oranları dizisi (ör. 40,20,10)"
             required
@@ -153,9 +159,12 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
           data-tooldescription="Rapor oranına ve engel grubuna göre engelli bireylere tanınan tüm resmi hakları sorgular."
           name="engelsizforum_disability_rights_guide"
         >
+          <label htmlFor="webmcp-guide-report" className="sr-only">Rapor engel oranı</label>
           <input
+            id="webmcp-guide-report"
             type="number"
             name="reportPercentage"
+            aria-label="Rapor engel oranı (ör. 40, 70, 90)"
             toolparamdescription="Rapor engel oranı (ör. 40, 70, 90)"
             data-toolparamdescription="Rapor engel oranı (ör. 40, 70, 90)"
             required
@@ -170,9 +179,12 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
           data-tooldescription="Türkiye ÖTV, Emeklilik, Evde Bakım ve EKPSS engelli mevzuat maddelerini verir."
           name="engelsizforum_legislation_lookup"
         >
+          <label htmlFor="webmcp-legislation-category" className="sr-only">Mevzuat kategorisi</label>
           <input
+            id="webmcp-legislation-category"
             type="text"
             name="category"
+            aria-label="Mevzuat kategorisi: otv_2026 | emeklilik | evde_bakim | ekpss | ram_egitim"
             toolparamdescription="Mevzuat kategorisi: otv_2026 | emeklilik | evde_bakim | ekpss | ram_egitim"
             data-toolparamdescription="Mevzuat kategorisi: otv_2026 | emeklilik | evde_bakim | ekpss | ram_egitim"
             required
@@ -187,16 +199,22 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
           data-tooldescription="EngelsizForum WCAG 2.1 AAA erişilebilirlik tercihlerini (yüksek kontrast, disleksi fontu, biyonik okuma) değiştirir."
           name="engelsizforum_accessibility_toggle"
         >
+          <label htmlFor="webmcp-a11y-feature" className="sr-only">Değiştirilecek özellik</label>
           <input
+            id="webmcp-a11y-feature"
             type="text"
             name="feature"
+            aria-label="Değiştirilecek özellik: highContrast | dyslexicFont | bionicReading"
             toolparamdescription="Değiştirilecek özellik: highContrast | dyslexicFont | bionicReading"
             data-toolparamdescription="Değiştirilecek özellik: highContrast | dyslexicFont | bionicReading"
             required
           />
+          <label htmlFor="webmcp-a11y-enabled" className="sr-only">Aktif veya pasif olma durumu</label>
           <input
+            id="webmcp-a11y-enabled"
             type="checkbox"
             name="enabled"
+            aria-label="Aktif (true) veya pasif (false) olma durumu"
             toolparamdescription="Aktif (true) veya pasif (false) olma durumu"
             data-toolparamdescription="Aktif (true) veya pasif (false) olma durumu"
           />
