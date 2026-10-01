@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, Suspense } from 'react';
-import { Search, Filter, Loader2, Mic, Sparkles, ChevronRight, X, Home, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect, useCallback, Suspense, useMemo } from 'react';
+import { Search, Filter, Loader2, Mic, Sparkles, ChevronRight, X, Home, MessageSquare, Calculator, ArrowRight, Building2, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { expandSearchQuery, matchQueryWithText } from '@/lib/search-dictionary';
+import { searchWithTypoTolerance } from '@/lib/seo-keyword-matrix';
 import ClassicSidebar from '@/components/forum/classic-sidebar';
 import { formatDistanceToNow } from 'date-fns';
 import { tr } from 'date-fns/locale';
@@ -252,6 +253,48 @@ function SearchContent() {
               )}
             </form>
           </div>
+
+          {/* Akıllı Mevzuat & Hesaplama Robotu Eşleşmesi (Fuzzy / Typo Toleransı) */}
+          {searched && query.trim() && (
+            (() => {
+              const matched = searchWithTypoTolerance(query).slice(0, 2);
+              if (matched.length === 0) return null;
+
+              return (
+                <div className="space-y-2.5">
+                  {matched.map((item) => (
+                    <div 
+                      key={item.id}
+                      className="p-3.5 bg-gradient-to-r from-sky-50 to-emerald-50/50 border border-sky-200 rounded-sm shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.2 bg-[#185886] text-white rounded-xs">
+                            Resmi Eşleşme
+                          </span>
+                          <span className="text-xs font-bold text-[#185886]">
+                            {item.primaryTerm}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 line-clamp-1">
+                          {item.definition}
+                        </p>
+                      </div>
+
+                      <Link
+                        href={item.targetUrl}
+                        className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#185886] hover:bg-[#104f75] text-white text-xs font-bold rounded-sm transition-colors shadow-2xs"
+                      >
+                        <Calculator size={13} className="text-sky-300" />
+                        <span>Sayfayı / Robotu Aç</span>
+                        <ArrowRight size={12} />
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()
+          )}
 
           {/* Results Block */}
           {searched && (

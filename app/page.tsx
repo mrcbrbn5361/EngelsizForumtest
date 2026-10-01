@@ -1,5 +1,7 @@
 import ClassicCategoryBlock from '@/components/forum/classic-category-block';
 import ClassicSidebar from '@/components/forum/classic-sidebar';
+import HomeSeoKnowledgeBase from '@/components/forum/home-seo-knowledge-base';
+import TeknofestNotice from '@/components/forum/teknofest-notice';
 import { supabaseServer } from '@/lib/supabase-server';
 import { formatDistanceToNow } from 'date-fns';
 import { tr } from 'date-fns/locale';
@@ -209,6 +211,9 @@ export default async function Home() {
           </a>
         </div>
 
+        {/* TEKNOFEST Özel Ziyaretçi & Kurucu Duyurusu */}
+        <TeknofestNotice />
+
         {displayCategories.map((category) => (
           <div key={category.title} className="mb-5">
             <ClassicCategoryBlock 
@@ -231,6 +236,9 @@ export default async function Home() {
             <span>Okunmamış mesaj var</span>
           </div>
         </div>
+
+        {/* 2026 Kapsamlı Engelli Hakları ve Mevzuat Rehberi (SEO & Bilgi Portalı) */}
+        <HomeSeoKnowledgeBase />
       </div>
 
       {/* Right Sidebar */}

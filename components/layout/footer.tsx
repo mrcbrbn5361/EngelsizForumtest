@@ -181,7 +181,7 @@ export function Footer() {
             <ul className="space-y-2 text-xs text-white">
               <li className="flex items-start gap-2">
                 <MapPin size={14} className="text-sky-400 shrink-0 mt-0.5" />
-                <span className="text-slate-200">Bağcılar / İstanbul, Türkiye</span>
+                <span className="text-slate-200">İstanbul, Türkiye</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={14} className="text-sky-400 shrink-0" />
