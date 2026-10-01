@@ -592,90 +592,90 @@ export const SEO_KEYWORD_MATRIX: KeywordEntry[] = [
 ];
 
 /**
- * 81 İl Listesi (Tam Türkiye Kapsamı)
+ * 81 İl ve Tüm İlçeler Listesi (Tam Türkiye Kapsamı)
  */
 export const TURKEY_PROVINCES = [
-  { code: '01', name: 'Adana', slug: 'adana' },
-  { code: '02', name: 'Adıyaman', slug: 'adiyaman' },
-  { code: '03', name: 'Afyonkarahisar', slug: 'afyonkarahisar' },
-  { code: '04', name: 'Ağrı', slug: 'agri' },
-  { code: '05', name: 'Amasya', slug: 'amasya' },
-  { code: '06', name: 'Ankara', slug: 'ankara' },
-  { code: '07', name: 'Antalya', slug: 'antalya' },
-  { code: '08', name: 'Artvin', slug: 'artvin' },
-  { code: '09', name: 'Aydın', slug: 'aydin' },
-  { code: '10', name: 'Balıkesir', slug: 'balikesir' },
-  { code: '11', name: 'Bilecik', slug: 'bilecik' },
-  { code: '12', name: 'Bingöl', slug: 'bingol' },
-  { code: '13', name: 'Bitlis', slug: 'bitlis' },
-  { code: '14', name: 'Bolu', slug: 'bolu' },
-  { code: '15', name: 'Burdur', slug: 'burdur' },
-  { code: '16', name: 'Bursa', slug: 'bursa' },
-  { code: '17', name: 'Çanakkale', slug: 'canakkale' },
-  { code: '18', name: 'Çankırı', slug: 'cankiri' },
-  { code: '19', name: 'Çorum', slug: 'corum' },
-  { code: '20', name: 'Denizli', slug: 'denizli' },
-  { code: '21', name: 'Diyarbakır', slug: 'diyarbakir' },
-  { code: '22', name: 'Edirne', slug: 'edirne' },
-  { code: '23', name: 'Elazığ', slug: 'elazig' },
-  { code: '24', name: 'Erzincan', slug: 'erzincan' },
-  { code: '25', name: 'Erzurum', slug: 'erzurum' },
-  { code: '26', name: 'Eskişehir', slug: 'eskisehir' },
-  { code: '27', name: 'Gaziantep', slug: 'gaziantep' },
-  { code: '28', name: 'Giresun', slug: 'giresun' },
-  { code: '29', name: 'Gümüşhane', slug: 'gumushane' },
-  { code: '30', name: 'Hakkari', slug: 'hakkari' },
-  { code: '31', name: 'Hatay', slug: 'hatay' },
-  { code: '32', name: 'Isparta', slug: 'isparta' },
-  { code: '33', name: 'Mersin', slug: 'mersin' },
-  { code: '34', name: 'İstanbul', slug: 'istanbul' },
-  { code: '35', name: 'İzmir', slug: 'izmir' },
-  { code: '36', name: 'Kars', slug: 'kars' },
-  { code: '37', name: 'Kastamonu', slug: 'kastamonu' },
-  { code: '38', name: 'Kayseri', slug: 'kayseri' },
-  { code: '39', name: 'Kırklareli', slug: 'kirklareli' },
-  { code: '40', name: 'Kırşehir', slug: 'kirsehir' },
-  { code: '41', name: 'Kocaeli', slug: 'kocaeli' },
-  { code: '42', name: 'Konya', slug: 'konya' },
-  { code: '43', name: 'Kütahya', slug: 'kutahya' },
-  { code: '44', name: 'Malatya', slug: 'malatya' },
-  { code: '45', name: 'Manisa', slug: 'manisa' },
-  { code: '46', name: 'Kahramanmaraş', slug: 'kahramanmaras' },
-  { code: '47', name: 'Mardin', slug: 'mardin' },
-  { code: '48', name: 'Muğla', slug: 'mugla' },
-  { code: '49', name: 'Muş', slug: 'mus' },
-  { code: '50', name: 'Nevşehir', slug: 'nevsehir' },
-  { code: '51', name: 'Niğde', slug: 'nigde' },
-  { code: '52', name: 'Ordu', slug: 'ordu' },
-  { code: '53', name: 'Rize', slug: 'rize' },
-  { code: '54', name: 'Sakarya', slug: 'sakarya' },
-  { code: '55', name: 'Samsun', slug: 'samsun' },
-  { code: '56', name: 'Siirt', slug: 'siirt' },
-  { code: '57', name: 'Sinop', slug: 'sinop' },
-  { code: '58', name: 'Sivas', slug: 'sivas' },
-  { code: '59', name: 'Tekirdağ', slug: 'tekirdag' },
-  { code: '60', name: 'Tokat', slug: 'tokat' },
-  { code: '61', name: 'Trabzon', slug: 'trabzon' },
-  { code: '62', name: 'Tunceli', slug: 'tunceli' },
-  { code: '63', name: 'Şanlıurfa', slug: 'sanliurfa' },
-  { code: '64', name: 'Uşak', slug: 'usak' },
-  { code: '65', name: 'Van', slug: 'van' },
-  { code: '66', name: 'Yozgat', slug: 'yozgat' },
-  { code: '67', name: 'Zonguldak', slug: 'zonguldak' },
-  { code: '68', name: 'Aksaray', slug: 'aksaray' },
-  { code: '69', name: 'Bayburt', slug: 'bayburt' },
-  { code: '70', name: 'Karaman', slug: 'karaman' },
-  { code: '71', name: 'Kırıkkale', slug: 'kirikkale' },
-  { code: '72', name: 'Batman', slug: 'batman' },
-  { code: '73', name: 'Şırnak', slug: 'sirnak' },
-  { code: '74', name: 'Bartın', slug: 'bartin' },
-  { code: '75', name: 'Ardahan', slug: 'ardahan' },
-  { code: '76', name: 'Iğdır', slug: 'igdir' },
-  { code: '77', name: 'Yalova', slug: 'yalova' },
-  { code: '78', name: 'Karabük', slug: 'karabuk' },
-  { code: '79', name: 'Kilis', slug: 'kilis' },
-  { code: '80', name: 'Osmaniye', slug: 'osmaniye' },
-  { code: '81', name: 'Düzce', slug: 'duzce' }
+  { code: '01', name: 'Adana', slug: 'adana', districts: ['Seyhan', 'Yüreğir', 'Çukurova', 'Sarıçam', 'Ceyhan', 'Kozan', 'İmamoğlu', 'Karataş', 'Karaisalı', 'Pozantı', 'Yumurtalık', 'Tufanbeyli', 'Feke', 'Aladağ', 'Saimbeyli'] },
+  { code: '02', name: 'Adıyaman', slug: 'adiyaman', districts: ['Merkez', 'Kahta', 'Besni', 'Gölbaşı', 'Gerger', 'Sincik', 'Çelikhan', 'Tut', 'Samsat'] },
+  { code: '03', name: 'Afyonkarahisar', slug: 'afyonkarahisar', districts: ['Merkez', 'Sandıklı', 'Dinar', 'Bolvadin', 'Sinanpaşa', 'Emirdağ', 'Şuhut', 'Çay', 'İhsaniye', 'İscehisar', 'Sultandağı', 'Çobanlar', 'Dazkırı', 'Başmakçı', 'Hocalar', 'Kızılören', 'Evciler'] },
+  { code: '04', name: 'Ağrı', slug: 'agri', districts: ['Merkez', 'Patnos', 'Doğubayazıt', 'Diyadin', 'Eleşkirt', 'Tutak', 'Taşlıçay', 'Hamur'] },
+  { code: '05', name: 'Amasya', slug: 'amasya', districts: ['Merkez', 'Merzifon', 'Suluova', 'Taşova', 'Göynücek', 'Gümüşhacıköy', 'Hamamözü'] },
+  { code: '06', name: 'Ankara', slug: 'ankara', districts: ['Çankaya', 'Keçiören', 'Yenimahalle', 'Mamak', 'Etimesgut', 'Sincan', 'Altındağ', 'Pursaklar', 'Gölbaşı', 'Polatlı', 'Çubuk', 'Kahramankazan', 'Beypazarı', 'Elmadağ', 'Nallıhan', 'Akyurt', 'Haymana', 'Kızılcahamam', 'Bala', 'Şereflikoçhisar', 'Kalecik', 'Ayaş', 'Güdül', 'Çamlıdere', 'Evren'] },
+  { code: '07', name: 'Antalya', slug: 'antalya', districts: ['Kepez', 'Muratpaşa', 'Alanya', 'Manavgat', 'Konyaaltı', 'Serik', 'Aksu', 'Kumluca', 'Kaş', 'Korkuteli', 'Gazipaşa', 'Finike', 'Kemer', 'Elmalı', 'Demre', 'Akseki', 'Gündoğmuş', 'İbradı'] },
+  { code: '08', name: 'Artvin', slug: 'artvin', districts: ['Merkez', 'Hopa', 'Borçka', 'Yusufeli', 'Arhavi', 'Şavşat', 'Ardanuç', 'Murgul', 'Kemalpaşa'] },
+  { code: '09', name: 'Aydın', slug: 'aydin', districts: ['Efeler', 'Kuşadası', 'Söke', 'Nazilli', 'Didim', 'İncirliova', 'Çine', 'Germencik', 'Bozdoğan', 'Köşk', 'Kuyucak', 'Sultanhisar', 'Karacasu', 'Yenipazar', 'Buharkent', 'Karpuzlu'] },
+  { code: '10', name: 'Balıkesir', slug: 'balikesir', districts: ['Karesi', 'Altıeylül', 'Bandırma', 'Edremit', 'Gönen', 'Ayvalık', 'Burhaniye', 'Bigadiç', 'Dursunbey', 'Susurluk', 'Sındırgı', 'İvrindi', 'Havran', 'Erdek', 'Manyas', 'Savaştepe', 'Balya', 'Gömeç', 'Kepsut', 'Marmara'] },
+  { code: '11', name: 'Bilecik', slug: 'bilecik', districts: ['Merkez', 'Bozüyük', 'Osmaneli', 'Söğüt', 'Gölpazarı', 'Pazaryeri', 'İnhisar', 'Yenipazar'] },
+  { code: '12', name: 'Bingöl', slug: 'bingol', districts: ['Merkez', 'Genç', 'Solhan', 'Karlıova', 'Adaklı', 'Kiğı', 'Yedisu', 'Yayladere'] },
+  { code: '13', name: 'Bitlis', slug: 'bitlis', districts: ['Tatvan', 'Merkez', 'Güroymak', 'Ahlat', 'Hizan', 'Mutki', 'Adilcevaz'] },
+  { code: '14', name: 'Bolu', slug: 'bolu', districts: ['Merkez', 'Gerede', 'Mudurnu', 'Göynük', 'Mengen', 'Yeniçağa', 'Dörtdivan', 'Seben', 'Kıbrıscık'] },
+  { code: '15', name: 'Burdur', slug: 'burdur', districts: ['Merkez', 'Bucak', 'Gölhisar', 'Yeşilova', 'Çavdır', 'Tefenni', 'Karamanlı', 'Ağlasun', 'Altınyayla', 'Çeltikçi', 'Kemer'] },
+  { code: '16', name: 'Bursa', slug: 'bursa', districts: ['Osmangazi', 'Yıldırım', 'Nilüfer', 'İnegöl', 'Gemlik', 'Mustafakemalpaşa', 'Mudanya', 'Gürsu', 'Karacabey', 'Orhangazi', 'Kestel', 'Yenişehir', 'İznik', 'Orhaneli', 'Keles', 'Büyükorhan', 'Harmancık'] },
+  { code: '17', name: 'Çanakkale', slug: 'canakkale', districts: ['Merkez', 'Biga', 'Çan', 'Gelibolu', 'Yenice', 'Ayvacık', 'Ezine', 'Bayramiç', 'Lapseki', 'Eceabat', 'Gökçeada', 'Bozcaada'] },
+  { code: '18', name: 'Çankırı', slug: 'cankiri', districts: ['Merkez', 'Çerkeş', 'Ilgaz', 'Orta', 'Şabanözü', 'Kurşunlu', 'Yapraklı', 'Kızılırmak', 'Eldivan', 'Atkaracalar', 'Korgun', 'Bayramören'] },
+  { code: '19', name: 'Çorum', slug: 'corum', districts: ['Merkez', 'Sungurlu', 'Osmancık', 'İskilip', 'Alaca', 'Bayat', 'Kargı', 'Mecitözü', 'Ortaköy', 'Uğurludağ', 'Dodurga', 'Oğuzlar', 'Laçin', 'Boğazkale'] },
+  { code: '20', name: 'Denizli', slug: 'denizli', districts: ['Pamukkale', 'Merkezefendi', 'Çivril', 'Acıpayam', 'Tavas', 'Honaz', 'Sarayköy', 'Buldan', 'Kale', 'Çal', 'Çameli', 'Serinhisar', 'Bozkurt', 'Güney', 'Çardak', 'Bekilli', 'Beyağaç', 'Babadağ', 'Baklan'] },
+  { code: '21', name: 'Diyarbakır', slug: 'diyarbakir', districts: ['Bağlar', 'Kayapınar', 'Yenişehir', 'Sur', 'Ergani', 'Bismil', 'Silvan', 'Çınar', 'Çermik', 'Dicle', 'Kulp', 'Hani', 'Lice', 'Eğil', 'Hazro', 'Kocaköy', 'Çüngüş'] },
+  { code: '22', name: 'Edirne', slug: 'edirne', districts: ['Merkez', 'Keşan', 'Uzunköprü', 'İpsala', 'Havsa', 'Meriç', 'Enez', 'Süloğlu', 'Lalapaşa'] },
+  { code: '23', name: 'Elazığ', slug: 'elazig', districts: ['Merkez', 'Kovancılar', 'Karakoçan', 'Palu', 'Arıcak', 'Baskil', 'Maden', 'Sivrice', 'Alacakaya', 'Keban', 'Ağın'] },
+  { code: '24', name: 'Erzincan', slug: 'erzincan', districts: ['Merkez', 'Tercan', 'Üzümlü', 'Çayırlı', 'İliç', 'Kemah', 'Kemaliye', 'Refahiye', 'Otlukbeli'] },
+  { code: '25', name: 'Erzurum', slug: 'erzurum', districts: ['Yakutiye', 'Palandöken', 'Aziziye', 'Horasan', 'Oltu', 'Pasinler', 'Karayazı', 'Hınıs', 'Tekman', 'Karaçoban', 'Aşkale', 'Şenkaya', 'Çat', 'Köprüköy', 'İspir', 'Tortum', 'Narman', 'Uzundere', 'Olur', 'Pazaryolu'] },
+  { code: '26', name: 'Eskişehir', slug: 'eskisehir', districts: ['Odunpazarı', 'Tepebaşı', 'Sivrihisar', 'Çifteler', 'Seyitgazi', 'Alpu', 'Mihalıççık', 'Mahmudiye', 'Beylikova', 'İnönü', 'Günyüzü', 'Han', 'Mihalgazi', 'Sarıcakaya'] },
+  { code: '27', name: 'Gaziantep', slug: 'gaziantep', districts: ['Şahinbey', 'Şehitkamil', 'Nizip', 'İslahiye', 'Nurdağı', 'Araban', 'Oğuzeli', 'Yavuzeli', 'Karkamış'] },
+  { code: '28', name: 'Giresun', slug: 'giresun', districts: ['Merkez', 'Bulancak', 'Espiye', 'Görele', 'Tirebolu', 'Dereli', 'Şebinkarahisar', 'Piraziz', 'Keşap', 'Yağlıdere', 'Eynesil', 'Alucra', 'Güce', 'Doğankent', 'Çamoluk', 'Çanakçı'] },
+  { code: '29', name: 'Gümüşhane', slug: 'gumushane', districts: ['Merkez', 'Kelkit', 'Şiran', 'Kürtün', 'Torul', 'Köse'] },
+  { code: '30', name: 'Hakkari', slug: 'hakkari', districts: ['Yüksekova', 'Merkez', 'Şemdinli', 'Çukurca', 'Derecik'] },
+  { code: '31', name: 'Hatay', slug: 'hatay', districts: ['Antakya', 'İskenderun', 'Defne', 'Dörtyol', 'Samandağ', 'Kırıkhan', 'Reyhanlı', 'Arsuz', 'Altınözü', 'Hassa', 'Erzin', 'Payas', 'Belen', 'Yayladağı', 'Kumlu'] },
+  { code: '32', name: 'Isparta', slug: 'isparta', districts: ['Merkez', 'Yalvaç', 'Eğirdir', 'Şarkikaraağaç', 'Gelendost', 'Keçiborlu', 'Senirkent', 'Sütçüler', 'Gönen', 'Uluborlu', 'Atabey', 'Aksu', 'Yenişarbademli'] },
+  { code: '33', name: 'Mersin', slug: 'mersin', districts: ['Tarsus', 'Toroslar', 'Akdeniz', 'Yenişehir', 'Mezitli', 'Erdemli', 'Silifke', 'Anamur', 'Mut', 'Bozyazı', 'Gülnar', 'Aydıncık', 'Çamlıyayla'] },
+  { code: '34', name: 'İstanbul', slug: 'istanbul', districts: ['Esenyurt', 'Küçükçekmece', 'Bağcılar', 'Pendik', 'Ümraniye', 'Bahçelievler', 'Sultangazi', 'Üsküdar', 'Maltepe', 'Gaziosmanpaşa', 'Kartal', 'Kadıköy', 'Esenler', 'Kağıthane', 'Fatih', 'Avcılar', 'Başakşehir', 'Ataşehir', 'Sancaktepe', 'Eyüpsultan', 'Beylikdüzü', 'Sarıyer', 'Sultanbeyli', 'Zeytinburnu', 'Güngören', 'Arnavutköy', 'Şişli', 'Bayrampaşa', 'Tuzla', 'Çekmeköy', 'Büyükçekmece', 'Beykoz', 'Beyoğlu', 'Bakırköy', 'Silivri', 'Beşiktaş', 'Çatalca', 'Şile', 'Adalar'] },
+  { code: '35', name: 'İzmir', slug: 'izmir', districts: ['Buca', 'Karabağlar', 'Bornova', 'Konak', 'Karşıyaka', 'Bayraklı', 'Çiğli', 'Torbalı', 'Menemen', 'Gaziemir', 'Ödemiş', 'Kemalpaşa', 'Bergama', 'Aliağa', 'Menderes', 'Tire', 'Balçova', 'Narlıdere', 'Urla', 'Seferihisar', 'Çeşme', 'Dikili', 'Kiraz', 'Bayındır', 'Selçuk', 'Güzelbahçe', 'Foça', 'Kınık', 'Karaburun', 'Beydağ'] },
+  { code: '36', name: 'Kars', slug: 'kars', districts: ['Merkez', 'Kağızman', 'Sarıkamış', 'Selim', 'Digor', 'Arpaçay', 'Akyaka', 'Susuz'] },
+  { code: '37', name: 'Kastamonu', slug: 'kastamonu', districts: ['Merkez', 'Tosya', 'Taşköprü', 'Cide', 'İnebolu', 'Araç', 'Devrekani', 'Bozkurt', 'Daday', 'Azdavay', 'Çatalzeytin', 'Küre', 'Doğanyurt', 'İhsangazi', 'Pınarbaşı', 'Şenpazar', 'Abana', 'Seydiler', 'Hanönü', 'Ağlı'] },
+  { code: '38', name: 'Kayseri', slug: 'kayseri', districts: ['Melikgazi', 'Kocasinan', 'Talas', 'Develi', 'Yahyalı', 'Bünyan', 'Pınarbaşı', 'Tomarza', 'Yeşilhisar', 'Sarıoğlan', 'Hacılar', 'Sarız', 'Felahiye', 'Akkışla', 'Özvatan'] },
+  { code: '39', name: 'Kırklareli', slug: 'kirklareli', districts: ['Lüleburgaz', 'Merkez', 'Babaeski', 'Vize', 'Pınarhisar', 'Demirköy', 'Pehlivanköy', 'Kofçaz'] },
+  { code: '40', name: 'Kırşehir', slug: 'kirsehir', districts: ['Merkez', 'Kaman', 'Mucur', 'Çiçekdağı', 'Akpınar', 'Boztepe', 'Akçakent'] },
+  { code: '41', name: 'Kocaeli', slug: 'kocaeli', districts: ['Gebze', 'İzmit', 'Darıca', 'Körfez', 'Gölcük', 'Derince', 'Çayırova', 'Kartepe', 'Başiskele', 'Karamürsel', 'Kandıra', 'Dilovası'] },
+  { code: '42', name: 'Konya', slug: 'konya', districts: ['Selçuklu', 'Meram', 'Karatay', 'Ereğli', 'Akşehir', 'Beyşehir', 'Cihanbeyli', 'Kulu', 'Seydişehir', 'Ilgın', 'Bozkır', 'Kadınhanı', 'Çumra', 'Sarayönü', 'Yunak', 'Doğanhisar', 'Hüyük', 'Altınekin', 'Hadim', 'Çeltik', 'Güneysınır', 'Emirgazi', 'Taşkent', 'Tuzlukçu', 'Derebucak', 'Akören', 'Ahırlı', 'Yalıhüyük'] },
+  { code: '43', name: 'Kütahya', slug: 'kutahya', districts: ['Merkez', 'Tavşanlı', 'Simav', 'Gediz', 'Emet', 'Altıntaş', 'Domaniç', 'Hisarcık', 'Aslanapa', 'Çavdarhisar', 'Şaphane', 'Pazarlar', 'Dumlupınar'] },
+  { code: '44', name: 'Malatya', slug: 'malatya', districts: ['Battalgazi', 'Yeşilyurt', 'Doğanşehir', 'Akçadağ', 'Darende', 'Hekimhan', 'Pütürge', 'Yazıhan', 'Arapgir', 'Kuluncak', 'Arguvan', 'Kale', 'Doğanyol'] },
+  { code: '45', name: 'Manisa', slug: 'manisa', districts: ['Yunusemre', 'Şehzadeler', 'Akhisar', 'Turgutlu', 'Salihli', 'Soma', 'Alaşehir', 'Saruhanlı', 'Kula', 'Demirci', 'Kırkağaç', 'Sarıgöl', 'Gördes', 'Selendi', 'Ahmetli', 'Gölmarmara', 'Köprübaşı'] },
+  { code: '46', name: 'Kahramanmaraş', slug: 'kahramanmaras', districts: ['Onikişubat', 'Dulkadiroğlu', 'Elbistan', 'Afşin', 'Türkoğlu', 'Pazarcık', 'Göksun', 'Andırın', 'Çağlayancerit', 'Nurhak', 'Ekinözü'] },
+  { code: '47', name: 'Mardin', slug: 'mardin', districts: ['Kızıltepe', 'Artuklu', 'Midyat', 'Nusaybin', 'Derik', 'Mazıdağı', 'Dargeçit', 'Savur', 'Yeşilli', 'Ömerli'] },
+  { code: '48', name: 'Muğla', slug: 'mugla', districts: ['Bodrum', 'Fethiye', 'Milas', 'Menteşe', 'Marmaris', 'Seydikemer', 'Ortaca', 'Yatağan', 'Dalaman', 'Köyceğiz', 'Ula', 'Datça', 'Kavaklıdere'] },
+  { code: '49', name: 'Muş', slug: 'mus', districts: ['Merkez', 'Bulanık', 'Malazgirt', 'Varto', 'Hasköy', 'Korkut'] },
+  { code: '50', name: 'Nevşehir', slug: 'nevsehir', districts: ['Merkez', 'Ürgüp', 'Avanos', 'Gülşehir', 'Derinkuyu', 'Kozaklı', 'Acıgöl', 'Hacıbektaş'] },
+  { code: '51', name: 'Niğde', slug: 'nigde', districts: ['Merkez', 'Bor', 'Çiftlik', 'Ulukışla', 'Altunhisar', 'Çamardı'] },
+  { code: '52', name: 'Ordu', slug: 'ordu', districts: ['Altınordu', 'Ünye', 'Fatsa', 'Kumru', 'Korgan', 'Gölköy', 'Perşembe', 'Aybastı', 'Akkuş', 'Ulubey', 'Mesudiye', 'İkizce', 'Gürgentepe', 'Çatalpınar', 'Çaybaşı', 'Kabataş', 'Kabadüz', 'Çamaş', 'Gülyalı'] },
+  { code: '53', name: 'Rize', slug: 'rize', districts: ['Merkez', 'Çayeli', 'Ardeşen', 'Pazar', 'Fındıklı', 'Güneysu', 'Kalkandere', 'İyidere', 'Derepazarı', 'Çamlıhemşin', 'İkizdere', 'Hemşin'] },
+  { code: '54', name: 'Sakarya', slug: 'sakarya', districts: ['Adapazarı', 'Serdivan', 'Akyazı', 'Erenler', 'Hendek', 'Karasu', 'Geyve', 'Arifiye', 'Sapanca', 'Pamukova', 'Ferizli', 'Kaynarca', 'Kocaali', 'Söğütlü', 'Karapürçek', 'Taraklı'] },
+  { code: '55', name: 'Samsun', slug: 'samsun', districts: ['İlkadım', 'Atakum', 'Bafra', 'Çarşamba', 'Canik', 'Vezirköprü', 'Terme', 'Tekkeköy', 'Havza', 'Alaçam', '19 Mayıs', 'Ayvacık', 'Kavak', 'Salıpazarı', 'Asarcık', 'Ladik', 'Yakakent'] },
+  { code: '56', name: 'Siirt', slug: 'siirt', districts: ['Merkez', 'Kurtalan', 'Pervari', 'Baykan', 'Şirvan', 'Eruh', 'Tillo'] },
+  { code: '57', name: 'Sinop', slug: 'sinop', districts: ['Merkez', 'Boyabat', 'Gerze', 'Ayancık', 'Durağan', 'Türkeli', 'Erfelek', 'Dikmen', 'Saraydüzü'] },
+  { code: '58', name: 'Sivas', slug: 'sivas', districts: ['Merkez', 'Şarkışla', 'Yıldızeli', 'Suşehri', 'Gemerek', 'Zara', 'Kangal', 'Gürün', 'Divriği', 'Koyulhisar', 'Altınyayla', 'Hafik', 'Ulaş', 'İmranlı', 'Akıncılar', 'Gölova', 'Doğanşar'] },
+  { code: '59', name: 'Tekirdağ', slug: 'tekirdag', districts: ['Çorlu', 'Süleymanpaşa', 'Çerkezköy', 'Kapaklı', 'Ergene', 'Malkara', 'Saray', 'Hayrabolu', 'Şarköy', 'Muratlı', 'Marmaraereğlisi'] },
+  { code: '60', name: 'Tokat', slug: 'tokat', districts: ['Merkez', 'Erbaa', 'Turhal', 'Zile', 'Niksar', 'Reşadiye', 'Almus', 'Pazar', 'Yeşilyurt', 'Artova', 'Sulusaray', 'Başçiftlik'] },
+  { code: '61', name: 'Trabzon', slug: 'trabzon', districts: ['Ortahisar', 'Akçaabat', 'Araklı', 'Of', 'Yomra', 'Arsin', 'Vakfıkebir', 'Sürmene', 'Maçka', 'Beşikdüzü', 'Çarşıbaşı', 'Tonya', 'Düzköy', 'Çaykara', 'Şalpazarı', 'Hayrat', 'Köprübaşı', 'Dernekpazarı'] },
+  { code: '62', name: 'Tunceli', slug: 'tunceli', districts: ['Merkez', 'Pertek', 'Mazgirt', 'Çemişgezek', 'Hozat', 'Ovacık', 'Pülümür', 'Nazımiye'] },
+  { code: '63', name: 'Şanlıurfa', slug: 'sanliurfa', districts: ['Eyyübiye', 'Haliliye', 'Siverek', 'Viranşehir', 'Karaköprü', 'Akçakale', 'Birecik', 'Suruç', 'Ceylanpınar', 'Harran', 'Bozova', 'Hilvan', 'Halfeti'] },
+  { code: '64', name: 'Uşak', slug: 'usak', districts: ['Merkez', 'Banaz', 'Eşme', 'Sivaslı', 'Ulubey', 'Karahallı'] },
+  { code: '65', name: 'Van', slug: 'van', districts: ['İpekyolu', 'Tuşba', 'Erciş', 'Edremit', 'Özalp', 'Çaldıran', 'Muradiye', 'Başkale', 'Gürpınar', 'Gevaş', 'Saray', 'Çatak', 'Bahçesaray'] },
+  { code: '66', name: 'Yozgat', slug: 'yozgat', districts: ['Merkez', 'Sorgun', 'Akdağmadeni', 'Yerköy', 'Boğazlıyan', 'Sarıkaya', 'Çekerek', 'Şefaatli', 'Saraykent', 'Çayıralan', 'Kadışehri', 'Aydıncık', 'Yenifakılı', 'Çandır'] },
+  { code: '67', name: 'Zonguldak', slug: 'zonguldak', districts: ['Kdz. Ereğli', 'Merkez', 'Çaycuma', 'Devrek', 'Kozlu', 'Alaplı', 'Kilimli', 'Gökçebey'] },
+  { code: '68', name: 'Aksaray', slug: 'aksaray', districts: ['Merkez', 'Ortaköy', 'Eskil', 'Gülağaç', 'Güzelyurt', 'Ağaçören', 'Sarıyahşi', 'Sultanhanı'] },
+  { code: '69', name: 'Bayburt', slug: 'bayburt', districts: ['Merkez', 'Demirözü', 'Aydıntepe'] },
+  { code: '70', name: 'Karaman', slug: 'karaman', districts: ['Merkez', 'Ermenek', 'Sarıveliler', 'Ayrancı', 'Kazımkarabekir', 'Başyayla'] },
+  { code: '71', name: 'Kırıkkale', slug: 'kirikkale', districts: ['Merkez', 'Yahşihan', 'Keskin', 'Delice', 'Sulakyurt', 'Bahşılı', 'Balışeyh', 'Karakeçili', 'Çelebi'] },
+  { code: '72', name: 'Batman', slug: 'batman', districts: ['Merkez', 'Kozluk', 'Sason', 'Beşiri', 'Gercüş', 'Hasankeyf'] },
+  { code: '73', name: 'Şırnak', slug: 'sirnak', districts: ['Cizre', 'Silopi', 'Merkez', 'İdil', 'Uludere', 'Beytüşşebap', 'Güçlükonak'] },
+  { code: '74', name: 'Bartın', slug: 'bartin', districts: ['Merkez', 'Amasra', 'Ulus', 'Kurucaşile'] },
+  { code: '75', name: 'Ardahan', slug: 'ardahan', districts: ['Merkez', 'Göle', 'Çıldır', 'Hanak', 'Posof', 'Damal'] },
+  { code: '76', name: 'Iğdır', slug: 'igdir', districts: ['Merkez', 'Tuzluca', 'Aralık', 'Karakoyunlu'] },
+  { code: '77', name: 'Yalova', slug: 'yalova', districts: ['Merkez', 'Çiftlikköy', 'Çınarcık', 'Altınova', 'Armutlu', 'Termal'] },
+  { code: '78', name: 'Karabük', slug: 'karabuk', districts: ['Merkez', 'Safranbolu', 'Yenice', 'Eskipazar', 'Eflani', 'Ovacık'] },
+  { code: '79', name: 'Kilis', slug: 'kilis', districts: ['Merkez', 'Musabeyli', 'Elbeyli', 'Polateli'] },
+  { code: '80', name: 'Osmaniye', slug: 'osmaniye', districts: ['Merkez', 'Kadirli', 'Düziçi', 'Bahçe', 'Toprakkale', 'Sumbas', 'Hasanbeyli'] },
+  { code: '81', name: 'Düzce', slug: 'duzce', districts: ['Merkez', 'Akçakoca', 'Gölyaka', 'Kaynaşlı', 'Çilimli', 'Yığılca', 'Beyköy', 'Gümüşova', 'Cumayeri'] }
 ];
 
 /**
@@ -686,7 +686,7 @@ export function searchWithTypoTolerance(query: string): KeywordEntry[] {
 
   const normalizedQuery = normalizeText(query);
 
-  return SEO_KEYWORD_MATRIX.filter((item) => {
+  const matched = SEO_KEYWORD_MATRIX.filter((item) => {
     // 1. Doğrudan terim eşleşmesi
     if (normalizeText(item.primaryTerm).includes(normalizedQuery)) return true;
 
@@ -704,6 +704,29 @@ export function searchWithTypoTolerance(query: string): KeywordEntry[] {
 
     return false;
   });
+
+  // İl veya ilçe eşleşmesi kontrolü
+  const matchedProvince = TURKEY_PROVINCES.find(prov => 
+    normalizeText(prov.name).includes(normalizedQuery) || 
+    prov.districts.some(dist => normalizeText(dist).includes(normalizedQuery)) ||
+    prov.code === normalizedQuery
+  );
+
+  if (matchedProvince && !matched.some(m => m.cityCode === matchedProvince.code)) {
+    matched.push({
+      id: `prov-${matchedProvince.code}`,
+      category: 'il',
+      primaryTerm: `${matchedProvince.name} Engelli Hizmetleri, SYDV & Hakem Hastaneler (${matchedProvince.code})`,
+      definition: `${matchedProvince.name} ili ve ${matchedProvince.districts.join(', ')} ilçeleri için engelli sağlık heyeti, kaymakamlık SYDV ve sosyal hizmet birimleri.`,
+      alternatives: matchedProvince.districts.map(d => `${matchedProvince.name} ${d} engelli yardımları`),
+      typos: [normalizeText(matchedProvince.name), `${normalizeText(matchedProvince.name)} engeli`],
+      targetUrl: '/hesaplama',
+      relatedInstitutions: [`${matchedProvince.name} İl Sağlık Müdürlüğü`, `${matchedProvince.name} SYDV`],
+      cityCode: matchedProvince.code
+    });
+  }
+
+  return matched;
 }
 
 /**
