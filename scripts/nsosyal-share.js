@@ -1,33 +1,44 @@
 /**
  * NSosyal (nsosyal.com) Otomatik Gönderi Paylaşım Scripti
  * 
- * Bu script, GitHub Actions Ubuntu ortamında Google Chrome / Chromium ve xvfb sanal ekranını
- * kullanarak Cloudflare Turnstile korumalarını akıllıca aşar, NSosyal hesabına giriş yapar 
- * ve Lexical editörde ~500 karakterlik güncelleme duyurusunu yayınlar.
+ * Bu script, GitHub Actions Ubuntu ortamında Stealth eklentisi (playwright-extra + puppeteer-extra-plugin-stealth),
+ * xvfb sanal ekranı ve akıllı Cloudflare Turnstile çözücü ile korumaları aşarak 
+ * NSosyal hesabına giriş yapar ve ~500 karakterlik güncelleme duyurusunu yayınlar.
  */
 
-const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
+
+// Stealth desteği ile Playwright'ı yükle
+let chromium;
+try {
+  const { chromium: extraChromium } = require('playwright-extra');
+  const stealthPlugin = require('puppeteer-extra-plugin-stealth')();
+  extraChromium.use(stealthPlugin);
+  chromium = extraChromium;
+  console.log('🛡️ playwright-extra + stealth koruma kalkanı devrede.');
+} catch {
+  chromium = require('playwright').chromium;
+  console.log('ℹ️ Standart playwright motoru devrede.');
+}
 
 // =============================================================================
 // KONFİGÜRASYON VE SEÇİCİLER (DOM Selectors)
 // =============================================================================
 const CONFIG = {
   baseUrl: 'https://nsosyal.com',
-  trendingUrl: 'https://nsosyal.com/explore/trending',
   loginUrl: 'https://nsosyal.com/login',
   
   navigationTimeout: 90000,
   actionTimeout: 35000,
-  typingDelayMin: 25,
-  typingDelayMax: 60,
+  typingDelayMin: 30,
+  typingDelayMax: 65,
   
   selectors: {
-    // 1. Giriş Bağlantısı (Ana Sayfa veya Explore)
+    // 1. Giriş Bağlantısı (Ana Sayfa / Keşfet)
     exploreLoginLink: 'a[href="/login"], a:has-text("Giriş Yap"), a.bg-blue-6',
     
-    // 2. Giriş Sayfası Elemanları
+    // 2. Giriş Sayfası Form Elemanları
     usernameInputList: [
       'input[name="username"]',
       'input[placeholder*="Kullanıcı adı" i]',
@@ -54,7 +65,7 @@ const CONFIG = {
       'form button'
     ],
 
-    // 3. Post Editörü Elemanları
+    // 3. Post / Gönderi Editörü Elemanları
     postEditorList: [
       'div[contenteditable="true"][id="main-post-editor"]',
       'div[contenteditable="true"][data-lexical-editor="true"]',
@@ -114,48 +125,58 @@ Türkiye'nin %100 erişilebilir engelli topluluğu ve mevzuat portalında yeni g
 }
 
 /**
- * Turnstile Iframe Tespiti ve Koordinat Tıklaması
+ * Cloudflare Turnstile ve Güvenlik Testlerini Tespit Edip Tıklayan Fonksiyon
  */
-async function clickTurnstileIfPresent(page) {
-  try {
-    const frames = page.locator('iframe[src*="cloudflare"], iframe[src*="turnstile"], iframe[src*="challenge"], iframe[title*="Cloudflare"], iframe[title*="challenge"]');
-    const count = await frames.count();
+async function solveTurnstileChallenges(page) {
+  let clicked = false;
 
-    for (let i = 0; i < count; i++) {
-      const frameLocator = frames.nth(i);
-      const isVisible = await frameLocator.isVisible().catch(() => false);
-      if (isVisible) {
-        const box = await frameLocator.boundingBox();
-        if (box && box.width > 0 && box.height > 0) {
-          console.log(`🎯 Cloudflare Turnstile tespit edildi (${box.width}x${box.height}), onay kutucuğuna tıklanıyor...`);
-          // Gerçek fare hareketi ve sol tıklama
-          const targetX = Math.round(box.x + Math.min(28, box.width / 4));
-          const targetY = Math.round(box.y + box.height / 2);
-          await page.mouse.move(box.x, box.y, { steps: 5 });
-          await sleep(200);
-          await page.mouse.move(targetX, targetY, { steps: 7 });
-          await sleep(300);
-          await page.mouse.click(targetX, targetY);
-          console.log('✅ Turnstile onay kutucuğu tıklandı.');
-          return true;
+  // 1. YÖNTEM: Sayfadaki tüm frame'leri (iframe) gez
+  try {
+    for (const frame of page.frames()) {
+      const frameUrl = frame.url();
+      if (frameUrl.includes('cloudflare.com') || frameUrl.includes('turnstile') || frameUrl.includes('challenge')) {
+        const checkbox = frame.locator('input[type="checkbox"], .ctp-checkbox-label, .mark, label, #challenge-stage').first();
+        if (await checkbox.isVisible({ timeout: 1500 }).catch(() => false)) {
+          console.log(`🎯 Turnstile iframe'inde onay kutucuğu bulundu (${frameUrl}), tıklanıyor...`);
+          await checkbox.click({ force: true }).catch(() => {});
+          clicked = true;
+          break;
         }
       }
     }
-  } catch {
-    // Hata durumunda devam et
+  } catch {}
+
+  // 2. YÖNTEM: Ana sayfadaki #challenge-stage veya Turnstile div'inin koordinatına tıkla
+  if (!clicked) {
+    try {
+      const stage = page.locator('#challenge-stage, #turnstile-wrapper, .cf-turnstile, [data-sitekey]').first();
+      if (await stage.isVisible({ timeout: 1500 }).catch(() => false)) {
+        const box = await stage.boundingBox();
+        if (box && box.width > 0) {
+          const clickX = Math.round(box.x + Math.min(30, box.width / 4));
+          const clickY = Math.round(box.y + box.height / 2);
+          console.log(`🎯 Ana sayfadaki Turnstile alanı koordinatına (${clickX}, ${clickY}) tıklanıyor...`);
+          await page.mouse.move(clickX, clickY, { steps: 5 });
+          await sleep(200);
+          await page.mouse.click(clickX, clickY);
+          clicked = true;
+        }
+      }
+    } catch {}
   }
-  return false;
+
+  return clicked;
 }
 
 /**
- * Cloudflare "Bir dakika lütfen..." Doğrulamasını Bekleme ve Çözme
+ * Cloudflare Doğrulama Ekranının ("Bir dakika lütfen...") Aşılmasını Bekleyen Döngü
  */
-async function waitForCloudflareClearance(page, maxWaitMs = 45000) {
+async function waitForCloudflareClearance(page, maxWaitMs = 40000) {
   const startTime = Date.now();
-  let attempt = 0;
+  let checkCount = 0;
 
   while (Date.now() - startTime < maxWaitMs) {
-    attempt++;
+    checkCount++;
     const title = (await page.title().catch(() => '')).trim();
 
     const isChallenge = 
@@ -165,16 +186,16 @@ async function waitForCloudflareClearance(page, maxWaitMs = 45000) {
       title.includes('Cloudflare');
 
     if (isChallenge) {
-      console.log(`⏳ [${attempt}] Cloudflare doğrulama ekranı bekleniyor ("${title}")...`);
+      console.log(`⏳ [${checkCount}] Cloudflare doğrulama ekranı tespit edildi ("${title}"). Aşılması bekleniyor...`);
       
-      // Turnstile iframe'ini tara ve tıkla
-      await clickTurnstileIfPresent(page);
+      // Turnstile kutucuğunu tıkla
+      await solveTurnstileChallenges(page);
 
-      // Rastgele insansı fare gezintisi
-      await page.mouse.move(getRandomInt(200, 700), getRandomInt(150, 450), { steps: 6 }).catch(() => {});
+      // Rastgele fare hareketi
+      await page.mouse.move(getRandomInt(200, 600), getRandomInt(150, 450), { steps: 5 }).catch(() => {});
       await sleep(2500);
     } else {
-      console.log(`🎉 Cloudflare aşımı başarılı! Sayfa Başlığı: "${title}" | URL: ${page.url()}`);
+      console.log(`🎉 Cloudflare aşımı tamamlandı! Başlık: "${title}" | URL: ${page.url()}`);
       return true;
     }
   }
@@ -184,7 +205,7 @@ async function waitForCloudflareClearance(page, maxWaitMs = 45000) {
 }
 
 /**
- * Liste İçerisinden İlk Görünür Elemanı Bulan Yardımcı
+ * Verilen listedeki seçicilerden ilk görünür olanı bulur
  */
 async function findFirstVisibleElement(page, selectorList, timeout = 25000) {
   const startTime = Date.now();
@@ -196,12 +217,10 @@ async function findFirstVisibleElement(page, selectorList, timeout = 25000) {
         if (isVisible) {
           return { locator, selector };
         }
-      } catch {
-        // Sıradaki seçiciye geç
-      }
+      } catch {}
     }
-    // Turnstile kutucuğu açılmışsa tıkla
-    await clickTurnstileIfPresent(page);
+    // Turnstile belirirse tıkla
+    await solveTurnstileChallenges(page);
     await sleep(600);
   }
   return null;
@@ -214,8 +233,8 @@ async function main() {
   const customMessage = process.env.POST_MESSAGE;
   const deployUrl = process.env.DEPLOYMENT_URL || 'https://engelsizforum.com';
 
-  if (!username || !password) {
-    console.error('❌ HATA: NSOSYAL_EMAIL veya NSOSYAL_PASSWORD tanımlanmamış!');
+  if (!sessionCookie && (!username || !password)) {
+    console.error('❌ HATA: Giriş için NSOSYAL_SESSION_COOKIE veya (NSOSYAL_EMAIL + NSOSYAL_PASSWORD) tanımlanmalıdır!');
     process.exit(1);
   }
 
@@ -224,58 +243,117 @@ async function main() {
   console.log('🌐 NSosyal Otomasyonu başlatılıyor...');
   console.log(`📊 Metin Karakter Sayısı: ${postContent.length} karakter`);
 
-  // Google Chrome veya Chromium başlatma
+  // Automation bayrağı kaldırılmış tarayıcı başlatma
   let browser;
-  const launchArgs = [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-blink-features=AutomationControlled',
-    '--start-maximized',
-    '--window-size=1366,768'
-  ];
+  const browserOptions = {
+    headless: false,
+    ignoreDefaultArgs: ['--enable-automation'],
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-blink-features=AutomationControlled',
+      '--disable-infobars',
+      '--window-size=1366,768'
+    ]
+  };
 
   try {
-    browser = await chromium.launch({
-      channel: 'chrome',
-      headless: false,
-      args: launchArgs
-    });
+    browser = await chromium.launch({ ...browserOptions, channel: 'chrome' });
     console.log('🚀 Sistemdeki resmi Google Chrome tarayıcısı başlatıldı.');
   } catch {
-    browser = await chromium.launch({
-      headless: false,
-      args: launchArgs
-    });
+    browser = await chromium.launch(browserOptions);
     console.log('🚀 Standart Chromium tarayıcısı başlatıldı.');
   }
 
-  // Gerçek tarayıcı kimliğini bozmamak için native user-agent kullanılır
   const context = await browser.newContext({
     viewport: { width: 1366, height: 768 },
     locale: 'tr-TR',
     timezoneId: 'Europe/Istanbul'
   });
 
-  // navigator.webdriver gizleme
+  // navigator.webdriver temizleme
   await context.addInitScript(() => {
-    Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+    delete Object.getPrototypeOf(navigator).webdriver;
   });
 
-  // Eğer secret olarak session cookie tanımlıysa doğrudan enjekte et
+  // Eğer secret olarak session cookie veya localStorage JSON tanımlıysa doğrudan enjekte et
   if (sessionCookie) {
-    try {
-      console.log('🍪 Tanımlı NSosyal oturum çerezi enjekte ediliyor...');
-      await context.addCookies([
-        {
-          name: '_session_id',
-          value: sessionCookie,
-          domain: '.nsosyal.com',
-          path: '/'
+    // 1. Durum: LocalStorage JSON dump verilmişse (copy(JSON.stringify(localStorage)))
+    if (sessionCookie.trim().startsWith('{') && sessionCookie.trim().endsWith('}')) {
+      try {
+        const storageItems = JSON.parse(sessionCookie);
+        const keys = Object.keys(storageItems);
+        console.log(`📦 ${keys.length} adet LocalStorage anahtarı tespit edildi (${keys.slice(0, 5).join(', ')}...), oturuma enjekte ediliyor...`);
+        await context.addInitScript((items) => {
+          for (const [key, val] of Object.entries(items)) {
+            try {
+              window.localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
+            } catch (err) {}
+          }
+        }, storageItems);
+        console.log('✅ LocalStorage anahtarları tarayıcı oturumuna başarıyla bağlandı.');
+      } catch (jsonErr) {
+        console.warn('LocalStorage JSON ayrıştırma uyarısı:', jsonErr.message);
+      }
+    } else {
+      // 2. Durum: Çerez (Cookie) formatı
+      try {
+        console.log('🍪 Tanımlı NSosyal oturum çerezi enjekte ediliyor...');
+        const cookieList = [];
+        let rawCookies = sessionCookie.trim();
+        if (rawCookies.toLowerCase().startsWith('cookie:')) {
+          rawCookies = rawCookies.substring(7).trim();
         }
-      ]);
-    } catch (cookieErr) {
-      console.warn('Çerez ekleme uyarısı:', cookieErr.message);
+
+        let detectedAccessToken = null;
+
+        if (rawCookies.includes('=')) {
+          // "name1=val1; name2=val2" formatı (Request Header Cookie kopyası)
+          const pairs = rawCookies.split(';');
+          for (const pair of pairs) {
+            const [k, ...v] = pair.trim().split('=');
+            if (k && v.length > 0) {
+              const name = k.trim();
+              const val = v.join('=').trim();
+              if (name === 'access_token') {
+                detectedAccessToken = val;
+              }
+              cookieList.push({
+                name,
+                value: val,
+                domain: '.nsosyal.com',
+                path: '/'
+              });
+            }
+          }
+        } else {
+          // Tekil değer verilmişse yaygın oturum çerez adlarının tümüne ekle
+          detectedAccessToken = rawCookies.trim();
+          ['access_token', 'token', '_session_id', 'session', 'auth_token', 'next-auth.session-token', 'remember_user_token'].forEach(cookieName => {
+            cookieList.push({
+              name: cookieName,
+              value: rawCookies.trim(),
+              domain: '.nsosyal.com',
+              path: '/'
+            });
+          });
+        }
+        await context.addCookies(cookieList);
+        console.log(`✅ ${cookieList.length} adet oturum çerezi (.nsosyal.com) tarayıcıya başarıyla eklendi.`);
+
+        if (detectedAccessToken) {
+          await context.addInitScript((token) => {
+            try {
+              window.localStorage.setItem('access_token', token);
+              window.localStorage.setItem('token', token);
+            } catch (err) {}
+          }, detectedAccessToken);
+          console.log('🔑 access_token ayrıca localStorage içine de bağlandı.');
+        }
+      } catch (cookieErr) {
+        console.warn('Çerez uyarısı:', cookieErr.message);
+      }
     }
   }
 
@@ -290,32 +368,31 @@ async function main() {
       timeout: CONFIG.navigationTimeout 
     });
 
-    await sleep(getRandomInt(2500, 3500));
+    await sleep(2500);
     await waitForCloudflareClearance(page);
 
     console.log(`📍 Mevcut URL: ${page.url()} | Başlık: "${await page.title()}"`);
 
-    // 2. ADIM: Ana Sayfadaki "Giriş Yap" Butonunu Bul ve Tıkla
+    // Oturum zaten açık mı kontrol et
     let isAlreadyLoggedIn = false;
-
-    // Önce post editörü zaten var mı (oturum açık mı) kontrol et
     const existingEditor = await findFirstVisibleElement(page, CONFIG.selectors.postEditorList, 3000);
     if (existingEditor) {
-      console.log('✨ Zaten oturum açılmış durumda, doğrudan gönderi adımına geçiliyor!');
+      console.log('✨ Zaten oturum açık, doğrudan gönderi oluşturuluyor!');
       isAlreadyLoggedIn = true;
     }
 
     if (!isAlreadyLoggedIn) {
+      // 2. ADIM: Sayfadaki "Giriş Yap" Butonunu Bul ve Tıkla
       console.log('🔍 "Giriş Yap" butonu aranıyor...');
-      const loginLinkMatch = await findFirstVisibleElement(page, [CONFIG.selectors.exploreLoginLink], 8000);
+      const loginLinkMatch = await findFirstVisibleElement(page, [CONFIG.selectors.exploreLoginLink], 6000);
 
       if (loginLinkMatch) {
-        console.log('👆 "Giriş Yap" butonuna tıklandı, yönlendiriliyor...');
+        console.log('👆 "Giriş Yap" butonuna tıklandı, giriş formu bekleniyor...');
         await loginLinkMatch.locator.click();
-        await sleep(getRandomInt(2000, 3000));
+        await sleep(2000);
         await waitForCloudflareClearance(page);
       } else {
-        console.log(`🔗 Doğrudan giriş sayfasına yönlendiriliyor: ${CONFIG.loginUrl}`);
+        console.log(`🔗 Doğrudan giriş rotasına gidiliyor: ${CONFIG.loginUrl}`);
         await page.goto(CONFIG.loginUrl, { 
           waitUntil: 'domcontentloaded', 
           timeout: CONFIG.navigationTimeout,
@@ -325,9 +402,9 @@ async function main() {
         await waitForCloudflareClearance(page);
       }
 
-      console.log(`📍 Giriş Sayfası URL: ${page.url()}`);
+      console.log(`📍 Form Ekranı URL: ${page.url()}`);
 
-      // 3. ADIM: Form Alanlarını Doldur
+      // 3. ADIM: Kullanıcı Adı ve Şifre Alanlarını Doldur
       console.log('🔑 Kullanıcı adı / E-posta alanı aranıyor...');
       const usernameMatch = await findFirstVisibleElement(page, CONFIG.selectors.usernameInputList, 30000);
 
@@ -362,7 +439,7 @@ async function main() {
 
       await sleep(getRandomInt(1000, 1600));
 
-      // 4. ADIM: Giriş Yap Butonuna Tıkla
+      // 4. ADIM: Giriş Butonuna Tıkla
       console.log('🚀 "Hesabına Giriş Yap" butonuna tıklanıyor...');
       const loginButtonMatch = await findFirstVisibleElement(page, CONFIG.selectors.loginSubmitButtonList, 10000);
 
@@ -379,12 +456,12 @@ async function main() {
       if (page.url().includes('/login')) {
         console.log('🔄 Ana akışa yönlendiriliyor...');
         await page.goto(CONFIG.baseUrl, { waitUntil: 'domcontentloaded', timeout: CONFIG.navigationTimeout });
-        await sleep(getRandomInt(3000, 4500));
+        await sleep(3000);
         await waitForCloudflareClearance(page);
       }
     }
 
-    console.log(`📍 Gönderi Öncesi Güncel URL: ${page.url()}`);
+    console.log(`📍 Gönderi Öncesi URL: ${page.url()}`);
 
     // 5. ADIM: Post / Lexical Editörünü Bul
     console.log('✍️ Gönderi paylaşım editörü aranıyor...');
@@ -398,12 +475,13 @@ async function main() {
     await editorMatch.locator.click();
     await sleep(getRandomInt(1000, 1800));
 
-    // 6. ADIM: Metni Yaz ve Yayınla
+    // 6. ADIM: Güncelleme Metnini Yaz
     console.log('📝 Güncelleme metni editöre yazılıyor...');
     await page.keyboard.type(postContent, { delay: getRandomInt(15, 30) });
 
     await sleep(getRandomInt(2500, 3500));
 
+    // 7. ADIM: Paylaşım Butonuna Tıkla
     console.log('📤 "Gönder" butonu aranıyor...');
     const submitBtnMatch = await findFirstVisibleElement(page, CONFIG.selectors.postSubmitButtonList, 15000);
 

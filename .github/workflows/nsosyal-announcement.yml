@@ -26,13 +26,14 @@ jobs:
 
       - name: 📦 Playwright ve Tarayıcı Bağımlılıklarını Kur
         run: |
-          npm install playwright
+          npm install playwright playwright-extra puppeteer-extra-plugin-stealth
           npx playwright install --with-deps chromium
 
       - name: 🚀 NSosyal Üzerinde Güncelleme Gönderisini Paylaş (~500 Karakter)
         env:
           NSOSYAL_EMAIL: ${{ secrets.NSOSYAL_EMAIL }}
           NSOSYAL_PASSWORD: ${{ secrets.NSOSYAL_PASSWORD }}
+          NSOSYAL_SESSION_COOKIE: ${{ secrets.NSOSYAL_SESSION_COOKIE }}
           DEPLOYMENT_URL: ${{ github.event.deployment_status.target_url || 'https://engelsizforum.com' }}
         run: |
           xvfb-run --auto-servernum --server-args="-screen 0 1366x768x24" node scripts/nsosyal-share.js
