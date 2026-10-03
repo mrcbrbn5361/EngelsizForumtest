@@ -1,9 +1,9 @@
 /**
  * NSosyal (nsosyal.com) Otomatik Gönderi Paylaşım Scripti
  * 
- * Bu script, Playwright kullanarak NSosyal hesabına (nsosyal.com) güvenli ve
- * bot korumalarına takılmayacak gelişmiş anti-bot (stealth) argümanları ve insan benzeri 
- * gecikmelerle giriş yapar; Lexical tabanlı editörde güncelleme duyurusunu paylaşır.
+ * Bu script, Playwright ve xvfb (X Virtual Framebuffer) kullanarak Cloudflare Turnstile 
+ * ve "Bir dakika lütfen..." doğrulama ekranlarını otomatik aşar, NSosyal hesabına giriş yapar 
+ * ve Lexical editörde ~500 karakterlik güncelleme duyurusunu paylaşır.
  */
 
 const { chromium } = require('playwright');
@@ -19,10 +19,10 @@ const CONFIG = {
   loginUrl: 'https://nsosyal.com/login',
   
   // Zaman aşımları ve bekleme aralıkları (ms)
-  navigationTimeout: 60000,
-  actionTimeout: 25000,
-  typingDelayMin: 30,
-  typingDelayMax: 65,
+  navigationTimeout: 90000,
+  actionTimeout: 30000,
+  typingDelayMin: 35,
+  typingDelayMax: 70,
   
   selectors: {
     // 1. Giriş Yönlendirmesi
@@ -79,7 +79,7 @@ const CONFIG = {
 };
 
 /**
- * Yardımcı Bekleme Fonksiyonları (Anti-Bot)
+ * Yardımcı Bekleme Fonksiyonu
  */
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -118,9 +118,57 @@ Türkiye'nin %100 erişilebilir engelli topluluğu ve mevzuat portalında yeni g
 }
 
 /**
+ * Cloudflare / DDoS-Guard "Bir dakika lütfen..." Doğrulama Ekranını Bekleme ve Aşma
+ */
+async function handleCloudflareChallenge(page, maxWaitMs = 35000) {
+  const startTime = Date.now();
+  
+  while (Date.now() - startTime < maxWaitMs) {
+    const title = (await page.title().catch(() => '')).trim();
+    const url = page.url();
+
+    const isChallenge = 
+      title.includes('Bir dakika lütfen') || 
+      title.includes('Just a moment') || 
+      title.includes('Attention Required') || 
+      title.includes('Cloudflare');
+
+    if (isChallenge) {
+      console.log(`🛡️ Cloudflare/Turnstile doğrulaması algılandı ("${title}"). Aşılması bekleniyor...`);
+      
+      // Fare hareketi simüle et
+      await page.mouse.move(getRandomInt(100, 500), getRandomInt(100, 400)).catch(() => {});
+      
+      // Turnstile iframe veya checkbox'ı varsa tıkla
+      try {
+        const cfFrames = page.frames();
+        for (const frame of cfFrames) {
+          const frameUrl = frame.url();
+          if (frameUrl.includes('cloudflare') || frameUrl.includes('turnstile') || frameUrl.includes('challenges')) {
+            const checkbox = frame.locator('input[type="checkbox"], .ctp-checkbox-label, #challenge-stage').first();
+            if (await checkbox.isVisible({ timeout: 1500 }).catch(() => false)) {
+              console.log('👆 Cloudflare Turnstile kutucuğuna tıklandı...');
+              await checkbox.click({ force: true }).catch(() => {});
+            }
+          }
+        }
+      } catch {}
+
+      await sleep(2500);
+    } else {
+      console.log(`✅ Doğrulama geçildi! Güncel Sayfa Başlığı: "${title}" | URL: ${url}`);
+      return true;
+    }
+  }
+
+  console.warn('⚠️ Cloudflare bekleme süresi doldu, sayfa akışına devam ediliyor...');
+  return false;
+}
+
+/**
  * Birden fazla seçici arasından ilk görünür olanı bulan yardımcı fonksiyon
  */
-async function findFirstVisibleElement(page, selectorList, timeout = 15000) {
+async function findFirstVisibleElement(page, selectorList, timeout = 20000) {
   const startTime = Date.now();
   while (Date.now() - startTime < timeout) {
     for (const selector of selectorList) {
@@ -131,10 +179,10 @@ async function findFirstVisibleElement(page, selectorList, timeout = 15000) {
           return { locator, selector };
         }
       } catch {
-        // Sonraki seçiciyi dene
+        // Sıradaki seçiciyi dene
       }
     }
-    await sleep(500);
+    await sleep(600);
   }
   return null;
 }
@@ -146,7 +194,7 @@ async function main() {
   const deployUrl = process.env.DEPLOYMENT_URL || 'https://engelsizforum.com';
 
   if (!username || !password) {
-    console.error('❌ HATA: NSOSYAL_EMAIL veya NSOSYAL_PASSWORD çevre değişkeni (Secret) bulunamadı!');
+    console.error('❌ HATA: NSOSYAL_EMAIL veya NSOSYAL_PASSWORD Secret tanımı bulunamadı!');
     process.exit(1);
   }
 
@@ -156,16 +204,15 @@ async function main() {
   console.log(`📊 Metin Karakter Sayısı: ${postContent.length} karakter`);
   console.log(`📝 Paylaşılacak Mesaj:\n---\n${postContent}\n---`);
 
-  // Stealth & Anti-Bot argümanları ile Chromium başlat
+  // Xvfb sanal ekranı altında gerçek ekranlı (headless: false) tarayıcı başlatılır
   const browser = await chromium.launch({
-    headless: true,
+    headless: false,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-blink-features=AutomationControlled',
-      '--disable-web-security',
-      '--disable-features=IsolateOrigins,site-per-process',
+      '--start-maximized',
       '--window-size=1366,768'
     ]
   });
@@ -183,7 +230,7 @@ async function main() {
     }
   });
 
-  // navigator.webdriver gizleme (Anti-Bot Bypass)
+  // navigator.webdriver gizleme
   await context.addInitScript(() => {
     Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
     window.chrome = { runtime: {} };
@@ -193,47 +240,50 @@ async function main() {
   page.setDefaultTimeout(CONFIG.actionTimeout);
 
   try {
-    // 1. ADIM: Doğrudan Giriş Sayfasına Git
+    // 1. ADIM: NSosyal Giriş Sayfasına Git
     console.log(`🔗 NSosyal giriş sayfasına gidiliyor: ${CONFIG.loginUrl}`);
     await page.goto(CONFIG.loginUrl, { 
       waitUntil: 'domcontentloaded', 
       timeout: CONFIG.navigationTimeout 
     });
 
-    await sleep(getRandomInt(2500, 4000));
+    await sleep(2000);
 
-    console.log(`📍 Mevcut URL: ${page.url()}`);
-    console.log(`📄 Sayfa Başlığı: ${await page.title()}`);
+    // Cloudflare doğrulamasını kontrol et ve geçmesini bekle
+    await handleCloudflareChallenge(page);
 
-    // Eğer /login sayfasına yönlenmediyse veya /explore/trending'de ise Giriş Yap bağlantısını ara
+    console.log(`📍 Doğrulama Sonrası URL: ${page.url()}`);
+
+    // Eğer /login harici bir sayfaya düşerse Giriş Yap linkini ara
     if (!page.url().includes('/login')) {
-      console.log('🔍 /login harici bir sayfada, "Giriş Yap" butonu aranıyor...');
+      console.log('🔍 /login harici sayfada bulunuldu, "Giriş Yap" butonu aranıyor...');
       const loginLink = page.locator(CONFIG.selectors.exploreLoginLink).first();
       const hasLoginLink = await loginLink.isVisible({ timeout: 5000 }).catch(() => false);
 
       if (hasLoginLink) {
-        console.log('👆 "Giriş Yap" butonuna tıklandı.');
+        console.log('👆 "Giriş Yap" bağlantısına tıklandı.');
         await loginLink.click();
         await sleep(getRandomInt(2000, 3500));
+        await handleCloudflareChallenge(page);
       } else {
-        console.log('🔗 Tekrar doğrudan /login rotasına zorlanıyor...');
+        console.log('🔗 Doğrudan /login rotasına yönlendiriliyor...');
         await page.goto(CONFIG.loginUrl, { waitUntil: 'domcontentloaded', timeout: CONFIG.navigationTimeout });
-        await sleep(getRandomInt(2000, 3000));
+        await handleCloudflareChallenge(page);
       }
     }
 
-    // 2. ADIM: Kullanıcı Adı ve Şifre Alanlarını Doldur
+    // 2. ADIM: Form Alanlarını Doldur
     console.log('🔑 Kullanıcı adı / E-posta alanı aranıyor...');
-    const usernameMatch = await findFirstVisibleElement(page, CONFIG.selectors.usernameInputList, 20000);
+    const usernameMatch = await findFirstVisibleElement(page, CONFIG.selectors.usernameInputList, 25000);
     
     if (!usernameMatch) {
-      throw new Error(`Kullanıcı adı alanı bulunamadı. Sayfa içeriği ve URL: ${page.url()}`);
+      throw new Error(`Kullanıcı adı alanı bulunamadı. Sayfa Başlığı: "${await page.title()}" | URL: ${page.url()}`);
     }
 
     console.log(`✅ Kullanıcı adı alanı bulundu (Seçici: ${usernameMatch.selector})`);
     await usernameMatch.locator.click();
-    await sleep(getRandomInt(400, 800));
-    await usernameMatch.locator.fill(''); // Temizle
+    await sleep(getRandomInt(400, 700));
+    await usernameMatch.locator.fill('');
     await usernameMatch.locator.pressSequentially(username, { 
       delay: getRandomInt(CONFIG.typingDelayMin, CONFIG.typingDelayMax) 
     });
@@ -241,15 +291,15 @@ async function main() {
     await sleep(getRandomInt(700, 1200));
 
     console.log('🔑 Şifre alanı aranıyor...');
-    const passwordMatch = await findFirstVisibleElement(page, CONFIG.selectors.passwordInputList, 10000);
+    const passwordMatch = await findFirstVisibleElement(page, CONFIG.selectors.passwordInputList, 15000);
     
     if (!passwordMatch) {
-      throw new Error('Şifre alanı sayfada bulunamadı.');
+      throw new Error('Şifre alanı bulunamadı.');
     }
 
     console.log(`✅ Şifre alanı bulundu (Seçici: ${passwordMatch.selector})`);
     await passwordMatch.locator.click();
-    await sleep(getRandomInt(400, 800));
+    await sleep(getRandomInt(400, 700));
     await passwordMatch.locator.fill('');
     await passwordMatch.locator.pressSequentially(password, { 
       delay: getRandomInt(CONFIG.typingDelayMin, CONFIG.typingDelayMax) 
@@ -267,21 +317,22 @@ async function main() {
 
     await loginButtonMatch.locator.click();
 
-    console.log('⏳ Oturum açılması ve ana akışın yüklenmesi bekleniyor...');
+    console.log('⏳ Oturum açılması ve akışın yüklenmesi bekleniyor...');
     await sleep(getRandomInt(5000, 7000));
+    await handleCloudflareChallenge(page);
 
-    // Giriş sonrası eğer hala /login sayfasında kalmışsa ana sayfaya geç
     if (page.url().includes('/login')) {
-      console.log('🔄 Ana sayfaya yönlendiriliyor...');
+      console.log('🔄 Ana sayfaya geçiliyor...');
       await page.goto(CONFIG.baseUrl, { waitUntil: 'domcontentloaded', timeout: CONFIG.navigationTimeout });
       await sleep(getRandomInt(3000, 5000));
+      await handleCloudflareChallenge(page);
     }
 
-    console.log(`📍 Oturum Açma Sonrası URL: ${page.url()}`);
+    console.log(`📍 Oturum Açma Sonrası Güncel URL: ${page.url()}`);
 
     // 4. ADIM: Gönderi / Lexical Editörünü Bul
     console.log('✍️ Gönderi oluşturma editörü aranıyor...');
-    const editorMatch = await findFirstVisibleElement(page, CONFIG.selectors.postEditorList, 20000);
+    const editorMatch = await findFirstVisibleElement(page, CONFIG.selectors.postEditorList, 25000);
 
     if (!editorMatch) {
       throw new Error('Gönderi paylaşım editörü sayfada bulunamadı.');
@@ -291,7 +342,7 @@ async function main() {
     await editorMatch.locator.click();
     await sleep(getRandomInt(800, 1500));
 
-    // 5. ADIM: Güncelleme Metnini İnsan Benzeri Hızla Yaz
+    // 5. ADIM: Güncelleme Metnini Yaz
     console.log('📝 Güncelleme metni editöre yazılıyor...');
     await page.keyboard.type(postContent, { delay: getRandomInt(15, 30) });
 
@@ -299,16 +350,15 @@ async function main() {
 
     // 6. ADIM: "Gönder" Butonunu Bul ve Tıkla
     console.log('📤 "Gönder" butonu aranıyor...');
-    const submitBtnMatch = await findFirstVisibleElement(page, CONFIG.selectors.postSubmitButtonList, 10000);
+    const submitBtnMatch = await findFirstVisibleElement(page, CONFIG.selectors.postSubmitButtonList, 15000);
 
     if (!submitBtnMatch) {
-      throw new Error('"Gönder" paylaşım butonu bulunamadı.');
+      throw new Error('"Gönder" butonu bulunamadı.');
     }
 
     console.log(`🚀 Gönderi yayınlanıyor (Seçici: ${submitBtnMatch.selector})...`);
     await submitBtnMatch.locator.click();
 
-    // Gönderinin iletilmesi ve veritabanına kaydedilmesi için bekle
     await sleep(getRandomInt(5000, 7000));
 
     console.log('🎉 TEBRİKLER: EngelsizForum güncelleme duyurusu NSosyal üzerinde başarıyla paylaşıldı!');
