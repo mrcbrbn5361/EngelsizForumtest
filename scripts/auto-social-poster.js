@@ -417,7 +417,7 @@ async function sendToLinkedin(content, accessToken, personUrn) {
  * @param {string} commitMessage
  * @returns {Promise<any>}
  */
-async function sendToMakeWebhook(content, webhookUrl, commitMessage) {
+async function sendToMakeWebhook(content, webhookUrl, commitMessage, imageUrl) {
   if (!webhookUrl) {
     process.stdout.write('ℹ️ MAKE_WEBHOOK_URL bulunamadı, Make.com Webhook gönderimi atlandı.\n');
     return;
@@ -438,7 +438,8 @@ async function sendToMakeWebhook(content, webhookUrl, commitMessage) {
     time: turkeyTime.shortTime,
     timezone: 'Europe/Istanbul',
     timestamp: new Date().toISOString(),
-    timestamp_tr: `${turkeyTime.date} ${turkeyTime.time}`
+    timestamp_tr: `${turkeyTime.date} ${turkeyTime.time}`,
+    image_url: imageUrl || ''
   };
 
   const response = await fetch(webhookUrl, {
@@ -466,6 +467,8 @@ async function sendToMakeWebhook(content, webhookUrl, commitMessage) {
 async function main() {
   const geminiApiKey = process.env.GEMINI_API_KEY;
   const makeWebhookUrl = process.env.MAKE_WEBHOOK_URL;
+  const instagramMakeWebhookUrl = process.env.INSTAGRAM_MAKE_WEBHOOK_URL;
+  const githubSha = process.env.GITHUB_SHA || '';
   const linkedinAccessToken = process.env.LINKEDIN_ACCESS_TOKEN;
   const linkedinPersonUrn = process.env.LINKEDIN_PERSON_URN;
   const nsosyalApiUrl = process.env.NSOSYAL_API_URL;
@@ -501,6 +504,17 @@ async function main() {
       }
     } else {
       process.stdout.write('ℹ️ MAKE_WEBHOOK_URL veya LINKEDIN_ACCESS_TOKEN tanımlanmadığı için LinkedIn paylaşım adımı atlandı.\n');
+    }
+
+    // 2. Instagram için ayrı Make.com Webhook
+    if (instagramMakeWebhookUrl) {
+      try {
+        const imageUrl = `https://engelsizforum.miracdeveloper.com.tr/api/instagram/card?title=${encodeURIComponent(commitMessage)}&sha=${encodeURIComponent(githubSha)}`;
+        await sendToMakeWebhook(finalNote, instagramMakeWebhookUrl, commitMessage, imageUrl);
+        process.stdout.write('BAŞARILI: Instagram Make.com Webhook tetiklendi.\\n');
+      } catch (instagramErr) {
+        process.stderr.write(`⚠️ Instagram Make Webhook Uyarısı: ${instagramErr.message}\\n`);
+      }
     }
 
     // 2. Post to NSosyal (Opsiyonel)
