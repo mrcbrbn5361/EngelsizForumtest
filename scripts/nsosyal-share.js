@@ -1,10 +1,9 @@
 /**
  * NSosyal (nsosyal.com) Otomatik Gönderi Paylaşım Scripti
  * 
- * Bu script 2 kademeli hibrit mimariye sahiptir:
- * 1. Kademe (Birincil): NSosyal v2-api (REST API) ve DPoP (RFC 9449) ile Cloudflare kilit ekranına
- *    ve tarayıcı gecikmelerine hiç takılmadan 2 saniyede doğrudan gönderi yayınlar.
- * 2. Kademe (Yedek): Gerekirse Playwright + xvfb + stealth motoru ile web arayüzü üzerinden paylaşır.
+ * Bu script 2 kademeli hibrit mimariyle çalışır:
+ * 1. Kademe: NSosyal REST API (DPoP RFC 9449) ile doğrudan paylaşım.
+ * 2. Kademe: Playwright tarayıcı motoru ile /home üzerindeki Lexical editörüne bağlanarak paylaşım.
  */
 
 const fs = require('fs');
@@ -12,55 +11,61 @@ const path = require('path');
 const crypto = require('crypto');
 
 // =============================================================================
-// KONFİGÜRASYON VE SEÇİCİLER (DOM Selectors)
+// KONFİGÜRASYON VE SEÇİCİLER
 // =============================================================================
 const CONFIG = {
   baseUrl: 'https://nsosyal.com',
-  apiUrl: 'https://v2-api.nsosyal.com',
+  homeUrl: 'https://nsosyal.com/home',
   loginUrl: 'https://nsosyal.com/login',
+  apiUrl: 'https://v2-api.nsosyal.com',
   
   navigationTimeout: 90000,
   actionTimeout: 35000,
-  typingDelayMin: 25,
-  typingDelayMax: 60,
+  typingDelayMin: 20,
+  typingDelayMax: 50,
   
   selectors: {
+    // 1. Giriş Sayfası Elemanları
     exploreLoginLink: 'a[href="/login"], a:has-text("Giriş Yap"), a.bg-blue-6',
     usernameInputList: [
       'input[name="username"]',
       'input[placeholder*="Kullanıcı adı" i]',
       'input[placeholder*="e-posta" i]',
-      'input[placeholder*="eposta" i]',
       'input[type="username"]',
       'input[type="email"]',
-      'input[type="text"]',
-      'input:not([type="password"]):not([type="hidden"]):not([type="checkbox"])'
+      'input[type="text"]'
     ],
     passwordInputList: [
       'input[name="password"]',
       'input[type="password"]',
-      'input[placeholder="••••••"]',
-      'input[placeholder*="Şifre" i]',
-      'input[placeholder*="sifre" i]'
+      'input[placeholder="••••••"]'
     ],
     loginSubmitButtonList: [
       'button[type="submit"]:has-text("Hesabına Giriş Yap")',
       'button:has-text("Hesabına Giriş Yap")',
-      'button[type="submit"]:has-text("Giriş")',
-      'button:has-text("Giriş Yap")',
       'button[type="submit"]',
       'form button'
     ],
-    postEditorList: [
-      'div[contenteditable="true"][id="main-post-editor"]',
+
+    // 2. Ana Sayfa Editör Tetikleyicisi (Kapalıyken)
+    editorTriggerList: [
+      'span:has-text("Gönderi oluşturmak için...")',
+      'div:has-text("Gönderi oluşturmak için...")',
+      '#main-post-editor',
+      '[data-text-editor-input="main-post-editor"]'
+    ],
+
+    // 3. Açık Lexical Editör (Yazım Alanı)
+    lexicalInputList: [
       'div[contenteditable="true"][data-lexical-editor="true"]',
-      'div[data-text-editor-input="main-post-editor"]',
-      'div[role="textbox"][contenteditable="true"]',
+      'div[contenteditable="true"][role="textbox"]',
+      'div[contenteditable="true"]#main-post-editor',
       '#main-post-editor [contenteditable="true"]',
       'div[contenteditable="true"]',
-      'textarea[placeholder*="düşünüyorsun" i]',
       'textarea'
     ],
+
+    // 4. Gönder Butonu
     postSubmitButtonList: [
       'button:has-text("Gönder")',
       'button:has(span:text-is("Gönder"))',
@@ -108,7 +113,7 @@ Türkiye'nin %100 erişilebilir engelli topluluğu ve mevzuat portalında yeni g
 }
 
 // =============================================================================
-// DPoP (RFC 9449) İSTEMCİSİ - CLOUDFLARE VE CAPTCHA AŞAN DOĞRUDAN API MOTORU
+// DPoP (RFC 9449) MOTORU
 // =============================================================================
 function createDPoPClient() {
   const { publicKey, privateKey } = crypto.generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
@@ -139,38 +144,51 @@ function createDPoPClient() {
 }
 
 /**
- * 1. KADEME: Cloudflare bot testlerine hiç girmeden doğrudan API ile paylaşım
+ * 1. KADEME: Doğrudan REST API + DPoP ile Paylaşım
  */
 async function tryDirectApiPost(username, password, postContent) {
-  console.log('⚡ [1. KADEME] NSosyal Resmi REST API ve DPoP ile doğrudan paylaşım başlatılıyor...');
+  console.log('⚡ [1. KADEME] NSosyal REST API (DPoP) üzerinden doğrudan paylaşım deneniyor...');
   const dpop = createDPoPClient();
   const loginUrl = `${CONFIG.apiUrl}/api/v1/auth/login`;
 
-  console.log(`🔑 API Giriş isteği gönderiliyor: ${loginUrl}`);
-  const loginRes = await fetch(loginUrl, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      'origin': 'https://nsosyal.com',
-      'referer': 'https://nsosyal.com/',
-      'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
-      'dpop': dpop.signProof('POST', loginUrl)
-    },
-    body: JSON.stringify({
-      username: username,
-      password: password
-    })
-  });
-
-  const loginData = await loginRes.json().catch(() => ({}));
-  console.log('API Giriş Yanıtı:', loginData.message || loginData.code || 'Bilinmiyor');
-
-  if (!loginData.success || !loginData.data?.access_token) {
-    throw new Error(`API Giriş başarısız oldu: ${loginData.message || JSON.stringify(loginData)}`);
+  // Username veya email varyasyonlarını dene
+  const userCandidates = [username];
+  if (username.includes('@')) {
+    userCandidates.push(username.split('@')[0]);
   }
 
-  const accessToken = loginData.data.access_token;
-  console.log('✅ API Oturumu başarıyla açıldı! Token bağlandı.');
+  let accessToken = null;
+
+  for (const userCandidate of userCandidates) {
+    try {
+      console.log(`🔑 Giriş deneniyor (${userCandidate})...`);
+      const loginRes = await fetch(loginUrl, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'origin': 'https://nsosyal.com',
+          'referer': 'https://nsosyal.com/',
+          'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+          'dpop': dpop.signProof('POST', loginUrl)
+        },
+        body: JSON.stringify({
+          username: userCandidate,
+          password: password
+        })
+      });
+
+      const loginData = await loginRes.json().catch(() => ({}));
+      if (loginData.success && loginData.data?.access_token) {
+        accessToken = loginData.data.access_token;
+        console.log(`✅ API Girişi başarılı! Kullanıcı: ${loginData.data.account?.username || userCandidate}`);
+        break;
+      }
+    } catch {}
+  }
+
+  if (!accessToken) {
+    throw new Error('API Giriş doğrulaması tamamlanamadı.');
+  }
 
   const postUrl = `${CONFIG.apiUrl}/api/v1/posts`;
   const payloads = [
@@ -182,36 +200,36 @@ async function tryDirectApiPost(username, password, postContent) {
   ];
 
   for (const bodyPayload of payloads) {
-    const postRes = await fetch(postUrl, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'origin': 'https://nsosyal.com',
-        'referer': 'https://nsosyal.com/',
-        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
-        'authorization': `Bearer ${accessToken}`,
-        'dpop': dpop.signProof('POST', postUrl)
-      },
-      body: JSON.stringify(bodyPayload)
-    });
+    try {
+      const postRes = await fetch(postUrl, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'origin': 'https://nsosyal.com',
+          'referer': 'https://nsosyal.com/',
+          'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+          'authorization': `Bearer ${accessToken}`,
+          'dpop': dpop.signProof('POST', postUrl)
+        },
+        body: JSON.stringify(bodyPayload)
+      });
 
-    const postData = await postRes.json().catch(() => ({}));
-    console.log(`API Gönderim Yanıtı (${Object.keys(bodyPayload).join(',')}):`, postData);
-
-    if (postData.success) {
-      console.log('🎉 TEBRİKLER: EngelsizForum güncelleme duyurusu NSosyal API üzerinden BAŞARIYLA paylaşıldı!');
-      return true;
-    }
+      const postData = await postRes.json().catch(() => ({}));
+      if (postData.success) {
+        console.log('🎉 TEBRİKLER: EngelsizForum güncelleme duyurusu NSosyal API üzerinden BAŞARIYLA paylaşıldı!');
+        return true;
+      }
+    } catch {}
   }
 
-  throw new Error('API post endpoint yanıt vermedi veya payload reddedildi.');
+  throw new Error('API gönderi isteği kabul edilmedi.');
 }
 
-// =============================================================================
-// 2. KADEME: PLAYWRIGHT İLE WEB ARAYÜZÜ YEDEK PAYLAŞIM MOTORU
-// =============================================================================
+/**
+ * 2. KADEME: Playwright Tarayıcı ile Web Arayüzünden Paylaşım
+ */
 async function runPlaywrightFallback(username, password, sessionCookie, postContent) {
-  console.log('🌐 [2. KADEME] Playwright tarayıcı motoru ile paylaşım deneniyor...');
+  console.log('🌐 [2. KADEME] Playwright tarayıcı motoru başlatılıyor...');
 
   let chromium;
   try {
@@ -256,9 +274,10 @@ async function runPlaywrightFallback(username, password, sessionCookie, postCont
     delete Object.getPrototypeOf(navigator).webdriver;
   });
 
+  // Çerez enjeksiyonu
   if (sessionCookie) {
     try {
-      console.log('🍪 Çerezler enjekte ediliyor...');
+      console.log('🍪 Tanımlı oturum çerezleri (.nsosyal.com) tarayıcıya ekleniyor...');
       const cookieList = [];
       let rawCookies = sessionCookie.trim();
       if (rawCookies.toLowerCase().startsWith('cookie:')) {
@@ -279,6 +298,8 @@ async function runPlaywrightFallback(username, password, sessionCookie, postCont
         }
       }
       await context.addCookies(cookieList);
+      console.log(`✅ ${cookieList.length} adet çerez yüklendi.`);
+
       if (detectedAccessToken) {
         await context.addInitScript((tok) => {
           try {
@@ -295,36 +316,103 @@ async function runPlaywrightFallback(username, password, sessionCookie, postCont
   const page = await context.newPage();
   page.setDefaultTimeout(CONFIG.actionTimeout);
 
+  const artifactDir = path.join(process.cwd(), 'artifacts');
+  if (!fs.existsSync(artifactDir)) fs.mkdirSync(artifactDir, { recursive: true });
+
   try {
-    console.log(`🔗 Sayfa açılıyor: ${CONFIG.baseUrl}`);
-    await page.goto(CONFIG.baseUrl, { waitUntil: 'domcontentloaded', timeout: CONFIG.navigationTimeout });
+    // Doğrudan ana akışa (/home) git
+    console.log(`🔗 NSosyal ana akışına gidiliyor: ${CONFIG.homeUrl}`);
+    await page.goto(CONFIG.homeUrl, { waitUntil: 'domcontentloaded', timeout: CONFIG.navigationTimeout });
     await sleep(4000);
 
-    // Editör kontrolü
-    let editor = page.locator(CONFIG.selectors.postEditorList.join(', ')).first();
-    const hasEditor = await editor.isVisible({ timeout: 5000 }).catch(() => false);
+    console.log(`📍 Mevcut URL: ${page.url()} | Başlık: "${await page.title()}"`);
+    await page.screenshot({ path: path.join(artifactDir, 'step1-initial.png') }).catch(() => {});
 
-    if (hasEditor) {
-      console.log('✅ Gönderi editörü hazır!');
-      await editor.click();
+    // Eğer /login sayfasına yönlenmişse giriş formunu doldur
+    if (page.url().includes('/login')) {
+      console.log('🔑 Giriş sayfasına yönlenildi, form dolduruluyor...');
+      const userField = page.locator(CONFIG.selectors.usernameInputList.join(', ')).first();
+      await userField.waitFor({ state: 'visible', timeout: 15000 });
+      await userField.click();
+      await userField.pressSequentially(username, { delay: 30 });
+      await sleep(500);
+
+      const passField = page.locator(CONFIG.selectors.passwordInputList.join(', ')).first();
+      await passField.click();
+      await passField.pressSequentially(password, { delay: 30 });
       await sleep(1000);
-      await page.keyboard.type(postContent, { delay: 20 });
-      await sleep(2000);
-      const submitBtn = page.locator(CONFIG.selectors.postSubmitButtonList.join(', ')).first();
+
+      const submitBtn = page.locator(CONFIG.selectors.loginSubmitButtonList.join(', ')).first();
       await submitBtn.click();
-      await sleep(5000);
-      console.log('🎉 Tarayıcı üzerinden gönderi paylaşıldı!');
-      return true;
+      console.log('🚀 Giriş butonuna tıklandı, yönlendirme bekleniyor...');
+      await sleep(6000);
+
+      if (page.url().includes('/login') || page.url().includes('/explore')) {
+        await page.goto(CONFIG.homeUrl, { waitUntil: 'domcontentloaded' });
+        await sleep(3000);
+      }
     }
 
-    throw new Error('Arayüz üzerinden editöre ulaşılamadı.');
+    // Eğer /explore sayfasına düşmüşse tekrar /home'a geç
+    if (page.url().includes('/explore')) {
+      console.log('🔄 /explore rotasından /home akışına geçiliyor...');
+      await page.goto(CONFIG.homeUrl, { waitUntil: 'domcontentloaded' });
+      await sleep(3000);
+    }
+
+    await page.screenshot({ path: path.join(artifactDir, 'step2-before-editor.png') }).catch(() => {});
+
+    // 1. Adım: Editör alanını veya "Gönderi oluşturmak için..." tetikleyicisini tıkla
+    console.log('✍️ Gönderi paylaşım editörü aranıyor...');
+    const trigger = page.locator(CONFIG.selectors.editorTriggerList.join(', ')).first();
+    const hasTrigger = await trigger.isVisible({ timeout: 6000 }).catch(() => false);
+
+    if (hasTrigger) {
+      console.log('👆 Editör tetikleyicisine tıklandı (Genişletiliyor)...');
+      await trigger.click();
+      await sleep(1500);
+    }
+
+    // 2. Adım: Aktif Lexical contenteditable yazım alanını bul
+    const lexicalBox = page.locator(CONFIG.selectors.lexicalInputList.join(', ')).first();
+    await lexicalBox.waitFor({ state: 'visible', timeout: 15000 });
+    console.log('✅ Lexical metin editörü bulundu ve odaklanılıyor...');
+    await lexicalBox.click();
+    await sleep(800);
+
+    // 3. Adım: Metni yaz
+    console.log('📝 Güncelleme duyurusu editöre yazılıyor...');
+    await page.keyboard.type(postContent, { delay: getRandomInt(CONFIG.typingDelayMin, CONFIG.typingDelayMax) });
+    await sleep(2500);
+
+    await page.screenshot({ path: path.join(artifactDir, 'step3-text-typed.png') }).catch(() => {});
+
+    // 4. Adım: "Gönder" butonuna tıkla
+    console.log('📤 "Gönder" butonu aranıyor...');
+    const sendBtn = page.locator(CONFIG.selectors.postSubmitButtonList.join(', ')).first();
+    await sendBtn.waitFor({ state: 'visible', timeout: 10000 });
+    
+    // Butonun disabled durumunun kalkmasını bekle
+    await sleep(1500);
+    console.log('🚀 Gönderi yayınlanıyor...');
+    await sendBtn.click();
+
+    // Gönderinin veritabanına kaydedilmesi için bekle
+    await sleep(6000);
+
+    await page.screenshot({ path: path.join(artifactDir, 'step4-published.png') }).catch(() => {});
+    console.log('🎉 TEBRİKLER: EngelsizForum güncelleme duyurusu NSosyal web arayüzü üzerinden başarıyla paylaşıldı!');
+    return true;
+  } catch (err) {
+    await page.screenshot({ path: path.join(artifactDir, 'nsosyal-error.png') }).catch(() => {});
+    throw err;
   } finally {
     await browser.close();
   }
 }
 
 // =============================================================================
-// ANA ÇALIŞTIRICI FONKSİYON
+// ANA ÇALIŞTIRICI
 // =============================================================================
 async function main() {
   const username = process.env.NSOSYAL_EMAIL || process.env.NSOSYAL_USERNAME;
@@ -340,29 +428,23 @@ async function main() {
   console.log(`📊 Karakter Sayısı: ${postContent.length}`);
   console.log('====================================================');
 
-  // 1. Önce doğrudan REST API + DPoP yöntemini dene (Cloudflare'siz, anında ve kesin)
+  // 1. Kademe: Doğrudan API
   if (username && password) {
     try {
       await tryDirectApiPost(username, password, postContent);
       process.exit(0);
     } catch (apiErr) {
-      console.warn('⚠️ 1. Kademe (Doğrudan API) uyarısı:', apiErr.message);
-      console.log('🔄 2. Kademeye (Playwright Tarayıcı) geçiliyor...');
+      console.warn('⚠️ 1. Kademe (API) uyarısı:', apiErr.message);
+      console.log('🔄 2. Kademeye (Playwright Arayüz) geçiliyor...');
     }
   }
 
-  // 2. API başarısız olursa Playwright yedek motorunu çalıştır
+  // 2. Kademe: Playwright Arayüz
   try {
     await runPlaywrightFallback(username, password, sessionCookie, postContent);
     process.exit(0);
   } catch (browserErr) {
     console.error('❌ HATA: Her iki paylaşım yöntemi de başarısız oldu:', browserErr.message);
-
-    try {
-      const artifactDir = path.join(process.cwd(), 'artifacts');
-      if (!fs.existsSync(artifactDir)) fs.mkdirSync(artifactDir, { recursive: true });
-    } catch {}
-
     process.exit(1);
   }
 }
