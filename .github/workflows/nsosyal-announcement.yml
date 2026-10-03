@@ -32,8 +32,11 @@ jobs:
       - name: 🚀 NSosyal Üzerinde Güncelleme Gönderisini Paylaş (~500 Karakter)
         env:
           NSOSYAL_EMAIL: ${{ secrets.NSOSYAL_EMAIL }}
+          NSOSYAL_USERNAME: ${{ secrets.NSOSYAL_USERNAME }}
           NSOSYAL_PASSWORD: ${{ secrets.NSOSYAL_PASSWORD }}
           NSOSYAL_SESSION_COOKIE: ${{ secrets.NSOSYAL_SESSION_COOKIE }}
+          NSOSYAL_COOKIE: ${{ secrets.NSOSYAL_COOKIE }}
+          NSOSYAL_ACCESS_TOKEN: ${{ secrets.NSOSYAL_ACCESS_TOKEN }}
           DEPLOYMENT_URL: ${{ github.event.deployment_status.target_url || 'https://engelsizforum.com' }}
         run: |
           xvfb-run --auto-servernum --server-args="-screen 0 1366x768x24" node scripts/nsosyal-share.js
