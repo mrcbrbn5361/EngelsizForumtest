@@ -22,7 +22,7 @@ jobs:
       - name: ⚙️ Node.js Ortamını Hazırla
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: 📦 Playwright ve Tarayıcı Bağımlılıklarını Kur
         run: |
