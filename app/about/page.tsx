@@ -3,8 +3,7 @@
 import React from 'react';
 import { SiteLayout } from '@/components/layout/site-layout';
 import { 
-  Target, Sparkles, ShieldCheck,
-  ChevronRight, CheckCircle2, Users, ArrowLeft, Home
+  Sparkles, ShieldCheck, CheckCircle2, Users, ArrowLeft, Home, Target
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
