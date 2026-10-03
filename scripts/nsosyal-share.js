@@ -1,9 +1,8 @@
 /**
  * NSosyal (nsosyal.com) Otomatik Gönderi Paylaşım Scripti
  * 
- * Bu script 2 kademeli hibrit mimariyle çalışır:
- * 1. Kademe: NSosyal REST API (DPoP RFC 9449) ile doğrudan paylaşım.
- * 2. Kademe: Playwright tarayıcı motoru ile /home üzerindeki Lexical editörüne bağlanarak paylaşım.
+ * 1. Kademe: NSosyal Resmi REST API (DPoP RFC 9449) ile doğrudan paylaşım.
+ * 2. Kademe: Playwright (Desktop 1920x1080) ile web arayüzünden Lexical editörüne bağlanarak paylaşım.
  */
 
 const fs = require('fs');
@@ -22,51 +21,26 @@ const CONFIG = {
   navigationTimeout: 90000,
   actionTimeout: 35000,
   typingDelayMin: 20,
-  typingDelayMax: 50,
+  typingDelayMax: 45,
   
   selectors: {
-    // 1. Giriş Sayfası Elemanları
-    exploreLoginLink: 'a[href="/login"], a:has-text("Giriş Yap"), a.bg-blue-6',
-    usernameInputList: [
-      'input[name="username"]',
-      'input[placeholder*="Kullanıcı adı" i]',
-      'input[placeholder*="e-posta" i]',
-      'input[type="username"]',
-      'input[type="email"]',
-      'input[type="text"]'
-    ],
-    passwordInputList: [
-      'input[name="password"]',
-      'input[type="password"]',
-      'input[placeholder="••••••"]'
-    ],
-    loginSubmitButtonList: [
-      'button[type="submit"]:has-text("Hesabına Giriş Yap")',
-      'button:has-text("Hesabına Giriş Yap")',
-      'button[type="submit"]',
-      'form button'
-    ],
-
-    // 2. Ana Sayfa Editör Tetikleyicisi (Kapalıyken)
-    editorTriggerList: [
-      'span:has-text("Gönderi oluşturmak için...")',
-      'div:has-text("Gönderi oluşturmak için...")',
-      '#main-post-editor',
-      '[data-text-editor-input="main-post-editor"]'
-    ],
-
-    // 3. Açık Lexical Editör (Yazım Alanı)
-    lexicalInputList: [
-      'div[contenteditable="true"][data-lexical-editor="true"]',
-      'div[contenteditable="true"][role="textbox"]',
-      'div[contenteditable="true"]#main-post-editor',
-      '#main-post-editor [contenteditable="true"]',
+    loginLinks: 'a[href="/login"], a:has-text("Giriş Yap"), a.bg-blue-6',
+    usernameInputs: 'input[name="username"], input[placeholder*="Kullanıcı adı" i], input[placeholder*="e-posta" i], input[type="username"], input[type="text"]',
+    passwordInputs: 'input[name="password"], input[type="password"], input[placeholder="••••••"]',
+    loginSubmitBtns: 'button[type="submit"]:has-text("Hesabına Giriş Yap"), button[type="submit"], button:has-text("Giriş Yap")',
+    
+    // Editör ve yazım alanı seçicileri
+    editorElements: [
       'div[contenteditable="true"]',
+      'div[data-lexical-editor="true"]',
+      'div[role="textbox"]',
+      '#main-post-editor [contenteditable="true"]',
+      '[data-text-editor-input="main-post-editor"]',
       'textarea'
     ],
-
-    // 4. Gönder Butonu
-    postSubmitButtonList: [
+    
+    // Gönder butonu
+    sendButtons: [
       'button:has-text("Gönder")',
       'button:has(span:text-is("Gönder"))',
       'button[type="button"]:has(span:has-text("Gönder"))',
@@ -113,7 +87,7 @@ Türkiye'nin %100 erişilebilir engelli topluluğu ve mevzuat portalında yeni g
 }
 
 // =============================================================================
-// DPoP (RFC 9449) MOTORU
+// DPoP (RFC 9449) İSTEMCİSİ
 // =============================================================================
 function createDPoPClient() {
   const { publicKey, privateKey } = crypto.generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
@@ -151,17 +125,19 @@ async function tryDirectApiPost(username, password, postContent) {
   const dpop = createDPoPClient();
   const loginUrl = `${CONFIG.apiUrl}/api/v1/auth/login`;
 
-  // Username veya email varyasyonlarını dene
-  const userCandidates = [username];
-  if (username.includes('@')) {
-    userCandidates.push(username.split('@')[0]);
+  const userCandidates = [];
+  if (username) {
+    userCandidates.push(username.trim());
+    if (username.includes('@')) {
+      userCandidates.push(username.split('@')[0].trim());
+    }
   }
 
   let accessToken = null;
 
   for (const userCandidate of userCandidates) {
     try {
-      console.log(`🔑 Giriş deneniyor (${userCandidate})...`);
+      console.log(`🔑 API Girişi deneniyor (Kullanıcı: ${userCandidate})...`);
       const loginRes = await fetch(loginUrl, {
         method: 'POST',
         headers: {
@@ -178,12 +154,16 @@ async function tryDirectApiPost(username, password, postContent) {
       });
 
       const loginData = await loginRes.json().catch(() => ({}));
+      console.log('API Giriş Yanıtı:', JSON.stringify(loginData));
+
       if (loginData.success && loginData.data?.access_token) {
         accessToken = loginData.data.access_token;
-        console.log(`✅ API Girişi başarılı! Kullanıcı: ${loginData.data.account?.username || userCandidate}`);
+        console.log(`✅ API Oturumu açıldı!`);
         break;
       }
-    } catch {}
+    } catch (e) {
+      console.warn('API istek hatası:', e.message);
+    }
   }
 
   if (!accessToken) {
@@ -215,14 +195,18 @@ async function tryDirectApiPost(username, password, postContent) {
       });
 
       const postData = await postRes.json().catch(() => ({}));
+      console.log(`API Gönderim Yanıtı:`, JSON.stringify(postData));
+
       if (postData.success) {
         console.log('🎉 TEBRİKLER: EngelsizForum güncelleme duyurusu NSosyal API üzerinden BAŞARIYLA paylaşıldı!');
         return true;
       }
-    } catch {}
+    } catch (e) {
+      console.warn('Post API hatası:', e.message);
+    }
   }
 
-  throw new Error('API gönderi isteği kabul edilmedi.');
+  throw new Error('API üzerinden gönderi oluşturulamadı.');
 }
 
 /**
@@ -251,7 +235,7 @@ async function runPlaywrightFallback(username, password, sessionCookie, postCont
       '--disable-dev-shm-usage',
       '--disable-blink-features=AutomationControlled',
       '--disable-infobars',
-      '--window-size=1366,768'
+      '--window-size=1920,1080'
     ]
   };
 
@@ -264,8 +248,9 @@ async function runPlaywrightFallback(username, password, sessionCookie, postCont
     console.log('🚀 Standart Chromium başlatıldı.');
   }
 
+  // Desktop 1920x1080 çözünürlük ile başlat (Tüm desktop UI elemanlarının görünmesi için)
   const context = await browser.newContext({
-    viewport: { width: 1366, height: 768 },
+    viewport: { width: 1920, height: 1080 },
     locale: 'tr-TR',
     timezoneId: 'Europe/Istanbul'
   });
@@ -274,7 +259,7 @@ async function runPlaywrightFallback(username, password, sessionCookie, postCont
     delete Object.getPrototypeOf(navigator).webdriver;
   });
 
-  // Çerez enjeksiyonu
+  // Çerez ve Token Enjeksiyonu
   if (sessionCookie) {
     try {
       console.log('🍪 Tanımlı oturum çerezleri (.nsosyal.com) tarayıcıya ekleniyor...');
@@ -293,7 +278,13 @@ async function runPlaywrightFallback(username, password, sessionCookie, postCont
             const name = k.trim();
             const val = v.join('=').trim();
             if (name === 'access_token') detectedAccessToken = val;
-            cookieList.push({ name, value: val, domain: '.nsosyal.com', path: '/' });
+            cookieList.push({
+              name,
+              value: val,
+              domain: '.nsosyal.com',
+              path: '/',
+              secure: true
+            });
           }
         }
       }
@@ -320,7 +311,7 @@ async function runPlaywrightFallback(username, password, sessionCookie, postCont
   if (!fs.existsSync(artifactDir)) fs.mkdirSync(artifactDir, { recursive: true });
 
   try {
-    // Doğrudan ana akışa (/home) git
+    // 1. ADIM: Ana Akışa Git
     console.log(`🔗 NSosyal ana akışına gidiliyor: ${CONFIG.homeUrl}`);
     await page.goto(CONFIG.homeUrl, { waitUntil: 'domcontentloaded', timeout: CONFIG.navigationTimeout });
     await sleep(4000);
@@ -328,82 +319,130 @@ async function runPlaywrightFallback(username, password, sessionCookie, postCont
     console.log(`📍 Mevcut URL: ${page.url()} | Başlık: "${await page.title()}"`);
     await page.screenshot({ path: path.join(artifactDir, 'step1-initial.png') }).catch(() => {});
 
-    // Eğer /login sayfasına yönlenmişse giriş formunu doldur
-    if (page.url().includes('/login')) {
-      console.log('🔑 Giriş sayfasına yönlenildi, form dolduruluyor...');
-      const userField = page.locator(CONFIG.selectors.usernameInputList.join(', ')).first();
-      await userField.waitFor({ state: 'visible', timeout: 15000 });
-      await userField.click();
-      await userField.pressSequentially(username, { delay: 30 });
-      await sleep(500);
+    // Sayfa durumunu analiz et
+    const pageStatus = await page.evaluate(() => {
+      const hasLoginBtn = !!document.querySelector('a[href="/login"]') || !!document.querySelector('button[type="submit"]');
+      const hasEditable = !!document.querySelector('[contenteditable="true"]') || !!document.querySelector('[data-lexical-editor="true"]');
+      const currentUrl = window.location.href;
+      return { hasLoginBtn, hasEditable, currentUrl };
+    });
 
-      const passField = page.locator(CONFIG.selectors.passwordInputList.join(', ')).first();
-      await passField.click();
-      await passField.pressSequentially(password, { delay: 30 });
-      await sleep(1000);
+    console.log('📊 Sayfa Durumu:', JSON.stringify(pageStatus));
 
-      const submitBtn = page.locator(CONFIG.selectors.loginSubmitButtonList.join(', ')).first();
-      await submitBtn.click();
-      console.log('🚀 Giriş butonuna tıklandı, yönlendirme bekleniyor...');
-      await sleep(6000);
-
-      if (page.url().includes('/login') || page.url().includes('/explore')) {
-        await page.goto(CONFIG.homeUrl, { waitUntil: 'domcontentloaded' });
-        await sleep(3000);
+    // 2. ADIM: Eğer oturum kapalıysa giriş yap
+    if (pageStatus.hasLoginBtn || page.url().includes('/login') || page.url().includes('/explore')) {
+      console.log('🔑 Oturum açılması gerekiyor, giriş formu aranıyor...');
+      
+      if (!page.url().includes('/login')) {
+        const loginLink = page.locator(CONFIG.selectors.loginLinks).first();
+        if (await loginLink.isVisible({ timeout: 4000 }).catch(() => false)) {
+          await loginLink.click();
+          await sleep(2500);
+        } else {
+          await page.goto(CONFIG.loginUrl, { waitUntil: 'domcontentloaded' });
+          await sleep(2500);
+        }
       }
-    }
 
-    // Eğer /explore sayfasına düşmüşse tekrar /home'a geç
-    if (page.url().includes('/explore')) {
-      console.log('🔄 /explore rotasından /home akışına geçiliyor...');
-      await page.goto(CONFIG.homeUrl, { waitUntil: 'domcontentloaded' });
-      await sleep(3000);
+      if (page.url().includes('/login')) {
+        console.log('📝 Kullanıcı adı ve şifre giriliyor...');
+        const userField = page.locator(CONFIG.selectors.usernameInputs).first();
+        await userField.waitFor({ state: 'visible', timeout: 15000 });
+        await userField.click();
+        await userField.fill('');
+        await userField.pressSequentially(username, { delay: 25 });
+        await sleep(500);
+
+        const passField = page.locator(CONFIG.selectors.passwordInputs).first();
+        await passField.click();
+        await passField.fill('');
+        await passField.pressSequentially(password, { delay: 25 });
+        await sleep(800);
+
+        const submitBtn = page.locator(CONFIG.selectors.loginSubmitBtns).first();
+        await submitBtn.click();
+        console.log('🚀 Giriş butonuna tıklandı, yönlendirme bekleniyor...');
+        await sleep(6000);
+      }
+
+      // Giriş sonrası tekrar /home sayfasına geç
+      if (!page.url().includes('/home')) {
+        console.log(`🔗 Tekrar ana akışa yönlendiriliyor: ${CONFIG.homeUrl}`);
+        await page.goto(CONFIG.homeUrl, { waitUntil: 'domcontentloaded' });
+        await sleep(3500);
+      }
     }
 
     await page.screenshot({ path: path.join(artifactDir, 'step2-before-editor.png') }).catch(() => {});
 
-    // 1. Adım: Editör alanını veya "Gönderi oluşturmak için..." tetikleyicisini tıkla
-    console.log('✍️ Gönderi paylaşım editörü aranıyor...');
-    const trigger = page.locator(CONFIG.selectors.editorTriggerList.join(', ')).first();
-    const hasTrigger = await trigger.isVisible({ timeout: 6000 }).catch(() => false);
+    // 3. ADIM: Editör Alanını Bul ve Odaklan (Doğrudan DOM Seviyesinde)
+    console.log('✍️ Gönderi editörü aranıyor ve odaklanılıyor...');
 
-    if (hasTrigger) {
-      console.log('👆 Editör tetikleyicisine tıklandı (Genişletiliyor)...');
-      await trigger.click();
-      await sleep(1500);
-    }
+    // Sayfada varsa "Gönderi oluşturmak için..." alanına tıkla
+    await page.evaluate(() => {
+      const trigger = document.querySelector('#main-post-editor') || 
+                      Array.from(document.querySelectorAll('div, span')).find(el => el.textContent && el.textContent.includes('Gönderi oluşturmak için'));
+      if (trigger) trigger.click();
+    }).catch(() => {});
 
-    // 2. Adım: Aktif Lexical contenteditable yazım alanını bul
-    const lexicalBox = page.locator(CONFIG.selectors.lexicalInputList.join(', ')).first();
-    await lexicalBox.waitFor({ state: 'visible', timeout: 15000 });
-    console.log('✅ Lexical metin editörü bulundu ve odaklanılıyor...');
-    await lexicalBox.click();
+    await sleep(1500);
+
+    // Editörün DOM'da var olmasını bekle (attached)
+    const editorSelector = CONFIG.selectors.editorElements.join(', ');
+    const editorLocator = page.locator(editorSelector).first();
+    await editorLocator.waitFor({ state: 'attached', timeout: 20000 });
+
+    console.log('✅ Editör alanı bulundu! Odaklanılıyor...');
+    
+    // Doğrudan JavaScript ile odaklan ve tıkla
+    await page.evaluate(() => {
+      const el = document.querySelector('[contenteditable="true"]') || 
+                 document.querySelector('[data-lexical-editor="true"]') || 
+                 document.querySelector('[role="textbox"]') || 
+                 document.querySelector('textarea');
+      if (el) {
+        el.focus();
+        el.click();
+      }
+    });
+
     await sleep(800);
 
-    // 3. Adım: Metni yaz
-    console.log('📝 Güncelleme duyurusu editöre yazılıyor...');
+    // 4. ADIM: Metni Yaz
+    console.log('📝 Güncelleme metni editöre yazılıyor...');
     await page.keyboard.type(postContent, { delay: getRandomInt(CONFIG.typingDelayMin, CONFIG.typingDelayMax) });
-    await sleep(2500);
+    await sleep(2000);
 
     await page.screenshot({ path: path.join(artifactDir, 'step3-text-typed.png') }).catch(() => {});
 
-    // 4. Adım: "Gönder" butonuna tıkla
+    // 5. ADIM: "Gönder" Butonunu Bul ve Tıkla
     console.log('📤 "Gönder" butonu aranıyor...');
-    const sendBtn = page.locator(CONFIG.selectors.postSubmitButtonList.join(', ')).first();
-    await sendBtn.waitFor({ state: 'visible', timeout: 10000 });
     
-    // Butonun disabled durumunun kalkmasını bekle
-    await sleep(1500);
-    console.log('🚀 Gönderi yayınlanıyor...');
-    await sendBtn.click();
+    // Butonun aktif olmasını bekle veya disabled kaldır
+    await page.evaluate(() => {
+      const btns = Array.from(document.querySelectorAll('button'));
+      const sendBtn = btns.find(b => b.textContent && b.textContent.includes('Gönder'));
+      if (sendBtn) {
+        sendBtn.removeAttribute('disabled');
+      }
+    });
 
-    // Gönderinin veritabanına kaydedilmesi için bekle
+    await sleep(1000);
+
+    const sendBtn = page.locator(CONFIG.selectors.sendButtons.join(', ')).first();
+    await sendBtn.waitFor({ state: 'attached', timeout: 10000 });
+    
+    console.log('🚀 Gönderi yayınlanıyor (Click)...');
+    await sendBtn.click({ force: true });
+
+    // Gönderinin veritabanına iletilmesi için bekle
     await sleep(6000);
 
     await page.screenshot({ path: path.join(artifactDir, 'step4-published.png') }).catch(() => {});
     console.log('🎉 TEBRİKLER: EngelsizForum güncelleme duyurusu NSosyal web arayüzü üzerinden başarıyla paylaşıldı!');
     return true;
   } catch (err) {
+    console.error('❌ Tarayıcı akışında hata:', err.message);
     await page.screenshot({ path: path.join(artifactDir, 'nsosyal-error.png') }).catch(() => {});
     throw err;
   } finally {
