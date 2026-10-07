@@ -48,17 +48,21 @@ export default function HomePage() {
           const statsMap: Record<string, { topicCount: number; messageCount: number; lastPost?: { title: string; author: string; date: string } }> = {};
 
           for (const cat of catRes.data) {
-            const catTopics = topRes.data.filter((t: any) => t.category_id === cat.id || t.category?.slug === cat.slug);
+            const catTopics = topRes.data.filter((t: any) => {
+              const catObj = Array.isArray(t.category) ? t.category[0] : t.category;
+              return t.category_id === cat.id || catObj?.slug === cat.slug;
+            });
             const totalTopics = catTopics.length;
             const totalComments = catTopics.reduce((acc: number, t: any) => acc + (t.comments_count || 0), 0);
-            const latestTopic = catTopics[0];
+            const latestTopic: any = catTopics[0];
+            const authorObj = Array.isArray(latestTopic?.author) ? latestTopic.author[0] : latestTopic?.author;
 
             statsMap[cat.slug] = {
               topicCount: totalTopics,
               messageCount: totalTopics + totalComments,
               lastPost: latestTopic ? {
                 title: latestTopic.title,
-                author: latestTopic.author?.username || 'Topluluk',
+                author: authorObj?.username || 'Topluluk',
                 date: formatDistanceToNow(new Date(latestTopic.created_at), { addSuffix: true, locale: tr })
               } : undefined
             };
