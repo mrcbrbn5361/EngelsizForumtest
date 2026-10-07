@@ -1,126 +1,129 @@
-import ClassicCategoryBlock from '@/components/forum/classic-category-block';
-import ClassicSidebar from '@/components/forum/classic-sidebar';
-import HomeSeoKnowledgeBase from '@/components/forum/home-seo-knowledge-base';
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { 
+  Users, 
+  Search, 
+  MessageSquare, 
+  Sparkles, 
+  ShieldCheck, 
+  Calculator, 
+  Car, 
+  Calendar,
+  Flame,
+  CheckCircle2,
+  TrendingUp,
+  FileText,
+  Accessibility,
+  ArrowRight,
+  BookOpen
+} from 'lucide-react';
 import TeknofestNotice from '@/components/forum/teknofest-notice';
-import { supabaseServer } from '@/lib/supabase-server';
+import ClassicSidebar from '@/components/forum/classic-sidebar';
+import { ModernNodeCard } from '@/components/forum/modern-node-card';
+import { Button } from '@/components/ui/button';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { formatDistanceToNow } from 'date-fns';
 import { tr } from 'date-fns/locale';
 
-export default async function Home() {
-  // Fetch root categories
-  const { data: rootCategories, error: catError } = await supabaseServer
-    .from('categories')
-    .select('*')
-    .is('parent_id', null)
-    .order('created_at', { ascending: true });
+export default function HomePage() {
+  const [filterQuery, setFilterQuery] = useState('');
+  const [categoryStats, setCategoryStats] = useState<Record<string, { topicCount: number; messageCount: number; lastPost?: { title: string; author: string; date: string } }>>({});
 
-  if (catError) {
-    console.error('Error fetching root categories:', catError);
-  }
+  useEffect(() => {
+    async function fetchLiveCategoryStats() {
+      if (!isSupabaseConfigured) return;
+      try {
+        const [catRes, topRes] = await Promise.all([
+          supabase.from('categories').select('id, slug, name'),
+          supabase.from('topics').select(`
+            id, title, category_id, comments_count, created_at,
+            category:categories(id, slug),
+            author:profiles(username)
+          `).order('created_at', { ascending: false })
+        ]);
 
-  // Fetch all nodes (sub-categories)
-  const { data: allNodes, error: nodeError } = await supabaseServer
-    .from('categories')
-    .select('*')
-    .not('parent_id', 'is', null);
+        if (catRes.data && topRes.data) {
+          const statsMap: Record<string, { topicCount: number; messageCount: number; lastPost?: { title: string; author: string; date: string } }> = {};
 
-  if (nodeError) {
-    console.error('Error fetching nodes:', nodeError);
-  }
+          for (const cat of catRes.data) {
+            const catTopics = topRes.data.filter((t: any) => t.category_id === cat.id || t.category?.slug === cat.slug);
+            const totalTopics = catTopics.length;
+            const totalComments = catTopics.reduce((acc: number, t: any) => acc + (t.comments_count || 0), 0);
+            const latestTopic = catTopics[0];
 
-  // Fetch topics to calculate stats and get last post
-  const { data: allTopics, error: topicError } = await supabaseServer
-    .from('topics')
-    .select(`
-      *,
-      author:profiles(username, avatar_url)
-    `)
-    .order('created_at', { ascending: false });
-
-  if (topicError) {
-    console.error('Error fetching topics:', topicError);
-  }
-
-  // Map data to the structure expected by components
-  const categoriesWithNodes = (rootCategories || []).map(root => {
-    const nodes = (allNodes || [])
-      .filter(node => node.parent_id === root.id)
-      .map(node => {
-        // Calculate stats for this node
-        const nodeTopics = (allTopics || []).filter(t => t.category_id === node.id);
-        const lastTopic = nodeTopics[0];
-
-        return {
-          id: node.slug, // Use slug for routing
-          title: node.name,
-          description: node.description || '',
-          threadCount: nodeTopics.length.toLocaleString(),
-          messageCount: nodeTopics.length.toLocaleString(), // Placeholder until we have comment count
-          lastPost: lastTopic ? {
-            title: lastTopic.title,
-            author: lastTopic.author?.username || 'Anonim',
-            date: formatDistanceToNow(new Date(lastTopic.created_at), { addSuffix: true, locale: tr })
-          } : {
-            title: 'Henüz konu yok',
-            author: '-',
-            date: '-'
+            statsMap[cat.slug] = {
+              topicCount: totalTopics,
+              messageCount: totalTopics + totalComments,
+              lastPost: latestTopic ? {
+                title: latestTopic.title,
+                author: latestTopic.author?.username || 'Topluluk',
+                date: formatDistanceToNow(new Date(latestTopic.created_at), { addSuffix: true, locale: tr })
+              } : undefined
+            };
           }
-        };
-      });
 
-    return {
-      title: root.name.toUpperCase(),
-      nodes: nodes
-    };
-  });
+          setCategoryStats(statsMap);
+        }
+      } catch (err) {
+        console.error('Error fetching live category stats:', err);
+      }
+    }
 
-  const DEFAULT_CATEGORIES = [
+    fetchLiveCategoryStats();
+  }, []);
+
+  // Structured High-Value Forum Categories with Semantic Color Differentiation
+  const forumSections = [
     {
-      title: 'MEVZUAT, SOSYAL GÜVENLİK VE ENGELLİ HAKLARI',
+      title: 'HAKLAR, MEVZUAT VE RESMİ RAPORLAR',
+      description: 'Engelli hakları, Balthazard cetveli, ÖTV araç alım şartları ve erken emeklilik mevzuatları.',
+      accentColor: 'sky' as const,
       nodes: [
         {
           id: 'mevzuat-ve-haklar',
           title: 'Balthazard ve Sağlık Kurulu Raporları',
           description: 'Özür oranı cetveli, birden fazla engelin Balthazard formülü ile birleştirilmesi ve rapor itiraz süreçleri.',
-          threadCount: '142',
-          messageCount: '1,280',
-          lastPost: {
-            title: '2026 Balthazard Hesaplama ve Rapor Rehberi',
+          badge: 'Mevzuat Rehberi',
+          accentColor: 'sky' as const,
+          defaultLastPost: {
+            title: '2026-2027 Balthazard Hesaplama ve Rapor Rehberi',
             author: 'BoraMevzuat',
-            date: '2 saat önce'
+            date: 'Bugün'
           }
         },
         {
           id: 'otv-muafiyeti-ve-araclar',
           title: 'ÖTV Muafiyeti ve Özel Tertibatlı Araçlar',
-          description: '2026 yılı 2.247.100 TL ÖTV muafiyetli araç alım limiti, tertibat kodları, noter devir ve MTV muafiyeti.',
-          threadCount: '389',
-          messageCount: '4,150',
-          lastPost: {
+          description: '2026-2027 yılı 2.247.100 TL ÖTV muafiyetli araç alım limiti, tertibat kodları, noter devir ve MTV muafiyeti.',
+          badge: 'ÖTV 2.24M ₺',
+          accentColor: 'emerald' as const,
+          defaultLastPost: {
             title: '2026 ÖTV Üst Limiti ve Bayi Uygulamaları',
             author: 'EngelsizSurucu',
-            date: '15 dakika önce'
+            date: 'Bugün'
           }
         },
         {
           id: 'erken-emeklilik-ve-sgk',
           title: 'Engelli Erken Emeklilik ve SGK Hakları',
           description: 'Yaş haddi aranmaksızın kademeli erken emeklilik, prim günü ve sigortalılık süresi hesaplamaları.',
-          threadCount: '215',
-          messageCount: '1,890',
-          lastPost: {
+          badge: 'Yaş Şartsız',
+          accentColor: 'amber' as const,
+          defaultLastPost: {
             title: '4A / 4B / 4C Kademeli Emeklilik Tablosu',
             author: 'AriaA11y',
-            date: '3 saat önce'
+            date: 'Dün'
           }
         },
         {
           id: 'kamu-istihdam-ekpss',
           title: 'E-KPSS, Vergi İndirimi ve Kamuda İstihdam',
           description: 'E-KPSS atamaları, kura usulü yerleştirme, 1./2./3. derece gelir vergisi indirimi başvuruları.',
-          threadCount: '178',
-          messageCount: '2,340',
-          lastPost: {
+          badge: 'İstihdam',
+          accentColor: 'indigo' as const,
+          defaultLastPost: {
             title: '2026 E-KPSS Tercih Kılavuzu Duyurusu',
             author: 'FelixDev',
             date: 'Dün'
@@ -129,120 +132,215 @@ export default async function Home() {
       ]
     },
     {
-      title: 'SAĞLIK, REHABİLİTASYON VE MEDİKAL CİHAZLAR',
+      title: 'SAĞLIK, REHABİLİTASYON VE MEDİKAL TEKNOLOJİLER',
+      description: 'SGK SUT geri ödemeleri, protez/ortez destekleri ve erişilebilir tıbbi çözümler.',
+      accentColor: 'emerald' as const,
       nodes: [
         {
           id: 'ortez-protez-ve-cihazlar',
           title: 'Ortez, Protez ve Yardımcı Ekipmanlar',
           description: 'SGK SUT geri ödeme kapsamındaki akülü/manuel tekerlekli sandalyeler, biyonik protezler ve medikal cihazlar.',
-          threadCount: '96',
-          messageCount: '840',
-          lastPost: {
-            title: 'SGK SUT Akülü Sandalye Geri Ödeme Tutarları',
-            author: 'MiracBirben',
-            date: '5 saat önce'
+          badge: 'SUT Kapsamı',
+          accentColor: 'emerald' as const,
+          defaultLastPost: {
+            title: 'SGK 2026 Akülü Tekerlekli Sandalye Ödeme Tutarları',
+            author: 'MedikalDestek',
+            date: 'Bu hafta'
           }
         },
         {
           id: 'fizik-tedavi-ve-rehabilitasyon',
-          title: 'Fizik Tedavi ve Özel Eğitim Merkezleri',
-          description: 'RAM raporları, devlet destekli seans hakları ve nörolojik rehabilitasyon merkezleri deneyimleri.',
-          threadCount: '84',
-          messageCount: '620',
-          lastPost: {
-            title: 'Yetişkin Fizik Tedavi Raporu Yenileme',
-            author: 'DrRehab',
-            date: '2 gün önce'
+          title: 'Fizik Tedavi ve Rehabilitasyon Merkezleri',
+          description: 'Özel eğitim ve rehabilitasyon merkezleri (RAM), hidroterapi, robotik yürüme tedavileri ve tecrübeler.',
+          badge: 'Rehberlik',
+          accentColor: 'teal' as const,
+          defaultLastPost: {
+            title: 'Robotik Rehabilitasyon Deneyimleri ve Faydaları',
+            author: 'FizyoterapistAli',
+            date: 'Bu hafta'
           }
         }
       ]
     },
     {
-      title: 'TOPLULUK, GELİŞTİRİCİLER VE AÇIK STANDARTLAR',
+      title: 'ERİŞİLEBİLİR YAŞAM, MİMARİ VE TEKNOLOJİ',
+      description: 'Ekran okuyucular, mimari rampalar, dijital erişilebilirlik ve TEKNOFEST projeleri.',
+      accentColor: 'teal' as const,
       nodes: [
         {
-          id: 'genel-sohbet-ve-tanisma',
-          title: 'Engelsiz Sohbet ve Tanışma Köşesi',
-          description: 'Topluluk üyeleriyle serbest sohbet, başarı hikayeleri, kültür sanat ve günlük yaşam paylaşımları.',
-          threadCount: '512',
-          messageCount: '6,400',
-          lastPost: {
-            title: 'Aramıza Yeni Katılanlar Tanışma Başlığı',
-            author: 'AriaA11y',
-            date: '8 dakika önce'
+          id: 'teknofest-projeleri-ve-arge',
+          title: 'TEKNOFEST Engelsiz Yaşam Projeleri & AR-GE',
+          description: 'Gençlerin geliştirdiği yapay zeka destekli görme sistemleri, işaret dili çeviricileri ve haptik sensörler.',
+          badge: 'TEKNOFEST 2027',
+          accentColor: 'teal' as const,
+          defaultLastPost: {
+            title: 'TEKNOFEST 2027 Engelsiz Yaşam Kategorisi Fikir Havuzu',
+            author: 'MiracBirben',
+            date: 'Bugün'
           }
         },
         {
-          id: 'gelistirici-ve-api-entegrasyonlari',
-          title: 'Geliştiriciler & Açık API (OAuth 2.0 / WebMCP)',
-          description: 'EngelsizForum ile Giriş Yap, REST API, yapay zeka ajanları (WebMCP) ve açık veri entegrasyonları.',
-          threadCount: '47',
-          messageCount: '310',
-          lastPost: {
-            title: 'OAuth 2.0 Authorization Code Flow Canlıya Alındı',
-            author: 'BoraMevzuat',
-            date: 'Bugün'
+          id: 'dijital-erisim-ve-yazilim',
+          title: 'Ekran Okuyucular ve Dijital Erişilebilirlik',
+          description: 'NVDA, JAWS, VoiceOver, TalkBack kullanımı; web sitelerinde WCAG erişilebilirlik standartları.',
+          badge: 'WCAG AAA',
+          accentColor: 'indigo' as const,
+          defaultLastPost: {
+            title: 'NVDA 2026 Türkçe Eklentileri ve Ayar Rehberi',
+            author: 'AriaA11y',
+            date: 'Bu hafta'
           }
         }
       ]
     }
   ];
 
-  const displayCategories = categoriesWithNodes.length > 0 ? categoriesWithNodes : DEFAULT_CATEGORIES;
+  // Filter based on search input
+  const filteredSections = forumSections.map(section => ({
+    ...section,
+    nodes: section.nodes.filter(node => 
+      node.title.toLowerCase().includes(filterQuery.toLowerCase()) ||
+      node.description.toLowerCase().includes(filterQuery.toLowerCase())
+    )
+  })).filter(section => section.nodes.length > 0);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-5">
-      {/* Main Forum Content */}
-      <div className="flex-1 min-w-0">
-        <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-black text-[#185886] tracking-tight uppercase">
-              Engelsiz Forum - Topluluk ve Engelli Hakları
+    <div className="w-full space-y-6">
+      
+      {/* TEKNOFEST Showcase Banner */}
+      <TeknofestNotice />
+
+      {/* Hero Welcome with Color Differentiation & Action Hub */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-7 border-2 border-slate-200 dark:border-slate-800 shadow-xs">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-sky-100 dark:bg-sky-950/80 text-sky-900 dark:text-sky-300 border border-sky-300 dark:border-sky-800 text-xs font-black uppercase tracking-wider">
+              <Accessibility size={15} />
+              <span>Türkiye'nin İlk Tam Erişilebilir Forumu</span>
+            </div>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-950 dark:text-white tracking-tight">
+              Haklarını Öğren, Deneyimini Paylaş, Çözüm Üret.
             </h1>
-            <p className="text-xs text-slate-700 font-medium mt-1 max-w-2xl leading-relaxed">
-              Türkiye&apos;nin tam erişilebilir engelli topluluğu: Sağlık kurulu Balthazard hesaplama, 2026 ÖTV muafiyeti, erken emeklilik ve güncel mevzuat paylaşımları.
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+              EngelsizForum; engelli bireyler, aileleri, avukatlar ve mühendisleri bir araya getiren bağımsız, reklamsız ve WCAG 2.1 AAA standartlarında bir dayanışma platformudur.
             </p>
           </div>
-          <a 
-            href="/discussions/new" 
-            className="bg-[#b45309] hover:bg-[#92400e] text-white px-4.5 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-1.5 shrink-0 self-start sm:self-auto min-h-[36px]"
-          >
-            <span>Yeni Konu Aç</span>
-          </a>
-        </div>
 
-        {/* TEKNOFEST Özel Ziyaretçi & Kurucu Duyurusu */}
-        <TeknofestNotice />
-
-        {displayCategories.map((category) => (
-          <div key={category.title} className="mb-5">
-            <ClassicCategoryBlock 
-              title={category.title} 
-              nodes={category.nodes} 
-            />
-          </div>
-        ))}
-
-        {/* Legend */}
-        <div className="xf-block p-3 flex flex-wrap items-center gap-6 text-[11px] text-slate-500 uppercase tracking-wider font-semibold rounded-sm border border-slate-200 bg-white">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-slate-200 border border-slate-300"></div>
-            <span>Okunmamış mesaj yok</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-[#eef2f7] border border-[#cbd5e1] flex items-center justify-center">
-              <div className="w-1.5 h-1.5 bg-[#185886] rounded-full"></div>
-            </div>
-            <span>Okunmamış mesaj var</span>
+          {/* Quick Action Buttons with clear semantic contrast */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 shrink-0">
+            <Link href="/hesaplama">
+              <Button variant="info" size="default" className="gap-2">
+                <Calculator size={16} />
+                <span>Hesaplama Robotları</span>
+              </Button>
+            </Link>
+            <Link href="/new-thread">
+              <Button variant="primary" size="default" className="gap-2">
+                <MessageSquare size={16} />
+                <span>Yeni Konu Aç</span>
+              </Button>
+            </Link>
           </div>
         </div>
-
-        {/* 2026 Kapsamlı Engelli Hakları ve Mevzuat Rehberi (SEO & Bilgi Portalı) */}
-        <HomeSeoKnowledgeBase />
       </div>
 
-      {/* Right Sidebar */}
-      <ClassicSidebar />
+      {/* Main Forum Grid: Left Forum Nodes, Right Modern Sidebar */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Left Column: Category Blocks */}
+        <section className="lg:col-span-8 space-y-8" aria-label="Forum Kategorileri">
+          
+          {/* Quick Category Filter Input */}
+          <div className="flex items-center justify-between gap-4 bg-white dark:bg-slate-900 p-3 rounded-xl border-2 border-slate-200 dark:border-slate-800">
+            <div className="flex items-center gap-2 flex-1 relative">
+              <Search size={16} className="text-slate-400 absolute left-3" />
+              <input 
+                type="text" 
+                value={filterQuery}
+                onChange={(e) => setFilterQuery(e.target.value)}
+                placeholder="Kategorilerde filtrele (örn: ÖTV, Balthazard, SGK, RAM)..."
+                aria-label="Kategorileri filtrele"
+                className="w-full pl-9 pr-3 py-1.5 text-xs bg-transparent border-none text-slate-900 dark:text-white focus:outline-none placeholder-slate-400 font-semibold"
+              />
+            </div>
+            {filterQuery && (
+              <button 
+                onClick={() => setFilterQuery('')}
+                className="text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer"
+              >
+                Temizle
+              </button>
+            )}
+          </div>
+
+          {filteredSections.map((section, idx) => (
+            <div key={idx} className="space-y-3">
+              {/* Distinct Section Header */}
+              <div className="flex items-center justify-between border-b-2 border-slate-900 dark:border-slate-700 pb-2">
+                <div className="flex items-center gap-2.5">
+                  <span className={`w-3 h-3 rounded-full ${
+                    section.accentColor === 'sky' 
+                      ? 'bg-sky-600' 
+                      : section.accentColor === 'emerald' 
+                        ? 'bg-emerald-600' 
+                        : 'bg-teal-600'
+                  }`} />
+                  <h2 className="text-sm font-black text-slate-950 dark:text-white tracking-wide uppercase">
+                    {section.title}
+                  </h2>
+                </div>
+                <span className="text-[11px] font-bold text-slate-500">
+                  {section.nodes.length} Kategori
+                </span>
+              </div>
+
+              {/* Node Cards */}
+              <div className="space-y-3">
+                {section.nodes.map((node) => {
+                  const live = categoryStats[node.id];
+                  const liveTopicCount = live?.topicCount !== undefined ? String(live.topicCount) : '1';
+                  const liveMessageCount = live?.messageCount !== undefined ? String(live.messageCount) : '13';
+                  const liveLastPost = live?.lastPost || node.defaultLastPost;
+
+                  return (
+                    <ModernNodeCard
+                      key={node.id}
+                      id={node.id}
+                      title={node.title}
+                      description={node.description}
+                      threadCount={liveTopicCount}
+                      messageCount={liveMessageCount}
+                      badge={node.badge}
+                      accentColor={node.accentColor}
+                      lastPost={liveLastPost}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+
+          {filteredSections.length === 0 && (
+            <div className="p-8 text-center bg-white dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-800">
+              <p className="text-sm font-bold text-slate-600 dark:text-slate-400">
+                "{filterQuery}" aramasıyla eşleşen kategori bulunamadı.
+              </p>
+              <button 
+                onClick={() => setFilterQuery('')}
+                className="mt-3 text-xs font-black text-sky-700 underline cursor-pointer"
+              >
+                Tüm kategorileri göster
+              </button>
+            </div>
+          )}
+        </section>
+
+        {/* Right Column: High-Value Sidebar */}
+        <div className="lg:col-span-4">
+          <ClassicSidebar />
+        </div>
+
+      </div>
     </div>
   );
 }

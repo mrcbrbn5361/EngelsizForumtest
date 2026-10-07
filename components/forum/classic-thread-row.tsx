@@ -1,6 +1,6 @@
 'use client';
 
-import { Lock, Pin, MessageSquare, Eye } from 'lucide-react';
+import { Lock, Pin, MessageSquare, Eye, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { tr } from 'date-fns/locale';
@@ -31,59 +31,64 @@ export default function ClassicThreadRow({ topic }: ClassicThreadRowProps) {
   const authorId = topic.author?.id || '#';
 
   return (
-    <div className="flex bg-white border-b border-[#e2e8f0] hover:bg-[#f8fafc] transition-all duration-200 p-3 items-center min-h-[60px]">
-      {/* Author Avatar */}
-      <div className="w-12 shrink-0 hidden sm:block">
-        <div className="w-10 h-10 bg-[#eef2f7] rounded-full border border-[#cbd5e1] flex items-center justify-center text-[#185886] font-bold uppercase text-xs">
+    <div className="flex flex-col sm:flex-row bg-white dark:bg-slate-900 border-b-2 border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors p-4 sm:items-center justify-between gap-3">
+      {/* Author Avatar & Thread Info */}
+      <div className="flex items-start sm:items-center gap-3.5 flex-1 min-w-0">
+        <div className="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 flex items-center justify-center font-black uppercase text-xs shrink-0 mt-0.5 sm:mt-0">
           {authorName.substring(0, 2)}
         </div>
-      </div>
 
-      {/* Thread Info */}
-      <div className="flex-1 min-w-0 pr-4">
-        <h3 className="flex items-center gap-1.5 mb-0.5 m-0 font-bold text-[15px]">
-          {topic.is_pinned && <Pin size={12} className="text-emerald-600 shrink-0" aria-label="Sabit Konu" />}
-          {topic.is_locked && <Lock size={12} className="text-slate-400 shrink-0" aria-label="Kilitli Konu" />}
-          <Link href={`/discussions/${topic.id}`} className="text-[#185886] hover:text-[#104f75] hover:underline truncate block">
-            {topic.title}
-          </Link>
-        </h3>
-        <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-          <Link href={`/profile/${authorId}`} className="hover:underline font-bold text-[#0066a2]">
-            {authorName}
-          </Link>
-          <span className="text-slate-300">•</span>
-          <span>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="hidden md:flex w-32 shrink-0 flex-col justify-center text-center px-2 border-l border-r border-[#e2e8f0]">
-        <div className="text-[12px] font-mono text-slate-500">
-          <span className="text-slate-400 mr-1">Cevap:</span>
-          <span className="font-bold text-slate-700">{topic.replyCount}</span>
-        </div>
-        <div className="text-[12px] font-mono text-slate-500">
-          <span className="text-slate-400 mr-1">Gör:</span>
-          <span className="font-bold text-slate-700">{topic.viewCount}</span>
-        </div>
-      </div>
-
-      {/* Last Post */}
-      <div className="hidden lg:flex w-48 shrink-0 flex-col justify-center pl-4 text-[12px]">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-[#eef2f7] rounded shrink-0 border border-[#cbd5e1] flex items-center justify-center text-[#185886] font-bold text-[10px] uppercase">
-            {(topic.lastReply?.author || authorName).substring(0, 2)}
+        <div className="space-y-1 min-w-0 flex-1">
+          <h3 className="flex items-center gap-1.5 m-0 font-bold text-sm text-slate-950 dark:text-white">
+            {topic.is_pinned && <Pin size={13} className="text-emerald-600 shrink-0 fill-emerald-600" aria-label="Sabit Konu" />}
+            {topic.is_locked && <Lock size={13} className="text-slate-400 shrink-0" aria-label="Kilitli Konu" />}
+            <Link 
+              href={`/discussions/${topic.id}`} 
+              className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors truncate block"
+            >
+              {topic.title}
+            </Link>
+          </h3>
+          <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-500 font-medium">
+            <span>Başlatan:</span>
+            <Link href={`/profile/${authorId}`} className="font-bold text-sky-700 dark:text-sky-400 hover:underline">
+              @{authorName}
+            </Link>
+            <span>&bull;</span>
+            <span>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
           </div>
-          <div className="flex flex-col min-w-0">
-            <span className="font-bold text-[#0066a2] truncate">
-              {topic.lastReply?.author || authorName}
+        </div>
+      </div>
+
+      {/* Stats & Actions */}
+      <div className="flex items-center justify-between sm:justify-end gap-5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
+        <div className="flex items-center gap-4 text-center">
+          <div className="space-y-0.5">
+            <span className="block text-xs font-black text-slate-900 dark:text-slate-100 font-mono">
+              {topic.replyCount}
             </span>
-            <span className="text-slate-400 text-[10px]">
-              {topic.lastReply?.date || formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}
+            <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+              Yanıt
+            </span>
+          </div>
+          <div className="h-6 w-px bg-slate-200 dark:bg-slate-800" />
+          <div className="space-y-0.5">
+            <span className="block text-xs font-black text-slate-900 dark:text-slate-100 font-mono">
+              {topic.viewCount}
+            </span>
+            <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+              Görüntüleme
             </span>
           </div>
         </div>
+
+        <Link 
+          href={`/discussions/${topic.id}`}
+          className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-sky-100 dark:hover:bg-sky-950 text-slate-600 dark:text-slate-400 hover:text-sky-700 flex items-center justify-center transition-colors shrink-0"
+          aria-label={`${topic.title} konusunu oku`}
+        >
+          <ChevronRight size={16} />
+        </Link>
       </div>
     </div>
   );

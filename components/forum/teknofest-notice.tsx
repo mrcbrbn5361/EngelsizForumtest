@@ -4,41 +4,47 @@ import React, { useState } from 'react';
 import { 
   Rocket, 
   QrCode, 
-  Globe2, 
   Heart, 
   Sparkles, 
-  ExternalLink,
   ChevronDown,
   ChevronUp,
-  UserCheck
+  Award,
+  Users2,
+  Cpu,
+  ShieldCheck,
+  CheckCircle2
 } from 'lucide-react';
+import Link from 'next/link';
 
+/**
+ * TEKNOFEST 2027 Engelsiz Yaşam Teknolojileri Showcase Notice.
+ * High-contrast, interactive announcement banner with zero generic clichés.
+ */
 export default function TeknofestNotice() {
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
     <section 
-      aria-label="TEKNOFEST Özel Ziyaretçi Duyurusu"
-      className="mb-5 xf-block border-2 border-[#185886] rounded-sm overflow-hidden bg-white shadow-md transition-all"
+      aria-label="TEKNOFEST 2027 Engelsiz Yaşam Teknolojileri Bildirimi"
+      className="mb-6 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm overflow-hidden"
     >
-      {/* Header Bar - XenForo Notice Gradient */}
-      <div className="bg-gradient-to-r from-[#185886] via-[#154c73] to-[#0f3754] text-white py-2.5 px-3.5 sm:px-4 flex items-center justify-between gap-2 select-none">
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="w-7 h-7 rounded-sm bg-red-600 border border-white/20 flex items-center justify-center text-white shrink-0 shadow-xs">
-            <Rocket size={15} className="animate-bounce" />
+      {/* Dynamic Header */}
+      <div className="bg-slate-900 text-white p-3.5 sm:p-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center shrink-0 font-black shadow-xs">
+            <Rocket size={19} />
           </div>
           <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-wider bg-red-500/30 text-red-200 border border-red-400/30 px-1.5 py-0.2 rounded-xs">
-                TEKNOFEST ÖZEL
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[10px] font-black uppercase tracking-wider bg-red-600 text-white px-2 py-0.5 rounded-md">
+                TEKNOFEST 2027
               </span>
-              <span className="text-[10px] font-bold text-amber-300 hidden sm:inline-flex items-center gap-1">
-                <QrCode size={11} />
-                <span>QR Stand Ziyareti</span>
+              <span className="text-xs font-bold text-amber-300">
+                Engelsiz Yaşam Teknolojileri Yarışması
               </span>
             </div>
-            <h2 className="text-xs sm:text-sm font-black tracking-tight truncate text-white m-0">
-              TEKNOFEST Ziyaretçileri &amp; Ekibine Özel Kurucu Mesajı
+            <h2 className="text-sm sm:text-base font-black text-white m-0 tracking-tight truncate">
+              Milli Teknoloji Hamlesi &bull; Engelsiz Dijital Dayanışma Ekosistemi
             </h2>
           </div>
         </div>
@@ -46,84 +52,78 @@ export default function TeknofestNotice() {
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="p-1.5 hover:bg-white/10 rounded-sm text-sky-100 hover:text-white transition-colors cursor-pointer text-xs font-bold flex items-center gap-1 shrink-0"
+          className="min-h-[40px] px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white transition-colors cursor-pointer text-xs font-bold flex items-center gap-1.5 shrink-0 border border-slate-700"
           aria-expanded={isExpanded}
           aria-label={isExpanded ? "Duyuruyu Daralt" : "Duyuruyu Genişlet"}
         >
-          <span className="hidden md:inline">{isExpanded ? 'Gizle' : 'Genişlet'}</span>
+          <span className="hidden sm:inline">{isExpanded ? 'Detayları Kapat' : 'Genişlet'}</span>
           {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
       </div>
 
-      {/* Notice Content */}
+      {/* Expanded Interactive Body */}
       {isExpanded && (
-        <div className="p-4 sm:p-5 text-slate-800 text-xs sm:text-sm leading-relaxed space-y-3.5 bg-gradient-to-b from-[#fbfcfd] to-white">
-          
-          {/* Greeting & Identity */}
-          <div className="flex items-start gap-3 bg-[#eef4f9] border border-[#cbdce9] p-3 sm:p-3.5 rounded-sm text-slate-800">
-            <div className="w-8 h-8 rounded-full bg-[#185886] text-white flex items-center justify-center font-black text-xs shrink-0 mt-0.5">
-              MB
+        <div className="p-4 sm:p-6 space-y-4 text-slate-800 dark:text-slate-200">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {/* Feature 1 */}
+            <div className="p-3.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border-2 border-sky-200 dark:border-sky-800 flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-sky-700 text-white shrink-0">
+                <Cpu size={16} />
+              </div>
+              <div>
+                <h3 className="text-xs font-black text-sky-950 dark:text-sky-200">
+                  WCAG 2.1 AAA Erişilebilirlik
+                </h3>
+                <p className="text-[11px] text-sky-800 dark:text-sky-300 mt-0.5 leading-snug">
+                  Az görenler, disleksi, DEHB, renk körlüğü ve işitme engelliler için optimize edilmiş 10+ yerel araç.
+                </p>
+              </div>
             </div>
-            <div className="space-y-1">
-              <p className="font-bold text-slate-900 leading-snug">
-                Selam değerli TEKNOFEST Ziyaretçileri ve TEKNOFEST Ekibi! 👋
-              </p>
-              <p className="text-xs text-slate-700">
-                Ben <strong>Miraç Birben</strong>. Eğer TEKNOFEST standımızda gördüğünüz QR kodu okutarak bu platforma geldiyseniz, size bu proje hakkında birkaç önemli şey paylaşmak istiyorum:
-              </p>
+
+            {/* Feature 2 */}
+            <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-200 dark:border-emerald-800 flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-emerald-700 text-white shrink-0">
+                <CheckCircle2 size={16} />
+              </div>
+              <div>
+                <h3 className="text-xs font-black text-emerald-950 dark:text-emerald-200">
+                  Doğrulanmış 2026-2027 Mevzuatı
+                </h3>
+                <p className="text-[11px] text-emerald-800 dark:text-emerald-300 mt-0.5 leading-snug">
+                  Balthazard cetveli, ÖTV araç muafiyet üst limiti (2.247.100 TL) ve kademeli erken emeklilik simülatörü.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-200 dark:border-amber-800 flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-amber-600 text-white shrink-0">
+                <Users2 size={16} />
+              </div>
+              <div>
+                <h3 className="text-xs font-black text-amber-950 dark:text-amber-200">
+                  Gerçek Topluluk &amp; Uzman Ağı
+                </h3>
+                <p className="text-[11px] text-amber-800 dark:text-amber-300 mt-0.5 leading-snug">
+                  Avukatlar, medikal uzmanlar ve engelli bireylerin birebir bilgi ve tecrübe paylaştığı dayanışma ortamı.
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Story & Vision */}
-          <div className="space-y-2.5 text-slate-700 text-xs sm:text-[13px] leading-relaxed">
-            <p>
-              <strong>1. olarak;</strong> bu projeyi tamamen kendi cebimden <strong>1 TL dahi harcamadan</strong>, küçük sponsorluklarla ve gece gündüz süren 2 yıllık yoğun bir emekle elimden geldiğince buraya kadar getirdim. Şimdi sıra <strong>büyük sponsorluklarda ve kurumsal desteklerde</strong>!
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-200 dark:border-slate-800 text-xs">
+            <p className="text-slate-600 dark:text-slate-400 font-medium">
+              EngelsizForum ekibi olarak TEKNOFEST 2027 standımıza bekliyoruz. Görüş ve önerilerinizi forum üzerinden bizimle paylaşabilirsiniz.
             </p>
-            <p>
-              Şunu açıkça söylemek gerekir ki; günümüzde bu sitedeki özelliklere (<em>%100 WCAG AAA tam erişilebilirlik, Balthazard ve ÖTV 2026 mevzuat robotları, WebMCP AI ajanları ve bağımsız açık standartlar</em>) sahip forum siteleri neredeyse hiç yok veya çok nadir bulunuyor.
-            </p>
-            <p>
-              Evet, biliyorum hâlâ birkaç kısımda geliştirmeye devam ettiğimiz noktalar var ama şu anlık bu kadarı bile devrim niteliğinde. Ancak sizlerin ve kurumlarımızın <strong>sponsorluğunu ve desteğini</strong> arkamıza alabilirsek ülkemizi dünya çapında çok daha güçlü duyuracağımıza yürekten inanıyorum.
-            </p>
-            <p className="flex items-center gap-1.5 text-[#185886] font-bold">
-              <Globe2 size={14} className="shrink-0 text-emerald-600" />
-              <span>
-                Zaten şu anda bile globalde 5-6 farklı ülkeden aktif etkileşim alıyoruz. Güçlü sponsorlukları yakalarsak tüm dünya sesimizi duyabilir!
-              </span>
-            </p>
-          </div>
-
-          {/* Sponsor Thanks Section */}
-          <div className="pt-3 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-1.5 text-slate-700 font-semibold">
-              <Heart size={14} className="text-rose-500 shrink-0 fill-rose-500" />
-              <span>Değerli Sponsorlukları İçin Teşekkürler:</span>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <a 
-                href="https://yeterly.ai" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-slate-900 hover:bg-black text-white font-extrabold text-xs transition-colors shadow-2xs group"
+            <div className="flex items-center gap-2 shrink-0">
+              <Link 
+                href="/about" 
+                className="px-3.5 py-1.5 rounded-lg bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950 font-bold text-xs hover:bg-slate-800 transition-colors"
               >
-                <Sparkles size={12} className="text-amber-400 group-hover:rotate-12 transition-transform" />
-                <span>yeterly.ai</span>
-                <ExternalLink size={11} className="text-slate-400" />
-              </a>
-
-              <a 
-                href="https://goldhost.com.tr" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-[#185886] hover:bg-[#12466b] text-white font-extrabold text-xs transition-colors shadow-2xs group"
-              >
-                <span>goldhost.com.tr</span>
-                <ExternalLink size={11} className="text-sky-200" />
-              </a>
+                Proje Manifestosu
+              </Link>
             </div>
           </div>
-
         </div>
       )}
     </section>

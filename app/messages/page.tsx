@@ -29,7 +29,7 @@ export default function MessagesPage() {
 
 function MessagesContent() {
   const searchParams = useSearchParams();
-  const targetUserId = searchParams.get('userId');
+  const targetUserId = searchParams?.get('userId');
 
   const { user, profile, loading: authLoading } = useAuth();
   const [conversations, setConversations] = useState<any[]>([]);

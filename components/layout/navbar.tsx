@@ -182,7 +182,7 @@ export function Navbar() {
             id="navbar-messages-icon-link"
             className={cn(
               "flex items-center justify-center rounded-lg h-8.5 w-8.5 sm:h-9 sm:w-9 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-sky-500 shrink-0 cursor-pointer",
-              pathname === '/messages' || pathname.startsWith('/messages/')
+              pathname === '/messages' || (pathname ? pathname.startsWith('/messages/') : false)
                 ? "bg-sky-500/15 text-sky-400 border border-sky-500/30"
                 : "text-slate-300 hover:bg-[#161f33] hover:text-sky-400"
             )}
@@ -450,7 +450,7 @@ export function Navbar() {
 
 function NavLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
   const pathname = usePathname();
-  const isActive = href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href + '/');
+  const isActive = href === '/' ? pathname === '/' : pathname === href || (pathname ? pathname.startsWith(href + '/') : false);
   
   return (
     <Link

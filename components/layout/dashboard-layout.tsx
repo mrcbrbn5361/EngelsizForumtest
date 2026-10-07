@@ -64,7 +64,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   const NavItem = ({ href, icon: Icon, label }: { href: string; icon: React.ComponentType<{ size?: number; className?: string }>; label: string }) => {
-    const isActive = href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(href + '/');
+    const isActive = href === '/' ? pathname === '/' : pathname === href || (pathname ? pathname.startsWith(href + '/') : false);
     return (
       <Link 
         href={href} 

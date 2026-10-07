@@ -14,11 +14,11 @@ export default function AuthPortalPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
   
-  const initialTab = searchParams.get('tab') === 'register' ? 'register' : 'login';
+  const initialTab = searchParams?.get('tab') === 'register' ? 'register' : 'login';
   const [activeTab, setActiveTab] = useState<'login' | 'register'>(initialTab);
 
   useEffect(() => {
-    const tabParam = searchParams.get('tab');
+    const tabParam = searchParams?.get('tab');
     if (tabParam === 'register' || tabParam === 'login') {
       setActiveTab(tabParam);
     }

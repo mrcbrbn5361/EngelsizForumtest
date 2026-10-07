@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation';
 import ClassicThreadRow from '@/components/forum/classic-thread-row';
 import ClassicSidebar from '@/components/forum/classic-sidebar';
 import Link from 'next/link';
-import { ChevronRight, Home, MessageSquare } from 'lucide-react';
+import { ChevronRight, Home, MessageSquare, PlusCircle, Folder } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -93,78 +94,82 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   }));
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5 max-w-7xl mx-auto w-full">
       {/* Breadcrumbs */}
-      <div className="bg-[#eef2f7] px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm mb-4">
-        <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1">
-          <Home size={12} />
-          Ana Sayfa
+      <div className="bg-white dark:bg-slate-900 px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
+        <Link href="/" className="hover:text-sky-600 flex items-center gap-1 font-bold">
+          <Home size={14} />
+          <span>Ana Sayfa</span>
         </Link>
-        <span className="opacity-50">/</span>
-        <Link href="/" className="hover:text-[#185886] hover:underline">Forumlar</Link>
+        <span className="opacity-40">/</span>
+        <Link href="/" className="hover:text-sky-600 font-semibold">Kategoriler</Link>
         {parentCategory && (
           <>
-            <span className="opacity-50">/</span>
-            <Link href={`/category/${parentCategory.slug}`} className="hover:text-[#185886] hover:underline">{parentCategory.name}</Link>
+            <span className="opacity-40">/</span>
+            <Link href={`/category/${parentCategory.slug}`} className="hover:text-sky-600 font-semibold">{parentCategory.name}</Link>
           </>
         )}
-        <span className="opacity-50">/</span>
-        <span className="font-bold text-slate-800">{category.name}</span>
+        <span className="opacity-40">/</span>
+        <span className="font-extrabold text-slate-950 dark:text-white">{category.name}</span>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-5">
-        <div className="flex-1 min-w-0">
-          <div className="mb-4 flex items-center justify-between">
-            <h1 className="text-xl font-black text-[#185886] uppercase tracking-wide">{category.name}</h1>
-            <Link 
-              href="/discussions/new" 
-              className="bg-[#b45309] hover:bg-[#92400e] text-white px-4.5 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 min-h-[36px]"
-            >
-              <span>Yeni Konu Aç</span>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="lg:col-span-8 space-y-6">
+          
+          {/* Header Card */}
+          <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 flex items-center justify-center shrink-0">
+                <Folder size={24} />
+              </div>
+              <div className="space-y-1">
+                <h1 className="text-lg sm:text-xl font-black text-slate-950 dark:text-white tracking-tight">
+                  {category.name}
+                </h1>
+                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                  {category.description || 'Bu kategori altındaki güncel tartışmalar ve topluluk paylaşımları.'}
+                </p>
+              </div>
+            </div>
+
+            <Link href="/new-thread" className="shrink-0">
+              <Button variant="primary" size="default" className="gap-2 font-bold w-full sm:w-auto">
+                <PlusCircle size={15} />
+                <span>Yeni Konu Aç</span>
+              </Button>
             </Link>
           </div>
 
-          <div className="xf-block rounded-sm overflow-hidden border border-slate-200 bg-white shadow-sm">
-            <h2 className="xf-block-header bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 py-3 px-4 m-0">
-              <div className="flex items-center gap-2 text-[#185886] font-black text-sm">
-                <MessageSquare size={14} />
-                KONULAR
+          {/* Topics List Card */}
+          <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs">
+            <div className="bg-slate-900 text-white py-3.5 px-5 flex items-center justify-between border-b-2 border-slate-800">
+              <div className="flex items-center gap-2 font-black text-xs uppercase tracking-wider">
+                <MessageSquare size={15} className="text-sky-400" />
+                <span>TARTIŞMA KONULARI</span>
               </div>
-            </h2>
+              <span className="text-xs font-bold text-slate-400 font-mono">
+                {topicsWithStats.length} Konu
+              </span>
+            </div>
             
-            <div className="flex flex-col">
+            <div className="divide-y-2 divide-slate-100 dark:divide-slate-800">
               {topicsWithStats.length > 0 ? (
                 topicsWithStats.map((topic) => (
                   <ClassicThreadRow key={topic.id} topic={topic} />
                 ))
               ) : (
-                <div className="p-10 text-center text-slate-500 bg-slate-50/50 italic border-b border-slate-100 text-xs">
-                  Bu kategoride henüz konu açılmamış.
+                <div className="p-12 text-center text-slate-500 bg-slate-50/50 dark:bg-slate-950/30 text-xs font-bold">
+                  Bu kategoride henüz konu açılmamış. İlk konuyu siz açabilirsiniz!
                 </div>
               )}
             </div>
           </div>
 
-          {/* Bottom Breadcrumbs */}
-          <div className="mt-6 bg-[#eef2f7] px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm">
-            <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1">
-              <Home size={12} />
-              Ana Sayfa
-            </Link>
-            <span className="opacity-50">/</span>
-            <Link href="/" className="hover:text-[#185886] hover:underline">Forumlar</Link>
-            {parentCategory && (
-              <>
-                <span className="opacity-50">/</span>
-                <Link href={`/category/${parentCategory.slug}`} className="hover:text-[#185886] hover:underline">{parentCategory.name}</Link>
-              </>
-            )}
-            <span className="opacity-50">/</span>
-            <span className="font-bold text-slate-800">{category.name}</span>
-          </div>
         </div>
 
-        <ClassicSidebar />
+        <div className="lg:col-span-4">
+          <ClassicSidebar />
+        </div>
       </div>
     </div>
   );

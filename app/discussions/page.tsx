@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, Suspense, useRef } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import { 
-  Search, Plus, Sparkles, MessageSquare, Mic, Loader2, X,
-  Filter, ChevronRight, Home, CheckCircle2, Pin, Flame
+  Search, Plus, MessageSquare, Mic, Loader2, X,
+  Filter, Home, CheckCircle2, Pin
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import ClassicThreadRow from '@/components/forum/classic-thread-row';
 import ClassicSidebar from '@/components/forum/classic-sidebar';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { expandSearchQuery, matchQueryWithText } from '@/lib/search-dictionary';
 
@@ -126,7 +127,6 @@ function DiscussionsContent() {
     fetchTopics(false);
   }, [selectedCategory, activeTab]);
 
-  // Sync category from search params
   useEffect(() => {
     const cat = searchParams?.get('kategori');
     if (cat !== null && cat !== undefined && cat !== selectedCategory) {
@@ -134,7 +134,6 @@ function DiscussionsContent() {
     }
   }, [searchParams]);
 
-  // Voice Search handler
   const startVoiceSearch = () => {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       toast.error('Tarayıcınız ses tanımayı desteklemiyor.');
@@ -157,7 +156,6 @@ function DiscussionsContent() {
     recognition.start();
   };
 
-  // Local filter for quick search
   const filteredTopics = topics.filter(topic => {
     if (!searchQuery.trim()) return true;
     const terms = expandSearchQuery(searchQuery);
@@ -165,76 +163,73 @@ function DiscussionsContent() {
   });
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* XenForo Breadcrumbs */}
-      <div className="bg-[#eef2f7] px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm mb-2">
-        <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 font-semibold">
-          <Home size={12} />
-          Ana Sayfa
+    <div className="flex flex-col gap-5 max-w-7xl mx-auto w-full">
+      {/* Breadcrumbs */}
+      <div className="bg-white dark:bg-slate-900 px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
+        <Link href="/" className="hover:text-sky-600 flex items-center gap-1 font-bold">
+          <Home size={14} />
+          <span>Ana Sayfa</span>
         </Link>
-        <span className="opacity-50">/</span>
-        <Link href="/" className="hover:text-[#185886] hover:underline font-semibold">Forumlar</Link>
-        <span className="opacity-50">/</span>
-        <span className="font-bold text-slate-800">Tartışmalar &amp; Danışma</span>
+        <span className="opacity-40">/</span>
+        <span className="font-extrabold text-slate-950 dark:text-white">Tartışmalar &amp; Dayanışma</span>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Main Feed Column */}
-        <div className="flex-1 min-w-0 space-y-4">
+        <div className="lg:col-span-8 space-y-5">
           
-          {/* Header & New Thread Button */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
-            <div>
-              <h1 className="text-xl font-black text-[#185886] uppercase tracking-wide flex items-center gap-2">
-                <MessageSquare size={20} className="text-[#185886]" />
-                Topluluk Tartışmaları
+          {/* Header Card */}
+          <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-950 dark:text-white tracking-tight flex items-center gap-2">
+                <MessageSquare size={22} className="text-sky-600 dark:text-sky-400" />
+                <span>Topluluk Tartışmaları</span>
               </h1>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Mevzuat, ÖTV 2026, erken emeklilik ve engelsiz yaşam tecrübeleri
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
+                Mevzuat, Balthazard formülü, ÖTV 2026, erken emeklilik ve erişilebilir yaşam tecrübeleri
               </p>
             </div>
-            <Link 
-              href="/discussions/new" 
-              className="bg-[#f2930d] hover:bg-[#d5800a] text-white px-4.5 py-2.5 rounded-sm text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-1.5 shrink-0"
-            >
-              <Plus size={14} />
-              <span>Yeni Konu Aç</span>
+            <Link href="/new-thread" className="shrink-0">
+              <Button variant="primary" size="default" className="gap-2 font-bold w-full sm:w-auto">
+                <Plus size={15} />
+                <span>Yeni Konu Aç</span>
+              </Button>
             </Link>
           </div>
 
-          {/* XenForo Filter & Search Toolbar */}
-          <div className="bg-white border border-slate-200 rounded-sm p-3 flex flex-col md:flex-row gap-3 items-center justify-between shadow-2xs">
-            {/* XenForo Navigation Tabs */}
-            <div className="flex items-center gap-1 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+          {/* Filter Toolbar */}
+          <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-3.5 flex flex-col md:flex-row gap-3 items-center justify-between shadow-xs">
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
               <button
                 onClick={() => setActiveTab('all')}
-                className={`px-3 py-1.5 text-xs font-bold rounded-sm uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg uppercase tracking-wider transition-colors cursor-pointer whitespace-nowrap ${
                   activeTab === 'all'
-                    ? 'bg-[#185886] text-white shadow-2xs'
-                    : 'bg-[#eef2f7] hover:bg-slate-200 text-slate-700'
+                    ? 'bg-sky-600 text-white shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
                 }`}
               >
                 Tümü
               </button>
               <button
                 onClick={() => setActiveTab('solved')}
-                className={`px-3 py-1.5 text-xs font-bold rounded-sm uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap ${
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   activeTab === 'solved'
-                    ? 'bg-emerald-700 text-white shadow-2xs'
-                    : 'bg-[#eef2f7] hover:bg-slate-200 text-slate-700'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
                 }`}
               >
-                <CheckCircle2 size={12} /> Çözülenler
+                <CheckCircle2 size={13} /> Çözülenler
               </button>
               <button
                 onClick={() => setActiveTab('pinned')}
-                className={`px-3 py-1.5 text-xs font-bold rounded-sm uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap ${
+                className={`px-3 py-1.5 text-xs font-bold rounded-lg uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
                   activeTab === 'pinned'
-                    ? 'bg-[#185886] text-white shadow-2xs'
-                    : 'bg-[#eef2f7] hover:bg-slate-200 text-slate-700'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
                 }`}
               >
-                <Pin size={12} /> Sabitler
+                <Pin size={13} /> Sabitler
               </button>
             </div>
 
@@ -243,7 +238,7 @@ function DiscussionsContent() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="h-8 bg-slate-50 border border-slate-300 rounded-sm px-2 text-xs font-semibold text-slate-700 focus:outline-none focus:border-[#185886] cursor-pointer max-w-[180px]"
+                className="h-9 bg-slate-50 dark:bg-slate-950/60 border-2 border-slate-200 dark:border-slate-800 rounded-xl px-2.5 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-600 cursor-pointer max-w-[180px]"
                 aria-label="Kategoriye göre filtrele"
               >
                 <option value="">Tüm Kategoriler</option>
@@ -258,90 +253,79 @@ function DiscussionsContent() {
                   placeholder="Başlıkta filtrele..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full h-8 pl-7 pr-7 bg-slate-50 border border-slate-300 rounded-sm text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#185886]"
+                  className="w-full h-9 pl-8 pr-7 bg-slate-50 dark:bg-slate-950/60 border-2 border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:border-sky-600"
                 />
-                <Search size={12} className="absolute left-2 top-2.5 text-slate-400" />
+                <Search size={14} className="absolute left-2.5 top-2.5 text-slate-400" />
                 {searchQuery ? (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-2 top-2 text-slate-400 hover:text-slate-600"
+                    className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 cursor-pointer"
                     title="Temizle"
                   >
-                    <X size={12} />
+                    <X size={13} />
                   </button>
                 ) : (
                   <button
                     onClick={startVoiceSearch}
-                    className={`absolute right-1.5 top-1 p-1 text-slate-400 hover:text-[#185886] ${isListening ? 'text-rose-600 animate-pulse' : ''}`}
+                    className={`absolute right-2 top-2 p-0.5 text-slate-400 hover:text-sky-600 cursor-pointer ${isListening ? 'text-rose-600 animate-pulse' : ''}`}
                     title="Sesli Ara"
                   >
-                    <Mic size={12} />
+                    <Mic size={14} />
                   </button>
                 )}
               </div>
             </div>
           </div>
 
-          {/* XenForo Thread List Container */}
-          <div className="xf-block rounded-sm overflow-hidden border border-slate-200 bg-white shadow-sm">
-            {/* Table Header */}
-            <div className="xf-block-header bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 py-3 px-4 flex items-center justify-between text-[#185886] font-black text-xs uppercase tracking-wider">
-              <div className="flex items-center gap-2">
-                <MessageSquare size={13} />
-                <span>KONULAR</span>
+          {/* Thread List Card */}
+          <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs">
+            <div className="bg-slate-900 text-white py-3.5 px-5 flex items-center justify-between border-b-2 border-slate-800">
+              <div className="flex items-center gap-2 font-black text-xs uppercase tracking-wider">
+                <MessageSquare size={15} className="text-sky-400" />
+                <span>GÜNCEL TARTIŞMALAR</span>
               </div>
-              <div className="hidden md:flex items-center gap-12 pr-6 text-slate-500 font-bold text-[11px]">
-                <span>CEVAP / GÖRÜNTÜLENME</span>
-                <span className="w-28 text-left">SON MESAJ</span>
-              </div>
+              <span className="text-xs font-bold text-slate-400 font-mono">
+                {filteredTopics.length} Konu
+              </span>
             </div>
 
-            {/* Thread Rows */}
-            <div className="flex flex-col divide-y divide-slate-100">
+            <div className="divide-y-2 divide-slate-100 dark:divide-slate-800">
               {loading && topics.length === 0 ? (
                 <div className="p-12 text-center text-slate-500 flex flex-col items-center justify-center gap-2">
-                  <Loader2 size={24} className="animate-spin text-[#185886]" />
-                  <span className="text-xs font-medium">Tartışmalar yükleniyor...</span>
+                  <Loader2 size={24} className="animate-spin text-sky-600" />
+                  <span className="text-xs font-semibold">Tartışmalar yükleniyor...</span>
                 </div>
               ) : filteredTopics.length > 0 ? (
                 filteredTopics.map((topic) => (
                   <ClassicThreadRow key={topic.id} topic={topic} />
                 ))
               ) : (
-                <div className="p-12 text-center text-slate-500 italic text-xs bg-slate-50/50">
+                <div className="p-12 text-center text-slate-500 dark:text-slate-400 text-xs font-bold bg-slate-50/50 dark:bg-slate-950/20">
                   Arama kriterlerinize uygun tartışma konusu bulunamadı.
                 </div>
               )}
             </div>
           </div>
 
-          {/* Pagination / Load More */}
+          {/* Load More Button */}
           {hasMore && !loading && (
             <div className="text-center pt-2">
-              <button
+              <Button
                 onClick={() => fetchTopics(true)}
-                className="bg-white hover:bg-slate-50 text-[#185886] border border-slate-300 px-6 py-2 rounded-sm text-xs font-extrabold uppercase tracking-wider transition-all shadow-2xs cursor-pointer"
+                variant="secondary"
+                size="default"
+                className="font-bold text-xs"
               >
                 Daha Fazla Tartışma Göster
-              </button>
+              </Button>
             </div>
           )}
-
-          {/* Bottom Breadcrumbs */}
-          <div className="bg-[#eef2f7] px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm mt-4">
-            <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 font-semibold">
-              <Home size={12} />
-              Ana Sayfa
-            </Link>
-            <span className="opacity-50">/</span>
-            <Link href="/" className="hover:text-[#185886] hover:underline font-semibold">Forumlar</Link>
-            <span className="opacity-50">/</span>
-            <span className="font-bold text-slate-800">Tartışmalar &amp; Danışma</span>
-          </div>
         </div>
 
         {/* Right Sidebar */}
-        <ClassicSidebar />
+        <div className="lg:col-span-4">
+          <ClassicSidebar />
+        </div>
       </div>
     </div>
   );
@@ -351,7 +335,7 @@ export default function DiscussionsPage() {
   return (
     <Suspense fallback={
       <div className="p-12 text-center flex flex-col items-center justify-center gap-3">
-        <Loader2 size={24} className="animate-spin text-[#185886]" />
+        <Loader2 size={24} className="animate-spin text-sky-600" />
         <span className="text-xs text-slate-500 font-bold uppercase tracking-wider">Yükleniyor...</span>
       </div>
     }>
