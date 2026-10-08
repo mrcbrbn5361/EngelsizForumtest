@@ -177,7 +177,7 @@ export default function ErkenEmeklilikPage() {
       </div>
 
       {/* Başlık ve Girdi Formu */}
-      <div className="bg-white rounded-md border border-slate-200 p-5 shadow-xs">
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded bg-purple-50 text-purple-700 flex items-center justify-center font-black">
@@ -210,7 +210,7 @@ export default function ErkenEmeklilikPage() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-[#185886]"
+              className="w-full px-3 py-2 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
             />
             <span className="text-[11px] text-slate-500 mt-1 block">
               Adınıza ilk primin yattığı gün
@@ -225,7 +225,7 @@ export default function ErkenEmeklilikPage() {
             <select
               value={insuranceType}
               onChange={(e) => setInsuranceType(e.target.value as InsuranceType)}
-              className="w-full px-3 py-2.5 rounded border border-slate-300 bg-white text-slate-900 text-xs font-semibold focus:outline-none focus:border-[#185886]"
+              className="w-full px-3 py-2.5 rounded border border-slate-300 bg-white text-slate-900 text-xs font-semibold focus:outline-none focus:border-sky-600"
             >
               <option value="4a">4A - SSK (Hizmet Akdiyle Çalışanlar)</option>
               <option value="4b">4B - Bağ-Kur (Esnaf / Kendi Adına Çalışanlar)</option>
@@ -244,7 +244,7 @@ export default function ErkenEmeklilikPage() {
             <select
               value={disabilityDegree}
               onChange={(e) => setDisabilityDegree(parseInt(e.target.value, 10))}
-              className="w-full px-3 py-2.5 rounded border border-slate-300 bg-white text-slate-900 text-xs font-semibold focus:outline-none focus:border-[#185886]"
+              className="w-full px-3 py-2.5 rounded border border-slate-300 bg-white text-slate-900 text-xs font-semibold focus:outline-none focus:border-sky-600"
             >
               <option value={1}>1. Derece (%80 ve Üzeri)</option>
               <option value={2}>2. Derece (%60 - %79 Arası)</option>
@@ -266,7 +266,7 @@ export default function ErkenEmeklilikPage() {
               max="15000"
               value={currentPaidDays || ''}
               onChange={(e) => setCurrentPaidDays(Math.max(0, parseInt(e.target.value, 10) || 0))}
-              className="w-full px-3.5 py-2 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-[#185886]"
+              className="w-full px-3.5 py-2 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
             />
             <span className="text-[11px] text-slate-500 mt-1 block">
               SGK hizmet dökümündeki toplam gün
@@ -278,10 +278,10 @@ export default function ErkenEmeklilikPage() {
 
       {/* HESAPLANAN ŞARTLAR VE EMEKLİLİK DURUMU */}
       {calculation && (
-        <div className={`rounded-md border p-6 shadow-xs ${
+        <div className={`rounded-2xl border p-6 shadow-xs ${
           calculation.isReadyForRetirement 
             ? 'bg-emerald-50/70 border-emerald-300' 
-            : 'bg-[#eef4f9] border-blue-200'
+            : 'bg-sky-50 dark:bg-sky-950/40 border-blue-200'
         }`}>
           <div className="flex items-start gap-4">
             <div className="mt-1">
@@ -290,7 +290,7 @@ export default function ErkenEmeklilikPage() {
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
               ) : (
-                <div className="w-10 h-10 rounded-full bg-[#185886] text-white flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-full bg-sky-700 text-white flex items-center justify-center font-bold">
                   <Clock className="w-6 h-6" />
                 </div>
               )}
@@ -309,7 +309,7 @@ export default function ErkenEmeklilikPage() {
                 <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${
                   calculation.isReadyForRetirement 
                     ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
-                    : 'bg-blue-100 text-[#185886] border-blue-200'
+                    : 'bg-blue-100 text-sky-700 dark:text-sky-400 border-blue-200'
                 }`}>
                   {calculation.isReadyForRetirement ? 'Emekliliğe Hak Kazanıldı' : 'Şartlar Devam Ediyor'}
                 </span>
@@ -344,7 +344,7 @@ export default function ErkenEmeklilikPage() {
 
                 <div className="p-2.5 bg-white rounded border border-slate-200">
                   <span className="text-slate-500 block text-[11px]">Gereken Prim Günü</span>
-                  <span className="font-black text-[#185886] text-sm">
+                  <span className="font-black text-sky-700 dark:text-sky-400 text-sm">
                     {calculation.reqDays} Gün
                   </span>
                   <span className={`text-[10px] block mt-0.5 font-semibold ${calculation.isDaysSatisfied ? 'text-emerald-700' : 'text-amber-700'}`}>
@@ -382,9 +382,9 @@ export default function ErkenEmeklilikPage() {
       {/* YASAL MEVZUAT VE DETAY BİLGİLENDİRME BLOKLARI */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         
-        <div className="bg-white rounded-md border border-slate-200 p-4 shadow-xs">
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
           <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <Award className="w-4 h-4 text-[#185886]" />
+            <Award className="w-4 h-4 text-sky-700 dark:text-sky-400" />
             <span>Engelli Erken Emekliliği ile Malulen Emeklilik Farkı</span>
           </h3>
           <ul className="text-xs text-slate-600 space-y-2 leading-relaxed">
@@ -397,7 +397,7 @@ export default function ErkenEmeklilikPage() {
           </ul>
         </div>
 
-        <div className="bg-white rounded-md border border-slate-200 p-4 shadow-xs">
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
           <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
             <FileText className="w-4 h-4 text-purple-700" />
             <span>Emeklilik Başvurusunda İzlenecek Adımlar</span>

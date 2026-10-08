@@ -81,24 +81,24 @@ export function AccessibilityMenu({ isOpen, onClose }: AccessibilityMenuProps) {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Mobile backdrop for outside click & focus isolation */}
+          {/* Backdrop for outside click & focus isolation (mobile & desktop) */}
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 sm:hidden"
+            className="fixed inset-0 bg-black/50 backdrop-blur-2xs z-40"
             onClick={onClose}
             aria-hidden="true"
           />
 
           {/* Accessibility Menu Panel */}
           <motion.div
-            initial={{ opacity: 0, y: -8, scale: 0.98 }}
+            initial={{ opacity: 0, y: -6, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.98 }}
+            exit={{ opacity: 0, y: -6, scale: 0.98 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
             id="accessibility-menu-panel"
             role="dialog"
             aria-modal="true"
             aria-label="Engelsiz Erişim ve Kişiselleştirme Menüsü"
-            className="fixed inset-x-3 top-14 z-50 max-w-md mx-auto sm:max-w-none sm:mx-0 sm:inset-x-auto sm:top-full sm:right-0 sm:absolute sm:mt-2 sm:w-96 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col text-slate-800 dark:text-slate-100"
+            className="fixed inset-x-2 top-16 max-h-[calc(100dvh-5rem)] sm:inset-x-auto sm:right-4 sm:top-16 sm:w-[400px] sm:max-h-[min(680px,calc(100dvh-5rem))] z-50 bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col text-slate-800 dark:text-slate-100"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 shrink-0">
@@ -107,7 +107,7 @@ export function AccessibilityMenu({ isOpen, onClose }: AccessibilityMenuProps) {
                   <Accessibility size={18} strokeWidth={2.5} />
                 </div>
                 <div>
-                  <h2 className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">
+                  <h2 className="text-xs font-black uppercase tracking-wider text-slate-950 dark:text-white">
                     Engelsiz Erişim Merkezi
                   </h2>
                   <p className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
@@ -139,7 +139,7 @@ export function AccessibilityMenu({ isOpen, onClose }: AccessibilityMenuProps) {
             </div>
 
             {/* Scrollable Body */}
-            <div className="max-h-[80vh] overflow-y-auto p-4 space-y-4 divide-y divide-slate-200 dark:divide-slate-800">
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-3.5 sm:p-4 space-y-4 divide-y divide-slate-200 dark:divide-slate-800">
               {/* Metin Boyutu */}
               <section className="space-y-2">
                 <label className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center justify-between">

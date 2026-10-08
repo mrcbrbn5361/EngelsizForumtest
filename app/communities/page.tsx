@@ -396,22 +396,22 @@ export default function CommunitiesPage() {
         
         {/* Breadcrumb */}
         <nav aria-label="Erişim yolu" className="flex items-center gap-2 text-xs text-slate-500">
-          <Link href="/" className="hover:text-[#185886] hover:underline transition-colors">Ana Sayfa</Link>
+          <Link href="/" className="hover:text-sky-600 hover:underline transition-colors">Ana Sayfa</Link>
           <ChevronRight size={14} className="text-slate-400" />
-          <span className="text-slate-800 font-bold">Topluluklar ve Uzmanlık Grupları</span>
+          <span className="text-slate-800 dark:text-slate-200 font-bold">Topluluklar ve Uzmanlık Grupları</span>
         </nav>
 
         {/* Header Hero */}
-        <header className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+        <header className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xs">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-2 max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#eef2f7] border border-[#cbd5e1] text-[#185886] text-xs font-semibold">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-900 dark:text-sky-300 border border-sky-300 dark:border-sky-800 text-xs font-black uppercase tracking-wider">
                 <Sparkles size={13} /> Uzmanlık &amp; Akran Dayanışması
               </div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-[#185886]">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-slate-950 dark:text-white">
                 Topluluklar ve Forum Kategorileri
               </h1>
-              <p className="text-xs sm:text-sm text-slate-500 font-normal leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
                 Engel gruplarına, hukuki haklara ve erişilebilirlik teknolojilerine özel odaklanmış toplulukları keşfedin, akranlarınızla yardımlaşın.
               </p>
             </div>
@@ -423,7 +423,7 @@ export default function CommunitiesPage() {
                 }
                 setShowCreateForm(!showCreateForm);
               }}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#185886] hover:bg-[#104f75] px-5 py-2.5 text-xs font-bold text-white shadow-sm transition whitespace-nowrap self-start lg:self-auto cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-700 hover:bg-sky-600 px-5 py-2.5 text-xs font-bold text-white shadow-xs transition whitespace-nowrap self-start lg:self-auto cursor-pointer"
               aria-expanded={showCreateForm}
             >
               <Plus size={16} className={showCreateForm ? 'rotate-45 transition-transform' : 'transition-transform'} />
@@ -458,14 +458,14 @@ export default function CommunitiesPage() {
                       value={newCommunity.name}
                       onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
                       required
-                      className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-xs focus:ring-1 focus:ring-[#185886] outline-none"
+                      className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs focus:ring-2 focus:ring-sky-500/20 focus:border-sky-600 outline-none"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label htmlFor="community-icon" className="text-xs font-bold text-slate-700">İkon Seçin</label>
+                    <label htmlFor="community-icon" className="text-xs font-bold text-slate-700 dark:text-slate-300">İkon Seçin</label>
                     <select 
                       id="community-icon"
-                      className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-xs focus:ring-1 focus:ring-[#185886] outline-none cursor-pointer"
+                      className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs focus:ring-2 focus:ring-sky-500/20 focus:border-sky-600 outline-none cursor-pointer"
                       value={newCommunity.icon}
                       onChange={(e) => setNewCommunity({...newCommunity, icon: e.target.value})}
                     >
@@ -480,28 +480,28 @@ export default function CommunitiesPage() {
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <label htmlFor="community-desc" className="text-xs font-bold text-slate-700">Topluluk Amacı ve Açıklaması</label>
+                  <label htmlFor="community-desc" className="text-xs font-bold text-slate-700 dark:text-slate-300">Topluluk Amacı ve Açıklaması</label>
                   <textarea 
                     id="community-desc"
                     placeholder="Bu topluluğun amacını ve kimlere hitap ettiğini kısaca belirtin..." 
                     value={newCommunity.description}
                     onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
                     required
-                    className="w-full p-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 text-xs focus:ring-1 focus:ring-[#185886] outline-none min-h-[90px]"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs focus:ring-2 focus:ring-sky-500/20 focus:border-sky-600 outline-none min-h-[90px]"
                   />
                 </div>
                 <div className="flex justify-end gap-2.5 pt-2">
                   <button 
                     type="button"
                     onClick={() => setShowCreateForm(false)}
-                    className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-700 transition-colors cursor-pointer"
+                    className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors cursor-pointer"
                   >
                     İptal
                   </button>
                   <button 
                     type="submit" 
                     disabled={creating}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#185886] hover:bg-[#104f75] px-5 py-2 text-xs font-bold text-white transition-all cursor-pointer disabled:opacity-50"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-sky-700 hover:bg-sky-600 px-5 py-2 text-xs font-bold text-white transition-all cursor-pointer disabled:opacity-50 shadow-xs"
                   >
                     {creating ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                     {creating ? 'Oluşturuluyor...' : 'Topluluğu Başlat'}
@@ -515,15 +515,15 @@ export default function CommunitiesPage() {
         {/* Filter Tabs & Search Bar */}
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex flex-wrap gap-1.5 p-1 bg-white border border-slate-200 rounded-xl w-fit shadow-xs">
+            <div className="flex flex-wrap gap-1.5 p-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl w-fit shadow-xs">
               {FOCUS_GROUPS.map((group) => (
                 <button
                   key={group.id}
                   onClick={() => setSelectedGroup(group.id)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all outline-none cursor-pointer ${
                     selectedGroup === group.id
-                      ? 'bg-[#eef2f7] text-[#185886] border border-[#cbd5e1]'
-                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
+                      ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300 border border-sky-300 dark:border-sky-800'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
                   aria-pressed={selectedGroup === group.id}
                 >
@@ -540,7 +540,7 @@ export default function CommunitiesPage() {
                 placeholder="Topluluklarda ara..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs text-slate-800 focus:ring-1 focus:ring-[#185886] outline-none placeholder:text-slate-400"
+                className="w-full pl-10 pr-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500/20 focus:border-sky-600 outline-none placeholder:text-slate-400"
                 aria-label="Topluluk arama kutusu"
               />
             </div>
@@ -581,24 +581,24 @@ export default function CommunitiesPage() {
               return (
                 <div 
                   key={community.id}
-                  className="group flex flex-col justify-between bg-white border border-slate-200 hover:border-[#185886] rounded-2xl p-5 transition-all shadow-sm"
+                  className="group flex flex-col justify-between bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-sky-500/60 rounded-2xl p-5 transition-all shadow-xs"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-[#eef2f7] border border-[#cbd5e1] rounded-xl shrink-0 text-[#185886]">
+                        <div className="p-2.5 bg-sky-50 dark:bg-sky-950 border border-sky-200 dark:border-sky-800 rounded-xl shrink-0 text-sky-700 dark:text-sky-300">
                           {getIcon(community.icon || 'users')}
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-bold text-[#185886]">Topluluk</span>
+                            <span className="text-[10px] font-bold text-sky-700 dark:text-sky-400">Topluluk</span>
                             {meta.featured && (
-                              <span className="px-1.5 py-0.2 rounded bg-amber-50 text-amber-800 border border-amber-200 text-[9px] font-bold flex items-center gap-1">
+                              <span className="px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-[9px] font-black flex items-center gap-1">
                                 <Sparkles size={9} /> Öne Çıkan
                               </span>
                             )}
                           </div>
-                          <h3 className="text-sm font-black text-[#185886] group-hover:underline transition-all">
+                          <h3 className="text-sm font-black text-slate-950 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                             <Link href={`/communities/${community.slug || community.id}`}>
                               {community.name}
                             </Link>
@@ -713,46 +713,46 @@ export default function CommunitiesPage() {
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
                 className="w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
               >
-                <div className="flex items-start justify-between gap-3 p-5 border-b border-slate-100">
+                <div className="flex items-start justify-between gap-3 p-5 border-b border-slate-200 dark:border-slate-800">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 bg-[#eef2f7] border border-[#cbd5e1] rounded-xl text-[#185886]">
+                    <div className="p-2 bg-sky-50 dark:bg-sky-950/60 border border-sky-300 dark:border-sky-800 rounded-xl text-sky-700 dark:text-sky-400">
                       {getIcon(activeRulesCommunity.icon || 'users')}
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold text-[#185886]">Topluluk Rehberi</span>
-                      <h3 id="modal-title" className="text-sm font-black text-slate-800">
+                      <span className="text-[10px] font-bold text-sky-700 dark:text-sky-400">Topluluk Rehberi</span>
+                      <h3 id="modal-title" className="text-sm font-black text-slate-900 dark:text-white">
                         {activeRulesCommunity.name} Kuralları
                       </h3>
                     </div>
                   </div>
                   <button 
                     onClick={() => setActiveRulesCommunity(null)}
-                    className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
+                    className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                     aria-label="Kapat"
                   >
                     <X size={16} />
                   </button>
                 </div>
 
-                <div className="p-5 space-y-3.5 text-slate-700">
-                  <p className="text-xs text-slate-500 font-normal leading-relaxed">
+                <div className="p-5 space-y-3.5 text-slate-700 dark:text-slate-300">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
                     Bu kurallar üyelerin güvenliği, doğrulanmış mevzuat akışı ve saygılı iletişim ortamı için belirlenmiştir:
                   </p>
                   
                   <ul className="space-y-2.5">
                     {meta.rules.map((rule, rIdx) => (
-                      <li key={rIdx} className="flex gap-2.5 items-start text-xs text-slate-600 leading-relaxed">
-                        <span className="text-[#185886] font-bold shrink-0 mt-0.5">•</span>
+                      <li key={rIdx} className="flex gap-2.5 items-start text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                        <span className="text-sky-700 dark:text-sky-400 font-bold shrink-0 mt-0.5">•</span>
                         <span>{rule}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="p-4 border-t border-slate-100 bg-slate-50">
+                <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
                   <button
                     onClick={() => setActiveRulesCommunity(null)}
-                    className="w-full py-2 bg-[#185886] hover:bg-[#104f75] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer shadow-xs"
+                    className="w-full py-2 bg-sky-700 hover:bg-sky-600 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer shadow-xs"
                   >
                     Anladım, Kuralları Kabul Ediyorum
                   </button>

@@ -260,9 +260,11 @@ export async function toggleReactionAction(topicId: string, emoji = '👍') {
  */
 export async function updateProfileServerAction(profileData: {
   username?: string;
-  fullName?: string;
-  bio?: string;
+  fullName?: string | null;
+  bio?: string | null;
+  avatarUrl?: string | null;
   accessibilityPrefs?: any;
+  notificationPrefs?: any;
 }) {
   const supabase = await getSupabaseServerClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -275,7 +277,7 @@ export async function updateProfileServerAction(profileData: {
     updated_at: new Date().toISOString()
   };
 
-  if (profileData.username !== undefined) {
+  if (profileData.username !== undefined && profileData.username !== null) {
     const cleanUsername = profileData.username.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
     if (cleanUsername.length < 3) {
       return { success: false, error: 'Kullanıcı adı en az 3 karakter olmalıdır.' };
@@ -284,15 +286,23 @@ export async function updateProfileServerAction(profileData: {
   }
 
   if (profileData.fullName !== undefined) {
-    updates.full_name = profileData.fullName.trim();
+    updates.full_name = profileData.fullName?.trim() || null;
   }
 
   if (profileData.bio !== undefined) {
-    updates.bio = profileData.bio.trim();
+    updates.bio = profileData.bio?.trim() || null;
+  }
+
+  if (profileData.avatarUrl !== undefined) {
+    updates.avatar_url = profileData.avatarUrl?.trim() || null;
   }
 
   if (profileData.accessibilityPrefs !== undefined) {
     updates.accessibility_prefs = profileData.accessibilityPrefs;
+  }
+
+  if (profileData.notificationPrefs !== undefined) {
+    updates.notification_prefs = profileData.notificationPrefs;
   }
 
   const { error: updateError } = await supabase

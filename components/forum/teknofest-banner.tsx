@@ -10,16 +10,16 @@ export function TeknofestBanner() {
   return (
     <section 
       aria-label="TEKNOFEST Özel Duyurusu"
-      className="relative overflow-hidden mb-6 rounded-xl border-2 border-[#185886]/30 bg-gradient-to-br from-white via-sky-50/40 to-slate-50 shadow-sm transition-all"
+      className="relative overflow-hidden mb-6 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs transition-all"
     >
       {/* Decorative top accent line with Turkey / TEKNOFEST energetic theme */}
-      <div className="h-1.5 w-full bg-gradient-to-r from-red-600 via-[#185886] to-sky-400" />
+      <div className="h-1.5 w-full bg-gradient-to-r from-red-600 via-sky-600 to-teal-400" />
 
       <div className="p-4 sm:p-5">
         {/* Header Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-red-600/10 text-red-600 border border-red-200 flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-lg bg-red-600/10 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/50 flex items-center justify-center shrink-0">
               <Rocket size={18} className="animate-pulse" />
             </div>
             <div>
@@ -27,12 +27,12 @@ export function TeknofestBanner() {
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-black uppercase tracking-wider bg-red-600 text-white shadow-2xs">
                   TEKNOFEST ÖZEL
                 </span>
-                <span className="text-[11px] font-semibold text-slate-500 hidden sm:inline-flex items-center gap-1">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 hidden sm:inline-flex items-center gap-1">
                   <QrCode size={13} />
                   Stant QR Ziyaretçileri İçin
                 </span>
               </div>
-              <h2 className="text-sm sm:text-base font-black text-slate-900 tracking-tight mt-0.5 m-0">
+              <h2 className="text-sm sm:text-base font-black text-slate-950 dark:text-white tracking-tight mt-0.5 m-0">
                 Miraç Birben&apos;den TEKNOFEST Ziyaretçilerine &amp; Ekibine Mesaj
               </h2>
             </div>
@@ -42,7 +42,7 @@ export function TeknofestBanner() {
             <button
               type="button"
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-xs font-semibold text-slate-600 hover:text-[#185886] px-2.5 py-1.5 rounded-md hover:bg-slate-100 transition-colors flex items-center gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#185886]"
+              className="text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-sky-700 dark:hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-500"
               aria-expanded={isExpanded}
               aria-label={isExpanded ? "Mesajı daralt" : "Mesajı genişlet"}
             >
@@ -54,8 +54,8 @@ export function TeknofestBanner() {
 
         {/* Message Content */}
         {isExpanded && (
-          <div className="pt-3.5 space-y-3.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
-            <p className="font-medium text-slate-800">
+          <div className="pt-3.5 space-y-3.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+            <p className="font-medium text-slate-900 dark:text-slate-200">
               Selam değerli <strong>TEKNOFEST Ziyaretçileri</strong> ve <strong>TEKNOFEST ekibi</strong>, ben <strong>Miraç Birben</strong>!
             </p>
 
@@ -63,7 +63,7 @@ export function TeknofestBanner() {
               Eğer TEKNOFEST&apos;te bu stantta gördüğünüz <strong>QR&apos;ı okuttuğunuzda</strong> bu siteye geldiyseniz size bu proje hakkında birkaç şey diyeceğim:
             </p>
 
-            <div className="p-3.5 sm:p-4 rounded-lg bg-white border border-slate-200/90 space-y-2 shadow-2xs text-slate-700">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-2 text-slate-800 dark:text-slate-200">
               <p>
                 <strong>1. olarak</strong> bu projeyi tamamen kendi cebimden <strong>1 TL bile harcamadan</strong> yaptım. Küçük sponsorluklarla 2 yılda elimden geldiğince buraya kadar getirdim, sıra büyük sponsorluklarda!
               </p>
@@ -78,7 +78,7 @@ export function TeknofestBanner() {
             {/* Sponsor Gratitude & CTA */}
             <div className="pt-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1 font-bold text-slate-800">
+                <span className="inline-flex items-center gap-1 font-bold text-slate-900 dark:text-white">
                   <Heart size={14} className="text-red-500 fill-red-500" />
                   Sponsorlarımıza Teşekkürler:
                 </span>
@@ -87,7 +87,7 @@ export function TeknofestBanner() {
                   href="https://yeterly.ai" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white hover:bg-slate-100 text-[#185886] font-bold border border-slate-300 transition-colors shadow-2xs"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-sky-700 dark:text-sky-300 font-bold border border-slate-200 dark:border-slate-700 transition-colors shadow-2xs"
                 >
                   <Sparkles size={12} className="text-amber-500" />
                   <span>yeterly.ai</span>
@@ -98,7 +98,7 @@ export function TeknofestBanner() {
                   href="https://goldhost.com.tr" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white hover:bg-slate-100 text-[#185886] font-bold border border-slate-300 transition-colors shadow-2xs"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-sky-700 dark:text-sky-300 font-bold border border-slate-200 dark:border-slate-700 transition-colors shadow-2xs"
                 >
                   <span>goldhost.com.tr</span>
                   <ExternalLink size={11} className="text-slate-400" />
@@ -108,7 +108,7 @@ export function TeknofestBanner() {
               <div className="flex items-center gap-2 shrink-0">
                 <a
                   href="mailto:miracbirben@engelsizforum.com"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#185886] hover:bg-[#104f75] text-white font-bold transition-all shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-700 hover:bg-sky-600 text-white font-bold transition-all shadow-xs"
                 >
                   <Mail size={13} />
                   <span>Sponsorluk &amp; İletişim</span>

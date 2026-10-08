@@ -28,14 +28,14 @@ export function ClassicNodeRow({
   return (
     <div className="xf-node-row bg-white border-b border-[#e2e8f0] hover:bg-[#f8fafc] transition-all duration-200">
       {/* Node Icon */}
-      <div className="xf-node-icon text-[#185886]">
+      <div className="xf-node-icon text-sky-700 dark:text-sky-400">
         <MessageSquare size={32} strokeWidth={1.5} />
       </div>
 
       {/* Main Content */}
       <div className="xf-node-main">
         <h3 className="m-0 leading-snug">
-          <Link href={`/category/${id}`} className="xf-node-title text-[#185886] hover:text-[#104f75] font-bold text-sm hover:underline">
+          <Link href={`/category/${id}`} className="xf-node-title text-sky-700 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-300 font-bold text-sm hover:underline">
             {title}
           </Link>
         </h3>
@@ -61,17 +61,17 @@ export function ClassicNodeRow({
       {/* Last Post Info */}
       <div className="xf-node-lastPost hidden lg:flex">
         <div className="flex gap-3 items-center">
-          <div className="w-9 h-9 bg-[#eef2f7] rounded shrink-0 border border-[#cbd5e1] flex items-center justify-center text-[#185886] font-bold uppercase text-xs">
+          <div className="w-9 h-9 bg-slate-100 dark:bg-slate-800 rounded-lg shrink-0 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-sky-700 dark:text-sky-400 font-bold uppercase text-xs">
             {(lastPost?.author || '-').substring(0, 2)}
           </div>
           <div className="flex flex-col min-w-0">
-            <Link href={`/discussions`} className="text-[#185886] hover:text-[#104f75] font-bold truncate hover:underline text-[13px]">
+            <Link href={`/discussions`} className="text-sky-700 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-300 font-bold truncate hover:underline text-[13px]">
               {lastPost?.title || 'Henüz konu yok'}
             </Link>
-            <div className="flex items-center gap-1.5 text-slate-500 text-[11px]">
-              <span className="font-bold text-[#0066a2]">{lastPost?.author || '-'}</span>
+            <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-[11px]">
+              <span className="font-bold text-sky-700 dark:text-sky-400">{lastPost?.author || '-'}</span>
               <span>•</span>
-              <span className="text-slate-400">{lastPost?.date || '-'}</span>
+              <span className="text-slate-400 dark:text-slate-500">{lastPost?.date || '-'}</span>
             </div>
           </div>
         </div>

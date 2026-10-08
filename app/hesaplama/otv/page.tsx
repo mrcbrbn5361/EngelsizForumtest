@@ -157,7 +157,7 @@ export default function OtvHesaplamaPage() {
       )}
 
       {/* Başlık ve Kontroller */}
-      <div className="bg-white rounded-md border border-slate-200 p-5 shadow-xs">
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded bg-emerald-50 text-emerald-700 flex items-center justify-center font-black">
@@ -198,7 +198,7 @@ export default function OtvHesaplamaPage() {
                 className={`w-full px-3.5 py-2.5 rounded border text-base font-bold transition-all focus:outline-none ${
                   calculation.isExceeded 
                     ? 'border-red-400 bg-red-50/40 text-red-900 focus:border-red-600' 
-                    : 'border-slate-300 bg-white text-slate-900 focus:border-[#185886]'
+                    : 'border-slate-300 bg-white text-slate-900 focus:border-sky-600'
                 }`}
               />
               <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">
@@ -216,7 +216,7 @@ export default function OtvHesaplamaPage() {
                   onClick={() => setListPrice(p)}
                   className={`text-xs px-2 py-1 rounded border font-semibold transition-colors ${
                     listPrice === p 
-                      ? 'bg-[#185886] text-white border-[#185886]' 
+                      ? 'bg-sky-700 text-white border-sky-600' 
                       : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                   }`}
                 >
@@ -234,7 +234,7 @@ export default function OtvHesaplamaPage() {
             <select
               value={selectedEngine}
               onChange={(e) => setSelectedEngine(e.target.value)}
-              className="w-full px-3 py-2.5 rounded border border-slate-300 bg-white text-slate-900 text-xs sm:text-sm font-semibold focus:outline-none focus:border-[#185886]"
+              className="w-full px-3 py-2.5 rounded border border-slate-300 bg-white text-slate-900 text-xs sm:text-sm font-semibold focus:outline-none focus:border-sky-600"
             >
               {ENGINE_OPTIONS.map((opt) => (
                 <option key={opt.id} value={opt.id}>
@@ -254,7 +254,7 @@ export default function OtvHesaplamaPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         
         {/* Sol Kart: Engelli Bireyin Ödeyeceği Tutar */}
-        <div className={`p-5 rounded-md border shadow-xs transition-all ${
+        <div className={`p-5 rounded-2xl border shadow-xs transition-all ${
           calculation.isExceeded 
             ? 'bg-red-50/50 border-red-200' 
             : 'bg-emerald-50/50 border-emerald-200'
@@ -286,7 +286,7 @@ export default function OtvHesaplamaPage() {
         </div>
 
         {/* Sağ Kart: Sağlanan Toplam Vergi Avantajı */}
-        <div className="p-5 rounded-md border border-blue-200 bg-blue-50/50 shadow-xs">
+        <div className="p-5 rounded-2xl border border-blue-200 bg-blue-50/50 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase font-bold text-slate-600 tracking-wider">
               Toplam Sağlanan Tasarruf
@@ -296,7 +296,7 @@ export default function OtvHesaplamaPage() {
             </span>
           </div>
 
-          <div className="text-3xl sm:text-4xl font-black text-[#185886] my-2">
+          <div className="text-3xl sm:text-4xl font-black text-sky-700 dark:text-sky-400 my-2">
             {calculation.isExceeded ? '0 ₺' : formatCurrency(calculation.toplamVergiAvantaji)}
           </div>
 
@@ -308,8 +308,8 @@ export default function OtvHesaplamaPage() {
       </div>
 
       {/* DETAYLI VERGİ VE FİYAT DAĞILIM TABLOSU */}
-      <div className="bg-white rounded-md border border-slate-200 overflow-hidden shadow-xs">
-        <div className="bg-[#124d77] text-white px-5 py-3 flex items-center justify-between">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="bg-slate-900 text-white px-5 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
             <Receipt className="w-4 h-4 text-blue-200" />
             <span>2026 TERS MATEMATİK HESAPLAMA VE DAĞILIM TABLOSU</span>
@@ -393,8 +393,8 @@ export default function OtvHesaplamaPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         
         {/* 1. Blok: %90 Üzeri Rapor Sahipleri */}
-        <div className="bg-white rounded-md border border-slate-200 p-4 shadow-xs">
-          <div className="flex items-center gap-2 text-[#185886] font-bold text-xs uppercase mb-2">
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+          <div className="flex items-center gap-2 text-sky-700 dark:text-sky-400 font-bold text-xs uppercase mb-2">
             <FileCheck2 className="w-4 h-4" />
             <span>%90 ve Üzeri Engelliler</span>
           </div>
@@ -404,8 +404,8 @@ export default function OtvHesaplamaPage() {
         </div>
 
         {/* 2. Blok: Ortopedik Engelliler */}
-        <div className="bg-white rounded-md border border-slate-200 p-4 shadow-xs">
-          <div className="flex items-center gap-2 text-[#185886] font-bold text-xs uppercase mb-2">
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+          <div className="flex items-center gap-2 text-sky-700 dark:text-sky-400 font-bold text-xs uppercase mb-2">
             <ShieldCheck className="w-4 h-4" />
             <span>Ortopedik Engelliler</span>
           </div>
@@ -415,8 +415,8 @@ export default function OtvHesaplamaPage() {
         </div>
 
         {/* 3. Blok: 5 Yıl Satış Yasağı */}
-        <div className="bg-white rounded-md border border-slate-200 p-4 shadow-xs">
-          <div className="flex items-center gap-2 text-[#185886] font-bold text-xs uppercase mb-2">
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
+          <div className="flex items-center gap-2 text-sky-700 dark:text-sky-400 font-bold text-xs uppercase mb-2">
             <AlertTriangle className="w-4 h-4 text-amber-600" />
             <span>5 Yıl Satış Kısıtlaması</span>
           </div>

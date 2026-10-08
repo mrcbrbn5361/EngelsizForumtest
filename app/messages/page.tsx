@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
 import { ConversationList } from '@/components/messages/conversation-list';
 import { ChatBox } from '@/components/messages/chat-box';
 import { useAuth } from '@/components/providers/auth-provider';
@@ -213,38 +212,38 @@ function MessagesContent() {
   if (!user || !activeProfile) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center max-w-md mx-auto min-h-[400px]">
-        <div className="size-16 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mb-4 mx-auto">
+        <div className="w-16 h-16 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border-2 border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 flex items-center justify-center mb-4 mx-auto shadow-xs">
           <MessageSquare size={32} />
         </div>
-        <h1 className="text-lg font-bold text-slate-100 mb-2">Özel Mesajlar</h1>
-        <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+        <h1 className="text-xl font-black text-slate-950 dark:text-white mb-2">Özel Mesajlar (DM)</h1>
+        <p className="text-xs text-slate-600 dark:text-slate-400 mb-6 leading-relaxed font-medium">
           Üyelerle doğrudan mesajlaşabilmek ve gelen mesajlarınızı görebilmek için lütfen giriş yapın.
         </p>
-        <a
+        <Link
           href="/login?redirect=/messages"
-          className="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-colors shadow-lg"
+          className="px-6 py-2.5 rounded-xl bg-sky-700 hover:bg-sky-600 text-white font-bold text-xs transition-colors shadow-md"
         >
           Giriş Yap
-        </a>
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="w-full flex flex-col h-[calc(100vh-160px)] min-h-[500px]">
+    <div className="w-full flex flex-col h-[calc(100dvh-130px)] md:h-[calc(100vh-160px)] min-h-[460px] max-w-7xl mx-auto">
       {/* New Chat Modal */}
       {isNewChatModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div 
             onClick={() => setIsNewChatModalOpen(false)}
-            className="absolute inset-0 bg-black/70 backdrop-blur-xs"
+            className="absolute inset-0 bg-black/60 backdrop-blur-xs"
           />
-          <div className="w-full max-w-md bg-[#111726] border border-white/[0.08] rounded-2xl shadow-2xl overflow-hidden relative z-10 p-5 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-              <h2 className="text-sm font-bold text-slate-100">Yeni Sohbet Başlat</h2>
+          <div className="w-full max-w-md bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden relative z-10 p-5 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+              <h2 className="text-sm font-extrabold text-slate-950 dark:text-white">Yeni Sohbet Başlat</h2>
               <button 
                 onClick={() => setIsNewChatModalOpen(false)}
-                className="text-slate-400 hover:text-slate-200 text-xs px-2 py-1 rounded-lg bg-slate-800 cursor-pointer"
+                className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 cursor-pointer font-bold"
               >
                 Kapat
               </button>
@@ -255,14 +254,14 @@ function MessagesContent() {
               value={searchMemberQuery}
               onChange={(e) => handleSearchMembers(e.target.value)}
               placeholder="Üye adı veya kullanıcı adı ara..."
-              className="w-full bg-[#090a0f] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-slate-200 placeholder:text-slate-500 outline-none focus:border-sky-500"
+              className="w-full bg-slate-50 dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-sky-600"
               autoFocus
             />
 
-            <div className="max-h-60 overflow-y-auto divide-y divide-white/[0.04] space-y-1">
+            <div className="max-h-60 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 space-y-1">
               {searchLoading ? (
-                <div className="py-6 text-center text-xs text-slate-400">
-                  <Loader2 className="size-4 animate-spin mx-auto mb-1 text-sky-400" />
+                <div className="py-6 text-center text-xs text-slate-500 font-medium">
+                  <Loader2 className="size-4 animate-spin mx-auto mb-1 text-sky-600" />
                   Aranıyor...
                 </div>
               ) : searchedProfiles.length > 0 ? (
@@ -273,21 +272,21 @@ function MessagesContent() {
                       setIsNewChatModalOpen(false);
                       initiateDirectConversation(p.id, conversations);
                     }}
-                    className="w-full p-2 rounded-xl hover:bg-slate-800/80 flex items-center gap-3 text-left transition-colors cursor-pointer"
+                    className="w-full p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-3 text-left transition-colors cursor-pointer"
                   >
-                    <div className="size-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-xs">
+                    <div className="size-8 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs">
                       {(p.full_name || p.username || 'U')[0]?.toUpperCase()}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="text-xs font-semibold text-slate-200 truncate">{p.full_name || p.username}</div>
-                      <div className="text-[10px] text-sky-400 font-mono truncate">@{p.username || 'isimsiz'}</div>
+                      <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{p.full_name || p.username}</div>
+                      <div className="text-[10px] text-sky-700 dark:text-sky-400 font-mono font-bold truncate">@{p.username || 'isimsiz'}</div>
                     </div>
                   </button>
                 ))
               ) : searchMemberQuery ? (
-                <div className="py-4 text-center text-xs text-slate-500">Üye bulunamadı.</div>
+                <div className="py-4 text-center text-xs text-slate-500 font-medium">Üye bulunamadı.</div>
               ) : (
-                <div className="py-4 text-center text-xs text-slate-500">Mesajlaşmak istediğiniz üyeyi arayın.</div>
+                <div className="py-4 text-center text-xs text-slate-500 font-medium">Mesajlaşmak istediğiniz üyeyi arayın.</div>
               )}
             </div>
           </div>
@@ -297,31 +296,32 @@ function MessagesContent() {
       <div className="flex-1 flex flex-col min-h-0 py-2">
         <div className="flex items-center justify-between gap-2.5 mb-4 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20">
+            <div className="p-2 rounded-xl bg-sky-50 dark:bg-sky-950 border border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 shadow-xs">
               <MessageSquare size={18} />
             </div>
             <div>
-              <h1 className="text-lg md:text-xl font-bold text-slate-100 tracking-tight">Özel Mesajlar</h1>
-              <p className="text-xs text-slate-400">Üyeler arası bireysel dayanışma ve yazışmalar</p>
+              <h1 className="text-lg md:text-xl font-black text-slate-950 dark:text-white tracking-tight">Özel Mesajlar (DM)</h1>
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">Üyeler arası doğrudan ve güvenli mesajlaşma</p>
             </div>
           </div>
 
           <button
             onClick={() => setIsNewChatModalOpen(true)}
-            className="px-3.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-colors cursor-pointer hidden sm:flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-sky-700 hover:bg-sky-600 text-white font-bold text-xs transition-colors cursor-pointer hidden sm:flex items-center gap-1.5 shadow-xs"
           >
-            Yeni Mesaj
+            <Plus size={15} />
+            <span>Yeni Mesaj</span>
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 flex-1 min-h-0 bg-[#111726]/80 border border-white/[0.08] rounded-2xl overflow-hidden backdrop-blur-md">
+        <div className="grid grid-cols-1 md:grid-cols-12 flex-1 min-h-0 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs">
           {/* List Sidebar */}
-          <div className={`${showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-4 lg:col-span-3 border-r border-white/[0.08] h-full overflow-hidden`}>
-            <div className="p-3 border-b border-white/[0.08] bg-slate-900/60 flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-300">Sohbetler</span>
+          <div className={`${showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-4 lg:col-span-3 border-r-2 border-slate-200 dark:border-slate-800 h-full overflow-hidden`}>
+            <div className="p-3 border-b-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between">
+              <span className="text-xs font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">Sohbetler</span>
               <button
                 onClick={() => setIsNewChatModalOpen(true)}
-                className="text-[11px] text-sky-400 hover:text-sky-300 font-semibold cursor-pointer"
+                className="text-[11px] text-sky-700 dark:text-sky-400 hover:underline font-black cursor-pointer"
               >
                 + Yeni
               </button>
@@ -341,7 +341,7 @@ function MessagesContent() {
           </div>
 
           {/* Chat Content */}
-          <div className={`${!showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-8 lg:col-span-9 h-full relative bg-slate-950/40`}>
+          <div className={`${!showListOnMobile ? 'flex' : 'hidden'} md:flex flex-col md:col-span-8 lg:col-span-9 h-full relative bg-slate-50 dark:bg-slate-950`}>
             {selectedConversation ? (
               <ChatBox 
                 conversationId={selectedConversation.id} 
@@ -351,14 +351,14 @@ function MessagesContent() {
               />
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center p-8 text-slate-500">
-                <MessageSquare size={48} className="mb-3 opacity-30 text-sky-400" />
-                <h2 className="text-sm font-semibold text-slate-300">Bir sohbet seçin</h2>
-                <p className="text-xs text-slate-500 mt-1 max-w-xs leading-relaxed mb-4">
+                <MessageSquare size={48} className="mb-3 opacity-30 text-sky-600" />
+                <h2 className="text-sm font-extrabold text-slate-900 dark:text-white">Bir sohbet seçin</h2>
+                <p className="text-xs text-slate-500 mt-1 max-w-xs leading-relaxed mb-4 font-medium">
                   Yazışmaya başlamak için sol listeden bir görüşme seçin veya yeni mesaj başlatın.
                 </p>
                 <button
                   onClick={() => setIsNewChatModalOpen(true)}
-                  className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-sky-700 hover:bg-sky-600 text-white font-bold text-xs transition-colors cursor-pointer shadow-xs"
                 >
                   Yeni Sohbet Başlat
                 </button>

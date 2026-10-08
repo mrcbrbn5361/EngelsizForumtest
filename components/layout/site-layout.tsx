@@ -15,10 +15,10 @@ import {
 
 export function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col w-full bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
+    <div className="flex flex-col w-full text-slate-900 dark:text-slate-100">
       {/* High-Impact Accessibility & Calculator Action Rail */}
-      <div className="w-full bg-white dark:bg-slate-900 border-b-2 border-slate-200 dark:border-slate-800 py-2.5 px-3 sm:px-6 shadow-xs">
-        <div className="w-full max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+      <div className="w-full bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl py-2.5 px-3 sm:px-6 shadow-xs mb-6">
+        <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-2.5">
           
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950 text-[11px] font-black uppercase tracking-wider">
@@ -90,10 +90,10 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <main id="main-content" className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
+      {/* Content Area */}
+      <div className="flex-1 w-full">
         {children}
-      </main>
+      </div>
     </div>
   );
 }

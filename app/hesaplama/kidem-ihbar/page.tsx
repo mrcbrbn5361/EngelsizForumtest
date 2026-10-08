@@ -105,11 +105,11 @@ export default function KidemIhbarPage() {
     <div className="space-y-6">
       
       {/* Engelli Çalışan İçin 24/I-a Bilgilendirme Kutusu */}
-      <div className="bg-blue-50 border-l-4 border-[#185886] p-4 rounded-r-md shadow-xs">
+      <div className="bg-sky-50 dark:bg-sky-950/40 border-l-4 border-sky-600 dark:border-sky-500 p-4 rounded-r-md shadow-xs">
         <div className="flex items-start gap-3">
-          <ShieldCheck className="w-5 h-5 text-[#185886] shrink-0 mt-0.5" />
+          <ShieldCheck className="w-5 h-5 text-sky-700 dark:text-sky-400 shrink-0 mt-0.5" />
           <div className="text-xs text-blue-950 leading-relaxed">
-            <h2 className="font-bold text-sm text-[#185886] mb-1">
+            <h2 className="font-bold text-sm text-sky-700 dark:text-sky-400 mb-1">
               Engelli Çalışanın Sağlık Raporuyla Haklı Fesih Hakkı (4857 Sayılı İş Kanunu m.24/I-a)
             </h2>
             <p>
@@ -120,7 +120,7 @@ export default function KidemIhbarPage() {
       </div>
 
       {/* Başlık ve Girdi Formu */}
-      <div className="bg-white rounded-md border border-slate-200 p-5 shadow-xs">
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded bg-teal-50 text-teal-700 flex items-center justify-center font-black">
@@ -155,7 +155,7 @@ export default function KidemIhbarPage() {
                 max="50"
                 value={years || ''}
                 onChange={(e) => setYears(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3 py-2 rounded border border-slate-300 font-bold text-sm text-slate-900 focus:outline-none focus:border-[#185886]"
+                className="w-full px-3 py-2 rounded border border-slate-300 font-bold text-sm text-slate-900 focus:outline-none focus:border-sky-600"
               />
             </div>
             <div>
@@ -166,7 +166,7 @@ export default function KidemIhbarPage() {
                 max="11"
                 value={months || ''}
                 onChange={(e) => setMonths(Math.min(11, Math.max(0, parseInt(e.target.value, 10) || 0)))}
-                className="w-full px-3 py-2 rounded border border-slate-300 font-bold text-sm text-slate-900 focus:outline-none focus:border-[#185886]"
+                className="w-full px-3 py-2 rounded border border-slate-300 font-bold text-sm text-slate-900 focus:outline-none focus:border-sky-600"
               />
             </div>
             <div>
@@ -177,7 +177,7 @@ export default function KidemIhbarPage() {
                 max="29"
                 value={days || ''}
                 onChange={(e) => setDays(Math.min(29, Math.max(0, parseInt(e.target.value, 10) || 0)))}
-                className="w-full px-3 py-2 rounded border border-slate-300 font-bold text-sm text-slate-900 focus:outline-none focus:border-[#185886]"
+                className="w-full px-3 py-2 rounded border border-slate-300 font-bold text-sm text-slate-900 focus:outline-none focus:border-sky-600"
               />
             </div>
           </div>
@@ -197,7 +197,7 @@ export default function KidemIhbarPage() {
                 step="500"
                 value={grossSalary || ''}
                 onChange={(e) => setGrossSalary(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-[#185886]"
+                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
               />
               <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
                 TL
@@ -220,7 +220,7 @@ export default function KidemIhbarPage() {
                 step="100"
                 value={regularPerks || ''}
                 onChange={(e) => setRegularPerks(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-[#185886]"
+                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
               />
               <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
                 TL / Ay
@@ -239,7 +239,7 @@ export default function KidemIhbarPage() {
               type="checkbox"
               checked={isHealthResignation}
               onChange={(e) => setIsHealthResignation(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-[#185886] focus:ring-[#185886] border-slate-300"
+              className="mt-0.5 w-4 h-4 rounded text-sky-700 dark:text-sky-400 focus:ring-sky-600 border-slate-300"
             />
             <div className="text-xs">
               <span className="font-bold text-slate-900 block">
@@ -257,7 +257,7 @@ export default function KidemIhbarPage() {
                 type="checkbox"
                 checked={includeIhbar}
                 onChange={(e) => setIncludeIhbar(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded text-[#185886] focus:ring-[#185886] border-slate-300"
+                className="mt-0.5 w-4 h-4 rounded text-sky-700 dark:text-sky-400 focus:ring-sky-600 border-slate-300"
               />
               <div className="text-xs">
                 <span className="font-bold text-slate-900 block">
@@ -286,7 +286,7 @@ export default function KidemIhbarPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         
         {/* Net Kıdem */}
-        <div className="p-5 rounded-md border border-teal-200 bg-teal-50/50 shadow-xs">
+        <div className="p-5 rounded-2xl border border-teal-200 bg-teal-50/50 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase font-bold text-slate-600 tracking-wider">
               Net Kıdem Tazminatı
@@ -306,7 +306,7 @@ export default function KidemIhbarPage() {
         </div>
 
         {/* Net İhbar */}
-        <div className="p-5 rounded-md border border-slate-200 bg-slate-50/70 shadow-xs">
+        <div className="p-5 rounded-2xl border border-slate-200 bg-slate-50/70 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase font-bold text-slate-600 tracking-wider">
               Net İhbar Tazminatı
@@ -328,16 +328,16 @@ export default function KidemIhbarPage() {
         </div>
 
         {/* Toplam Ele Geçecek Tutar */}
-        <div className="p-5 rounded-md border border-[#185886]/30 bg-[#eef4f9] shadow-xs">
+        <div className="p-5 rounded-2xl border border-sky-600/30 bg-sky-50 dark:bg-sky-950/40 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs uppercase font-bold text-slate-600 tracking-wider">
               TOPLAM NET ELE GEÇECEK
             </span>
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-[#185886] text-white">
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-sky-700 text-white">
               Banka Hesabına
             </span>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-[#185886] my-2">
+          <div className="text-2xl sm:text-3xl font-black text-sky-700 dark:text-sky-400 my-2">
             {formatCurrency(calculation.toplamNetEleGecen)}
           </div>
           <p className="text-xs text-slate-600">
@@ -348,8 +348,8 @@ export default function KidemIhbarPage() {
       </div>
 
       {/* DETAYLI KALEM VE KESİNTİ DÖKÜM TABLOSU */}
-      <div className="bg-white rounded-md border border-slate-200 overflow-hidden shadow-xs">
-        <div className="bg-[#124d77] text-white px-5 py-3 flex items-center justify-between">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="bg-slate-900 text-white px-5 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
             <FileSpreadsheet className="w-4 h-4 text-blue-200" />
             <span>TAZMİNAT BRÜT HESABI VE YASAL KESİNTİ DÖKÜMÜ</span>

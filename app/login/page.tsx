@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/components/providers/auth-provider';
 import Link from 'next/link';
@@ -10,8 +10,22 @@ import { Home, LogIn, Lock, Mail, Loader2, ArrowRight, ShieldCheck } from 'lucid
 import { Button } from '@/components/ui/button';
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-[300px]">
+        <Loader2 className="animate-spin text-sky-600 size-6" />
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const destination = searchParams?.get('redirect') || searchParams?.get('redirectTo') || '/';
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,9 +34,9 @@ export default function LoginPage() {
   // Redirect if logged in
   useEffect(() => {
     if (!authLoading && user) {
-      router.push('/');
+      router.push(destination);
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, destination]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +47,7 @@ export default function LoginPage() {
       if (signInError) throw signInError;
 
       toast.success('Giriş başarılı!');
-      router.push('/');
+      router.push(destination);
     } catch (err: any) {
       toast.error('Giriş yapılamadı: ' + err.message);
     } finally {

@@ -550,7 +550,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
   const roleColors = {
     'YÖNETİCİ': 'bg-rose-50 text-rose-700 border border-rose-200 font-bold',
     'MODERATÖR': 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold',
-    'UZMAN': 'bg-sky-50 text-[#185886] border border-sky-200 font-bold',
+    'UZMAN': 'bg-sky-50 text-sky-700 dark:text-sky-400 border border-sky-200 font-bold',
     'ÜYE': 'bg-slate-100 text-slate-600 border border-slate-200 font-semibold'
   };
 
@@ -574,7 +574,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
             return (
               <div key={lineIdx} className="my-3 p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-3 max-w-sm">
                 <div className="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
-                  <Volume2 size={16} className="text-[#185886]" />
+                  <Volume2 size={16} className="text-sky-700 dark:text-sky-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Sesli Mesaj</p>
@@ -588,21 +588,21 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
         // Markdown Headers
         if (line.startsWith('### ')) {
           return (
-            <h4 key={lineIdx} className="text-sm font-extrabold text-[#185886] mt-3 mb-1.5 uppercase tracking-wide">
+            <h4 key={lineIdx} className="text-sm font-extrabold text-sky-700 dark:text-sky-400 mt-3 mb-1.5 uppercase tracking-wide">
               {line.substring(4)}
             </h4>
           );
         }
         if (line.startsWith('## ')) {
           return (
-            <h3 key={lineIdx} className="text-base font-extrabold text-[#185886] mt-4 mb-2 uppercase tracking-wide border-b border-slate-200 pb-1">
+            <h3 key={lineIdx} className="text-base font-extrabold text-sky-700 dark:text-sky-400 mt-4 mb-2 uppercase tracking-wide border-b border-slate-200 pb-1">
               {line.substring(3)}
             </h3>
           );
         }
         if (line.startsWith('# ')) {
           return (
-            <h2 key={lineIdx} className="text-lg font-extrabold text-[#185886] mt-5 mb-2 uppercase tracking-wide border-b border-slate-200 pb-1">
+            <h2 key={lineIdx} className="text-lg font-extrabold text-sky-700 dark:text-sky-400 mt-5 mb-2 uppercase tracking-wide border-b border-slate-200 pb-1">
               {line.substring(2)}
             </h2>
           );
@@ -617,7 +617,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
             .replace(/\\frac{([^}]+)}{([^}]+)}/g, '($1 / $2)');
 
           return (
-            <div key={lineIdx} className="my-3 p-3.5 bg-slate-50 border border-slate-200 rounded-sm font-mono text-center text-xs sm:text-sm text-[#185886] font-bold select-all tracking-wide">
+            <div key={lineIdx} className="my-3 p-3.5 bg-slate-50 border border-slate-200 rounded-sm font-mono text-center text-xs sm:text-sm text-sky-700 dark:text-sky-400 font-bold select-all tracking-wide">
               {displayMath}
             </div>
           );
@@ -667,8 +667,8 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
       parts.push(
         <div key={`quote-${match.index}`} className="bg-slate-50 border border-slate-200 border-l-[3px] border-l-[#185886] p-3.5 my-3 rounded-sm text-xs text-slate-600 select-text">
-          <div className="font-bold text-[#185886] mb-1.5 flex items-center gap-1.5 uppercase tracking-wide text-[10px]">
-            <Quote size={11} className="text-[#185886]" /> {author} dedi ki:
+          <div className="font-bold text-sky-700 dark:text-sky-400 mb-1.5 flex items-center gap-1.5 uppercase tracking-wide text-[10px]">
+            <Quote size={11} className="text-sky-700 dark:text-sky-400" /> {author} dedi ki:
           </div>
           <div className="italic text-slate-600 leading-relaxed pl-1">
             {renderPostContent(quoteBody)}
@@ -694,16 +694,16 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
     <div className="flex flex-col gap-4">
       {/* Breadcrumbs */}
       <div className="bg-slate-50 px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm mb-4 shadow-2xs">
-        <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 font-semibold">
+        <Link href="/" className="hover:text-sky-700 dark:text-sky-400 hover:underline flex items-center gap-1 font-semibold">
           <Home size={12} />
           Ana Sayfa
         </Link>
         <span className="opacity-50">/</span>
-        <Link href="/" className="hover:text-[#185886] hover:underline font-semibold">Forumlar</Link>
+        <Link href="/" className="hover:text-sky-700 dark:text-sky-400 hover:underline font-semibold">Forumlar</Link>
         {topic.category && (
           <>
             <span className="opacity-50">/</span>
-            <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-[#185886] hover:underline font-semibold">{topic.category.name}</Link>
+            <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-sky-700 dark:text-sky-400 hover:underline font-semibold">{topic.category.name}</Link>
           </>
         )}
         <span className="opacity-50">/</span>
@@ -715,7 +715,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 mb-1 leading-snug break-words flex items-center flex-wrap gap-2">
             {topic.is_pinned && (
-              <span className="bg-[#eef2f7] text-[#185886] border border-[#cbd5e1] text-[10px] px-2 py-0.5 rounded-sm uppercase font-black tracking-wider flex items-center gap-1">
+              <span className="bg-sky-50 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300 border border-sky-200 dark:border-sky-800 text-[10px] px-2 py-0.5 rounded-sm uppercase font-black tracking-wider flex items-center gap-1">
                 <Pin size={10} className="fill-current" /> Sabit
               </span>
             )}
@@ -727,7 +727,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
             <span className="text-slate-900 font-extrabold">{topic.title}</span>
           </h1>
           <div className="flex items-center gap-2 text-[11px] sm:text-[12px] text-slate-500 flex-wrap">
-            <span>Konuyu başlatan: <span className="text-[#185886] hover:underline font-bold">@{topic.author?.username || 'Anonim'}</span></span>
+            <span>Konuyu başlatan: <span className="text-sky-700 dark:text-sky-400 hover:underline font-bold">@{topic.author?.username || 'Anonim'}</span></span>
             <span>•</span>
             <span suppressHydrationWarning>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
             <span>•</span>
@@ -740,11 +740,11 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
           <button
             onClick={handleSummarizeTopic}
             disabled={loadingSummary}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[#185886] text-[11px] font-bold uppercase transition-all shadow-2xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-slate-50 hover:bg-slate-100 border border-slate-200 text-sky-700 dark:text-sky-400 text-[11px] font-bold uppercase transition-all shadow-2xs"
             title="Tartışmayı Yeterly AI ile özetle"
           >
             {loadingSummary ? (
-              <Loader2 size={12} className="animate-spin text-[#185886]" />
+              <Loader2 size={12} className="animate-spin text-sky-700 dark:text-sky-400" />
             ) : (
               <Sparkles size={12} className="text-amber-500 animate-pulse" />
             )}
@@ -757,14 +757,14 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
       {topicSummary && (
         <div className="bg-sky-50/50 border-l-[4px] border-l-[#185886] border border-sky-100 rounded-sm p-4 text-xs sm:text-sm text-slate-700 mb-2 relative">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-black text-[#185886] uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+            <span className="font-black text-sky-700 dark:text-sky-400 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
               <Sparkles size={12} className="text-amber-500" />
               Yeterly AI Özet
             </span>
             <button
               onClick={() => handleTTS('summary', topicSummary)}
               className={`p-1 rounded hover:bg-sky-100 transition-colors flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider ${
-                currentlyPlayingId === 'summary' ? 'text-rose-600' : 'text-[#185886]'
+                currentlyPlayingId === 'summary' ? 'text-rose-600' : 'text-sky-700 dark:text-sky-400'
               }`}
               title={currentlyPlayingId === 'summary' ? 'Seslendirmeyi durdur' : 'Özeti sesli dinle'}
             >
@@ -792,7 +792,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   size="sm"
                 />
                 <div className="flex flex-col">
-                  <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-bold text-[#185886] hover:underline text-xs">
+                  <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-bold text-sky-700 dark:text-sky-400 hover:underline text-xs">
                     {topic.author?.full_name || topic.author?.username || 'Anonim'}
                   </Link>
                   <span className={`text-[9px] px-1.5 py-0.5 rounded-sm font-bold w-fit ${roleColors[mapRole(topic.author?.role || 'user')]}`}>
@@ -805,7 +805,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
             {/* Desktop Author Column */}
             <div className="xf-post-author hidden md:flex flex-col items-center bg-slate-50 shrink-0 w-44 p-4 border-r border-slate-200">
-              <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-extrabold text-[#185886] hover:underline text-sm mb-2 truncate max-w-full">
+              <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-extrabold text-sky-700 dark:text-sky-400 hover:underline text-sm mb-2 truncate max-w-full">
                 @{topic.author?.username || 'Anonim'}
               </Link>
               <UserAvatar 
@@ -821,7 +821,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
               <div className="w-full flex flex-col gap-1.5 text-[11px] text-slate-500">
                 <div className="flex justify-between border-b border-slate-200/50 pb-1">
                   <span>Seviye:</span>
-                  <span className="font-bold text-[#185886]">{topic.author?.level || 1}</span>
+                  <span className="font-bold text-sky-700 dark:text-sky-400">{topic.author?.level || 1}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Puan:</span>
@@ -847,7 +847,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-sm transition-all border ${
                     likedTopic 
                       ? 'bg-rose-50 text-rose-600 border-rose-200' 
-                      : 'text-slate-500 hover:text-[#185886] border-transparent hover:bg-slate-50'
+                      : 'text-slate-500 hover:text-sky-700 dark:text-sky-400 border-transparent hover:bg-slate-50'
                   }`}
                 >
                   <Heart size={14} className={likedTopic ? 'fill-current scale-110' : ''} />
@@ -860,7 +860,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                     className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${
                       currentlyPlayingId === topic.id 
                         ? 'text-rose-600 font-extrabold bg-rose-50 border border-rose-200 px-2.5 py-1.5 rounded-sm' 
-                        : 'text-[#185886] hover:bg-slate-50 px-2.5 py-1.5 rounded-sm'
+                        : 'text-sky-700 dark:text-sky-400 hover:bg-slate-50 px-2.5 py-1.5 rounded-sm'
                     }`}
                   >
                     {currentlyPlayingId === topic.id ? <VolumeX size={13} className="animate-pulse" /> : <Volume2 size={13} />}
@@ -869,7 +869,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
                   <button 
                     onClick={() => handleQuote(topic.author?.username || 'Anonim', topic.content)}
-                    className="flex items-center gap-1.5 text-xs font-bold text-[#185886] hover:bg-slate-50 px-2.5 py-1.5 rounded-sm transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-bold text-sky-700 dark:text-sky-400 hover:bg-slate-50 px-2.5 py-1.5 rounded-sm transition-colors"
                   >
                     <Quote size={13} />
                     Alıntı Yap
@@ -906,7 +906,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                       />
                       <div className="flex flex-col">
                         <div className="flex items-center gap-1.5">
-                          <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-bold text-[#185886] hover:underline text-xs">
+                          <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-bold text-sky-700 dark:text-sky-400 hover:underline text-xs">
                             {comment.author?.full_name || comment.author?.username || 'Anonim'}
                           </Link>
                           {isCommentAuthorOp && (
@@ -924,7 +924,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   {/* Desktop view Author Column */}
                   <div className="xf-post-author hidden md:flex flex-col items-center bg-slate-50 shrink-0 w-44 p-4 border-r border-slate-200">
                     <div className="flex flex-col items-center max-w-full">
-                      <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-extrabold text-[#185886] hover:underline text-sm mb-1 truncate max-w-full">
+                      <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-extrabold text-sky-700 dark:text-sky-400 hover:underline text-sm mb-1 truncate max-w-full">
                         @{comment.author?.username || 'Anonim'}
                       </Link>
                       {isCommentAuthorOp && (
@@ -947,7 +947,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                     <div className="w-full flex flex-col gap-1.5 text-[11px] text-slate-500">
                       <div className="flex justify-between border-b border-slate-200/50 pb-1">
                         <span>Seviye:</span>
-                        <span className="font-bold text-[#185886]">{comment.author?.level || 1}</span>
+                        <span className="font-bold text-sky-700 dark:text-sky-400">{comment.author?.level || 1}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Puan:</span>
@@ -997,7 +997,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                           className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${
                             currentlyPlayingId === comment.id 
                               ? 'text-rose-600 font-extrabold bg-rose-50 border border-rose-200 px-2.5 py-1.5 rounded-sm' 
-                              : 'text-[#185886] hover:bg-slate-50 px-2.5 py-1.5 rounded-sm'
+                              : 'text-sky-700 dark:text-sky-400 hover:bg-slate-50 px-2.5 py-1.5 rounded-sm'
                           }`}
                         >
                           {currentlyPlayingId === comment.id ? <VolumeX size={13} className="animate-pulse" /> : <Volume2 size={13} />}
@@ -1006,7 +1006,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
                         <button 
                           onClick={() => handleQuote(comment.author?.username || 'Anonim', comment.content)}
-                          className="flex items-center gap-1.5 text-xs font-bold text-[#185886] hover:bg-slate-50 px-2.5 py-1.5 rounded-sm transition-colors"
+                          className="flex items-center gap-1.5 text-xs font-bold text-sky-700 dark:text-sky-400 hover:bg-slate-50 px-2.5 py-1.5 rounded-sm transition-colors"
                         >
                           <Quote size={13} />
                           Cevapla
@@ -1021,7 +1021,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
           {/* Quick Reply Form */}
           <div className="xf-block border border-slate-200 bg-white rounded-sm shadow-sm mt-6">
-            <h2 className="xf-block-header bg-[#eef2f7] border-b border-slate-200 text-[#185886] font-extrabold uppercase text-[12px] tracking-wider py-2.5 px-3 m-0">Hızlı Cevap Yaz</h2>
+            <h2 className="xf-block-header bg-[#eef2f7] border-b border-slate-200 text-sky-700 dark:text-sky-400 font-extrabold uppercase text-[12px] tracking-wider py-2.5 px-3 m-0">Hızlı Cevap Yaz</h2>
             <div className="p-4 bg-white">
               {user ? (
                 <form onSubmit={handleReplySubmit}>
@@ -1039,10 +1039,10 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                         className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${
                           isRecording 
                             ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' 
-                            : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-[#185886] hover:text-[#185886]'
+                            : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-sky-600 hover:text-sky-700 dark:text-sky-400'
                         }`}
                       >
-                        <Radio size={13} className={isRecording ? 'animate-pulse text-rose-600' : 'text-[#185886]'} />
+                        <Radio size={13} className={isRecording ? 'animate-pulse text-rose-600' : 'text-sky-700 dark:text-sky-400'} />
                         {isRecording ? `${Math.floor(recordingTime / 60).toString().padStart(2, '0')}:${(recordingTime % 60).toString().padStart(2, '0')} Durdur ve Ekle` : 'Sesli Mesaj Kaydet'}
                       </button>
                     </div>
@@ -1052,7 +1052,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                     ref={replyInputRef}
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-3 min-h-[140px] text-xs sm:text-sm focus:outline-none focus:border-[#185886] text-slate-800 placeholder:text-slate-400 mb-3 leading-relaxed"
+                    className="w-full bg-slate-50 border border-slate-200 rounded p-3 min-h-[140px] text-xs sm:text-sm focus:outline-none focus:border-sky-600 text-slate-800 placeholder:text-slate-400 mb-3 leading-relaxed"
                     placeholder="Yardımcı veya açıklayıcı bir cevap yazın..."
                     disabled={submitting}
                   />
@@ -1060,7 +1060,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                     <button 
                       type="submit"
                       disabled={submitting || !replyContent.trim()}
-                      className="bg-[#185886] hover:bg-[#104f75] disabled:opacity-50 text-white px-6 h-10 rounded-sm text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                      className="bg-sky-700 hover:bg-sky-600 disabled:opacity-50 text-white px-6 h-10 rounded-sm text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-2 cursor-pointer"
                     >
                       {submitting ? (
                         <>
@@ -1079,7 +1079,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
               ) : (
                 <div className="text-center py-6">
                   <p className="text-slate-500 text-xs sm:text-sm mb-3">Bu konuya cevap yazabilmek için üye girişi yapmanız gerekmektedir.</p>
-                  <Link href="/login" className="bg-[#185886] hover:bg-[#104f75] text-white px-5 py-2.5 rounded-sm text-xs font-bold uppercase transition-colors inline-block">
+                  <Link href="/login" className="bg-sky-700 hover:bg-sky-600 text-white px-5 py-2.5 rounded-sm text-xs font-bold uppercase transition-colors inline-block">
                     Giriş Yap / Kayıt Ol
                   </Link>
                 </div>
@@ -1089,16 +1089,16 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
           {/* Bottom Breadcrumbs */}
           <div className="bg-slate-50 px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm mt-4 shadow-2xs">
-            <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 font-semibold">
+            <Link href="/" className="hover:text-sky-700 dark:text-sky-400 hover:underline flex items-center gap-1 font-semibold">
               <Home size={12} />
               Ana Sayfa
             </Link>
             <span className="opacity-50">/</span>
-            <Link href="/" className="hover:text-[#185886] hover:underline font-semibold">Forumlar</Link>
+            <Link href="/" className="hover:text-sky-700 dark:text-sky-400 hover:underline font-semibold">Forumlar</Link>
             {topic.category && (
               <>
                 <span className="opacity-50">/</span>
-                <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-[#185886] hover:underline font-semibold">{topic.category.name}</Link>
+                <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-sky-700 dark:text-sky-400 hover:underline font-semibold">{topic.category.name}</Link>
               </>
             )}
             <span className="opacity-50">/</span>

@@ -58,7 +58,7 @@ export default function EvdeBakimPage() {
     <div className="space-y-6">
       
       {/* Üst Başlık & Mevzuat Dayanağı */}
-      <div className="bg-white rounded-md border border-slate-200 p-5 shadow-xs">
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded bg-rose-50 text-rose-700 flex items-center justify-center font-black">
@@ -94,7 +94,7 @@ export default function EvdeBakimPage() {
                 max="20"
                 value={householdSize || ''}
                 onChange={(e) => setHouseholdSize(Math.max(1, parseInt(e.target.value, 10) || 1))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-[#185886]"
+                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
               />
               <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
                 Kişi
@@ -118,7 +118,7 @@ export default function EvdeBakimPage() {
                 step="500"
                 value={totalIncome || ''}
                 onChange={(e) => setTotalIncome(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-[#185886]"
+                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
               />
               <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
                 TL / Ay
@@ -138,7 +138,7 @@ export default function EvdeBakimPage() {
               type="checkbox"
               checked={isTamBagimli}
               onChange={(e) => setIsTamBagimli(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-[#185886] focus:ring-[#185886] border-slate-300"
+              className="mt-0.5 w-4 h-4 rounded text-sky-700 dark:text-sky-400 focus:ring-sky-600 border-slate-300"
             />
             <div className="text-xs">
               <span className="font-bold text-slate-900 block">
@@ -155,7 +155,7 @@ export default function EvdeBakimPage() {
               type="checkbox"
               checked={hasReport}
               onChange={(e) => setHasReport(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-[#185886] focus:ring-[#185886] border-slate-300"
+              className="mt-0.5 w-4 h-4 rounded text-sky-700 dark:text-sky-400 focus:ring-sky-600 border-slate-300"
             />
             <div className="text-xs">
               <span className="font-bold text-slate-900 block">
@@ -170,7 +170,7 @@ export default function EvdeBakimPage() {
       </div>
 
       {/* SONUÇ VE DEĞERLENDİRME KARTI */}
-      <div className={`rounded-md border p-6 shadow-xs ${
+      <div className={`rounded-2xl border p-6 shadow-xs ${
         calculation.isFullyApproved 
           ? 'bg-emerald-50/70 border-emerald-300' 
           : 'bg-amber-50/70 border-amber-300'
@@ -240,7 +240,7 @@ export default function EvdeBakimPage() {
 
               <div className="p-2 bg-white/80 rounded border border-slate-200">
                 <span className="text-slate-500 block text-[11px]">2026 Yasal Sınırı</span>
-                <span className="font-black text-[#185886] text-sm">
+                <span className="font-black text-sky-700 dark:text-sky-400 text-sm">
                   {formatCurrency(calculation.kisiBasiGelirSiniri)}
                 </span>
               </div>
@@ -267,9 +267,9 @@ export default function EvdeBakimPage() {
       {/* BAŞVURU ŞARTLARI VE KİMLER BAKICI OLABİLİR? */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         
-        <div className="bg-white rounded-md border border-slate-200 p-4 shadow-xs">
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
           <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-            <Building className="w-4 h-4 text-[#185886]" />
+            <Building className="w-4 h-4 text-sky-700 dark:text-sky-400" />
             <span>Kimler Bakıcı Olarak Gösterilebilir?</span>
           </h3>
           <ul className="text-xs text-slate-600 space-y-1.5 leading-relaxed">
@@ -280,7 +280,7 @@ export default function EvdeBakimPage() {
           </ul>
         </div>
 
-        <div className="bg-white rounded-md border border-slate-200 p-4 shadow-xs">
+        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
           <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
             <ShieldAlert className="w-4 h-4 text-amber-600" />
             <span>Başvuru ve İnceleme Prosedürü</span>

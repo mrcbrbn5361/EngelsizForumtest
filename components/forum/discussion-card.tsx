@@ -58,7 +58,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
       className={`group relative p-4 sm:p-5 md:p-6 rounded-2xl border transition-all duration-200 ${
         topic.is_pinned 
           ? 'bg-amber-50/70 border-amber-300 shadow-xs' 
-          : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-[#185886]/40 shadow-sm'
+          : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-sky-600/40 shadow-sm'
       }`}
     >
       <div className="flex items-start justify-between gap-3 sm:gap-4">
@@ -84,24 +84,24 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
                 <span>Kilitli</span>
               </span>
             )}
-            <span className="px-2 py-0.5 rounded-md bg-[#eef2f7] text-[#185886] border border-[#cbd5e1] font-bold truncate max-w-[160px] sm:max-w-[220px]">
+            <span className="px-2 py-0.5 rounded-md bg-sky-50 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300 border border-sky-200 dark:border-sky-800 font-bold truncate max-w-[160px] sm:max-w-[220px]">
               {topic.category?.name || 'Genel Danışma'}
             </span>
             <span className="text-slate-300 hidden sm:inline" aria-hidden="true">•</span>
             <span className="text-slate-500 text-[11px] font-medium hidden sm:inline-flex items-center gap-1">
-              <Eye size={12} className="text-[#185886]/80" aria-hidden="true" />
+              <Eye size={12} className="text-sky-700 dark:text-sky-400/80" aria-hidden="true" />
               <span>{formatCompactNumber(topic.views_count || 0)} görüntülenme</span>
             </span>
           </div>
 
           {/* Title with link */}
-          <h2 id={`topic-title-${topic.id}`} className="text-base sm:text-lg md:text-xl font-black leading-snug text-slate-800 group-hover:text-[#185886] group-hover:underline transition-all tracking-tight break-words" lang="tr">
+          <h2 id={`topic-title-${topic.id}`} className="text-base sm:text-lg md:text-xl font-black leading-snug text-slate-800 group-hover:text-sky-700 dark:text-sky-400 group-hover:underline transition-all tracking-tight break-words" lang="tr">
             <Link 
               href={`/discussions/${topic.id}`} 
-              className="outline-none focus-visible:ring-2 focus-visible:ring-[#185886] focus-visible:ring-offset-2 focus-visible:ring-offset-white rounded-sm after:absolute after:inset-0 after:content-[''] after:z-0 flex items-center justify-between gap-2"
+              className="outline-none focus-visible:ring-2 focus-visible:ring-sky-600 focus-visible:ring-offset-2 focus-visible:ring-offset-white rounded-sm after:absolute after:inset-0 after:content-[''] after:z-0 flex items-center justify-between gap-2"
             >
               <span>{topic.title}</span>
-              <ArrowUpRight size={16} className="text-slate-400 group-hover:text-[#185886] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0 hidden sm:inline-block" aria-hidden="true" />
+              <ArrowUpRight size={16} className="text-slate-400 group-hover:text-sky-700 dark:text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0 hidden sm:inline-block" aria-hidden="true" />
             </Link>
           </h2>
         </div>
@@ -127,7 +127,7 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
                 onSummarize(topic.id);
               }}
               disabled={isLoading}
-              className="flex h-8 sm:h-9 items-center justify-center gap-1.5 rounded-xl bg-[#eef2f7] px-2.5 sm:px-3 text-[11px] font-bold text-[#185886] hover:bg-[#185886] hover:text-white transition-all disabled:opacity-50 border border-[#cbd5e1] group/ai uppercase tracking-wider cursor-pointer"
+              className="flex h-8 sm:h-9 items-center justify-center gap-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 px-2.5 sm:px-3 text-[11px] font-bold text-sky-700 dark:text-sky-400 hover:bg-sky-700 hover:text-white dark:hover:bg-sky-600 dark:hover:text-white transition-all disabled:opacity-50 border border-slate-200 dark:border-slate-700 group/ai uppercase tracking-wider cursor-pointer"
               aria-label={`"${topic.title}" konusunu yapay zeka ile özetle`}
               title="Tartışmayı AI ile hızlıca özetle"
             >
@@ -179,11 +179,11 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
             </span>
           )}
           <div className="flex items-center gap-1.5 whitespace-nowrap">
-            <Calendar size={12} className="text-[#185886]" aria-hidden="true" />
+            <Calendar size={12} className="text-sky-700 dark:text-sky-400" aria-hidden="true" />
             <time dateTime={topic.created_at}><ClientDate dateString={topic.created_at} /></time>
           </div>
           <div className="flex items-center gap-1.5 whitespace-nowrap px-2 py-0.5 rounded-md bg-slate-50 text-slate-600 border border-slate-200 font-bold">
-            <MessageSquare size={12} className="text-[#185886]" aria-hidden="true" />
+            <MessageSquare size={12} className="text-sky-700 dark:text-sky-400" aria-hidden="true" />
             <span>{formatCompactNumber(commentsCount)}</span>
             <span className="text-[10px] text-slate-400 font-normal hidden sm:inline">yanıt</span>
           </div>

@@ -13,6 +13,7 @@ import {
   Accessibility, 
   Sparkles, 
   Calculator,
+  Shield,
   ShieldCheck,
   ChevronDown,
   LogOut,
@@ -28,6 +29,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
 import { AccessibilityMenu } from '@/components/accessibility/accessibility-menu';
 import { Button } from '@/components/ui/button';
+import { UserAvatar } from '@/components/ui/user-avatar';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { useKeyboardShortcuts } from '@/lib/hotkeys';
@@ -295,9 +297,13 @@ export default function ClassicNavbar() {
                 className="min-h-[44px] flex items-center gap-2 p-1.5 rounded-lg border-2 border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                 aria-expanded={isProfileOpen}
               >
-                <div className="w-8 h-8 rounded-lg bg-sky-800 text-white font-extrabold flex items-center justify-center text-xs">
-                  {profile?.username?.charAt(0).toUpperCase() || 'U'}
-                </div>
+                <UserAvatar
+                  src={profile?.avatar_url || (user?.user_metadata?.avatar_url as string) || (user?.user_metadata?.picture as string) || null}
+                  username={profile?.username || (user?.user_metadata?.user_name as string) || user?.email?.split('@')[0]}
+                  name={profile?.full_name || (user?.user_metadata?.full_name as string) || (user?.user_metadata?.name as string) || profile?.username}
+                  size="sm"
+                  className="rounded-lg shadow-xs"
+                />
                 <span className="hidden sm:inline text-xs font-bold text-slate-900 dark:text-white max-w-[100px] truncate">
                   {profile?.username || 'Hesabım'}
                 </span>
@@ -342,6 +348,17 @@ export default function ClassicNavbar() {
                     <span>Profil &amp; Tercih Ayarları</span>
                   </Link>
 
+                  {profile?.role === 'admin' && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40"
+                    >
+                      <Shield size={14} />
+                      <span>Yönetim Paneli (ACP)</span>
+                    </Link>
+                  )}
+
                   <button
                     type="button"
                     onClick={handleSignOut}
@@ -374,55 +391,138 @@ export default function ClassicNavbar() {
 
       {/* Mobile Drawer Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 space-y-2">
-          <form onSubmit={handleSearchSubmit} className="relative mb-3">
+        <div className="md:hidden border-t-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 space-y-3">
+          <form onSubmit={handleSearchSubmit} className="relative mb-2">
             <input
               type="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Mevzuat, Balthazard ara..."
-              className="w-full h-10 pl-9 pr-3 text-xs bg-slate-50 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 rounded-lg"
+              className="w-full h-10 pl-9 pr-3 text-xs bg-slate-50 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
             />
             <Search size={15} className="absolute left-3 top-3 text-slate-400" />
           </form>
 
-          <Link
-            href="/"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-slate-800 dark:text-slate-200"
-          >
-            Forum Ana Sayfa
-          </Link>
-          <Link
-            href="/hesaplama"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-sky-700 dark:text-sky-400 flex items-center gap-2"
-          >
-            <Calculator size={16} />
-            <span>Balthazard &amp; ÖTV Hesaplama Robotları</span>
-          </Link>
-          <Link
-            href="/new-thread"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2"
-          >
-            <PlusCircle size={16} />
-            <span>Yeni Konu Aç</span>
-          </Link>
-          <Link
-            href="/about"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-slate-800 dark:text-slate-200"
-          >
-            Hakkımızda &bull; TEKNOFEST 2027
-          </Link>
-          <Link
-            href="/help"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-slate-800 dark:text-slate-200"
-          >
-            Yardım &amp; SSS
-          </Link>
+          {/* User Status Bar in Mobile Menu */}
+          {user ? (
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-200 dark:border-slate-700 space-y-2">
+              <div className="flex items-center gap-3">
+                <UserAvatar
+                  src={profile?.avatar_url || (user?.user_metadata?.avatar_url as string) || (user?.user_metadata?.picture as string) || null}
+                  username={profile?.username || (user?.user_metadata?.user_name as string) || user?.email?.split('@')[0]}
+                  name={profile?.full_name || (user?.user_metadata?.full_name as string) || (user?.user_metadata?.name as string) || profile?.username}
+                  size="md"
+                  className="rounded-xl shadow-xs"
+                />
+                <div className="min-w-0">
+                  <div className="text-xs font-black text-slate-950 dark:text-white truncate">
+                    {profile?.full_name || profile?.username || 'Hesabım'}
+                  </div>
+                  <div className="text-[10px] font-mono text-slate-500 truncate">
+                    @{profile?.username || user.email?.split('@')[0]} &bull; {profile?.role || 'Üye'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                <Link
+                  href={`/profile/${user.id}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-center gap-1.5 px-2.5 py-2 text-xs font-bold rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"
+                >
+                  <User size={13} className="text-sky-600" />
+                  <span>Profilim</span>
+                </Link>
+                <Link
+                  href="/messages"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-center gap-1.5 px-2.5 py-2 text-xs font-bold rounded-lg bg-sky-50 dark:bg-sky-950/60 border border-sky-300 dark:border-sky-800 text-sky-800 dark:text-sky-300"
+                >
+                  <MessageSquare size={13} className="text-emerald-600" />
+                  <span>DM (Mesajlar)</span>
+                </Link>
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-[11px] font-bold text-slate-600 dark:text-slate-400 hover:text-sky-600"
+                >
+                  Profil &amp; Tercih Ayarları
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleSignOut();
+                  }}
+                  className="text-[11px] font-bold text-rose-600 hover:underline cursor-pointer"
+                >
+                  Çıkış Yap
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700">
+              <Link
+                href="/login"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-1.5 py-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-white"
+              >
+                <LogIn size={13} />
+                <span>Giriş Yap</span>
+              </Link>
+              <Link
+                href="/register"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-1.5 py-2 rounded-lg bg-sky-700 hover:bg-sky-600 text-white text-xs font-bold shadow-xs"
+              >
+                <UserPlus size={13} />
+                <span>Kayıt Ol</span>
+              </Link>
+            </div>
+          )}
+
+          <div className="space-y-1 pt-1">
+            <Link
+              href="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-2.5 py-2 text-sm font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+            >
+              Forum Ana Sayfa
+            </Link>
+            <Link
+              href="/hesaplama"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-2.5 py-2 text-sm font-bold text-sky-700 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 rounded-lg flex items-center gap-2"
+            >
+              <Calculator size={16} />
+              <span>Balthazard &amp; ÖTV Hesaplama Robotları</span>
+            </Link>
+            <Link
+              href="/new-thread"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-2.5 py-2 text-sm font-bold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg flex items-center gap-2"
+            >
+              <PlusCircle size={16} />
+              <span>Yeni Konu Aç</span>
+            </Link>
+            <Link
+              href="/about"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-2.5 py-2 text-sm font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+            >
+              Hakkımızda &bull; TEKNOFEST 2027
+            </Link>
+            <Link
+              href="/help"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block px-2.5 py-2 text-sm font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+            >
+              Yardım &amp; SSS
+            </Link>
+          </div>
         </div>
       )}
     </header>

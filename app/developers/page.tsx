@@ -351,14 +351,14 @@ export default function DeveloperPortalPage() {
   return (
     <SiteLayout>
       <div className="flex flex-col gap-4">
-        {/* Breadcrumb Navigation - XenForo Style */}
-        <div className="bg-[#eef2f7] -mx-4 px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border-b border-slate-200 mb-1">
-          <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 transition-colors">
-            <Home size={12} />
-            Ana Sayfa
+        {/* Breadcrumb Navigation */}
+        <div className="bg-white dark:bg-slate-900 px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-800 rounded-xl mb-1 shadow-xs">
+          <Link href="/" className="hover:text-sky-600 flex items-center gap-1 font-bold">
+            <Home size={13} />
+            <span>Ana Sayfa</span>
           </Link>
-          <span className="opacity-50">/</span>
-          <span className="font-bold text-slate-800">Geliştirici Portalı (OAuth 2.0 &amp; REST API)</span>
+          <span className="opacity-40">/</span>
+          <span className="font-extrabold text-slate-950 dark:text-white">Geliştirici Portalı (OAuth 2.0 &amp; REST API)</span>
         </div>
 
         {/* XenForo Main Header Block */}
@@ -1599,7 +1599,7 @@ export function LoginWithEngelsizForum() {
                         <button
                           onClick={handleExecuteConsoleRequest}
                           disabled={consoleLoading}
-                          className="px-4 py-1.5 bg-[#185886] hover:bg-[#12466b] text-white font-bold text-xs rounded-xs flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 shrink-0"
+                          className="px-4 py-1.5 bg-sky-700 hover:bg-sky-600 text-white font-bold text-xs rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 shrink-0"
                         >
                           {consoleLoading ? (
                             <RefreshCw size={13} className="animate-spin" />
@@ -1639,7 +1639,7 @@ export function LoginWithEngelsizForum() {
                               setConsoleBody(JSON.stringify(JSON.parse(consoleBody), null, 2));
                             } catch {}
                           }}
-                          className="text-[11px] text-[#185886] hover:underline cursor-pointer font-semibold"
+                          className="text-[11px] text-sky-700 dark:text-sky-400 hover:underline cursor-pointer font-semibold"
                         >
                           JSON Biçimlendir
                         </button>
@@ -1734,12 +1734,12 @@ export function LoginWithEngelsizForum() {
                 </p>
 
                 <div className="p-3 bg-slate-50 border border-slate-300 rounded-sm space-y-2">
-                  <div className="font-bold text-[#185886] uppercase text-xs">Canlı MCP Manifest URL:</div>
+                  <div className="font-bold text-sky-700 dark:text-sky-400 uppercase text-xs">Canlı MCP Manifest URL:</div>
                   <div className="flex items-center justify-between gap-2 bg-white border border-slate-300 p-2 rounded-sm font-mono text-xs">
                     <span className="select-all">https://engelsizforum.com/webmcp/mcp.json</span>
                     <button
                       onClick={() => copyToClipboard('https://engelsizforum.com/webmcp/mcp.json', 'mcp-url')}
-                      className="text-slate-600 hover:text-[#185886] font-bold text-[11px] flex items-center gap-1 cursor-pointer shrink-0"
+                      className="text-slate-600 hover:text-sky-700 font-bold text-[11px] flex items-center gap-1 cursor-pointer shrink-0"
                     >
                       {copiedKey === 'mcp-url' ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
                       <span>Kopyala</span>
@@ -1799,7 +1799,7 @@ export function LoginWithEngelsizForum() {
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
                     placeholder="Örn: Engelsiz Mobil Asistan"
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-[#185886] text-slate-800"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-sky-600 text-slate-800"
                   />
                 </div>
 
@@ -1813,7 +1813,7 @@ export function LoginWithEngelsizForum() {
                     value={formRedirectUris}
                     onChange={(e) => setFormRedirectUris(e.target.value)}
                     placeholder="https://uygulamaniz.com/auth/callback (Her satıra bir URI)"
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-[#185886] text-slate-800 font-mono text-[11px]"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-sky-600 text-slate-800 font-mono text-[11px]"
                   />
                   <p className="text-[10px] text-slate-500">
                     Kullanıcı izin verdikten sonra yönlendirileceği adres. Birden fazla adres için her satıra bir adet yazın.
@@ -1829,7 +1829,7 @@ export function LoginWithEngelsizForum() {
                     value={formDescription}
                     onChange={(e) => setFormDescription(e.target.value)}
                     placeholder="Uygulamanızın ne yaptığını kısaca özetleyin"
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-[#185886] text-slate-800"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-sky-600 text-slate-800"
                   />
                 </div>
 
@@ -1842,7 +1842,7 @@ export function LoginWithEngelsizForum() {
                     value={formLogoUrl}
                     onChange={(e) => setFormLogoUrl(e.target.value)}
                     placeholder="https://uygulamaniz.com/logo.png"
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-[#185886] text-slate-800"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-sky-600 text-slate-800"
                   />
                 </div>
 

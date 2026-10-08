@@ -54,6 +54,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } else if (data) {
           // Verify role from validated profile row
           let finalProfile = data;
+          const userMetaAvatar = (authUser.user_metadata?.avatar_url as string) || (authUser.user_metadata?.picture as string) || null;
+          
+          // Auto-sync avatar if missing in profile row but present in auth metadata
+          if (!data.avatar_url && userMetaAvatar) {
+            finalProfile = { ...finalProfile, avatar_url: userMetaAvatar };
+            supabase.from('profiles').update({ avatar_url: userMetaAvatar }).eq('id', authUser.id).then();
+          }
+
           if (authUser.email === 'miracbirben@gmail.com' && data.role !== 'admin') {
             const { data: updatedProfile } = await supabase
               .from('profiles')
@@ -62,9 +70,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               .select()
               .maybeSingle();
             if (updatedProfile) {
-              finalProfile = updatedProfile;
+              finalProfile = { ...updatedProfile, avatar_url: updatedProfile.avatar_url || userMetaAvatar };
             } else {
-              finalProfile = { ...data, role: 'admin' };
+              finalProfile = { ...finalProfile, role: 'admin' };
             }
           }
           setProfile(finalProfile);
@@ -73,11 +81,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // Profile does not exist - Let's auto-create it!
           const defaultUsername = authUser.email ? authUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '') : `user_${authUser.id.substring(0, 5)}`;
           const defaultRole = authUser.email === 'miracbirben@gmail.com' ? 'admin' : 'user';
+          const metaAvatar = (authUser.user_metadata?.avatar_url as string) || (authUser.user_metadata?.picture as string) || '';
           const newProfile = {
             id: authUser.id,
             username: defaultUsername,
             full_name: authUser.user_metadata?.full_name || defaultUsername,
-            avatar_url: authUser.user_metadata?.avatar_url || '',
+            avatar_url: metaAvatar,
             role: defaultRole,
             xp: 10,
             level: 1,

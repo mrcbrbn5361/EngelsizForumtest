@@ -83,7 +83,7 @@ export default function EngelliAyligiPage() {
     <div className="space-y-6">
       
       {/* Üst Başlık & Mevzuat Dayanağı */}
-      <div className="bg-white rounded-md border border-slate-200 p-5 shadow-xs">
+      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded bg-amber-50 text-amber-700 flex items-center justify-center font-black">
@@ -119,7 +119,7 @@ export default function EngelliAyligiPage() {
                 max="20"
                 value={householdSize || ''}
                 onChange={(e) => setHouseholdSize(Math.max(1, parseInt(e.target.value, 10) || 1))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-[#185886]"
+                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
               />
               <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
                 Kişi
@@ -140,7 +140,7 @@ export default function EngelliAyligiPage() {
                 step="500"
                 value={totalIncome || ''}
                 onChange={(e) => setTotalIncome(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-[#185886]"
+                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
               />
               <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
                 TL
@@ -160,7 +160,7 @@ export default function EngelliAyligiPage() {
                 max="100"
                 value={disabilityRate || ''}
                 onChange={(e) => setDisabilityRate(Math.min(100, Math.max(0, parseInt(e.target.value, 10) || 0)))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-[#185886]"
+                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
               />
               <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
                 %
@@ -195,7 +195,7 @@ export default function EngelliAyligiPage() {
               type="checkbox"
               checked={receivesEvdeBakim}
               onChange={(e) => setReceivesEvdeBakim(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-[#185886] focus:ring-[#185886] border-slate-300"
+              className="mt-0.5 w-4 h-4 rounded text-sky-700 dark:text-sky-400 focus:ring-sky-600 border-slate-300"
             />
             <div className="text-xs">
               <span className="font-bold text-slate-900 block">
@@ -211,7 +211,7 @@ export default function EngelliAyligiPage() {
       </div>
 
       {/* SONUÇ KARTLARI */}
-      <div className={`rounded-md border p-6 shadow-xs ${
+      <div className={`rounded-2xl border p-6 shadow-xs ${
         calculation.isApproved 
           ? 'bg-emerald-50/70 border-emerald-300' 
           : 'bg-amber-50/70 border-amber-300'
@@ -286,7 +286,7 @@ export default function EngelliAyligiPage() {
 
               <div className="p-2 bg-white/80 rounded border border-slate-200">
                 <span className="text-slate-500 block text-[11px]">1/3 Asgari Ücret Sınırı</span>
-                <span className="font-black text-[#185886] text-sm">
+                <span className="font-black text-sky-700 dark:text-sky-400 text-sm">
                   {formatCurrency(calculation.kisiBasiSinir)}
                 </span>
               </div>
@@ -311,8 +311,8 @@ export default function EngelliAyligiPage() {
       </div>
 
       {/* 2026 KADEMELİ AY LIK TUTARLARI TABLOSU */}
-      <div className="bg-white rounded-md border border-slate-200 overflow-hidden shadow-xs">
-        <div className="bg-[#124d77] text-white px-5 py-3 flex items-center justify-between">
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="bg-slate-900 text-white px-5 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
             <Receipt className="w-4 h-4 text-blue-200" />
             <span>2026 YILI 2022 SAYILI KANUN GÜNCEL MAAŞ KADEMELERİ</span>

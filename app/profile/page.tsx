@@ -1,10 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useId, useCallback } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Navbar } from '@/components/layout/navbar';
-import { Footer } from '@/components/layout/footer';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
 import { updateProfileServerAction } from '@/app/actions';
@@ -27,8 +25,14 @@ import {
   MoveHorizontal,
   Contrast,
   Target,
-  ExternalLink
+  ExternalLink,
+  Home,
+  MessageSquare,
+  ShieldCheck
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import ClassicSidebar from '@/components/forum/classic-sidebar';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -54,7 +58,6 @@ export default function ProfileManagementPage() {
   // Notification & Accessibility preferences local state
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [browserNotifications, setBrowserNotifications] = useState(true);
-  const [soundAlerts, setSoundAlerts] = useState(false);
 
   // Form UI state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -80,7 +83,6 @@ export default function ProfileManagementPage() {
       const notifPrefs = (profile as any).notification_prefs || {};
       if (typeof notifPrefs.email === 'boolean') setEmailNotifications(notifPrefs.email);
       if (typeof notifPrefs.browser === 'boolean') setBrowserNotifications(notifPrefs.browser);
-      if (typeof notifPrefs.sound === 'boolean') setSoundAlerts(notifPrefs.sound);
 
       setHasUnsavedChanges(false);
     }
@@ -94,12 +96,7 @@ export default function ProfileManagementPage() {
     setFormError(null);
   };
 
-  // Redirect if not signed in
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace('/login?redirect=/profile');
-    }
-  }, [authLoading, user, router]);
+  // If not signed in and loading finishes, handled gracefully below without bounce loop
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,301 +138,372 @@ export default function ProfileManagementPage() {
 
       const result = await updateProfileServerAction({
         username: cleanUsername,
-        fullName: fullName.trim(),
-        bio: bio.trim(),
-        accessibilityPrefs: accessPrefs
+        fullName: fullName.trim() || null,
+        bio: bio.trim() || null,
+        avatarUrl: avatarUrl.trim() || null,
+        accessibilityPrefs: accessPrefs,
+        notificationPrefs: {
+          email: emailNotifications,
+          browser: browserNotifications,
+        }
       });
 
       if (!result.success) {
-        throw new Error(result.error || 'Profil güncellenirken bir hata oluştu.');
+        setFormError(result.error || 'Profil güncellenirken bir hata oluştu.');
+        toast.error(result.error || 'Profil güncellenemedi.');
+      } else {
+        setFormSuccess('Profiliniz ve tercihleriniz başarıyla güncellendi.');
+        setHasUnsavedChanges(false);
+        toast.success('Profil değişiklikleriniz kaydedildi.');
+        await refreshProfile();
       }
-
-      await refreshProfile();
-      setHasUnsavedChanges(false);
-      setFormSuccess('Profiliniz ve tercihleriniz başarıyla güncellendi.');
-      toast.success('Profil bilgileri kaydedildi.');
     } catch (err: any) {
-      console.error('Profile save error:', err);
-      setFormError(err.message || 'Profil kaydedilemedi. Lütfen bilgilerinizi kontrol edip tekrar deneyin.');
-      toast.error('Güncelleme başarısız oldu.');
+      setFormError(err.message || 'Beklenmeyen bir hata oluştu.');
+      toast.error('İşlem başarısız.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (authLoading || (!user && authLoading)) {
+  if (authLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-12 min-h-[400px]">
-        <Loader2 className="animate-spin text-sky-400 size-10 mb-3" aria-hidden="true" />
-        <p className="text-xs text-slate-400 font-medium">Profil bilgileri yükleniyor...</p>
+        <Loader2 className="animate-spin text-sky-600 size-10 mb-3" aria-hidden="true" />
+        <p className="text-xs text-slate-500 font-medium">Profil bilgileri yükleniyor...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center max-w-md mx-auto min-h-[400px]">
+        <div className="w-16 h-16 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border-2 border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 flex items-center justify-center mb-4 mx-auto shadow-xs">
+          <User size={32} />
+        </div>
+        <h1 className="text-xl font-black text-slate-950 dark:text-white mb-2">Profil ve Tercih Yönetimi</h1>
+        <p className="text-xs text-slate-600 dark:text-slate-400 mb-6 leading-relaxed font-medium">
+          Profil bilgilerinizi, erişilebilirlik ayarlarınızı ve bildirim tercihlerinizi düzenleyebilmek için lütfen oturum açın.
+        </p>
+        <Link
+          href="/login?redirect=/profile"
+          className="px-6 py-2.5 rounded-xl bg-sky-700 hover:bg-sky-600 text-white font-bold text-xs transition-colors shadow-md"
+        >
+          Giriş Yap
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-2 sm:py-4">
-      {/* Header summary banner */}
-      <div className="bg-[#111726]/90 border border-white/[0.08] rounded-2xl p-5 sm:p-7 backdrop-blur-md mb-6 shadow-xl">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <UserAvatar
-                src={avatarUrl || profile?.avatar_url}
-                username={username || profile?.username}
-                name={fullName || profile?.full_name}
-                size="lg"
-                className="ring-2 ring-sky-500/30 rounded-2xl"
-              />
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-base sm:text-lg font-bold text-slate-100 tracking-tight truncate">
-                    {fullName || profile?.full_name || username || 'Kullanıcı Profili'}
-                  </h1>
-                  <UserRoleBadge role={profile?.role} size="xs" />
-                </div>
-                <p className="text-xs text-slate-400 font-mono mt-0.5">@{username || profile?.username}</p>
-                <p className="text-[11px] text-slate-500 mt-1 truncate max-w-xs sm:max-w-md">{user?.email}</p>
-              </div>
-            </div>
+    <div className="flex flex-col gap-5 max-w-7xl mx-auto w-full">
+      {/* Breadcrumbs */}
+      <div className="bg-white dark:bg-slate-900 px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
+        <Link href="/" className="hover:text-sky-600 flex items-center gap-1 font-bold">
+          <Home size={14} />
+          <span>Ana Sayfa</span>
+        </Link>
+        <span className="opacity-40">/</span>
+        <span className="hover:text-sky-600 font-semibold">Hesabım</span>
+        <span className="opacity-40">/</span>
+        <span className="font-extrabold text-slate-950 dark:text-white">Profil &amp; Tercih Ayarları</span>
+      </div>
 
-            <div className="flex items-center gap-3 flex-wrap">
-              {user?.id && (
-                <Link
-                  href={`/profile/${user.id}`}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-xs font-semibold text-sky-400 hover:text-sky-300 border border-sky-500/20 hover:border-sky-500/40 transition-colors shadow-xs"
-                >
-                  <ExternalLink size={14} aria-hidden="true" />
-                  Herkese Açık Profilim
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Main Content Form */}
+        <div className="lg:col-span-8 space-y-6">
+          
+          {/* Header summary banner */}
+          <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-7 shadow-xs">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <UserAvatar
+                  src={avatarUrl || profile?.avatar_url}
+                  username={username || profile?.username}
+                  name={fullName || profile?.full_name}
+                  size="xl"
+                  className="ring-4 ring-slate-100 dark:ring-slate-800 rounded-2xl shadow-sm"
+                />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h1 className="text-base sm:text-lg font-black text-slate-950 dark:text-white tracking-tight truncate">
+                      {fullName || profile?.full_name || username || 'Kullanıcı Profili'}
+                    </h1>
+                    <UserRoleBadge role={profile?.role} size="xs" />
+                  </div>
+                  <p className="text-xs text-slate-500 font-mono mt-0.5">@{username || profile?.username}</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5 truncate max-w-xs sm:max-w-md">{user?.email}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5 flex-wrap">
+                {user?.id && (
+                  <Link href={`/profile/${user.id}`}>
+                    <Button variant="outline" size="sm" className="gap-1.5 font-bold">
+                      <ExternalLink size={14} />
+                      <span>Herkese Açık Profil</span>
+                    </Button>
+                  </Link>
+                )}
+                <Link href="/messages">
+                  <Button variant="primary" size="sm" className="gap-1.5 font-bold">
+                    <MessageSquare size={14} />
+                    <span>Özel Mesajlar (DM)</span>
+                  </Button>
                 </Link>
-              )}
-              {hasUnsavedChanges && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold animate-pulse">
-                  <Sparkles size={13} /> Kaydedilmemiş değişiklikler var
-                </span>
-              )}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Status Announcements */}
-        {formError && (
-          <div 
-            id={alertId}
-            role="alert"
-            aria-live="assertive"
-            className="flex items-start gap-2.5 p-4 rounded-xl bg-destructive/10 text-destructive border border-destructive/20 font-semibold text-xs leading-relaxed mb-6"
-          >
-            <AlertCircle size={16} className="shrink-0 mt-0.5" aria-hidden="true" />
-            <span>{formError}</span>
-          </div>
-        )}
+          {/* Status Announcements */}
+          {formError && (
+            <div 
+              id={alertId}
+              role="alert"
+              className="flex items-start gap-2.5 p-4 rounded-xl bg-destructive/10 text-destructive border-2 border-destructive/20 font-bold text-xs leading-relaxed"
+            >
+              <AlertCircle size={16} className="shrink-0 mt-0.5" />
+              <span>{formError}</span>
+            </div>
+          )}
 
-        {formSuccess && (
-          <div 
-            role="status"
-            aria-live="polite"
-            className="flex items-start gap-2.5 p-4 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold text-xs leading-relaxed mb-6"
-          >
-            <CheckCircle2 size={16} className="shrink-0 mt-0.5" aria-hidden="true" />
-            <span>{formSuccess}</span>
-          </div>
-        )}
+          {formSuccess && (
+            <div 
+              role="status"
+              className="flex items-start gap-2.5 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-2 border-emerald-300 dark:border-emerald-800 font-bold text-xs leading-relaxed"
+            >
+              <CheckCircle2 size={16} className="shrink-0 mt-0.5" />
+              <span>{formSuccess}</span>
+            </div>
+          )}
 
-        {/* Profile Settings Form */}
-        <form onSubmit={handleSave} className="space-y-6" noValidate>
-          {/* Card 1: Temel Bilgiler */}
-          <section aria-labelledby="basic-info-heading" className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 sm:p-6 backdrop-blur-md">
-            <h2 id="basic-info-heading" className="text-xs font-bold uppercase tracking-wider text-sky-400 mb-4 flex items-center gap-2">
-              <User size={15} /> Temel Profil Bilgileri
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label htmlFor={usernameId} className="text-xs font-bold text-slate-300">
-                  Kullanıcı Adı <span className="text-rose-400">*</span>
-                </label>
-                <input
-                  id={usernameId}
-                  type="text"
-                  required
-                  value={username}
-                  onChange={(e) => handleFieldChange(setUsername, e.target.value)}
-                  className="w-full h-10 px-3.5 text-xs font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
-                  placeholder="ornek_kullanici"
-                  maxLength={30}
-                />
+          {/* Profile Settings Form */}
+          <form onSubmit={handleSave} className="space-y-6" noValidate>
+            
+            {/* Card 1: Temel Bilgiler */}
+            <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-sky-700 dark:text-sky-400 border-b border-slate-200 dark:border-slate-800 pb-3">
+                <User size={16} />
+                <span>Temel Profil Bilgileri</span>
               </div>
 
-              <div className="space-y-1.5">
-                <label htmlFor={fullNameId} className="text-xs font-bold text-slate-300">
-                  Ad Soyad
-                </label>
-                <input
-                  id={fullNameId}
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => handleFieldChange(setFullName, e.target.value)}
-                  className="w-full h-10 px-3.5 text-xs font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors"
-                  placeholder="Adınız Soyadınız"
-                  maxLength={70}
-                />
-              </div>
-
-              <div className="sm:col-span-2 space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <label htmlFor={bioId} className="text-xs font-bold text-slate-300">
-                    Biyografi / Hakkımda
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label htmlFor={usernameId} className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                    Kullanıcı Adı <span className="text-rose-500">*</span>
                   </label>
-                  <span className="text-[10px] text-slate-500 font-mono">{bio.length}/300</span>
+                  <input
+                    id={usernameId}
+                    type="text"
+                    required
+                    value={username}
+                    onChange={(e) => handleFieldChange(setUsername, e.target.value)}
+                    className="w-full h-10 px-3.5 text-xs font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-600 transition-colors"
+                    placeholder="ornek_kullanici"
+                    maxLength={30}
+                  />
                 </div>
-                <textarea
-                  id={bioId}
-                  rows={3}
-                  value={bio}
-                  onChange={(e) => handleFieldChange(setBio, e.target.value)}
-                  className="w-full p-3 text-xs font-medium rounded-xl border border-white/[0.08] bg-[#0b0f19] text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 transition-colors resize-none"
-                  placeholder="Kendinizden, ilgi alanlarınızdan veya deneyimlerinizden kısaca bahsedin..."
-                  maxLength={300}
-                />
+
+                <div className="space-y-1.5">
+                  <label htmlFor={fullNameId} className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                    Ad Soyad
+                  </label>
+                  <input
+                    id={fullNameId}
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => handleFieldChange(setFullName, e.target.value)}
+                    className="w-full h-10 px-3.5 text-xs font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-600 transition-colors"
+                    placeholder="Adınız Soyadınız"
+                    maxLength={70}
+                  />
+                </div>
+
+                <div className="sm:col-span-2 space-y-1.5">
+                  <label htmlFor={avatarId} className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                    Profil Resmi / Avatar URL
+                  </label>
+                  <input
+                    id={avatarId}
+                    type="url"
+                    value={avatarUrl}
+                    onChange={(e) => handleFieldChange(setAvatarUrl, e.target.value)}
+                    className="w-full h-10 px-3.5 text-xs font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-600 transition-colors"
+                    placeholder="https://... (boş bırakırsanız otomatik oluşturulur)"
+                  />
+                </div>
+
+                <div className="sm:col-span-2 space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <label htmlFor={bioId} className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                      Biyografi &bull; Kendinizden Bahsedin
+                    </label>
+                    <span className="text-[10px] text-slate-400 font-mono">{bio.length}/300</span>
+                  </div>
+                  <textarea
+                    id={bioId}
+                    rows={3}
+                    value={bio}
+                    onChange={(e) => handleFieldChange(setBio, e.target.value)}
+                    className="w-full p-3 text-xs font-medium rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-600 transition-colors resize-none"
+                    placeholder="Deneyimleriniz, ilgi duyduğunuz mevzuatlar veya engelsiz yaşam tecrübeleriniz..."
+                    maxLength={300}
+                  />
+                </div>
               </div>
             </div>
-          </section>
 
-          {/* Card 2: Erişilebilirlik Tercihleri */}
-          <section aria-labelledby="accessibility-prefs-heading" className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 sm:p-6 backdrop-blur-md">
-            <h2 id="accessibility-prefs-heading" className="text-xs font-bold uppercase tracking-wider text-sky-400 mb-4 flex items-center gap-2">
-              <Accessibility size={15} /> Kişiselleştirilmiş Erişilebilirlik
-            </h2>
-
-            <div className="space-y-3">
-              {/* Font Size */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-[#0b0f19] border border-white/[0.06]">
-                <div>
-                  <p className="text-xs font-bold text-slate-200">Metin Okuma Boyutu</p>
-                  <p className="text-[11px] text-slate-400">Forum genelindeki yazı büyüklüğü</p>
-                </div>
-                <div className="grid grid-cols-4 gap-1 sm:w-64">
-                  {(['sm', 'md', 'lg', 'xl'] as const).map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      onClick={() => {
-                        updateSettings({ fontSize: size });
-                        setHasUnsavedChanges(true);
-                      }}
-                      className={cn(
-                        "py-1.5 text-xs font-bold uppercase rounded-lg border transition-colors",
-                        fontSize === size 
-                          ? "bg-sky-500 text-slate-950 border-sky-500 font-black" 
-                          : "bg-[#111726] text-slate-300 border-white/[0.08] hover:bg-[#161f33]"
-                      )}
-                      aria-pressed={fontSize === size}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
+            {/* Card 2: Erişilebilirlik Tercihleri */}
+            <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-sky-700 dark:text-sky-400 border-b border-slate-200 dark:border-slate-800 pb-3">
+                <Accessibility size={16} />
+                <span>Kişisel Erişilebilirlik Ayarları</span>
               </div>
 
-              {/* Toggles */}
+              <div className="space-y-3">
+                {/* Font Size */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+                  <div>
+                    <p className="text-xs font-bold text-slate-900 dark:text-white">Yazı Büyüklüğü (Font Size)</p>
+                    <p className="text-[11px] text-slate-500">Platform genelindeki varsayılan metin boyutu</p>
+                  </div>
+                  <div className="grid grid-cols-4 gap-1.5 sm:w-64">
+                    {(['sm', 'md', 'lg', 'xl'] as const).map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => {
+                          updateSettings({ fontSize: size });
+                          setHasUnsavedChanges(true);
+                        }}
+                        className={cn(
+                          "py-1.5 text-xs font-bold uppercase rounded-lg border-2 transition-colors cursor-pointer",
+                          fontSize === size 
+                            ? "bg-sky-700 text-white border-sky-700 font-black" 
+                            : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-100"
+                        )}
+                        aria-pressed={fontSize === size}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Toggles */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <PreferenceToggle
+                    icon={<Contrast size={14} />}
+                    title="Yüksek Kontrast"
+                    desc="Zıtlığı artırır (WCAG AAA)"
+                    active={highContrast}
+                    onToggle={() => {
+                      updateSettings({ highContrast: !highContrast });
+                      setHasUnsavedChanges(true);
+                    }}
+                  />
+                  <PreferenceToggle
+                    icon={<Type size={14} />}
+                    title="Disleksi Uyumlu Font"
+                    desc="Okumayı kolaylaştıran özel font"
+                    active={dyslexicFont}
+                    onToggle={() => {
+                      updateSettings({ dyslexicFont: !dyslexicFont });
+                      setHasUnsavedChanges(true);
+                    }}
+                  />
+                  <PreferenceToggle
+                    icon={<Sparkles size={14} />}
+                    title="Biyonik Okuma"
+                    desc="Kelimelerin baş harflerini vurgular"
+                    active={bionicReading}
+                    onToggle={() => {
+                      updateSettings({ bionicReading: !bionicReading });
+                      setHasUnsavedChanges(true);
+                    }}
+                  />
+                  <PreferenceToggle
+                    icon={<MoveHorizontal size={14} />}
+                    title="Hareketi Azalt"
+                    desc="Arayüz animasyonlarını durdurur"
+                    active={reducedMotion}
+                    onToggle={() => {
+                      updateSettings({ reducedMotion: !reducedMotion });
+                      setHasUnsavedChanges(true);
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3: Bildirim Tercihleri */}
+            <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-sky-700 dark:text-sky-400 border-b border-slate-200 dark:border-slate-800 pb-3">
+                <Bell size={16} />
+                <span>Bildirim Tercihleri</span>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <PreferenceToggle
-                  icon={<Contrast size={14} />}
-                  title="Yüksek Kontrast"
-                  desc="Metin ve arka plan zıtlığını artırır"
-                  active={highContrast}
-                  onToggle={() => {
-                    updateSettings({ highContrast: !highContrast });
-                    setHasUnsavedChanges(true);
-                  }}
+                  icon={<Bell size={14} />}
+                  title="E-posta Bildirimleri"
+                  desc="Mesaj ve konu yanıtlarında e-posta al"
+                  active={emailNotifications}
+                  onToggle={() => handleFieldChange(setEmailNotifications, !emailNotifications)}
                 />
                 <PreferenceToggle
-                  icon={<Type size={14} />}
-                  title="Disleksi Uyumlu Font"
-                  desc="Okumayı kolaylaştıran font ailesi"
-                  active={dyslexicFont}
-                  onToggle={() => {
-                    updateSettings({ dyslexicFont: !dyslexicFont });
-                    setHasUnsavedChanges(true);
-                  }}
-                />
-                <PreferenceToggle
-                  icon={<Sparkles size={14} />}
-                  title="Biyonik Okuma"
-                  desc="Kelimelerin baş harflerini vurgular"
-                  active={bionicReading}
-                  onToggle={() => {
-                    updateSettings({ bionicReading: !bionicReading });
-                    setHasUnsavedChanges(true);
-                  }}
-                />
-                <PreferenceToggle
-                  icon={<MoveHorizontal size={14} />}
-                  title="Hareketi Azalt"
-                  desc="Arayüz animasyonlarını durdurur"
-                  active={reducedMotion}
-                  onToggle={() => {
-                    updateSettings({ reducedMotion: !reducedMotion });
-                    setHasUnsavedChanges(true);
-                  }}
+                  icon={<Eye size={14} />}
+                  title="Tarayıcı Bildirimleri"
+                  desc="Anlık web bildirimleri al"
+                  active={browserNotifications}
+                  onToggle={() => handleFieldChange(setBrowserNotifications, !browserNotifications)}
                 />
               </div>
             </div>
-          </section>
 
-          {/* Card 3: Bildirim Tercihleri */}
-          <section aria-labelledby="notification-prefs-heading" className="bg-[#111726]/80 border border-white/[0.08] rounded-2xl p-5 sm:p-6 backdrop-blur-md">
-            <h2 id="notification-prefs-heading" className="text-xs font-bold uppercase tracking-wider text-sky-400 mb-4 flex items-center gap-2">
-              <Bell size={15} /> Bildirim ve İletişim Tercihleri
-            </h2>
+            {/* Action Bar */}
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (profile) {
+                    setUsername(profile.username || '');
+                    setFullName(profile.full_name || '');
+                    setBio(profile.bio || '');
+                    setAvatarUrl(profile.avatar_url || '');
+                    setHasUnsavedChanges(false);
+                    setFormError(null);
+                    setFormSuccess(null);
+                  }
+                }}
+                disabled={!hasUnsavedChanges || isSubmitting}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all disabled:opacity-40 cursor-pointer"
+              >
+                <RotateCcw size={14} /> 
+                <span>Vazgeç</span>
+              </button>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <PreferenceToggle
-                icon={<Bell size={14} />}
-                title="E-posta Bildirimleri"
-                desc="Yanıtlar ve mesajlar e-postanıza gelsin"
-                active={emailNotifications}
-                onToggle={() => handleFieldChange(setEmailNotifications, !emailNotifications)}
-              />
-              <PreferenceToggle
-                icon={<Eye size={14} />}
-                title="Tarayıcı Bildirimleri"
-                desc="Gerçek zamanlı web bildirimleri"
-                active={browserNotifications}
-                onToggle={() => handleFieldChange(setBrowserNotifications, !browserNotifications)}
-              />
+              <Button
+                type="submit"
+                disabled={isSubmitting || !hasUnsavedChanges}
+                variant="primary"
+                size="default"
+                className="gap-2 font-bold"
+              >
+                {isSubmitting ? <Loader2 className="animate-spin" size={15} /> : <Save size={15} />}
+                <span>{isSubmitting ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}</span>
+              </Button>
             </div>
-          </section>
+          </form>
 
-          {/* Action Bar */}
-          <div className="flex items-center justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={() => {
-                if (profile) {
-                  setUsername(profile.username || '');
-                  setFullName(profile.full_name || '');
-                  setBio(profile.bio || '');
-                  setHasUnsavedChanges(false);
-                  setFormError(null);
-                  setFormSuccess(null);
-                }
-              }}
-              disabled={!hasUnsavedChanges || isSubmitting}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-white/[0.08] bg-[#111726] hover:bg-[#161f33] text-slate-300 text-xs font-bold transition-all disabled:opacity-40 cursor-pointer"
-            >
-              <RotateCcw size={14} /> Değişiklikleri Sıfırla
-            </button>
+        </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting || !hasUnsavedChanges}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold shadow-lg shadow-sky-500/20 transition-all active:scale-95 disabled:opacity-40 cursor-pointer"
-            >
-              {isSubmitting ? <Loader2 className="animate-spin" size={15} /> : <Save size={15} />}
-              <span>{isSubmitting ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}</span>
-            </button>
-          </div>
-        </form>
+        {/* Sidebar */}
+        <div className="lg:col-span-4">
+          <ClassicSidebar />
+        </div>
+
+      </div>
     </div>
   );
 }
@@ -458,25 +526,25 @@ function PreferenceToggle({
       type="button"
       onClick={onToggle}
       className={cn(
-        "flex items-center justify-between p-3 rounded-xl border transition-all text-left w-full outline-none",
+        "flex items-center justify-between p-3 rounded-xl border-2 transition-all text-left w-full outline-none cursor-pointer",
         active 
-          ? "bg-sky-500/10 border-sky-500/30 text-sky-400" 
-          : "bg-[#0b0f19] border-white/[0.06] text-slate-300 hover:bg-[#161f33]"
+          ? "bg-sky-50 dark:bg-sky-950/60 border-sky-400 dark:border-sky-800 text-sky-900 dark:text-sky-200" 
+          : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
       )}
       aria-pressed={active}
     >
       <div className="flex items-center gap-2.5 pr-2">
-        <div className={cn("p-2 rounded-lg shrink-0", active ? "bg-sky-500 text-slate-950" : "bg-[#161f33] text-slate-400")}>
+        <div className={cn("p-2 rounded-lg shrink-0", active ? "bg-sky-700 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400")}>
           {icon}
         </div>
         <div>
-          <p className="text-xs font-bold text-slate-200">{title}</p>
-          <p className="text-[11px] text-slate-400 leading-tight">{desc}</p>
+          <p className="text-xs font-bold text-slate-900 dark:text-white">{title}</p>
+          <p className="text-[11px] text-slate-500 leading-tight">{desc}</p>
         </div>
       </div>
       <div className={cn(
         "h-4 w-7 rounded-full border relative transition-colors shrink-0",
-        active ? "bg-sky-500 border-sky-500" : "bg-slate-800 border-slate-700"
+        active ? "bg-sky-600 border-sky-600" : "bg-slate-300 dark:bg-slate-700 border-slate-400 dark:border-slate-600"
       )}>
         <div className={cn(
           "absolute top-0.5 left-0.5 h-2.5 w-2.5 rounded-full bg-white transition-transform",
@@ -486,5 +554,3 @@ function PreferenceToggle({
     </button>
   );
 }
-
-

@@ -151,36 +151,36 @@ export default function AdminDashboard() {
   return (
     <DashboardLayout>
       <div className="w-full max-w-7xl mx-auto px-4 py-6 md:py-8 space-y-6">
-        {/* Header - XenForo ACP Block style */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-slate-200 bg-[#eef2f7] p-5 rounded-sm shadow-xs">
+        {/* Header - Modern Admin Block style */}
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 rounded-2xl shadow-xs">
           <div className="flex items-center gap-3.5">
-            <div className="flex h-12 w-12 items-center justify-center rounded-sm bg-[#185886] text-white shrink-0 shadow-xs">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-700 text-white shrink-0 shadow-xs">
               <Shield size={24} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg sm:text-xl font-black text-[#185886] uppercase tracking-wide">Yönetim ve Moderasyon Paneli</h1>
-                <span className="px-2 py-0.5 rounded-sm bg-[#185886] text-white text-[10px] font-black uppercase tracking-wider">
+                <h1 className="text-lg sm:text-xl font-black text-slate-950 dark:text-white uppercase tracking-wide">Yönetim ve Moderasyon Paneli</h1>
+                <span className="px-2 py-0.5 rounded-md bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300 text-[10px] font-black uppercase tracking-wider border border-sky-300 dark:border-sky-800">
                   {profile?.role === 'admin' ? 'YETKİLİ' : 'MODERATÖR'}
                 </span>
               </div>
-              <p className="text-xs text-slate-600 font-normal mt-1">
-                Hoş geldiniz, <span className="text-slate-950 font-bold">{profile?.username}</span> • Sistem ve topluluk yönetimi
+              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-1">
+                Hoş geldiniz, <span className="text-slate-950 dark:text-white font-extrabold">{profile?.username}</span> • Sistem ve topluluk yönetimi
               </p>
             </div>
           </div>
           <button 
             onClick={() => router.push('/')}
-            className="inline-flex items-center justify-center gap-2 rounded-sm bg-[#f2930d] hover:bg-[#d68007] border border-[#b26904] px-4 py-2 text-xs font-black text-slate-950 transition-colors whitespace-nowrap cursor-pointer shadow-xs"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border-2 border-slate-300 dark:border-slate-700 px-4 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 transition-colors whitespace-nowrap cursor-pointer shadow-xs"
           >
             Foruma Dön
           </button>
         </header>
 
-        {/* Tabs Navigation - XenForo Sub-nav Bar Style */}
+        {/* Tabs Navigation */}
         <Tabs.Root value={activeTab} onValueChange={setActiveTab} className="flex flex-col gap-6">
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-            <Tabs.List className="flex gap-1 p-1 bg-slate-100 border border-slate-200 rounded-sm w-max sm:w-fit">
+            <Tabs.List className="flex gap-1.5 p-1.5 bg-slate-100 dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-xl w-max sm:w-fit">
               <TabButton value="overview" icon={<TrendingUp size={14} />} label="Genel Bakış" />
               {isAdmin && <TabButton value="mcp" icon={<Bot size={14} />} label="WebMCP & Yapay Zeka" />}
               {isAdmin && <TabButton value="analiz" icon={<Radio size={14} />} label="Trafik ve IoT" />}
@@ -201,32 +201,32 @@ export default function AdminDashboard() {
 
             <div className="grid lg:grid-cols-2 gap-6">
               {/* Son Kayıt Olan Üyeler Block */}
-              <div className="rounded-sm border border-slate-200 bg-white overflow-hidden shadow-xs">
-                <div className="bg-[#eef2f7] border-b border-slate-200 py-3 px-4 flex items-center justify-between">
+              <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs">
+                <div className="bg-slate-50 dark:bg-slate-800/80 border-b-2 border-slate-200 dark:border-slate-800 py-3 px-4 flex items-center justify-between">
                   <div>
-                    <h3 className="text-xs font-black text-[#185886] uppercase tracking-wider">Son Kayıt Olan Üyeler</h3>
-                    <p className="text-[10px] text-slate-500 font-normal">Platforma katılan en yeni 5 üye</p>
+                    <h3 className="text-xs font-black text-sky-800 dark:text-sky-300 uppercase tracking-wider">Son Kayıt Olan Üyeler</h3>
+                    <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Platforma katılan en yeni 5 üye</p>
                   </div>
                   {isAdmin && (
-                    <button onClick={() => setActiveTab('users')} className="text-xs font-extrabold text-[#185886] hover:underline cursor-pointer">Tümünü İncele</button>
+                    <button onClick={() => setActiveTab('users')} className="text-xs font-extrabold text-sky-700 dark:text-sky-400 hover:underline cursor-pointer">Tümünü İncele</button>
                   )}
                 </div>
                 <div className="p-4 space-y-2.5">
                   {usersList.slice(0, 5).map((u) => (
-                    <div key={u.id} className="flex items-center justify-between p-3 rounded-sm bg-slate-50 border border-slate-100 hover:border-slate-200 transition-colors">
+                    <div key={u.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 transition-colors">
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-sm bg-[#185886]/10 border border-[#185886]/20 flex items-center justify-center font-bold text-[#185886] text-xs">
+                        <div className="h-8 w-8 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300 border border-sky-300 dark:border-sky-800 flex items-center justify-center font-bold text-xs">
                           {(u.username || '?')[0].toUpperCase()}
                         </div>
                         <div>
-                          <p className="text-xs font-extrabold text-[#185886]">@{u.username || 'isimsiz'}</p>
-                          <p className="text-[10px] text-slate-500">{u.full_name || 'Üye'}</p>
+                          <p className="text-xs font-extrabold text-slate-900 dark:text-white">@{u.username || 'isimsiz'}</p>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{u.full_name || 'Üye'}</p>
                         </div>
                       </div>
-                      <span className={`px-2 py-0.5 rounded-sm text-[9px] font-bold uppercase tracking-wider border ${
-                        u.role === 'admin' ? 'bg-red-50 text-red-700 border-red-200' :
-                        u.role === 'moderator' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                        'bg-slate-100 text-slate-600 border-slate-200'
+                      <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider border ${
+                        u.role === 'admin' ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800' :
+                        u.role === 'moderator' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800' :
+                        'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
                       }`}>
                         {u.role || 'user'}
                       </span>
@@ -237,54 +237,54 @@ export default function AdminDashboard() {
 
               {/* Sol/Sağ split block for staff */}
               {!isAdmin ? (
-                <div className="rounded-sm border border-slate-200 bg-white overflow-hidden shadow-xs flex flex-col justify-between">
+                <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs flex flex-col justify-between">
                   <div>
-                    <div className="bg-[#eef2f7] border-b border-slate-200 py-3 px-4 flex items-center gap-2">
-                      <Shield size={14} className="text-[#185886]" />
-                      <h3 className="text-xs font-black text-[#185886] uppercase tracking-wider">Moderatör Denetim Masası</h3>
+                    <div className="bg-slate-50 dark:bg-slate-800/80 border-b-2 border-slate-200 dark:border-slate-800 py-3 px-4 flex items-center gap-2">
+                      <Shield size={14} className="text-sky-700 dark:text-sky-400" />
+                      <h3 className="text-xs font-black text-sky-800 dark:text-sky-300 uppercase tracking-wider">Moderatör Denetim Masası</h3>
                     </div>
                     <div className="p-4 space-y-4">
-                      <p className="text-xs text-slate-600 font-normal leading-relaxed">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
                         EngelsizForum topluluk kalitesini korumak için, kurallara uymayan paylaşımları moderasyon sekmesinden kilitleyebilir veya silebilirsiniz. Hak ihlali bildirimlerini gözden geçirin.
                       </p>
                       <div className="grid grid-cols-2 gap-3">
-                        <div className="p-3 rounded-sm bg-slate-50 border border-slate-100">
+                        <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Yetki Seviyesi</span>
-                          <p className="text-xs font-semibold text-slate-700 mt-0.5">Forum Moderatörü</p>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white mt-0.5">Forum Moderatörü</p>
                         </div>
-                        <div className="p-3 rounded-sm bg-slate-50 border border-slate-100">
+                        <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Görev</span>
-                          <p className="text-xs font-semibold text-emerald-600 mt-0.5">Topluluk Düzeni</p>
+                          <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">Topluluk Düzeni</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="p-4 border-t border-slate-100 bg-slate-50">
+                  <div className="p-4 border-t-2 border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40">
                     <button 
                       onClick={() => setActiveTab('moderation')}
-                      className="w-full py-2.5 px-4 rounded-sm bg-[#f2930d] hover:bg-[#d68007] text-slate-950 text-xs font-black transition-colors flex items-center justify-center gap-2 cursor-pointer border border-[#b26904] shadow-xs"
+                      className="w-full py-2.5 px-4 rounded-xl bg-sky-700 hover:bg-sky-600 text-white text-xs font-black transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                     >
                       <MessageSquare size={15} /> Moderasyon Konsolunu Aç
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="rounded-sm border border-slate-200 bg-white overflow-hidden shadow-xs flex flex-col justify-between">
+                <div className="rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs flex flex-col justify-between">
                   <div>
-                    <div className="bg-[#eef2f7] border-b border-slate-200 py-3 px-4 flex items-center gap-2">
-                      <Sparkles size={14} className="text-[#185886]" />
-                      <h3 className="text-xs font-black text-[#185886] uppercase tracking-wider">Yapay Zeka Ajan Entegrasyonları</h3>
+                    <div className="bg-slate-50 dark:bg-slate-800/80 border-b-2 border-slate-200 dark:border-slate-800 py-3 px-4 flex items-center gap-2">
+                      <Sparkles size={14} className="text-sky-700 dark:text-sky-400" />
+                      <h3 className="text-xs font-black text-sky-800 dark:text-sky-300 uppercase tracking-wider">Yapay Zeka Ajan Entegrasyonları</h3>
                     </div>
                     <div className="p-4 space-y-4">
                       <p className="text-xs text-slate-600 font-normal leading-relaxed">
                         EngelsizForum, 26 adet canlı MCP aracıyla Claude, Cursor, ChatGPT, Gemini ve özel donanım istemcilerine erişilebilirlik ve mevzuat verisi sağlar.
                       </p>
                       <div className="grid grid-cols-2 gap-3">
-                        <div className="p-3 rounded-sm bg-slate-50 border border-slate-100">
+                        <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Protokol</span>
                           <p className="text-xs font-mono font-semibold text-slate-700 mt-0.5">MCP 2024-11-05</p>
                         </div>
-                        <div className="p-3 rounded-sm bg-slate-50 border border-slate-100">
+                        <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
                           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Durum</span>
                           <p className="text-xs font-mono font-semibold text-emerald-600 mt-0.5">200 OK / Aktif</p>
                         </div>
@@ -294,7 +294,7 @@ export default function AdminDashboard() {
                   <div className="p-4 border-t border-slate-100 bg-slate-50">
                     <button 
                       onClick={() => setActiveTab('mcp')}
-                      className="w-full py-2.5 px-4 rounded-sm bg-[#185886] hover:bg-[#104f75] text-white text-xs font-black transition-colors flex items-center justify-center gap-2 cursor-pointer border border-[#0f3b5c] shadow-xs"
+                      className="w-full py-2.5 px-4 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-black transition-colors flex items-center justify-center gap-2 cursor-pointer border border-[#075985] shadow-xs"
                     >
                       <Bot size={15} /> WebMCP Konsolunu Aç
                     </button>
@@ -376,7 +376,7 @@ function TabButton({ value, icon, label }: { value: string, icon: React.ReactNod
   return (
     <Tabs.Trigger 
       value={value}
-      className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-sm text-slate-600 hover:text-[#185886] hover:bg-[#eef2f7] transition-all data-[state=active]:bg-[#185886] data-[state=active]:text-white outline-none whitespace-nowrap shrink-0 cursor-pointer border border-transparent data-[state=active]:border-[#104f75]"
+      className="flex items-center gap-2 px-3.5 py-2 text-xs font-bold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-all data-[state=active]:bg-sky-700 data-[state=active]:text-white outline-none whitespace-nowrap shrink-0 cursor-pointer shadow-xs"
     >
       <span className="shrink-0 text-current">{icon}</span>
       <span>{label}</span>
@@ -386,15 +386,15 @@ function TabButton({ value, icon, label }: { value: string, icon: React.ReactNod
 
 function StatCard({ label, value, icon, live }: { label: string, value: number, icon: React.ReactNode, live?: boolean }) {
   return (
-    <div className="p-4 sm:p-5 rounded-sm border border-slate-200 bg-white shadow-xs hover:border-[#185886]/40 transition-colors">
+    <div className="p-4 sm:p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs hover:border-sky-500/40 transition-colors">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-bold text-[#185886] uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-black text-slate-500 uppercase tracking-wider">{label}</span>
         <div className="flex items-center gap-1.5">
-          {live && <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />}
-          <div className="p-1 text-[#185886]">{icon}</div>
+          {live && <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />}
+          <div className="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-950 text-sky-700 dark:text-sky-300">{icon}</div>
         </div>
       </div>
-      <p className="text-2xl sm:text-3xl font-black text-slate-800 tabular-nums">{value}</p>
+      <p className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-white tabular-nums">{value}</p>
     </div>
   );
 }
@@ -532,25 +532,25 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-slate-200 bg-[#eef2f7] p-4 rounded-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-5 rounded-2xl shadow-xs">
         <div>
-          <h2 className="text-sm font-black text-[#185886] uppercase tracking-wider">Kategori ve Forum Hiyerarşisi</h2>
-          <p className="text-xs text-slate-600 font-normal mt-0.5">Ana bölümleri ve alt forum dallarını yönetin.</p>
+          <h2 className="text-sm font-black text-slate-950 dark:text-white uppercase tracking-wider">Kategori ve Forum Hiyerarşisi</h2>
+          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-0.5">Ana bölümleri ve alt forum dallarını yönetin.</p>
         </div>
         <div className="flex items-center gap-2">
           <button 
             onClick={handleSeedDefaultCategories}
             disabled={seeding}
-            className="flex items-center gap-1.5 bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 px-3 py-1.5 rounded-sm text-xs font-bold shadow-xs cursor-pointer disabled:opacity-50"
+            className="flex items-center gap-1.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border-2 border-slate-300 dark:border-slate-700 px-3.5 py-2 rounded-xl text-xs font-bold shadow-xs cursor-pointer disabled:opacity-50"
           >
             {seeding ? <Loader2 size={13} className="animate-spin" /> : <FolderTree size={13} />}
             Varsayılan Ağacı Yükle
           </button>
           <button 
             onClick={() => setIsAdding(true)}
-            className="flex items-center gap-1 bg-[#f2930d] hover:bg-[#d68007] text-slate-950 border border-[#b26904] px-3.5 py-1.5 rounded-sm text-xs font-black uppercase tracking-wider cursor-pointer shadow-xs"
+            className="flex items-center gap-1.5 bg-sky-700 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider cursor-pointer shadow-xs"
           >
-            <Plus size={13} /> Yeni Kategori Ekle
+            <Plus size={14} /> Yeni Kategori Ekle
           </button>
         </div>
       </div>
@@ -562,20 +562,20 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
             : null;
 
           return (
-            <div key={cat.id} className="rounded-sm border border-slate-200 bg-white shadow-xs hover:border-[#185886]/40 transition-colors flex flex-col justify-between overflow-hidden">
+            <div key={cat.id} className="rounded-xl border border-slate-200 bg-white shadow-xs hover:border-[#0284c7]/40 transition-colors flex flex-col justify-between overflow-hidden">
               <div className="bg-slate-50 border-b border-slate-100 p-3 flex items-center justify-between">
-                <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-sm ${
+                <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-xl ${
                   cat.parent_id ? 'bg-sky-50 text-sky-700 border border-sky-100' : 'bg-slate-200 text-slate-700 border border-slate-300'
                 }`}>
                   {cat.parent_id ? `ALT FORUM / ${parentName}` : 'ANA BÖLÜM'}
                 </span>
-                <button onClick={() => handleDelete(cat.id)} className="p-1 rounded-sm text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer" title="Sil">
+                <button onClick={() => handleDelete(cat.id)} className="p-1 rounded-xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer" title="Sil">
                   <Trash2 size={13}/>
                 </button>
               </div>
 
               <div className="p-4 flex-1">
-                <h4 className="font-extrabold text-xs sm:text-sm text-[#185886] mb-1">{cat.name}</h4>
+                <h4 className="font-extrabold text-xs sm:text-sm text-[#0284c7] mb-1">{cat.name}</h4>
                 <p className="text-xs text-slate-500 leading-normal line-clamp-3">{cat.description || 'Açıklama belirtilmemiş.'}</p>
               </div>
 
@@ -591,8 +591,8 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
       <Dialog.Root open={isAdding} onOpenChange={setIsAdding}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md bg-white border border-slate-300 p-5 rounded-sm shadow-2xl focus:outline-none">
-            <Dialog.Title className="text-sm font-black text-[#185886] uppercase tracking-wider mb-1">Yeni Kategori Ekle</Dialog.Title>
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md bg-white border border-slate-300 p-5 rounded-xl shadow-2xl focus:outline-none">
+            <Dialog.Title className="text-sm font-black text-[#0284c7] uppercase tracking-wider mb-1">Yeni Kategori Ekle</Dialog.Title>
             <Dialog.Description className="text-xs text-slate-500 mb-4">Bu kategori forum ana dizininde ve filtrelerde görünecektir.</Dialog.Description>
             
             <form onSubmit={handleAdd} className="space-y-4">
@@ -603,7 +603,7 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
                   type="text" 
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  className="w-full p-2 rounded-sm border border-slate-300 bg-white text-slate-900 text-xs focus:border-[#185886] outline-none" 
+                  className="w-full p-2 rounded-xl border border-slate-300 bg-white text-slate-900 text-xs focus:border-[#0284c7] outline-none" 
                   placeholder="Örn: Erişilebilirlik Donanımları"
                 />
               </div>
@@ -612,7 +612,7 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
                 <select 
                   value={formData.parent_id}
                   onChange={(e) => setFormData({...formData, parent_id: e.target.value})}
-                  className="w-full p-2 rounded-sm border border-slate-300 bg-white text-slate-900 text-xs focus:border-[#185886] outline-none cursor-pointer"
+                  className="w-full p-2 rounded-xl border border-slate-300 bg-white text-slate-900 text-xs focus:border-[#0284c7] outline-none cursor-pointer"
                 >
                   <option value="">-- Ana Forum Bölümü Yap --</option>
                   {parentCategoriesList.map(parent => (
@@ -625,15 +625,15 @@ function CategoryManager({ categories, onRefresh }: { categories: any[], onRefre
                 <textarea 
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  className="w-full p-2 rounded-sm border border-slate-300 bg-white text-slate-900 text-xs focus:border-[#185886] outline-none min-h-[70px]" 
+                  className="w-full p-2 rounded-xl border border-slate-300 bg-white text-slate-900 text-xs focus:border-[#0284c7] outline-none min-h-[70px]" 
                   placeholder="Bu kategori altında paylaşılabilecek konular hakkında kısa bilgi..."
                 />
               </div>
               <div className="flex gap-2 pt-2">
                 <Dialog.Close asChild>
-                  <button type="button" className="flex-1 p-2 rounded-sm bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors cursor-pointer">İptal</button>
+                  <button type="button" className="flex-1 p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors cursor-pointer">İptal</button>
                 </Dialog.Close>
-                <button type="submit" className="flex-1 p-2 rounded-sm bg-[#185886] hover:bg-[#104f75] text-white text-xs font-bold transition-colors cursor-pointer">Oluştur</button>
+                <button type="submit" className="flex-1 p-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold transition-colors cursor-pointer">Oluştur</button>
               </div>
             </form>
           </Dialog.Content>
@@ -666,64 +666,64 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border border-slate-200 bg-[#eef2f7] p-4 rounded-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-5 rounded-2xl shadow-xs">
         <div>
-          <h2 className="text-sm font-black text-[#185886] uppercase tracking-wider">Kullanıcı ve Rol Yönetimi</h2>
-          <p className="text-xs text-slate-600 font-normal mt-0.5">Üye rolleri ve erişim yetkilerini düzenleyin.</p>
+          <h2 className="text-sm font-black text-slate-950 dark:text-white uppercase tracking-wider">Kullanıcı ve Rol Yönetimi</h2>
+          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-0.5">Üye rolleri ve erişim yetkilerini düzenleyin.</p>
         </div>
         <div className="relative w-full md:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={13} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
           <input 
             type="text" 
             placeholder="Kullanıcı adı ara..."
             aria-label="Kullanıcı listesinde ara"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 rounded-sm border border-slate-300 bg-white text-xs text-slate-900 focus:border-[#185886] outline-none"
+            className="w-full pl-9 pr-3 py-2 rounded-xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:border-sky-600 outline-none"
           />
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-sm border border-slate-200 bg-white shadow-xs">
+      <div className="overflow-x-auto rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
         <table className="w-full text-left border-collapse min-w-[500px]">
-          <thead className="bg-slate-50 border-b border-slate-200">
+          <thead className="bg-slate-50 dark:bg-slate-800/80 border-b-2 border-slate-200 dark:border-slate-800">
             <tr>
-              <th className="px-4 py-2.5 text-xs font-bold text-[#185886] uppercase tracking-wider">Kullanıcı</th>
-              <th className="px-4 py-2.5 text-xs font-bold text-[#185886] uppercase tracking-wider">Rol / Yetki</th>
-              <th className="px-4 py-2.5 text-xs font-bold text-[#185886] uppercase tracking-wider text-right">İşlem</th>
+              <th className="px-4 py-3 text-xs font-bold text-sky-800 dark:text-sky-300 uppercase tracking-wider">Kullanıcı</th>
+              <th className="px-4 py-3 text-xs font-bold text-sky-800 dark:text-sky-300 uppercase tracking-wider">Rol / Yetki</th>
+              <th className="px-4 py-3 text-xs font-bold text-sky-800 dark:text-sky-300 uppercase tracking-wider text-right">İşlem</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
             {filteredUsers.map((u) => (
-              <tr key={u.id} className="hover:bg-slate-50 transition-colors">
-                <td className="px-4 py-2.5">
+              <tr key={u.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+                <td className="px-4 py-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="h-7 w-7 rounded-sm bg-[#eef2f7] border border-slate-200 flex items-center justify-center font-bold text-[#185886] text-xs shrink-0">
+                    <div className="h-8 w-8 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300 border border-sky-300 dark:border-sky-800 flex items-center justify-center font-bold text-xs shrink-0">
                       {(u.username || '?')[0].toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-slate-800">@{u.username || 'isimsiz'}</p>
-                      <p className="text-[11px] text-slate-500">{u.full_name || 'İsimsiz Üye'}</p>
+                      <p className="text-xs font-bold text-slate-900 dark:text-white">@{u.username || 'isimsiz'}</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">{u.full_name || 'İsimsiz Üye'}</p>
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-2.5">
-                  <span className={`inline-flex items-center px-1.5 py-0.5 rounded-sm text-[9px] font-black uppercase tracking-wider border ${
-                    u.role === 'admin' ? 'bg-red-50 text-red-700 border-red-200' : 
-                    u.role === 'moderator' ? 'bg-sky-50 text-sky-700 border-sky-200' : 
-                    'bg-slate-100 text-slate-600 border-slate-200'
+                <td className="px-4 py-3">
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider border ${
+                    u.role === 'admin' ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/60 dark:text-red-300 dark:border-red-800' : 
+                    u.role === 'moderator' ? 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-800' : 
+                    'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
                   }`}>
                     {u.role || 'user'}
                   </span>
                 </td>
-                <td className="px-4 py-2.5 text-right">
-                  <div className="inline-flex items-center gap-1">
+                <td className="px-4 py-3 text-right">
+                  <div className="inline-flex items-center gap-1.5">
                     {isAdmin && (
                       <>
                         {u.role !== 'admin' && (
                           <button 
                             onClick={() => handleRoleChange(u.id, 'admin')} 
-                            className="px-2 py-1 rounded-sm bg-slate-50 hover:bg-slate-100 text-slate-800 text-[11px] font-bold transition-colors cursor-pointer border border-slate-300"
+                            className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-[11px] font-bold transition-colors cursor-pointer border border-slate-300 dark:border-slate-700"
                           >
                             Yönetici Yap
                           </button>
@@ -731,7 +731,7 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
                         {u.role !== 'moderator' && (
                           <button 
                             onClick={() => handleRoleChange(u.id, 'moderator')} 
-                            className="px-2 py-1 rounded-sm bg-[#eef2f7] hover:bg-[#deedf7] text-[#185886] text-[11px] font-bold transition-colors cursor-pointer border border-slate-300"
+                            className="px-2.5 py-1 rounded-lg bg-sky-50 dark:bg-sky-950/60 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 text-[11px] font-bold transition-colors cursor-pointer border border-sky-300 dark:border-sky-800"
                           >
                             Moderatör Yap
                           </button>
@@ -739,7 +739,7 @@ function UserManager({ users, onRefresh, isAdmin }: { users: any[], onRefresh: (
                         {u.role !== 'user' && (
                           <button 
                             onClick={() => handleRoleChange(u.id, 'user')} 
-                            className="px-2 py-1 rounded-sm bg-slate-100 hover:bg-slate-200 text-slate-600 text-[11px] font-bold transition-colors cursor-pointer border border-slate-300"
+                            className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 text-[11px] font-bold transition-colors cursor-pointer border border-slate-300 dark:border-slate-700"
                           >
                             Üye Yap
                           </button>
@@ -801,46 +801,46 @@ function ModerationManager({ onTopicChange }: { onTopicChange?: () => void }) {
 
   return (
     <div className="space-y-6">
-      <div className="border border-slate-200 bg-[#eef2f7] p-4 rounded-sm">
-        <h2 className="text-sm font-black text-[#185886] uppercase tracking-wider">Topluluk Moderasyonu</h2>
-        <p className="text-xs text-slate-600 font-normal mt-0.5">Konu kilitleme, denetim ve silme işlemleri</p>
+      <div className="border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-5 rounded-2xl shadow-xs">
+        <h2 className="text-sm font-black text-slate-950 dark:text-white uppercase tracking-wider">Topluluk Moderasyonu</h2>
+        <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-0.5">Konu kilitleme, denetim ve silme işlemleri</p>
       </div>
       
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         {loading ? (
-          <div className="h-24 animate-pulse bg-slate-100 rounded-sm"></div>
+          <div className="h-24 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-2xl"></div>
         ) : topics.length === 0 ? (
-          <div className="p-8 text-center border border-dashed border-slate-300 rounded-sm bg-white text-slate-500 text-xs">
+          <div className="p-8 text-center border-2 border-dashed border-slate-300 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 text-slate-500 text-xs">
             İncelenecek konu bulunmuyor.
           </div>
         ) : (
           topics.map((topic) => (
-            <div key={topic.id} className="p-4 rounded-sm border border-slate-200 bg-white shadow-xs flex items-center justify-between gap-4 hover:border-slate-300 transition-colors">
+            <div key={topic.id} className="p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs flex items-center justify-between gap-4 hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                  <span className="text-[10px] font-bold text-[#185886]">@{topic.author?.username || 'isimsiz'}</span>
+                  <span className="text-[10px] font-bold text-sky-700 dark:text-sky-400">@{topic.author?.username || 'isimsiz'}</span>
                   <span className="text-[10px] text-slate-400">• <ClientDate dateString={topic.created_at} /></span>
                   {topic.is_locked && (
-                    <span className="px-1.5 py-0.5 rounded-sm bg-amber-50 text-amber-700 border border-amber-200 text-[9px] font-black uppercase tracking-wider">
+                    <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-[9px] font-black uppercase tracking-wider">
                       Kilitli
                     </span>
                   )}
                 </div>
-                <h4 className="font-extrabold text-xs sm:text-sm text-slate-800 truncate">{topic.title}</h4>
-                <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{topic.content}</p>
+                <h4 className="font-extrabold text-xs sm:text-sm text-slate-950 dark:text-white truncate">{topic.title}</h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 font-medium">{topic.content}</p>
               </div>
               
               <div className="flex items-center gap-1 shrink-0">
                 <button 
                   onClick={() => handleToggleLock(topic.id, topic.is_locked)}
-                  className={`p-2 rounded-sm border transition-colors cursor-pointer ${topic.is_locked ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-slate-50 text-slate-600 border-slate-300 hover:text-amber-600'}`}
+                  className={`p-2 rounded-xl border transition-colors cursor-pointer ${topic.is_locked ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-slate-50 text-slate-600 border-slate-300 hover:text-amber-600'}`}
                   title={topic.is_locked ? 'Kilidi Aç' : 'Kilitle'}
                 >
                   {topic.is_locked ? <Unlock size={13} /> : <Lock size={13} />}
                 </button>
                 <button 
                   onClick={() => handleDeleteTopic(topic.id)}
-                  className="p-2 rounded-sm bg-slate-50 text-slate-600 border border-slate-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors cursor-pointer"
+                  className="p-2 rounded-xl bg-slate-50 text-slate-600 border border-slate-300 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors cursor-pointer"
                   title="Sil"
                 >
                   <Trash2 size={13} />
@@ -958,67 +958,67 @@ function McpAdminManager() {
     <div className="space-y-6">
       {/* Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-sm border border-slate-200 bg-white shadow-xs space-y-1">
+        <div className="p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[#185886]">MCP Sunucu Durumu</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-sky-700 dark:text-sky-400">MCP Sunucu Durumu</span>
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
           </div>
-          <p className="text-sm font-bold font-mono text-emerald-600">ONLINE (200 OK)</p>
-          <p className="text-[10px] text-slate-400 font-mono">/api/mcp (SSE & JSON-RPC)</p>
+          <p className="text-sm font-bold font-mono text-emerald-600 dark:text-emerald-400">ONLINE (200 OK)</p>
+          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">/api/mcp (SSE & JSON-RPC)</p>
         </div>
 
-        <div className="p-4 rounded-sm border border-slate-200 bg-white shadow-xs space-y-1">
+        <div className="p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[#185886]">Aktif Ajan Araçları</span>
-            <Bot size={14} className="text-[#185886]" />
+            <span className="text-[10px] font-black uppercase tracking-wider text-sky-700 dark:text-sky-400">Aktif Ajan Araçları</span>
+            <Bot size={14} className="text-sky-600 dark:text-sky-400" />
           </div>
-          <p className="text-base font-black text-slate-800 tabular-nums">26 Araç</p>
-          <p className="text-[10px] text-slate-400">Mevzuat ve Erişilebilirlik Motoru</p>
+          <p className="text-base font-black text-slate-900 dark:text-white tabular-nums">26 Araç</p>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400">Mevzuat ve Erişilebilirlik Motoru</p>
         </div>
 
-        <div className="p-4 rounded-sm border border-slate-200 bg-white shadow-xs space-y-1">
+        <div className="p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[#185886]">Canlı Arama (Grounding)</span>
-            <Sparkles size={14} className="text-[#185886]" />
+            <span className="text-[10px] font-black uppercase tracking-wider text-sky-700 dark:text-sky-400">Canlı Arama (Grounding)</span>
+            <Sparkles size={14} className="text-sky-600 dark:text-sky-400" />
           </div>
-          <p className="text-sm font-bold text-slate-800">Gemini 2.5 Flash</p>
-          <p className="text-[10px] text-slate-400">Resmi Gazete ve Web Doğrulama</p>
+          <p className="text-sm font-bold text-slate-900 dark:text-white">Gemini 2.5 Flash</p>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400">Resmi Gazete ve Web Doğrulama</p>
         </div>
 
-        <div className="p-4 rounded-sm border border-slate-200 bg-white shadow-xs space-y-1">
+        <div className="p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[#185886]">Protokol Standardı</span>
-            <Globe size={14} className="text-[#185886]" />
+            <span className="text-[10px] font-black uppercase tracking-wider text-sky-700 dark:text-sky-400">Protokol Standardı</span>
+            <Globe size={14} className="text-sky-600 dark:text-sky-400" />
           </div>
-          <p className="text-sm font-bold font-mono text-slate-800">MCP (2024-11-05)</p>
-          <p className="text-[10px] text-slate-400">JSON-RPC 2.0 / W3C WebML</p>
+          <p className="text-sm font-bold font-mono text-slate-900 dark:text-white">MCP (2024-11-05)</p>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400">JSON-RPC 2.0 / W3C WebML</p>
         </div>
       </div>
 
       {/* Interactive Tool Test Console */}
-      <div className="p-5 rounded-sm border border-slate-200 bg-white shadow-xs space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-slate-200 bg-[#eef2f7] p-3.5 rounded-sm">
+      <div className="p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-xl">
           <div>
-            <h3 className="text-sm font-black text-[#185886] uppercase tracking-wider">Canlı MCP Araç Test Konsolu</h3>
-            <p className="text-xs text-slate-600 font-normal mt-0.5">WebMCP ve JSON-RPC araçlarını doğrudan test edin.</p>
+            <h3 className="text-sm font-black text-slate-950 dark:text-white uppercase tracking-wider">Canlı MCP Araç Test Konsolu</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-0.5">WebMCP ve JSON-RPC araçlarını doğrudan test edin.</p>
           </div>
 
-          <div className="flex items-center gap-1 bg-white p-1 rounded-sm border border-slate-300">
+          <div className="flex items-center gap-1 bg-white dark:bg-slate-900 p-1 rounded-xl border border-slate-300 dark:border-slate-700">
             <button
               onClick={() => setTestMode('remote')}
-              className={`px-2.5 py-1 rounded-sm text-xs font-bold transition-all cursor-pointer ${testMode === 'remote' ? 'bg-[#185886] text-white' : 'text-slate-600 hover:text-[#185886] hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${testMode === 'remote' ? 'bg-sky-700 text-white' : 'text-slate-600 dark:text-slate-300 hover:text-sky-700 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               Remote MCP
             </button>
             <button
               onClick={() => setTestMode('webmcp')}
-              className={`px-2.5 py-1 rounded-sm text-xs font-bold transition-all cursor-pointer ${testMode === 'webmcp' ? 'bg-[#185886] text-white' : 'text-slate-600 hover:text-[#185886] hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${testMode === 'webmcp' ? 'bg-sky-700 text-white' : 'text-slate-600 dark:text-slate-300 hover:text-sky-700 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               WebMCP Client
             </button>
             <button
               onClick={() => setTestMode('simulation')}
-              className={`px-2.5 py-1 rounded-sm text-xs font-bold transition-all cursor-pointer ${testMode === 'simulation' ? 'bg-[#185886] text-white' : 'text-slate-600 hover:text-[#185886] hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${testMode === 'simulation' ? 'bg-sky-700 text-white' : 'text-slate-600 dark:text-slate-300 hover:text-sky-700 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               Ajan Simülasyonu
             </button>
@@ -1027,13 +1027,13 @@ function McpAdminManager() {
 
         {/* Quick Presets */}
         <div className="space-y-1.5">
-          <span className="text-[10px] font-black uppercase tracking-wider text-[#185886]">Hızlı test önayarları:</span>
+          <span className="text-[10px] font-black uppercase tracking-wider text-sky-800 dark:text-sky-300">Hızlı test önayarları:</span>
           <div className="flex flex-wrap gap-1.5">
             {presets.map((preset, idx) => (
               <button
                 key={idx}
                 onClick={() => applyPreset(preset)}
-                className="px-2.5 py-1 rounded-sm border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-xs transition-colors cursor-pointer"
+                className="px-2.5 py-1 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-xs transition-colors cursor-pointer"
               >
                 {preset.label}
               </button>
@@ -1048,7 +1048,7 @@ function McpAdminManager() {
               <select
                 value={selectedTool}
                 onChange={(e) => handleToolSelect(e.target.value)}
-                className="w-full p-2 rounded-sm border border-slate-300 bg-white text-slate-900 font-bold text-xs focus:border-[#185886] outline-none cursor-pointer"
+                className="w-full p-2 rounded-xl border border-slate-300 bg-white text-slate-900 font-bold text-xs focus:border-[#0284c7] outline-none cursor-pointer"
               >
                 {toolsList.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -1067,7 +1067,7 @@ function McpAdminManager() {
                     type="text"
                     value={paramVal}
                     onChange={(e) => setToolArgs({ ...toolArgs, [paramKey]: e.target.value })}
-                    className="w-full mt-0.5 p-2 rounded-sm border border-slate-300 bg-white text-xs text-slate-900 focus:border-[#185886] outline-none"
+                    className="w-full mt-0.5 p-2 rounded-xl border border-slate-300 bg-white text-xs text-slate-900 focus:border-[#0284c7] outline-none"
                   />
                 </div>
               ))}
@@ -1076,7 +1076,7 @@ function McpAdminManager() {
             <button
               onClick={handleRunTest}
               disabled={isExecuting}
-              className="w-full py-2 px-4 rounded-sm bg-[#185886] hover:bg-[#104f75] text-white font-black text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer disabled:opacity-50"
+              className="w-full py-2 px-4 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-black text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer disabled:opacity-50"
             >
               {isExecuting ? <Loader2 size={13} className="animate-spin" /> : <Terminal size={13} />}
               {testMode === 'webmcp' ? 'WebMCP Çalıştır' : 'Aracı Çalıştır'}
@@ -1085,7 +1085,7 @@ function McpAdminManager() {
 
           <div className="space-y-2 md:col-span-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#185886] uppercase tracking-wider">
+              <span className="text-xs font-bold text-[#0284c7] uppercase tracking-wider">
                 Konsol Çıktısı ({testMode.toUpperCase()})
               </span>
               {testResult && (
@@ -1093,17 +1093,17 @@ function McpAdminManager() {
               )}
             </div>
 
-            <div className="p-4 rounded-sm bg-slate-900 border border-slate-800 font-mono text-xs overflow-x-auto min-h-[220px] max-h-[360px] space-y-3 text-slate-100">
+            <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 font-mono text-xs overflow-x-auto min-h-[220px] max-h-[360px] space-y-3 text-slate-100">
               {isExecuting ? (
                 <div className="flex items-center gap-2 text-slate-400 py-16 justify-center">
-                  <Loader2 size={15} className="animate-spin text-[#185886]" />
+                  <Loader2 size={15} className="animate-spin text-[#0284c7]" />
                   <span className="text-xs">MCP ve Gemini Grounding taranıyor...</span>
                 </div>
               ) : testResult ? (
                 <>
                   <div>
                     <span className="text-emerald-400 font-bold">{"// Formatlanmış Yanıt:"}</span>
-                    <pre className="mt-1.5 text-slate-200 font-sans text-xs whitespace-pre-wrap leading-relaxed bg-slate-850 p-3 rounded-sm border border-slate-800">
+                    <pre className="mt-1.5 text-slate-200 font-sans text-xs whitespace-pre-wrap leading-relaxed bg-slate-850 p-3 rounded-xl border border-slate-800">
                       {testResult.responsePayload?.result?.content?.[0]?.text || JSON.stringify(testResult, null, 2)}
                     </pre>
                   </div>
@@ -1125,35 +1125,35 @@ function McpAdminManager() {
       </div>
 
       {/* Integration Snippets */}
-      <div className="p-5 rounded-sm border border-slate-200 bg-white shadow-xs space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border border-slate-200 bg-[#eef2f7] p-3.5 rounded-sm">
+      <div className="p-5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/80 p-4 rounded-xl">
           <div>
-            <h3 className="text-sm font-black text-[#185886] uppercase tracking-wider">Geliştirici ve Ajan Entegrasyon Rehberi</h3>
-            <p className="text-xs text-slate-600 font-normal mt-0.5">Cursor, Claude, Windsurf, Python ve IoT entegrasyon kodları.</p>
+            <h3 className="text-sm font-black text-slate-950 dark:text-white uppercase tracking-wider">Geliştirici ve Ajan Entegrasyon Rehberi</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-0.5">Cursor, Claude, Windsurf, Python ve IoT entegrasyon kodları.</p>
           </div>
 
-          <div className="flex items-center gap-1 bg-white p-1 rounded-sm border border-slate-300 flex-wrap">
+          <div className="flex items-center gap-1 bg-white dark:bg-slate-900 p-1 rounded-xl border border-slate-300 dark:border-slate-700 flex-wrap">
             <button
               onClick={() => setActiveTab('web')}
-              className={`px-2.5 py-1 rounded-sm text-xs font-bold transition-all cursor-pointer ${activeTab === 'web' ? 'bg-[#185886] text-white' : 'text-slate-600 hover:text-[#185886] hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeTab === 'web' ? 'bg-sky-700 text-white' : 'text-slate-600 dark:text-slate-300 hover:text-sky-700 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               Web AI
             </button>
             <button
               onClick={() => setActiveTab('desktop')}
-              className={`px-2.5 py-1 rounded-sm text-xs font-bold transition-all cursor-pointer ${activeTab === 'desktop' ? 'bg-[#185886] text-white' : 'text-slate-600 hover:text-[#185886] hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeTab === 'desktop' ? 'bg-sky-700 text-white' : 'text-slate-600 dark:text-slate-300 hover:text-sky-700 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               Masaüstü IDE
             </button>
             <button
               onClick={() => setActiveTab('terminal')}
-              className={`px-2.5 py-1 rounded-sm text-xs font-bold transition-all cursor-pointer ${activeTab === 'terminal' ? 'bg-[#185886] text-white' : 'text-slate-600 hover:text-[#185886] hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeTab === 'terminal' ? 'bg-sky-700 text-white' : 'text-slate-600 dark:text-slate-300 hover:text-sky-700 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               Terminal / CLI
             </button>
             <button
               onClick={() => setActiveTab('hardware')}
-              className={`px-2.5 py-1 rounded-sm text-xs font-bold transition-all cursor-pointer ${activeTab === 'hardware' ? 'bg-[#185886] text-white' : 'text-slate-600 hover:text-[#185886] hover:bg-slate-50'}`}
+              className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'hardware' ? 'bg-[#0284c7] text-white' : 'text-slate-600 hover:text-[#0284c7] hover:bg-slate-50'}`}
             >
               Donanım ve IoT
             </button>
@@ -1163,36 +1163,36 @@ function McpAdminManager() {
         {/* Tab 1: Web AI */}
         {activeTab === 'web' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="p-4 rounded-sm bg-slate-50 border border-slate-200 space-y-2">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#185886]">Google Gemini ve Claude Web Remote MCP</span>
+                <span className="text-xs font-bold text-[#0284c7]">Google Gemini ve Claude Web Remote MCP</span>
                 <button
                   onClick={() => copyText('https://www.engelsizforum.com/mcp', 'Remote MCP URL')}
-                  className="p-1 hover:bg-slate-200 rounded-sm text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                  className="p-1 hover:bg-slate-200 rounded-xl text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
                   title="Kopyala"
                 >
                   {copiedCode === 'Remote MCP URL' ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
                 </button>
               </div>
               <p className="text-xs text-slate-500 font-normal">Custom Connected Apps veya Remote MCP sunucu adresi:</p>
-              <pre className="p-2.5 rounded-sm bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
+              <pre className="p-2.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
                 https://www.engelsizforum.com/mcp
               </pre>
             </div>
 
-            <div className="p-4 rounded-sm bg-slate-50 border border-slate-200 space-y-2">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#185886]">ChatGPT / Custom GPT OpenAPI Endpoint</span>
+                <span className="text-xs font-bold text-[#0284c7]">ChatGPT / Custom GPT OpenAPI Endpoint</span>
                 <button
                   onClick={() => copyText('https://www.engelsizforum.com/api/mcp', 'OpenAPI URL')}
-                  className="p-1 hover:bg-slate-200 rounded-sm text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                  className="p-1 hover:bg-slate-200 rounded-xl text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
                   title="Kopyala"
                 >
                   {copiedCode === 'OpenAPI URL' ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
                 </button>
               </div>
               <p className="text-xs text-slate-500 font-normal">GPTs Actions sekmesinde kullanılacak Endpoint:</p>
-              <pre className="p-2.5 rounded-sm bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
+              <pre className="p-2.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
                 https://www.engelsizforum.com/api/mcp
               </pre>
             </div>
@@ -1202,18 +1202,18 @@ function McpAdminManager() {
         {/* Tab 2: Desktop */}
         {activeTab === 'desktop' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="p-4 rounded-sm bg-slate-50 border border-slate-200 space-y-2">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#185886]">Cursor IDE (.cursor/mcp.json)</span>
+                <span className="text-xs font-bold text-[#0284c7]">Cursor IDE (.cursor/mcp.json)</span>
                 <button
                   onClick={() => copyText(JSON.stringify({ mcpServers: { engelsizforum: { url: 'https://www.engelsizforum.com/mcp' } } }, null, 2), 'Cursor Config')}
-                  className="p-1 hover:bg-slate-200 rounded-sm text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                  className="p-1 hover:bg-slate-200 rounded-xl text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
                   title="Kopyala"
                 >
                   {copiedCode === 'Cursor Config' ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
                 </button>
               </div>
-              <pre className="p-2.5 rounded-sm bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
+              <pre className="p-2.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
 {`{
   "mcpServers": {
     "engelsizforum": {
@@ -1224,18 +1224,18 @@ function McpAdminManager() {
               </pre>
             </div>
 
-            <div className="p-4 rounded-sm bg-slate-50 border border-slate-200 space-y-2">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#185886]">Windsurf ve Claude Desktop</span>
+                <span className="text-xs font-bold text-[#0284c7]">Windsurf ve Claude Desktop</span>
                 <button
                   onClick={() => copyText(JSON.stringify({ mcpServers: { engelsizforum: { url: 'https://www.engelsizforum.com/mcp' } } }, null, 2), 'Desktop Config')}
-                  className="p-1 hover:bg-slate-200 rounded-sm text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                  className="p-1 hover:bg-slate-200 rounded-xl text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
                   title="Kopyala"
                 >
                   {copiedCode === 'Desktop Config' ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
                 </button>
               </div>
-              <pre className="p-2.5 rounded-sm bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
+              <pre className="p-2.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
 {`{
   "mcpServers": {
     "engelsizforum": {
@@ -1251,32 +1251,32 @@ function McpAdminManager() {
         {/* Tab 3: Terminal */}
         {activeTab === 'terminal' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="p-4 rounded-sm bg-slate-50 border border-slate-200 space-y-2">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#185886]">Claude Code CLI</span>
+                <span className="text-xs font-bold text-[#0284c7]">Claude Code CLI</span>
                 <button
                   onClick={() => copyText('claude mcp add engelsizforum https://www.engelsizforum.com/mcp', 'Claude CLI')}
-                  className="p-1 hover:bg-slate-200 rounded-sm text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                  className="p-1 hover:bg-slate-200 rounded-xl text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
                 >
                   {copiedCode === 'Claude CLI' ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
                 </button>
               </div>
-              <pre className="p-2.5 rounded-sm bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
+              <pre className="p-2.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
                 claude mcp add engelsizforum https://www.engelsizforum.com/mcp
               </pre>
             </div>
 
-            <div className="p-4 rounded-sm bg-slate-50 border border-slate-200 space-y-2">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#185886]">Aider CLI</span>
+                <span className="text-xs font-bold text-[#0284c7]">Aider CLI</span>
                 <button
                   onClick={() => copyText('aider --mcp-server https://www.engelsizforum.com/mcp', 'Aider CLI')}
-                  className="p-1 hover:bg-slate-200 rounded-sm text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                  className="p-1 hover:bg-slate-200 rounded-xl text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
                 >
                   {copiedCode === 'Aider CLI' ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
                 </button>
               </div>
-              <pre className="p-2.5 rounded-sm bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
+              <pre className="p-2.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
                 aider --mcp-server https://www.engelsizforum.com/mcp
               </pre>
             </div>
@@ -1286,9 +1286,9 @@ function McpAdminManager() {
         {/* Tab 4: Hardware */}
         {activeTab === 'hardware' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="p-4 rounded-sm bg-slate-50 border border-slate-200 space-y-2">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#185886]">Raspberry Pi (Python Asistan)</span>
+                <span className="text-xs font-bold text-[#0284c7]">Raspberry Pi (Python Asistan)</span>
                 <button
                   onClick={() => copyText(`import requests
 res = requests.post("https://www.engelsizforum.com/api/mcp", json={
@@ -1296,12 +1296,12 @@ res = requests.post("https://www.engelsizforum.com/api/mcp", json={
     "params": {"name": "engelsizforum_live_disability_news", "arguments": {"topic": "ÖTV 2026"}}
 })
 print(res.json()["result"]["content"][0]["text"])`, 'Python Script')}
-                  className="p-1 hover:bg-slate-200 rounded-sm text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                  className="p-1 hover:bg-slate-200 rounded-xl text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
                 >
                   {copiedCode === 'Python Script' ? <Check size={13} className="text-emerald-600" /> : <Copy size={13} />}
                 </button>
               </div>
-              <pre className="p-2.5 rounded-sm bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
+              <pre className="p-2.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
 {`import requests
 res = requests.post("https://www.engelsizforum.com/api/mcp", json={
     "jsonrpc": "2.0", "id": 1, "method": "tools/call",
@@ -1311,11 +1311,11 @@ print(res.json()["result"]["content"][0]["text"])`}
               </pre>
             </div>
 
-            <div className="p-4 rounded-sm bg-slate-50 border border-slate-200 space-y-2">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#185886]">ESP32 (MicroPython)</span>
+                <span className="text-xs font-bold text-[#0284c7]">ESP32 (MicroPython)</span>
               </div>
-              <pre className="p-2.5 rounded-sm bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
+              <pre className="p-2.5 rounded-xl bg-slate-900 text-slate-100 font-mono text-xs overflow-x-auto border border-slate-800">
 {`import urequests, ujson
 res = urequests.post("https://www.engelsizforum.com/api/mcp", 
     headers={"Content-Type": "application/json"},

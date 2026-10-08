@@ -317,7 +317,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <WebMCPProvider>
               <div className="flex flex-col min-h-screen">
                 <ClassicNavbar />
-                <main id="main-content" className="flex-1 w-full max-w-[1280px] mx-auto px-4 py-6 outline-none" tabIndex={-1}>
+                <main id="main-content" className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 min-w-0 overflow-x-hidden outline-none" tabIndex={-1}>
                   {children}
                 </main>
                 <Footer />

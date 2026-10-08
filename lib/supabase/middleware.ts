@@ -41,9 +41,8 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // Protected routes that require authentication
-  const isProtectedRoute = pathname.startsWith('/messages') || 
-                           pathname.startsWith('/profile/edit') || 
+  // Protected routes that require hard server-side authentication
+  const isProtectedRoute = pathname.startsWith('/profile/edit') || 
                            pathname.startsWith('/new-topic') || 
                            pathname.startsWith('/notifications');
 

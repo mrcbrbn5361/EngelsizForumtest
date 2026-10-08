@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { User as UserIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -26,23 +25,19 @@ const sizeMap = {
 };
 
 export function UserAvatar({ src, name, username, size = 'md', className, badge, isOnline, fit = 'cover' }: UserAvatarProps) {
-  const [error, setError] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const [errorCount, setErrorCount] = useState(0);
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
+    setErrorCount(0);
+  }, [src]);
 
-  const safeUsername = encodeURIComponent(username || name || 'user');
-  const dicebearUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${safeUsername}`;
-  
-  // If src is a mock path like "/avatars/..." or something invalid, we default to dicebear early
-  const isMockUrl = src?.startsWith('/avatars/') || src?.includes('localhost') || src?.includes('mock');
-  const effectiveSrc = (error || isMockUrl || !src) ? dicebearUrl : src;
+  const cleanUsername = (username || name || 'user').trim();
+  const safeSeed = encodeURIComponent(cleanUsername);
+  const dicebearUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${safeSeed}`;
 
   const getInitials = () => {
     if (name) {
-      const parts = name.trim().split(' ');
+      const parts = name.trim().split(/\s+/);
       if (parts.length > 1) {
         return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
       }
@@ -54,36 +49,46 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge,
 
   const initials = getInitials();
 
+  // Determine current image source based on errors
+  const isMockUrl = src?.startsWith('/avatars/') || src?.includes('localhost');
+  const validCustomSrc = src && !isMockUrl ? src : null;
+
+  let currentImgSrc: string | null = null;
+  if (errorCount === 0) {
+    currentImgSrc = validCustomSrc || dicebearUrl;
+  } else if (errorCount === 1) {
+    // If custom image failed, try dicebear fallback
+    currentImgSrc = validCustomSrc ? dicebearUrl : null;
+  } else {
+    // If dicebear also failed, fallback to initials
+    currentImgSrc = null;
+  }
+
   return (
     <div className={cn("relative shrink-0 select-none inline-flex items-center justify-center", className)}>
       <div 
         role="img"
         aria-label={name || username || 'Kullanıcı Avatarı'}
         className={cn(
-          "rounded-xl border border-white/[0.08] overflow-hidden bg-[#161f33] relative flex items-center justify-center transition-all",
+          "rounded-xl border border-slate-300 dark:border-slate-700 overflow-hidden bg-slate-100 dark:bg-slate-800 relative flex items-center justify-center transition-all",
           sizeMap[size]
         )}
       >
-        {isMounted && (
-          <Image
-            src={effectiveSrc}
+        {currentImgSrc ? (
+          <img
+            src={currentImgSrc}
             alt={name || username || 'Kullanıcı'}
-            fill
-            sizes="(max-width: 768px) 80px, 120px"
-            unoptimized={effectiveSrc.includes('/svg') || effectiveSrc.includes('.svg') || effectiveSrc.includes('dicebear')}
-            className={cn(
-              "transition-opacity duration-300",
-              fit === 'contain' ? "object-contain object-center" : "object-cover object-center",
-              error ? "opacity-0" : "opacity-100"
-            )}
-            onError={() => setError(true)}
+            loading="lazy"
+            decoding="async"
             referrerPolicy="no-referrer"
+            onError={() => setErrorCount(prev => prev + 1)}
+            className={cn(
+              "w-full h-full",
+              fit === 'contain' ? "object-contain object-center" : "object-cover object-center"
+            )}
           />
-        )}
-        
-        {/* Initials Fallback (visible while loading or if image fails) */}
-        {(error || !src) && (
-          <div className="absolute inset-0 flex items-center justify-center font-black text-sky-400 bg-sky-500/10 select-none">
+        ) : (
+          <div className="w-full h-full flex items-center justify-center font-black text-sky-800 dark:text-sky-300 bg-sky-100 dark:bg-sky-950/70 select-none">
             {initials || <UserIcon size={14} />}
           </div>
         )}

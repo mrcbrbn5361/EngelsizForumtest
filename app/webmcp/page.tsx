@@ -434,24 +434,24 @@ export default function WebMCPPage() {
   return (
     <SiteLayout>
       <div className="flex flex-col gap-4">
-        {/* Breadcrumb Navigation - XenForo Style */}
-        <div className="bg-[#eef2f7] -mx-4 px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border-b border-slate-200 mb-2">
-          <Link href="/" className="hover:text-[#185886] hover:underline flex items-center gap-1 transition-colors">
-            <Home size={12} />
-            Ana Sayfa
+        {/* Breadcrumb Navigation */}
+        <div className="bg-white dark:bg-slate-900 px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-800 rounded-xl mb-2 shadow-xs">
+          <Link href="/" className="hover:text-sky-600 flex items-center gap-1 font-bold">
+            <Home size={13} />
+            <span>Ana Sayfa</span>
           </Link>
-          <span className="opacity-50">/</span>
-          <span className="font-bold text-slate-800">Yapay Zeka (AI) Ajanları ve Evrensel MCP Modülü</span>
+          <span className="opacity-40">/</span>
+          <span className="font-extrabold text-slate-950 dark:text-white">Yapay Zeka (AI) Ajanları ve Evrensel MCP Modülü</span>
         </div>
 
         {/* Hero Welcome Message */}
-        <div className="p-5 bg-white border border-slate-200 rounded-sm shadow-xs space-y-3">
+        <div className="p-5 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs space-y-3">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-sm bg-[#eef2f7] text-[#185886] border border-slate-300 text-[11px] font-bold uppercase tracking-wider">
-              <Sparkles size={12} className="text-[#185886]" />
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-sky-50 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300 border border-sky-200 dark:border-sky-800 text-[11px] font-black uppercase tracking-wider">
+              <Sparkles size={12} className="text-sky-600 dark:text-sky-400" />
               W3C Chrome WebMCP 1.1 &amp; Remote MCP
             </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-sm bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-[11px] font-black uppercase tracking-wider">
               <CheckCircle2 size={12} />
               26 Evrensel Ajan Aracı
             </span>
@@ -459,10 +459,10 @@ export default function WebMCPPage() {
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight">
+              <h1 className="text-xl sm:text-2xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
                 Yapay Zeka (AI) Ajanları ve Evrensel MCP Modülü
               </h1>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
                 Cursor, VS Code, Windsurf, Claude Code, Aider ve diğer tüm AI ajanları için canlı mevzuat, hesap makineleri ve tam erişilebilirlik entegrasyon hub&apos;ı.
               </p>
             </div>
@@ -470,7 +470,7 @@ export default function WebMCPPage() {
             <button
               onClick={handleTriggerSync}
               disabled={isSyncing}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-sm bg-[#185886] hover:bg-[#12466b] text-white text-xs font-black uppercase tracking-wider shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-700 hover:bg-sky-600 text-white text-xs font-black uppercase tracking-wider shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
               {isSyncing ? 'Eşleniyor...' : 'Tüm Dizini Eşle'}
@@ -523,10 +523,10 @@ export default function WebMCPPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-black uppercase tracking-wider border-t-2 border-x transition-colors whitespace-nowrap cursor-pointer rounded-t-sm ${
+                className={`flex items-center gap-1.5 px-4 py-2.5 text-xs font-black uppercase tracking-wider border-t-2 border-x transition-colors whitespace-nowrap cursor-pointer rounded-t-lg ${
                   isActive
-                    ? 'border-t-[#f2930d] border-x-slate-200 bg-white text-[#185886]'
-                    : 'border-t-transparent border-x-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    ? 'border-t-sky-600 border-x-slate-200 dark:border-x-slate-800 bg-white dark:bg-slate-900 text-sky-700 dark:text-sky-400'
+                    : 'border-t-transparent border-x-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800'
                 }`}
               >
                 {tab.icon}
@@ -1423,10 +1423,10 @@ export default function WebMCPPage() {
                 <button
                   key={pill.id}
                   onClick={() => setGuideCategoryFilter(pill.id)}
-                  className={`px-3 py-1.5 rounded-sm text-xs font-bold transition-colors border cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border cursor-pointer ${
                     guideCategoryFilter === pill.id
-                      ? 'bg-[#185886] text-white border-[#185886] shadow-xs'
-                      : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'
+                      ? 'bg-sky-700 text-white border-sky-700 shadow-xs'
+                      : 'bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                   }`}
                 >
                   {pill.label}

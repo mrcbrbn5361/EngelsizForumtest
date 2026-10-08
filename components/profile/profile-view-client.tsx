@@ -184,10 +184,16 @@ export function ProfileViewClient({ targetProfile, stats, recentTopics }: Profil
           <div className="flex flex-wrap sm:flex-nowrap md:flex-col items-center gap-2.5 shrink-0 w-full md:w-auto">
             {isOwnProfile ? (
               <>
+                <Link href="/messages" className="w-full">
+                  <Button variant="primary" size="default" className="w-full gap-2 font-bold shadow-xs">
+                    <Mail size={15} />
+                    <span>Özel Mesajlarım (DM)</span>
+                  </Button>
+                </Link>
                 <Link href="/profile" className="w-full">
-                  <Button variant="primary" size="default" className="w-full gap-2 font-bold">
+                  <Button variant="outline" size="default" className="w-full gap-2 font-bold">
                     <Edit3 size={15} />
-                    <span>Profili Düzenle</span>
+                    <span>Profili &amp; Tercihleri Düzenle</span>
                   </Button>
                 </Link>
                 {isViewerAdmin && (
