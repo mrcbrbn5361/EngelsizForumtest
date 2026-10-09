@@ -1,0 +1,35 @@
+{
+  "$schema": "../schema.json",
+  "name": "Engelsiz Erişilebilirlik",
+  "description": "EngelsizForum open-source universal WCAG 2.1 AAA web accessibility widget for visually impaired, neurodivergent, and motor-disabled users.",
+  "url": "https://engelsizforum.com/developers",
+  "cats": [
+    89
+  ],
+  "icon": "engelsizforum.svg",
+  "website": "https://engelsizforum.com",
+  "pricing": [
+    "freemium",
+    "open-source"
+  ],
+  "js": {
+    "EngelsizAccessibility": "",
+    "EngelsizAccessibility.version": "(.*)\\;version:\\1",
+    "__ENGELSIZ_WIDGET_VERSION__": "(.*)\\;version:\\1"
+  },
+  "dom": {
+    "#engelsiz-accessibility-widget": {
+      "attributes": {
+        "data-engelsiz-version": "(.*)\\;version:\\1"
+      }
+    },
+    "meta[name='engelsiz-accessibility']": {
+      "attributes": {
+        "content": "active",
+        "data-version": "(.*)\\;version:\\1"
+      }
+    }
+  },
+  "scripts": "(?:/widget/|/api/widget/)engelsiz-accessibility(?:\\.min)?\\.js",
+  "implies": []
+}

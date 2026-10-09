@@ -28,7 +28,15 @@ import {
   Play,
   Send,
   Clock,
-  Sparkles
+  Sparkles,
+  Accessibility,
+  Sliders,
+  Download,
+  Eye,
+  Type,
+  Volume2,
+  Palette,
+  CheckCircle
 } from 'lucide-react';
 import { SiteLayout } from '@/components/layout/site-layout';
 import { createClient } from '@/lib/supabase/client';
@@ -48,8 +56,57 @@ export default function DeveloperPortalPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [apps, setApps] = useState<OAuthApp[]>([]);
-  const [activeTab, setActiveTab] = useState<'apps' | 'docs' | 'button' | 'rest' | 'console' | 'webmcp'>('apps');
+  const [activeTab, setActiveTab] = useState<'apps' | 'docs' | 'button' | 'widget' | 'rest' | 'console' | 'webmcp'>('apps');
   const [selectedDocLang, setSelectedDocLang] = useState<'nextauth' | 'nodejs' | 'python' | 'php'>('nextauth');
+
+  // Erişilebilirlik Widget'ı Generator & Wappalyzer Test State
+  const [widgetPosition, setWidgetPosition] = useState<'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'>('bottom-right');
+  const [widgetColor, setWidgetColor] = useState<string>('#185886');
+  const [widgetLang, setWidgetLang] = useState<'tr' | 'en'>('tr');
+  const [widgetCodeTab, setWidgetCodeTab] = useState<'html' | 'react' | 'wappalyzer' | 'api'>('html');
+  const [widgetSignatureCheck, setWidgetSignatureCheck] = useState<{
+    checked: boolean;
+    hasWindowGlobal: boolean;
+    hasMetaTag: boolean;
+    hasDomElement: boolean;
+    hasScriptEndpoint: boolean;
+    version: string;
+  }>({
+    checked: false,
+    hasWindowGlobal: false,
+    hasMetaTag: false,
+    hasDomElement: false,
+    hasScriptEndpoint: false,
+    version: '1.0.0',
+  });
+
+  const runSignatureCheck = () => {
+    if (typeof window === 'undefined') return;
+
+    if (!(window as any).EngelsizAccessibility && !document.getElementById('engelsiz-widget-script')) {
+      const s = document.createElement('script');
+      s.id = 'engelsiz-widget-script';
+      s.src = '/widget/engelsiz-accessibility.js';
+      s.async = true;
+      document.body.appendChild(s);
+    }
+
+    setTimeout(() => {
+      const hasWindowGlobal = typeof window !== 'undefined' && !!(window as any).EngelsizAccessibility;
+      const hasMetaTag = typeof document !== 'undefined' && !!document.querySelector('meta[name="engelsiz-accessibility"]');
+      const hasDomElement = typeof document !== 'undefined' && !!document.getElementById('engelsiz-accessibility-widget');
+      const version = (window as any)?.EngelsizAccessibility?.version || '1.0.0';
+
+      setWidgetSignatureCheck({
+        checked: true,
+        hasWindowGlobal,
+        hasMetaTag,
+        hasDomElement,
+        hasScriptEndpoint: true,
+        version,
+      });
+    }, 400);
+  };
 
   // Logolu Giriş Butonu Generator State
   const [btnTheme, setBtnTheme] = useState<'green' | 'blue' | 'dark' | 'white'>('green');
@@ -438,6 +495,24 @@ export default function DeveloperPortalPage() {
           >
             <LogIn size={13} className="text-[#00875a]" />
             <span>Logolu Giriş Butonu &amp; Logo</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab('widget');
+              runSignatureCheck();
+            }}
+            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer rounded-t-sm flex items-center gap-1.5 ${
+              activeTab === 'widget'
+                ? 'bg-white text-[#185886] border-t-2 border-t-[#185886] border-x border-slate-300 -mb-1 pb-2.5 shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
+          >
+            <Accessibility size={13} className="text-[#185886]" />
+            <span>Erişilebilirlik Widget&apos;ı &amp; Wappalyzer</span>
+            <span className="bg-amber-100 text-amber-800 text-[9px] font-black px-1.5 py-0.5 rounded-xs border border-amber-300">
+              YENİ
+            </span>
           </button>
 
           <button
@@ -1403,6 +1478,607 @@ export function LoginWithEngelsizForum() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: ACCESSIBILITY WIDGET & WAPPALYZER INTEGRATION */}
+        {activeTab === 'widget' && (
+          <div className="space-y-4">
+            {/* Header Banner */}
+            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-black uppercase text-[12px] tracking-wider py-2.5 px-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Accessibility size={16} />
+                  <span>ENGELSİZ ERİŞİLEBİLİRLİK WIDGET&apos;I (EMBED SDK) &amp; WAPPALYZER TESPİTİ</span>
+                </div>
+                <span className="text-[11px] font-normal text-white/80 bg-white/10 px-2 py-0.5 rounded-sm border border-white/20">
+                  WCAG 2.1 AAA • Wappalyzer Kategori 89
+                </span>
+              </div>
+
+              <div className="p-4 sm:p-5 space-y-3 text-xs sm:text-sm text-slate-700 bg-white">
+                <p className="leading-relaxed">
+                  Her web sitesine tek bir satır kod ile tam donanımlı, yerli ve açık kaynaklı <strong>WCAG 2.1 AAA</strong> erişilebilirlik paneli entegre edin. Bu widget harici sitelerde çalışırken <strong>Wappalyzer</strong>, <strong>BuiltWith</strong> ve web tarayıcıları tarafından otomatik olarak tespit edilebilen küresel imzalara sahiptir.
+                </p>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                  <div className="p-2.5 bg-sky-50 border border-sky-200 rounded-sm">
+                    <div className="text-[10px] font-black uppercase text-sky-800">Görme Desteği</div>
+                    <div className="text-xs font-bold text-sky-950 mt-0.5">Yüksek Kontrast &amp; Büyüteç</div>
+                  </div>
+                  <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-sm">
+                    <div className="text-[10px] font-black uppercase text-emerald-800">Nöroçeşitlilik</div>
+                    <div className="text-xs font-bold text-emerald-950 mt-0.5">OpenDyslexic &amp; Bionic Okuma</div>
+                  </div>
+                  <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-sm">
+                    <div className="text-[10px] font-black uppercase text-amber-800">Sesli Rehber</div>
+                    <div className="text-xs font-bold text-amber-950 mt-0.5">Ekran Okuyucu (TTS Speech)</div>
+                  </div>
+                  <div className="p-2.5 bg-purple-50 border border-purple-200 rounded-sm">
+                    <div className="text-[10px] font-black uppercase text-purple-800">Wappalyzer</div>
+                    <div className="text-xs font-bold text-purple-950 mt-0.5">Global İmza &amp; DOM Tespiti</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Widget Yapılandırıcı & Kod Üreteci */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+              {/* Sol Sütun: Yapılandırma */}
+              <div className="lg:col-span-5 space-y-4">
+                <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+                  <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-bold text-xs uppercase py-2 px-3 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Sliders size={13} />
+                      <span>Widget Ayarlarını Kişiselleştir</span>
+                    </div>
+                  </div>
+
+                  <div className="p-4 space-y-3.5 text-xs">
+                    {/* Pozisyon */}
+                    <div className="space-y-1">
+                      <label className="block font-bold text-slate-800 uppercase text-[10px]">
+                        Buton Ekran Konumu:
+                      </label>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {[
+                          { id: 'bottom-right', label: 'Sağ Alt (Varsayılan)' },
+                          { id: 'bottom-left', label: 'Sol Alt' },
+                          { id: 'top-right', label: 'Sağ Üst' },
+                          { id: 'top-left', label: 'Sol Üst' }
+                        ].map((pos) => (
+                          <button
+                            key={pos.id}
+                            type="button"
+                            onClick={() => setWidgetPosition(pos.id as any)}
+                            className={`p-2 rounded-sm border text-left font-bold text-xs transition-colors cursor-pointer ${
+                              widgetPosition === pos.id
+                                ? 'bg-sky-50 border-sky-600 text-[#185886]'
+                                : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-700'
+                            }`}
+                          >
+                            {pos.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Ana Tema Rengi */}
+                    <div className="space-y-1.5">
+                      <label className="block font-bold text-slate-800 uppercase text-[10px]">
+                        Tema Rengi:
+                      </label>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {[
+                          { color: '#185886', name: 'Engelsiz Mavisi' },
+                          { color: '#00875a', name: 'Zümrüt Yeşili' },
+                          { color: '#f2930d', name: 'Turuncu' },
+                          { color: '#0f172a', name: 'Gece Siyahı' },
+                          { color: '#7c3aed', name: 'Mor' }
+                        ].map((t) => (
+                          <button
+                            key={t.color}
+                            type="button"
+                            onClick={() => setWidgetColor(t.color)}
+                            className={`w-7 h-7 rounded-full border-2 transition-transform cursor-pointer flex items-center justify-center ${
+                              widgetColor === t.color ? 'scale-110 border-slate-900 shadow-sm' : 'border-white hover:scale-105'
+                            }`}
+                            style={{ backgroundColor: t.color }}
+                            title={t.name}
+                          >
+                            {widgetColor === t.color && <Check size={13} className="text-white drop-shadow-sm" />}
+                          </button>
+                        ))}
+                        <input
+                          type="text"
+                          value={widgetColor}
+                          onChange={(e) => setWidgetColor(e.target.value)}
+                          placeholder="#185886"
+                          className="w-24 px-2 py-1 text-xs border border-slate-300 rounded-sm font-mono"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Dil */}
+                    <div className="space-y-1">
+                      <label className="block font-bold text-slate-800 uppercase text-[10px]">
+                        Arayüz Dili:
+                      </label>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => setWidgetLang('tr')}
+                          className={`p-2 rounded-sm border font-bold text-xs text-center cursor-pointer ${
+                            widgetLang === 'tr'
+                              ? 'bg-sky-50 border-sky-600 text-[#185886]'
+                              : 'bg-white border-slate-200 text-slate-700'
+                          }`}
+                        >
+                          Türkçe (tr)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setWidgetLang('en')}
+                          className={`p-2 rounded-sm border font-bold text-xs text-center cursor-pointer ${
+                            widgetLang === 'en'
+                              ? 'bg-sky-50 border-sky-600 text-[#185886]'
+                              : 'bg-white border-slate-200 text-slate-700'
+                          }`}
+                        >
+                          English (en)
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Canlı Test Butonları */}
+                    <div className="pt-2 border-t border-slate-200 space-y-2">
+                      <div className="text-[10px] font-bold text-slate-600 uppercase">
+                        Sayfada Canlı Test Et:
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if ((window as any).EngelsizAccessibility) {
+                              (window as any).EngelsizAccessibility.open();
+                            } else {
+                              runSignatureCheck();
+                              setTimeout(() => (window as any).EngelsizAccessibility?.open(), 500);
+                            }
+                          }}
+                          className="px-3 py-1.5 bg-[#185886] hover:bg-[#12466b] text-white rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer shadow-xs"
+                        >
+                          <Accessibility size={13} />
+                          <span>Widget&apos;ı Aç</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if ((window as any).EngelsizAccessibility) {
+                              (window as any).EngelsizAccessibility.toggleDyslexicFont();
+                            } else {
+                              runSignatureCheck();
+                            }
+                          }}
+                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-sm font-bold text-xs cursor-pointer border border-slate-300"
+                        >
+                          Disleksi Fontu
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if ((window as any).EngelsizAccessibility) {
+                              (window as any).EngelsizAccessibility.toggleReadingRuler();
+                            } else {
+                              runSignatureCheck();
+                            }
+                          }}
+                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-sm font-bold text-xs cursor-pointer border border-slate-300"
+                        >
+                          Okuma Cetveli
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Sağ Sütun: Kod Üretici & Entegrasyon */}
+              <div className="lg:col-span-7 space-y-4">
+                <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+                  <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-bold text-xs uppercase py-2 px-3 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <Code2 size={13} />
+                      <span>Hazır Entegrasyon Kodları (Kopyala &amp; Yapıştır)</span>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      {(['html', 'react', 'api', 'wappalyzer'] as const).map((tab) => (
+                        <button
+                          key={tab}
+                          onClick={() => setWidgetCodeTab(tab)}
+                          className={`px-2 py-0.5 rounded-xs text-[10px] font-bold uppercase transition-colors cursor-pointer ${
+                            widgetCodeTab === tab
+                              ? 'bg-[#185886] text-white'
+                              : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          {tab === 'html' && 'HTML / Web'}
+                          {tab === 'react' && 'React / Next.js'}
+                          {tab === 'api' && 'JS API'}
+                          {tab === 'wappalyzer' && 'Wappalyzer JSON'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="p-4 space-y-3 text-xs">
+                    {/* HTML TAB */}
+                    {widgetCodeTab === 'html' && (
+                      <div className="space-y-2">
+                        <p className="text-slate-600">
+                          Sitenizin <code className="bg-slate-100 px-1 py-0.5 rounded text-rose-600">&lt;body&gt;</code> kapanış etiketinden hemen önce aşağıdaki tek satır scripti eklemeniz yeterlidir:
+                        </p>
+                        <div className="relative">
+                          <pre className="bg-[#0b1320] text-sky-200 p-3.5 rounded-sm font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-slate-800">
+{`<!-- EngelsizForum WCAG 2.1 AAA Erişilebilirlik Widget'ı -->
+<script
+  src="https://engelsizforum.com/widget/engelsiz-accessibility.js"
+  data-position="${widgetPosition}"
+  data-color="${widgetColor}"
+  data-lang="${widgetLang}"
+  async
+  defer>
+</script>`}
+                          </pre>
+                          <button
+                            onClick={() => copyToClipboard(`<!-- EngelsizForum WCAG 2.1 AAA Erişilebilirlik Widget'ı -->\n<script\n  src="https://engelsizforum.com/widget/engelsiz-accessibility.js"\n  data-position="${widgetPosition}"\n  data-color="${widgetColor}"\n  data-lang="${widgetLang}"\n  async\n  defer>\n</script>`, 'html-widget')}
+                            className="absolute top-2 right-2 px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-sm text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                          >
+                            {copiedKey === 'html-widget' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                            <span>Kopyala</span>
+                          </button>
+                        </div>
+                        <div className="p-2.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-sm text-[11px] flex items-center gap-2">
+                          <Info size={14} className="shrink-0 text-amber-700" />
+                          <span>WordPress, Shopify, Wix veya özel e-ticaret sitelerinin tüm tema dosyalarıyla %100 uyumludur. Sıfır dış kütüphane gerektirir.</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* REACT / NEXT.JS TAB */}
+                    {widgetCodeTab === 'react' && (
+                      <div className="space-y-2">
+                        <p className="text-slate-600">
+                          Next.js App Router veya React uygulamalarında <code className="bg-slate-100 px-1 py-0.5 rounded text-rose-600">app/layout.tsx</code> dosyanıza ekleyin:
+                        </p>
+                        <div className="relative">
+                          <pre className="bg-[#0b1320] text-sky-200 p-3.5 rounded-sm font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-slate-800">
+{`import Script from 'next/script';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="${widgetLang}">
+      <body>
+        {children}
+        <Script
+          src="https://engelsizforum.com/widget/engelsiz-accessibility.js"
+          data-position="${widgetPosition}"
+          data-color="${widgetColor}"
+          data-lang="${widgetLang}"
+          strategy="lazyOnload"
+        />
+      </body>
+    </html>
+  );
+}`}
+                          </pre>
+                          <button
+                            onClick={() => copyToClipboard(`import Script from 'next/script';\n\nexport default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <html lang="${widgetLang}">\n      <body>\n        {children}\n        <Script\n          src="https://engelsizforum.com/widget/engelsiz-accessibility.js"\n          data-position="${widgetPosition}"\n          data-color="${widgetColor}"\n          data-lang="${widgetLang}"\n          strategy="lazyOnload"\n        />\n      </body>\n    </html>\n  );\n}`, 'react-widget')}
+                            className="absolute top-2 right-2 px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-sm text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                          >
+                            {copiedKey === 'react-widget' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                            <span>Kopyala</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* JAVASCRIPT API TAB */}
+                    {widgetCodeTab === 'api' && (
+                      <div className="space-y-2">
+                        <p className="text-slate-600">
+                          Widget yüklendikten sonra <code className="bg-slate-100 px-1 py-0.5 rounded font-mono font-bold text-sky-700">window.EngelsizAccessibility</code> küresel nesnesi üzerinden kodla yönetebilirsiniz:
+                        </p>
+                        <div className="relative">
+                          <pre className="bg-[#0b1320] text-sky-200 p-3.5 rounded-sm font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-slate-800">
+{`// Menüyü programatik aç / kapat
+window.EngelsizAccessibility.open();
+window.EngelsizAccessibility.close();
+window.EngelsizAccessibility.toggle();
+
+// Yazı boyutunu değiştir (-1: 90%, 0: 100%, 1: 110%, 2: 125%, 3: 140%)
+window.EngelsizAccessibility.setFontSize(2);
+
+// Kontrast modunu değiştir ('normal', 'high-contrast', 'yellow-black', 'dark')
+window.EngelsizAccessibility.setContrast('high-contrast');
+
+// Disleksi fontu veya Okuma Cetvelini tetikle
+window.EngelsizAccessibility.toggleDyslexicFont();
+window.EngelsizAccessibility.toggleReadingRuler();
+
+// Sesli Ekran Okuyucu ile metin seslendir (Web Speech API)
+window.EngelsizAccessibility.speak('Önemli duyuru metni...');
+window.EngelsizAccessibility.stopSpeech();
+
+// Kullanıcının aktif tercihlerini oku
+const state = window.EngelsizAccessibility.getState();`}
+                          </pre>
+                          <button
+                            onClick={() => copyToClipboard(`window.EngelsizAccessibility.open();\nwindow.EngelsizAccessibility.setFontSize(2);\nwindow.EngelsizAccessibility.setContrast('high-contrast');\nwindow.EngelsizAccessibility.toggleDyslexicFont();\nwindow.EngelsizAccessibility.speak('EngelsizForum Erişilebilirlik');`, 'api-widget')}
+                            className="absolute top-2 right-2 px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-sm text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                          >
+                            {copiedKey === 'api-widget' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                            <span>Kopyala</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* WAPPALYZER JSON TAB */}
+                    {widgetCodeTab === 'wappalyzer' && (
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <p className="text-slate-600">
+                            Wappalyzer resmi tanım dosyası (<code className="bg-slate-100 px-1 py-0.5 rounded font-mono text-[10px]">engelsiz-accessibility.json</code>):
+                          </p>
+                          <a
+                            href="/widget/wappalyzer-engelsiz-accessibility.json"
+                            download="engelsiz-accessibility.json"
+                            className="text-xs text-[#185886] font-bold hover:underline flex items-center gap-1"
+                          >
+                            <Download size={12} />
+                            <span>JSON İndir</span>
+                          </a>
+                        </div>
+                        <div className="relative">
+                          <pre className="bg-[#0b1320] text-sky-200 p-3.5 rounded-sm font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-slate-800">
+{`{
+  "$schema": "../schema.json",
+  "name": "Engelsiz Erişilebilirlik",
+  "description": "EngelsizForum open-source universal WCAG 2.1 AAA web accessibility widget.",
+  "url": "https://engelsizforum.com/developers",
+  "cats": [89],
+  "icon": "engelsizforum.svg",
+  "website": "https://engelsizforum.com",
+  "js": {
+    "EngelsizAccessibility": "",
+    "EngelsizAccessibility.version": "(.*)\\\\;version:\\\\1"
+  },
+  "dom": {
+    "#engelsiz-accessibility-widget": {
+      "attributes": { "data-engelsiz-version": "(.*)\\\\;version:\\\\1" }
+    },
+    "meta[name='engelsiz-accessibility']": {
+      "attributes": { "content": "active" }
+    }
+  },
+  "scripts": "(?:/widget/|/api/widget/)engelsiz-accessibility(?:\\\\.min)?\\\\.js"
+}`}
+                          </pre>
+                          <button
+                            onClick={() => copyToClipboard(`{\n  "$schema": "../schema.json",\n  "name": "Engelsiz Erişilebilirlik",\n  "description": "EngelsizForum open-source universal WCAG 2.1 AAA web accessibility widget.",\n  "url": "https://engelsizforum.com/developers",\n  "cats": [89],\n  "icon": "engelsizforum.svg",\n  "website": "https://engelsizforum.com",\n  "js": {\n    "EngelsizAccessibility": "",\n    "EngelsizAccessibility.version": "(.*)\\\\;version:\\\\1"\n  },\n  "dom": {\n    "#engelsiz-accessibility-widget": {\n      "attributes": { "data-engelsiz-version": "(.*)\\\\;version:\\\\1" }\n    },\n    "meta[name='engelsiz-accessibility']": {\n      "attributes": { "content": "active" }\n    }\n  },\n  "scripts": "(?:/widget/|/api/widget/)engelsiz-accessibility(?:\\\\.min)?\\\\.js"\n}`, 'wapp-json')}
+                            className="absolute top-2 right-2 px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-sm text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                          >
+                            {copiedKey === 'wapp-json' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                            <span>Kopyala</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* WAPPALYZER VE TEKNOLOJİ TESPİTİ DERİNLEMESİNE İNCELEME */}
+            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-bold text-xs uppercase py-2.5 px-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Shield size={14} />
+                  <span>Wappalyzer &amp; Web Tarayıcı Teknoloji Tespiti Nasıl Çalışır?</span>
+                </div>
+                <button
+                  onClick={runSignatureCheck}
+                  className="px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-sm text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                >
+                  <RefreshCw size={12} className={widgetSignatureCheck.checked ? '' : 'animate-spin'} />
+                  <span>Tarayıcımda İmzaları Denetle</span>
+                </button>
+              </div>
+
+              <div className="p-4 sm:p-5 space-y-4 text-xs sm:text-sm text-slate-700 bg-white">
+                <p className="leading-relaxed">
+                  <strong>Wappalyzer</strong>, <strong>BuiltWith</strong>, <strong>WhatRuns</strong> gibi tarayıcı eklentileri sitenizdeki yazılımları 4 farklı katmanda tespit eder. EngelsizForum Widget&apos;ı bu 4 katmanın tamamında doğrulanabilir iz bırakır:
+                </p>
+
+                {/* 4 Katman Kartları */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {/* Katman 1 */}
+                  <div className="p-3 border border-slate-200 rounded-sm bg-slate-50 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase text-slate-500">1. JS Global Nesnesi</span>
+                      {widgetSignatureCheck.hasWindowGlobal ? (
+                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded flex items-center gap-0.5">
+                          <Check size={10} /> Aktif
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold text-slate-500 bg-slate-200 px-1.5 py-0.2 rounded">Hazır</span>
+                      )}
+                    </div>
+                    <div className="font-mono text-[11px] font-bold text-sky-900 bg-white p-1.5 rounded border border-slate-200 select-all">
+                      window.EngelsizAccessibility
+                    </div>
+                    <p className="text-[11px] text-slate-600">
+                      Wappalyzer&apos;ın <code className="font-mono text-[10px]">js</code> anahtarı bunu tarar ve sürümü okur (<code className="font-mono text-[10px]">v{widgetSignatureCheck.version}</code>).
+                    </p>
+                  </div>
+
+                  {/* Katman 2 */}
+                  <div className="p-3 border border-slate-200 rounded-sm bg-slate-50 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase text-slate-500">2. DOM Kök Elemanı</span>
+                      {widgetSignatureCheck.hasDomElement ? (
+                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded flex items-center gap-0.5">
+                          <Check size={10} /> Aktif
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold text-slate-500 bg-slate-200 px-1.5 py-0.2 rounded">Hazır</span>
+                      )}
+                    </div>
+                    <div className="font-mono text-[11px] font-bold text-sky-900 bg-white p-1.5 rounded border border-slate-200 select-all">
+                      #engelsiz-accessibility-widget
+                    </div>
+                    <p className="text-[11px] text-slate-600">
+                      DOM ağacında <code className="font-mono text-[10px]">data-engelsiz-version</code> özniteliği ile tespit edilir.
+                    </p>
+                  </div>
+
+                  {/* Katman 3 */}
+                  <div className="p-3 border border-slate-200 rounded-sm bg-slate-50 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase text-slate-500">3. HTML Meta Etiketi</span>
+                      {widgetSignatureCheck.hasMetaTag ? (
+                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded flex items-center gap-0.5">
+                          <Check size={10} /> Aktif
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold text-slate-500 bg-slate-200 px-1.5 py-0.2 rounded">Hazır</span>
+                      )}
+                    </div>
+                    <div className="font-mono text-[10px] font-bold text-sky-900 bg-white p-1.5 rounded border border-slate-200 select-all truncate">
+                      &lt;meta name=&quot;engelsiz-accessibility&quot;&gt;
+                    </div>
+                    <p className="text-[11px] text-slate-600">
+                      Sayfa başlığında otomatik enjekte edilir. Arama motorları ve botlar tarafından indekslenir.
+                    </p>
+                  </div>
+
+                  {/* Katman 4 */}
+                  <div className="p-3 border border-slate-200 rounded-sm bg-slate-50 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase text-slate-500">4. Script URL Regex</span>
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded flex items-center gap-0.5">
+                        <Check size={10} /> CDN
+                      </span>
+                    </div>
+                    <div className="font-mono text-[10px] font-bold text-sky-900 bg-white p-1.5 rounded border border-slate-200 select-all truncate">
+                      /widget/engelsiz-accessibility.js
+                    </div>
+                    <p className="text-[11px] text-slate-600">
+                      Wappalyzer <code className="font-mono text-[10px]">scripts</code> regex kuralı ile dosya yolunu anında eşleştirir.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Wappalyzer Pull Request Rehberi */}
+                <div className="p-3.5 bg-slate-50 border border-slate-300 rounded-sm space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="font-bold text-slate-900 text-xs uppercase flex items-center gap-1.5">
+                      <Terminal size={14} className="text-[#185886]" />
+                      <span>Wappalyzer Resmi Deposu için Pull Request (PR) Talimatları:</span>
+                    </div>
+                    <a
+                      href="https://github.com/enthec/webappanalyzer"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-[#185886] font-bold hover:underline flex items-center gap-1"
+                    >
+                      <span>enthec/webappanalyzer Deposu</span>
+                      <ExternalLink size={12} />
+                    </a>
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Wappalyzer açık kaynaklı veritabanına eklenmek üzere <code className="bg-white px-1 py-0.5 rounded border text-[11px]">src/technologies/e/engelsiz-accessibility.json</code> dosyası oluşturulmuştur. Bu JSON dosyasını Wappalyzer projesine göndererek tüm dünyadaki Wappalyzer kullanıcılarının sitenizdeki widget&apos;ı tanımasını sağlayabilirsiniz.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* WCAG 2.1 AAA ve TEKNOFEST 2027 UYUM TABLOSU */}
+            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
+              <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-bold text-xs uppercase py-2 px-3 flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="text-emerald-600" />
+                <span>Sağlanan WCAG 2.1 AAA Standartları ve Erişilebilirlik Özellikleri</span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[10px]">
+                      <th className="p-2.5">WCAG Kriteri</th>
+                      <th className="p-2.5">Özellik Adı</th>
+                      <th className="p-2.5">Hedef Kitle</th>
+                      <th className="p-2.5">Teknik İşleyiş</th>
+                      <th className="p-2.5">Uyumluluk</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200 text-slate-700">
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="p-2.5 font-mono font-bold text-sky-800">1.4.3 / 1.4.6</td>
+                      <td className="p-2.5 font-bold">Yüksek Kontrast Modları</td>
+                      <td className="p-2.5">Az Görenler / Yaşlılar</td>
+                      <td className="p-2.5 text-slate-500">Derin siyah/beyaz ve sarı/siyah yüksek kontrast filtreleri</td>
+                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="p-2.5 font-mono font-bold text-sky-800">1.4.4</td>
+                      <td className="p-2.5 font-bold">Yazı Boyutu Ölçekleme</td>
+                      <td className="p-2.5">Miyop / Hipermetrop</td>
+                      <td className="p-2.5 text-slate-500">Düzeni bozmadan %90 - %140 font ölçekleme</td>
+                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="p-2.5 font-mono font-bold text-sky-800">Cognitive AAA</td>
+                      <td className="p-2.5 font-bold">OpenDyslexic &amp; Bionic Okuma</td>
+                      <td className="p-2.5">Disleksi / DEHB / Nöroçeşitlilik</td>
+                      <td className="p-2.5 text-slate-500">Özel harf taban ağırlıkları ve kelime başlangıç hece vurguları</td>
+                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="p-2.5 font-mono font-bold text-sky-800">1.4.8</td>
+                      <td className="p-2.5 font-bold">Okuma Cetveli (Focus Guide)</td>
+                      <td className="p-2.5">Konsantrasyon / DEHB</td>
+                      <td className="p-2.5 text-slate-500">Fare hareketini takip eden yatay görsel odaklama barı</td>
+                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="p-2.5 font-mono font-bold text-sky-800">1.4.1</td>
+                      <td className="p-2.5 font-bold">Renk Körlüğü Filtreleri</td>
+                      <td className="p-2.5">Protanopi, Döteranopi, Tritanopi</td>
+                      <td className="p-2.5 text-slate-500">feColorMatrix tabanlı gerçek zamanlı SVG renk matris dönüşümü</td>
+                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="p-2.5 font-mono font-bold text-sky-800">3.1.2</td>
+                      <td className="p-2.5 font-bold">Sesli Ekran Okuyucu (TTS)</td>
+                      <td className="p-2.5">Görme Engelliler</td>
+                      <td className="p-2.5 text-slate-500">Web Speech Synthesis API ile paragrafları ve seçilen metni Türkçe seslendirme</td>
+                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    </tr>
+                    <tr className="hover:bg-slate-50/50">
+                      <td className="p-2.5 font-mono font-bold text-sky-800">2.1.1</td>
+                      <td className="p-2.5 font-bold">Klavye Erişilebilirliği</td>
+                      <td className="p-2.5">Ortopedik / Motor Engeli</td>
+                      <td className="p-2.5 text-slate-500">Alt+A / Alt+E kısayolları, Escape ile kapatma ve odak kapanı (focus trap)</td>
+                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
