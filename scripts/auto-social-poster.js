@@ -84,7 +84,8 @@ function getTurkeyTimeInfo() {
  * @returns {Promise<string>}
  */
 async function generateUpdateNote(commitMessage, diffContent, apiKey) {
-  const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+  // Use active and available models
+  const models = ['gemini-2.5-flash', 'gemini-1.5-flash-8b', 'gemini-2.0-flash-exp'];
   const turkeyTime = getTurkeyTimeInfo();
 
   const prompt = `
@@ -493,14 +494,14 @@ async function main() {
       try {
         await sendToMakeWebhook(finalNote, makeWebhookUrl, commitMessage);
       } catch (makeErr) {
-        process.stderr.write(`⚠️ Make.com Webhook Uyarısı: ${makeErr.message}\n`);
+        process.stderr.write(`❌ Make.com Webhook Hatası: ${makeErr.message}\n`);
       }
     } else if (linkedinAccessToken) {
       // Direct LinkedIn API fallback
       try {
         await sendToLinkedin(finalNote, linkedinAccessToken, linkedinPersonUrn);
       } catch (linkedinErr) {
-        process.stderr.write(`⚠️ LinkedIn Direct API Uyarısı: ${linkedinErr.message}\n`);
+        process.stderr.write(`❌ LinkedIn Direct API Hatası: ${linkedinErr.message}\n`);
       }
     } else {
       process.stdout.write('ℹ️ MAKE_WEBHOOK_URL veya LINKEDIN_ACCESS_TOKEN tanımlanmadığı için LinkedIn paylaşım adımı atlandı.\n');
@@ -511,9 +512,9 @@ async function main() {
       try {
         const imageUrl = `https://engelsizforum.miracdeveloper.com.tr/api/instagram/card?title=${encodeURIComponent(commitMessage)}&sha=${encodeURIComponent(githubSha)}`;
         await sendToMakeWebhook(finalNote, instagramMakeWebhookUrl, commitMessage, imageUrl);
-        process.stdout.write('BAŞARILI: Instagram Make.com Webhook tetiklendi.\\n');
+        process.stdout.write('🎉 BAŞARILI: Instagram Make.com Webhook tetiklendi.\n');
       } catch (instagramErr) {
-        process.stderr.write(`⚠️ Instagram Make Webhook Uyarısı: ${instagramErr.message}\\n`);
+        process.stderr.write(`❌ Instagram Make Webhook Hatası: ${instagramErr.message}\n`);
       }
     }
 

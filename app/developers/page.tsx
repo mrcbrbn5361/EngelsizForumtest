@@ -1829,12 +1829,12 @@ const state = window.EngelsizAccessibility.getState();`}
                       </div>
                     )}
 
-                    {/* WAPPALYZER JSON TAB */}
+                     {/* WAPPALYZER JSON TAB */}
                     {widgetCodeTab === 'wappalyzer' && (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <p className="text-slate-600">
-                            Wappalyzer resmi tanım dosyası (<code className="bg-slate-100 px-1 py-0.5 rounded font-mono text-[10px]">engelsiz-accessibility.json</code>):
+                            Wappalyzer resmi tanım parçası (<code className="bg-slate-100 px-1 py-0.5 rounded font-mono text-[10px]">src/technologies/e.json</code> içine eklenir):
                           </p>
                           <a
                             href="/widget/wappalyzer-engelsiz-accessibility.json"
@@ -1847,17 +1847,16 @@ const state = window.EngelsizAccessibility.getState();`}
                         </div>
                         <div className="relative">
                           <pre className="bg-[#0b1320] text-sky-200 p-3.5 rounded-sm font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-slate-800">
-{`{
-  "$schema": "../schema.json",
-  "name": "Engelsiz Erişilebilirlik",
-  "description": "EngelsizForum open-source universal WCAG 2.1 AAA web accessibility widget.",
-  "url": "https://engelsizforum.com/developers",
-  "cats": [89],
-  "icon": "engelsizforum.svg",
+{`"Engelsiz Erişilebilirlik": {
+  "cats": [68],
+  "description": "EngelsizForum open-source universal WCAG 2.1 AAA web accessibility widget for visually impaired, neurodivergent, and motor-disabled users.",
+  "icon": "default.svg",
+  "pricing": ["open-source"],
   "website": "https://engelsizforum.com",
   "js": {
     "EngelsizAccessibility": "",
-    "EngelsizAccessibility.version": "(.*)\\\\;version:\\\\1"
+    "EngelsizAccessibility.version": "(.*)\\\\;version:\\\\1",
+    "__ENGELSIZ_WIDGET_VERSION__": "(.*)\\\\;version:\\\\1"
   },
   "dom": {
     "#engelsiz-accessibility-widget": {
@@ -1871,7 +1870,7 @@ const state = window.EngelsizAccessibility.getState();`}
 }`}
                           </pre>
                           <button
-                            onClick={() => copyToClipboard(`{\n  "$schema": "../schema.json",\n  "name": "Engelsiz Erişilebilirlik",\n  "description": "EngelsizForum open-source universal WCAG 2.1 AAA web accessibility widget.",\n  "url": "https://engelsizforum.com/developers",\n  "cats": [89],\n  "icon": "engelsizforum.svg",\n  "website": "https://engelsizforum.com",\n  "js": {\n    "EngelsizAccessibility": "",\n    "EngelsizAccessibility.version": "(.*)\\\\;version:\\\\1"\n  },\n  "dom": {\n    "#engelsiz-accessibility-widget": {\n      "attributes": { "data-engelsiz-version": "(.*)\\\\;version:\\\\1" }\n    },\n    "meta[name='engelsiz-accessibility']": {\n      "attributes": { "content": "active" }\n    }\n  },\n  "scripts": "(?:/widget/|/api/widget/)engelsiz-accessibility(?:\\\\.min)?\\\\.js"\n}`, 'wapp-json')}
+                            onClick={() => copyToClipboard(`"Engelsiz Erişilebilirlik": {\n  "cats": [68],\n  "description": "EngelsizForum open-source universal WCAG 2.1 AAA web accessibility widget for visually impaired, neurodivergent, and motor-disabled users.",\n  "icon": "default.svg",\n  "pricing": ["open-source"],\n  "website": "https://engelsizforum.com",\n  "js": {\n    "EngelsizAccessibility": "",\n    "EngelsizAccessibility.version": "(.*)\\\\;version:\\\\1",\n    "__ENGELSIZ_WIDGET_VERSION__": "(.*)\\\\;version:\\\\1"\n  },\n  "dom": {\n    "#engelsiz-accessibility-widget": {\n      "attributes": { "data-engelsiz-version": "(.*)\\\\;version:\\\\1" }\n    },\n    "meta[name='engelsiz-accessibility']": {\n      "attributes": { "content": "active" }\n    }\n  },\n  "scripts": "(?:/widget/|/api/widget/)engelsiz-accessibility(?:\\\\.min)?\\\\.js"\n}`, 'wapp-json')}
                             className="absolute top-2 right-2 px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-sm text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                           >
                             {copiedKey === 'wapp-json' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
@@ -1986,25 +1985,33 @@ const state = window.EngelsizAccessibility.getState();`}
                 </div>
 
                 {/* Wappalyzer Pull Request Rehberi */}
-                <div className="p-3.5 bg-slate-50 border border-slate-300 rounded-sm space-y-2">
-                  <div className="flex items-center justify-between">
+                <div className="p-3.5 bg-slate-50 border border-slate-300 rounded-sm space-y-2.5">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
                     <div className="font-bold text-slate-900 text-xs uppercase flex items-center gap-1.5">
                       <Terminal size={14} className="text-[#185886]" />
-                      <span>Wappalyzer Resmi Deposu için Pull Request (PR) Talimatları:</span>
+                      <span>Wappalyzer Resmi Deposu için 1-Tıkla PR (Pull Request) Adımları:</span>
                     </div>
                     <a
-                      href="https://github.com/enthec/webappanalyzer"
+                      href="https://github.com/enthec/webappanalyzer/edit/main/src/technologies/e.json"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-[#185886] font-bold hover:underline flex items-center gap-1"
+                      className="text-xs bg-[#185886] text-white px-2.5 py-1 rounded-sm font-bold hover:bg-[#12466b] flex items-center gap-1 transition-colors"
                     >
-                      <span>enthec/webappanalyzer Deposu</span>
+                      <span>Doğrudan GitHub&apos;da e.json Düzenle</span>
                       <ExternalLink size={12} />
                     </a>
                   </div>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Wappalyzer açık kaynaklı veritabanına eklenmek üzere <code className="bg-white px-1 py-0.5 rounded border text-[11px]">src/technologies/e/engelsiz-accessibility.json</code> dosyası oluşturulmuştur. Bu JSON dosyasını Wappalyzer projesine göndererek tüm dünyadaki Wappalyzer kullanıcılarının sitenizdeki widget&apos;ı tanımasını sağlayabilirsiniz.
+                    Wappalyzer teknolojileri harf dosyaları halinde saklar. E harfiyle başlayan teknolojiler doğrudan <code className="bg-white px-1.5 py-0.5 rounded border border-slate-300 text-[11px] font-mono font-bold text-sky-800">src/technologies/e.json</code> dosyasında yer alır (Kategori: <strong>68 - Accessibility</strong>).
                   </p>
+                  <div className="bg-white p-2.5 rounded border border-slate-200 text-xs space-y-1 text-slate-700">
+                    <div className="font-bold text-[#185886]">Hızlı 3 Adım:</div>
+                    <ol className="list-decimal pl-4 space-y-1">
+                      <li>Yukarıdaki <strong>&quot;Doğrudan GitHub&apos;da e.json Düzenle&quot;</strong> butonuna tıklayın. (GitHub otomatik olarak düzenleme sayfasını açar).</li>
+                      <li>Dosyanın en altındaki kapanış süslü parantezinden (<code className="font-mono text-[11px]">&quot;&#125;&quot;</code>) hemen önce virgül koyup yukarıdaki JSON kodunu yapıştırın.</li>
+                      <li>Sayfanın altındaki <strong>&quot;Propose changes&quot;</strong> butonuna, ardından <strong>&quot;Create pull request&quot;</strong> butonuna tıklayın.</li>
+                    </ol>
+                  </div>
                 </div>
               </div>
             </div>
