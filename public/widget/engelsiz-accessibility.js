@@ -229,21 +229,9 @@
       .engelsiz-pos-top-right { top: ${config.offsetY}; right: ${config.offsetX}; }
       .engelsiz-pos-top-left { top: ${config.offsetY}; left: ${config.offsetX}; }
 
-      /* Modal Backdrop */
+      /* Modal Backdrop - Disabled to keep host website fully interactive & prevent dark overlay in contrast modes */
       .engelsiz-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.45);
-        backdrop-filter: blur(2px);
-        z-index: ${parseInt(config.zIndex, 10) - 1};
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s ease;
-      }
-
-      .engelsiz-backdrop.engelsiz-show {
-        opacity: 1;
-        pointer-events: auto;
+        display: none !important;
       }
 
       /* Modal Panel */
@@ -512,7 +500,7 @@
         background-color: #000000 !important;
         color: #ffffff !important;
       }
-      body.engelsiz-theme-high-contrast *:not(#engelsiz-accessibility-widget *) {
+      body.engelsiz-theme-high-contrast *:not(#engelsiz-accessibility-widget):not(#engelsiz-accessibility-widget *) {
         background-color: #000000 !important;
         color: #ffffff !important;
         border-color: #ffffff !important;
@@ -526,7 +514,7 @@
         background-color: #000000 !important;
         color: #ffff00 !important;
       }
-      body.engelsiz-theme-yellow-black *:not(#engelsiz-accessibility-widget *) {
+      body.engelsiz-theme-yellow-black *:not(#engelsiz-accessibility-widget):not(#engelsiz-accessibility-widget *) {
         background-color: #000000 !important;
         color: #ffff00 !important;
         border-color: #ffff00 !important;
@@ -536,9 +524,66 @@
         background-color: #0f172a !important;
         color: #e2e8f0 !important;
       }
-      body.engelsiz-theme-dark *:not(#engelsiz-accessibility-widget *) {
+      body.engelsiz-theme-dark *:not(#engelsiz-accessibility-widget):not(#engelsiz-accessibility-widget *) {
         background-color: #0f172a !important;
         color: #e2e8f0 !important;
+      }
+
+      /* Complete Immunity and Isolation for Engelsiz Accessibility Widget */
+      #engelsiz-accessibility-widget,
+      #engelsiz-accessibility-widget * {
+        box-sizing: border-box;
+      }
+      #engelsiz-accessibility-widget .engelsiz-panel {
+        background-color: #ffffff !important;
+        color: #1e293b !important;
+        border: 1px solid rgba(0, 0, 0, 0.12) !important;
+      }
+      #engelsiz-accessibility-widget .engelsiz-header {
+        background: linear-gradient(135deg, ${config.color}, #0d3856) !important;
+        color: #ffffff !important;
+      }
+      #engelsiz-accessibility-widget .engelsiz-header * {
+        color: #ffffff !important;
+      }
+      #engelsiz-accessibility-widget .engelsiz-body {
+        background-color: #ffffff !important;
+        color: #1e293b !important;
+      }
+      #engelsiz-accessibility-widget .engelsiz-section {
+        background-color: transparent !important;
+      }
+      #engelsiz-accessibility-widget .engelsiz-section-title {
+        color: #64748b !important;
+      }
+      #engelsiz-accessibility-widget .engelsiz-btn-grid button,
+      #engelsiz-accessibility-widget .engelsiz-btn-pill {
+        background-color: #f8fafc !important;
+        color: #334155 !important;
+        border: 1px solid #e2e8f0 !important;
+      }
+      #engelsiz-accessibility-widget .engelsiz-btn-grid button.engelsiz-active,
+      #engelsiz-accessibility-widget .engelsiz-btn-pill.engelsiz-active {
+        background-color: ${config.color} !important;
+        color: #ffffff !important;
+        border-color: ${config.color} !important;
+      }
+      #engelsiz-accessibility-widget select {
+        background-color: #ffffff !important;
+        color: #334155 !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+      #engelsiz-accessibility-widget select option {
+        background-color: #ffffff !important;
+        color: #334155 !important;
+      }
+      #engelsiz-accessibility-widget .engelsiz-footer {
+        background-color: #f8fafc !important;
+        color: #64748b !important;
+        border-top: 1px solid #e2e8f0 !important;
+      }
+      #engelsiz-accessibility-widget .engelsiz-footer a {
+        color: ${config.color} !important;
       }
 
       /* Font scaling */
@@ -565,21 +610,23 @@
     if (!document.getElementById('engelsiz-svg-filters')) {
       const svgContainer = document.createElement('div');
       svgContainer.id = 'engelsiz-svg-filters';
-      svgContainer.style.display = 'none';
+      svgContainer.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;pointer-events:none;opacity:0;';
       svgContainer.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg">
-          <filter id="engelsiz-filter-protanopia">
-            <feColorMatrix type="matrix" values="0.567, 0.433, 0, 0, 0   0.558, 0.442, 0, 0, 0   0, 0.242, 0.758, 0, 0   0, 0, 0, 1, 0"/>
-          </filter>
-          <filter id="engelsiz-filter-deuteranopia">
-            <feColorMatrix type="matrix" values="0.625, 0.375, 0, 0, 0   0.7, 0.3, 0, 0, 0   0, 0.3, 0.7, 0, 0   0, 0, 0, 1, 0"/>
-          </filter>
-          <filter id="engelsiz-filter-tritanopia">
-            <feColorMatrix type="matrix" values="0.95, 0.05, 0, 0, 0   0, 0.433, 0.567, 0, 0   0, 0.475, 0.525, 0, 0   0, 0, 0, 1, 0"/>
-          </filter>
+        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <filter id="engelsiz-filter-protanopia">
+              <feColorMatrix type="matrix" values="0.567, 0.433, 0, 0, 0   0.558, 0.442, 0, 0, 0   0, 0.242, 0.758, 0, 0   0, 0, 0, 1, 0"/>
+            </filter>
+            <filter id="engelsiz-filter-deuteranopia">
+              <feColorMatrix type="matrix" values="0.625, 0.375, 0, 0, 0   0.7, 0.3, 0, 0, 0   0, 0.3, 0.7, 0, 0   0, 0, 0, 1, 0"/>
+            </filter>
+            <filter id="engelsiz-filter-tritanopia">
+              <feColorMatrix type="matrix" values="0.95, 0.05, 0, 0, 0   0, 0.433, 0.567, 0, 0   0, 0.475, 0.525, 0, 0   0, 0, 0, 1, 0"/>
+            </filter>
+          </defs>
         </svg>
       `;
-      document.body.appendChild(svgContainer);
+      (document.documentElement || document.body).appendChild(svgContainer);
     }
   }
 
@@ -589,7 +636,7 @@
     if (!rulerElement) {
       rulerElement = document.createElement('div');
       rulerElement.id = 'engelsiz-reading-ruler';
-      document.body.appendChild(rulerElement);
+      (document.documentElement || document.body).appendChild(rulerElement);
 
       window.addEventListener('mousemove', (e) => {
         if (state.readingRuler && rulerElement) {
@@ -667,7 +714,6 @@
   // Build DOM Structure
   let container = null;
   let panel = null;
-  let backdrop = null;
 
   function renderWidget() {
     if (document.getElementById('engelsiz-accessibility-widget')) return;
@@ -676,12 +722,6 @@
     container.id = 'engelsiz-accessibility-widget';
     container.setAttribute('data-engelsiz-version', VERSION);
     container.className = `engelsiz-pos-${config.position}`;
-
-    // Backdrop
-    backdrop = document.createElement('div');
-    backdrop.className = 'engelsiz-backdrop';
-    backdrop.onclick = () => togglePanel(false);
-    document.body.appendChild(backdrop);
 
     // Accessibility Icon SVG
     const iconSvg = `
@@ -839,7 +879,7 @@
 
     container.appendChild(trigger);
     container.appendChild(panel);
-    document.body.appendChild(container);
+    (document.documentElement || document.body).appendChild(container);
 
     attachEventListeners();
     updateUIControls();
@@ -849,19 +889,22 @@
   // Toggle Panel
   function togglePanel(open) {
     state.isOpen = open !== undefined ? open : !state.isOpen;
-    if (panel && backdrop) {
+    if (panel) {
       if (state.isOpen) {
         panel.classList.add('engelsiz-show');
-        backdrop.classList.add('engelsiz-show');
       } else {
         panel.classList.remove('engelsiz-show');
-        backdrop.classList.remove('engelsiz-show');
       }
     }
   }
 
   // Attach Event Listeners to UI components
   function attachEventListeners() {
+    // Prevent clicks inside the panel from bubbling outside
+    panel.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
     const btnClose = document.getElementById('engelsiz-btn-close');
     if (btnClose) btnClose.onclick = () => togglePanel(false);
 
@@ -957,8 +1000,13 @@
     const selectCb = document.getElementById('engelsiz-select-colorblind');
     if (selectCb) {
       selectCb.onchange = (e) => {
+        e.stopPropagation();
         state.colorBlind = e.target.value;
         applyState();
+        updateUIControls();
+      };
+      selectCb.onclick = (e) => {
+        e.stopPropagation();
       };
     }
 
@@ -966,7 +1014,6 @@
     document.addEventListener('click', (e) => {
       if (!state.isOpen) return;
       if (container && container.contains(e.target)) return;
-      if (backdrop && backdrop.contains(e.target)) return;
       
       const target = e.target;
       if (target && (target.tagName === 'P' || target.tagName === 'H1' || target.tagName === 'H2' || target.tagName === 'H3' || target.tagName === 'LI')) {
