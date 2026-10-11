@@ -89,8 +89,8 @@ export async function GET(request: NextRequest) {
       },
       {
         id: 'disc-002',
-        title: '2026 ÖTV Muafiyetli Sıfır Araç Alım Üst Limiti (2.247.100 TL) Detayları',
-        excerpt: '2026 yılı yeniden değerleme oranı kapsamında engelli araç alımındaki üst sınır 2.247.100 TL olarak ilan edilmiştir.',
+        title: '2026 ÖTV Muafiyetli Sıfır Araç Alım Üst Limiti (2.873.972 TL) Detayları',
+        excerpt: '2026 yılı yeniden değerleme oranı kapsamında engelli araç alımındaki üst sınır 2.873.972 TL olarak ilan edilmiştir.',
         slug: '2026-otv-muafiyeti-arac-limiti',
         views_count: 3890,
         replies_count: 94,

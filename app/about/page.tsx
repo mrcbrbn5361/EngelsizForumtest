@@ -1,97 +1,89 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import Link from 'next/link';
 import { 
   Sparkles, 
-  ShieldCheck, 
-  CheckCircle2, 
-  Users, 
-  ArrowLeft, 
   Home, 
+  ChevronRight,
   Target,
   Accessibility,
   HeartHandshake,
   Cpu,
   Eye,
-  Award
+  Award,
+  ArrowRight
 } from 'lucide-react';
-import { useAuth } from '@/components/providers/auth-provider';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import ClassicSidebar from '@/components/forum/classic-sidebar';
 
 export default function AboutPage() {
-  const { user } = useAuth();
-  
   return (
-    <div className="flex flex-col gap-5 max-w-7xl mx-auto w-full">
-      {/* Breadcrumbs */}
-      <div className="bg-white dark:bg-slate-900 px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
-        <Link href="/" className="hover:text-sky-600 flex items-center gap-1 font-bold">
-          <Home size={14} />
-          <span>Ana Sayfa</span>
+    <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full py-4 text-white">
+      {/* Breadcrumb Navigation */}
+      <div className="bg-[#161b22] border border-[#30363d] px-4 py-2.5 rounded-md flex items-center gap-2 text-xs text-slate-300">
+        <Link href="/" className="hover:text-white font-bold transition-colors">
+          Ana Sayfa
         </Link>
-        <span className="opacity-40">/</span>
-        <span className="font-extrabold text-slate-950 dark:text-white">Hakkımızda &amp; TEKNOFEST 2027</span>
+        <ChevronRight size={13} className="text-slate-500" />
+        <span className="font-bold text-white">Hakkımızda &amp; Proje Vizyonu</span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Main Content Area */}
-        <div className="lg:col-span-8 space-y-6">
-          
-          {/* Hero Welcome Card */}
-          <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-6 md:p-8 shadow-xs space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-900 dark:text-sky-300 border border-sky-300 dark:border-sky-800 text-xs font-black uppercase tracking-wider">
-              <Sparkles size={14} />
+        <div className="lg:col-span-8 space-y-8">
+          {/* Header Section */}
+          <div className="border-b border-[#30363d] pb-6 space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-800 text-[11px] font-mono font-bold uppercase tracking-wider">
+              <Sparkles size={13} />
               <span>Engelsiz Topluluk Ekosistemi • TEKNOFEST 2027</span>
             </div>
             
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
               Bariyersiz Bilgi, Eşit ve Güvenilir Topluluk.
             </h1>
             
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-              EngelsizForum, engelli bireylerin haklarını öğrenmesi, mevzuat ve sağlık kurulu raporu süreçlerini çözmesi, medikal ve teknolojik donanımlarda akran deneyimlerine ulaşması amacıyla geliştirilmiş Türkiye&apos;nin ilk tam erişilebilir bağımsız dayanışma platformudur.
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal max-w-2xl">
+              EngelsizForum; engelli bireylerin haklarını öğrenmesi, sağlık kurulu raporu ve mevzuat süreçlerini çözmesi, medikal ve teknolojik donanımlarda akran deneyimlerine ulaşması amacıyla geliştirilmiş bağımsız bir dayanışma platformudur.
             </p>
           </div>
 
-          {/* Core Mission & Vision */}
+          {/* Misyon & Vizyon */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs space-y-2.5">
-              <div className="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold">
-                <Target size={20} />
+            <div className="bg-[#161b22] border border-[#30363d] p-5 rounded-md space-y-3">
+              <div className="w-8 h-8 rounded bg-[#21262d] text-sky-400 flex items-center justify-center font-bold">
+                <Target size={18} />
               </div>
-              <h2 className="text-sm font-black text-slate-950 dark:text-white uppercase tracking-wide">
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
                 Misyonumuz
               </h2>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                Engellilerin sosyal hayatta, çalışma yaşamında ve yasal hak arama süreçlerinde karşılaştığı bilgi karmaşasını ortadan kaldırmak. Güncel Balthazard formülleri, ÖTV muafiyet limitleri ve mevzuatları herkes için şeffaf kılmak.
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Sosyal yaşamda, istihdamda ve yasal hak arama süreçlerinde karşılaşılan bürokratik bilgi kirliliğini ortadan kaldırmak. Güncel Balthazard cetveli, 2.873.972 TL 2026 ÖTV araç istisnası ve erken emeklilik mevzuatını herkes için şeffaf kılmak.
               </p>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs space-y-2.5">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold">
-                <HeartHandshake size={20} />
+            <div className="bg-[#161b22] border border-[#30363d] p-5 rounded-md space-y-3">
+              <div className="w-8 h-8 rounded bg-[#21262d] text-emerald-400 flex items-center justify-center font-bold">
+                <HeartHandshake size={18} />
               </div>
-              <h2 className="text-sm font-black text-slate-950 dark:text-white uppercase tracking-wide">
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
                 Vizyonumuz
               </h2>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                Hiçbir bireyin bürokrasi veya teknoloji engeli sebebiyle hak kaybı yaşamadığı; genç mühendisler, uzmanlar ve engelli bireylerin ortak projeler ürettiği küresel standartta bir dijital ekosistem inşa etmek.
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Hiçbir engelli bireyin dijital bariyerler yüzünden hak kaybına uğramadığı; genç mühendislerin, uzman hekimlerin ve engelli bireylerin ortak çözümler ürettiği küresel standartta bir açık kaynak ekosistemi inşa etmek.
               </p>
             </div>
           </div>
 
-          {/* Technical Standards Card */}
-          <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs">
-            <div className="bg-slate-900 text-white py-3.5 px-5 flex items-center justify-between border-b-2 border-slate-800">
-              <div className="flex items-center gap-2 font-black text-xs uppercase tracking-wider">
+          {/* Teknik Standartlar */}
+          <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#161b22]">
+            <div className="bg-[#21262d] py-3 px-4 flex items-center justify-between border-b border-[#30363d]">
+              <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-slate-200">
                 <Accessibility size={15} className="text-sky-400" />
-                <span>PLATFORM MİMARİSİ VE TEKNİK STANDARTLAR</span>
+                <span>Platform Mimarisi ve Teknik Standartlar</span>
               </div>
-              <span className="text-[10px] bg-sky-950 border border-sky-800 text-sky-300 px-2 py-0.5 rounded font-black uppercase">
+              <span className="text-[10px] bg-sky-950 border border-sky-800 text-sky-300 px-2 py-0.5 rounded font-mono font-bold uppercase">
                 WCAG 2.1 AAA
               </span>
             </div>
@@ -100,67 +92,68 @@ export default function AboutPage() {
               {[
                 { 
                   icon: Eye,
-                  title: 'Ekran Okuyucu Desteği', 
-                  desc: 'NVDA, JAWS, VoiceOver ve TalkBack ile kusursuz semantik ARIA ağacı, mantıksal sekme akışı ve sesli yönlendirme.' 
+                  title: 'Ekran Okuyucu Uyumluluğu', 
+                  desc: 'NVDA, JAWS, VoiceOver ve TalkBack ile eksiksiz semantik ARIA etiketlemesi, mantıksal odaklanma akışı.' 
                 },
                 { 
                   icon: Accessibility,
                   title: 'Yüksek Kontrast & Tipografi', 
-                  desc: 'Düşük gören bireyler için 4 kademeli yazı boyutu, disleksi dostu OpenDyslexic fontu ve AAA kontrast filtreleri.' 
+                  desc: 'Düşük gören bireyler için doğrudan font boyutu kontrolü (A- / A+), disleksi dostu font ve özel engel profilleri.' 
                 },
                 { 
                   icon: Cpu,
-                  title: 'WebMCP AI Ajanları', 
-                  desc: 'Model Context Protocol ile harici yapay zeka asistanlarına güncel mevzuat ve hesaplama verileri aktaran altyapı.' 
+                  title: 'WebMCP AI & REST API', 
+                  desc: 'Model Context Protocol ve OAuth 2.0 ile harici yapay zeka ajanlarına ve mobil uygulamalara canlı veri akışı.' 
                 },
                 { 
                   icon: Award,
                   title: 'TEKNOFEST 2027 AR-GE', 
-                  desc: 'Engelsiz Yaşam Teknolojileri kategorisinde genç mucitlerin projelerini toplulukla buluşturan fikir kuluçkası.' 
+                  desc: 'Engelsiz Yaşam Teknolojileri kategorisinde genç geliştiricilerin projelerini toplulukla buluşturan açık platform.' 
                 }
               ].map((item, idx) => (
-                <div key={idx} className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 space-y-1.5">
-                  <div className="flex items-center gap-2 text-sky-700 dark:text-sky-400">
+                <div key={idx} className="p-4 rounded-md border border-[#30363d] bg-[#0d1117] space-y-2">
+                  <div className="flex items-center gap-2 text-sky-400">
                     <item.icon size={16} />
-                    <h3 className="font-extrabold text-xs text-slate-950 dark:text-white uppercase">{item.title}</h3>
+                    <h3 className="font-bold text-xs text-white uppercase">{item.title}</h3>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">{item.desc}</p>
+                  <p className="text-xs text-slate-300 leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Call to action */}
-          <div className="bg-gradient-to-r from-sky-900 to-slate-900 text-white rounded-2xl p-6 border-2 border-slate-800 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="space-y-1 text-center sm:text-left">
-              <h2 className="text-sm sm:text-base font-black">
+          {/* CTA Banner */}
+          <div className="border border-[#30363d] rounded-md p-6 bg-[#161b22] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h2 className="text-sm sm:text-base font-bold text-white">
                 Topluluğumuza Katılın ve Deneyiminizi Paylaşın
               </h2>
-              <p className="text-xs text-slate-300">
-                Sorularınızı foruma yazabilir veya hesaplama araçlarıyla anında simülasyon yapabilirsiniz.
+              <p className="text-xs text-slate-400">
+                Sorularınızı foruma yazabilir veya 2026 hesaplama robotlarıyla simülasyon yapabilirsiniz.
               </p>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <Link href="/hesaplama">
-                <Button variant="info" size="sm" className="font-bold">
-                  Hesaplayıcılar
-                </Button>
+            <div className="flex items-center gap-2">
+              <Link 
+                href="/hesaplama"
+                className="px-3.5 py-2 rounded-md bg-[#21262d] border border-[#30363d] hover:bg-[#30363d] text-white text-xs font-semibold transition-colors"
+              >
+                Hesaplama Robotları
               </Link>
-              <Link href="/discussions/new">
-                <Button variant="primary" size="sm" className="font-bold bg-white text-slate-950 hover:bg-slate-100">
-                  Konu Aç
-                </Button>
+              <Link 
+                href="/discussions/new"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-white hover:bg-slate-100 text-black text-xs font-bold transition-colors shadow-xs"
+              >
+                <span>Yeni Konu Aç</span>
+                <ArrowRight size={14} />
               </Link>
             </div>
           </div>
-
         </div>
 
         {/* Sidebar */}
         <div className="lg:col-span-4">
           <ClassicSidebar />
         </div>
-
       </div>
     </div>
   );

@@ -61,7 +61,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'vücut fonksiyon kaybı oranı cetveli',
       'ötv 2026 hesaplama',
       'ötv muafiyetli araç 2026 üst limit',
-      '2.290.200 tl ötv limiti',
+      '2.873.972 tl ötv limiti',
       'otv indirimi',
       'otvsiz sıfır araba',
       'otvli araç alımı',

@@ -4,60 +4,25 @@
   --font-heading: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
   --font-sans: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
 }
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --primary: #0f172a;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #1e293b;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;
-  --link: #0369a1;
-  --link-hover: #075985;
-}
-
-/* Dark mode variables */
-.dark {
-  --background: #020617;
-  --foreground: #f8fafc;
-  --card: #0f172a;
-  --card-foreground: #f8fafc;
-  --primary: #f8fafc;
-  --primary-foreground: #020617;
-  --secondary: #1e293b;
-  --secondary-foreground: #f8fafc;
-  --muted: #0b1329;
-  --muted-foreground: #94a3b8;
-  --border: #334155;
-  --link: #38bdf8;
-  --link-hover: #7dd3fc;
+  --bg-color: #0d1117;
+  --text-main: #f0f6fc;
 }
 
 html, body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: #0d1117 !important;
+  color: #f0f6fc !important;
   font-family: var(--font-sans);
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.6;
   -webkit-text-size-adjust: 100%;
+}
+
+/* Yüksek Okunabilirlik için Net Kontrast Standartları */
+p, span, div, li, input, select, textarea, button {
+  color-scheme: dark;
 }
 
 /* Skip Navigation Link - WCAG AAA */
@@ -65,69 +30,68 @@ html, body {
   position: absolute;
   top: -100px;
   left: 20px;
-  background: #0f172a;
-  color: #ffffff !important;
+  background: #ffffff;
+  color: #000000 !important;
   padding: 10px 18px;
   font-weight: 800;
-  border-radius: 8px;
+  border-radius: 6px;
   z-index: 10000;
-  border: 2px solid #f59e0b;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  border: 2px solid #38bdf8;
   transition: top 0.2s ease;
 }
 
 .skip-link:focus {
   top: 16px;
-  outline: 3px solid #f59e0b;
+  outline: 3px solid #38bdf8;
   outline-offset: 2px;
 }
 
 /* Accessibility: Font Size Variants */
 html[data-font-size="sm"] {
-  font-size: 13px;
+  font-size: 14px;
 }
 html[data-font-size="md"] {
-  font-size: 15px;
+  font-size: 16px;
 }
 html[data-font-size="lg"] {
-  font-size: 17px;
+  font-size: 18px;
 }
 html[data-font-size="xl"] {
-  font-size: 19px;
+  font-size: 20px;
 }
 
-/* Accessibility: OpenDyslexic or High-Legibility Font for Dyslexia */
+/* Accessibility: OpenDyslexic / Dyslexia Font */
 html.dyslexic-font,
 html.dyslexic-font body,
+html.dyslexic-font p,
+html.dyslexic-font span,
+html.dyslexic-font h1,
+html.dyslexic-font h2,
+html.dyslexic-font h3,
+html.dyslexic-font a,
 html.dyslexic-font input,
 html.dyslexic-font textarea,
 html.dyslexic-font button {
-  font-family: "OpenDyslexic", "Comic Sans MS", "Arial Rounded MT Bold", sans-serif !important;
   letter-spacing: 0.05em !important;
-  word-spacing: 0.1em !important;
-  line-height: 1.8 !important;
+  word-spacing: 0.12em !important;
+  line-height: 1.85 !important;
 }
 
 /* Accessibility: High Contrast AAA Mode */
-html.high-contrast {
-  --background: #000000 !important;
-  --foreground: #ffffff !important;
-  --card: #050505 !important;
-  --card-foreground: #ffffff !important;
-  --border: #facc15 !important;
-  --link: #fde047 !important;
-}
+html.high-contrast,
 html.high-contrast body {
   background-color: #000000 !important;
   color: #ffffff !important;
 }
-html.high-contrast button,
-html.high-contrast input,
-html.high-contrast a {
+html.high-contrast * {
   border-color: #facc15 !important;
 }
+html.high-contrast a,
+html.high-contrast button {
+  color: #facc15 !important;
+}
 
-/* Accessibility: Large Cursor */
+/* Accessibility: Large Yellow Cursor */
 html.large-cursor,
 html.large-cursor * {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='%23facc15' stroke='%23000' stroke-width='2'%3E%3Cpath d='M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z'/%3E%3C/svg%3E"), auto !important;
@@ -142,31 +106,16 @@ html.reduced-motion *::after {
   transition-duration: 0.001ms !important;
 }
 
-/* Accessibility: Color Blindness SVG Filters */
+/* Color Blindness Filters */
 html.protanopia {
-  filter: url('#protanopia');
+  filter: url('#protanopia-filter');
 }
 html.deuteranopia {
-  filter: url('#deuteranopia');
+  filter: url('#deuteranopia-filter');
 }
 html.tritanopia {
-  filter: url('#tritanopia');
+  filter: url('#tritanopia-filter');
 }
 html.achromatopsia {
-  filter: url('#achromatopsia');
-}
-
-/* Accessibility: Focus Visible Enhanced Outline */
-*:focus-visible {
-  outline: 3px solid #0284c7 !important;
-  outline-offset: 3px !important;
-}
-
-/* Hide scrollbar helper */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  filter: grayscale(100%);
 }

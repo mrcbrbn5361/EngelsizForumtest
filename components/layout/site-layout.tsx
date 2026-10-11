@@ -51,14 +51,14 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
             <Link 
               href="/hesaplama" 
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-900 dark:text-emerald-200 border-2 border-emerald-300 dark:border-emerald-800 transition-all font-bold text-xs group"
-              title="2026 Üst Sınırı: 2.247.100 TL"
+              title="2026 Üst Sınırı: 2.873.972 TL"
             >
               <div className="p-1 rounded bg-emerald-700 text-white shrink-0 group-hover:scale-110 transition-transform">
                 <Car size={13} />
               </div>
               <span>ÖTV Muafiyeti</span>
               <span className="text-[10px] bg-emerald-200 dark:bg-emerald-800 text-emerald-950 dark:text-white px-1.5 py-0.2 rounded font-black">
-                2.24M ₺
+                2.87M ₺
               </span>
             </Link>
 

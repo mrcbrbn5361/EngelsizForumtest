@@ -107,7 +107,7 @@ export default function HelpPage() {
                 icon: Calculator, 
                 title: 'Resmi Hesaplama Robotları', 
                 badge: '2026 Mevzuatı',
-                text: 'Balthazard sağlık raporu oranı birleştirme, 2.247.100 TL ÖTV istisna limiti ve kademeli erken emeklilik hesaplayıcıları.' 
+                text: 'Balthazard sağlık raporu oranı birleştirme, 2.873.972 TL ÖTV istisna limiti ve kademeli erken emeklilik hesaplayıcıları.' 
               },
               { 
                 icon: MessageSquare, 

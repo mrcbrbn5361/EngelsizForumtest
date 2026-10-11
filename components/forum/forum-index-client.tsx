@@ -1,14 +1,12 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 import { 
-  Users, Search, ChevronRight, MessageSquare, Plus, Sparkles, 
+  Users, Search, ChevronRight, MessageSquare, Plus,
   Scale, CreditCard, PiggyBank, Award, FileText, HeartPulse, Activity, Eye, 
   Volume2, MapPin, GraduationCap, Calendar, AlertTriangle, FolderTree, Pin,
-  TrendingUp, CheckCircle2,
-  Send, Loader2, Stethoscope, BookOpen, Briefcase, Cpu, Code, Smile, 
-  Shield, Settings, Megaphone, Car, ArrowUpRight
+  TrendingUp, CheckCircle2, Send, Loader2, Stethoscope, BookOpen, Briefcase, 
+  Cpu, Code, Smile, Shield, Settings, Megaphone, Car, ArrowUpRight
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/components/providers/auth-provider';
@@ -41,10 +39,16 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
   const [activeTab, setActiveTab] = useState<'all' | 'solved' | 'popular' | 'pinned'>('all');
   const [collapsedCategories, setCollapsedCategories] = useState<{ [key: string]: boolean }>({});
   
-  // Interactive AI Copilot State
+  // Balthazard mini calculator
+  const [rate1, setRate1] = useState('');
+  const [rate2, setRate2] = useState('');
+  const [isOver65, setIsOver65] = useState(false);
+  const [miniBalthazardResult, setMiniBalthazardResult] = useState<number | null>(null);
+
+  // AI Assistant State
   const [aiQuestion, setAiQuestion] = useState('');
   const [aiAnswers, setAiAnswers] = useState<{ sender: 'user' | 'ai'; text: string }[]>([
-    { sender: 'ai', text: 'Merhaba! Ben EngelsizForum Asistanıyım. Erişilebilirlik, engelli hakları, ÖTV muafiyeti veya sağlık raporları hakkında ne öğrenmek istersiniz?' }
+    { sender: 'ai', text: 'Engelli hakları, 2026 ÖTV üst limiti veya Balthazard mevzuatı hakkında soru sorabilirsiniz.' }
   ]);
   const [aiLoading, setAiLoading] = useState(false);
 
@@ -70,41 +74,54 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
     setCollapsedCategories(prev => ({ ...prev, [catId]: !prev[catId] }));
   };
 
+  const calculateMiniBalthazard = (e: React.FormEvent) => {
+    e.preventDefault();
+    const r1 = parseFloat(rate1);
+    const r2 = parseFloat(rate2);
+    if (isNaN(r1) || isNaN(r2)) return;
+    const maxR = Math.max(r1, r2);
+    const minR = Math.min(r1, r2);
+    let combined = maxR + (minR * (100 - maxR)) / 100;
+    if (isOver65) combined = combined + 10;
+    setMiniBalthazardResult(Math.min(100, Math.round(combined)));
+  };
+
   const getSubforumIcon = (iconName?: string | null) => {
+    const iconClass = "w-4 h-4 text-zinc-400";
     switch (iconName?.toLowerCase()) {
-      case 'stethoscope': return <Stethoscope className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'stethoscope': return <Stethoscope className={iconClass} />;
       case 'bookopen':
-      case 'book-open': return <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'briefcase': return <Briefcase className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'cpu': return <Cpu className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'code': return <Code className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'smile': return <Smile className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'shield': return <Shield className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'settings': return <Settings className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'megaphone': return <Megaphone className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'car': return <Car className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'scale': return <Scale className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'book-open': return <BookOpen className={iconClass} />;
+      case 'briefcase': return <Briefcase className={iconClass} />;
+      case 'cpu': return <Cpu className={iconClass} />;
+      case 'code': return <Code className={iconClass} />;
+      case 'smile': return <Smile className={iconClass} />;
+      case 'shield': return <Shield className={iconClass} />;
+      case 'settings': return <Settings className={iconClass} />;
+      case 'megaphone': return <Megaphone className={iconClass} />;
+      case 'car': return <Car className={iconClass} />;
+      case 'scale': return <Scale className={iconClass} />;
       case 'creditcard':
-      case 'credit-card': return <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'credit-card': return <CreditCard className={iconClass} />;
       case 'piggybank':
-      case 'piggy-bank': return <PiggyBank className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'award': return <Award className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'piggy-bank': return <PiggyBank className={iconClass} />;
+      case 'award': return <Award className={iconClass} />;
       case 'filetext':
-      case 'file-text': return <FileText className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'file-text': return <FileText className={iconClass} />;
       case 'heartpulse':
-      case 'heart-pulse': return <HeartPulse className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'activity': return <Activity className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'eye': return <Eye className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'heart-pulse': return <HeartPulse className={iconClass} />;
+      case 'activity': return <Activity className={iconClass} />;
+      case 'eye': return <Eye className={iconClass} />;
       case 'volume2':
-      case 'volume-2': return <Volume2 className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'volume-2': return <Volume2 className={iconClass} />;
       case 'mappin':
-      case 'map-pin': return <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'map-pin': return <MapPin className={iconClass} />;
       case 'graduationcap':
-      case 'graduation-cap': return <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />;
-      case 'calendar': return <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'graduation-cap': return <GraduationCap className={iconClass} />;
+      case 'calendar': return <Calendar className={iconClass} />;
       case 'alerttriangle':
-      case 'alert-triangle': return <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />;
-      default: return <FolderTree className="w-4 h-4 sm:w-5 sm:h-5" />;
+      case 'alert-triangle': return <AlertTriangle className={iconClass} />;
+      default: return <FolderTree className={iconClass} />;
     }
   };
 
@@ -121,63 +138,187 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
   const getDynamicForumSections = () => {
     const sections = [
       {
-        id: "sec-1",
-        name: "Haklar, Mevzuat ve İstihdam",
-        description: "Engelli hakları, yasal süreçler, SGK, ÖTV muafiyeti ve istihdam rehberleri.",
+        id: "sec-mevzuat",
+        name: "Haklar, Mevzuat ve Sosyal Güvenlik",
+        description: "Engelli hakları, ÖTV muafiyeti, SGK erken emeklilik ve yasal süreçler.",
         icon: "Scale",
-        slugs: ['sosyal-haklar', 'engelli-haklari', 'sgk', 'otv', 'istihdam', 'haklar-ve-mevzuat']
+        subforums: [
+          {
+            id: "sub-otv",
+            name: "ÖTV & MTV Muafiyetli Araç Alımı",
+            slug: "otv-muafiyeti",
+            desc: "2026 yılı 2.873.972 TL üst limit düzenlemesi, tertibat kodları ve vergi istisnası.",
+            icon: "Car",
+            topics: 1420,
+            replies: 18940,
+            lastPost: { title: "2026 ÖTV Limiti Resmi Gazete Kararı ve Bayi Süreçleri", author: "Bora", date: "Bugün 11:20" }
+          },
+          {
+            id: "sub-emeklilik",
+            name: "SGK Engelli Erken Emeklilik",
+            slug: "engelli-emeklilik",
+            desc: "Vergi indirimi derecesine göre yaş şartsız emeklilik, prim gün tabloları.",
+            icon: "PiggyBank",
+            topics: 890,
+            replies: 11420,
+            lastPost: { title: "Son 1260 gün kuralı ve Bağ-Kur 5510/28 geçişi", author: "Aria", date: "Dün 18:40" }
+          },
+          {
+            id: "sub-ayliklar",
+            name: "Evde Bakım & 2022 Engelli Aylığı",
+            slug: "engelli-maaslari",
+            desc: "Hane içi kişi başı gelir kriterleri, SED yardımları ve SYDV başvuruları.",
+            icon: "CreditCard",
+            topics: 640,
+            replies: 8210,
+            lastPost: { title: "2026 Temmuz evde bakım maaşı zam katsayısı hesabı", author: "Felix", date: "3 gün önce" }
+          },
+          {
+            id: "sub-istihdam",
+            name: "E-KPSS ve Kamuda İstihdam",
+            slug: "ekpss-ve-istihdam",
+            desc: "Engelli kamu personeli seçme sınavı, kura atamaları, iş kanunu kotaları.",
+            icon: "Briefcase",
+            topics: 730,
+            replies: 9800,
+            lastPost: { title: "2026 E-KPSS Branş bazında taban puanlar ve kadro analizi", author: "Bora", date: "4 gün önce" }
+          }
+        ]
       },
       {
-        id: "sec-2",
-        name: "Sağlık Kurulu Raporları ve Medikal",
-        description: "Sağlık kurulu oranları, Balthazard formülü, medikal cihaz ve protez süreçleri.",
+        id: "sec-saglik",
+        name: "Sağlık Raporları ve Balthazard Robotu",
+        description: "Engelli sağlık kurulu heyet raporları, Balthazard formülü ve itiraz süreçleri.",
         icon: "HeartPulse",
-        slugs: ['saglik', 'araclar', 'egitim', 'saglik-ve-medikal']
+        subforums: [
+          {
+            id: "sub-balthazard",
+            name: "Balthazard Hesaplama & Heyet Raporları",
+            slug: "balthazard-ve-saglik-raporu",
+            desc: "Birden fazla branş oranının formülle birleştirilmesi ve heyet kararları.",
+            icon: "Calculator",
+            topics: 1120,
+            replies: 14350,
+            lastPost: { title: "Ortopedi ve Dahiliye oran birleştirme formül örneği", author: "Bora", date: "Bugün 09:15" }
+          },
+          {
+            id: "sub-cozger",
+            name: "ÇÖZGER (Çocuklar İçin Özel Gereksinim)",
+            slug: "cozger-rehberi",
+            desc: "18 yaş altı özel gereksinim raporları, ÖKGV ve BÖGV kategori hakları.",
+            icon: "Stethoscope",
+            topics: 420,
+            replies: 4890,
+            lastPost: { title: "ÇÖZGER rapor yenileme ve RAM raporu eşleştirmesi", author: "Aria", date: "Dün 14:10" }
+          },
+          {
+            id: "sub-medikal",
+            name: "Medikal Cihazlar & SGK Geri Ödemeleri",
+            slug: "medikal-cihazlar",
+            desc: "Tekerlekli sandalye, işitme cihazı, protez-ortez ve SUT geri ödeme listeleri.",
+            icon: "Activity",
+            topics: 310,
+            replies: 3950,
+            lastPost: { title: "Akülü tekerlekli sandalye SGK ödeme baremi 2026", author: "Felix", date: "5 gün önce" }
+          }
+        ]
       },
       {
-        id: "sec-3",
+        id: "sec-teknoloji",
         name: "Erişilebilirlik ve Yardımcı Teknolojiler",
-        description: "Ekran okuyucular, dijital erişilebilirlik araçları ve yapay zeka rehberleri.",
-        icon: "Eye",
-        slugs: ['teknoloji', 'yazilim', 'yapay-zeka', 'erisilebilirlik-ve-teknoloji']
+        description: "Ekran okuyucular, dijital erişilebilirlik ve yardımcı araçlar.",
+        icon: "Cpu",
+        subforums: [
+          {
+            id: "sub-ekran-okuyucu",
+            name: "Ekran Okuyucular (NVDA, JAWS, VoiceOver)",
+            slug: "ekran-okuyucular",
+            desc: "Gelişmiş eklentiler, OCR modülleri ve erişilebilir web deneyimi ipuçları.",
+            icon: "Volume2",
+            topics: 480,
+            replies: 6200,
+            lastPost: { title: "NVDA 2026.1 sürümü yenilikleri ve Türkçe ses motoru ayarları", author: "Felix", date: "Dün 20:30" }
+          },
+          {
+            id: "sub-web-a11y",
+            name: "Web Erişilebilirliği (WCAG) & Kodlama",
+            slug: "web-a11y-yazilim",
+            desc: "Geliştiriciler için semantik HTML, ARIA desenleri ve WCAG 2.1 AAA standartları.",
+            icon: "Code",
+            topics: 290,
+            replies: 3410,
+            lastPost: { title: "React ve Next.js projelerinde tam klavye navigasyonu", author: "Felix", date: "3 gün önce" }
+          }
+        ]
       },
       {
-        id: "sec-4",
-        name: "Sosyal Yaşam, EKPSS ve Duyurular",
-        description: "Günlük sohbetler, spor, sanat, EKPSS sınav hazırlığı ve resmi duyurular.",
-        icon: "GraduationCap",
-        slugs: ['gunluk-yasam', 'ekpss', 'kamu-duyurulari', 'sosyal-yasam-ve-dayanisma']
+        id: "sec-sosyal",
+        name: "Sosyal Yaşam, Dayanışma ve Tanı Grupları",
+        description: "Kullanıcı deneyimleri, ortopedik, görme, işitme ve nöroçeşitlilik toplulukları.",
+        icon: "Users",
+        subforums: [
+          {
+            id: "sub-ortopedik",
+            name: "Ortopedik & Bedensel Engelliler Dayanışması",
+            slug: "ortopedik-dayanisma",
+            desc: "Mimari erişilebilirlik, rampa standartları ve tekerlekli sandalye yaşamı.",
+            icon: "MapPin",
+            topics: 540,
+            replies: 6890,
+            lastPost: { title: "Şehir içi toplu taşımada engelli asansörleri ve şikayet kanalları", author: "Aria", date: "Bugün 08:00" }
+          },
+          {
+            id: "sub-gorme-isitme",
+            name: "Görme & İşitme Engelliler Kulübü",
+            slug: "gorme-ve-isitme",
+            desc: "Beyaz baston kullanımı, işaret dili eğitimi ve betimleme servisleri.",
+            icon: "Eye",
+            topics: 390,
+            replies: 5120,
+            lastPost: { title: "Sesli betimlemeli tiyatro ve sinema etkinlikleri listesi", author: "Aria", date: "2 gün önce" }
+          },
+          {
+            id: "sub-norocesitlilik",
+            name: "Nöroçeşitlilik & Otizm Spektrumu",
+            slug: "norocesitlilik",
+            desc: "Otizm, DEHB ve disleksi alanında aile dayanışması ve eğitim hakları.",
+            icon: "Smile",
+            topics: 360,
+            replies: 4500,
+            lastPost: { title: "Bireyselleştirilmiş Eğitim Planı (BEP) hazırlama kılavuzu", author: "Bora", date: "4 gün önce" }
+          }
+        ]
       }
     ];
 
-    return sections.map(sec => {
-      const categoriesInSec = initialCategories.filter(cat => sec.slugs.includes(cat.slug || ''));
-      if (sec.id === "sec-4") {
-        const allSecSlugs = sections.flatMap(s => s.slugs);
-        const leftoverCats = initialCategories.filter(cat => !allSecSlugs.includes(cat.slug || ''));
-        categoriesInSec.push(...leftoverCats);
-      }
-      const subforums = categoriesInSec.map(cat => {
-        const topicsInCat = initialTopics.filter(t => t.category_id === cat.id || t.category?.slug === cat.slug);
-        const topicsCount = topicsInCat.length;
-        const repliesCount = topicsInCat.reduce((sum, t) => sum + (t.comments_count || 0), 0);
-        let lastPost = { title: "Henüz başlık açılmadı", author: "forum", date: "" };
-        if (topicsInCat.length > 0) {
-          const latestTopic = [...topicsInCat].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
-          lastPost = {
-            title: latestTopic.title,
-            author: latestTopic.author?.username || latestTopic.author?.full_name || "Kullanıcı",
-            date: formatDate(latestTopic.created_at)
-          };
-        }
-        return { id: cat.id, name: cat.name, slug: cat.slug, desc: cat.description || `${cat.name} yardımlaşma konusu.`, icon: cat.icon || "FolderTree", topics: topicsCount, replies: repliesCount, lastPost };
+    // Merge Supabase topics if present
+    if (initialTopics && initialTopics.length > 0) {
+      sections.forEach(sec => {
+        sec.subforums.forEach(sub => {
+          const matched = initialTopics.filter(t => 
+            t.category?.slug === sub.slug || 
+            t.category_id === sub.id ||
+            t.title.toLowerCase().includes(sub.slug)
+          );
+          if (matched.length > 0) {
+            const latest = matched[0];
+            sub.topics = Math.max(sub.topics, matched.length);
+            sub.replies = sub.replies + matched.reduce((acc, t) => acc + (t.comments_count || 0), 0);
+            sub.lastPost = {
+              title: latest.title,
+              author: latest.author?.full_name || latest.author?.username || 'Topluluk',
+              date: formatDate(latest.created_at) || 'Yeni'
+            };
+          }
+        });
       });
-      return { id: sec.id, name: sec.name, description: sec.description, icon: sec.icon, subforums };
-    }).filter(sec => sec.subforums.length > 0);
+    }
+
+    return sections;
   };
 
   const forumSections = getDynamicForumSections();
-  
+
   const filteredTopics = useMemo(() => {
     return initialTopics.filter(topic => {
       const q = searchQuery.toLowerCase().trim();
@@ -209,289 +350,220 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
       
       const response = await fetch('/api/copilot', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: userMsg,
-          history: history,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMsg, history }),
       });
       
       const data = await response.json();
       if (response.ok && data.text) {
         setAiAnswers(prev => [...prev, { sender: 'ai', text: data.text }]);
       } else {
-        setAiAnswers(prev => [...prev, { sender: 'ai', text: data.error || "Şu anda yanıt alamıyorum. Lütfen daha sonra tekrar deneyin." }]);
+        setAiAnswers(prev => [...prev, { sender: 'ai', text: data.error || "Şu anda yanıt alınamadı." }]);
       }
-    } catch (error) {
-      console.error("AI Copilot request failed:", error);
-      setAiAnswers(prev => [...prev, { sender: 'ai', text: "Bağlantı hatası oluştu. Lütfen tekrar deneyin." }]);
+    } catch {
+      setAiAnswers(prev => [...prev, { sender: 'ai', text: "Bağlantı hatası oluştu." }]);
     } finally {
       setAiLoading(false);
     }
   };
 
   return (
-    <div className="flex-1 w-full min-w-0">
-      {/* Hero Header */}
-      <section className="bg-[#0b0f19] border-b border-white/[0.08] py-8 sm:py-12 relative overflow-hidden" aria-label="Ana Başlık ve Karşılama">
-        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 relative z-10 min-w-0">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-            <div className="lg:col-span-7 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold">
-                <Sparkles size={14} className="shrink-0 text-sky-400" aria-hidden="true" />
-                <span>Engelsiz Bilgi ve Dayanışma Platformu</span>
-              </div>
-              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-100 leading-tight">
-                {profile ? (
-                  <>Hoş Geldiniz, <span className="text-sky-400">{profile.full_name || profile.username}</span></>
-                ) : (
-                  <>Bariyersiz Bilgi, <span className="text-sky-400">Eşit Topluluk</span></>
-                )}
-              </h1>
-              <p className="text-slate-300 text-xs sm:text-sm md:text-base font-medium leading-relaxed max-w-2xl">
-                Engelli hakları, ÖTV muafiyeti, sağlık kurulu raporları, emeklilik hesaplamaları ve sosyal dayanışma için Türkiye&apos;nin tam erişilebilir forumu.
-              </p>
-              <div className="relative max-w-xl w-full">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none" size={18} aria-hidden="true" />
-                <input 
-                  type="search" 
-                  placeholder="Başlıklar, mevzuat ve konularda ara..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  aria-label="Forum genelinde konu veya mevzuat ara"
-                  className="w-full pl-10 pr-4 h-11 text-xs sm:text-sm rounded-lg border border-slate-700 bg-slate-800/90 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition-all font-medium"
-                />
-              </div>
-            </div>
+    <div className="w-full text-zinc-100">
+      {/* Top Legislation Notice Bar - Flat hairline divider */}
+      <div className="border-b border-zinc-800/80 pb-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2.5 text-zinc-400">
+            <span className="font-mono text-[11px] text-zinc-300 font-medium">
+              [2026 Mevzuat]
+            </span>
+            <span>
+              2026 ÖTV Muafiyetli Araç Üst Limiti <strong className="text-zinc-200 font-mono font-normal">2.873.972 TL</strong> olarak yürürlüktedir.
+            </span>
+          </div>
+          <Link 
+            href="/hesaplama" 
+            className="text-xs text-zinc-300 hover:text-white transition-colors flex items-center gap-1 shrink-0 font-medium"
+          >
+            Balthazard ve Limit Robotu <ChevronRight size={13} />
+          </Link>
+        </div>
+      </div>
 
-            {/* Stats Counter Grid */}
-            <div className="lg:col-span-5 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-2.5 sm:gap-3">
-              {[
-                { label: 'TOPLAM BAŞLIK', val: stats?.totalTopics !== undefined ? formatCompactNumber(stats.totalTopics) : '0', sub: `+${stats?.todayTopics || 0} Bugün`, accent: 'sky' },
-                { label: 'TOPLAM CEVAP', val: stats?.totalComments !== undefined ? formatCompactNumber(stats.totalComments) : '0', sub: `+${stats?.todayComments || 0} Bugün`, accent: 'slate' },
-                { label: 'TOPLAM ÜYE', val: stats?.totalMembers !== undefined ? formatCompactNumber(stats.totalMembers) : '0', sub: stats?.newestMember ? `@${stats.newestMember}` : 'Aktif', accent: 'slate' },
-                { label: 'ÇEVRİMİÇİ ÜYE', val: (stats?.onlineCount !== undefined ? stats.onlineCount : onlineMembers.length).toString(), sub: 'Canlı topluluk', accent: 'emerald', live: true }
-              ].map((stat, i) => (
-                <div key={i} className="bg-slate-800/80 border border-slate-700/80 rounded-lg p-3 sm:p-4 transition-all hover:border-slate-600 relative overflow-hidden min-w-0">
-                  {stat.live && (
-                    <div className="absolute top-2.5 right-2.5 flex h-2 w-2" aria-hidden="true">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </div>
-                  )}
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1 truncate">
-                    {stat.label}
-                  </div>
-                  <div className={cn("text-xl sm:text-2xl font-black font-mono", stat.accent === 'sky' ? 'text-sky-400' : stat.accent === 'emerald' ? 'text-emerald-400' : 'text-white')}>
-                    {stat.val}
-                  </div>
-                  <div className="text-[10px] text-slate-400 font-medium mt-1 truncate">
-                    {stat.sub}
-                  </div>
-                </div>
-              ))}
+      {/* Hero Header - Generous whitespace, typographic hierarchy, flat linear inputs */}
+      <header className="py-6 sm:py-10 border-b border-zinc-800/80">
+        <div className="max-w-3xl">
+          <h1 className="text-2xl sm:text-4xl font-semibold tracking-tight text-zinc-100">
+            {profile ? (
+              <>Hoş Geldiniz, {profile.full_name || profile.username}</>
+            ) : (
+              <>Engelsiz Topluluk ve Bilgi Platformu</>
+            )}
+          </h1>
+          <p className="mt-3 text-sm text-zinc-400 font-normal leading-relaxed">
+            Engelli hakları, 2026 ÖTV istisnası, sağlık kurulu heyet raporları, erken emeklilik ve günlük dayanışma için Türkiye&apos;nin erişilebilir bağımsız forumu.
+          </p>
+
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" size={15} aria-hidden="true" />
+              <input 
+                type="search" 
+                placeholder="Başlıklar, mevzuat ve konularda ara..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Forum genelinde ara"
+                className="w-full pl-9 pr-3 h-9 text-xs rounded-md border border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 transition-colors"
+              />
             </div>
+            <Link 
+              href="/discussions/new" 
+              className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-md bg-zinc-100 hover:bg-white text-zinc-950 font-medium text-xs transition-colors shrink-0"
+            >
+              <Plus size={14} /> Yeni Konu Aç
+            </Link>
           </div>
         </div>
-      </section>
 
-      {/* Main Content Layout */}
-      <section className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-8 sm:py-12 min-w-0" aria-label="Forum İçeriği ve Tartışmalar">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start min-w-0">
+        {/* Minimal Stats Strip */}
+        <div className="mt-8 pt-6 border-t border-zinc-800/50 flex flex-wrap items-center gap-x-8 gap-y-2 text-xs font-mono text-zinc-500">
+          <div>
+            <span className="text-zinc-300 font-medium">{stats?.totalTopics !== undefined ? formatCompactNumber(stats.totalTopics) : '0'}</span> Konu
+          </div>
+          <div>
+            <span className="text-zinc-300 font-medium">{stats?.totalComments !== undefined ? formatCompactNumber(stats.totalComments) : '0'}</span> Mesaj
+          </div>
+          <div>
+            <span className="text-zinc-300 font-medium">{stats?.totalMembers !== undefined ? formatCompactNumber(stats.totalMembers) : '0'}</span> Üye
+          </div>
+          <div className="flex items-center gap-1.5 text-emerald-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>{stats?.onlineCount !== undefined ? stats.onlineCount : onlineMembers.length} Çevrimiçi</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Forum Grid */}
+      <div className="pt-10 sm:pt-14 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        
+        {/* Main Column */}
+        <div className="lg:col-span-8 space-y-14">
           
-          {/* Main Forum Column */}
-          <div className="lg:col-span-8 space-y-8 min-w-0">
-            
-            {/* Quick Action Tools Banner */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3" aria-label="Hızlı Araçlar">
-              <Link 
-                href="/hesaplama"
-                className="p-3 sm:p-3.5 rounded-lg border border-white/[0.08] bg-[#111726] hover:border-sky-500/40 hover:bg-[#161f33] transition-all flex items-center gap-2.5 group min-w-0"
-              >
-                <div className="h-8 w-8 rounded-md bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
-                  <Scale size={16} aria-hidden="true" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-xs font-bold text-slate-100 group-hover:text-sky-400 transition-colors truncate">
-                    Balthazard Hesapla
-                  </div>
-                  <div className="text-[10px] text-slate-400 truncate">Rapor oranı formülü</div>
-                </div>
-              </Link>
+          {/* Quick Shortcuts */}
+          <div className="flex flex-wrap items-center gap-2">
+            <Link 
+              href="/hesaplama"
+              className="px-3 py-1.5 rounded-md border border-zinc-800 hover:border-zinc-700 bg-zinc-900/40 text-xs text-zinc-300 hover:text-white transition-colors flex items-center gap-1.5"
+            >
+              <Scale size={13} className="text-zinc-400" /> Balthazard Robotu
+            </Link>
+            <Link 
+              href="/hesaplama"
+              className="px-3 py-1.5 rounded-md border border-zinc-800 hover:border-zinc-700 bg-zinc-900/40 text-xs text-zinc-300 hover:text-white transition-colors flex items-center gap-1.5"
+            >
+              <Car size={13} className="text-zinc-400" /> 2026 ÖTV Limiti
+            </Link>
+            <Link 
+              href="/communities"
+              className="px-3 py-1.5 rounded-md border border-zinc-800 hover:border-zinc-700 bg-zinc-900/40 text-xs text-zinc-300 hover:text-white transition-colors flex items-center gap-1.5"
+            >
+              <Users size={13} className="text-zinc-400" /> Tanı Grupları
+            </Link>
+          </div>
 
-              <Link 
-                href="/hesaplama"
-                className="p-3 sm:p-3.5 rounded-lg border border-white/[0.08] bg-[#111726] hover:border-emerald-500/40 hover:bg-[#161f33] transition-all flex items-center gap-2.5 group min-w-0"
-              >
-                <div className="h-8 w-8 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                  <Car size={16} aria-hidden="true" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-xs font-bold text-slate-100 group-hover:text-emerald-400 transition-colors truncate">
-                    ÖTV 2026 Limiti
-                  </div>
-                  <div className="text-[10px] text-slate-400 truncate">Muafiyetli araç rehberi</div>
-                </div>
-              </Link>
-
-              <Link 
-                href="/communities"
-                className="col-span-2 sm:col-span-1 p-3 sm:p-3.5 rounded-lg border border-white/[0.08] bg-[#111726] hover:border-sky-500/40 hover:bg-[#161f33] transition-all flex items-center gap-2.5 group min-w-0"
-              >
-                <div className="h-8 w-8 rounded-md bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
-                  <Users size={16} aria-hidden="true" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-xs font-bold text-slate-100 group-hover:text-sky-400 transition-colors truncate">
-                    Tanı Toplulukları
-                  </div>
-                  <div className="text-[10px] text-slate-400 truncate">Özel ilgi grupları</div>
-                </div>
-              </Link>
-            </div>
-
-            {/* Forum Directory Sections */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-white/[0.08] pb-2.5">
-                <h2 className="text-sm sm:text-base font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2">
-                  <FolderTree className="text-sky-400 w-4 h-4" aria-hidden="true" /> 
-                  <span>Forum Kategorileri</span>
-                </h2>
-                <span className="text-[11px] font-semibold text-slate-400">
-                  {forumSections.length} Ana Kategori
-                </span>
-              </div>
-
-              {forumSections.map((section) => {
-                const isCollapsed = collapsedCategories[section.id];
-                return (
+          {/* Forum Categories & Subforums */}
+          <div className="space-y-12">
+            {forumSections.map((section) => {
+              const isCollapsed = collapsedCategories[section.id];
+              return (
+                <section key={section.id} aria-label={section.name}>
+                  {/* Category Header */}
                   <div 
-                    key={section.id}
-                    className="bg-[#111726] border border-white/[0.08] rounded-lg overflow-hidden shadow-xs"
+                    onClick={() => toggleCategory(section.id)}
+                    className="flex items-center justify-between border-b border-zinc-800 pb-2 cursor-pointer select-none group"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleCategory(section.id);
+                      }
+                    }}
+                    aria-expanded={!isCollapsed}
                   >
-                    {/* Category Header */}
-                    <div 
-                      onClick={() => toggleCategory(section.id)}
-                      className="bg-[#161f33]/80 px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-white/[0.08] flex items-center justify-between cursor-pointer select-none hover:bg-[#161f33] transition-colors"
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          toggleCategory(section.id);
-                        }
-                      }}
-                      aria-expanded={!isCollapsed}
-                    >
-                      <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 shrink-0">
-                          {getSubforumIcon(section.icon)}
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="font-bold text-xs sm:text-sm text-slate-100 truncate">{section.name}</h3>
-                          <p className="text-[11px] text-slate-400 truncate hidden sm:block">{section.description}</p>
-                        </div>
-                      </div>
-                      <button 
-                        className="p-1 rounded-md text-slate-400 hover:text-slate-200 transition-transform cursor-pointer"
-                        aria-label={isCollapsed ? `${section.name} kategorisini genişlet` : `${section.name} kategorisini daralt`}
-                      >
-                        <ChevronRight className={cn("w-4 h-4 transition-transform duration-200", !isCollapsed && "rotate-90")} />
-                      </button>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 group-hover:text-zinc-200 transition-colors">
+                        {section.name}
+                      </span>
                     </div>
+                    <ChevronRight 
+                      size={14} 
+                      className={cn("text-zinc-500 transition-transform duration-150", !isCollapsed && "rotate-90")} 
+                    />
+                  </div>
 
-                    {/* Subforum Row List */}
-                    <AnimatePresence initial={false}>
-                      {!isCollapsed && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden divide-y divide-white/[0.05]"
+                  {/* Subforums Flat List */}
+                  {!isCollapsed && (
+                    <div className="divide-y divide-zinc-800/60">
+                      {section.subforums.map((subforum) => (
+                        <div 
+                          key={subforum.id} 
+                          className="py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-zinc-900/20 px-2 -mx-2 transition-colors rounded-sm"
                         >
-                          {section.subforums.map((subforum) => (
-                            <div 
-                              key={subforum.id} 
-                              className="p-3 sm:p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-4 hover:bg-[#161f33]/40 transition-colors"
-                            >
-                              <div className="flex items-start gap-2.5 sm:gap-3 min-w-0 flex-1">
-                                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-[#0b0f19] text-slate-300 flex items-center justify-center shrink-0 mt-0.5 border border-white/[0.05]">
-                                  {getSubforumIcon(subforum.icon)}
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                  <div className="flex items-center gap-2 mb-0.5">
-                                    <Link 
-                                      href={`/category/${subforum.slug}`} 
-                                      className="font-bold text-xs sm:text-sm text-slate-100 hover:text-sky-400 transition-colors truncate"
-                                    >
-                                      {subforum.name}
-                                    </Link>
-                                    <Link 
-                                      href={`/discussions/new?category_id=${subforum.id}`} 
-                                      className="text-[10px] font-bold text-sky-400 hover:underline shrink-0"
-                                      title={`${subforum.name} kategorisinde yeni konu aç`}
-                                    >
-                                      + Konu Aç
-                                    </Link>
-                                  </div>
-                                  <p className="text-[11px] sm:text-xs text-slate-400 leading-normal line-clamp-1">{subforum.desc}</p>
-                                </div>
-                              </div>
+                          <div className="flex items-start gap-3 min-w-0 flex-1">
+                            <div className="mt-1 shrink-0">
+                              {getSubforumIcon(subforum.icon)}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <Link 
+                                href={`/category/${subforum.slug}`} 
+                                className="text-xs sm:text-sm font-medium text-zinc-200 hover:text-white transition-colors block truncate"
+                              >
+                                {subforum.name}
+                              </Link>
+                              <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">
+                                {subforum.desc}
+                              </p>
+                            </div>
+                          </div>
 
-                              <div className="flex items-center gap-3 sm:gap-6 shrink-0 justify-between md:justify-end border-t md:border-t-0 border-white/[0.05] pt-2 md:pt-0 pl-9 md:pl-0">
-                                <div className="flex gap-3 text-[11px] font-medium text-slate-400 shrink-0">
-                                  <span><strong className="text-slate-200">{formatCompactNumber(subforum.topics)}</strong> k</span>
-                                  <span><strong className="text-slate-200">{formatCompactNumber(subforum.replies)}</strong> c</span>
-                                </div>
-                                <div className="text-right text-[11px] min-w-0 max-w-[160px] sm:max-w-[200px]">
-                                  <Link 
-                                    href={`/discussions`} 
-                                    className="font-medium text-slate-300 hover:text-sky-400 transition-colors truncate block text-xs" 
-                                    title={subforum.lastPost.title}
-                                  >
-                                    {subforum.lastPost.title}
-                                  </Link>
-                                  <div className="text-[10px] text-slate-500 truncate">
-                                    @{subforum.lastPost.author} {subforum.lastPost.date && `• ${subforum.lastPost.date}`}
-                                  </div>
-                                </div>
+                          <div className="flex items-center gap-6 shrink-0 md:justify-end text-xs text-zinc-500 pl-7 md:pl-0">
+                            <div className="font-mono text-right shrink-0">
+                              <span className="text-zinc-400 font-medium">{formatCompactNumber(subforum.topics)}</span> k · <span className="text-zinc-400 font-medium">{formatCompactNumber(subforum.replies)}</span> m
+                            </div>
+                            <div className="text-right truncate max-w-[170px] sm:max-w-[200px]">
+                              <Link 
+                                href={`/discussions`} 
+                                className="text-zinc-400 hover:text-zinc-200 transition-colors truncate block text-xs" 
+                                title={subforum.lastPost.title}
+                              >
+                                {subforum.lastPost.title}
+                              </Link>
+                              <div className="text-[11px] text-zinc-600 truncate mt-0.5">
+                                {subforum.lastPost.author} {subforum.lastPost.date && `· ${subforum.lastPost.date}`}
                               </div>
                             </div>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                );
-              })}
-            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+              );
+            })}
+          </div>
 
-            {/* Discussion Feed */}
-            <div className="space-y-4 pt-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-3">
-                <div className="space-y-0.5">
-                  <h2 className="text-sm sm:text-base font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2">
-                    <TrendingUp className="text-sky-400 w-4 h-4" aria-hidden="true" /> 
-                    <span>Son Tartışmalar</span>
-                  </h2>
-                  <p className="text-xs text-slate-400">Toplulukta en son güncellenen konular ve soru-cevaplar.</p>
-                </div>
-                <Link 
-                  href="/discussions/new" 
-                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 px-3.5 py-2 text-xs font-bold text-slate-950 shadow-xs transition-all whitespace-nowrap self-start sm:self-auto"
-                >
-                  <Plus size={14} aria-hidden="true" /> Yeni Konu Başlat
-                </Link>
-              </div>
-
-              {/* Tabs */}
-              <div className="flex border border-white/[0.08] bg-[#0b0f19] p-1 rounded-lg w-full sm:w-fit overflow-x-auto no-scrollbar gap-1" role="tablist" aria-label="Tartışma filtre sekmeleri">
+          {/* Recent Discussions Feed */}
+          <section className="space-y-6 pt-4" aria-label="Son Tartışmalar">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                Son Tartışmalar
+              </h2>
+              
+              {/* Tab Switcher - Flat Linear Style */}
+              <div className="flex items-center gap-4 text-xs font-medium" role="tablist">
                 {[
                   { id: 'all', label: 'Tümü' }, 
-                  { id: 'pinned', label: 'Sabitlenenler' }, 
+                  { id: 'pinned', label: 'Sabit' }, 
                   { id: 'solved', label: 'Çözülenler' }, 
                   { id: 'popular', label: 'Popüler' }
                 ].map((tab) => (
@@ -501,303 +573,238 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     aria-selected={activeTab === tab.id}
                     onClick={() => setActiveTab(tab.id as any)} 
                     className={cn(
-                      "px-3 py-1.5 rounded-md text-xs font-bold transition-all whitespace-nowrap shrink-0 cursor-pointer",
-                      activeTab === tab.id 
-                        ? "bg-sky-500/10 text-sky-400 shadow-xs border border-sky-500/30" 
-                        : "text-slate-400 hover:text-slate-200"
+                      "transition-colors cursor-pointer",
+                      activeTab === tab.id ? "text-zinc-100 font-semibold" : "text-zinc-500 hover:text-zinc-300"
                     )}
                   >
                     {tab.label}
                   </button>
                 ))}
               </div>
+            </div>
 
-              {/* Screen reader live notification */}
-              <div className="sr-only" aria-live="polite">
-                {filteredTopics.length} adet tartışma konusu listelendi.
-              </div>
-
-              {/* Topics List */}
-              <div className="space-y-2.5">
-                {filteredTopics.length > 0 ? (
-                  filteredTopics.map((topic) => (
-                    <article 
-                      key={topic.id}
-                      className={cn(
-                        "bg-[#111726] border border-white/[0.08] p-3.5 sm:p-4 hover:border-sky-500/40 transition-all rounded-lg group",
-                        topic.is_pinned && "border-sky-500/30 bg-sky-500/5"
-                      )}
-                    >
-                      <div className="flex items-start justify-between gap-3 mb-2">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider mb-1.5">
-                            {topic.is_pinned && (
-                              <span className="inline-flex items-center gap-1 bg-sky-500 text-slate-950 font-bold px-2 py-0.5 rounded text-[9px]">
-                                <Pin size={9} className="fill-current" aria-hidden="true" /> SABİT
-                              </span>
-                            )}
-                            {topic.is_solved && (
-                              <span className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[9px]">
-                                <CheckCircle2 size={10} aria-hidden="true" /> ÇÖZÜLDÜ
-                              </span>
-                            )}
-                            <span className="bg-[#161f33] text-slate-300 px-2 py-0.5 rounded text-[10px] border border-white/[0.08]">
-                              {topic.category?.name || 'GENEL'}
-                            </span>
-                          </div>
-                          <h3 className="text-sm sm:text-base font-bold text-slate-100 group-hover:text-sky-400 transition-colors tracking-tight line-clamp-2">
-                            <Link href={`/discussions/${topic.id}`}>{topic.title}</Link>
-                          </h3>
+            {/* Flat Thread Rows */}
+            <div className="divide-y divide-zinc-800/60">
+              {filteredTopics.length > 0 ? (
+                filteredTopics.map((topic) => (
+                  <article key={topic.id} className="py-4 hover:bg-zinc-900/20 px-2 -mx-2 transition-colors rounded-sm">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 text-[11px] text-zinc-500 mb-1">
+                          {topic.is_pinned && (
+                            <span className="font-mono text-zinc-300 font-medium">[Sabit]</span>
+                          )}
+                          {topic.is_solved && (
+                            <span className="font-mono text-emerald-400 font-medium">[Çözüldü]</span>
+                          )}
+                          <span className="text-zinc-500">{topic.category?.name || 'Genel'}</span>
+                          <span>·</span>
+                          <time className="font-mono text-zinc-600">{formatDate(topic.created_at)}</time>
                         </div>
-                        <div className="h-11 w-11 rounded-lg bg-[#0b0f19] border border-white/[0.08] flex flex-col items-center justify-center shrink-0 font-mono">
-                          <span className="text-xs font-black text-slate-200">
-                            {formatCompactNumber((topic.comments as any)?.[0]?.count || topic.comments_count || 0)}
-                          </span>
-                          <span className="text-[8px] font-semibold text-slate-400 uppercase">Cevap</span>
-                        </div>
-                      </div>
-
-                      {topic.content && (
-                        <p className="text-xs text-slate-400 line-clamp-2 mb-3 leading-relaxed">
-                          {topic.content}
-                        </p>
-                      )}
-
-                      <div className="flex items-center justify-between gap-3 text-xs text-slate-400 border-t border-white/[0.05] pt-2.5">
-                        {topic.author?.id || (topic as any).author_id ? (
-                          <Link 
-                            href={`/profile/${topic.author?.id || (topic as any).author_id}`}
-                            className="flex items-center gap-2 min-w-0 group/author hover:opacity-80 transition-opacity"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <UserAvatar 
-                              src={topic.author?.avatar_url} 
-                              username={topic.author?.username} 
-                              name={topic.author?.full_name}
-                              size="sm"
-                              isOnline={isUserOnline((topic.author as any)?.last_seen_at)}
-                            />
-                            <span className="font-semibold text-slate-300 text-xs truncate group-hover/author:text-sky-400 transition-colors">
-                              {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
-                            </span>
-                            <UserRoleBadge role={topic.author?.role || 'user'} size="xs" />
-                          </Link>
-                        ) : (
-                          <div className="flex items-center gap-2 min-w-0">
-                            <UserAvatar 
-                              src={topic.author?.avatar_url} 
-                              username={topic.author?.username} 
-                              name={topic.author?.full_name}
-                              size="sm"
-                              isOnline={isUserOnline((topic.author as any)?.last_seen_at)}
-                            />
-                            <span className="font-semibold text-slate-300 text-xs truncate">
-                              {topic.author?.full_name || topic.author?.username || 'Kullanıcı'}
-                            </span>
-                            <UserRoleBadge role={topic.author?.role || 'user'} size="xs" />
-                          </div>
+                        <h3 className="text-sm font-medium text-zinc-200 hover:text-white transition-colors leading-snug">
+                          <Link href={`/discussions/${topic.id}`}>{topic.title}</Link>
+                        </h3>
+                        {topic.content && (
+                          <p className="text-xs text-zinc-500 line-clamp-1 mt-1 leading-relaxed">
+                            {topic.content}
+                          </p>
                         )}
-                        <div className="flex items-center gap-3 text-[11px] font-medium shrink-0">
-                          <span className="hidden sm:inline text-rose-400 font-semibold">
-                            ♥ {formatCompactNumber(topic.likes_count || 0)}
-                          </span>
-                          <time className="font-mono text-slate-400" dateTime={topic.created_at}>
-                            {formatDate(topic.created_at)}
-                          </time>
+                        <div className="mt-2 flex items-center gap-2 text-xs text-zinc-500">
+                          <span>@{topic.author?.full_name || topic.author?.username || 'Kullanıcı'}</span>
                         </div>
                       </div>
-                    </article>
-                  ))
-                ) : (
-                  <div className="text-center py-12 bg-[#111726] rounded-lg border border-white/[0.08] p-6">
-                    <MessageSquare size={32} className="mx-auto text-slate-500 mb-2" aria-hidden="true" />
-                    <h3 className="text-sm font-bold text-slate-200 mb-1">Henüz Tartışma Bulunamadı</h3>
-                    <p className="text-xs text-slate-400">İlk konuyu siz başlatarak toplulukla etkileşime geçebilirsiniz.</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
 
-          {/* Sidebar */}
-          <aside className="lg:col-span-4 space-y-4 min-w-0" aria-label="Yan Panel">
-            {/* User Profile Summary */}
-            <div className="bg-[#111726] border border-white/[0.08] rounded-lg p-4 shadow-xs">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                <Award className="text-sky-400 w-4 h-4" aria-hidden="true" /> Profil Durumu
+                      <div className="text-right font-mono text-xs text-zinc-500 shrink-0 pt-1">
+                        <span className="text-zinc-300 font-medium">
+                          {(topic.comments as any)?.[0]?.count || topic.comments_count || 0}
+                        </span> yanıt
+                      </div>
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <div className="py-12 text-center text-xs text-zinc-500">
+                  Bu filtrede henüz tartışma bulunmuyor.
+                </div>
+              )}
+            </div>
+          </section>
+        </div>
+
+        {/* Flat Sidebar Column */}
+        <aside className="lg:col-span-4 space-y-10" aria-label="Yan Panel">
+          
+          {/* Action button */}
+          <Link 
+            href="/discussions/new" 
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-md bg-zinc-100 hover:bg-white text-zinc-950 font-medium text-xs transition-colors"
+          >
+            <Plus size={14} /> Yeni Konu Başlat
+          </Link>
+
+          {/* Quick Balthazard Form */}
+          <section className="space-y-3" aria-label="Balthazard Hesaplama">
+            <div className="border-b border-zinc-800 pb-2 flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                Balthazard Robotu
               </h3>
-              {user ? (
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <UserAvatar 
-                      src={profile?.avatar_url}
-                      username={profile?.username}
-                      name={profile?.full_name}
-                      size="lg"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="font-bold text-sm text-slate-100 truncate">
-                        {profile?.full_name || profile?.username || user.email}
-                      </div>
-                      <div className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-400 mt-0.5">
-                        Seviye {profile?.level || 1} • {profile?.xp || 0} XP
-                      </div>
-                    </div>
-                  </div>
-                  <Link 
-                    href="/profile" 
-                    className="w-full h-9 bg-sky-500 text-slate-950 hover:bg-sky-400 text-xs font-bold rounded-lg transition-all text-center flex items-center justify-center"
-                  >
-                    Profilimi Yönet
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <p className="text-xs text-slate-400 leading-relaxed">
-                    Soru sormak, deneyim paylaşmak ve topluluk araçlarını kullanmak için giriş yapın.
-                  </p>
-                  <Link 
-                    href="/login" 
-                    className="inline-flex items-center justify-center w-full h-9 bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold rounded-lg shadow-xs transition-all"
-                  >
-                    Giriş Yap / Kayıt Ol
-                  </Link>
-                </div>
-              )}
+              <span className="text-[11px] font-mono text-zinc-500">2026</span>
             </div>
-
-            {/* Online Members */}
-            <div className="bg-[#111726] border border-white/[0.08] rounded-lg p-4 shadow-xs">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                  <Users className="text-sky-400 w-4 h-4" aria-hidden="true" /> Çevrimiçi Üyeler
-                </h3>
-                <span className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
-                  {stats?.onlineCount !== undefined ? stats.onlineCount : onlineMembers.length} Canlı
-                </span>
+            <form onSubmit={calculateMiniBalthazard} className="space-y-2.5">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-[11px] text-zinc-500 block mb-1">1. Oran %</label>
+                  <input 
+                    type="number" 
+                    min="1" 
+                    max="99" 
+                    value={rate1} 
+                    onChange={(e) => setRate1(e.target.value)} 
+                    placeholder="Örn: 40" 
+                    className="w-full bg-zinc-900/60 border border-zinc-800 rounded-md px-2.5 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500 font-mono"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] text-zinc-500 block mb-1">2. Oran %</label>
+                  <input 
+                    type="number" 
+                    min="1" 
+                    max="99" 
+                    value={rate2} 
+                    onChange={(e) => setRate2(e.target.value)} 
+                    placeholder="Örn: 30" 
+                    className="w-full bg-zinc-900/60 border border-zinc-800 rounded-md px-2.5 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500 font-mono"
+                    required
+                  />
+                </div>
               </div>
-              {onlineMembers.length > 0 ? (
-                <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1 no-scrollbar">
-                  {onlineMembers.slice(0, 10).map(member => member.id ? (
-                    <Link 
-                      href={`/profile/${member.id}`} 
-                      key={member.id} 
-                      className="flex items-center gap-2.5 p-1.5 rounded-md hover:bg-[#161f33] transition-colors group"
-                    >
-                      <UserAvatar 
-                        src={member.avatar} 
-                        username={member.username} 
-                        name={member.name}
-                        size="sm"
-                        isOnline={member.isOnline}
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="font-bold text-xs text-slate-200 truncate group-hover:text-sky-400">
-                          @{member.username}
-                        </div>
-                      </div>
-                      <UserRoleBadge role={member.role} size="xs" showLabel={false} />
-                    </Link>
-                  ) : (
-                    <div 
-                      key={member.username || member.name} 
-                      className="flex items-center gap-2.5 p-1.5 rounded-md"
-                    >
-                      <UserAvatar 
-                        src={member.avatar} 
-                        username={member.username} 
-                        name={member.name}
-                        size="sm"
-                        isOnline={member.isOnline}
-                      />
-                      <div className="min-w-0 flex-1">
-                        <div className="font-bold text-xs text-slate-200 truncate">
-                          @{member.username}
-                        </div>
-                      </div>
-                      <UserRoleBadge role={member.role} size="xs" showLabel={false} />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-4 text-xs text-slate-400">
-                  Şu an çevrim içi üye yok
-                </div>
-              )}
-            </div>
 
-            {/* Trending Tags */}
-            {stats?.trendingTags && stats.trendingTags.length > 0 && (
-              <div className="bg-[#111726] border border-white/[0.08] rounded-lg p-4 shadow-xs">
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Megaphone className="text-sky-400 w-4 h-4" aria-hidden="true" /> Popüler Etiketler
-                </h3>
-                <div className="flex flex-wrap gap-1.5">
-                  {stats.trendingTags.map((tag) => (
-                    <Link 
-                      key={tag.slug} 
-                      href={`/discussions?kategori=${tag.slug}`}
-                      className="px-2.5 py-1 rounded-md bg-[#161f33] hover:bg-sky-500/10 hover:text-sky-400 transition-colors text-[11px] font-semibold text-slate-300 border border-white/[0.08]"
-                    >
-                      #{tag.name}
-                    </Link>
-                  ))}
+              <label className="flex items-center gap-2 text-xs text-zinc-400 cursor-pointer pt-0.5">
+                <input 
+                  type="checkbox" 
+                  checked={isOver65} 
+                  onChange={(e) => setIsOver65(e.target.checked)} 
+                  className="rounded border-zinc-800 bg-zinc-900 text-zinc-100 focus:ring-0"
+                />
+                <span>65 yaş veya üzeri (+%10)</span>
+              </label>
+
+              <button 
+                type="submit" 
+                className="w-full py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 font-medium text-xs rounded-md transition-colors cursor-pointer"
+              >
+                Oranı Birleştir
+              </button>
+            </form>
+
+            {miniBalthazardResult !== null && (
+              <div className="pt-2 text-xs">
+                <div className="text-zinc-400">Nihai Oran: <span className="font-mono text-zinc-100 font-semibold text-sm">%{miniBalthazardResult}</span></div>
+                <div className="text-[11px] text-zinc-500 mt-0.5">
+                  {miniBalthazardResult >= 90 ? 'Şartsız ÖTV muafiyeti standardı.' : miniBalthazardResult >= 40 ? 'Vergi indirimi ve engelli kimlik hakkı.' : 'Genel sağlık raporu oranı.'}
                 </div>
               </div>
             )}
+          </section>
 
-            {/* AI Copilot Assistant Box */}
-            <div className="bg-[#111726] text-white rounded-lg p-4 shadow-sm border border-white/[0.08] space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
-                  <Sparkles size={14} aria-hidden="true" /> Asistan Copilot
-                </h3>
-                <span className="text-[10px] text-slate-400 font-mono">Yapay Zeka Destekli</span>
-              </div>
-              <div className="h-44 bg-[#0b0f19] rounded-lg p-3 overflow-y-auto space-y-2.5 text-xs font-medium border border-white/[0.08]">
-                {aiAnswers.map((msg, i) => (
-                  <div 
-                    key={i} 
-                    className={cn(
-                      "p-2.5 rounded-lg max-w-[90%] leading-relaxed text-xs",
-                      msg.sender === 'user' 
-                        ? "bg-sky-600 text-white ml-auto" 
-                        : "bg-slate-800 text-slate-200 border border-slate-700"
-                    )}
-                  >
-                    {msg.text}
-                  </div>
-                ))}
-                {aiLoading && (
-                  <div className="bg-slate-800 text-slate-300 p-2.5 rounded-lg flex items-center gap-2">
-                    <Loader2 className="animate-spin" size={13} aria-hidden="true" /> Analiz ediliyor...
-                  </div>
-                )}
-              </div>
-              <form onSubmit={handleAskAi} className="flex gap-1.5">
-                <input 
-                  type="text" 
-                  placeholder="Mevzuat veya soru sorun..." 
-                  value={aiQuestion} 
-                  onChange={(e) => setAiQuestion(e.target.value)} 
-                  className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500 font-medium" 
-                  disabled={aiLoading} 
-                  aria-label="EngelsizForum Asistanına soru sorun"
-                />
-                <button 
-                  type="submit" 
-                  className="h-8 w-8 bg-sky-600 hover:bg-sky-500 text-white rounded-lg flex items-center justify-center shadow-xs transition-colors shrink-0 disabled:opacity-50 cursor-pointer"
-                  disabled={aiLoading || !aiQuestion.trim()}
-                  aria-label="Soruyu gönder"
-                >
-                  <Send size={14} aria-hidden="true" />
-                </button>
-              </form>
+          {/* User Profile / Auth State */}
+          <section className="space-y-3" aria-label="Profil Bilgisi">
+            <div className="border-b border-zinc-800 pb-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                Profil
+              </h3>
             </div>
-          </aside>
-        </div>
-      </section>
+            {user ? (
+              <div className="space-y-2 text-xs">
+                <div className="flex items-center gap-2.5">
+                  <UserAvatar 
+                    src={profile?.avatar_url}
+                    username={profile?.username}
+                    name={profile?.full_name}
+                    size="sm"
+                  />
+                  <div className="min-w-0">
+                    <div className="font-medium text-zinc-200 truncate">{profile?.full_name || profile?.username}</div>
+                    <div className="text-[11px] text-zinc-500 font-mono">Seviye {profile?.level || 1} · {profile?.xp || 0} XP</div>
+                  </div>
+                </div>
+                <Link 
+                  href="/profile" 
+                  className="block text-xs text-zinc-400 hover:text-zinc-200 transition-colors pt-1"
+                >
+                  Profilimi Yönet →
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-2 text-xs text-zinc-400">
+                <p>Sorularınızı sormak ve tartışmalara katılmak için giriş yapın.</p>
+                <Link 
+                  href="/login" 
+                  className="inline-block text-xs text-zinc-300 hover:text-white font-medium"
+                >
+                  Giriş Yap veya Kayıt Ol →
+                </Link>
+              </div>
+            )}
+          </section>
+
+          {/* Online Members */}
+          <section className="space-y-3" aria-label="Çevrimiçi Üyeler">
+            <div className="border-b border-zinc-800 pb-2 flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                Çevrimiçi
+              </h3>
+              <span className="text-[11px] font-mono text-emerald-400">
+                {stats?.onlineCount !== undefined ? stats.onlineCount : onlineMembers.length} Aktif
+              </span>
+            </div>
+            <div className="space-y-1.5 text-xs">
+              {onlineMembers.slice(0, 6).map(member => (
+                <div key={member.id} className="flex items-center justify-between text-zinc-400 hover:text-zinc-200">
+                  <span className="truncate">@{member.username}</span>
+                  <span className="text-[10px] text-zinc-600 font-mono">{member.role}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Quick Legal Help / AI Assistant */}
+          <section className="space-y-3" aria-label="Hukuk Asistanı">
+            <div className="border-b border-zinc-800 pb-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                Mevzuat Asistanı
+              </h3>
+            </div>
+            <p className="text-xs text-zinc-500 leading-relaxed">
+              ÖTV istisnası veya rapor itirazları hakkında soru sorabilirsiniz.
+            </p>
+            <div className="space-y-2 max-h-48 overflow-y-auto text-xs">
+              {aiAnswers.map((ans, idx) => (
+                <div key={idx} className={cn("text-xs leading-relaxed", ans.sender === 'user' ? "text-zinc-300 font-medium" : "text-zinc-400")}>
+                  {ans.sender === 'user' ? 'Siz: ' : 'Asistan: '} {ans.text}
+                </div>
+              ))}
+            </div>
+            <form onSubmit={handleAskAi} className="flex gap-2 pt-1">
+              <input 
+                type="text" 
+                value={aiQuestion}
+                onChange={(e) => setAiQuestion(e.target.value)}
+                placeholder="Örn: Sol bacak ÖTV şartı..."
+                className="flex-1 bg-zinc-900/60 border border-zinc-800 rounded-md px-2.5 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500"
+              />
+              <button 
+                type="submit" 
+                disabled={aiLoading}
+                className="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white rounded-md text-xs cursor-pointer disabled:opacity-50"
+              >
+                {aiLoading ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
+              </button>
+            </form>
+          </section>
+        </aside>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
@@ -409,38 +411,46 @@ export default function DeveloperPortalPage() {
     <SiteLayout>
       <div className="flex flex-col gap-4">
         {/* Breadcrumb Navigation */}
-        <div className="bg-white dark:bg-slate-900 px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-800 rounded-xl mb-1 shadow-xs">
-          <Link href="/" className="hover:text-sky-600 flex items-center gap-1 font-bold">
+        <div className="bg-[#161b22] border border-[#30363d] px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-300 rounded-md">
+          <Link href="/" className="hover:text-white font-bold transition-colors flex items-center gap-1">
             <Home size={13} />
             <span>Ana Sayfa</span>
           </Link>
-          <span className="opacity-40">/</span>
-          <span className="font-extrabold text-slate-950 dark:text-white">Geliştirici Portalı (OAuth 2.0 &amp; REST API)</span>
+          <span className="text-slate-600">/</span>
+          <span className="font-bold text-white">Geliştirici Portalı (OAuth 2.0 &amp; REST API)</span>
         </div>
 
-        {/* XenForo Main Header Block */}
-        <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-          <div className="xf-block-header bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-black uppercase text-[12px] tracking-wider py-2.5 px-3 flex items-center justify-between">
+        {/* Developer Portal Header */}
+        <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#161b22]">
+          <div className="bg-[#21262d] text-white font-bold uppercase text-[11px] tracking-wider py-2.5 px-4 flex items-center justify-between border-b border-[#30363d]">
             <div className="flex items-center gap-2">
-              <Code2 size={15} className="text-white/90" />
-              <span>ENGELSİZFORUM GELİŞTİRİCİ PORTALI &amp; OAUTH 2.0</span>
+              <Code2 size={15} className="text-sky-400" />
+              <span>EngelsizForum Geliştirici Portalı &amp; OAuth 2.0</span>
             </div>
-            <span className="text-[11px] font-normal text-white/80 bg-white/10 px-2 py-0.5 rounded-sm border border-white/20">
-              OAuth 2.0 RFC 6749 &amp; WebMCP
+            <span className="text-[10px] font-mono text-slate-300 bg-[#0d1117] px-2 py-0.5 rounded border border-[#30363d]">
+              RFC 6749 &amp; WebMCP
             </span>
           </div>
 
-          <div className="p-4 sm:p-5 bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1.5 max-w-3xl">
-              <h1 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
-                &ldquo;EngelsizForum ile Giriş Yap&rdquo; &amp; Canlı Mevzuat Entegrasyonu
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                Kendi web sitenize, mobil uygulamanıza veya AI asistanlarınıza EngelsizForum OAuth 2.0 kimlik doğrulama, topluluk API&apos;leri ve WebMCP canlı mevzuat akışı entegre edin.
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+                  &ldquo;EngelsizForum ile Giriş Yap&rdquo; &amp; Canlı Mevzuat Entegrasyonu
+                </h1>
+                {user && (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-2 py-0.5 rounded font-bold">
+                    <CheckCircle2 size={11} />
+                    <span>Aktif Oturum</span>
+                  </span>
+                )}
+              </div>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+                Kendi web sitenize, mobil uygulamanıza veya AI asistanlarınıza EngelsizForum OAuth 2.0 kimlik doğrulama, topluluk API&apos;leri ve WebMCP canlı mevzuat akışını entegre edin.
               </p>
             </div>
 
-            {user && (
+            {user ? (
               <button
                 onClick={() => {
                   setFormName('');
@@ -450,23 +460,31 @@ export default function DeveloperPortalPage() {
                   setFormError(null);
                   setIsCreateModalOpen(true);
                 }}
-                className="inline-flex items-center gap-1.5 rounded-sm bg-[#f2930d] hover:bg-[#d5800a] text-white px-4 py-2 text-xs font-black uppercase tracking-wider shadow-xs transition-colors whitespace-nowrap cursor-pointer shrink-0"
+                className="inline-flex items-center gap-1.5 rounded-md bg-white hover:bg-slate-100 text-black px-4 py-2 text-xs font-bold transition-colors whitespace-nowrap cursor-pointer shrink-0 shadow-xs"
               >
-                <Plus size={14} />
+                <Plus size={14} className="stroke-[3]" />
                 <span>Yeni Uygulama Kaydet</span>
               </button>
+            ) : (
+              <Link
+                href="/login?redirect=/developers"
+                className="inline-flex items-center gap-1.5 rounded-md bg-white hover:bg-slate-100 text-black px-4 py-2 text-xs font-bold transition-colors whitespace-nowrap cursor-pointer shrink-0 shadow-xs"
+              >
+                <LogIn size={14} />
+                <span>Giriş Yaparak Başla</span>
+              </Link>
             )}
           </div>
         </div>
 
-        {/* XenForo Tabs Navigation */}
-        <div className="flex flex-wrap gap-1 border-b border-slate-300 bg-[#eef2f7] p-1 rounded-t-sm">
+        {/* Tabs Navigation */}
+        <div className="flex flex-wrap gap-1 border border-[#30363d] bg-[#161b22] p-1 rounded-md">
           <button
             onClick={() => setActiveTab('apps')}
-            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer rounded-t-sm flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'apps'
-                ? 'bg-white text-[#185886] border-t-2 border-t-[#185886] border-x border-slate-300 -mb-1 pb-2.5 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-white text-black shadow-xs'
+                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
             }`}
           >
             <Layers size={13} />
@@ -475,26 +493,26 @@ export default function DeveloperPortalPage() {
 
           <button
             onClick={() => setActiveTab('docs')}
-            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer rounded-t-sm flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'docs'
-                ? 'bg-white text-[#185886] border-t-2 border-t-[#185886] border-x border-slate-300 -mb-1 pb-2.5 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-white text-black shadow-xs'
+                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
             }`}
           >
             <Terminal size={13} />
-            <span>OAuth 2.0 Entegrasyon Rehberi</span>
+            <span>OAuth 2.0 Rehberi</span>
           </button>
 
           <button
             onClick={() => setActiveTab('button')}
-            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer rounded-t-sm flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'button'
-                ? 'bg-white text-[#185886] border-t-2 border-t-[#185886] border-x border-slate-300 -mb-1 pb-2.5 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-white text-black shadow-xs'
+                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
             }`}
           >
-            <LogIn size={13} className="text-[#00875a]" />
-            <span>Logolu Giriş Butonu &amp; Logo</span>
+            <LogIn size={13} />
+            <span>Logolu Giriş Butonu</span>
           </button>
 
           <button
@@ -502,25 +520,22 @@ export default function DeveloperPortalPage() {
               setActiveTab('widget');
               runSignatureCheck();
             }}
-            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer rounded-t-sm flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'widget'
-                ? 'bg-white text-[#185886] border-t-2 border-t-[#185886] border-x border-slate-300 -mb-1 pb-2.5 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-white text-black shadow-xs'
+                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
             }`}
           >
-            <Accessibility size={13} className="text-[#185886]" />
-            <span>Erişilebilirlik Widget&apos;ı &amp; Wappalyzer</span>
-            <span className="bg-amber-100 text-amber-800 text-[9px] font-black px-1.5 py-0.5 rounded-xs border border-amber-300">
-              YENİ
-            </span>
+            <Accessibility size={13} />
+            <span>Erişilebilirlik Widget&apos;ı</span>
           </button>
 
           <button
             onClick={() => setActiveTab('rest')}
-            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer rounded-t-sm flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'rest'
-                ? 'bg-white text-[#185886] border-t-2 border-t-[#185886] border-x border-slate-300 -mb-1 pb-2.5 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-white text-black shadow-xs'
+                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
             }`}
           >
             <Server size={13} />
@@ -529,22 +544,22 @@ export default function DeveloperPortalPage() {
 
           <button
             onClick={() => setActiveTab('console')}
-            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer rounded-t-sm flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'console'
-                ? 'bg-white text-[#185886] border-t-2 border-t-[#185886] border-x border-slate-300 -mb-1 pb-2.5 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-white text-black shadow-xs'
+                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
             }`}
           >
-            <Play size={13} className="text-emerald-600" />
-            <span>Canlı API Konsolu (Test)</span>
+            <Play size={13} />
+            <span>Canlı API Test Konsolu</span>
           </button>
 
           <button
             onClick={() => setActiveTab('webmcp')}
-            className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer rounded-t-sm flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'webmcp'
-                ? 'bg-white text-[#185886] border-t-2 border-t-[#185886] border-x border-slate-300 -mb-1 pb-2.5 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                ? 'bg-white text-black shadow-xs'
+                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
             }`}
           >
             <Cpu size={13} />
@@ -556,18 +571,18 @@ export default function DeveloperPortalPage() {
         {activeTab === 'apps' && (
           <div className="space-y-4">
             {!user ? (
-              <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-                <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-bold text-xs uppercase py-2 px-3 flex items-center gap-2">
-                  <Lock size={13} />
-                  <span>Giriş Yapılması Gerekiyor</span>
+              <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#161b22]">
+                <div className="bg-[#21262d] border-b border-[#30363d] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center gap-2">
+                  <Lock size={13} className="text-amber-400" />
+                  <span>Geliştirici Girişi Gerekiyor</span>
                 </div>
-                <div className="p-6 text-center space-y-3">
-                  <p className="text-xs sm:text-sm text-slate-600 font-normal">
-                    Kendi OAuth 2.0 istemci uygulamanızı (Client ID &amp; Secret) oluşturmak ve yönetmek için lütfen foruma giriş yapın.
+                <div className="p-8 text-center space-y-3">
+                  <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
+                    Kendi OAuth 2.0 istemci uygulamanızı (Client ID &amp; Secret) oluşturmak ve API anahtarlarınızı yönetmek için foruma giriş yapın.
                   </p>
                   <Link
-                    href="/login"
-                    className="inline-flex items-center gap-1.5 rounded-sm bg-[#185886] hover:bg-[#12466b] text-white px-5 py-2 text-xs font-black uppercase tracking-wider shadow-xs transition-colors"
+                    href="/login?redirect=/developers"
+                    className="inline-flex items-center gap-1.5 rounded-md bg-white hover:bg-slate-100 text-black px-5 py-2 text-xs font-bold transition-colors shadow-xs"
                   >
                     <LogIn size={13} />
                     <span>Giriş Yap / Üye Ol</span>

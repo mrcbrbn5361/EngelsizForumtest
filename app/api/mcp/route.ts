@@ -594,7 +594,7 @@ ${response.text}`;
   // Live Fallback if key unavailable or error
   return `📰 CANLI İNTERNET ENGELLİ HABERLERİ & SONDAKİKA ("${queryTopic}"):
 ------------------------------------------------------------------
-1. 🚗 ÖTV 2026 Limit & Düzenlemeleri: 2026 yılı yeniden değerlendirme oranıyla ÖTV'siz engelli araç alma üst sınırı 2.247.100 TL olarak Resmi Gazete'de ilan edildi.
+1. 🚗 ÖTV 2026 Limit & Düzenlemeleri: 2026 yılı yeniden değerlendirme oranıyla ÖTV'siz engelli araç alma üst sınırı 2.873.972 TL olarak Resmi Gazete'de ilan edildi.
 2. 🏛️ Aile ve Sosyal Hizmetler Bakanlığı 2026 Destek Paketi: Evde bakım yardımı ve engelli aylığı ödemelerinde memur katsayısı güncellendi.
 3. 📜 Resmi Gazete Kararları: Erişebilirlik izleme ve denetleme yönetmeliklerinde kamu binaları ve toplu taşıma için 2026 standartları sıkılaştırıldı.
 4. 📱 Teknoloji & Erişilebilirlik: iOS ve Android ekran okuyucu güncellemeleri, yapay zeka destekli Türkçe ses betimleme araçları yayınlandı.
@@ -670,7 +670,7 @@ Girdi Oranları: ${sorted.map((r) => `%${r}`).join(', ')}
 Net Balthazard Toplam Engel Oranı: %${finalScore}
 
 ⚖️ Yasal Haklar ve Mevzuat Durumu:
-- %90 ve Üzeri: 2026 ÖTV'siz araç alım muafiyeti (%100 ÖTV muafiyeti, 2.247.100 TL üst limit).
+- %90 ve Üzeri: 2026 ÖTV'siz araç alım muafiyeti (%100 ÖTV muafiyeti, 2.873.972 TL üst limit).
 - %40 - %89 Arası: Engelli Vergi İndirimi, EKPSS'ye Girme Hakkı, Ücretsiz Toplu Taşıma Kartı, Emlak Vergisi Muafiyeti (200m² tek mesken).
 - Ortopedik Engel: Ortopedik engeli olup "Özel Tertibatlı Araç Kullanmalıdır" onaylı sağlık kurulu raporu olanlarda oran aranmaksızın ÖTV muafiyeti geçerlidir.`;
 }
@@ -678,7 +678,7 @@ Net Balthazard Toplam Engel Oranı: %${finalScore}
 function handleSearch(query: string) {
   return `🔍 EngelsizForum Arama Sonuçları ("${query}"):
 --------------------------------------------------
-1. ÖTV 2026 Şartları & Araç Limiti: 2.247.100 TL üst sınır, %90+ rapor veya ortopedik aparatlı kullanım şartı.
+1. ÖTV 2026 Şartları & Araç Limiti: 2.873.972 TL üst sınır, %90+ rapor veya ortopedik aparatlı kullanım şartı.
 2. Sağlık Kurulu Raporu & ÇÖZGER: Erişkinler İçin Engellilik Sağlık Kurulu Raporu ve Çocuklar İçin Özel Gereksinim Raporu kılavuzu.
 3. Yaş Şartsız Engelli Erken Emeklilik: 15 yıl 3600 prim gününden başlayan kademeli emeklilik cetveli.
 4. EKPSS 2026 Kamu Atamaları: Ortaöğretim, Önlisans ve Lisans kadroları, kura yöntemi ve nitelik kodları.
@@ -694,7 +694,7 @@ function handleDisabilityRightsGuide(reportPercentage: number, disabilityType?: 
   const mainRights: string[] = [];
 
   if (pct >= 90) {
-    mainRights.push('🚗 ÖTV 2026 Araç Alım Muafiyeti (%100 ÖTV Muafiyeti, 2.247.100 TL üst limiti ile)');
+    mainRights.push('🚗 ÖTV 2026 Araç Alım Muafiyeti (%100 ÖTV Muafiyeti, 2.873.972 TL üst limiti ile)');
     mainRights.push('🚘 Motorlu Taşıtlar Vergisi (MTV) Tam Muafiyeti');
     mainRights.push('💵 1. Derece Engelli Vergi İndirimi Hakkı');
     mainRights.push('🏠 Emlak Vergisi Muafiyeti (200 m² tek mesken)');
@@ -743,7 +743,7 @@ function handleLegislationLookup(category: string) {
     case 'otv_2026':
       return `📜 ÖTV Muafiyeti Mevzuatı (4760 Sayılı ÖTV Kanunu 7/2. Madde):
 - %90 ve üzeri engelli bireyler için Taşıt Alımında %100 ÖTV muafiyeti uygulanır.
-- 2026 Yılı Yeniden Değerlendirme Oranı ile uygulanan ÖTV muafiyetli araç üst sınırı: 2.247.100 TL (Vergiler dahil anahtar teslim).
+- 2026 Yılı Yeniden Değerlendirme Oranı ile uygulanan ÖTV muafiyetli araç üst sınırı: 2.873.972 TL (Vergiler dahil anahtar teslim).
 - Taşıt 5 yıl boyunca satılamaz veya devredilemez. 5 yıl dolduğunda ÖTV ödemeden satış yapılabilir.
 - Ortopedik Engelliler: %90 altı oranlarda da "Özel tertibatlı araç kullanmalıdır" ibaresiyle ÖTV muafiyetli araç alabilir.`;
 

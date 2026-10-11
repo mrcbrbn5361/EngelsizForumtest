@@ -75,7 +75,7 @@ export function WebMCPProvider({ children }: { children: React.ReactNode }) {
           tool: 'engelsizforum_legislation_lookup',
           category: 'otv_2026',
           lawNo: '4760 Sayılı ÖTV Kanunu Madde 7/2',
-          limit2026: '2.247.100 TL',
+          limit2026: '2.873.972 TL',
           summary: '%90 üzeri raporlulara %100 ÖTV muafiyeti, 5 yıl devredilemezlik şartı.'
         }, null, 2));
       } else if (toolName === 'engelsizforum_accessibility_toggle') {

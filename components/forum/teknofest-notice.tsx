@@ -90,7 +90,7 @@ export default function TeknofestNotice() {
                   Doğrulanmış 2026-2027 Mevzuatı
                 </h3>
                 <p className="text-[11px] text-emerald-800 dark:text-emerald-300 mt-0.5 leading-snug">
-                  Balthazard cetveli, ÖTV araç muafiyet üst limiti (2.247.100 TL) ve kademeli erken emeklilik simülatörü.
+                  Balthazard cetveli, ÖTV araç muafiyet üst limiti (2.873.972 TL) ve kademeli erken emeklilik simülatörü.
                 </p>
               </div>
             </div>

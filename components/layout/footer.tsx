@@ -3,19 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { 
-  Calculator, 
-  Car, 
-  Calendar, 
-  Code2, 
-  ShieldCheck, 
-  Mail, 
-  MapPin, 
   ChevronUp, 
-  Globe, 
-  Sparkles,
-  Accessibility,
+  Accessibility, 
   Heart,
-  ExternalLink
+  ExternalLink,
+  Sparkles
 } from 'lucide-react';
 
 export function Footer() {
@@ -28,118 +20,114 @@ export function Footer() {
   };
 
   return (
-    <footer id="site-footer" className="w-full bg-slate-900 text-slate-200 border-t-2 border-slate-800 mt-12 text-xs" role="contentinfo">
+    <footer id="site-footer" className="w-full bg-[#0d1117] border-t border-[#30363d] text-slate-300 mt-16 text-xs" role="contentinfo">
       
-      {/* Top Utility Links */}
-      <div className="bg-slate-950/80 border-b border-slate-800/80 py-3 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs font-bold">
-          
-          <div className="flex flex-wrap items-center gap-2">
-            <Link href="/hesaplama" className="hover:text-amber-300 text-white font-extrabold flex items-center gap-1.5 px-2 py-1 rounded transition-colors">
-              <Calculator size={14} className="text-sky-400" />
-              <span>Hesaplama Robotları</span>
-            </Link>
-            <span className="text-slate-600 select-none">•</span>
-            <Link href="/about" className="hover:text-white text-slate-300 px-2 py-1 rounded transition-colors">
-              <span>Hakkımızda &bull; TEKNOFEST</span>
-            </Link>
-            <span className="text-slate-600 select-none">•</span>
-            <Link href="/terms" className="hover:text-white text-slate-300 px-2 py-1 rounded transition-colors">
-              <span>Kullanım Kuralları</span>
-            </Link>
-            <span className="text-slate-600 select-none">•</span>
-            <Link href="/privacy" className="hover:text-white text-slate-300 px-2 py-1 rounded transition-colors">
-              <span>Gizlilik Politikası</span>
-            </Link>
-            <span className="text-slate-600 select-none">•</span>
-            <Link href="/help" className="hover:text-white text-slate-300 px-2 py-1 rounded transition-colors">
-              <span>Yardım &amp; SSS</span>
-            </Link>
-          </div>
-
-          <button
-            type="button"
-            onClick={scrollToTop}
-            className="min-h-[38px] px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white transition-colors cursor-pointer flex items-center gap-1.5 font-bold"
-            aria-label="Sayfanın Başına Dön"
-          >
-            <span>Yukarı Çık</span>
-            <ChevronUp size={15} />
-          </button>
-
-        </div>
-      </div>
-
-      {/* Main Footer Body */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 md:grid-cols-4 gap-8">
-        
-        {/* Brand info */}
-        <div className="space-y-3 md:col-span-2">
+      {/* 1. Sponsorlar Şeridi (Footer Üstü) */}
+      <div className="bg-[#161b22] border-b border-[#30363d] py-3.5 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center font-black">
-              <Accessibility size={18} />
-            </div>
-            <span className="text-base font-black text-white tracking-tight">
-              ENGELSİZ<span className="text-sky-400">FORUM</span>
+            <Heart size={14} className="text-red-500 fill-red-500 shrink-0" />
+            <span className="font-bold text-white uppercase text-[11px] tracking-wider">
+              Resmi Destekçiler &amp; Sponsorlar:
             </span>
           </div>
-          <p className="text-xs text-slate-400 leading-relaxed max-w-md">
-            TEKNOFEST 2027 Engelsiz Yaşam Teknolojileri vizyonu doğrultusunda geliştirilen EngelsizForum; engelli bireylerin haklarına, rapor hesaplamalarına ve güncel mevzuata kolayca erişmesini hedefleyen bağımsız ve erişilebilir dijital platformdur.
+
+          <div className="flex flex-wrap items-center gap-3">
+            <a 
+              href="https://yeterly.ai" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#21262d] hover:bg-[#30363d] text-white font-bold border border-[#30363d] transition-colors"
+            >
+              <Sparkles size={12} className="text-amber-400" />
+              <span>yeterly.ai</span>
+              <ExternalLink size={10} className="text-slate-400" />
+            </a>
+
+            <a 
+              href="https://goldhost.com.tr" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#21262d] hover:bg-[#30363d] text-white font-bold border border-[#30363d] transition-colors"
+            >
+              <span>goldhost.com.tr</span>
+              <ExternalLink size={10} className="text-slate-400" />
+            </a>
+
+            <a
+              href="mailto:miracbirben@engelsizforum.com"
+              className="text-[11px] text-sky-400 hover:underline font-semibold"
+            >
+              Sponsor Olun &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Sayfa Linkleri & Başa Dön */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 border-b border-[#30363d] flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-semibold">
+          <Link href="/hesaplama" className="hover:text-white transition-colors">
+            Hesaplama Robotları
+          </Link>
+          <Link href="/discussions" className="hover:text-white transition-colors">
+            Tartışmalar
+          </Link>
+          <Link href="/communities" className="hover:text-white transition-colors">
+            Topluluklar
+          </Link>
+          <Link href="/about" className="hover:text-white transition-colors">
+            Hakkımızda
+          </Link>
+          <Link href="/terms" className="hover:text-white transition-colors">
+            Kullanım Kuralları
+          </Link>
+          <Link href="/privacy" className="hover:text-white transition-colors">
+            Gizlilik Politikası
+          </Link>
+          <Link href="/help" className="hover:text-white transition-colors">
+            Yardım &amp; SSS
+          </Link>
+        </div>
+
+        <button
+          type="button"
+          onClick={scrollToTop}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#21262d] border border-[#30363d] hover:bg-[#30363d] text-white transition-colors cursor-pointer text-xs font-bold"
+          aria-label="Sayfanın Başına Dön"
+        >
+          <span>Başa Dön</span>
+          <ChevronUp size={14} />
+        </button>
+      </div>
+
+      {/* 3. Marka & Durum */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        
+        <div className="space-y-1.5 max-w-xl">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded bg-white text-black flex items-center justify-center font-black text-xs">
+              <Accessibility size={16} strokeWidth={3} />
+            </div>
+            <span className="font-extrabold text-white text-sm">
+              ENGELSİZ FORUM
+            </span>
+            <span className="text-xs font-mono font-bold text-sky-400 uppercase">
+              WCAG 2.1 AAA
+            </span>
+          </div>
+          <p className="text-xs text-slate-300 leading-relaxed font-medium">
+            Türkiye&apos;nin ilk tam erişilebilir engelli topluluğu; 2026 ÖTV muafiyeti, Balthazard ve erken emeklilik dayanışma platformu.
           </p>
-          <div className="flex items-center gap-2 text-[11px] text-amber-300 font-bold">
-            <Sparkles size={13} />
-            <span>WCAG 2.1 AAA Standartlarına Uyumlu Tasarım</span>
+        </div>
+
+        <div className="text-left md:text-right space-y-1 text-xs text-slate-300 font-mono">
+          <div className="font-semibold text-white">&copy; {currentYear} EngelsizForum &middot; Tüm hakları saklıdır.</div>
+          <div className="text-xs text-slate-400">
+            Aria &bull; Bora &bull; Felix &bull; MiracBirben &bull; TEKNOFEST 2027
           </div>
         </div>
 
-        {/* Quick Tools */}
-        <div className="space-y-2">
-          <h4 className="text-xs font-black uppercase tracking-wider text-white">
-            Hesaplama Robotları
-          </h4>
-          <ul className="space-y-1.5 text-xs text-slate-400">
-            <li>
-              <Link href="/hesaplama" className="hover:text-white transition-colors">
-                Balthazard Oranı Hesaplama
-              </Link>
-            </li>
-            <li>
-              <Link href="/hesaplama" className="hover:text-white transition-colors">
-                2026-2027 ÖTV Araç Üst Limiti
-              </Link>
-            </li>
-            <li>
-              <Link href="/hesaplama" className="hover:text-white transition-colors">
-                Erken Emeklilik ve Prim Tablosu
-              </Link>
-            </li>
-            <li>
-              <Link href="/hesaplama" className="hover:text-white transition-colors">
-                E-KPSS ve Gelir Vergisi İndirimi
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* Legal & Standards */}
-        <div className="space-y-2">
-          <h4 className="text-xs font-black uppercase tracking-wider text-white">
-            Erişilebilirlik &amp; Standartlar
-          </h4>
-          <ul className="space-y-1.5 text-xs text-slate-400">
-            <li>OpenDyslexic Disleksi Desteği</li>
-            <li>Web Speech API Sesli Ekran Okuma</li>
-            <li>Döteranopi / Protanopi Renk Filtreleri</li>
-            <li>İşitme Engelli Görsel Flaş Uyarıları</li>
-            <li>Klavyeden Tam Kontrol (Alt+A)</li>
-          </ul>
-        </div>
-
-      </div>
-
-      {/* Copyright */}
-      <div className="border-t border-slate-800/80 py-4 px-4 sm:px-6 bg-slate-950 text-center text-[11px] text-slate-500 font-medium">
-        &copy; {currentYear} EngelsizForum. Tüm hakları saklıdır. TEKNOFEST 2027 Engelsiz Yaşam Teknolojileri için hazırlanmıştır.
       </div>
 
     </footer>

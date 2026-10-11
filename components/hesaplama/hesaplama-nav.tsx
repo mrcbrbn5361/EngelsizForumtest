@@ -38,7 +38,7 @@ const TOOLS: ToolItem[] = [
   {
     id: 'otv',
     name: '2026 ÖTV Araç İndirimi',
-    shortDesc: '2.290.200 ₺ tavan & ters hesap',
+    shortDesc: '2.873.972 ₺ tavan & ters hesap',
     href: '/hesaplama/otv',
     icon: Car,
     badge: '2026 Tavan',

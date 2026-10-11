@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import { SiteLayout } from '@/components/layout/site-layout';
 import { useAccessibility } from '@/components/providers/accessibility-provider';

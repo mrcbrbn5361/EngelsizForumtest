@@ -1,25 +1,25 @@
 # SCOPE: EngelsizForum
 
 ## 🎯 Proje Hedefi
-Engelli bireylerin hiçbir bariyerle karşılaşmadan bilgi paylaşabildiği, tartıştığı ve topluluk oluşturduğu, tam erişilebilir bir forum platformu.
+Engelli bireylerin hiçbir bariyerle karşılaşmadan bilgi paylaşabildiği, tartıştığı ve topluluk oluşturduğu, tam erişilebilir ve **profesyonel** bir forum platformu.
 
 ## 👥 Hedef Kitle (Persona bazlı erişilebilirlik)
 - **Görme Engelli Kullanıcılar:** Ekran okuyucu uyumu, semantik HTML, sesli bildirimler.
-- **İşitme Engelli Kullanıcılar:** Video içeriklerinde otomatik altyazı (GLM AI desteğiyle), görsel uyarılar.
+- **İşitme Engelli Kullanıcılar:** Video içeriklerinde otomatik altyazı, görsel uyarılar.
 - **Motor Engelli Kullanıcılar:** Sesli kontrol, geniş tıklama alanları, klavye navigasyonu.
 - **Nöro-Çeşitli Kullanıcılar:** Basitleştirilmiş arayüz, AI özetleme (TL;DR), dikkat dağıtmayan mod.
 
 ## 🛠️ Teknik Altyapı
 - **Frontend:** Next.js (App Router), Tailwind CSS, Framer Motion.
 - **Backend/Database:** Supabase (Auth, Realtime, Storage).
-- **AI Entegrasyonu:** ZhiPu AI GLM-4.5 API (Erişilebilirlik asistanı ve içerik özetleme için).
+- **Professionalization Tools:** Impeccable MCP (Automated QA, Performance & Standards).
+- **AI Entegrasyonu:** ZhiPu AI GLM-4.5 API.
 
-## 🚀 MVP (Aşama 1) Özellikleri
-1. **Erişilebilir Üyelik:** Supabase Auth ile kolay giriş.
-2. **Kategorik Tartışmalar:** Temel forum mimarisi.
-3. **Smart Accessibility Toolbar:** Kullanıcının engel türüne göre arayüzü anında maskeleyen bir araç çubuğu.
-4. **AI Destekli İçerik:** Uzun yazıları tek tıkla özetleyen asistan.
-5. **Veritabanı Stabilitesi:** Supabase üzerinde net ilişki tanımları ve explicit FK kullanımı ile hata payının minimize edilmesi.
+## 🚀 Profesyonel Forum Özellikleri (Yeni Aşama)
+1. **İdari Panel:** Kullanıcı yönetimi, içerik moderasyonu ve loglama.
+2. **Gelişmiş Analitik:** Forum aktiviteleri ve topluluk metrikleri.
+3. **Impeccable Entegrasyonu:** Otomatik QA süreçleri, performans standartları ve kod kalitesi kontrolleri.
+4. **Gelişmiş SEO:** `applet-seo` ile yapılandırılmış veriler ve sosyal medya kartları.
 
 ---
 

@@ -110,6 +110,20 @@ Bu plan, EngelsizForum platformundaki her bir sayfayı sırayla ele alarak "prem
 
 ---
 
+
+---
+
+### [ ] ADIM 17: Profesyonel Forum - İdari Panel ve QA (Admin Dashboard & Impeccable)
+- **İdari Panel Tasarımı:** Kullanıcı yönetimi, forum moderasyonu ve içerik denetimi için modern, güvenli ve erişilebilir bir `/app/admin` paneli.
+- **Analitik Sistemi:** Forum aktivite metriklerinin görselleştirilmesi.
+- **Otomatik Kalite Denetimi:** `impeccable` entegrasyonu ile otomatik QA süreçlerinin kurulması, performans ve erişilebilirlik standartlarının (WCAG) canlı denetimi.
+
+### [ ] ADIM 18: Gelişmiş SEO ve Sosyal Paylaşım (Advanced SEO & Social)
+- **SEO Stratejisi:** `applet-seo` kullanımı ile dinamik meta etiketleri, OpenGraph ve Twitter kartlarının yapılandırılması.
+- **Stratejik Veri (JSON-LD):** Forum tartışmaları ve kullanıcı profilleri için Schema.org yapılandırılmış veri entegrasyonu.
+
+---
+
 ## 🚦 Çalışma Kuralları
 1. **Her adımda yalnızca tek bir sayfa üzerinde çalışılacaktır.**
 2. **Asla adımlar atlanmayacak veya otomatik devam edilmeyecektir.**

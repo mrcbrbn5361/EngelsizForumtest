@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useMemo } from 'react';
 import { 
   Car, 
@@ -10,7 +12,7 @@ import {
   FileCheck2 
 } from 'lucide-react';
 
-const OTV_LIMIT_2026 = 2290200; // 2026 Resmi ÖTV Üst Sınırı
+const OTV_LIMIT_2026 = 2873972; // 2026 Resmi ÖTV Üst Sınırı
 
 interface EngineOption {
   id: string;
@@ -148,7 +150,7 @@ export default function OtvHesaplamaPage() {
                 2026 Yılı Resmi ÖTV İstisna Tavanı Aşılmıştır!
               </h2>
               <p>
-                Girdiğiniz anahtar teslim fiyat ({formatCurrency(listPrice)}), 2026 yılı için belirlenen <strong>2.290.200 TL</strong> üst sınırını <strong>{formatCurrency(listPrice - OTV_LIMIT_2026)}</strong> aşmaktadır.
+                Girdiğiniz anahtar teslim fiyat ({formatCurrency(listPrice)}), 2026 yılı için belirlenen <strong>2.873.972 TL</strong> üst sınırını <strong>{formatCurrency(listPrice - OTV_LIMIT_2026)}</strong> aşmaktadır.
                 Kanun gereğince bu limiti 1 TL dahi aşan araçlar için ÖTV muafiyeti uygulanamaz; fark ödenerek indirim alınması hukuken mümkün değildir.
               </p>
             </div>
@@ -174,7 +176,7 @@ export default function OtvHesaplamaPage() {
           </div>
 
           <div className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200">
-            2026 Tavanı: <strong>2.290.200 ₺</strong>
+            2026 Tavanı: <strong>2.873.972 ₺</strong>
           </div>
         </div>
 
@@ -220,7 +222,7 @@ export default function OtvHesaplamaPage() {
                       : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                   }`}
                 >
-                  {p === OTV_LIMIT_2026 ? '2026 Tavanı (2.290.200 ₺)' : formatCurrency(p)}
+                  {p === OTV_LIMIT_2026 ? '2026 Tavanı (2.873.972 ₺)' : formatCurrency(p)}
                 </button>
               ))}
             </div>
@@ -275,7 +277,7 @@ export default function OtvHesaplamaPage() {
           <p className="text-xs text-slate-600 leading-relaxed">
             {calculation.isExceeded ? (
               <span className="text-red-700 font-semibold">
-                Bu araç 2.290.200 TL üst sınırını aştığı için ÖTV muafiyetinden faydalanamazsınız.
+                Bu araç 2.873.972 TL üst sınırını aştığı için ÖTV muafiyetinden faydalanamazsınız.
               </span>
             ) : (
               <>
