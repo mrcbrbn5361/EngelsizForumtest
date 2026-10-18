@@ -119,3 +119,39 @@ html.tritanopia {
 html.achromatopsia {
   filter: grayscale(100%);
 }
+
+/* Microsoft Fluent 2 & Windows 11 Acrylic / Mica Effects */
+.fluent-acrylic {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fluent-card {
+  background: #161b22;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fluent-card:hover {
+  border-color: rgba(0, 120, 212, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 120, 212, 0.08);
+}
+
+.fluent-btn-primary {
+  background-color: #0078D4;
+  color: #ffffff;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
+}
+
+.fluent-btn-primary:hover {
+  background-color: #106EBE;
+}
+
+.fluent-btn-primary:active {
+  background-color: #005A9E;
+}

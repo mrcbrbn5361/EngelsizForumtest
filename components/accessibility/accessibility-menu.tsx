@@ -140,8 +140,18 @@ export function AccessibilityMenu({ isOpen, onClose }: AccessibilityMenuProps) {
 
             {/* Scrollable Body */}
             <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-3.5 sm:p-4 space-y-4 divide-y divide-slate-200 dark:divide-slate-800">
-              {/* Metin Boyutu */}
+              
+              {/* Profiller */}
               <section className="space-y-2">
+                <label className="text-xs font-bold text-slate-900 dark:text-slate-100">Hızlı Erişilebilirlik Profilleri</label>
+                <div className="grid grid-cols-2 gap-1.5">
+                  <button onClick={() => { updateSettings({ reducedMotion: true, visualAlerts: false }); }} className="text-xs p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border">Nöbet Güvenli</button>
+                  <button onClick={() => { updateSettings({ fontSize: 'xl', highContrast: true }); }} className="text-xs p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border">Görme Engelli</button>
+                </div>
+              </section>
+
+              {/* Metin Boyutu */}
+              <section className="space-y-2 pt-3.5">
                 <label className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
                     <Type size={15} className="text-sky-700 dark:text-sky-400" />

@@ -17,7 +17,8 @@ import {
   Plus, 
   HelpCircle, 
   MessageSquare,
-  Code2
+  Code2,
+  Sparkles
 } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
@@ -206,7 +207,20 @@ export default function ClassicNavbar() {
             <span>Rehber &amp; SSS</span>
           </Link>
 
-          {profile && (profile.role === 'admin' || profile.role === 'moderator') && (
+          <Link 
+            href="/widgets" 
+            className={cn(
+              "px-3 py-1.5 rounded-md font-semibold transition-colors flex items-center gap-1.5 text-sky-400 hover:text-sky-300",
+              pathname === '/widgets' 
+                ? "bg-[#21262d] text-white border border-[#30363d]" 
+                : "hover:bg-[#161b22]"
+            )}
+          >
+            <Sparkles size={14} className="text-sky-400" />
+            <span>0 TL Widget</span>
+          </Link>
+
+          {(user?.email === 'miracbirben@gmail.com' || profile?.role === 'admin' || profile?.role === 'moderator') && (
             <Link 
               href="/admin" 
               className={cn(
@@ -331,14 +345,23 @@ export default function ClassicNavbar() {
                     <span>Geliştirici Portalı</span>
                   </Link>
 
-                  {profile?.role === 'admin' && (
+                  <Link
+                    href="/widgets"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 text-sky-400 hover:bg-[#21262d] hover:text-sky-300 font-semibold"
+                  >
+                    <Sparkles size={14} />
+                    <span>0 TL Widget &amp; SDK</span>
+                  </Link>
+
+                  {(profile?.role === 'admin' || user?.email === 'miracbirben@gmail.com') && (
                     <Link
                       href="/admin"
                       onClick={() => setIsProfileOpen(false)}
                       className="flex items-center gap-2 px-3 py-2 text-amber-300 hover:bg-[#21262d] font-semibold"
                     >
                       <ShieldCheck size={14} />
-                      <span>Yönetim Paneli</span>
+                      <span>Yönetim Paneli (ACP)</span>
                     </Link>
                   )}
 

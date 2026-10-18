@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import VisitorTracker from '@/components/layout/visitor-tracker';
 import { Plus_Jakarta_Sans, Atkinson_Hyperlegible, JetBrains_Mono } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
@@ -9,8 +8,11 @@ import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/providers/auth-provider';
 import { SkipNav } from '@/components/accessibility/skip-nav';
 import ClassicNavbar from '@/components/layout/classic-navbar';
-import { EngelsizAI } from '@/components/layout/engelsiz-ai';
 import { Footer } from '@/components/layout/footer';
+
+import VisitorTracker from '@/components/layout/lazy-visitor-tracker';
+import EngelsizAI from '@/components/layout/lazy-engelsiz-ai';
+import AccessibilityInspector from '@/components/accessibility/lazy-accessibility-inspector';
 
 const headingFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -289,6 +291,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr" className="h-full" suppressHydrationWarning>
       <head>
+        <style dangerouslySetInnerHTML={{ __html: `
+          body { background-color: #0d1117 !important; color: #f0f6fc !important; margin: 0; }
+          .min-h-screen { min-height: 100vh; }
+          .bg-background { background-color: #0d1117; }
+        `}} />
         <link rel="preconnect" href="https://vtmozdquvamjeniwhonm.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://vtmozdquvamjeniwhonm.supabase.co" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
@@ -325,6 +332,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <VisitorTracker />
               <EngelsizAI />
               <Toaster position="top-right" richColors closeButton />
+              <AccessibilityInspector />
             </WebMCPProvider>
           </AccessibilityProvider>
         </AuthProvider>

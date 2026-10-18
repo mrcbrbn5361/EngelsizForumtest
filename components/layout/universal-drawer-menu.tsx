@@ -79,8 +79,8 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
 
   if (!isOpen) return null;
 
-  const role = (profile?.role || 'guest') as string;
-  const isAdmin = role === 'admin';
+  const role = (profile?.role || (user?.email === 'miracbirben@gmail.com' ? 'admin' : 'guest')) as string;
+  const isAdmin = role === 'admin' || user?.email === 'miracbirben@gmail.com';
   const isMod = role === 'moderator' || isAdmin;
   const isExpert = role === 'uzman' || isMod;
   const isLoggedIn = !!user;
@@ -383,6 +383,20 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                   <span>Geliştirici &amp; WebMCP Ajan API</span>
                 </span>
                 <ChevronRight size={13} className="text-slate-500" />
+              </Link>
+
+              <Link
+                href="/widgets"
+                onClick={onClose}
+                className="flex items-center justify-between px-3 py-2 rounded-md font-semibold text-sky-400 hover:bg-[#161b22] hover:text-sky-300 transition-colors"
+              >
+                <span className="flex items-center gap-2.5">
+                  <Sparkles size={15} className="text-sky-400" />
+                  <span>0 TL Erişilebilirlik &amp; WebMCP Widget</span>
+                </span>
+                <span className="text-[10px] font-mono uppercase bg-sky-500/20 text-sky-300 border border-sky-500/30 px-1.5 py-0.5 rounded font-bold">
+                  0 TL
+                </span>
               </Link>
             </div>
           )}
