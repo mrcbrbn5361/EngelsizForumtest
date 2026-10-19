@@ -143,11 +143,11 @@ export default function ClassicNavbar() {
         </div>
 
         {/* Center Nav Links - High Contrast & Quick Links */}
-        <nav className="hidden lg:flex items-center gap-1.5 text-sm">
+        <nav className="hidden lg:flex items-center gap-1 text-xs">
           <Link 
             href="/" 
             className={cn(
-              "px-3 py-1.5 rounded-md font-semibold transition-colors",
+              "px-2.5 py-1 rounded-md font-semibold transition-colors",
               pathname === '/' 
                 ? "bg-[#21262d] text-white border border-[#30363d]" 
                 : "text-slate-200 hover:text-white hover:bg-[#161b22]"
@@ -159,33 +159,33 @@ export default function ClassicNavbar() {
           <Link 
             href="/discussions" 
             className={cn(
-              "px-3 py-1.5 rounded-md font-semibold transition-colors flex items-center gap-1.5",
+              "px-2.5 py-1 rounded-md font-semibold transition-colors flex items-center gap-1",
               pathname === '/discussions' 
                 ? "bg-[#21262d] text-white border border-[#30363d]" 
                 : "text-slate-200 hover:text-white hover:bg-[#161b22]"
             )}
           >
-            <MessageSquare size={15} className="text-sky-400" />
+            <MessageSquare size={14} className="text-sky-400" />
             <span>Tartışmalar</span>
           </Link>
 
           <Link 
             href="/hesaplama" 
             className={cn(
-              "px-3 py-1.5 rounded-md font-semibold transition-colors flex items-center gap-1.5",
+              "px-2.5 py-1 rounded-md font-semibold transition-colors flex items-center gap-1",
               pathname?.startsWith('/hesaplama') 
                 ? "bg-[#21262d] text-white border border-[#30363d]" 
                 : "text-slate-200 hover:text-white hover:bg-[#161b22]"
             )}
           >
-            <Calculator size={15} className="text-emerald-400" />
-            <span>Hesaplama Robotları</span>
+            <Calculator size={14} className="text-emerald-400" />
+            <span>Hesaplama</span>
           </Link>
 
           <Link 
             href="/about" 
             className={cn(
-              "px-3 py-1.5 rounded-md font-semibold transition-colors",
+              "px-2.5 py-1 rounded-md font-semibold transition-colors",
               pathname === '/about' 
                 ? "bg-[#21262d] text-white border border-[#30363d]" 
                 : "text-slate-200 hover:text-white hover:bg-[#161b22]"
@@ -197,26 +197,26 @@ export default function ClassicNavbar() {
           <Link 
             href="/help" 
             className={cn(
-              "px-3 py-1.5 rounded-md font-semibold transition-colors flex items-center gap-1",
+              "px-2.5 py-1 rounded-md font-semibold transition-colors flex items-center gap-1",
               pathname === '/help' 
                 ? "bg-[#21262d] text-white border border-[#30363d]" 
                 : "text-slate-200 hover:text-white hover:bg-[#161b22]"
             )}
           >
-            <HelpCircle size={15} className="text-amber-400" />
-            <span>Rehber &amp; SSS</span>
+            <HelpCircle size={14} className="text-amber-400" />
+            <span>Rehber</span>
           </Link>
 
           <Link 
             href="/widgets" 
             className={cn(
-              "px-3 py-1.5 rounded-md font-semibold transition-colors flex items-center gap-1.5 text-sky-400 hover:text-sky-300",
+              "px-2.5 py-1 rounded-md font-semibold transition-colors flex items-center gap-1 text-sky-400 hover:text-sky-300",
               pathname === '/widgets' 
                 ? "bg-[#21262d] text-white border border-[#30363d]" 
                 : "hover:bg-[#161b22]"
             )}
           >
-            <Sparkles size={14} className="text-sky-400" />
+            <Sparkles size={13} className="text-sky-400" />
             <span>0 TL Widget</span>
           </Link>
 
@@ -224,11 +224,11 @@ export default function ClassicNavbar() {
             <Link 
               href="/admin" 
               className={cn(
-                "px-3 py-1.5 rounded-md font-bold transition-colors flex items-center gap-1.5 text-amber-300 border border-amber-600/60 bg-amber-950/40",
+                "px-2.5 py-1 rounded-md font-bold transition-colors flex items-center gap-1 text-amber-300 border border-amber-600/60 bg-amber-950/40",
                 pathname.startsWith('/admin') && "bg-amber-900/60 text-white border-amber-400"
               )}
             >
-              <ShieldCheck size={15} />
+              <ShieldCheck size={14} />
               <span>Yönetim</span>
             </Link>
           )}
