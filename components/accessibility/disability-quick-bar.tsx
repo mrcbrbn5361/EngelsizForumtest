@@ -141,24 +141,24 @@ export function DisabilityQuickBar() {
 
   return (
     <div 
-      className="w-full bg-[#161b22] border-b border-[#30363d] px-3 sm:px-6 py-2"
+      className="w-full bg-[#161b22] border-b border-[#30363d] px-3 sm:px-6 py-2 overflow-x-hidden"
       role="region" 
       aria-label="Erişilebilirlik ve Engel Türü Hızlı Seçici"
     >
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+      <div className="max-w-7xl mx-auto flex flex-col xl:flex-row items-start xl:items-center justify-between gap-2">
         
         {/* Left Label */}
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <span className="text-xs font-bold text-white tracking-wide">
             Erişilebilirlik Profili:
           </span>
-          <span className="text-xs text-slate-300 hidden lg:inline">
+          <span className="text-xs text-slate-300 hidden 2xl:inline">
             (Bireysel ihtiyacınıza göre görünümü tek tıkla uyarlayın)
           </span>
         </div>
 
-        {/* Profiles Pill Buttons - High Contrast, Clear Text */}
-        <div className="flex items-center flex-wrap gap-2 w-full md:w-auto">
+        {/* Profiles Pill Buttons - High Contrast, Clear Text with horizontal scroll safety on smaller viewports */}
+        <div className="flex items-center overflow-x-auto w-full xl:w-auto gap-2 py-1 xl:py-0 scrollbar-none shrink-0">
           {PROFILES.map((p) => {
             const Icon = p.icon;
             const isSelected = activeProfile === p.id;
@@ -167,7 +167,7 @@ export function DisabilityQuickBar() {
                 key={p.id}
                 type="button"
                 onClick={() => applyProfile(p.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer border ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md transition-colors shrink-0 cursor-pointer border ${
                   isSelected 
                     ? 'bg-white text-black border-white font-bold shadow-xs' 
                     : 'bg-[#21262d] text-slate-100 border-[#30363d] hover:bg-[#30363d] hover:text-white'
@@ -183,11 +183,11 @@ export function DisabilityQuickBar() {
           })}
 
           {/* Quick Font Size Controls (A- / A+) */}
-          <div className="flex items-center gap-1 border-l border-[#30363d] pl-2 ml-1">
+          <div className="flex items-center gap-1 border-l border-[#30363d] pl-2 ml-1 shrink-0">
             <button
               type="button"
               onClick={decreaseFont}
-              className="px-2 py-1 bg-[#21262d] hover:bg-[#30363d] text-white border border-[#30363d] rounded text-xs font-bold transition-colors"
+              className="px-2 py-1 bg-[#21262d] hover:bg-[#30363d] text-white border border-[#30363d] rounded text-xs font-bold transition-colors cursor-pointer"
               title="Yazı Boyutunu Küçült"
               aria-label="Yazı boyutunu küçült"
             >
@@ -196,7 +196,7 @@ export function DisabilityQuickBar() {
             <button
               type="button"
               onClick={increaseFont}
-              className="px-2 py-1 bg-[#21262d] hover:bg-[#30363d] text-white border border-[#30363d] rounded text-xs font-bold transition-colors"
+              className="px-2 py-1 bg-[#21262d] hover:bg-[#30363d] text-white border border-[#30363d] rounded text-xs font-bold transition-colors cursor-pointer"
               title="Yazı Boyutunu Büyüt"
               aria-label="Yazı boyutunu büyüt"
             >
@@ -207,7 +207,7 @@ export function DisabilityQuickBar() {
           <button
             type="button"
             onClick={resetSettings}
-            className="flex items-center gap-1 px-2.5 py-1 text-xs text-slate-300 hover:text-white transition-colors ml-auto md:ml-1 font-medium"
+            className="flex items-center gap-1 px-2.5 py-1 text-xs text-slate-300 hover:text-white transition-colors ml-auto xl:ml-1 font-medium shrink-0 cursor-pointer"
             title="Ayarları Sıfırla"
             aria-label="Tüm erişilebilirlik ayarlarını varsayılana sıfırla"
           >
