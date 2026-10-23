@@ -85,6 +85,17 @@ export function Footer() {
           <Link href="/privacy" className="hover:text-white transition-colors">
             Gizlilik Politikası
           </Link>
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('open-cookie-settings'));
+              }
+            }}
+            className="hover:text-white transition-colors cursor-pointer text-left text-sm font-semibold text-slate-300"
+          >
+            Çerez Tercihleri
+          </button>
           <Link href="/help" className="hover:text-white transition-colors">
             Yardım &amp; SSS
           </Link>

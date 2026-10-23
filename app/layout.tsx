@@ -13,6 +13,7 @@ import { Footer } from '@/components/layout/footer';
 import VisitorTracker from '@/components/layout/lazy-visitor-tracker';
 import EngelsizAI from '@/components/layout/lazy-engelsiz-ai';
 import AccessibilityInspector from '@/components/accessibility/lazy-accessibility-inspector';
+import CookieConsentBanner from '@/components/layout/lazy-cookie-consent';
 
 const headingFont = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -291,19 +292,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr" className="h-full" suppressHydrationWarning>
       <head>
-        {/* Google tag (gtag.js) */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-XBFZ4BS7GJ"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
+        {/* Google tag (gtag.js) & Google Consent Mode v2 */}
+        <Script id="google-consent-mode" strategy="beforeInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
+
+            // Check existing consent from localStorage
+            var savedConsent = null;
+            try {
+              var item = localStorage.getItem('engelsizforum_cookie_consent_v2');
+              if (item) {
+                savedConsent = JSON.parse(item);
+              }
+            } catch(e) {}
+
+            gtag('consent', 'default', {
+              'ad_storage': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
+              'ad_user_data': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
+              'ad_personalization': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
+              'analytics_storage': (savedConsent && savedConsent.analytics) ? 'granted' : 'denied',
+              'wait_for_update': 500
+            });
             gtag('js', new Date());
             gtag('config', 'G-XBFZ4BS7GJ');
           `}
         </Script>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-XBFZ4BS7GJ"
+          strategy="afterInteractive"
+        />
         <style dangerouslySetInnerHTML={{ __html: `
           body { background-color: #0d1117 !important; color: #f0f6fc !important; margin: 0; }
           .min-h-screen { min-height: 100vh; }
@@ -349,6 +367,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <EngelsizAI />
               <Toaster position="top-right" richColors closeButton />
               <AccessibilityInspector />
+              <CookieConsentBanner />
             </WebMCPProvider>
           </AccessibilityProvider>
         </AuthProvider>

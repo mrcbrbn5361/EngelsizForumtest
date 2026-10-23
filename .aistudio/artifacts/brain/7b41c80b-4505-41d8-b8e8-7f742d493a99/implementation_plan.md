@@ -1,46 +1,41 @@
-# Accessibility and Developer Inspector Upgrade Plan
+# Özel İzin Banner'ı ve Google Consent Mode v2 Uygulama Planı
 
-## Overview
-This plan outlines the upgrade of the existing accessibility widget and the creation of a new, advanced developer inspection tool for the Engelliler İçin Forum Projesi, focusing on WCAG 2.1 AA/AAA compliance, enhanced usability for diverse user groups, and robust development debugging capabilities.
+Bu plan, Google Analytics izin modu panelinde yer alan **"Özel bir izin banner'ı kullanıyorum"** seçeneğini eksiksiz karşılamak üzere, EngelsizForum'a özel, tam erişilebilir (WCAG AAA) ve KVKK/GDPR uyumlu bir çerez ve veri izni yönetim banner'ı entegre edilmesini kapsamaktadır.
 
-## 1. Accessibility Panel Upgrade
-### A) Enhanced Features
-- **Ready-Made Profiles:**
-  - Nöbet Güvenli: Disable animations, remove flashing content, reduce saturation.
-  - Görme Engelli: Increase font, high contrast, legible font.
-  - Görme Engelli (Screen Reader): Improve ARIA and semantic structure.
-  - DEHB Dostu: Reduce distractions, reading ruler.
-  - Bilişsel Engel Dostu: Simplify content, big text, highlighted links.
-  - Klavye (Motor Engelli): Enhance focus, skip links, tab navigation.
-  - Disleksi Dostu: Disleksi font, enhanced spacing.
-- **Advanced Tools:**
-  - Web Speech API integration for navigation (e.g., "scroll down").
-  - Content magnification under cursor.
-  - Color blindness filters (protanopia, deuteranopia, tritanopia).
+---
 
-### B) Implementation
-- Upgrade `AccessibilityMenu` in `/components/accessibility`.
-- Use CSS variables for theme application.
-- State management via `AccessibilityProvider`.
+## 1. Google Consent Mode v2 Kod Entegrasyonu
+- **Dosya:** `app/layout.tsx`
+- **İşlem:** Google etiketi (`gtag.js`) yüklenmeden hemen önce varsayılan izin durumunu (`consent default`) tanımlamak:
+  - `analytics_storage`: 'denied' (Kullanıcı onay verene kadar varsayılan kapalı)
+  - `ad_storage`: 'denied'
+  - `ad_user_data`: 'denied'
+  - `ad_personalization`: 'denied'
+  - `wait_for_update`: 500ms
+- Kullanıcı önceden onay vermişse `localStorage`'dan bu tercihler anında okunup güncellenir.
 
-## 2. Developer Accessibility Inspector (Dev Widget)
-### A) Features
-- Scan DOM for:
-  - Missing alt text in images.
-  - Unlabeled form fields.
-  - Empty links/buttons.
-  - Heading hierarchy errors.
-  - Color contrast violations (WCAG AA/AAA).
-  - Incorrect ARIA roles/landmarks.
-- Visual markers (red border, tooltip) on problematic elements.
-- Export report (JSON/CSV).
-- Triggerable via `?a11y-debug=1` or dev mode toggle.
+## 2. Özel İzin Banner'ı Bileşeni (`CookieConsentBanner`)
+- **Dosya:** `components/layout/cookie-consent-banner.tsx`
+- **Özellikler:**
+  - **Erişilebilirlik (WCAG 2.1 AAA):** Ekran okuyucu uyumlu (`role="dialog"`, `aria-label`, `aria-describedby`), klavye ile `Tab` ile erişilebilir ve `Esc` ile kapatılabilir.
+  - **Tasarım:** Sitenin mevcut karanlık/yüksek kontrast tasarımına tam uyumlu, mobilde ve masaüstünde ekranı engellemeyen kompakt alt şerit.
+  - **Aksiyonlar:**
+    1. **Tümünü Kabul Et:** Tüm analitik ve reklam izinlerini `'granted'` yapar ve tercihi kaydeder.
+    2. **Tümünü Reddet:** Yalnızca zorunlu çerezleri aktif bırakıp Google izinlerini `'denied'` olarak tutar.
+    3. **Özelleştir (Modal/Açılır Bölüm):** Kullanıcının zorunlu, analitik ve pazarlama çerezlerini bağımsız olarak açıp kapatabilmesini sağlar.
+  - **Kalıcılık:** Tercih `localStorage` (`engelsizforum_cookie_consent`) içinde saklanır ve banner tekrar gereksiz yere gösterilmez.
 
-### B) Implementation
-- New component in `/components/dev/accessibility-inspector.tsx`.
-- Client-side DOM scanning using `useEffect` on route/DOM changes.
+## 3. Yeniden Tercih Düzenleme (Footer Entegrasyonu)
+- **Dosya:** `components/layout/footer.tsx`
+- **İşlem:** Footer bölümüne "Çerez Tercihlerini Güncelle" butonu eklenerek kullanıcının istediği an izinlerini değiştirebilmesi sağlanır.
 
-## 3. Timeline & Next Steps
-1. Develop the enhanced `AccessibilityMenu` component.
-2. Develop the `AccessibilityInspector` dev widget.
-3. Integrate and test (keyboard navigation, screen reader, mobil, cross-browser).
+## 4. Google Analytics Panelindeki Sonraki Adım
+- Google Analytics arayüzünde **"Özel bir izin banner'ı kullanıyorum"** seçeneği işaretlenip sonraki adıma geçildiğinde sistem otomatik olarak hazır ve uyumlu olacaktır.
+
+---
+
+## Doğrulama ve Test
+- Sayfa ilk açıldığında banner'ın düzgün belirmesi.
+- Kabul et / Reddet butonlarına basıldığında `gtag('consent', 'update', ...)` fonksiyonunun doğru tetiklenmesi.
+- Sayfa yenilendiğinde tercihin hatırlanması.
+- Mobil ve masaüstü arayüzlerde layout shift veya taşma olmaması.
