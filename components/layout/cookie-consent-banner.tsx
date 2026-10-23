@@ -26,13 +26,22 @@ export function CookieConsentBanner() {
 
   // Apply consent to Google Consent Mode v2
   const applyGtagConsent = useCallback((analyticsGranted: boolean, marketingGranted: boolean) => {
-    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-      (window as any).gtag('consent', 'update', {
-        analytics_storage: analyticsGranted ? 'granted' : 'denied',
-        ad_storage: marketingGranted ? 'granted' : 'denied',
-        ad_user_data: marketingGranted ? 'granted' : 'denied',
-        ad_personalization: marketingGranted ? 'granted' : 'denied',
-      });
+    if (typeof window !== 'undefined') {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('consent', 'update', {
+          analytics_storage: analyticsGranted ? 'granted' : 'denied',
+          ad_storage: marketingGranted ? 'granted' : 'denied',
+          ad_user_data: marketingGranted ? 'granted' : 'denied',
+          ad_personalization: marketingGranted ? 'granted' : 'denied',
+        });
+      }
+      if (Array.isArray((window as any).dataLayer)) {
+        (window as any).dataLayer.push({
+          event: 'consent_status_update',
+          analytics_consent: analyticsGranted,
+          marketing_consent: marketingGranted,
+        });
+      }
     }
   }, []);
 

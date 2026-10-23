@@ -314,6 +314,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               'analytics_storage': (savedConsent && savedConsent.analytics) ? 'granted' : 'denied',
               'wait_for_update': 500
             });
+
+            // Google Advanced Consent Mode Enhancements
+            gtag('set', 'ads_data_redaction', true);
+            gtag('set', 'url_passthrough', true);
+
             gtag('js', new Date());
             gtag('config', 'G-XBFZ4BS7GJ');
           `}

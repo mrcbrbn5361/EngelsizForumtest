@@ -1,6 +1,6 @@
 {
-  "summary":  "Google Consent Mode v2 uyumlu, KVKK ve WCAG 2.1 AAA standartlarında özel izin banner'ı (Custom Cookie & Consent Banner) uygulama planı.",
-  "updatedAt":  "2026-10-23T15:32:29.178844726Z",
+  "summary":  "Google Gelişmiş İzin Modu (Advanced Consent Mode), URL Passthrough ve Reklam Verisi Gizleme (ads_data_redaction) entegrasyon planı.",
+  "updatedAt":  "2026-10-23T15:54:10.593100765Z",
   "requestFeedback":  true,
   "userFacing":  true
 }
