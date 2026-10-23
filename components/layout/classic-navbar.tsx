@@ -207,19 +207,6 @@ export default function ClassicNavbar() {
             <span>Rehber</span>
           </Link>
 
-          <Link 
-            href="/widgets" 
-            className={cn(
-              "px-2.5 py-1 rounded-md font-semibold transition-colors flex items-center gap-1 text-sky-400 hover:text-sky-300",
-              pathname === '/widgets' 
-                ? "bg-[#21262d] text-white border border-[#30363d]" 
-                : "hover:bg-[#161b22]"
-            )}
-          >
-            <Sparkles size={13} className="text-sky-400" />
-            <span>0 TL Widget</span>
-          </Link>
-
           {(user?.email === 'miracbirben@gmail.com' || profile?.role === 'admin' || profile?.role === 'moderator') && (
             <Link 
               href="/admin" 
@@ -343,15 +330,6 @@ export default function ClassicNavbar() {
                   >
                     <Code2 size={14} />
                     <span>Geliştirici Portalı</span>
-                  </Link>
-
-                  <Link
-                    href="/widgets"
-                    onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-sky-400 hover:bg-[#21262d] hover:text-sky-300 font-semibold"
-                  >
-                    <Sparkles size={14} />
-                    <span>0 TL Widget &amp; SDK</span>
                   </Link>
 
                   {(profile?.role === 'admin' || user?.email === 'miracbirben@gmail.com') && (

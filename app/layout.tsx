@@ -300,6 +300,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href="https://vtmozdquvamjeniwhonm.supabase.co" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
         <link rel="alternate" type="application/json" title="AI Catalog" href="/ai-catalog.json" />
       </head>
@@ -313,6 +315,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* Google Analytics - gtag.js */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-XBFZ4BS7GJ"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XBFZ4BS7GJ');
+          `}
+        </Script>
+        {/* Google AdSense */}
         <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1868964903102165"
           crossOrigin="anonymous"
