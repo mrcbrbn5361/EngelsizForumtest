@@ -292,40 +292,39 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr" className="h-full" suppressHydrationWarning>
       <head>
-        {/* Google tag (gtag.js) & Google Consent Mode v2 */}
-        <Script id="google-consent-mode" strategy="beforeInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
+        {/* Google tag (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XBFZ4BS7GJ" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
 
-            // Check existing consent from localStorage
-            var savedConsent = null;
-            try {
-              var item = localStorage.getItem('engelsizforum_cookie_consent_v2');
-              if (item) {
-                savedConsent = JSON.parse(item);
-              }
-            } catch(e) {}
+              // Check existing consent from localStorage
+              var savedConsent = null;
+              try {
+                var item = localStorage.getItem('engelsizforum_cookie_consent_v2');
+                if (item) {
+                  savedConsent = JSON.parse(item);
+                }
+              } catch(e) {}
 
-            gtag('consent', 'default', {
-              'ad_storage': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
-              'ad_user_data': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
-              'ad_personalization': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
-              'analytics_storage': (savedConsent && savedConsent.analytics) ? 'granted' : 'denied',
-              'wait_for_update': 500
-            });
+              gtag('consent', 'default', {
+                'ad_storage': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
+                'ad_user_data': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
+                'ad_personalization': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
+                'analytics_storage': (savedConsent && savedConsent.analytics) ? 'granted' : 'denied',
+                'wait_for_update': 500
+              });
 
-            // Google Advanced Consent Mode Enhancements
-            gtag('set', 'ads_data_redaction', true);
-            gtag('set', 'url_passthrough', true);
+              // Google Advanced Consent Mode Enhancements
+              gtag('set', 'ads_data_redaction', true);
+              gtag('set', 'url_passthrough', true);
 
-            gtag('js', new Date());
-            gtag('config', 'G-XBFZ4BS7GJ');
-          `}
-        </Script>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-XBFZ4BS7GJ"
-          strategy="afterInteractive"
+              gtag('js', new Date());
+              gtag('config', 'G-XBFZ4BS7GJ');
+            `,
+          }}
         />
         <style dangerouslySetInnerHTML={{ __html: `
           body { background-color: #0d1117 !important; color: #f0f6fc !important; margin: 0; }
