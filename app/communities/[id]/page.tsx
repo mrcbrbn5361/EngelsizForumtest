@@ -1,21 +1,21 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { 
-  ArrowLeft, Users, MessageSquare, Shield, Globe, Loader2, Sparkles, Plus, Search, Check,
+  ArrowLeft, Users, MessageSquare, Shield, Globe, Loader2, Plus, Search, Check,
   Stethoscope, BookOpen, Briefcase, Cpu, Code, Smile, Settings, Megaphone, Scale, 
   CreditCard, PiggyBank, Award, FileText, HeartPulse, Activity, Eye, Volume2, MapPin, 
   GraduationCap, Calendar, AlertTriangle, FolderTree, Car, HelpCircle, RefreshCw, AlertCircle
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Topic } from '@/types/database';
 import { DiscussionCard } from '@/components/forum/discussion-card';
 import { useAuth } from '@/components/providers/auth-provider';
-import { formatCompactNumber, generateUUID } from '@/lib/utils';
+import { formatCompactNumber } from '@/lib/utils';
 import Link from 'next/link';
 
 interface Community {
@@ -29,16 +29,12 @@ interface Community {
 const COMMUNITY_META: Record<string, {
   focusGroups: string[];
   tags: string[];
-  memberCount: number;
-  topicCount: number;
   featured?: boolean;
   rules: string[];
 }> = {
   'sgk': {
     focusGroups: ['haklar'],
     tags: ['Emeklilik', 'Sağlık Kurulu', 'Mevzuat'],
-    memberCount: 1420,
-    topicCount: 312,
     featured: true,
     rules: [
       'Resmi evrak ve raporlarınızı paylaşırken kişisel verilerinizi (T.C. Kimlik No, adres vb.) mutlaka maskeleyin.',
@@ -49,8 +45,6 @@ const COMMUNITY_META: Record<string, {
   'ekpss': {
     focusGroups: ['bilissel', 'haklar'],
     tags: ['Sınav Hazırlığı', 'Kadro Atamaları', 'Çalışma Grupları'],
-    memberCount: 2350,
-    topicCount: 540,
     featured: true,
     rules: [
       'Telif hakkı içeren sınav dokümanlarını veya korsan kitap linklerini kesinlikle paylaşmayın.',
@@ -60,9 +54,7 @@ const COMMUNITY_META: Record<string, {
   },
   'otv': {
     focusGroups: ['ortopedik'],
-    tags: ['Araç Alımı', 'ÖTV Muafiyeti', 'Limit Takibi'],
-    memberCount: 1890,
-    topicCount: 425,
+    tags: ['Araç Alımı', 'ÖTV Muafiyeti (2.873.972 TL)', 'Limit Takibi'],
     featured: true,
     rules: [
       'Otomobil galerisi veya aracı takip firması reklamı/pazarlaması yapmak kesinlikle yasaktır.',
@@ -73,8 +65,6 @@ const COMMUNITY_META: Record<string, {
   'saglik': {
     focusGroups: ['ortopedik', 'bilissel'],
     tags: ['Rapor Derecesi', 'Tedavi Süreçleri', 'Hekim Tavsiyeleri'],
-    memberCount: 1210,
-    topicCount: 245,
     rules: [
       'Tıbbi tanı koymak veya reçeteli ilaç tavsiyesinde bulunmak kesinlikle yasaktır.',
       'Onaylanmamış alternatif tıp yöntemlerinin reklamını veya özendirmesini yapmayın.',
@@ -84,8 +74,6 @@ const COMMUNITY_META: Record<string, {
   'egitim': {
     focusGroups: ['bilissel'],
     tags: ['Özel Eğitim', 'RAM Raporları', 'Kapsayıcı Okullar'],
-    memberCount: 940,
-    topicCount: 180,
     rules: [
       'Özel gereksinimli çocukların fotoğraflarını veya isimlerini açıkça içeren görseller paylaşmayın.',
       'Öğretmenler, rehabilitasyon merkezleri ve veliler arasında saygılı, yapıcı bir dil kullanın.',
@@ -95,8 +83,6 @@ const COMMUNITY_META: Record<string, {
   'istihdam': {
     focusGroups: ['haklar'],
     tags: ['Kariyer', 'İş İlanları', 'Mülakat Teknikleri'],
-    memberCount: 1560,
-    topicCount: 290,
     featured: true,
     rules: [
       'Sadece engelli kadrosu barındıran veya uygun çalışma koşulları sunan gerçek ilanları paylaşın.',
@@ -107,8 +93,6 @@ const COMMUNITY_META: Record<string, {
   'teknoloji': {
     focusGroups: ['gorme', 'isitme'],
     tags: ['Ekran Okuyucular', 'Yardımcı Yazılımlar', 'Erişilebilirlik'],
-    memberCount: 2100,
-    topicCount: 480,
     featured: true,
     rules: [
       'Yazılımsal yardımlaşmalarda korsan yazılım veya virüslü bağlantı paylaşımı yasaktır.',
@@ -119,8 +103,6 @@ const COMMUNITY_META: Record<string, {
   'yazilim': {
     focusGroups: ['gorme', 'isitme'],
     tags: ['Erişilebilir Kod', 'A11y Standartları', 'Web Geliştirme'],
-    memberCount: 820,
-    topicCount: 140,
     rules: [
       'Kod paylaşırken Markdown formatını kullanarak kodun okunabilirliğini artırın.',
       'WCAG standartlarına uygun örnekler paylaşmaya özen gösterin.',
@@ -130,8 +112,6 @@ const COMMUNITY_META: Record<string, {
   'gunluk-yasam': {
     focusGroups: ['gorme', 'isitme', 'ortopedik', 'bilissel'],
     tags: ['Sohbet', 'Hobiler & Sanat', 'Engelsiz Seyahat'],
-    memberCount: 1780,
-    topicCount: 390,
     rules: [
       'Kutuplaştırıcı ve incitici tartışmalardan kaçının.',
       'Engelsiz seyahat ve mekan deneyimlerinizde rampa, asansör, sesli yönlendirme detaylarını belirtin.',
@@ -150,8 +130,6 @@ export default function CommunityDetailPage() {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [summarizingId, setSummarizingId] = useState<string | null>(null);
-  const [summaryResult, setSummaryResult] = useState<{ id: string, text: string } | null>(null);
   const [memberCount, setMemberCount] = useState<number>(0);
   
   const [searchQuery, setSearchQuery] = useState('');
@@ -166,8 +144,6 @@ export default function CommunityDetailPage() {
     return {
       focusGroups: ['gorme', 'isitme', 'ortopedik', 'bilissel'],
       tags: ['Topluluk', 'Yardımlaşma', 'Genel'],
-      memberCount: 240,
-      topicCount: 42,
       rules: [
         'Topluluk saygı çerçevesinde paylaşımlar yapmalıdır.',
         'Kapsayıcı, erişilebilir ve hakaret içermeyen bir dil kullanılması zorunludur.'
@@ -176,32 +152,34 @@ export default function CommunityDetailPage() {
   }, []);
 
   const fetchCommunityData = useCallback(async () => {
-    if (!isSupabaseConfigured) {
-      setCommunity(null);
+    if (!id || !isSupabaseConfigured) {
       setLoading(false);
       return;
     }
 
-    setLoading(true);
-    setFetchError(null);
     try {
-      const isUuid = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+      setLoading(true);
+      setFetchError(null);
+
+      // Find by slug or id
+      let query = supabase.from('categories').select('*');
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
       
-      let catQuery = supabase.from('categories').select('*');
-      if (isUuid(id as string)) {
-        catQuery = catQuery.eq('id', id);
+      if (isUUID) {
+        query = query.eq('id', id);
       } else {
-        catQuery = catQuery.eq('slug', id);
+        query = query.eq('slug', id);
       }
-      
-      const { data, error } = await catQuery.maybeSingle();
-      
+
+      const { data, error } = await query.maybeSingle();
+
       if (error || !data) {
         setCommunity(null);
         if (error) setFetchError(error.message);
       } else {
         setCommunity(data);
         
+        // Fetch real topics
         const { data: topicsData, error: topicsError } = await supabase
           .from('topics')
           .select(`
@@ -217,27 +195,26 @@ export default function CommunityDetailPage() {
         }
         setTopics((topicsData as any || []).filter((t: any) => t.author));
 
-        // Check if user is joined from community_members
+        // Fetch real member count for this community
+        const { count: realMembersCount } = await supabase
+          .from('community_members')
+          .select('*', { count: 'exact', head: true })
+          .eq('community_id', data.id);
+        
+        setMemberCount(realMembersCount || 0);
+
+        // Check if user is joined
         if (user) {
-          const { data: memberEntry, error: memberError } = await supabase
+          const { data: memberEntry } = await supabase
             .from('community_members')
             .select('community_id')
             .eq('community_id', data.id)
             .eq('user_id', user.id)
             .maybeSingle();
-          if (memberError) {
-            console.warn('Error fetching community membership:', memberError);
-          } else if (memberEntry) {
+          if (memberEntry) {
             setIsJoined(true);
           }
         }
-      }
-
-      const { count: totalProfiles } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true });
-      if (totalProfiles) {
-        setMemberCount(totalProfiles);
       }
     } catch (error: any) {
       console.error('Error fetching community data:', error);
@@ -257,31 +234,29 @@ export default function CommunityDetailPage() {
   const toggleJoin = async () => {
     if (!community) return;
     if (!user) {
-      toast.error('Topluluklara katılmak için giriş yapmalısınız.');
+      toast.error('Topluluklara katılmak için lütfen giriş yapın.');
       return;
     }
 
     if (isJoined) {
       setIsJoined(false);
+      setMemberCount(prev => Math.max(0, prev - 1));
       try {
         const { error } = await supabase
           .from('community_members')
           .delete()
           .eq('community_id', community.id)
           .eq('user_id', user.id);
-        if (error) {
-          setIsJoined(true); // rollback
-          toast.error(`"${community.name}" topluluğundan ayrılma başarısız: ` + error.message);
-          return;
-        }
-        toast.success(`"${community.name}" topluluğundan ayrıldınız.`);
+        if (error) throw error;
+        toast.success(`"${community.name}" grubundan ayrıldınız.`);
       } catch (err: any) {
-        setIsJoined(true); // rollback
-        console.warn('Could not delete community member remotely:', err);
-        toast.error(`"${community.name}" topluluğundan ayrılma sırasında hata oluştu.`);
+        setIsJoined(true);
+        setMemberCount(prev => prev + 1);
+        toast.error(`Ayrılma sırasında hata: ` + err.message);
       }
     } else {
       setIsJoined(true);
+      setMemberCount(prev => prev + 1);
       try {
         const { error } = await supabase
           .from('community_members')
@@ -289,54 +264,18 @@ export default function CommunityDetailPage() {
             community_id: community.id,
             user_id: user.id
           });
-        if (error) {
-          setIsJoined(false); // rollback
-          toast.error(`"${community.name}" topluluğuna katılamadı: ` + error.message);
-          return;
-        }
-        toast.success(`"${community.name}" topluluğuna katıldınız!`);
+        if (error) throw error;
+        toast.success(`"${community.name}" grubuna katıldınız!`);
       } catch (err: any) {
-        setIsJoined(false); // rollback
-        console.warn('Could not insert community member remotely:', err);
-        toast.error(`"${community.name}" topluluğuna katılma sırasında hata oluştu.`);
+        setIsJoined(false);
+        setMemberCount(prev => Math.max(0, prev - 1));
+        toast.error(`Katılma sırasında hata: ` + err.message);
       }
-    }
-  };
-
-  const handleSummarize = async (topicId: string) => {
-    const topic = topics.find(t => t.id === topicId);
-    if (!topic) {
-      toast.error('AI Özeti için gerekli veriler eksik.');
-      return;
-    }
-
-    setSummarizingId(topicId);
-    try {
-      const response = await fetch('/api/summarize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: topic.title, content: topic.content, type: 'topic_summary' })
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Özet oluşturulamadı');
-      }
-      
-      if (data.text) {
-        setSummaryResult({ id: topicId, text: data.text });
-      }
-    } catch (error: any) {
-      console.error('Summarization failed:', error);
-      toast.error('Özet oluşturulurken bir hata oluştu: ' + error.message);
-    } finally {
-      setSummarizingId(null);
     }
   };
 
   const getIcon = (iconName?: string) => {
-    const cls = "text-sky-700 dark:text-sky-400";
+    const cls = "text-indigo-400";
     switch (iconName?.toLowerCase()) {
       case 'stethoscope': return <Stethoscope size={20} className={cls} aria-hidden="true" />;
       case 'bookopen':
@@ -372,7 +311,6 @@ export default function CommunityDetailPage() {
       case 'alert-triangle': return <AlertTriangle size={20} className={cls} aria-hidden="true" />;
       case 'users': return <Users size={20} className={cls} aria-hidden="true" />;
       case 'message': return <MessageSquare size={20} className={cls} aria-hidden="true" />;
-      case 'sparkles': return <Sparkles size={20} className={cls} aria-hidden="true" />;
       default: return <FolderTree size={20} className={cls} aria-hidden="true" />;
     }
   };
@@ -400,283 +338,255 @@ export default function CommunityDetailPage() {
 
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className="flex-1 flex flex-col items-center justify-center py-24 text-slate-700" role="status">
-          <Loader2 className="animate-spin text-sky-600 dark:text-sky-400" size={40} aria-hidden="true" />
-          <p className="mt-4 text-xs font-bold text-slate-500 dark:text-slate-400">Topluluk verileri yükleniyor...</p>
-        </div>
-      </DashboardLayout>
+      <div className="flex flex-col items-center justify-center py-24 text-slate-400" role="status">
+        <Loader2 className="animate-spin text-indigo-400" size={36} aria-hidden="true" />
+        <p className="mt-4 text-xs font-mono">Topluluk verileri yükleniyor...</p>
+      </div>
     );
   }
 
   if (!community) {
     return (
-      <DashboardLayout>
-        <div className="flex-1 flex flex-col items-center justify-center py-24 text-center px-6 space-y-4 text-slate-700" role="alert">
-          <AlertCircle className="w-12 h-12 text-rose-600" aria-hidden="true" />
-          <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">Topluluk Bulunamadı</h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed">
-            {fetchError || 'Aradığınız topluluk mevcut değil veya taşınmış olabilir.'}
-          </p>
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => fetchCommunityData()} 
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
-            >
-              <RefreshCw size={14} /> Tekrar Dene
-            </button>
-            <button 
-              onClick={() => router.push('/communities')} 
-              className="px-5 py-2.5 bg-sky-700 hover:bg-sky-600 text-white rounded-xl text-xs font-bold shadow-xs transition-colors cursor-pointer"
-            >
-              Topluluklara Geri Dön
-            </button>
-          </div>
+      <div className="flex flex-col items-center justify-center py-24 text-center px-6 space-y-4 max-w-md mx-auto" role="alert">
+        <AlertCircle className="w-12 h-12 text-rose-400" aria-hidden="true" />
+        <h1 className="text-xl font-bold text-white font-heading">Topluluk Bulunamadı</h1>
+        <p className="text-xs text-slate-400 leading-relaxed font-normal">
+          {fetchError || 'Aradığınız topluluk mevcut değil veya taşınmış olabilir.'}
+        </p>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => fetchCommunityData()} 
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#18243A] hover:bg-[#1E293B] text-slate-200 rounded-md text-xs font-medium border border-[#1E293B] transition-colors cursor-pointer"
+          >
+            <RefreshCw size={14} /> Tekrar Dene
+          </button>
+          <button 
+            onClick={() => router.push('/communities')} 
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+          >
+            Topluluklara Geri Dön
+          </button>
         </div>
-      </DashboardLayout>
+      </div>
     );
   }
 
   const meta = getMeta(community.slug);
 
   return (
-    <DashboardLayout>
-      <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl space-y-6 text-slate-700">
-        
-        {/* Navigation Breadcrumb */}
-        <nav aria-label="Erişim yolu" className="flex items-center gap-2 text-xs text-slate-500">
-          <Link href="/communities" className="inline-flex items-center gap-1.5 hover:text-sky-600 hover:underline transition-colors">
-            <ArrowLeft size={14} aria-hidden="true" /> Topluluklar
-          </Link>
-          <span className="text-slate-400" aria-hidden="true">/</span>
-          <span className="text-slate-800 font-bold">{community.name}</span>
-        </nav>
+    <div className="container mx-auto px-4 py-6 max-w-7xl space-y-6 text-slate-200">
+      
+      {/* Navigation Breadcrumb */}
+      <nav aria-label="Erişim yolu" className="bg-[#111B2E] border border-[#1E293B] px-4 py-2.5 rounded-lg flex items-center gap-2 text-xs text-slate-400 font-mono">
+        <Link href="/communities" className="inline-flex items-center gap-1.5 hover:text-indigo-400 transition-colors">
+          <ArrowLeft size={13} aria-hidden="true" /> Topluluklar
+        </Link>
+        <span className="text-slate-600" aria-hidden="true">/</span>
+        <span className="text-slate-200 font-semibold font-sans">{community.name}</span>
+      </nav>
 
-        {/* Header Hero Banner */}
-        <header className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-            <div className="flex items-start gap-4">
-              <div className="p-3.5 bg-sky-50 dark:bg-sky-950 border border-sky-200 dark:border-sky-800 rounded-2xl text-sky-700 dark:text-sky-300 shrink-0">
-                {getIcon(community.icon || 'users')}
-              </div>
-              <div className="space-y-1.5">
-                <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md bg-sky-100 dark:bg-sky-950 text-sky-900 dark:text-sky-300 border border-sky-300 dark:border-sky-800 text-[10px] font-black uppercase tracking-wider">
-                  Topluluk &amp; Paylaşım Grubu
-                </div>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-slate-950 dark:text-white">
-                  {community.name}
-                </h1>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium leading-relaxed max-w-2xl">
-                  {community.description || 'Bu toplulukta deneyimlerinizi paylaşabilir, soru sorabilir ve uzman akran desteği alabilirsiniz.'}
-                </p>
-              </div>
+      {/* Header Hero Banner */}
+      <header className="bg-[#111B2E] border border-[#1E293B] rounded-lg p-6 sm:p-7 space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="flex items-start gap-4">
+            <div className="p-3 bg-[#18243A] border border-[#1E293B] rounded-lg text-indigo-400 shrink-0">
+              {getIcon(community.icon || 'users')}
             </div>
-
-            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-              <button 
-                onClick={toggleJoin}
-                className={`inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  isJoined 
-                    ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
-                    : 'bg-sky-700 hover:bg-sky-600 text-white shadow-xs'
-                }`}
-                aria-label={isJoined ? `${community.name} topluluğundan ayrıl` : `${community.name} topluluğuna katıl`}
-              >
-                {isJoined ? <Check size={14} aria-hidden="true" /> : <Plus size={14} aria-hidden="true" />}
-                {isJoined ? 'Topluluktasınız' : 'Gruba Katıl'}
-              </button>
-
-              <Link 
-                href={`/discussions/new?category_id=${community.id}`}
-                className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition-colors"
-              >
-                <Plus size={14} aria-hidden="true" /> Başlık Aç
-              </Link>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-200 dark:border-slate-800">
-            {meta.tags.map((tag, tIdx) => (
-              <span 
-                key={tIdx} 
-                className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </header>
-
-        {/* Layout: Main topics stream & Right Sidebar */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          {/* Main Discussions Column (2 cols on large screen) */}
-          <div className="lg:col-span-2 space-y-4">
-            
-            {/* Search and Filters Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-3 shadow-xs">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} aria-hidden="true" />
-                <input 
-                  type="search" 
-                  placeholder="Bu topluluk içinde ara..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  aria-label="Topluluk içi konu arama"
-                  className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:ring-2 focus:ring-sky-500/20 focus:border-sky-600 outline-none placeholder:text-slate-400"
-                />
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 text-[10px] font-mono uppercase tracking-wider">
+                Topluluk &amp; Akran Dayanışması
               </div>
-
-              <div className="flex flex-wrap gap-1" role="tablist" aria-label="Konu filtreleme">
-                {[
-                  { id: 'all', label: 'Tümü' },
-                  { id: 'pinned', label: 'Sabit' },
-                  { id: 'solved', label: 'Çözüldü' },
-                  { id: 'popular', label: 'Popüler' }
-                ].map((filter) => (
-                  <button
-                    key={filter.id}
-                    role="tab"
-                    aria-selected={activeFilter === filter.id}
-                    onClick={() => setActiveFilter(filter.id as any)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      activeFilter === filter.id
-                        ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300 border border-sky-300 dark:border-sky-800'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
-                  >
-                    {filter.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Screen reader live notification */}
-            <div className="sr-only" aria-live="polite">
-              {filteredTopics.length} adet konu bulundu.
-            </div>
-
-            {/* Discussions List */}
-            <div className="space-y-3">
-              {filteredTopics.length > 0 ? (
-                filteredTopics.map((topic) => (
-                  <div key={topic.id} className="space-y-2">
-                    <DiscussionCard 
-                      topic={topic} 
-                      onSummarize={handleSummarize}
-                      isLoading={summarizingId === topic.id}
-                    />
-                    <AnimatePresence>
-                      {summaryResult && summaryResult.id === topic.id && (
-                        <motion.div 
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="p-4 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2 shadow-xs"
-                        >
-                          <div className="flex items-center gap-1.5 text-sky-700 dark:text-sky-400 text-xs font-bold">
-                            <Sparkles size={14} aria-hidden="true" /> AI Tartışma Özeti
-                          </div>
-                          <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed italic">
-                            &ldquo;{summaryResult.text}&rdquo;
-                          </p>
-                          <button 
-                            onClick={() => setSummaryResult(null)}
-                            className="text-[11px] text-slate-400 hover:text-sky-600 underline transition-colors cursor-pointer"
-                          >
-                            Özeti Kapat
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-16 px-6 bg-white dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
-                  <MessageSquare size={36} className="mx-auto text-slate-400" aria-hidden="true" />
-                  <div className="space-y-1">
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Henüz Tartışma Bulunmuyor</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-                      Bu grupta henüz konu açılmamış veya arama filtrenize uygun başlık yok.
-                    </p>
-                  </div>
-                  <Link 
-                    href={`/discussions/new?category_id=${community.id}`}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-xl text-xs font-bold transition-colors shadow-xs"
-                  >
-                    <Plus size={14} aria-hidden="true" /> İlk Başlığı Siz Açın
-                  </Link>
-                </div>
-              )}
-            </div>
-
-          </div>
-
-          {/* Right Sidebar Column (1 col on large screen) */}
-          <aside className="space-y-4" aria-label="Topluluk Bilgileri">
-            
-            {/* Rules Card */}
-            <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-3 shadow-xs">
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white">
-                <Shield size={16} className="text-sky-700 dark:text-sky-400" aria-hidden="true" />
-                <span>Topluluk Kuralları</span>
-              </div>
-              <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                {meta.rules.map((rule, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="text-sky-700 dark:text-sky-400 font-bold mt-0.5" aria-hidden="true">•</span>
-                    <span>{rule}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Statistics Card */}
-            <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-3 shadow-xs">
-              <div className="text-xs font-bold text-slate-900 dark:text-white">Topluluk İstatistikleri</div>
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 flex items-center gap-2"><Users size={14} className="text-slate-400" aria-hidden="true" /> Üyeler</span>
-                  <span className="font-bold text-slate-800 dark:text-slate-200">
-                    {memberCount > 0 ? formatCompactNumber(memberCount + meta.memberCount) : formatCompactNumber(meta.memberCount)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 flex items-center gap-2"><MessageSquare size={14} className="text-slate-400" aria-hidden="true" /> Konular</span>
-                  <span className="font-bold text-slate-800 dark:text-slate-200">{topics.length}</span>
-                </div>
-                <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 flex items-center gap-2"><Globe size={14} className="text-slate-400" aria-hidden="true" /> Görünürlük</span>
-                  <span className="text-sky-700 dark:text-sky-400 font-bold">Açık Topluluk</span>
-                </div>
-                <div className="flex items-center justify-between pt-1">
-                  <span className="text-slate-500 dark:text-slate-400 flex items-center gap-2"><Shield size={14} className="text-slate-400" aria-hidden="true" /> Durum</span>
-                  <span className="text-emerald-700 dark:text-emerald-400 font-bold">Moderatör Onaylı</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Contact Card */}
-            <div className="bg-sky-50 dark:bg-slate-900 border-2 border-sky-200 dark:border-slate-800 rounded-2xl p-5 space-y-3 shadow-xs">
-              <div className="flex items-center gap-2 text-xs font-bold text-sky-800 dark:text-sky-300">
-                <HelpCircle size={16} aria-hidden="true" /> Destek &amp; Moderasyon
-              </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                Bu topluluk ile ilgili hak ihlali, yanıltıcı bilgi veya erişilebilirlik sorunu yaşarsanız moderatör ekibimizle iletişime geçebilirsiniz.
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-heading">
+                {community.name}
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed max-w-2xl">
+                {community.description || 'Bu toplulukta deneyimlerinizi paylaşabilir, soru sorabilir ve uzman akran desteği alabilirsiniz.'}
               </p>
-              <Link 
-                href="/messages"
-                className="inline-flex items-center justify-center w-full py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-xl text-xs font-bold transition-colors shadow-xs"
-              >
-                Moderatöre Ulaşın
-              </Link>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button 
+              onClick={toggleJoin}
+              className={`inline-flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                isJoined 
+                  ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800'
+                  : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs'
+              }`}
+              aria-label={isJoined ? `${community.name} topluluğundan ayrıl` : `${community.name} topluluğuna katıl`}
+            >
+              {isJoined ? <Check size={13} aria-hidden="true" /> : <Plus size={13} aria-hidden="true" />}
+              {isJoined ? 'Katıldınız' : 'Gruba Katıl'}
+            </button>
+
+            <Link 
+              href={`/discussions/new?category_id=${community.id}`}
+              className="inline-flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-md bg-[#18243A] hover:bg-[#1E293B] text-slate-200 hover:text-white text-xs font-medium border border-[#1E293B] transition-colors"
+            >
+              <Plus size={13} aria-hidden="true" /> Konu Aç
+            </Link>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-[#1E293B]">
+          {meta.tags.map((tag, tIdx) => (
+            <span 
+              key={tIdx} 
+              className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#18243A] text-slate-300 border border-[#1E293B]"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </header>
+
+      {/* Layout: Main topics stream & Right Sidebar */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Main Discussions Column */}
+        <div className="lg:col-span-8 space-y-4">
+          
+          {/* Search and Filters Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#111B2E] border border-[#1E293B] rounded-lg p-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} aria-hidden="true" />
+              <input 
+                type="text"
+                placeholder={`${community.name} konularında ara...`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3.5 py-1.5 rounded-md border border-[#1E293B] bg-[#18243A] text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-400"
+              />
             </div>
 
-          </aside>
+            <div className="flex items-center gap-1 shrink-0">
+              <button 
+                onClick={() => setActiveFilter('all')}
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
+                  activeFilter === 'all'
+                    ? 'bg-indigo-600 text-white'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#18243A]'
+                }`}
+              >
+                Tümü
+              </button>
+              <button 
+                onClick={() => setActiveFilter('solved')}
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
+                  activeFilter === 'solved'
+                    ? 'bg-indigo-600 text-white'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#18243A]'
+                }`}
+              >
+                Çözüldü
+              </button>
+              <button 
+                onClick={() => setActiveFilter('popular')}
+                className={`px-3 py-1.5 rounded text-xs font-medium transition-colors cursor-pointer ${
+                  activeFilter === 'popular'
+                    ? 'bg-indigo-600 text-white'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#18243A]'
+                }`}
+              >
+                Popüler
+              </button>
+            </div>
+          </div>
+
+          {/* Discussions List */}
+          <div className="space-y-3">
+            {filteredTopics.length > 0 ? (
+              filteredTopics.map((topic) => (
+                <DiscussionCard 
+                  key={topic.id} 
+                  topic={topic} 
+                />
+              ))
+            ) : (
+              <div className="bg-[#111B2E] border border-[#1E293B] rounded-lg p-10 text-center space-y-3">
+                <MessageSquare className="mx-auto text-slate-500" size={32} aria-hidden="true" />
+                <div className="space-y-1">
+                  <h3 className="text-sm font-bold text-white font-heading">Henüz Konu Bulunmuyor</h3>
+                  <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed font-normal">
+                    Bu toplulukta henüz konu açılmamış veya arama kriterinize uygun başlık yok.
+                  </p>
+                </div>
+                <Link 
+                  href={`/discussions/new?category_id=${community.id}`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md text-xs font-semibold transition-colors shadow-xs"
+                >
+                  <Plus size={14} aria-hidden="true" /> İlk Başlığı Siz Açın
+                </Link>
+              </div>
+            )}
+          </div>
 
         </div>
 
+        {/* Right Sidebar Column */}
+        <aside className="lg:col-span-4 space-y-4" aria-label="Topluluk Bilgileri">
+          
+          {/* Rules Card */}
+          <div className="bg-[#111B2E] border border-[#1E293B] rounded-lg p-5 space-y-3">
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-200 uppercase tracking-wider font-heading">
+              <Shield size={15} className="text-indigo-400" aria-hidden="true" />
+              <span>Topluluk Kuralları</span>
+            </div>
+            <ul className="space-y-2.5 text-xs text-slate-300 leading-relaxed font-normal">
+              {meta.rules.map((rule, idx) => (
+                <li key={idx} className="flex items-start gap-2">
+                  <span className="text-indigo-400 font-mono text-[11px] shrink-0" aria-hidden="true">{idx + 1}.</span>
+                  <span>{rule}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Statistics Card */}
+          <div className="bg-[#111B2E] border border-[#1E293B] rounded-lg p-5 space-y-3">
+            <div className="text-xs font-semibold text-slate-200 uppercase tracking-wider font-heading">Topluluk İstatistikleri</div>
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center justify-between py-1.5 border-b border-[#1E293B]">
+                <span className="text-slate-400 flex items-center gap-2"><Users size={14} className="text-indigo-400" aria-hidden="true" /> Üyeler</span>
+                <span className="font-mono font-medium text-slate-200">
+                  {formatCompactNumber(memberCount)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between py-1.5 border-b border-[#1E293B]">
+                <span className="text-slate-400 flex items-center gap-2"><MessageSquare size={14} className="text-indigo-400" aria-hidden="true" /> Konular</span>
+                <span className="font-mono font-medium text-slate-200">{topics.length}</span>
+              </div>
+              <div className="flex items-center justify-between py-1.5 border-b border-[#1E293B]">
+                <span className="text-slate-400 flex items-center gap-2"><Globe size={14} className="text-indigo-400" aria-hidden="true" /> Görünürlük</span>
+                <span className="text-indigo-400 font-mono font-medium text-xs">Açık Topluluk</span>
+              </div>
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-slate-400 flex items-center gap-2"><Shield size={14} className="text-indigo-400" aria-hidden="true" /> Moderasyon</span>
+                <span className="text-emerald-400 font-mono font-medium text-xs">Doğrulanmış</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Contact Card */}
+          <div className="bg-[#111B2E] border border-[#1E293B] rounded-lg p-5 space-y-3">
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-200 uppercase tracking-wider font-heading">
+              <HelpCircle size={15} className="text-indigo-400" aria-hidden="true" /> Destek &amp; Moderasyon
+            </div>
+            <p className="text-xs text-slate-400 leading-relaxed font-normal">
+              Bu topluluk ile ilgili hak ihlali, yanıltıcı bilgi veya erişilebilirlik sorunu yaşarsanız moderatör ekibimizle iletişime geçebilirsiniz.
+            </p>
+            <Link 
+              href="/help"
+              className="inline-flex items-center justify-center w-full py-2 bg-[#18243A] hover:bg-[#1E293B] hover:text-white text-slate-200 border border-[#1E293B] rounded-md text-xs font-medium transition-colors"
+            >
+              Destek Masasına Ulaşın
+            </Link>
+          </div>
+
+        </aside>
+
       </div>
-    </DashboardLayout>
+
+    </div>
   );
 }

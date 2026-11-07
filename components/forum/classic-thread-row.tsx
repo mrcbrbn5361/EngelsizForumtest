@@ -30,39 +30,39 @@ export default function ClassicThreadRow({ topic }: ClassicThreadRowProps) {
   const authorName = topic.author?.username || 'Anonim';
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3.5 border-b border-[#30363d] hover:bg-[#161b22] px-3 -mx-3 rounded-md transition-colors group">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3.5 border-b border-[#1E293B] hover:bg-[#111B2E]/60 px-3 -mx-3 rounded-md transition-colors group">
       {/* Title & Author Info */}
       <div className="min-w-0 flex-1 space-y-1">
         <div className="flex items-center gap-2 flex-wrap">
           {topic.is_pinned && (
-            <span className="inline-flex items-center gap-1 text-[11px] font-mono uppercase font-bold text-amber-300 bg-amber-950/60 border border-amber-700/60 px-1.5 py-0.5 rounded">
+            <span className="inline-flex items-center gap-1 text-[11px] font-mono uppercase font-semibold text-amber-300 bg-amber-950/40 border border-amber-700/50 px-1.5 py-0.5 rounded">
               <Pin size={11} className="fill-amber-300" /> Sabit
             </span>
           )}
           {topic.is_locked && (
-            <span className="inline-flex items-center gap-1 text-[11px] font-mono uppercase font-bold text-slate-300 bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded">
+            <span className="inline-flex items-center gap-1 text-[11px] font-mono uppercase font-semibold text-slate-300 bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded">
               <Lock size={11} /> Kilitli
             </span>
           )}
           <Link 
             href={`/discussions/${topic.id}`} 
-            className="text-sm sm:text-base font-bold text-white group-hover:text-sky-400 transition-colors block"
+            className="text-sm sm:text-base font-semibold text-white group-hover:text-indigo-400 transition-colors block"
           >
             {topic.title}
           </Link>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-slate-300">
-          <span className="font-semibold text-sky-300">@{authorName}</span>
-          <span className="text-slate-500">&middot;</span>
-          <span className="font-mono text-slate-300">{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
+        <div className="flex items-center gap-2 text-xs text-slate-400">
+          <span className="font-semibold text-indigo-400">@{authorName}</span>
+          <span className="text-slate-600">&middot;</span>
+          <span className="font-mono text-slate-400">{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
         </div>
       </div>
 
-      {/* Stats - Clear White / Slate Numbers */}
-      <div className="flex items-center gap-6 shrink-0 text-right self-end sm:self-center">
+      {/* Stats - Clear Numbers */}
+      <div className="flex items-center gap-6 shrink-0 text-right self-end sm:self-center font-mono">
         <div>
-          <div className="text-sm font-mono font-bold text-white">
+          <div className="text-sm font-semibold text-slate-100 tabular-nums">
             {topic.replyCount}
           </div>
           <div className="text-[10px] uppercase font-bold text-slate-400">
@@ -71,7 +71,7 @@ export default function ClassicThreadRow({ topic }: ClassicThreadRowProps) {
         </div>
 
         <div>
-          <div className="text-sm font-mono font-bold text-white">
+          <div className="text-sm font-semibold text-slate-100 tabular-nums">
             {topic.viewCount}
           </div>
           <div className="text-[10px] uppercase font-bold text-slate-400">

@@ -29,16 +29,12 @@ interface Community {
 const COMMUNITY_META: Record<string, {
   focusGroups: string[];
   tags: string[];
-  memberCount: number;
-  topicCount: number;
   featured?: boolean;
   rules: string[];
 }> = {
   'sgk': {
     focusGroups: ['haklar'],
     tags: ['Emeklilik', 'Sağlık Kurulu', 'Mevzuat'],
-    memberCount: 1420,
-    topicCount: 312,
     featured: true,
     rules: [
       'Resmi evrak ve raporlarınızı paylaşırken kişisel verilerinizi (T.C. Kimlik No, adres vb.) mutlaka maskeleyin.',
@@ -49,8 +45,6 @@ const COMMUNITY_META: Record<string, {
   'ekpss': {
     focusGroups: ['bilissel', 'haklar'],
     tags: ['Sınav Hazırlığı', 'Kadro Atamaları', 'Çalışma Grupları'],
-    memberCount: 2350,
-    topicCount: 540,
     featured: true,
     rules: [
       'Telif hakkı içeren sınav dokümanlarını veya korsan kitap linklerini kesinlikle paylaşmayın.',
@@ -61,8 +55,6 @@ const COMMUNITY_META: Record<string, {
   'otv': {
     focusGroups: ['ortopedik'],
     tags: ['Araç Alımı', 'ÖTV Muafiyeti (2.873.972 TL)', 'Limit Takibi'],
-    memberCount: 1890,
-    topicCount: 425,
     featured: true,
     rules: [
       'Otomobil galerisi veya aracı takip firması reklamı/pazarlaması yapmak kesinlikle yasaktır.',
@@ -73,8 +65,6 @@ const COMMUNITY_META: Record<string, {
   'saglik': {
     focusGroups: ['ortopedik', 'bilissel'],
     tags: ['Rapor Derecesi', 'Tedavi Süreçleri', 'Hekim Tavsiyeleri'],
-    memberCount: 1210,
-    topicCount: 245,
     rules: [
       'Tıbbi tanı koymak veya reçeteli ilaç tavsiyesinde bulunmak kesinlikle yasaktır.',
       'Onaylanmamış alternatif tıp yöntemlerinin reklamını veya özendirmesini yapmayın.',
@@ -84,8 +74,6 @@ const COMMUNITY_META: Record<string, {
   'egitim': {
     focusGroups: ['bilissel'],
     tags: ['Özel Eğitim', 'RAM Raporları', 'Kapsayıcı Okullar'],
-    memberCount: 940,
-    topicCount: 180,
     rules: [
       'Özel gereksinimli çocukların fotoğraflarını veya isimlerini açıkça içeren görseller paylaşmayın.',
       'Öğretmenler, rehabilitasyon merkezleri ve veliler arasında saygılı, yapıcı bir dil kullanın.',
@@ -95,8 +83,6 @@ const COMMUNITY_META: Record<string, {
   'istihdam': {
     focusGroups: ['haklar'],
     tags: ['Kariyer', 'İş İlanları', 'Mülakat Teknikleri'],
-    memberCount: 1560,
-    topicCount: 290,
     featured: true,
     rules: [
       'Sadece engelli kadrosu barındıran veya uygun çalışma koşulları sunan gerçek ilanları paylaşın.',
@@ -107,8 +93,6 @@ const COMMUNITY_META: Record<string, {
   'teknoloji': {
     focusGroups: ['gorme', 'isitme'],
     tags: ['Ekran Okuyucular', 'Yardımcı Yazılımlar', 'Erişilebilirlik'],
-    memberCount: 2100,
-    topicCount: 480,
     featured: true,
     rules: [
       'Yazılımsal yardımlaşmalarda korsan yazılım veya virüslü bağlantı paylaşımı yasaktır.',
@@ -119,8 +103,6 @@ const COMMUNITY_META: Record<string, {
   'yazilim': {
     focusGroups: ['gorme', 'isitme'],
     tags: ['Erişilebilir Kod', 'A11y Standartları', 'Web Geliştirme'],
-    memberCount: 820,
-    topicCount: 140,
     rules: [
       'Kod paylaşırken Markdown formatını kullanarak kodun okunabilirliğini artırın.',
       'WCAG standartlarına uygun örnekler paylaşmaya özen gösterin.',
@@ -130,8 +112,6 @@ const COMMUNITY_META: Record<string, {
   'gunluk-yasam': {
     focusGroups: ['gorme', 'isitme', 'ortopedik', 'bilissel'],
     tags: ['Sohbet', 'Hobiler & Sanat', 'Engelsiz Seyahat'],
-    memberCount: 1780,
-    topicCount: 390,
     rules: [
       'Kutuplaştırıcı ve incitici tartışmalardan kaçının.',
       'Engelsiz seyahat ve mekan deneyimlerinizde rampa, asansör, sesli yönlendirme detaylarını belirtin.',
@@ -194,14 +174,15 @@ export default function CommunitiesPage() {
     try {
       const { data, error } = await supabase
         .from('categories')
-        .select('*, topics:topics(count)')
+        .select('*, topics:topics(count), members:community_members(count)')
         .order('name');
       
       if (error) throw error;
       if (data && data.length > 0) {
         const formatted = data.map(cat => ({
           ...cat,
-          topic_count: cat.topics?.[0]?.count || 0
+          topic_count: cat.topics?.[0]?.count || 0,
+          member_count: cat.members?.[0]?.count || 0,
         }));
         setCommunities(formatted);
       } else {
@@ -263,8 +244,6 @@ export default function CommunitiesPage() {
     return {
       focusGroups: ['gorme', 'isitme', 'ortopedik', 'bilissel'],
       tags: ['Topluluk', 'Yardımlaşma', 'Genel'],
-      memberCount: 240,
-      topicCount: 42,
       rules: [
         'Topluluk saygı çerçevesinde paylaşımlar yapmalıdır.',
         'Kapsayıcı, erişilebilir ve hakaret içermeyen bir dil kullanılması zorunludur.'
@@ -339,7 +318,7 @@ export default function CommunitiesPage() {
   }, [communities, searchQuery, selectedGroup]);
 
   const getIcon = (iconName?: string) => {
-    const cls = "text-sky-400";
+    const cls = "text-indigo-400";
     switch (iconName?.toLowerCase()) {
       case 'stethoscope': return <Stethoscope size={16} className={cls} />;
       case 'bookopen':
@@ -384,25 +363,25 @@ export default function CommunitiesPage() {
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl space-y-6 text-white">
       {/* Breadcrumb */}
-      <div className="bg-[#161b22] border border-[#30363d] px-4 py-2.5 rounded-md flex items-center gap-2 text-xs text-slate-300">
-        <Link href="/" className="hover:text-white font-bold transition-colors">
+      <div className="bg-[#111B2E] border border-[#1E293B] px-4 py-2.5 rounded-lg flex items-center gap-2 text-xs text-slate-400">
+        <Link href="/" className="hover:text-indigo-400 font-semibold transition-colors">
           Ana Sayfa
         </Link>
-        <ChevronRight size={13} className="text-slate-500" />
-        <span className="font-bold text-white">Topluluklar ve Uzmanlık Grupları</span>
+        <ChevronRight size={13} className="text-slate-600" />
+        <span className="font-semibold text-slate-200">Topluluklar ve Uzmanlık Grupları</span>
       </div>
 
       {/* Header Banner */}
-      <div className="border-b border-[#30363d] pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="border-b border-[#1E293B] pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1.5 max-w-3xl">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-800 text-[11px] font-mono font-bold uppercase">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 text-[11px] font-mono font-medium uppercase">
             <Sparkles size={12} />
             <span>Akran Dayanışması &amp; Tanı Grupları</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight font-heading">
             Topluluklar ve Forum Kategorileri
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
             Engel türlerine, hukuki mevzuata ve yardımcı teknolojilere özel odaklanmış toplulukları keşfedin, akranlarınızla yardımlaşın.
           </p>
         </div>
@@ -415,7 +394,7 @@ export default function CommunitiesPage() {
             }
             setShowCreateForm(!showCreateForm);
           }}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-white hover:bg-slate-100 text-black text-xs font-bold transition-colors shadow-xs cursor-pointer shrink-0 self-start md:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors shadow-xs cursor-pointer shrink-0 self-start md:self-auto"
         >
           <Plus size={14} className={showCreateForm ? 'rotate-45 transition-transform' : 'transition-transform'} />
           <span>{showCreateForm ? 'İptal Et' : 'Yeni Topluluk Kur'}</span>
@@ -426,15 +405,15 @@ export default function CommunitiesPage() {
       {showCreateForm && (
         <form 
           onSubmit={createCommunity}
-          className="bg-[#161b22] border border-[#30363d] rounded-md p-5 space-y-4"
+          className="bg-[#111B2E] border border-[#1E293B] rounded-lg p-5 space-y-4"
         >
           <div className="space-y-1">
-            <h2 className="text-sm font-bold text-white">Yeni Bir Topluluk Kur</h2>
+            <h2 className="text-sm font-bold text-white font-heading">Yeni Bir Topluluk Kur</h2>
             <p className="text-xs text-slate-400">Yeni uzmanlık veya dayanışma grubunuzu başlatın.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label htmlFor="community-name" className="text-xs font-bold text-slate-300">Topluluk Adı</label>
+              <label htmlFor="community-name" className="text-xs font-semibold text-slate-300">Topluluk Adı</label>
               <input 
                 id="community-name"
                 type="text" 
@@ -442,14 +421,14 @@ export default function CommunitiesPage() {
                 value={newCommunity.name}
                 onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
                 required
-                className="w-full p-2.5 rounded-md border border-[#30363d] bg-[#0d1117] text-white text-xs outline-none focus:border-sky-400"
+                className="w-full p-2.5 rounded-md border border-[#1E293B] bg-[#18243A] text-white text-xs outline-none focus:border-indigo-400"
               />
             </div>
             <div className="space-y-1">
-              <label htmlFor="community-icon" className="text-xs font-bold text-slate-300">İkon</label>
+              <label htmlFor="community-icon" className="text-xs font-semibold text-slate-300">İkon</label>
               <select 
                 id="community-icon"
-                className="w-full p-2.5 rounded-md border border-[#30363d] bg-[#0d1117] text-white text-xs outline-none focus:border-sky-400 cursor-pointer"
+                className="w-full p-2.5 rounded-md border border-[#1E293B] bg-[#18243A] text-white text-xs outline-none focus:border-indigo-400 cursor-pointer"
                 value={newCommunity.icon}
                 onChange={(e) => setNewCommunity({...newCommunity, icon: e.target.value})}
               >
@@ -464,28 +443,28 @@ export default function CommunitiesPage() {
             </div>
           </div>
           <div className="space-y-1">
-            <label htmlFor="community-desc" className="text-xs font-bold text-slate-300">Açıklama</label>
+            <label htmlFor="community-desc" className="text-xs font-semibold text-slate-300">Açıklama</label>
             <textarea 
               id="community-desc"
               placeholder="Bu topluluğun amacını ve kimlere hitap ettiğini belirtin..." 
               value={newCommunity.description}
               onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
               required
-              className="w-full p-2.5 rounded-md border border-[#30363d] bg-[#0d1117] text-white text-xs outline-none focus:border-sky-400 min-h-[80px]"
+              className="w-full p-2.5 rounded-md border border-[#1E293B] bg-[#18243A] text-white text-xs outline-none focus:border-indigo-400 min-h-[80px]"
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <button 
               type="button"
               onClick={() => setShowCreateForm(false)}
-              className="px-3.5 py-1.5 rounded-md text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-white transition-colors cursor-pointer"
             >
               İptal
             </button>
             <button 
               type="submit" 
               disabled={creating}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-white hover:bg-slate-100 text-black text-xs font-bold transition-colors cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
             >
               {creating ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
               <span>{creating ? 'Oluşturuluyor...' : 'Topluluğu Başlat'}</span>
@@ -502,10 +481,10 @@ export default function CommunitiesPage() {
               <button
                 key={group.id}
                 onClick={() => setSelectedGroup(group.id)}
-                className={`px-3 py-1.5 rounded-md text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
                   selectedGroup === group.id
-                    ? 'bg-white text-black'
-                    : 'bg-[#161b22] text-slate-300 border border-[#30363d] hover:bg-[#21262d] hover:text-white'
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-[#111B2E] text-slate-300 border border-[#1E293B] hover:bg-[#18243A] hover:text-white'
                 }`}
               >
                 <span>{group.icon}</span>
@@ -521,7 +500,7 @@ export default function CommunitiesPage() {
               placeholder="Topluluklarda ara..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3.5 py-1.5 rounded-md border border-[#30363d] bg-[#161b22] text-xs text-white placeholder-slate-400 focus:outline-none focus:border-sky-400"
+              className="w-full pl-9 pr-3.5 py-1.5 rounded-md border border-[#1E293B] bg-[#111B2E] text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-400"
             />
           </div>
         </div>
@@ -537,7 +516,7 @@ export default function CommunitiesPage() {
           Topluluklar yükleniyor...
         </div>
       ) : filteredAndGroupedCommunities.length === 0 ? (
-        <div className="text-center py-12 px-6 bg-[#161b22] rounded-md border border-dashed border-[#30363d] max-w-md mx-auto space-y-2">
+        <div className="text-center py-12 px-6 bg-[#111B2E] rounded-lg border border-dashed border-[#1E293B] max-w-md mx-auto space-y-2">
           <Users className="mx-auto text-slate-500" size={32} />
           <h3 className="text-sm font-bold text-white">Topluluk Bulunamadı</h3>
           <p className="text-xs text-slate-400">
@@ -553,21 +532,21 @@ export default function CommunitiesPage() {
             return (
               <div 
                 key={community.id}
-                className="flex flex-col justify-between bg-[#161b22] border border-[#30363d] hover:border-slate-500 rounded-md p-5 transition-colors"
+                className="flex flex-col justify-between bg-[#111B2E] border border-[#1E293B] hover:border-indigo-500/50 rounded-lg p-5 transition-colors"
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="p-2 bg-[#21262d] rounded-md text-sky-400">
+                      <div className="p-2 bg-[#18243A] border border-[#1E293B] rounded-md text-indigo-400">
                         {getIcon(community.icon || 'users')}
                       </div>
                       <div>
                         {meta.featured && (
-                          <span className="text-[10px] font-mono text-amber-400 uppercase">
+                          <span className="text-[10px] font-mono text-amber-400 uppercase font-semibold">
                             Öne Çıkan
                           </span>
                         )}
-                        <h3 className="text-sm font-bold text-white hover:text-sky-400 transition-colors">
+                        <h3 className="text-sm font-bold text-white hover:text-indigo-400 transition-colors font-heading">
                           <Link href={`/communities/${community.slug || community.id}`}>
                             {community.name}
                           </Link>
@@ -584,7 +563,7 @@ export default function CommunitiesPage() {
                     </button>
                   </div>
 
-                  <p className="text-xs text-slate-300 leading-relaxed line-clamp-2">
+                  <p className="text-xs text-slate-300 leading-relaxed line-clamp-2 font-normal">
                     {community.description || 'Açıklama belirtilmemiş.'}
                   </p>
 
@@ -592,33 +571,33 @@ export default function CommunitiesPage() {
                     {meta.tags.map((tag, tIdx) => (
                       <span 
                         key={tIdx} 
-                        className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#0d1117] text-slate-300 border border-[#30363d]"
+                        className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#18243A] text-slate-300 border border-[#1E293B]"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
 
-                  <div className="flex items-center gap-3 pt-1 text-[11px] text-slate-400">
+                  <div className="flex items-center gap-3 pt-1 text-[11px] text-slate-400 font-mono">
                     <div className="flex items-center gap-1">
                       <MessageSquare size={12} />
                       <span>{(community as any).topic_count || 0} Tartışma</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Users size={12} />
-                      <span>{meta.memberCount} Üye</span>
+                      <span>{community.member_count || 0} Üye</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Card Actions */}
-                <div className="pt-4 border-t border-[#30363d] mt-4 flex items-center justify-between gap-2">
+                <div className="pt-4 border-t border-[#1E293B] mt-4 flex items-center justify-between gap-2">
                   <button
                     onClick={(e) => toggleJoin(community.id, community.name, e)}
-                    className={`flex items-center gap-1.5 h-7 px-2.5 rounded text-xs font-semibold transition-colors cursor-pointer ${
+                    className={`flex items-center gap-1.5 h-7 px-2.5 rounded text-xs font-medium transition-colors cursor-pointer ${
                       isJoined 
                         ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800'
-                        : 'bg-[#21262d] text-slate-200 hover:bg-[#30363d] border border-[#30363d]'
+                        : 'bg-[#18243A] text-slate-200 hover:bg-[#1E293B] border border-[#1E293B]'
                     }`}
                   >
                     {isJoined ? (
@@ -641,7 +620,7 @@ export default function CommunitiesPage() {
                     </Link>
                     <Link 
                       href={`/communities/${community.slug || community.id}`}
-                      className="flex items-center gap-0.5 text-xs font-bold text-sky-400 hover:underline"
+                      className="flex items-center gap-0.5 text-xs font-semibold text-indigo-400 hover:text-indigo-300"
                     >
                       <span>İncele</span>
                       <ChevronRight size={13} />
@@ -657,10 +636,10 @@ export default function CommunitiesPage() {
       {/* Rules Modal */}
       {activeRulesCommunity && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-          <div className="bg-[#161b22] border border-[#30363d] rounded-md max-w-lg w-full p-6 space-y-4 text-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-[#30363d] pb-3">
-              <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                <Shield size={16} className="text-sky-400" />
+          <div className="bg-[#111B2E] border border-[#1E293B] rounded-lg max-w-lg w-full p-6 space-y-4 text-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
+              <h2 className="text-sm font-bold text-white flex items-center gap-2 font-heading">
+                <Shield size={16} className="text-indigo-400" />
                 <span>{activeRulesCommunity.name} Kuralları</span>
               </h2>
               <button 
@@ -674,7 +653,7 @@ export default function CommunitiesPage() {
             <div className="space-y-2 text-xs text-slate-300">
               {getMeta(activeRulesCommunity.slug).rules.map((rule, idx) => (
                 <div key={idx} className="flex items-start gap-2">
-                  <span className="font-mono text-sky-400 text-[11px] shrink-0">{idx + 1}.</span>
+                  <span className="font-mono text-indigo-400 text-[11px] shrink-0">{idx + 1}.</span>
                   <p className="leading-relaxed">{rule}</p>
                 </div>
               ))}
@@ -683,7 +662,7 @@ export default function CommunitiesPage() {
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setActiveRulesCommunity(null)}
-                className="px-4 py-1.5 rounded-md bg-white text-black text-xs font-bold hover:bg-slate-100 transition-colors cursor-pointer"
+                className="px-4 py-1.5 rounded-md bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-500 transition-colors cursor-pointer"
               >
                 Anladım
               </button>

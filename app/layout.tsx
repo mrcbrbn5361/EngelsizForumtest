@@ -38,7 +38,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#090a0f',
+  themeColor: '#0B1220',
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -327,9 +327,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <style dangerouslySetInnerHTML={{ __html: `
-          body { background-color: #0d1117 !important; color: #f0f6fc !important; margin: 0; }
+          body { background-color: #0B1220 !important; color: #CBD5E1 !important; margin: 0; }
           .min-h-screen { min-height: 100vh; }
-          .bg-background { background-color: #0d1117; }
+          .bg-background { background-color: #0B1220; }
         `}} />
         <link rel="preconnect" href="https://vtmozdquvamjeniwhonm.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://vtmozdquvamjeniwhonm.supabase.co" />

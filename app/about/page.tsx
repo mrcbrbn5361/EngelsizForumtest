@@ -14,7 +14,8 @@ import {
   Cpu,
   Eye,
   Award,
-  ArrowRight
+  ArrowRight,
+  Info
 } from 'lucide-react';
 import ClassicSidebar from '@/components/forum/classic-sidebar';
 
@@ -22,25 +23,25 @@ export default function AboutPage() {
   return (
     <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full py-4 text-white">
       {/* Breadcrumb Navigation */}
-      <div className="bg-[#161b22] border border-[#30363d] px-4 py-2.5 rounded-md flex items-center gap-2 text-xs text-slate-300">
-        <Link href="/" className="hover:text-white font-bold transition-colors">
+      <div className="bg-[#111B2E] border border-[#1E293B] px-4 py-2.5 rounded-lg flex items-center gap-2 text-xs text-slate-400 font-mono">
+        <Link href="/" className="hover:text-indigo-400 font-semibold transition-colors">
           Ana Sayfa
         </Link>
-        <ChevronRight size={13} className="text-slate-500" />
-        <span className="font-bold text-white">Hakkımızda &amp; Proje Vizyonu</span>
+        <ChevronRight size={13} className="text-slate-600" />
+        <span className="font-semibold text-slate-200 font-sans">Hakkımızda &amp; Proje Vizyonu</span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Main Content Area */}
         <div className="lg:col-span-8 space-y-8">
           {/* Header Section */}
-          <div className="border-b border-[#30363d] pb-6 space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-800 text-[11px] font-mono font-bold uppercase tracking-wider">
+          <div className="border-b border-[#1E293B] pb-6 space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 text-[11px] font-mono uppercase tracking-wider">
               <Sparkles size={13} />
               <span>Engelsiz Topluluk Ekosistemi • TEKNOFEST 2027</span>
             </div>
             
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight font-heading">
               Bariyersiz Bilgi, Eşit ve Güvenilir Topluluk.
             </h1>
             
@@ -51,40 +52,40 @@ export default function AboutPage() {
 
           {/* Misyon & Vizyon */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-[#161b22] border border-[#30363d] p-5 rounded-md space-y-3">
-              <div className="w-8 h-8 rounded bg-[#21262d] text-sky-400 flex items-center justify-center font-bold">
+            <div className="bg-[#111B2E] border border-[#1E293B] p-5 rounded-lg space-y-3">
+              <div className="w-8 h-8 rounded-md bg-[#18243A] text-indigo-400 flex items-center justify-center font-bold">
                 <Target size={18} />
               </div>
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
                 Misyonumuz
               </h2>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed font-normal">
                 Sosyal yaşamda, istihdamda ve yasal hak arama süreçlerinde karşılaşılan bürokratik bilgi kirliliğini ortadan kaldırmak. Güncel Balthazard cetveli, 2.873.972 TL 2026 ÖTV araç istisnası ve erken emeklilik mevzuatını herkes için şeffaf kılmak.
               </p>
             </div>
 
-            <div className="bg-[#161b22] border border-[#30363d] p-5 rounded-md space-y-3">
-              <div className="w-8 h-8 rounded bg-[#21262d] text-emerald-400 flex items-center justify-center font-bold">
+            <div className="bg-[#111B2E] border border-[#1E293B] p-5 rounded-lg space-y-3">
+              <div className="w-8 h-8 rounded-md bg-[#18243A] text-emerald-400 flex items-center justify-center font-bold">
                 <HeartHandshake size={18} />
               </div>
-              <h2 className="text-sm font-bold text-white uppercase tracking-wider">
+              <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
                 Vizyonumuz
               </h2>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-400 leading-relaxed font-normal">
                 Hiçbir engelli bireyin dijital bariyerler yüzünden hak kaybına uğramadığı; genç mühendislerin, uzman hekimlerin ve engelli bireylerin ortak çözümler ürettiği küresel standartta bir açık kaynak ekosistemi inşa etmek.
               </p>
             </div>
           </div>
 
           {/* Teknik Standartlar */}
-          <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#161b22]">
-            <div className="bg-[#21262d] py-3 px-4 flex items-center justify-between border-b border-[#30363d]">
-              <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-slate-200">
-                <Accessibility size={15} className="text-sky-400" />
+          <div className="border border-[#1E293B] rounded-lg overflow-hidden bg-[#111B2E]">
+            <div className="bg-[#18243A] py-3 px-4 flex items-center justify-between border-b border-[#1E293B]">
+              <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider text-slate-200 font-heading">
+                <Accessibility size={15} className="text-indigo-400" />
                 <span>Platform Mimarisi ve Teknik Standartlar</span>
               </div>
-              <span className="text-[10px] bg-sky-950 border border-sky-800 text-sky-300 px-2 py-0.5 rounded font-mono font-bold uppercase">
-                WCAG 2.1 AAA
+              <span className="text-[10px] bg-indigo-950/80 border border-indigo-800/60 text-indigo-300 px-2 py-0.5 rounded font-mono font-medium uppercase">
+                WCAG 2.2 AA
               </span>
             </div>
 
@@ -111,37 +112,37 @@ export default function AboutPage() {
                   desc: 'Engelsiz Yaşam Teknolojileri kategorisinde genç geliştiricilerin projelerini toplulukla buluşturan açık platform.' 
                 }
               ].map((item, idx) => (
-                <div key={idx} className="p-4 rounded-md border border-[#30363d] bg-[#0d1117] space-y-2">
-                  <div className="flex items-center gap-2 text-sky-400">
+                <div key={idx} className="p-4 rounded-md border border-[#1E293B] bg-[#0B1220] space-y-2">
+                  <div className="flex items-center gap-2 text-indigo-400">
                     <item.icon size={16} />
-                    <h3 className="font-bold text-xs text-white uppercase">{item.title}</h3>
+                    <h3 className="font-bold text-xs text-white uppercase font-heading">{item.title}</h3>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">{item.desc}</p>
+                  <p className="text-xs text-slate-400 leading-relaxed font-normal">{item.desc}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* CTA Banner */}
-          <div className="border border-[#30363d] rounded-md p-6 bg-[#161b22] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="border border-[#1E293B] rounded-lg p-6 bg-[#111B2E] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <h2 className="text-sm sm:text-base font-bold text-white">
-                Topluluğumuza Katılın ve Deneyiminizi Paylaşın
+              <h2 className="text-sm sm:text-base font-bold text-white font-heading">
+                Topluluklarımıza Katılın ve Deneyiminizi Paylaşın
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-400 font-normal">
                 Sorularınızı foruma yazabilir veya 2026 hesaplama robotlarıyla simülasyon yapabilirsiniz.
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <Link 
                 href="/hesaplama"
-                className="px-3.5 py-2 rounded-md bg-[#21262d] border border-[#30363d] hover:bg-[#30363d] text-white text-xs font-semibold transition-colors"
+                className="px-3.5 py-2 rounded-md bg-[#18243A] border border-[#1E293B] hover:bg-[#1E293B] hover:text-white text-slate-300 text-xs font-medium transition-colors"
               >
                 Hesaplama Robotları
               </Link>
               <Link 
                 href="/discussions/new"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-white hover:bg-slate-100 text-black text-xs font-bold transition-colors shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors shadow-xs"
               >
                 <span>Yeni Konu Aç</span>
                 <ArrowRight size={14} />

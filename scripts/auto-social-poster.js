@@ -166,130 +166,6 @@ function sanitizeAndTruncateText(text, maxLimit = 9900) {
   return `${safeText}\n\n[Devamı için platformumuzu ziyaret edin]\n\n🌐 https://engelsizforum.com\n\n#EngelsizForum #A11y`;
 }
 
-/**
- * Sends the generated update text to NSosyal / target social media REST API.
- * Handles automatic endpoint resolution (Mastodon, Misskey, or Custom REST).
- * @param {string} content
- * @param {string} rawApiUrl
- * @param {string} bearerToken
- * @returns {Promise<any>}
- */
-async function sendToNsosyal(content, rawApiUrl, bearerToken) {
-  const cleanUrl = rawApiUrl.trim().replace(/\/+$/, '');
-  
-  // Extract base origin if user passed a full web page URL
-  let baseOrigin = cleanUrl;
-  try {
-    const parsed = new URL(cleanUrl);
-    baseOrigin = parsed.origin;
-  } catch {
-    baseOrigin = cleanUrl;
-  }
-
-  // Define candidate API endpoints to try
-  const candidates = [];
-
-  // If user provided a specific endpoint ending with a recognized path, try it first
-  if (cleanUrl.endsWith('/api/v1/statuses') || cleanUrl.endsWith('/api/notes/create') || cleanUrl.endsWith('/api/posts')) {
-    candidates.push({
-      url: cleanUrl,
-      type: cleanUrl.includes('/notes/create') ? 'misskey' : 'mastodon',
-    });
-  } else {
-    // 1. Mastodon API (Default Fediverse Standard used by NextSosyal/NSosyal Mastodon)
-    candidates.push({
-      url: `${baseOrigin}/api/v1/statuses`,
-      type: 'mastodon',
-    });
-    // 2. Misskey / Firefish API
-    candidates.push({
-      url: `${baseOrigin}/api/notes/create`,
-      type: 'misskey',
-    });
-    // 3. Custom REST API
-    candidates.push({
-      url: `${baseOrigin}/api/posts`,
-      type: 'custom',
-    });
-    // 4. Raw provided URL as fallback
-    if (cleanUrl !== baseOrigin && !candidates.some(c => c.url === cleanUrl)) {
-      candidates.push({
-        url: cleanUrl,
-        type: 'mastodon',
-      });
-    }
-  }
-
-  let lastError = null;
-
-  for (const candidate of candidates) {
-    try {
-      let bodyData = {};
-      const headers = { 'Content-Type': 'application/json' };
-
-      if (candidate.type === 'misskey') {
-        bodyData = {
-          i: bearerToken,
-          text: content,
-          visibility: 'public',
-        };
-      } else if (candidate.type === 'custom') {
-        headers['Authorization'] = `Bearer ${bearerToken}`;
-        bodyData = {
-          content: content,
-          text: content,
-          status: content,
-        };
-      } else {
-        // Mastodon standard
-        headers['Authorization'] = `Bearer ${bearerToken}`;
-        bodyData = {
-          status: content,
-          visibility: 'public',
-        };
-      }
-
-      const response = await fetch(candidate.url, {
-        method: 'POST',
-        headers,
-        signal: AbortSignal.timeout(20000),
-        body: JSON.stringify(bodyData),
-      });
-
-      const responseText = await response.text();
-
-      // Check if response is valid JSON and HTTP OK
-      if (response.ok && !responseText.trim().startsWith('<!DOCTYPE') && !responseText.trim().startsWith('<html')) {
-        process.stdout.write(`BAŞARILI: İletişim sağlandı -> ${candidate.url}\n`);
-        try {
-          return JSON.parse(responseText);
-        } catch {
-          return { raw: responseText };
-        }
-      }
-
-      // If HTML page returned (404/page not found), record error and try next candidate endpoint
-      const isHtml = responseText.includes('<!DOCTYPE') || responseText.includes('<html') || responseText.includes('bulunamadı');
-      lastError = `Endpoint: ${candidate.url} | HTTP: ${response.status} | Yanıt: ${isHtml ? 'HTML Sayfası (404 / Sayfa Bulunamadı)' : responseText.substring(0, 150)}`;
-    } catch (err) {
-      lastError = `Endpoint: ${candidate.url} | Hata: ${err.message}`;
-    }
-  }
-
-  // If all candidate endpoints failed, print clear diagnostic guide
-  throw new Error(
-    `NSosyal API Bağlantı Hatası!\n` +
-    `Gönderim yapılan adres bir API uç noktası yerine web frontend sayfası döndürdü ("Sayfa Bulunamadı").\n\n` +
-    `Son Deneme Detayı: ${lastError}\n\n` +
-    `ÇÖZÜM:\n` +
-    `1. GitHub Repository -> Settings -> Secrets and variables -> Actions sekmesini açın.\n` +
-    `2. NSOSYAL_API_URL değişkenini kontrol edin:\n` +
-    `   - Eğer NSosyal Mastodon tabanlı ise: https://domain.com/api/v1/statuses\n` +
-    `   - Eğer NSosyal Misskey/Firefish tabanlı ise: https://domain.com/api/notes/create\n` +
-    `   - Eğer Özel REST API ise: https://domain.com/api/posts\n` +
-    `3. NSOSYAL_BEARER_TOKEN değişkeninizin geçerli bir API Access Token olduğundan emin olun.`
-  );
-}
 
 /**
  * Sends the generated update text to LinkedIn using LinkedIn REST API.
@@ -472,8 +348,6 @@ async function main() {
   const githubSha = process.env.GITHUB_SHA || '';
   const linkedinAccessToken = process.env.LINKEDIN_ACCESS_TOKEN;
   const linkedinPersonUrn = process.env.LINKEDIN_PERSON_URN;
-  const nsosyalApiUrl = process.env.NSOSYAL_API_URL;
-  const nsosyalBearerToken = process.env.NSOSYAL_BEARER_TOKEN;
 
   if (!geminiApiKey) {
     process.stdout.write('⚠️ UYARI: GEMINI_API_KEY ortam değişkeni (GitHub Secret) bulunamadı.\n');
@@ -515,16 +389,6 @@ async function main() {
         process.stdout.write('🎉 BAŞARILI: Instagram Make.com Webhook tetiklendi.\n');
       } catch (instagramErr) {
         process.stderr.write(`❌ Instagram Make Webhook Hatası: ${instagramErr.message}\n`);
-      }
-    }
-
-    // 2. Post to NSosyal (Opsiyonel)
-    if (nsosyalApiUrl && nsosyalBearerToken) {
-      try {
-        await sendToNsosyal(finalNote, nsosyalApiUrl, nsosyalBearerToken);
-        process.stdout.write('BAŞARILI: EngelsizForum güncelleme notu NSosyal platformunda başarıyla yayınlandı.\n');
-      } catch (nsosyalErr) {
-        process.stderr.write(`⚠️ NSosyal Uyarısı: ${nsosyalErr.message}\n`);
       }
     }
   } catch (error) {

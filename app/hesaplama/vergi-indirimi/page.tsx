@@ -1,11 +1,17 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useMemo } from 'react';
 import { 
   Receipt, 
   Info, 
   ShieldCheck,
-  FileSpreadsheet
+  FileSpreadsheet,
+  TrendingUp,
+  ChevronRight,
+  Calculator,
+  Scale
 } from 'lucide-react';
 
 interface DegreeInfo {
@@ -118,34 +124,36 @@ export default function VergiIndirimiPage() {
     <div className="space-y-6">
       
       {/* Üst Başlık & Mevzuat Dayanağı */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded bg-indigo-50 text-indigo-700 flex items-center justify-center font-black">
-              <Receipt className="w-5 h-5" />
+      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1E293B] pb-5 mb-6">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-lg bg-[#18243A] text-indigo-400 flex items-center justify-center shadow-inner border border-[#1E293B]">
+              <Receipt className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900">
-                2026 Engelli Gelir Vergisi İndirimi ve Net Maaş Hesaplama
+              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+                Engelli Gelir Vergisi İndirimi Hesaplama (2026)
               </h1>
-              <span className="text-xs text-slate-500 font-medium">
-                Dayanak: 193 sayılı Gelir Vergisi Kanunu 31. Madde ve GİB Tebliğleri
-              </span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <Info size={12} className="text-slate-500" />
+                <span className="text-xs text-slate-400 font-medium">
+                  193 Sayılı GVK 31. Madde ve GİB Tebliğ Standartları
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="text-xs font-semibold px-2.5 py-1 rounded bg-indigo-50 text-indigo-800 border border-indigo-200">
+          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
             {degreeObj.name.split(' (')[0]}
           </div>
         </div>
 
         {/* Girdi Parametreleri */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* 1. Aylık Brüt Maaş */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Aylık Brüt Maaş (TL)
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              Aylık Brüt Maaş
             </label>
             <div className="relative">
               <input
@@ -155,195 +163,202 @@ export default function VergiIndirimiPage() {
                 step="500"
                 value={grossSalary || ''}
                 onChange={(e) => setGrossSalary(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                placeholder="Örn: 45000"
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
+                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
-                TL
-              </span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-[10px]">TL</span>
             </div>
-            <span className="text-[11px] text-slate-500 mt-1 block">
-              Bordronuzdaki sigortaya tabi brüt ücret
-            </span>
+            <span className="text-[10px] text-slate-500 italic block">SGK&apos;ya tabi brüt ücret</span>
           </div>
 
-          {/* 2. Engellilik Derecesi */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
               Engellilik Derecesi
             </label>
-            <select
-              value={selectedDegree}
-              onChange={(e) => setSelectedDegree(parseInt(e.target.value, 10))}
-              className="w-full px-3 py-2.5 rounded border border-slate-300 bg-white text-slate-900 text-xs sm:text-sm font-semibold focus:outline-none focus:border-sky-600"
-            >
-              {DEGREES.map((deg) => (
-                <option key={deg.degree} value={deg.degree}>
-                  {deg.name} — ({formatCurrency(deg.officialDiscount2026)}/ay)
-                </option>
-              ))}
-            </select>
-            <span className="text-[11px] text-slate-500 mt-1 block">
-              GİB Vergi Dairesi onaylı resmi derece
-            </span>
+            <div className="relative">
+              <select
+                value={selectedDegree}
+                onChange={(e) => setSelectedDegree(parseInt(e.target.value, 10))}
+                className="w-full pl-3 pr-10 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+              >
+                {DEGREES.map((deg) => (
+                  <option key={deg.degree} value={deg.degree}>
+                    {deg.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                <ChevronRight size={14} className="rotate-90" />
+              </div>
+            </div>
+            <span className="text-[10px] text-slate-500 italic block">GİB onaylı resmi derece</span>
           </div>
 
-          {/* 3. Gelir Vergisi Dilimi */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Bulunulan Gelir Vergisi Dilimi
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              Vergi Dilimi
             </label>
-            <select
-              value={taxRate}
-              onChange={(e) => setTaxRate(parseInt(e.target.value, 10))}
-              className="w-full px-3 py-2.5 rounded border border-slate-300 bg-white text-slate-900 text-xs sm:text-sm font-semibold focus:outline-none focus:border-sky-600"
-            >
-              {TAX_BRACKETS.map((tb) => (
-                <option key={tb.rate} value={tb.rate}>
-                  {tb.label}
-                </option>
-              ))}
-            </select>
-            <span className="text-[11px] text-slate-500 mt-1 block">
-              Kümülatif matraha göre cari vergi dilimi
-            </span>
+            <div className="relative">
+              <select
+                value={taxRate}
+                onChange={(e) => setTaxRate(parseInt(e.target.value, 10))}
+                className="w-full pl-3 pr-10 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+              >
+                {TAX_BRACKETS.map((tb) => (
+                  <option key={tb.rate} value={tb.rate}>
+                    {tb.label}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                <ChevronRight size={14} className="rotate-90" />
+              </div>
+            </div>
+            <span className="text-[10px] text-slate-500 italic block">Kümülatif matrah dilimi</span>
           </div>
 
         </div>
 
         {/* İsteğe Bağlı Özel İndirim Tutarı */}
-        <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-xs text-slate-600">
-            <Info className="w-4 h-4 text-slate-400" />
-            <span>2026 Resmi Matrah İndirim Tutarı: <strong>{formatCurrency(degreeObj.officialDiscount2026)} / ay</strong></span>
+        <div className="mt-6 pt-4 border-t border-[#1E293B] flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5 text-xs text-[#CBD5E1]">
+            <Calculator className="w-4 h-4 text-indigo-400" />
+            <span>2026 Matrah İndirimi: <strong className="text-white">{formatCurrency(degreeObj.officialDiscount2026)} / ay</strong></span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-500">Farklı Tutar Gir:</span>
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Özel Tutar:</span>
             <input
               type="number"
               value={customDiscount}
               onChange={(e) => setCustomDiscount(e.target.value)}
               placeholder={degreeObj.officialDiscount2026.toString()}
-              className="w-28 px-2.5 py-1 text-xs border border-slate-300 rounded focus:outline-none focus:border-sky-600"
+              className="w-28 px-3 py-1 bg-[#0B1220] border border-[#1E293B] rounded text-white text-xs font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
             />
           </div>
         </div>
       </div>
 
       {/* NET KAZANÇ VE AVANTAJ KARTLARI */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         
-        {/* Aylık Net Kazanç Kartı */}
-        <div className="bg-emerald-50/60 border border-emerald-200 rounded-2xl p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-bold text-slate-600 tracking-wider">
-              Aylık Net Maaşa Yansıyan Kazanç
-            </span>
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
-              Cepte Kalan Net Para
+        <div className="p-6 rounded-xl border border-emerald-900/50 bg-emerald-950/10 shadow-xl animate-in zoom-in-95 duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-emerald-900/30 text-emerald-400 flex items-center justify-center">
+                <TrendingUp size={18} />
+              </div>
+              <span className="text-xs uppercase font-black text-slate-400 tracking-widest">
+                Aylık Net Maaş Artışı
+              </span>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-600 text-white shadow-sm uppercase">
+              Cepte Kalan
             </span>
           </div>
 
-          <div className="text-3xl sm:text-4xl font-black text-emerald-900 my-2">
+          <div className="text-4xl font-black text-emerald-400 mb-3 tracking-tighter">
             +{formatCurrency(calculation.aylikNetKazanc)}
           </div>
 
-          <p className="text-xs text-slate-600 leading-relaxed">
-            Maaşınızdan kesilecek gelir vergisi bu tutar kadar azalır ve doğrudan banka hesabınıza yatırılan net maaşa eklenir.
+          <p className="text-xs text-slate-400 leading-relaxed font-medium">
+            Gelir verginiz bu tutar kadar azalır ve doğrudan net maaşınıza eklenir.
           </p>
         </div>
 
-        {/* Yıllık Toplam Tasarruf Kartı */}
-        <div className="bg-indigo-50/60 border border-indigo-200 rounded-2xl p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-bold text-slate-600 tracking-wider">
-              Yıllık Toplam Vergi Avantajı
-            </span>
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 border border-indigo-200">
-              12 Aylık Tasarruf
+        <div className="p-6 rounded-xl border border-indigo-900/50 bg-indigo-950/10 shadow-xl animate-in zoom-in-95 duration-300 delay-100">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-indigo-900/30 text-indigo-400 flex items-center justify-center">
+                <Receipt size={18} />
+              </div>
+              <span className="text-xs uppercase font-black text-slate-400 tracking-widest">
+                Yıllık Toplam Tasarruf
+              </span>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#18243A] text-indigo-300 border border-[#1E293B] uppercase">
+              12 Aylık
             </span>
           </div>
 
-          <div className="text-3xl sm:text-4xl font-black text-indigo-900 my-2">
+          <div className="text-4xl font-black text-indigo-400 mb-3 tracking-tighter">
             +{formatCurrency(calculation.yillikToplamKazanc)}
           </div>
 
-          <p className="text-xs text-slate-600 leading-relaxed">
-            12 ay boyunca kesilmeyen gelir vergilerinin kümülatif toplamıdır.
+          <p className="text-xs text-slate-400 leading-relaxed font-medium">
+            Bir takvim yılı boyunca sağlanan kümülatif net vergi muafiyeti toplamıdır.
           </p>
         </div>
 
       </div>
 
       {/* KARŞILAŞTIRMALI BOR DRO VE VERGİ MATRAHI TABLOSU */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
-        <div className="bg-slate-900 text-white px-5 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
-            <FileSpreadsheet className="w-4 h-4 text-blue-200" />
-            <span>STANDART BOR DRO İLE ENGELLİ İNDİRİMLİ BOR DRO KARŞILAŞTIRMASI</span>
+      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] overflow-hidden shadow-xl">
+        <div className="bg-[#18243A] text-white px-5 py-3.5 flex items-center justify-between border-b border-[#1E293B]">
+          <div className="flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            <Scale className="w-4 h-4 text-indigo-400" />
+            <span>Karşılaştırmalı Bordro Simülasyonu</span>
           </div>
-          <span className="text-xs text-blue-200">
-            %{taxRate} Vergi Dilimi
+          <span className="text-[11px] font-mono font-bold text-indigo-300 bg-indigo-950/50 border border-indigo-800/60 px-2 py-0.5 rounded">
+            %{taxRate} VERGİ DİLİMİ
           </span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
-                <th className="p-3">Bordro Kalemi</th>
-                <th className="p-3">Açıklama / Yasal Kural</th>
-                <th className="p-3 text-right">Standart Çalışan</th>
-                <th className="p-3 text-right text-emerald-800 bg-emerald-50/60 font-bold">
+              <tr className="bg-[#0B1220] text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-[#1E293B]">
+                <th className="p-4">Bordro Kalemi</th>
+                <th className="p-4">Yasal Dayanak</th>
+                <th className="p-4 text-right">Standart Çalışan</th>
+                <th className="p-4 text-right text-emerald-400 bg-emerald-950/20 font-black">
                   Engelli İndirimli
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
-              <tr>
-                <td className="p-3 font-semibold text-slate-800">1. Aylık Brüt Ücret</td>
-                <td className="p-3 text-slate-500">Sözleşmeli brüt hak ediş</td>
-                <td className="p-3 text-right font-medium text-slate-700">{formatCurrency(calculation.gross)}</td>
-                <td className="p-3 text-right font-bold text-emerald-800 bg-emerald-50/60">{formatCurrency(calculation.gross)}</td>
+            <tbody className="divide-y divide-[#1E293B] text-[#CBD5E1]">
+              <tr className="hover:bg-white/5 transition-colors">
+                <td className="p-4 font-bold text-[#F8FAFC]">1. Aylık Brüt Ücret</td>
+                <td className="p-4 text-slate-500 italic">Sözleşme Tutarı</td>
+                <td className="p-4 text-right font-medium">{formatCurrency(calculation.gross)}</td>
+                <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">{formatCurrency(calculation.gross)}</td>
               </tr>
-              <tr>
-                <td className="p-3 font-semibold text-slate-800">2. SGK + İşsizlik İşçi Primi (%15)</td>
-                <td className="p-3 text-slate-500">%14 SGK + %1 İşsizlik kesintisi</td>
-                <td className="p-3 text-right text-rose-700">-{formatCurrency(calculation.sgkKesintisi)}</td>
-                <td className="p-3 text-right text-rose-700 bg-emerald-50/60">-{formatCurrency(calculation.sgkKesintisi)}</td>
+              <tr className="hover:bg-white/5 transition-colors">
+                <td className="p-4 font-bold text-[#F8FAFC]">2. SGK + İşsizlik Payı (%15)</td>
+                <td className="p-4 text-slate-500 italic">Zorunlu Kesinti</td>
+                <td className="p-4 text-right text-rose-400">-{formatCurrency(calculation.sgkKesintisi)}</td>
+                <td className="p-4 text-right text-rose-400 bg-emerald-950/20">-{formatCurrency(calculation.sgkKesintisi)}</td>
               </tr>
-              <tr className="bg-slate-50">
-                <td className="p-3 font-semibold text-slate-800">3. Engellilik İndirimi (GVK 31)</td>
-                <td className="p-3 text-slate-500">Vergi matrahından düşülen yasal tutar</td>
-                <td className="p-3 text-right text-slate-400">0 ₺</td>
-                <td className="p-3 text-right font-bold text-emerald-700 bg-emerald-100">
+              <tr className="bg-[#18243A]/50 transition-colors border-y border-indigo-500/20">
+                <td className="p-4 font-bold text-indigo-400">3. Engellilik İndirimi (GVK 31)</td>
+                <td className="p-4 text-indigo-500 italic font-mono text-[10px]">Matrahtan Düşülen</td>
+                <td className="p-4 text-right text-slate-600">0 ₺</td>
+                <td className="p-4 text-right font-black text-indigo-300">
                   -{formatCurrency(calculation.uygulananIndirim)}
                 </td>
               </tr>
-              <tr>
-                <td className="p-3 font-semibold text-slate-800">4. Gelir Vergisi Matrahı</td>
-                <td className="p-3 text-slate-500">Vergi hesaplanacak baz tutar</td>
-                <td className="p-3 text-right font-medium text-slate-700">{formatCurrency(calculation.standartMatrah)}</td>
-                <td className="p-3 text-right font-bold text-emerald-800 bg-emerald-50/60">
+              <tr className="hover:bg-white/5 transition-colors">
+                <td className="p-4 font-bold text-[#F8FAFC]">4. Gelir Vergisi Matrahı</td>
+                <td className="p-4 text-slate-500 italic">Vergi Matrahı</td>
+                <td className="p-4 text-right font-medium">{formatCurrency(calculation.standartMatrah)}</td>
+                <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">
                   {formatCurrency(calculation.indirimliMatrah)}
                 </td>
               </tr>
-              <tr>
-                <td className="p-3 font-semibold text-slate-800">5. Kesilen Gelir Vergisi (%{taxRate})</td>
-                <td className="p-3 text-slate-500">Matrah × %{taxRate}</td>
-                <td className="p-3 text-right text-rose-700 font-medium">-{formatCurrency(calculation.standartGelirVergisi)}</td>
-                <td className="p-3 text-right font-bold text-emerald-800 bg-emerald-50/60">
+              <tr className="hover:bg-white/5 transition-colors">
+                <td className="p-4 font-bold text-[#F8FAFC]">5. Gelir Vergisi (%{taxRate})</td>
+                <td className="p-4 text-slate-500 italic">Kesilen Vergi</td>
+                <td className="p-4 text-right text-rose-400 font-medium">-{formatCurrency(calculation.standartGelirVergisi)}</td>
+                <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">
                   -{formatCurrency(calculation.indirimliGelirVergisi)}
                 </td>
               </tr>
-              <tr className="bg-sky-50 dark:bg-sky-950/40 font-bold text-slate-900 border-t-2 border-slate-300">
-                <td className="p-3">NET MAAŞA YANSIYAN AYLIK FARK</td>
-                <td className="p-3 text-slate-600 text-[11px]">
-                  Gelir vergisi tasarrufu = {formatCurrency(calculation.uygulananIndirim)} × %{taxRate}
+              <tr className="bg-[#18243A] font-black text-[#F8FAFC] border-t border-indigo-500/30">
+                <td className="p-4 text-sm uppercase">NET MAAŞA YANSIYAN FARK</td>
+                <td className="p-4 text-indigo-300 font-mono text-[10px] uppercase">
+                  AYLIK TASARRUF
                 </td>
-                <td className="p-3 text-right text-slate-500">Standart</td>
-                <td className="p-3 text-right text-emerald-900 bg-emerald-100 text-sm font-black">
+                <td className="p-4 text-right text-slate-500 italic">Baz Alınan</td>
+                <td className="p-4 text-right text-sm text-emerald-400 bg-emerald-500/10 shadow-inner">
                   +{formatCurrency(calculation.aylikNetKazanc)} / ay
                 </td>
               </tr>
@@ -353,24 +368,32 @@ export default function VergiIndirimiPage() {
       </div>
 
       {/* BAŞVURU REHBERİ */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-sky-700 dark:text-sky-400" />
-          <span>Gelir İdaresi Başkanlığı Vergi İndirimi Başvuru Süreci</span>
+      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">
+        <h3 className="text-xs font-black text-[#F8FAFC] uppercase tracking-widest mb-5 flex items-center gap-2.5">
+          <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+            <ShieldCheck size={16} />
+          </div>
+          <span>Vergi İndirimi Başvuru Süreci</span>
         </h3>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-600">
-          <div className="p-3 bg-slate-50 rounded border border-slate-200">
-            <span className="font-bold text-slate-900 block mb-1">1. Başvuru Makamı</span>
-            İkametinizin veya işyerinizin bağlı olduğu Vergi Dairesi Başkanlığına (veya Defterdarlığa / e-Devlet İnteraktif Vergi Dairesi üzerinden) müracaat edilir.
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] space-y-2 group hover:border-indigo-500/30 transition-colors">
+            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block">1. Başvuru Makamı</span>
+            <p className="text-xs text-[#CBD5E1] leading-relaxed font-medium">
+              İşyerinizin bağlı olduğu Vergi Dairesi Başkanlığına veya e-Devlet İnteraktif Vergi Dairesi üzerinden müracaat edilir.
+            </p>
           </div>
-          <div className="p-3 bg-slate-50 rounded border border-slate-200">
-            <span className="font-bold text-slate-900 block mb-1">2. Gerekli Evraklar</span>
-            İşyerinden alınmış aktif çalıştığınıza dair imzalı-kaşeli çalışma belgesi, geçerli Erişkin Sağlık Kurulu Raporu ve dilekçe gerekmektedir.
+          <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] space-y-2 group hover:border-indigo-500/30 transition-colors">
+            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block">2. Gerekli Evraklar</span>
+            <p className="text-xs text-[#CBD5E1] leading-relaxed font-medium">
+              İşyerinden alınmış çalışma belgesi, geçerli Erişkin Sağlık Kurulu Raporu ve dilekçe gerekmektedir.
+            </p>
           </div>
-          <div className="p-3 bg-slate-50 rounded border border-slate-200">
-            <span className="font-bold text-slate-900 block mb-1">3. Erken Emekliliğe Etkisi</span>
-            01.10.2008 öncesi SSK (4A) sigortalılar için vergi indirim belgesi almak, <strong>erken emeklilik hakkının kazanılmasında yasal bir ön şarttır</strong>.
+          <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] space-y-2 group hover:border-indigo-500/30 transition-colors">
+            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block">3. Emekliliğe Etkisi</span>
+            <p className="text-xs text-[#CBD5E1] leading-relaxed font-medium">
+              01.10.2008 öncesi 4A&apos;lılar için vergi indirim belgesi almak, <strong>erken emeklilik hakkı için yasal bir ön şarttır</strong>.
+            </p>
           </div>
         </div>
       </div>

@@ -97,68 +97,70 @@ export default function HesaplamaIndexPage() {
     <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
-        <Link href="/" className="hover:text-white transition-colors">
+        <Link href="/" className="hover:text-indigo-400 transition-colors">
           Forum
         </Link>
-        <span>/</span>
-        <span className="text-white font-semibold">Hesaplama Robotları</span>
+        <span className="text-slate-600">/</span>
+        <span className="text-slate-200 font-semibold">Hesaplama Robotları</span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Main Column */}
         <div className="lg:col-span-8 space-y-6">
-          <div className="pb-4 border-b border-[#30363d]">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+          <div className="pb-4 border-b border-[#1E293B]">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-heading">
               Resmi Mevzuat Hesaplama Robotları (2026)
             </h1>
-            <p className="text-sm text-slate-300 mt-1 font-medium">
+            <p className="text-sm text-slate-300 mt-1 font-normal">
               Resmî Gazete ve SGK yönergeleriyle uyumlu, matematiksel ters hesaplama algoritmaları.
             </p>
           </div>
 
           {/* Tools List */}
-          <div className="divide-y divide-[#30363d]">
+          <div className="divide-y divide-[#1E293B]/80 bg-[#111B2E] border border-[#1E293B] rounded-lg p-5">
             {TOOLS.map((tool) => {
               const Icon = tool.icon;
               return (
-                <div key={tool.href} className="py-5 space-y-2 group">
+                <div key={tool.href} className="py-5 first:pt-0 last:pb-0 space-y-2 group">
                   <div className="flex items-start justify-between gap-4">
                     <div className="space-y-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <Icon size={18} className="text-sky-400" />
+                      <div className="flex items-center gap-2.5 flex-wrap">
+                        <div className="w-8 h-8 rounded-md bg-[#18243A] border border-[#1E293B] flex items-center justify-center text-indigo-400 shrink-0">
+                          <Icon size={16} />
+                        </div>
                         <Link 
                           href={tool.href}
-                          className="text-base sm:text-lg font-bold text-white group-hover:text-sky-400 transition-colors"
+                          className="text-base sm:text-lg font-bold text-white group-hover:text-indigo-400 transition-colors font-heading"
                         >
                           {tool.title}
                         </Link>
-                        <span className="text-[11px] font-mono font-bold text-sky-300 bg-sky-950/60 border border-sky-800 px-2 py-0.5 rounded">
+                        <span className="text-[11px] font-mono font-medium text-indigo-300 bg-indigo-950/50 border border-indigo-800/60 px-2 py-0.5 rounded">
                           {tool.tag}
                         </span>
                       </div>
-                      <div className="text-xs font-mono font-semibold text-slate-400">
+                      <div className="text-xs font-mono text-slate-400">
                         {tool.legislation}
                       </div>
                     </div>
 
                     <Link
                       href={tool.href}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-[#21262d] border border-[#30363d] hover:bg-white hover:text-black text-xs font-bold text-white shrink-0 transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-[#18243A] border border-[#1E293B] hover:bg-indigo-600 hover:border-indigo-500 hover:text-white text-xs font-medium text-slate-200 shrink-0 transition-colors"
                     >
                       <span>Hesapla</span>
-                      <ArrowRight size={14} />
+                      <ArrowRight size={13} />
                     </Link>
                   </div>
 
-                  <p className="text-sm text-slate-300 leading-relaxed max-w-2xl font-normal">
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl font-normal">
                     {tool.description}
                   </p>
 
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1 text-xs text-slate-300">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1 text-xs text-slate-400">
                     {tool.keyPoints.map((pt, i) => (
                       <span key={i} className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                        <span>{pt}</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                        <span className="text-slate-300">{pt}</span>
                       </span>
                     ))}
                   </div>

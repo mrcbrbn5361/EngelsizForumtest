@@ -1,13 +1,20 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useMemo } from 'react';
 import { 
   Users, 
   ShieldAlert, 
   CheckCircle2, 
   AlertTriangle,
+  AlertCircle,
   Receipt,
-  FileCheck
+  FileCheck,
+  Info,
+  Wallet,
+  TrendingDown,
+  LayoutDashboard
 } from 'lucide-react';
 
 const NET_ASGARI_UCRET_2026 = 22104; // 2026 Gösterge Net Asgari Ücret
@@ -83,33 +90,35 @@ export default function EngelliAyligiPage() {
     <div className="space-y-6">
       
       {/* Üst Başlık & Mevzuat Dayanağı */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded bg-amber-50 text-amber-700 flex items-center justify-center font-black">
-              <Users className="w-5 h-5" />
+      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1E293B] pb-5 mb-6">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-lg bg-[#18243A] text-indigo-400 flex items-center justify-center shadow-inner border border-[#1E293B]">
+              <Users className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900">
-                2026 Yılı 2022 Engelli Aylığı Muhtaçlık ve Gelir Testi
+              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+                2022 Engelli Aylığı Muhtaçlık Testi (2026)
               </h1>
-              <span className="text-xs text-slate-500 font-medium">
-                Dayanak: 2022 sayılı 65 Yaşını Doldurmuş Muhtaç, Güçsüz ve Kimsesiz Türk Vatandaşlarına Aylık Bağlanması Hakkında Kanun
-              </span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <Info size={12} className="text-slate-500" />
+                <span className="text-xs text-slate-400 font-medium">
+                  2022 Sayılı Kanun ve SYDV Muhtaçlık Kriterleri Standardı
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="text-xs font-semibold px-2.5 py-1 rounded bg-amber-50 text-amber-800 border border-amber-200">
-            2026 Muhtaçlık Sınırı: <strong>{formatCurrency(kisiBasiSinir)}</strong>
+          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
+            2026 SINIRI: {formatCurrency(kisiBasiSinir)}
           </div>
         </div>
 
         {/* Girdi Formu */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* Hanedeki Kişi Sayısı */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
               Hanedeki Birey Sayısı
             </label>
             <div className="relative">
@@ -119,18 +128,15 @@ export default function EngelliAyligiPage() {
                 max="20"
                 value={householdSize || ''}
                 onChange={(e) => setHouseholdSize(Math.max(1, parseInt(e.target.value, 10) || 1))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
+                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
-                Kişi
-              </span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-[10px] uppercase">KİŞİ</span>
             </div>
           </div>
 
-          {/* Hanenin Aylık Net Geliri */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Hanenin Aylık Toplam Geliri
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              Hanenin Aylık Net Geliri
             </label>
             <div className="relative">
               <input
@@ -140,18 +146,15 @@ export default function EngelliAyligiPage() {
                 step="500"
                 value={totalIncome || ''}
                 onChange={(e) => setTotalIncome(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
+                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
-                TL
-              </span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-[10px] uppercase">TL</span>
             </div>
           </div>
 
-          {/* Engel Oranı */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Sağlık Kurulu Engel Oranı
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              Engelli Rapor Oranı
             </label>
             <div className="relative">
               <input
@@ -160,48 +163,50 @@ export default function EngelliAyligiPage() {
                 max="100"
                 value={disabilityRate || ''}
                 onChange={(e) => setDisabilityRate(Math.min(100, Math.max(0, parseInt(e.target.value, 10) || 0)))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
+                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
-                %
-              </span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">%</span>
             </div>
           </div>
 
         </div>
 
         {/* İlave Şart Onay Kutuları */}
-        <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5">
+        <div className="mt-6 pt-6 border-t border-[#1E293B] space-y-3">
           
-          <label className="flex items-start gap-3 cursor-pointer select-none p-2.5 rounded bg-slate-50 border border-slate-200 hover:bg-slate-100/70 transition-colors">
-            <input
-              type="checkbox"
-              checked={hasSgk}
-              onChange={(e) => setHasSgk(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-red-600 focus:ring-red-500 border-slate-300"
-            />
-            <div className="text-xs">
-              <span className="font-bold text-slate-900 block">
-                Engelli Birey Üzerine Aktif SGK (4A, 4B, 4C) Kaydı veya Emekli Aylığı Var mı?
+          <label className="flex items-start gap-4 cursor-pointer select-none p-4 rounded-lg bg-[#0B1220] border border-[#1E293B] hover:bg-[#18243A]/50 transition-all group">
+            <div className="mt-1">
+              <input
+                type="checkbox"
+                checked={hasSgk}
+                onChange={(e) => setHasSgk(e.target.checked)}
+                className="w-4 h-4 rounded-sm text-indigo-500 focus:ring-indigo-500 border-[#1E293B] bg-[#111B2E]"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 transition-colors">
+                Aktif SGK Kaydı veya Emekli Aylığı Var mı?
               </span>
-              <span className="text-slate-600 block mt-0.5">
-                2022 sayılı Kanun kapsamında engelli aylığı yalnızca SGK kapsamında aktif sigortalı olmayan ve SGK&apos;dan herhangi bir gelir/aylık almayan muhtaç kişilere bağlanır.
+              <span className="text-[11px] text-slate-500 leading-relaxed block">
+                2022 aylığı yalnızca SGK kapsamında aktif sigortalı olmayan ve sosyal güvencesi bulunmayan muhtaç kişilere bağlanır.
               </span>
             </div>
           </label>
 
-          <label className="flex items-start gap-3 cursor-pointer select-none p-2.5 rounded bg-slate-50 border border-slate-200 hover:bg-slate-100/70 transition-colors">
-            <input
-              type="checkbox"
-              checked={receivesEvdeBakim}
-              onChange={(e) => setReceivesEvdeBakim(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-sky-700 dark:text-sky-400 focus:ring-sky-600 border-slate-300"
-            />
-            <div className="text-xs">
-              <span className="font-bold text-slate-900 block">
-                Hanede Evde Bakım Maaşı Alan Başka Bir Birey Var mı? (+11.400 TL Hane Gelirine Eklenir)
+          <label className="flex items-start gap-4 cursor-pointer select-none p-4 rounded-lg bg-[#0B1220] border border-[#1E293B] hover:bg-[#18243A]/50 transition-all group">
+            <div className="mt-1">
+              <input
+                type="checkbox"
+                checked={receivesEvdeBakim}
+                onChange={(e) => setReceivesEvdeBakim(e.target.checked)}
+                className="w-4 h-4 rounded-sm text-indigo-500 focus:ring-indigo-500 border-[#1E293B] bg-[#111B2E]"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 transition-colors">
+                Hanede Evde Bakım Maaşı Alan Var mı? (+11.400 TL Gelire Eklenir)
               </span>
-              <span className="text-slate-600 block mt-0.5">
+              <span className="text-[11px] text-slate-500 leading-relaxed block">
                 SYDV muhtaçlık testinde, haneye giren evde bakım yardımları da resmi gelir kabul edilerek kişi başına paylaştırılır.
               </span>
             </div>
@@ -211,98 +216,99 @@ export default function EngelliAyligiPage() {
       </div>
 
       {/* SONUÇ KARTLARI */}
-      <div className={`rounded-2xl border p-6 shadow-xs ${
+      <div className={`rounded-xl border p-6 shadow-xl animate-in zoom-in-95 duration-300 ${
         calculation.isApproved 
-          ? 'bg-emerald-50/70 border-emerald-300' 
-          : 'bg-amber-50/70 border-amber-300'
+          ? 'bg-emerald-950/10 border-emerald-900/50' 
+          : 'bg-indigo-950/10 border-indigo-900/50'
       }`}>
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-5">
           <div className="mt-1">
             {calculation.isApproved ? (
-              <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
-                <CheckCircle2 className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-full bg-emerald-900/30 text-emerald-400 flex items-center justify-center shadow-inner">
+                <CheckCircle2 size={28} />
               </div>
             ) : (
-              <div className="w-10 h-10 rounded-full bg-amber-600 text-white flex items-center justify-center font-bold">
-                <AlertTriangle className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-full bg-indigo-900/30 text-indigo-400 flex items-center justify-center shadow-inner">
+                <AlertTriangle size={28} />
               </div>
             )}
           </div>
 
-          <div className="space-y-2 flex-1">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className={`text-base font-bold ${
-                calculation.isApproved ? 'text-emerald-950' : 'text-amber-950'
-              }`}>
+          <div className="space-y-4 flex-1">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-lg font-bold text-[#F8FAFC] tracking-tight uppercase">
                 {calculation.isApproved 
-                  ? 'ŞARTLAR UYGUN: 2022 Engelli Aylığı Almaya Hak Kazanıyorsunuz' 
-                  : 'ENGEL DURUMU VEYA GELİR KRİTERİ AŞILDI'}
+                  ? 'GELİR KRİTERİ UYGUN: Aylık Bağlanabilir' 
+                  : 'YASAL ŞARTLAR VEYA GELİR KRİTERİ AŞILDI'}
               </h2>
 
-              <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${
+              <span className={`text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-wider border ${
                 calculation.isApproved 
-                  ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
-                  : 'bg-amber-100 text-amber-800 border-amber-300'
+                  ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800' 
+                  : 'bg-indigo-950/40 text-indigo-400 border-indigo-800'
               }`}>
-                {calculation.isApproved ? 'Aylık Bağlanabilir' : 'Başvuru Reddedilebilir'}
+                {calculation.isApproved ? 'Muhtaçlık Onaylı' : 'Ret Gerekçesi Var'}
               </span>
             </div>
 
-            <p className="text-xs text-slate-700 leading-relaxed">
+            <div className="text-sm text-[#CBD5E1] leading-relaxed max-w-4xl">
               {calculation.isApproved ? (
                 <>
                   Hane içi kişi başı net geliriniz <strong>{formatCurrency(calculation.kisiBasiGelir)}</strong> olup, kanuni muhtaçlık sınırı olan <strong>{formatCurrency(calculation.kisiBasiSinir)}</strong> tutarının altındadır. 
-                  İkamet ettiğiniz ilçedeki <strong>Sosyal Yardımlaşma ve Dayanışma Vakfı&apos;na (SYDV)</strong> müracaat ederek aylık <strong>{formatCurrency(calculation.aylikTutar)}</strong> 2022 engelli aylığı alabilirsiniz.
+                  İlçenizdeki <strong>SYDV&apos;ye</strong> müracaat ederek aylık <strong>{formatCurrency(calculation.aylikTutar)}</strong> ödeme alabilirsiniz.
                 </>
               ) : (
-                <>
+                <div className="space-y-2">
                   {hasSgk && (
-                    <span className="block text-red-800 font-semibold mb-1">
-                      • Aktif Sigorta Engeli: Birey adına SGK primi yatırıldığı veya emekli aylığı bulunduğu için 2022 aylığı bağlanamaz.
-                    </span>
+                    <div className="flex items-center gap-2 text-rose-400 font-bold">
+                      <TrendingDown size={14} />
+                      <span>AKTİF SİGORTA: Birey sigortalı olduğu için 2022 aylığı bağlanamaz.</span>
+                    </div>
                   )}
                   {!calculation.isIncomeEligible && (
-                    <span className="block text-red-800 font-semibold mb-1">
-                      • Gelir Kriteri Aşıldı: Hanede kişi başı düşen gelir ({formatCurrency(calculation.kisiBasiGelir)}), kanuni sınır olan {formatCurrency(calculation.kisiBasiSinir)} tutarından {formatCurrency(-calculation.fark)} fazladır.
-                    </span>
+                    <div className="flex items-center gap-2 text-rose-400 font-bold">
+                      <TrendingDown size={14} />
+                      <span>GELİR AŞIMI: Kişi başı gelir ({formatCurrency(calculation.kisiBasiGelir)}), sınırı {formatCurrency(-calculation.fark)} aşıyor.</span>
+                    </div>
                   )}
                   {disabilityRate < 40 && (
-                    <span className="block text-amber-900 font-semibold mb-1">
-                      • Rapor Oranı Yetersiz: Engelli aylığı bağlanabilmesi için resmi sağlık kurulu oranının en az %40 olması zorunludur.
-                    </span>
+                    <div className="flex items-center gap-2 text-amber-400 font-bold">
+                      <AlertCircle size={14} />
+                      <span>RAPOR ORANI: Aylık için en az %40 sağlık kurulu raporu zorunludur.</span>
+                    </div>
                   )}
-                </>
+                </div>
               )}
-            </p>
+            </div>
 
             {/* İstatistikler */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-200/80 text-xs">
-              <div className="p-2 bg-white/80 rounded border border-slate-200">
-                <span className="text-slate-500 block text-[11px]">Kişi Başı Gelir</span>
-                <span className="font-black text-slate-900 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-[#1E293B]">
+              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Kişi Başı Gelir</span>
+                <div className="text-xl font-black text-white">
                   {formatCurrency(calculation.kisiBasiGelir)}
-                </span>
+                </div>
               </div>
 
-              <div className="p-2 bg-white/80 rounded border border-slate-200">
-                <span className="text-slate-500 block text-[11px]">1/3 Asgari Ücret Sınırı</span>
-                <span className="font-black text-sky-700 dark:text-sky-400 text-sm">
+              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Muhtaçlık Sınırı</span>
+                <div className="text-xl font-black text-indigo-400">
                   {formatCurrency(calculation.kisiBasiSinir)}
-                </span>
+                </div>
               </div>
 
-              <div className="p-2 bg-white/80 rounded border border-slate-200">
-                <span className="text-slate-500 block text-[11px]">Engel Kapsamı</span>
-                <span className="font-black text-purple-800 text-sm">
-                  %{disabilityRate} ({calculation.kategori.split(' ')[0]})
-                </span>
+              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Rapor Durumu</span>
+                <div className="text-xl font-black text-indigo-300">
+                  %{disabilityRate} Oran
+                </div>
               </div>
 
-              <div className="p-2 bg-white/80 rounded border border-slate-200">
-                <span className="text-slate-500 block text-[11px]">Bağlanacak Aylık Tutarı</span>
-                <span className="font-black text-emerald-800 text-sm">
-                  {formatCurrency(calculation.aylikTutar)} / ay
-                </span>
+              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Bağlanacak Maaş</span>
+                <div className="text-xl font-black text-emerald-400">
+                  {formatCurrency(calculation.aylikTutar)} <span className="text-[10px] text-slate-500">/ AY</span>
+                </div>
               </div>
             </div>
 
@@ -311,49 +317,49 @@ export default function EngelliAyligiPage() {
       </div>
 
       {/* 2026 KADEMELİ AY LIK TUTARLARI TABLOSU */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
-        <div className="bg-slate-900 text-white px-5 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
-            <Receipt className="w-4 h-4 text-blue-200" />
-            <span>2026 YILI 2022 SAYILI KANUN GÜNCEL MAAŞ KADEMELERİ</span>
+      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] overflow-hidden shadow-xl">
+        <div className="bg-[#18243A] text-white px-5 py-3.5 flex items-center justify-between border-b border-[#1E293B]">
+          <div className="flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            <Wallet className="w-4 h-4 text-indigo-400" />
+            <span>2026 GÜNCEL 2022 AYLIĞI KADEMELERİ</span>
           </div>
-          <span className="text-xs text-blue-200">
-            Hazine ve Maliye Bakanlığı Katsayıları
+          <span className="text-[11px] font-mono font-bold text-indigo-300 bg-indigo-950/50 border border-indigo-800/60 px-2 py-0.5 rounded">
+            MEMUR KATSAYISI ENDEKSLİ
           </span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
-                <th className="p-3">Yardım Türü</th>
-                <th className="p-3">Engel Oranı / Kapsam</th>
-                <th className="p-3">Muhtaçlık Kriteri</th>
-                <th className="p-3 text-right">2026 Aylık Tutarı</th>
+              <tr className="bg-[#0B1220] text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-[#1E293B]">
+                <th className="p-4">Yardım Türü</th>
+                <th className="p-4">Engel Kapsamı</th>
+                <th className="p-4">Gelir Kriteri</th>
+                <th className="p-4 text-right">2026 Aylık Tutarı</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
-              <tr className={disabilityRate >= 40 && disabilityRate < 70 ? 'bg-amber-50/80 font-bold' : ''}>
-                <td className="p-3 font-semibold text-slate-800">%40 - %69 Engelli Aylığı</td>
-                <td className="p-3 text-slate-600">%40 ile %69 arasında raporu olanlar</td>
-                <td className="p-3 text-slate-600">Kişi başı &lt; {formatCurrency(kisiBasiSinir)}</td>
-                <td className="p-3 text-right font-black text-emerald-800 text-sm">
+            <tbody className="divide-y divide-[#1E293B] text-[#CBD5E1]">
+              <tr className={`hover:bg-white/5 transition-colors ${disabilityRate >= 40 && disabilityRate < 70 ? 'bg-indigo-950/20' : ''}`}>
+                <td className="p-4 font-bold text-[#F8FAFC]">%40 - %69 Engelli Aylığı</td>
+                <td className="p-4 text-slate-400 font-medium">%40 ile %69 arası raporu olanlar</td>
+                <td className="p-4 text-slate-500 font-mono text-[10px]">Kişi başı &lt; {formatCurrency(kisiBasiSinir)}</td>
+                <td className="p-4 text-right font-black text-indigo-400 text-sm">
                   {formatCurrency(MAAS_40_69)}
                 </td>
               </tr>
-              <tr className={disabilityRate >= 70 ? 'bg-emerald-50/80 font-bold' : ''}>
-                <td className="p-3 font-semibold text-slate-800">%70 ve Üzeri Başkasına Muhtaç Aylığı</td>
-                <td className="p-3 text-slate-600">%70 ve üzeri ağır kayıp yaşayanlar</td>
-                <td className="p-3 text-slate-600">Kişi başı &lt; {formatCurrency(kisiBasiSinir)}</td>
-                <td className="p-3 text-right font-black text-emerald-800 text-sm">
+              <tr className={`hover:bg-white/5 transition-colors ${disabilityRate >= 70 ? 'bg-emerald-950/20' : ''}`}>
+                <td className="p-4 font-bold text-[#F8FAFC]">%70 ve Üzeri Bakıma Muhtaç</td>
+                <td className="p-4 text-slate-400 font-medium">%70 ve üzeri ağır engelli bireyler</td>
+                <td className="p-4 text-slate-500 font-mono text-[10px]">Kişi başı &lt; {formatCurrency(kisiBasiSinir)}</td>
+                <td className="p-4 text-right font-black text-emerald-400 text-sm">
                   {formatCurrency(MAAS_70_USTU)}
                 </td>
               </tr>
-              <tr>
-                <td className="p-3 font-semibold text-slate-800">18 Yaş Altı Engelli Yakını Aylığı</td>
-                <td className="p-3 text-slate-600">ÇÖZ-GER raporlu çocuğun sigortasız ebeveyni</td>
-                <td className="p-3 text-slate-600">Kişi başı &lt; {formatCurrency(kisiBasiSinir)}</td>
-                <td className="p-3 text-right font-black text-emerald-800 text-sm">
+              <tr className="hover:bg-white/5 transition-colors">
+                <td className="p-4 font-bold text-[#F8FAFC]">18 Yaş Altı Engelli Yakını</td>
+                <td className="p-4 text-slate-400 font-medium">Özel gereksinimli çocuk ebeveyni</td>
+                <td className="p-4 text-slate-500 font-mono text-[10px]">Kişi başı &lt; {formatCurrency(kisiBasiSinir)}</td>
+                <td className="p-4 text-right font-black text-indigo-400 text-sm">
                   {formatCurrency(MAAS_18_YAS_ALTI)}
                 </td>
               </tr>

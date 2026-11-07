@@ -9,7 +9,12 @@ import {
   CheckCircle2, 
   ShieldCheck, 
   Receipt, 
-  FileCheck2 
+  FileCheck2,
+  Info,
+  ChevronRight,
+  TrendingDown,
+  Scale,
+  Sparkles
 } from 'lucide-react';
 
 const OTV_LIMIT_2026 = 2873972; // 2026 Resmi ÖTV Üst Sınırı
@@ -142,16 +147,18 @@ export default function OtvHesaplamaPage() {
       
       {/* 2026 Üst Limit Aşıldı Uyarısı */}
       {calculation.isExceeded && (
-        <div className="bg-red-50 border-l-4 border-red-600 p-4 rounded-r-md shadow-xs animate-shake">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
-            <div className="text-xs text-red-900 leading-relaxed">
-              <h2 className="font-bold text-sm text-red-950 mb-1">
+        <div className="bg-rose-950/20 border border-rose-800 p-5 rounded-lg shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-rose-900/50 flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-6 h-6 text-rose-500" />
+            </div>
+            <div className="space-y-1.5">
+              <h2 className="font-bold text-lg text-rose-400 tracking-tight">
                 2026 Yılı Resmi ÖTV İstisna Tavanı Aşılmıştır!
               </h2>
-              <p>
-                Girdiğiniz anahtar teslim fiyat ({formatCurrency(listPrice)}), 2026 yılı için belirlenen <strong>2.873.972 TL</strong> üst sınırını <strong>{formatCurrency(listPrice - OTV_LIMIT_2026)}</strong> aşmaktadır.
-                Kanun gereğince bu limiti 1 TL dahi aşan araçlar için ÖTV muafiyeti uygulanamaz; fark ödenerek indirim alınması hukuken mümkün değildir.
+              <p className="text-sm text-rose-200/80 leading-relaxed">
+                Girdiğiniz anahtar teslim fiyat ({formatCurrency(listPrice)}), 2026 yılı için belirlenen <strong className="text-rose-300">2.873.972 TL</strong> üst sınırını <strong className="text-rose-300">{formatCurrency(listPrice - OTV_LIMIT_2026)}</strong> aşmaktadır.
+                Kanun gereğince bu limiti 1 TL dahi aşan araçlar için ÖTV muafiyeti uygulanamaz.
               </p>
             </div>
           </div>
@@ -159,36 +166,42 @@ export default function OtvHesaplamaPage() {
       )}
 
       {/* Başlık ve Kontroller */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded bg-emerald-50 text-emerald-700 flex items-center justify-center font-black">
-              <Car className="w-5 h-5" />
+      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1E293B] pb-5 mb-6">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-lg bg-[#18243A] text-indigo-400 flex items-center justify-center shadow-inner border border-[#1E293B]">
+              <Car className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900">
-                2026 Engelli ÖTV İndirimli Sıfır Araç Fiyat Hesaplama
+              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+                Engelli ÖTV İndirimli Araç Hesaplama (2026)
               </h1>
-              <span className="text-xs text-slate-500 font-medium">
-                Dayanak: 4760 sayılı ÖTVK 7. Madde ve 2026 Gelir İdaresi Başkanlığı Tebliği
-              </span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <Info size={12} className="text-slate-500" />
+                <span className="text-xs text-slate-400 font-medium">
+                  4760 Sayılı ÖTVK m.7 ve GİB Tebliği Standardı
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200">
-            2026 Tavanı: <strong>2.873.972 ₺</strong>
+          <div className="text-xs font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-indigo-300 border border-[#1E293B] shadow-sm">
+            2026 ÜST LİMİT: {OTV_LIMIT_2026.toLocaleString('tr-TR')} ₺
           </div>
         </div>
 
         {/* Girdi Formu */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Fiyat Girdisi */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Aracın Güncel Liste Satış Fiyatı (KDV + ÖTV Dahil)
+          <div className="space-y-3">
+            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest">
+              Araç Anahtar Teslim Liste Fiyatı
             </label>
-            <div className="relative">
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
+                <Receipt size={18} />
+              </div>
               <input
                 type="number"
                 min="100000"
@@ -197,126 +210,149 @@ export default function OtvHesaplamaPage() {
                 value={listPrice || ''}
                 onChange={(e) => setListPrice(Math.max(0, parseInt(e.target.value, 10) || 0))}
                 placeholder="Örn: 1850000"
-                className={`w-full px-3.5 py-2.5 rounded border text-base font-bold transition-all focus:outline-none ${
+                className={`w-full pl-11 pr-12 py-3 rounded-lg border text-lg font-bold transition-all outline-hidden focus:ring-2 focus:ring-indigo-500/30 ${
                   calculation.isExceeded 
-                    ? 'border-red-400 bg-red-50/40 text-red-900 focus:border-red-600' 
-                    : 'border-slate-300 bg-white text-slate-900 focus:border-sky-600'
+                    ? 'border-rose-800 bg-rose-950/20 text-rose-200' 
+                    : 'border-[#1E293B] bg-[#0B1220] text-white'
                 }`}
               />
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">
                 TL
               </span>
             </div>
 
             {/* Hızlı Seçim Butonları */}
-            <div className="flex flex-wrap gap-1.5 mt-2.5">
-              <span className="text-[11px] text-slate-400 self-center mr-1">Hızlı Fiyat:</span>
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="text-[10px] font-bold text-slate-500 uppercase self-center tracking-wider mr-1">Presets:</span>
               {[1400000, 1850000, 2100000, OTV_LIMIT_2026].map((p) => (
                 <button
                   key={p}
                   type="button"
                   onClick={() => setListPrice(p)}
-                  className={`text-xs px-2 py-1 rounded border font-semibold transition-colors ${
+                  className={`text-[11px] px-2.5 py-1 rounded-md border font-bold transition-all cursor-pointer ${
                     listPrice === p 
-                      ? 'bg-sky-700 text-white border-sky-600' 
-                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                      ? 'bg-indigo-600 text-white border-indigo-500 shadow-sm' 
+                      : 'bg-[#18243A] text-slate-400 border-[#1E293B] hover:text-white hover:bg-[#1E293B]'
                   }`}
                 >
-                  {p === OTV_LIMIT_2026 ? '2026 Tavanı (2.873.972 ₺)' : formatCurrency(p)}
+                  {p === OTV_LIMIT_2026 ? '2026 TAVAN' : formatCurrency(p)}
                 </button>
               ))}
             </div>
           </div>
 
           {/* Motor Tipi Seçimi */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Motor Tipi, Gücü ve ÖTV Dilimi
+          <div className="space-y-3">
+            <label className="block text-xs font-black text-slate-400 uppercase tracking-widest">
+              Motor Tipi ve Vergi Dilimi
             </label>
-            <select
-              value={selectedEngine}
-              onChange={(e) => setSelectedEngine(e.target.value)}
-              className="w-full px-3 py-2.5 rounded border border-slate-300 bg-white text-slate-900 text-xs sm:text-sm font-semibold focus:outline-none focus:border-sky-600"
-            >
-              {ENGINE_OPTIONS.map((opt) => (
-                <option key={opt.id} value={opt.id}>
-                  {opt.name} — ({opt.badge})
-                </option>
-              ))}
-            </select>
-            <p className="mt-1.5 text-[11px] text-slate-500 leading-relaxed">
-              {currentEngine.desc}
-            </p>
+            <div className="relative">
+              <select
+                value={selectedEngine}
+                onChange={(e) => setSelectedEngine(e.target.value)}
+                className="w-full pl-4 pr-10 py-3 rounded-lg border border-[#1E293B] bg-[#0B1220] text-white text-sm font-bold appearance-none outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all"
+              >
+                {ENGINE_OPTIONS.map((opt) => (
+                  <option key={opt.id} value={opt.id} className="bg-[#111B2E]">
+                    {opt.name} ({opt.badge})
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                <ChevronRight size={18} className="rotate-90" />
+              </div>
+            </div>
+            <div className="flex items-start gap-2 p-3 bg-[#18243A]/50 rounded-lg border border-[#1E293B]/50">
+              <Info size={14} className="text-indigo-400 mt-0.5 shrink-0" />
+              <p className="text-[11px] text-slate-400 leading-relaxed italic">
+                {currentEngine.desc}
+              </p>
+            </div>
           </div>
 
         </div>
       </div>
 
       {/* SONUÇ KARTLARI */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         
         {/* Sol Kart: Engelli Bireyin Ödeyeceği Tutar */}
-        <div className={`p-5 rounded-2xl border shadow-xs transition-all ${
+        <div className={`p-6 rounded-xl border shadow-lg transition-all animate-in zoom-in-95 duration-300 ${
           calculation.isExceeded 
-            ? 'bg-red-50/50 border-red-200' 
-            : 'bg-emerald-50/50 border-emerald-200'
+            ? 'bg-rose-950/10 border-rose-900/50' 
+            : 'bg-emerald-950/10 border-emerald-900/50'
         }`}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-bold text-slate-600 tracking-wider">
-              Muafiyetli Ödenecek Fiyat
-            </span>
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
-              ÖTV Sıfırlanır
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${calculation.isExceeded ? 'bg-rose-900/30 text-rose-400' : 'bg-emerald-900/30 text-emerald-400'}`}>
+                <FileCheck2 size={18} />
+              </div>
+              <span className="text-xs uppercase font-black text-slate-400 tracking-widest">
+                Muafiyetli Net Fiyat
+              </span>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-950/60 text-indigo-300 border border-indigo-800">
+              ÖTV MUAF (%0)
             </span>
           </div>
 
-          <div className="text-3xl sm:text-4xl font-black text-emerald-900 my-2">
-            {calculation.isExceeded ? 'Geçersiz (Tavan Aşıldı)' : formatCurrency(calculation.engelliOdenecekTutar)}
+          <div className={`text-4xl font-black mb-3 tracking-tighter ${calculation.isExceeded ? 'text-rose-500' : 'text-emerald-400'}`}>
+            {calculation.isExceeded ? 'GEÇERSİZ' : formatCurrency(calculation.engelliOdenecekTutar)}
           </div>
 
-          <p className="text-xs text-slate-600 leading-relaxed">
+          <div className="text-xs text-slate-400 leading-relaxed font-medium">
             {calculation.isExceeded ? (
-              <span className="text-red-700 font-semibold">
-                Bu araç 2.873.972 TL üst sınırını aştığı için ÖTV muafiyetinden faydalanamazsınız.
+              <span className="text-rose-400 flex items-center gap-1.5">
+                <AlertTriangle size={12} />
+                Araç fiyatı istisna üst sınırını aşıyor.
               </span>
             ) : (
-              <>
-                Ham fabrika bedeli üzerine yalnızca <strong>%20 KDV</strong> eklenmiştir. ÖTV bedeli tamamen istisnadır.
-              </>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={12} className="text-emerald-500" />
+                Fabrika çıkış bedeli + %20 KDV dahil anahtar teslim tutardır.
+              </span>
             )}
-          </p>
+          </div>
         </div>
 
         {/* Sağ Kart: Sağlanan Toplam Vergi Avantajı */}
-        <div className="p-5 rounded-2xl border border-blue-200 bg-blue-50/50 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-bold text-slate-600 tracking-wider">
-              Toplam Sağlanan Tasarruf
-            </span>
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200">
-              Net Vergi İndirimi: %{calculation.indirimYuzdesi}
-            </span>
+        <div className="p-6 rounded-xl border border-indigo-900/50 bg-indigo-950/10 shadow-lg animate-in zoom-in-95 duration-300 delay-100">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-indigo-900/30 text-indigo-400 flex items-center justify-center">
+                <TrendingDown size={18} />
+              </div>
+              <span className="text-xs uppercase font-black text-slate-400 tracking-widest">
+                Toplam Vergi Kazancı
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-600 text-white shadow-sm">
+                -%{calculation.indirimYuzdesi} TASARRUF
+              </span>
+            </div>
           </div>
 
-          <div className="text-3xl sm:text-4xl font-black text-sky-700 dark:text-sky-400 my-2">
+          <div className="text-4xl font-black text-indigo-400 mb-3 tracking-tighter">
             {calculation.isExceeded ? '0 ₺' : formatCurrency(calculation.toplamVergiAvantaji)}
           </div>
 
-          <p className="text-xs text-slate-600 leading-relaxed">
-            Normal liste satış fiyatına kıyasla cebinizde kalan net nakit vergi muafiyeti tutarıdır.
-          </p>
+          <div className="text-xs text-slate-400 leading-relaxed font-medium flex items-center gap-1.5">
+            <Sparkles size={12} className="text-amber-400" />
+            ÖTV muafiyeti sayesinde ödemediğiniz toplam vergi tutarıdır.
+          </div>
         </div>
 
       </div>
 
       {/* DETAYLI VERGİ VE FİYAT DAĞILIM TABLOSU */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
-        <div className="bg-slate-900 text-white px-5 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
-            <Receipt className="w-4 h-4 text-blue-200" />
-            <span>2026 TERS MATEMATİK HESAPLAMA VE DAĞILIM TABLOSU</span>
+      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] overflow-hidden shadow-xl">
+        <div className="bg-[#18243A] text-white px-5 py-3.5 flex items-center justify-between border-b border-[#1E293B]">
+          <div className="flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            <Scale className="w-4 h-4 text-indigo-400" />
+            <span>Resmi Ters Matematik Dağılımı</span>
           </div>
-          <span className="text-xs text-blue-200">
+          <span className="text-[11px] font-mono font-bold text-indigo-300 bg-indigo-950/50 border border-indigo-800/60 px-2 py-0.5 rounded">
             {currentEngine.badge}
           </span>
         </div>
@@ -324,66 +360,66 @@ export default function OtvHesaplamaPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
-                <th className="p-3">Mali Kalem</th>
-                <th className="p-3">Resmi Hesaplama Formülü</th>
-                <th className="p-3 text-right">Normal Bayi Satışı</th>
-                <th className="p-3 text-right text-emerald-800 bg-emerald-50/60 font-bold">
+              <tr className="bg-[#0B1220] text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-[#1E293B]">
+                <th className="p-4">Mali Kalem</th>
+                <th className="p-4">Hesaplama Mantığı</th>
+                <th className="p-4 text-right">Standart Bayi Satışı</th>
+                <th className="p-4 text-right text-emerald-400 bg-emerald-950/20 font-black">
                   Engelli Birey İçin
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
-              <tr>
-                <td className="p-3 font-semibold text-slate-800">1. Ham Fabrika Satış Bedeli</td>
-                <td className="p-3 text-slate-500 font-mono text-[11px]">
-                  KDV Hariç / (1 + ÖTV Oranı / 100)
+            <tbody className="divide-y divide-[#1E293B] text-[#CBD5E1]">
+              <tr className="hover:bg-white/5 transition-colors">
+                <td className="p-4 font-bold text-[#F8FAFC]">1. Ham Fabrika Bedeli</td>
+                <td className="p-4 text-slate-500 font-mono text-[10px]">
+                  KDV Hariç / (1 + ÖTV Oranı)
                 </td>
-                <td className="p-3 text-right font-medium text-slate-700">
+                <td className="p-4 text-right font-medium">
                   {formatCurrency(calculation.hamFabrikaFiyati)}
                 </td>
-                <td className="p-3 text-right font-bold text-emerald-800 bg-emerald-50/60">
+                <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">
                   {formatCurrency(calculation.hamFabrikaFiyati)}
                 </td>
               </tr>
-              <tr>
-                <td className="p-3 font-semibold text-slate-800">
+              <tr className="hover:bg-white/5 transition-colors">
+                <td className="p-4 font-bold text-[#F8FAFC]">
                   2. Özel Tüketim Vergisi (ÖTV)
                 </td>
-                <td className="p-3 text-slate-500 font-mono text-[11px]">
+                <td className="p-4 text-slate-500 font-mono text-[10px]">
                   Ham Bedel × %{currentEngine.rate}
                 </td>
-                <td className="p-3 text-right font-medium text-rose-700">
+                <td className="p-4 text-right font-medium text-rose-400">
                   +{formatCurrency(calculation.normalOtvTutari)}
                 </td>
-                <td className="p-3 text-right font-bold text-emerald-700 bg-emerald-50/60">
-                  0 ₺ (%100 Muaf)
+                <td className="p-4 text-right font-black text-emerald-500 bg-emerald-950/20">
+                  0 ₺ (İSTİSNA)
                 </td>
               </tr>
-              <tr>
-                <td className="p-3 font-semibold text-slate-800">
+              <tr className="hover:bg-white/5 transition-colors">
+                <td className="p-4 font-bold text-[#F8FAFC]">
                   3. Katma Değer Vergisi (%20 KDV)
                 </td>
-                <td className="p-3 text-slate-500 font-mono text-[11px]">
-                  Normalde (Ham + ÖTV) × 0.20 | Engellide Ham × 0.20
+                <td className="p-4 text-slate-500 font-mono text-[10px]">
+                  KDV Matrahı × 0.20
                 </td>
-                <td className="p-3 text-right font-medium text-slate-700">
+                <td className="p-4 text-right font-medium">
                   +{formatCurrency(calculation.normalKdvTutari)}
                 </td>
-                <td className="p-3 text-right font-bold text-emerald-800 bg-emerald-50/60">
+                <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">
                   +{formatCurrency(calculation.engelliKdvTutari)}
                 </td>
               </tr>
-              <tr className="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
-                <td className="p-3">TOPLAM ANAHTAR TESLİM</td>
-                <td className="p-3 text-slate-600 text-[11px]">
-                  Ham Fiyat + ÖTV + KDV
+              <tr className="bg-[#18243A] font-black text-[#F8FAFC] border-t border-indigo-500/30">
+                <td className="p-4 text-sm uppercase">Anahtar Teslim Toplam</td>
+                <td className="p-4 text-indigo-300 font-mono text-[10px] uppercase">
+                  Nihai Satış Fiyatı
                 </td>
-                <td className="p-3 text-right text-slate-900 text-sm">
+                <td className="p-4 text-right text-sm">
                   {formatCurrency(listPrice)}
                 </td>
-                <td className="p-3 text-right text-emerald-900 bg-emerald-100 text-sm font-black">
-                  {calculation.isExceeded ? 'Tavan Aşıldı' : formatCurrency(calculation.engelliOdenecekTutar)}
+                <td className="p-4 text-right text-sm text-emerald-400 bg-emerald-500/10 shadow-inner">
+                  {calculation.isExceeded ? 'TAVAN AŞILDI' : formatCurrency(calculation.engelliOdenecekTutar)}
                 </td>
               </tr>
             </tbody>
@@ -391,39 +427,42 @@ export default function OtvHesaplamaPage() {
         </div>
       </div>
 
-      {/* 3 ADET YASAL VE MEVZUAT BLOKLARI */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* YASAL MEVZUAT BLOKLARI */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         
-        {/* 1. Blok: %90 Üzeri Rapor Sahipleri */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
-          <div className="flex items-center gap-2 text-sky-700 dark:text-sky-400 font-bold text-xs uppercase mb-2">
-            <FileCheck2 className="w-4 h-4" />
-            <span>%90 ve Üzeri Engelliler</span>
+        <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
+          <div className="flex items-center gap-2.5 text-indigo-400 font-bold text-xs uppercase mb-3 tracking-wider">
+            <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20">
+              <FileCheck2 size={14} />
+            </div>
+            <span>%90 Üzeri Engellilik</span>
           </div>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            Sağlık kurulu raporu %90 ve üzeri olan bireylerde <strong>araçta herhangi bir özel tertibat aranmaz</strong>. Aracı engelli bireyin kendisi, eşi, aynı il sınırlarında ikamet eden 1. dereceye kadar kan ve sıhri hısımları ile tescil belgesinde kayıtlı şoförü kullanabilir.
+          <p className="text-xs text-slate-400 leading-relaxed font-medium">
+            Sağlık kurulu raporu %90 ve üzeri olan bireylerde <strong>özel tertibat aranmaz</strong>. Aracı engelli bireyin kendisi, eşi ve tescil belgesinde kayıtlı yakınları kullanabilir.
           </p>
         </div>
 
-        {/* 2. Blok: Ortopedik Engelliler */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
-          <div className="flex items-center gap-2 text-sky-700 dark:text-sky-400 font-bold text-xs uppercase mb-2">
-            <ShieldCheck className="w-4 h-4" />
-            <span>Ortopedik Engelliler</span>
+        <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
+          <div className="flex items-center gap-2.5 text-indigo-400 font-bold text-xs uppercase mb-3 tracking-wider">
+            <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20">
+              <ShieldCheck size={14} />
+            </div>
+            <span>Ortopedik Engel</span>
           </div>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            Ortopedik engelli bireylerde <strong>%90 oran şartı aranmaz</strong> (Örn: %20 veya %40 ortopedik rapor yeterlidir). Raporda ve sürücü belgesinde &quot;Hareket ettirici aksamda özel tertibatlı araç kullanır&quot; ibaresi ve ehliyet tertibat kodları bulunmalıdır. Aracı bizzat hak sahibi kullanır.
+          <p className="text-xs text-slate-400 leading-relaxed font-medium">
+            Ortopedik engellilerde <strong>oran şartı yoktur</strong>. Raporda &quot;Özel tertibatlı araç kullanır&quot; ibaresi ve ehliyet kodları şarttır. Aracı bizzat hak sahibi kullanmalıdır.
           </p>
         </div>
 
-        {/* 3. Blok: 5 Yıl Satış Yasağı */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
-          <div className="flex items-center gap-2 text-sky-700 dark:text-sky-400 font-bold text-xs uppercase mb-2">
-            <AlertTriangle className="w-4 h-4 text-amber-600" />
-            <span>5 Yıl Satış Kısıtlaması</span>
+        <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
+          <div className="flex items-center gap-2.5 text-amber-400 font-bold text-xs uppercase mb-3 tracking-wider">
+            <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/20">
+              <AlertTriangle size={14} />
+            </div>
+            <span>5 Yıl Satış Kısıtı</span>
           </div>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            ÖTV muafiyetiyle satın alınan araç <strong>5 yıl boyunca</strong> satılamaz, bağışlanamaz veya devredilemez. 5 yıl dolmadan satılmak istenirse istisna edilen ÖTV tutarı vergi dairesine geri ödenir. 5 yıl dolduktan sonra ÖTV ödenmeksizin serbestçe satılabilir ve yeni muafiyetli araç hakkı doğar.
+          <p className="text-xs text-slate-400 leading-relaxed font-medium">
+            Muafiyetli araç <strong>5 yıl boyunca</strong> satılamaz. 5 yıl dolmadan satılırsa istisna edilen ÖTV geri ödenir. Süre dolunca ÖTV&apos;siz satış ve yeni araç hakkı doğar.
           </p>
         </div>
 

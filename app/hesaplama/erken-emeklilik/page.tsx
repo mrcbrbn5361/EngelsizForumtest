@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useMemo } from 'react';
 import { 
   Calendar, 
@@ -8,17 +10,14 @@ import {
   AlertCircle, 
   FileText,
   Clock,
-  ShieldAlert
+  ShieldAlert,
+  Info,
+  ChevronRight,
+  TrendingUp,
+  History
 } from 'lucide-react';
 
 type InsuranceType = '4a' | '4b' | '4c'; // 4A: SSK, 4B: Bağ-Kur, 4C: Emekli Sandığı (Memur)
-
-interface RetirementCondition {
-  sigortalilikSuresiYil: number;
-  primGunu: number;
-  aciklama: string;
-  vergiIndirimiZorunlu: boolean;
-}
 
 export default function ErkenEmeklilikPage() {
   const [startDate, setStartDate] = useState<string>('2005-04-15');
@@ -161,104 +160,109 @@ export default function ErkenEmeklilikPage() {
     <div className="space-y-6">
       
       {/* 01.10.2008 Milat Uyarısı */}
-      <div className="bg-purple-50 border-l-4 border-purple-600 p-4 rounded-r-md shadow-xs">
-        <div className="flex items-start gap-3">
-          <ShieldAlert className="w-5 h-5 text-purple-600 shrink-0 mt-0.5" />
-          <div className="text-xs text-purple-950 leading-relaxed">
-            <h2 className="font-bold text-sm text-purple-900 mb-1">
-              Erken Emeklilikte 01.10.2008 Tarihi Neden Hayati Önem Taşır?
+      <div className="bg-indigo-950/20 border border-indigo-800 p-5 rounded-lg shadow-lg">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 rounded-full bg-indigo-900/50 flex items-center justify-center shrink-0">
+            <ShieldAlert className="w-6 h-6 text-indigo-400" />
+          </div>
+          <div className="space-y-1.5">
+            <h2 className="font-bold text-lg text-indigo-400 tracking-tight">
+              Erken Emeklilikte 01.10.2008 Tarihi Neden Önemlidir?
             </h2>
-            <p>
-              <strong>01.10.2008 öncesi SSK (4A) sigortalılar</strong> için emeklilikte yaş aranmaz ancak <strong>Gelir İdaresi Başkanlığı onaylı Vergi İndirim Belgesi</strong> almak kanunen zorunludur. 
-              <strong>01.10.2008 sonrasında</strong> ilk defa sigortalı olanlarda ise vergi indirimi aranmaz; emeklilik müracaatı doğrudan SGK&apos;ya yapılır ve SGK Sağlık Kurulunca çalışma gücü kaybı tespiti yapılır.
+            <p className="text-sm text-[#CBD5E1] leading-relaxed">
+              <strong>01.10.2008 öncesi SSK (4A) sigortalılar</strong> için emeklilikte yaş aranmaz ancak <strong>Gelir İdaresi Başkanlığı onaylı Vergi İndirim Belgesi</strong> almak zorunludur. 
+              <strong>01.10.2008 sonrasında</strong> ise vergi indirimi aranmaz; müracaat doğrudan SGK&apos;ya yapılır.
             </p>
           </div>
         </div>
       </div>
 
       {/* Başlık ve Girdi Formu */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded bg-purple-50 text-purple-700 flex items-center justify-center font-black">
-              <Calendar className="w-5 h-5" />
+      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1E293B] pb-5 mb-6">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-lg bg-[#18243A] text-indigo-400 flex items-center justify-center shadow-inner border border-[#1E293B]">
+              <Calendar className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900">
-                Engelli Erken Emeklilik Şartları ve Kalan Süre Hesaplama
+              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+                Engelli Erken Emeklilik Şartları Hesaplama
               </h1>
-              <span className="text-xs text-slate-500 font-medium">
-                Dayanak: 506 SK Geçici 18. Madde ve 5510 SK 28. Madde
-              </span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <Info size={12} className="text-slate-500" />
+                <span className="text-xs text-slate-400 font-medium">
+                  506 SK Geçici 18. Madde ve 5510 SK 28. Madde Uyumluluğu
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200">
-            Yaş Şartı Yoktur
+          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-emerald-400 border border-emerald-800/50 shadow-sm uppercase tracking-wider">
+            YAŞ ŞARTI ARANMAZ
           </div>
         </div>
 
         {/* Girdi Formu */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          {/* İlk Sigorta Tescil Tarihi */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              İlk İşe Giriş / Sigorta Tarihi
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              İşe Giriş Tarihi
             </label>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
+              className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
             />
-            <span className="text-[11px] text-slate-500 mt-1 block">
-              Adınıza ilk primin yattığı gün
-            </span>
+            <span className="text-[10px] text-slate-500 italic block">İlk primin yattığı gün</span>
           </div>
 
-          {/* Sigorta Statüsü */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Sigorta Kolu (Statü)
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              Sigorta Statüsü
             </label>
-            <select
-              value={insuranceType}
-              onChange={(e) => setInsuranceType(e.target.value as InsuranceType)}
-              className="w-full px-3 py-2.5 rounded border border-slate-300 bg-white text-slate-900 text-xs font-semibold focus:outline-none focus:border-sky-600"
-            >
-              <option value="4a">4A - SSK (Hizmet Akdiyle Çalışanlar)</option>
-              <option value="4b">4B - Bağ-Kur (Esnaf / Kendi Adına Çalışanlar)</option>
-              <option value="4c">4C - Emekli Sandığı (Kamu Görevlileri / Memurlar)</option>
-            </select>
-            <span className="text-[11px] text-slate-500 mt-1 block">
-              Son 2520 günün çoğunluğunun geçtiği statü
-            </span>
+            <div className="relative">
+              <select
+                value={insuranceType}
+                onChange={(e) => setInsuranceType(e.target.value as InsuranceType)}
+                className="w-full pl-3 pr-10 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+              >
+                <option value="4a">4A - SSK (Hizmet Akdi)</option>
+                <option value="4b">4B - Bağ-Kur (Esnaf)</option>
+                <option value="4c">4C - Emekli Sandığı (Memur)</option>
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                <ChevronRight size={14} className="rotate-90" />
+              </div>
+            </div>
+            <span className="text-[10px] text-slate-500 italic block">Son 2520 gün ağırlığı</span>
           </div>
 
-          {/* Engel Derecesi */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Engel Derecesi / Oranı
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              Engel Derecesi
             </label>
-            <select
-              value={disabilityDegree}
-              onChange={(e) => setDisabilityDegree(parseInt(e.target.value, 10))}
-              className="w-full px-3 py-2.5 rounded border border-slate-300 bg-white text-slate-900 text-xs font-semibold focus:outline-none focus:border-sky-600"
-            >
-              <option value={1}>1. Derece (%80 ve Üzeri)</option>
-              <option value={2}>2. Derece (%60 - %79 Arası)</option>
-              <option value={3}>3. Derece (%40 - %59 Arası)</option>
-            </select>
-            <span className="text-[11px] text-slate-500 mt-1 block">
-              Kurulca saptanan kayıp oranı
-            </span>
+            <div className="relative">
+              <select
+                value={disabilityDegree}
+                onChange={(e) => setDisabilityDegree(parseInt(e.target.value, 10))}
+                className="w-full pl-3 pr-10 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+              >
+                <option value={1}>1. Derece (%80+)</option>
+                <option value={2}>2. Derece (%60-79)</option>
+                <option value={3}>3. Derece (%40-59)</option>
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                <ChevronRight size={14} className="rotate-90" />
+              </div>
+            </div>
+            <span className="text-[10px] text-slate-500 italic block">Kurulca saptanan oran</span>
           </div>
 
-          {/* Mevcut Prim Günü */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Mevcut Ödenmiş Prim Günü
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              Ödenmiş Prim Günü
             </label>
             <input
               type="number"
@@ -266,11 +270,9 @@ export default function ErkenEmeklilikPage() {
               max="15000"
               value={currentPaidDays || ''}
               onChange={(e) => setCurrentPaidDays(Math.max(0, parseInt(e.target.value, 10) || 0))}
-              className="w-full px-3.5 py-2 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
+              className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
             />
-            <span className="text-[11px] text-slate-500 mt-1 block">
-              SGK hizmet dökümündeki toplam gün
-            </span>
+            <span className="text-[10px] text-slate-500 italic block">Hizmet dökümü toplamı</span>
           </div>
 
         </div>
@@ -278,48 +280,46 @@ export default function ErkenEmeklilikPage() {
 
       {/* HESAPLANAN ŞARTLAR VE EMEKLİLİK DURUMU */}
       {calculation && (
-        <div className={`rounded-2xl border p-6 shadow-xs ${
+        <div className={`rounded-xl border p-6 shadow-xl animate-in zoom-in-95 duration-300 ${
           calculation.isReadyForRetirement 
-            ? 'bg-emerald-50/70 border-emerald-300' 
-            : 'bg-sky-50 dark:bg-sky-950/40 border-blue-200'
+            ? 'bg-emerald-950/10 border-emerald-900/50' 
+            : 'bg-indigo-950/10 border-indigo-900/50'
         }`}>
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-5">
             <div className="mt-1">
               {calculation.isReadyForRetirement ? (
-                <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
-                  <CheckCircle2 className="w-6 h-6" />
+                <div className="w-12 h-12 rounded-full bg-emerald-900/30 text-emerald-400 flex items-center justify-center shadow-inner">
+                  <CheckCircle2 size={28} />
                 </div>
               ) : (
-                <div className="w-10 h-10 rounded-full bg-sky-700 text-white flex items-center justify-center font-bold">
-                  <Clock className="w-6 h-6" />
+                <div className="w-12 h-12 rounded-full bg-indigo-900/30 text-indigo-400 flex items-center justify-center shadow-inner">
+                  <Clock size={28} />
                 </div>
               )}
             </div>
 
-            <div className="space-y-2 flex-1">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className={`text-base font-bold ${
-                  calculation.isReadyForRetirement ? 'text-emerald-950' : 'text-slate-900'
-                }`}>
+            <div className="space-y-4 flex-1">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h2 className="text-lg font-bold text-[#F8FAFC] tracking-tight">
                   {calculation.isReadyForRetirement 
-                    ? 'TEBRİKLER: Engelli Erken Emeklilik Şartlarını Eksiksiz Tamamladınız!' 
-                    : 'ERKEN EMEKLİLİK İÇİN GEREKLİ ŞARTLAR VE KALAN SÜRE'}
+                    ? 'TEBRİKLER: Emeklilik Şartlarını Eksiksiz Tamamladınız!' 
+                    : 'EMEKLİLİK İÇİN GEREKLİ ŞARTLAR VE KALAN SÜRE'}
                 </h2>
 
-                <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${
+                <span className={`text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-wider border ${
                   calculation.isReadyForRetirement 
-                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
-                    : 'bg-blue-100 text-sky-700 dark:text-sky-400 border-blue-200'
+                    ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800' 
+                    : 'bg-indigo-950/40 text-indigo-400 border-indigo-800'
                 }`}>
-                  {calculation.isReadyForRetirement ? 'Emekliliğe Hak Kazanıldı' : 'Şartlar Devam Ediyor'}
+                  {calculation.isReadyForRetirement ? 'Hak Kazanıldı' : 'Süreç Devam Ediyor'}
                 </span>
               </div>
 
-              <p className="text-xs text-slate-700 leading-relaxed">
+              <p className="text-sm text-[#CBD5E1] leading-relaxed max-w-4xl">
                 {calculation.isReadyForRetirement ? (
                   <>
                     Hem <strong>{calculation.reqYears} yıllık</strong> sigortalılık süresini hem de aranan <strong>{calculation.reqDays} prim gününü</strong> başarıyla doldurdunuz. 
-                    {calculation.isTaxDiscountMandatory && ' Vergi indirim belgeniz onaylıysa'} dilediğiniz zaman SGK Tahsis Servisi&apos;ne veya e-Devlet üzerinden Gelir/Aylık/Ödenek Talep Belgesi ile emeklilik başvurusu yapabilirsiniz.
+                    {calculation.isTaxDiscountMandatory && ' Vergi indirim belgeniz onaylıysa'} dilediğiniz zaman SGK Tahsis Servisi&apos;ne müracaat ederek emeklilik sürecinizi başlatabilirsiniz.
                   </>
                 ) : (
                   <>
@@ -330,48 +330,55 @@ export default function ErkenEmeklilikPage() {
               </p>
 
               {/* 4'lü İstatistik Paneli */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-200/80 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-[#1E293B]">
                 
-                <div className="p-2.5 bg-white rounded border border-slate-200">
-                  <span className="text-slate-500 block text-[11px]">Gereken Sigorta Süresi</span>
-                  <span className="font-black text-slate-900 text-sm">
+                <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Sigorta Süresi</span>
+                  <div className="text-xl font-black text-white">
                     {calculation.reqYears} Yıl
-                  </span>
-                  <span className={`text-[10px] block mt-0.5 font-semibold ${calculation.isYearsSatisfied ? 'text-emerald-700' : 'text-amber-700'}`}>
-                    {calculation.completionDate} ({calculation.remainingYearsText})
-                  </span>
+                  </div>
+                  <div className={`text-[11px] mt-1 font-bold ${calculation.isYearsSatisfied ? 'text-emerald-400' : 'text-amber-400'}`}>
+                    {calculation.completionDate}
+                  </div>
                 </div>
 
-                <div className="p-2.5 bg-white rounded border border-slate-200">
-                  <span className="text-slate-500 block text-[11px]">Gereken Prim Günü</span>
-                  <span className="font-black text-sky-700 dark:text-sky-400 text-sm">
+                <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Gereken Prim</span>
+                  <div className="text-xl font-black text-indigo-400">
                     {calculation.reqDays} Gün
-                  </span>
-                  <span className={`text-[10px] block mt-0.5 font-semibold ${calculation.isDaysSatisfied ? 'text-emerald-700' : 'text-amber-700'}`}>
+                  </div>
+                  <div className={`text-[11px] mt-1 font-bold ${calculation.isDaysSatisfied ? 'text-emerald-400' : 'text-slate-400'}`}>
                     Mevcut: {currentPaidDays} gün
-                  </span>
+                  </div>
                 </div>
 
-                <div className="p-2.5 bg-white rounded border border-slate-200">
-                  <span className="text-slate-500 block text-[11px]">Kalan Prim İhtiyacı</span>
-                  <span className={`font-black text-sm ${calculation.remainingDays === 0 ? 'text-emerald-700' : 'text-red-700'}`}>
-                    {calculation.remainingDays === 0 ? 'Tamamlandı (0 Gün)' : `${calculation.remainingDays} Gün Kaldı`}
-                  </span>
-                  <span className="text-[10px] text-slate-500 block mt-0.5">
-                    {calculation.remainingDays > 0 ? `Yaklaşık ${(calculation.remainingDays / 30).toFixed(1)} ay` : 'Prim yeterli'}
-                  </span>
+                <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Kalan İhtiyaç</span>
+                  <div className={`text-xl font-black ${calculation.remainingDays === 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {calculation.remainingDays === 0 ? 'TAMAM' : `${calculation.remainingDays} Gün`}
+                  </div>
+                  <div className="text-[11px] text-slate-500 mt-1 font-medium">
+                    {calculation.remainingDays > 0 ? `~${(calculation.remainingDays / 30).toFixed(1)} ay kaldı` : 'Kriter sağlandı'}
+                  </div>
                 </div>
 
-                <div className="p-2.5 bg-white rounded border border-slate-200">
-                  <span className="text-slate-500 block text-[11px]">Vergi İndirimi Şartı</span>
-                  <span className={`font-black text-sm ${calculation.isTaxDiscountMandatory ? 'text-purple-800' : 'text-slate-700'}`}>
-                    {calculation.isTaxDiscountMandatory ? 'ZORUNLU (4A Öncesi)' : 'Aranmaz (5510 K.)'}
-                  </span>
-                  <span className="text-[10px] text-slate-500 block mt-0.5">
-                    {calculation.isTaxDiscountMandatory ? 'Maliye onayı gerekir' : 'SGK Kurulu sevk eder'}
-                  </span>
+                <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Vergi İndirimi</span>
+                  <div className={`text-xl font-black ${calculation.isTaxDiscountMandatory ? 'text-indigo-300' : 'text-slate-400'}`}>
+                    {calculation.isTaxDiscountMandatory ? 'ZORUNLU' : 'GEREKMEZ'}
+                  </div>
+                  <div className="text-[11px] text-slate-500 mt-1 font-medium italic">
+                    {calculation.isTaxDiscountMandatory ? 'Maliye onayı şart' : 'SGK Kurul sevki'}
+                  </div>
                 </div>
 
+              </div>
+
+              <div className="flex items-center gap-2 p-3 bg-[#18243A]/50 rounded-lg border border-[#1E293B]/50">
+                <History size={14} className="text-indigo-400" />
+                <p className="text-[11px] text-slate-400 italic">
+                  {calculation.note}
+                </p>
               </div>
 
             </div>
@@ -380,34 +387,45 @@ export default function ErkenEmeklilikPage() {
       )}
 
       {/* YASAL MEVZUAT VE DETAY BİLGİLENDİRME BLOKLARI */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
-          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <Award className="w-4 h-4 text-sky-700 dark:text-sky-400" />
-            <span>Engelli Erken Emekliliği ile Malulen Emeklilik Farkı</span>
+        <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
+          <h3 className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-4 flex items-center gap-2.5">
+            <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20">
+              <Award size={14} />
+            </div>
+            <span>Malulen vs Erken Emeklilik</span>
           </h3>
-          <ul className="text-xs text-slate-600 space-y-2 leading-relaxed">
-            <li>
-              • <strong>Malulen Emeklilik:</strong> Çalışma gücünün en az %60&apos;ını sigortalı olduktan sonra kaybeden ve 10 yıl sigortalılık + 1800 gün primi olanlara bağlanır. Başkasının bakımına muhtaç ise 10 yıl şartı aranmaz. Ancak malul maaşı alan kişi tekrar sigortalı çalışamaz, çalışırsa aylığı kesilir!
+          <ul className="text-xs text-[#CBD5E1] space-y-3 leading-relaxed font-medium">
+            <li className="p-3 bg-[#0B1220] rounded border border-[#1E293B]">
+              <strong className="text-indigo-300 block mb-1">Malulen Emeklilik:</strong> Sonradan %60+ kayıp yaşayanlara tanınır. Emekli olan kişi tekrar sigortalı çalışamaz, çalışırsa aylığı kesilir.
             </li>
-            <li>
-              • <strong>Engelli Erken Emekliliği:</strong> Doğuştan veya sonradan engelli olanlara tanınır. Emekli olduktan sonra <strong>Sosyal Güvenlik Destek Primi (SGDP) ödeyerek hem emekli maaşını alıp hem de çalışmaya devam edebilir</strong> (Aylığı kesilmez).
+            <li className="p-3 bg-[#0B1220] rounded border border-[#1E293B]">
+              <strong className="text-indigo-300 block mb-1">Engelli Erken Emekliliği:</strong> Hem emekli maaşını alıp hem de Sosyal Güvenlik Destek Primi (SGDP) ödeyerek çalışmaya devam edebilirler.
             </li>
           </ul>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
-          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <FileText className="w-4 h-4 text-purple-700" />
-            <span>Emeklilik Başvurusunda İzlenecek Adımlar</span>
+        <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
+          <h3 className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-4 flex items-center gap-2.5">
+            <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20">
+              <FileText size={14} />
+            </div>
+            <span>Başvuru Adımları</span>
           </h3>
-          <ul className="text-xs text-slate-600 space-y-1.5 leading-relaxed">
-            <li>• 1. 01.10.2008 öncesi SSK&apos;lı iseniz vergi dairesinden onaylı vergi indirimi yazınızın çıktısını alın.</li>
-            <li>• 2. e-Devlet Kapısı üzerinden &quot;Gelir, Aylık, Ödenek Talep Belgesi&quot; doldurarak doğrudan online müracaat edin.</li>
-            <li>• 3. İşyerinizden &quot;Emeklilik Nedeniyle İşten Ayrılış Bildirgesi&quot; (Kod 08) düzenlenmesini talep edin.</li>
-            <li>• 4. Başvurunuzu takip eden ay başından itibaren emekli maaşınız birikmeye ve hesaplanmaya başlar.</li>
-          </ul>
+          <div className="space-y-2">
+            {[
+              "01.10.2008 öncesi 4A'lı iseniz vergi dairesinden onaylı yazınızı alın.",
+              "e-Devlet üzerinden 'Gelir, Aylık, Ödenek Talep Belgesi' ile online müracaat edin.",
+              "İşyerinizden 'Emeklilik Nedeniyle İşten Ayrılış' (Kod 08) düzenlemesini isteyin.",
+              "Başvuruyu takip eden ay başından itibaren emekli maaşınız birikmeye başlar."
+            ].map((step, idx) => (
+              <div key={idx} className="flex items-start gap-3 p-2.5 bg-[#0B1220] rounded border border-[#1E293B]">
+                <span className="text-indigo-400 font-black font-mono text-sm leading-none mt-0.5">{idx + 1}.</span>
+                <p className="text-xs text-[#CBD5E1] font-medium leading-relaxed">{step}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
       </div>

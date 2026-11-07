@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useMemo } from 'react';
 import { 
   Briefcase, 
@@ -8,7 +10,12 @@ import {
   Receipt, 
   FileSpreadsheet,
   HelpCircle,
-  ShieldCheck
+  ShieldCheck,
+  Info,
+  Scale,
+  TrendingDown,
+  Clock,
+  History
 } from 'lucide-react';
 
 const KIDEM_TAVANI_2026 = 41828; // 2026 Resmi Kıdem Tazminatı Tavanı (TL / Yıl)
@@ -105,89 +112,94 @@ export default function KidemIhbarPage() {
     <div className="space-y-6">
       
       {/* Engelli Çalışan İçin 24/I-a Bilgilendirme Kutusu */}
-      <div className="bg-sky-50 dark:bg-sky-950/40 border-l-4 border-sky-600 dark:border-sky-500 p-4 rounded-r-md shadow-xs">
-        <div className="flex items-start gap-3">
-          <ShieldCheck className="w-5 h-5 text-sky-700 dark:text-sky-400 shrink-0 mt-0.5" />
-          <div className="text-xs text-blue-950 leading-relaxed">
-            <h2 className="font-bold text-sm text-sky-700 dark:text-sky-400 mb-1">
-              Engelli Çalışanın Sağlık Raporuyla Haklı Fesih Hakkı (4857 Sayılı İş Kanunu m.24/I-a)
+      <div className="bg-indigo-950/20 border border-indigo-800 p-5 rounded-lg shadow-lg">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 rounded-full bg-indigo-900/50 flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-6 h-6 text-indigo-400" />
+          </div>
+          <div className="space-y-1.5">
+            <h2 className="font-bold text-lg text-indigo-400 tracking-tight">
+              Haklı Fesih Hakkı (4857 İş Kanunu m.24/I-a)
             </h2>
-            <p>
-              Engelli bir çalışan, yapmakta olduğu işin sağlığı veya bedensel varlığı için tehlike oluşturduğunu <strong>tam teşekküllü devlet hastanesi sağlık kurulu raporuyla</strong> belgelendirdiği takdirde, iş sözleşmesini tek taraflı feshederek <strong>tüm kıdem tazminatını alarak istifa edebilir</strong>.
+            <p className="text-sm text-[#CBD5E1] leading-relaxed">
+              Engelli çalışanlar, işin sağlıkları için tehlike oluşturduğunu <strong>sağlık kurulu raporuyla</strong> belgeledikleri takdirde, iş sözleşmesini feshederek <strong>kıdem tazminatını alıp istifa edebilirler</strong>.
             </p>
           </div>
         </div>
       </div>
 
       {/* Başlık ve Girdi Formu */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded bg-teal-50 text-teal-700 flex items-center justify-center font-black">
-              <Briefcase className="w-5 h-5" />
+      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1E293B] pb-5 mb-6">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-lg bg-[#18243A] text-indigo-400 flex items-center justify-center shadow-inner border border-[#1E293B]">
+              <Briefcase className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900">
-                2026 Kıdem ve İhbar Tazminatı Hesaplama Robotu
+              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+                Kıdem ve İhbar Tazminatı Hesaplama (2026)
               </h1>
-              <span className="text-xs text-slate-500 font-medium">
-                Dayanak: 1475 sayılı İş Kanunu 14. Madde ve 4857 sayılı İş Kanunu
-              </span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <Info size={12} className="text-slate-500" />
+                <span className="text-xs text-slate-400 font-medium">
+                  1475 SK m.14 ve 4857 Sayılı İş Kanunu Standardı
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700 border border-slate-200">
-            2026 Kıdem Tavanı: <strong>{formatCurrency(KIDEM_TAVANI_2026)}</strong>
+          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
+            2026 TAVANI: {formatCurrency(KIDEM_TAVANI_2026)}
           </div>
         </div>
 
-        {/* Çalışma Süresi */}
-        <div className="mb-4">
-          <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
-            İşyerindeki Toplam Çalışma / Hizmet Süresi
+        {/* Hizmet Süresi */}
+        <div className="space-y-3 mb-6">
+          <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+            Toplam Hizmet Süresi
           </label>
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <span className="text-xs text-slate-500 block mb-1">Yıl</span>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="space-y-1">
               <input
                 type="number"
                 min="0"
                 max="50"
                 value={years || ''}
                 onChange={(e) => setYears(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3 py-2 rounded border border-slate-300 font-bold text-sm text-slate-900 focus:outline-none focus:border-sky-600"
+                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all text-center"
               />
+              <span className="text-[10px] text-slate-500 uppercase font-black tracking-tighter block text-center">YIL</span>
             </div>
-            <div>
-              <span className="text-xs text-slate-500 block mb-1">Ay</span>
+            <div className="space-y-1">
               <input
                 type="number"
                 min="0"
                 max="11"
                 value={months || ''}
                 onChange={(e) => setMonths(Math.min(11, Math.max(0, parseInt(e.target.value, 10) || 0)))}
-                className="w-full px-3 py-2 rounded border border-slate-300 font-bold text-sm text-slate-900 focus:outline-none focus:border-sky-600"
+                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all text-center"
               />
+              <span className="text-[10px] text-slate-500 uppercase font-black tracking-tighter block text-center">AY</span>
             </div>
-            <div>
-              <span className="text-xs text-slate-500 block mb-1">Gün</span>
+            <div className="space-y-1">
               <input
                 type="number"
                 min="0"
                 max="29"
                 value={days || ''}
                 onChange={(e) => setDays(Math.min(29, Math.max(0, parseInt(e.target.value, 10) || 0)))}
-                className="w-full px-3 py-2 rounded border border-slate-300 font-bold text-sm text-slate-900 focus:outline-none focus:border-sky-600"
+                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all text-center"
               />
+              <span className="text-[10px] text-slate-500 uppercase font-black tracking-tighter block text-center">GÜN</span>
             </div>
           </div>
         </div>
 
         {/* Maaş ve Yan Haklar */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Aylık Çıplak Brüt Maaş (TL)
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              Aylık Çıplak Brüt Maaş
             </label>
             <div className="relative">
               <input
@@ -197,20 +209,16 @@ export default function KidemIhbarPage() {
                 step="500"
                 value={grossSalary || ''}
                 onChange={(e) => setGrossSalary(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
+                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
-                TL
-              </span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-[10px] uppercase">TL</span>
             </div>
-            <span className="text-[11px] text-slate-500 mt-1 block">
-              Bordrodaki asıl çıplak sözleşme ücreti
-            </span>
+            <span className="text-[10px] text-slate-500 italic block">Sözleşmedeki asıl ücret</span>
           </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Aylık Düzenli Yan Haklar (Yol, Yemek, Prim vb.)
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              Aylık Düzenli Yan Haklar
             </label>
             <div className="relative">
               <input
@@ -220,51 +228,51 @@ export default function KidemIhbarPage() {
                 step="100"
                 value={regularPerks || ''}
                 onChange={(e) => setRegularPerks(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
+                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
-                TL / Ay
-              </span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-[10px] uppercase">TL</span>
             </div>
-            <span className="text-[11px] text-slate-500 mt-1 block">
-              1 yıllık ikramiye/yakacak/primlerin 1 aya düşen payı
-            </span>
+            <span className="text-[10px] text-slate-500 italic block">Yol, yemek, ikramiye payı</span>
           </div>
         </div>
 
         {/* Fesih Türü ve Seçenekler */}
-        <div className="mt-4 pt-4 border-t border-slate-100 space-y-2.5">
-          <label className="flex items-start gap-3 cursor-pointer select-none p-2.5 rounded bg-slate-50 border border-slate-200 hover:bg-slate-100/70 transition-colors">
-            <input
-              type="checkbox"
-              checked={isHealthResignation}
-              onChange={(e) => setIsHealthResignation(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-sky-700 dark:text-sky-400 focus:ring-sky-600 border-slate-300"
-            />
-            <div className="text-xs">
-              <span className="font-bold text-slate-900 block">
-                Sağlık Sebebiyle Haklı Fesih mi? (İş Kanunu 24/I-a Raporlu İstifa)
+        <div className="mt-6 pt-6 border-t border-[#1E293B] space-y-3">
+          <label className="flex items-start gap-4 cursor-pointer select-none p-4 rounded-lg bg-[#0B1220] border border-[#1E293B] hover:bg-[#18243A]/50 transition-all group">
+            <div className="mt-1">
+              <input
+                type="checkbox"
+                checked={isHealthResignation}
+                onChange={(e) => setIsHealthResignation(e.target.checked)}
+                className="w-4 h-4 rounded-sm text-indigo-500 focus:ring-indigo-500 border-[#1E293B] bg-[#111B2E]"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 transition-colors">
+                Sağlık Sebebiyle Haklı Fesih / İstifa (m.24/I-a)
               </span>
-              <span className="text-slate-600 block mt-0.5">
-                İşçi kendi istifa ettiği için ihbar tazminatı talep edemez ancak kıdem tazminatının tamamını eksiksiz alır.
+              <span className="text-[11px] text-slate-500 leading-relaxed block">
+                İhbar ödenmez ancak kıdem tazminatının tamamı yasal olarak alınabilir.
               </span>
             </div>
           </label>
 
           {!isHealthResignation && (
-            <label className="flex items-start gap-3 cursor-pointer select-none p-2.5 rounded bg-slate-50 border border-slate-200 hover:bg-slate-100/70 transition-colors">
-              <input
-                type="checkbox"
-                checked={includeIhbar}
-                onChange={(e) => setIncludeIhbar(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded text-sky-700 dark:text-sky-400 focus:ring-sky-600 border-slate-300"
-              />
-              <div className="text-xs">
-                <span className="font-bold text-slate-900 block">
-                  İşveren Bildirimsiz İşten Çıkardı (İhbar Tazminatı Hesaba Katılsın)
+            <label className="flex items-start gap-4 cursor-pointer select-none p-4 rounded-lg bg-[#0B1220] border border-[#1E293B] hover:bg-[#18243A]/50 transition-all group">
+              <div className="mt-1">
+                <input
+                  type="checkbox"
+                  checked={includeIhbar}
+                  onChange={(e) => setIncludeIhbar(e.target.checked)}
+                  className="w-4 h-4 rounded-sm text-indigo-500 focus:ring-indigo-500 border-[#1E293B] bg-[#111B2E]"
+                />
+              </div>
+              <div className="space-y-1">
+                <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 transition-colors">
+                  Bildirimsiz İşten Çıkarılma (İhbar Dahil)
                 </span>
-                <span className="text-slate-600 block mt-0.5">
-                  İhbar süresi kullandırılmadan derhal iş akdi feshedildiğinde ödenmesi gereken yasal tazminat.
+                <span className="text-[11px] text-slate-500 leading-relaxed block">
+                  İhbar süresi kullandırılmadan işten çıkarılma durumunda ödenen tazminat.
                 </span>
               </div>
             </label>
@@ -272,130 +280,103 @@ export default function KidemIhbarPage() {
         </div>
       </div>
 
-      {/* TAVAN BİLGİSİ VE SONUÇ KARTLARI */}
+      {/* TAVAN UYARISI */}
       {calculation.isTavanAsildi && (
-        <div className="bg-amber-50 border-l-4 border-amber-500 p-3.5 rounded-r-md text-xs text-amber-900 flex items-start gap-2.5">
-          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-          <div>
-            <strong>Kıdem Tazminatı Tavan Uyarısı:</strong> Giydirilmiş brüt ücretiniz ({formatCurrency(calculation.giydirilmisBrut)}), 2026 yılı tavan tutarı olan <strong>{formatCurrency(KIDEM_TAVANI_2026)}</strong> üzerinde olduğu için kıdem tazminatınız yasal tavan üzerinden hesaplanmıştır.
+        <div className="bg-amber-950/20 border border-amber-800/50 p-4 rounded-lg flex items-start gap-3 animate-in slide-in-from-top-1">
+          <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+          <div className="text-[11px] text-amber-200/80 leading-relaxed">
+            <strong className="text-amber-400 block mb-0.5">Kıdem Tazminatı Tavan Uyarısı:</strong> 
+            Giydirilmiş brüt ücretiniz ({formatCurrency(calculation.giydirilmisBrut)}), 2026 yılı tavan tutarı olan <strong className="text-white">{formatCurrency(KIDEM_TAVANI_2026)}</strong> üzerinde olduğu için yasal tavan uygulandı.
           </div>
         </div>
       )}
 
-      {/* NET ELE GEÇEN TUTAR KARTLARI */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* NET SONUÇ KARTLARI */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         
-        {/* Net Kıdem */}
-        <div className="p-5 rounded-2xl border border-teal-200 bg-teal-50/50 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-bold text-slate-600 tracking-wider">
-              Net Kıdem Tazminatı
-            </span>
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-teal-100 text-teal-800 border border-teal-200">
-              Sadece Damga Vergisi Kesildi
-            </span>
+        <div className="p-6 rounded-xl border border-indigo-900/50 bg-indigo-950/10 shadow-xl animate-in zoom-in-95 duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs uppercase font-black text-slate-400 tracking-widest">Net Kıdem</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#18243A] text-indigo-300 border border-[#1E293B]">-%0,759 DV</span>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-teal-950 my-2">
-            {formatCurrency(calculation.netKidem)}
-          </div>
-          <p className="text-xs text-slate-600">
-            {calculation.isKidemHakEdildi 
-              ? `${calculation.toplamYil.toFixed(2)} yıllık hizmet karşılığı net kıdem tutarı.` 
-              : 'En az 1 tam yıl doldurulmadığı için kıdem hakkı doğmaz.'}
+          <div className="text-3xl font-black text-white mb-2">{formatCurrency(calculation.netKidem)}</div>
+          <p className="text-[11px] text-slate-500 font-medium">
+            {calculation.isKidemHakEdildi ? `${calculation.toplamYil.toFixed(2)} yıllık hizmet karşılığı.` : '1 yıl dolmadığı için hak doğmaz.'}
           </p>
         </div>
 
-        {/* Net İhbar */}
-        <div className="p-5 rounded-2xl border border-slate-200 bg-slate-50/70 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-bold text-slate-600 tracking-wider">
-              Net İhbar Tazminatı
-            </span>
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-700">
-              {calculation.ihbarHaftasi} Hafta ({calculation.ihbarHaftasi * 7} Gün)
-            </span>
+        <div className="p-6 rounded-xl border border-[#1E293B] bg-[#111B2E] shadow-xl animate-in zoom-in-95 duration-300 delay-75">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs uppercase font-black text-slate-400 tracking-widest">Net İhbar</span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#0B1220] text-slate-400 border border-[#1E293B]">{calculation.ihbarHaftasi} Hafta</span>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-slate-900 my-2">
-            {formatCurrency(calculation.netIhbar)}
-          </div>
-          <p className="text-xs text-slate-600">
-            {isHealthResignation 
-              ? 'İşçi haklı sebeple istifa ettiğinde ihbar ödenmez.' 
-              : includeIhbar 
-              ? 'Gelir vergisi ve damga vergisi kesintileri düşülmüştür.' 
-              : 'İhbar tazminatı hariç tutuldu.'}
+          <div className="text-3xl font-black text-white mb-2">{formatCurrency(calculation.netIhbar)}</div>
+          <p className="text-[11px] text-slate-500 font-medium italic">
+            {isHealthResignation ? 'İstifada ihbar ödenmez.' : includeIhbar ? 'Kesintiler düşülmüştür.' : 'Hesaplamaya katılmadı.'}
           </p>
         </div>
 
-        {/* Toplam Ele Geçecek Tutar */}
-        <div className="p-5 rounded-2xl border border-sky-600/30 bg-sky-50 dark:bg-sky-950/40 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-bold text-slate-600 tracking-wider">
-              TOPLAM NET ELE GEÇECEK
-            </span>
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-sky-700 text-white">
-              Banka Hesabına
-            </span>
+        <div className="p-6 rounded-xl border border-emerald-900/50 bg-emerald-950/10 shadow-xl animate-in zoom-in-95 duration-300 delay-150">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs uppercase font-black text-emerald-400 tracking-widest">Toplam Net</span>
+            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-sm uppercase">ELE GEÇEN</span>
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-sky-700 dark:text-sky-400 my-2">
-            {formatCurrency(calculation.toplamNetEleGecen)}
-          </div>
-          <p className="text-xs text-slate-600">
-            Kıdem ve ihbar tazminatının kesintiler sonrası net nakit toplamıdır.
+          <div className="text-3xl font-black text-emerald-400 mb-2">{formatCurrency(calculation.toplamNetEleGecen)}</div>
+          <p className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
+            <CheckCircle2 size={12} className="text-emerald-500" />
+            Tüm kesintiler sonrası net nakit.
           </p>
         </div>
 
       </div>
 
       {/* DETAYLI KALEM VE KESİNTİ DÖKÜM TABLOSU */}
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
-        <div className="bg-slate-900 text-white px-5 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-bold text-xs sm:text-sm">
-            <FileSpreadsheet className="w-4 h-4 text-blue-200" />
-            <span>TAZMİNAT BRÜT HESABI VE YASAL KESİNTİ DÖKÜMÜ</span>
+      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] overflow-hidden shadow-xl">
+        <div className="bg-[#18243A] text-white px-5 py-3.5 flex items-center justify-between border-b border-[#1E293B]">
+          <div className="flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            <FileSpreadsheet className="w-4 h-4 text-indigo-400" />
+            <span>Tazminat ve Kesinti Detayları</span>
           </div>
-          <span className="text-xs text-blue-200">
-            Hizmet: {years} Yıl {months} Ay {days} Gün
+          <span className="text-[11px] font-mono font-bold text-indigo-300 bg-indigo-950/50 border border-indigo-800/60 px-2 py-0.5 rounded">
+            SÜRE: {years}Y {months}A {days}G
           </span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
-                <th className="p-3">Tazminat Türü</th>
-                <th className="p-3">Esas Alınan Aylık Ücret</th>
-                <th className="p-3 text-right">Brüt Tutar</th>
-                <th className="p-3 text-right text-rose-700">Gelir Vergisi</th>
-                <th className="p-3 text-right text-rose-700">Damga Vergisi</th>
-                <th className="p-3 text-right text-teal-800 bg-teal-50/60 font-bold">Net Ödenecek</th>
+              <tr className="bg-[#0B1220] text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-[#1E293B]">
+                <th className="p-4">Kalem</th>
+                <th className="p-4">Baz Ücret</th>
+                <th className="p-4 text-right">Brüt Tutar</th>
+                <th className="p-4 text-right text-rose-400">G. Vergisi</th>
+                <th className="p-4 text-right text-rose-400">D. Vergisi</th>
+                <th className="p-4 text-right text-emerald-400 bg-emerald-950/20 font-black">Net Tutar</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
-              <tr>
-                <td className="p-3 font-semibold text-slate-800">Kıdem Tazminatı</td>
-                <td className="p-3 text-slate-600">
-                  {formatCurrency(calculation.kidemBazUcret)} {calculation.isTavanAsildi ? '(Tavan)' : ''}
-                </td>
-                <td className="p-3 text-right font-medium text-slate-800">{formatCurrency(calculation.brutKidem)}</td>
-                <td className="p-3 text-right text-slate-400">0 ₺ (Muaf)</td>
-                <td className="p-3 text-right text-rose-700 font-medium">-{formatCurrency(calculation.kidemDamgaVergisi)}</td>
-                <td className="p-3 text-right font-bold text-teal-800 bg-teal-50/60">{formatCurrency(calculation.netKidem)}</td>
+            <tbody className="divide-y divide-[#1E293B] text-[#CBD5E1]">
+              <tr className="hover:bg-white/5 transition-colors">
+                <td className="p-4 font-bold text-[#F8FAFC]">Kıdem Tazminatı</td>
+                <td className="p-4 text-slate-500 italic">{formatCurrency(calculation.kidemBazUcret)}</td>
+                <td className="p-4 text-right font-medium">{formatCurrency(calculation.brutKidem)}</td>
+                <td className="p-4 text-right text-slate-600">MUAF</td>
+                <td className="p-4 text-right text-rose-400">-{formatCurrency(calculation.kidemDamgaVergisi)}</td>
+                <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">{formatCurrency(calculation.netKidem)}</td>
               </tr>
-              <tr>
-                <td className="p-3 font-semibold text-slate-800">İhbar Tazminatı</td>
-                <td className="p-3 text-slate-600">{formatCurrency(calculation.giydirilmisBrut)} (Tavansız)</td>
-                <td className="p-3 text-right font-medium text-slate-800">{formatCurrency(calculation.brutIhbar)}</td>
-                <td className="p-3 text-right text-rose-700 font-medium">-{formatCurrency(calculation.ihbarGelirVergisi)}</td>
-                <td className="p-3 text-right text-rose-700 font-medium">-{formatCurrency(calculation.ihbarDamgaVergisi)}</td>
-                <td className="p-3 text-right font-bold text-teal-800 bg-teal-50/60">{formatCurrency(calculation.netIhbar)}</td>
+              <tr className="hover:bg-white/5 transition-colors">
+                <td className="p-4 font-bold text-[#F8FAFC]">İhbar Tazminatı</td>
+                <td className="p-4 text-slate-500 italic">{formatCurrency(calculation.giydirilmisBrut)}</td>
+                <td className="p-4 text-right font-medium">{formatCurrency(calculation.brutIhbar)}</td>
+                <td className="p-4 text-right text-rose-400">-{formatCurrency(calculation.ihbarGelirVergisi)}</td>
+                <td className="p-4 text-right text-rose-400">-{formatCurrency(calculation.ihbarDamgaVergisi)}</td>
+                <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">{formatCurrency(calculation.netIhbar)}</td>
               </tr>
-              <tr className="bg-slate-100 font-bold text-slate-900 border-t-2 border-slate-300">
-                <td className="p-3" colSpan={2}>GENEL TOPLAMLAR</td>
-                <td className="p-3 text-right text-sm">{formatCurrency(calculation.toplamBrutTazminat)}</td>
-                <td className="p-3 text-right text-rose-700">-{formatCurrency(calculation.ihbarGelirVergisi)}</td>
-                <td className="p-3 text-right text-rose-700">-{formatCurrency(calculation.kidemDamgaVergisi + calculation.ihbarDamgaVergisi)}</td>
-                <td className="p-3 text-right text-teal-950 bg-teal-100 text-sm font-black">
+              <tr className="bg-[#18243A] font-black text-[#F8FAFC] border-t border-indigo-500/30">
+                <td className="p-4 text-sm uppercase" colSpan={2}>GENEL TOPLAMLAR</td>
+                <td className="p-4 text-right text-sm">{formatCurrency(calculation.toplamBrutTazminat)}</td>
+                <td className="p-4 text-right text-rose-400">-{formatCurrency(calculation.ihbarGelirVergisi)}</td>
+                <td className="p-4 text-right text-rose-400">-{formatCurrency(calculation.toplamKesinti - calculation.ihbarGelirVergisi)}</td>
+                <td className="p-4 text-right text-sm text-emerald-400 bg-emerald-500/10 shadow-inner font-black">
                   {formatCurrency(calculation.toplamNetEleGecen)}
                 </td>
               </tr>

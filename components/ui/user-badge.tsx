@@ -52,10 +52,10 @@ export function UserRoleBadge({ role, size = 'sm', showLabel = true, className }
   }
 
   const sizeClasses = {
-    xs: 'text-[8px] px-1.5 py-0.5 gap-1 rounded-md border',
-    sm: 'text-[9px] px-2 py-0.5 gap-1 rounded-lg border',
-    md: 'text-[10px] px-2.5 py-1 gap-1.5 rounded-xl border',
-    lg: 'text-xs px-3 py-1.5 gap-2 rounded-2xl border',
+    xs: 'text-[8px] px-1.5 py-0.5 gap-1 rounded-sm border',
+    sm: 'text-[9px] px-2 py-0.5 gap-1 rounded-md border',
+    md: 'text-[10px] px-2.5 py-1 gap-1.5 rounded-md border',
+    lg: 'text-xs px-3 py-1.5 gap-2 rounded-md border',
   };
 
   return (
@@ -103,7 +103,7 @@ export function UserLevelBadge({ level = 1, xp, size = 'sm' }: { level?: number;
     <span 
       role="status"
       aria-label={`Kullanıcı seviyesi ${safeLevel}${xp !== undefined ? `, ${xp} deneyim puanı` : ''}`}
-      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-sky-500/10 border border-sky-500/20 text-sky-400 text-[9px] font-bold uppercase tracking-wider"
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[9px] font-bold uppercase tracking-wider"
     >
       <Award size={11} aria-hidden="true" />
       <span>SEVİYE {safeLevel}</span>

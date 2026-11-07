@@ -25,26 +25,26 @@ export async function GET() {
   var style = document.createElement('style');
   style.id = 'ef-a11y-styles';
   style.textContent = [
-    '#ef-a11y-trigger { position: fixed; bottom: 20px; right: 20px; z-index: 999999; width: 48px; height: 48px; border-radius: 50%; background: #0078D4; color: #ffffff; border: 2px solid #ffffff; box-shadow: 0 4px 14px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s, background 0.2s; font-family: Segoe UI, system-ui, sans-serif; }',
-    '#ef-a11y-trigger:hover { transform: scale(1.08); background: #106EBE; }',
-    '#ef-a11y-trigger:focus-visible { outline: 3px solid #ffaa00; outline-offset: 3px; }',
-    '#ef-a11y-modal { position: fixed; bottom: 80px; right: 20px; z-index: 999999; width: 320px; max-width: calc(100vw - 40px); background: #1f1f1f; color: #f3f3f3; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; box-shadow: 0 12px 32px rgba(0,0,0,0.45); font-family: "Segoe UI", -apple-system, sans-serif; display: none; flex-direction: column; overflow: hidden; backdrop-filter: blur(20px); }',
-    '#ef-a11y-modal.open { display: flex; animation: efFadeIn 0.2s ease-out; }',
-    '@keyframes efFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }',
-    '.ef-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: #2b2b2b; border-bottom: 1px solid rgba(255,255,255,0.1); }',
-    '.ef-title { font-size: 13px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 6px; }',
-    '.ef-close { background: none; border: none; color: #cccccc; cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 4px; }',
-    '.ef-close:hover { background: rgba(255,255,255,0.1); color: #ffffff; }',
+    '#ef-a11y-trigger { position: fixed; bottom: 20px; right: 20px; z-index: 999999; width: 48px; height: 48px; border-radius: 12px; background: #6366f1; color: #ffffff; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 8px 24px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s, background 0.2s; font-family: Segoe UI, system-ui, sans-serif; }',
+    '#ef-a11y-trigger:hover { transform: translateY(-4px); background: #818cf8; }',
+    '#ef-a11y-trigger:focus-visible { outline: 3px solid #6366f1; outline-offset: 3px; }',
+    '#ef-a11y-modal { position: fixed; bottom: 80px; right: 20px; z-index: 999999; width: 320px; max-width: calc(100vw - 40px); background: #111b2e; color: #f8fafc; border: 1px solid #1e293b; border-radius: 12px; box-shadow: 0 20px 48px rgba(0,0,0,0.5); font-family: "Segoe UI", -apple-system, sans-serif; display: none; flex-direction: column; overflow: hidden; backdrop-filter: blur(24px); }',
+    '#ef-a11y-modal.open { display: flex; animation: efFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }',
+    '@keyframes efFadeIn { from { opacity: 0; transform: translateY(12px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }',
+    '.ef-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #18243a; border-bottom: 1px solid #1e293b; }',
+    '.ef-title { font-size: 13px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }',
+    '.ef-close { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 18px; padding: 4px; border-radius: 6px; transition: color 0.15s, background 0.15s; }',
+    '.ef-close:hover { background: rgba(255,255,255,0.05); color: #ffffff; }',
     '.ef-body { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 420px; overflow-y: auto; }',
-    '.ef-btn { background: #2d2d2d; border: 1px solid rgba(255,255,255,0.12); color: #e1e1e1; padding: 8px 6px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; transition: background 0.15s, border-color 0.15s; text-align: center; }',
-    '.ef-btn:hover { background: #383838; border-color: #0078D4; color: #ffffff; }',
-    '.ef-btn.active { background: #0078D4; color: #ffffff; border-color: #005a9e; }',
-    '.ef-footer { padding: 8px 12px; background: #181818; border-top: 1px solid rgba(255,255,255,0.08); font-size: 10px; color: #888888; text-align: center; }',
-    '.ef-footer a { color: #60a5fa; text-decoration: none; font-weight: 600; }',
-    '.ef-footer a:hover { text-decoration: underline; }',
-    '#ef-reading-ruler { position: fixed; left: 0; width: 100%; height: 28px; background: rgba(255, 235, 59, 0.25); border-top: 2px solid #fbc02d; border-bottom: 2px solid #fbc02d; pointer-events: none; z-index: 999998; display: none; }',
+    '.ef-btn { background: #18243a; border: 1px solid #1e293b; color: #cbd5e1; padding: 10px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; transition: all 0.15s ease; text-align: center; }',
+    '.ef-btn:hover { background: #1e293b; border-color: #6366f1; color: #ffffff; transform: translateY(-1px); }',
+    '.ef-btn.active { background: #6366f1; color: #ffffff; border-color: #818cf8; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }',
+    '.ef-footer { padding: 10px 14px; background: #0b1220; border-top: 1px solid #1e293b; font-size: 10px; color: #64748b; text-align: center; font-weight: 500; }',
+    '.ef-footer a { color: #818cf8; text-decoration: none; font-weight: 700; }',
+    '.ef-footer a:hover { color: #6366f1; text-decoration: underline; }',
+    '#ef-reading-ruler { position: fixed; left: 0; width: 100%; height: 32px; background: rgba(99, 102, 241, 0.15); border-top: 2px solid #6366f1; border-bottom: 2px solid #6366f1; pointer-events: none; z-index: 999998; display: none; box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }',
     'html.ef-high-contrast { filter: contrast(160%) !important; background: #000000 !important; }',
-    'html.ef-high-contrast * { background-color: #000000 !important; color: #ffff00 !important; border-color: #ffff00 !important; }',
+    'html.ef-high-contrast * { background-color: #000000 !important; color: #facc15 !important; border-color: #facc15 !important; }',
     'html.ef-dyslexia * { letter-spacing: 0.08em !important; word-spacing: 0.15em !important; line-height: 1.85 !important; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif !important; }',
     'html.ef-large-cursor, html.ef-large-cursor * { cursor: default !important; }'
   ].join('\\n');
@@ -54,7 +54,7 @@ export async function GET() {
   var trigger = document.createElement('button');
   trigger.id = 'ef-a11y-trigger';
   trigger.setAttribute('aria-label', 'Erişilebilirlik Araçlarını Aç');
-  trigger.title = 'Erişilebilirlik Menüsü (EngelsizForum 0 TL Widget)';
+  trigger.title = 'Erişilebilirlik Menüsü (EngelsizForum)';
   trigger.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5"/><path d="m9 20 3-6 3 6"/><path d="m6 8 6 2 6-2"/><path d="M12 10v4"/></svg>';
   document.body.appendChild(trigger);
 
@@ -65,7 +65,7 @@ export async function GET() {
 
   window.addEventListener('mousemove', function(e) {
     if (isRulerActive) {
-      ruler.style.top = (e.clientY - 14) + 'px';
+      ruler.style.top = (e.clientY - 16) + 'px';
     }
   });
 
@@ -77,8 +77,8 @@ export async function GET() {
   modal.innerHTML = [
     '<div class="ef-header">',
     '  <div class="ef-title">',
-    '    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0078D4" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>',
-    '    <span>Erişilebilirlik Asistanı</span>',
+    '    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>',
+    '    <span>Erişilebilirlik</span>',
     '  </div>',
     '  <button class="ef-close" id="ef-close-btn" aria-label="Kapat">✕</button>',
     '</div>',

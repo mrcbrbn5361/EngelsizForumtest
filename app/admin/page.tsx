@@ -111,127 +111,56 @@ export default function AdminPage() {
   const fetchUsers = useCallback(async () => {
     setLoadingUsers(true);
     try {
-      let { data, error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
 
-      if (error || !data || data.length === 0) {
-        // Fallback default sample profiles if table is fresh
-        data = [
-          {
-            id: user?.id || 'admin-current',
-            username: profile?.username || 'miracbirben',
-            full_name: profile?.full_name || 'Miraç Birben',
-            role: 'admin',
-            level: 15,
-            xp: 1250,
-            is_verified: true,
-            avatar_url: profile?.avatar_url || '',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: 'mod-aria',
-            username: 'aria_tech',
-            full_name: 'Aria Demir (Erişilebilirlik)',
-            role: 'moderator',
-            level: 9,
-            xp: 750,
-            is_verified: true,
-            avatar_url: '',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: 'mod-felix',
-            username: 'felix_dev',
-            full_name: 'Felix Tan (WebMCP)',
-            role: 'moderator',
-            level: 8,
-            xp: 620,
-            is_verified: true,
-            avatar_url: '',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          },
-          {
-            id: 'user-ahmet',
-            username: 'ahmet_kaya',
-            full_name: 'Ahmet Kaya',
-            role: 'user',
-            level: 3,
-            xp: 120,
-            is_verified: false,
-            avatar_url: '',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          }
-        ] as any[];
+      if (!error && data) {
+        setProfiles(data as Profile[]);
+      } else {
+        setProfiles([]);
       }
-
-      setProfiles((data as Profile[]) || []);
     } catch (err) {
       console.error('Users load error:', err);
+      setProfiles([]);
     } finally {
       setLoadingUsers(false);
     }
-  }, [user, profile]);
+  }, []);
 
   // Fetch Threads
   const fetchThreads = useCallback(async () => {
     setLoadingThreads(true);
     try {
-      const { data, error } = await supabase
-        .from('threads')
+      let { data, error } = await supabase
+        .from('topics')
         .select(`
-          id, title, content, is_pinned, is_locked, likes_count, comments_count, created_at,
+          id, title, content, is_pinned, is_locked, views_count, comments_count, created_at,
           author:profiles(username, display_name),
           category:categories(name)
         `)
         .order('created_at', { ascending: false })
         .limit(50);
 
-      if (!error && data && data.length > 0) {
-        setThreads(data);
-      } else {
-        // Fallback demo threads
-        setThreads([
-          {
-            id: 'thread-1',
-            title: '2026 ÖTV Muafiyetli Araç Alım Üst Limiti (2.873.972 TL) ve Mevzuat Rehberi',
-            category: { name: 'Engelsiz Yaşam & Mevzuat' },
-            author: { username: 'Bora (Hukuk)' },
-            is_pinned: true,
-            is_locked: false,
-            comments_count: 42,
-            created_at: new Date().toISOString()
-          },
-          {
-            id: 'thread-2',
-            title: 'WebMCP ile 0 TL Bütçeli Erişilebilirlik ve Yapay Zeka Ajanı Entegrasyonu',
-            category: { name: 'Yazılım & Yapay Zeka' },
-            author: { username: 'Felix (Geliştirici)' },
-            is_pinned: true,
-            is_locked: false,
-            comments_count: 28,
-            created_at: new Date().toISOString()
-          },
-          {
-            id: 'thread-3',
-            title: 'Windows 11 Fluent 2 Tasarım Sistemi ve WCAG AAA Erişilebilirlik Standartları',
-            category: { name: 'Donanım & Sistemler' },
-            author: { username: 'Aria (Tasarım)' },
-            is_pinned: false,
-            is_locked: false,
-            comments_count: 15,
-            created_at: new Date().toISOString()
-          }
-        ]);
+      if (error) {
+        const fallback = await supabase
+          .from('threads')
+          .select(`
+            id, title, content, is_pinned, is_locked, views_count, comments_count, created_at,
+            author:profiles(username, display_name),
+            category:categories(name)
+          `)
+          .order('created_at', { ascending: false })
+          .limit(50);
+        data = fallback.data;
       }
+
+      setThreads(data || []);
     } catch (err) {
       console.error('Threads error:', err);
+      setThreads([]);
     } finally {
       setLoadingThreads(false);
     }
@@ -244,21 +173,16 @@ export default function AdminPage() {
       const { data, error } = await supabase
         .from('categories')
         .select('*')
-        .order('order_index', { ascending: true });
+        .order('name', { ascending: true });
 
-      if (!error && data && data.length > 0) {
+      if (!error && data) {
         setCategories(data as Category[]);
       } else {
-        setCategories([
-          { id: '1', name: 'Yazılım, WebMCP & Yapay Zeka', slug: 'yazilim-ai', description: 'Yapay zeka modelleri, WebMCP araçları ve web geliştirme tartışmaları.', sort_order: 1, created_at: '', icon: 'Cpu', color: '#0078D4' },
-          { id: '2', name: 'Engelsiz Yaşam & 2026 Mevzuatı', slug: 'engelsiz-mevzuat', description: '2.873.972 TL ÖTV istisna tavanı, Balthazard raporları ve erken emeklilik.', sort_order: 2, created_at: '', icon: 'Scale', color: '#107C41' },
-          { id: '3', name: 'Donanım, Sistemler & Windows 11', slug: 'donanim-sistem', description: 'Microsoft Windows 11, bilgisayar bileşenleri ve erişilebilir çevre birimleri.', sort_order: 3, created_at: '', icon: 'Monitor', color: '#5C2D91' },
-          { id: '4', name: 'Kariyer, E-KPSS & Girişimcilik', slug: 'kariyer-istihdam', description: 'Kamu personeli sınavları, uzaktan bilişim işleri ve girişimcilik destekleri.', sort_order: 4, created_at: '', icon: 'Briefcase', color: '#D83B01' },
-          { id: '5', name: 'Genel Sohbet & Topluluk Dayanışması', slug: 'genel-sohbet', description: 'Serbest sohbet, tanışma, hobiler ve genel forum paylaşımları.', sort_order: 5, created_at: '', icon: 'MessageSquare', color: '#008272' }
-        ]);
+        setCategories([]);
       }
     } catch (err) {
       console.error('Categories error:', err);
+      setCategories([]);
     } finally {
       setLoadingCategories(false);
     }
@@ -270,15 +194,15 @@ export default function AdminPage() {
       fetchUsers();
       fetchThreads();
       fetchCategories();
-      // Fetch visitor stats
+      // Fetch real visitor stats
       fetch('/api/visitor-stats')
         .then(res => res.json())
         .then(data => {
           if (data && data.stats) {
             setVisitorStats({
-              totalVisits: data.stats.totalVisits || 1420,
-              uniqueVisitors: data.stats.uniqueVisitors || 890,
-              last24h: data.stats.last24Hours || 312
+              totalVisits: data.stats.totalVisits || 0,
+              uniqueVisitors: data.stats.uniqueVisitors || 0,
+              last24h: data.stats.last24Hours || 0
             });
           }
         })

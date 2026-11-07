@@ -145,26 +145,26 @@ function DiscussionsContent() {
         <div className="lg:col-span-8 space-y-6">
           
           {/* Header Section */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#30363d]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#1E293B]">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-heading">
                 Topluluk Tartışmaları
               </h1>
-              <p className="text-sm text-slate-300 mt-1 font-medium">
+              <p className="text-sm text-slate-300 mt-1 font-normal">
                 Engelli hakları, ÖTV muafiyeti, Balthazard ve mevzuat deneyim paylaşımları.
               </p>
             </div>
             <Link 
               href="/discussions/new"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-white hover:bg-slate-100 text-black text-xs font-bold self-start sm:self-auto transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold self-start sm:self-auto transition-colors"
             >
-              <Plus size={15} className="stroke-[3]" />
+              <Plus size={15} className="stroke-[2.5]" />
               <span>Yeni Konu</span>
             </Link>
           </div>
 
           {/* Filter Toolbar */}
-          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between pb-3 border-b border-[#30363d]">
+          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between pb-3 border-b border-[#1E293B]">
             <div className="flex items-center gap-1.5 overflow-x-auto text-xs">
               {[
                 { id: 'all', label: 'Tümü' },
@@ -174,10 +174,10 @@ function DiscussionsContent() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as any)}
-                  className={`px-3 py-1.5 rounded-md font-bold transition-colors cursor-pointer whitespace-nowrap ${
+                  className={`px-3 py-1.5 rounded-md font-medium transition-colors cursor-pointer whitespace-nowrap ${
                     activeTab === tab.id
-                      ? 'bg-white text-black'
-                      : 'text-slate-200 hover:text-white hover:bg-[#21262d] bg-[#161b22] border border-[#30363d]'
+                      ? 'bg-indigo-600 text-white'
+                      : 'text-slate-300 hover:text-white hover:bg-[#18243A] bg-[#111B2E] border border-[#1E293B]'
                   }`}
                 >
                   {tab.label}
@@ -189,7 +189,7 @@ function DiscussionsContent() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="h-9 bg-[#161b22] border border-[#30363d] rounded-md px-2.5 text-xs font-semibold text-white focus:outline-none focus:border-sky-400 cursor-pointer"
+                className="h-9 bg-[#111B2E] border border-[#1E293B] rounded-md px-2.5 text-xs font-medium text-slate-200 focus:outline-none focus:border-indigo-400 cursor-pointer"
                 aria-label="Kategori filtresi"
               >
                 <option value="">Tüm Kategoriler</option>
@@ -205,7 +205,7 @@ function DiscussionsContent() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Başlıklarda ara..."
-                  className="w-full h-9 pl-8 pr-2.5 text-xs bg-[#161b22] border border-[#30363d] rounded-md text-white placeholder-slate-400 focus:outline-none focus:border-sky-400"
+                  className="w-full h-9 pl-8 pr-2.5 text-xs bg-[#111B2E] border border-[#1E293B] rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-400"
                 />
               </div>
             </div>
@@ -213,7 +213,7 @@ function DiscussionsContent() {
 
           {/* Topics List */}
           {loading ? (
-            <div className="py-12 text-center text-sm font-semibold text-slate-300">
+            <div className="py-12 text-center text-sm font-medium text-slate-400">
               Tartışmalar yükleniyor...
             </div>
           ) : filteredTopics.length > 0 ? (
@@ -226,7 +226,7 @@ function DiscussionsContent() {
                 <div className="pt-6 text-center">
                   <button
                     onClick={() => fetchTopics(true)}
-                    className="px-4 py-2 rounded-md bg-[#21262d] border border-[#30363d] hover:bg-[#30363d] text-xs font-bold text-white transition-colors cursor-pointer"
+                    className="px-4 py-2 rounded-md bg-[#111B2E] border border-[#1E293B] hover:bg-[#18243A] text-xs font-semibold text-slate-200 transition-colors cursor-pointer"
                   >
                     Daha Fazla Göster
                   </button>
@@ -234,9 +234,9 @@ function DiscussionsContent() {
               )}
             </div>
           ) : (
-            <div className="py-16 text-center text-slate-300 space-y-2">
-              <MessageSquare size={28} className="mx-auto text-slate-400" />
-              <div className="text-sm font-bold">Bu kriterlerde konu bulunamadı.</div>
+            <div className="py-16 text-center text-slate-400 space-y-2">
+              <MessageSquare size={28} className="mx-auto text-slate-500" />
+              <div className="text-sm font-medium">Bu kriterlerde konu bulunamadı.</div>
             </div>
           )}
 

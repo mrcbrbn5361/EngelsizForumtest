@@ -548,10 +548,10 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
   };
 
   const roleColors = {
-    'YÖNETİCİ': 'bg-rose-50 text-rose-700 border border-rose-200 font-bold',
-    'MODERATÖR': 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold',
-    'UZMAN': 'bg-sky-50 text-sky-700 dark:text-sky-400 border border-sky-200 font-bold',
-    'ÜYE': 'bg-slate-100 text-slate-600 border border-slate-200 font-semibold'
+    'YÖNETİCİ': 'bg-rose-950/40 text-rose-300 border border-rose-800/60 font-semibold',
+    'MODERATÖR': 'bg-emerald-950/40 text-emerald-300 border border-emerald-800/60 font-semibold',
+    'UZMAN': 'bg-indigo-950/40 text-indigo-300 border border-indigo-800/60 font-semibold',
+    'ÜYE': 'bg-[#18243A] text-slate-300 border border-[#1E293B] font-medium'
   };
 
   // Unified markdown, BBCode [QUOTE], and math equation parser
@@ -572,12 +572,12 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
           if (audioMatch) {
             const audioUrl = audioMatch[1];
             return (
-              <div key={lineIdx} className="my-3 p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-3 max-w-sm">
-                <div className="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center shrink-0">
-                  <Volume2 size={16} className="text-sky-700 dark:text-sky-400" />
+              <div key={lineIdx} className="my-3 p-3 bg-[#18243A] border border-[#1E293B] rounded-md flex items-center gap-3 max-w-sm">
+                <div className="w-8 h-8 rounded-md bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center shrink-0">
+                  <Volume2 size={16} className="text-indigo-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Sesli Mesaj</p>
+                  <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Sesli Mesaj</p>
                   <DiscussionAudioPlayer base64={audioUrl} />
                 </div>
               </div>
@@ -588,21 +588,21 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
         // Markdown Headers
         if (line.startsWith('### ')) {
           return (
-            <h4 key={lineIdx} className="text-sm font-extrabold text-sky-700 dark:text-sky-400 mt-3 mb-1.5 uppercase tracking-wide">
+            <h4 key={lineIdx} className="text-sm font-bold text-indigo-400 mt-3 mb-1.5 uppercase tracking-wide font-heading">
               {line.substring(4)}
             </h4>
           );
         }
         if (line.startsWith('## ')) {
           return (
-            <h3 key={lineIdx} className="text-base font-extrabold text-sky-700 dark:text-sky-400 mt-4 mb-2 uppercase tracking-wide border-b border-slate-200 pb-1">
+            <h3 key={lineIdx} className="text-base font-bold text-indigo-400 mt-4 mb-2 uppercase tracking-wide border-b border-[#1E293B] pb-1 font-heading">
               {line.substring(3)}
             </h3>
           );
         }
         if (line.startsWith('# ')) {
           return (
-            <h2 key={lineIdx} className="text-lg font-extrabold text-sky-700 dark:text-sky-400 mt-5 mb-2 uppercase tracking-wide border-b border-slate-200 pb-1">
+            <h2 key={lineIdx} className="text-lg font-bold text-indigo-400 mt-5 mb-2 uppercase tracking-wide border-b border-[#1E293B] pb-1 font-heading">
               {line.substring(2)}
             </h2>
           );
@@ -617,7 +617,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
             .replace(/\\frac{([^}]+)}{([^}]+)}/g, '($1 / $2)');
 
           return (
-            <div key={lineIdx} className="my-3 p-3.5 bg-slate-50 border border-slate-200 rounded-sm font-mono text-center text-xs sm:text-sm text-sky-700 dark:text-sky-400 font-bold select-all tracking-wide">
+            <div key={lineIdx} className="my-3 p-3.5 bg-[#18243A] border border-[#1E293B] rounded-md font-mono text-center text-xs sm:text-sm text-indigo-300 font-medium select-all tracking-wide">
               {displayMath}
             </div>
           );
@@ -633,7 +633,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
           if (match.index > lastIdx) {
             elements.push(line.substring(lastIdx, match.index));
           }
-          elements.push(<strong key={match.index} className="font-extrabold text-slate-900">{match[1]}</strong>);
+          elements.push(<strong key={match.index} className="font-semibold text-white">{match[1]}</strong>);
           lastIdx = boldRegex.lastIndex;
         }
 
@@ -642,7 +642,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
         }
 
         return (
-          <p key={lineIdx} className="min-h-[1.25rem] leading-relaxed text-slate-700">
+          <p key={lineIdx} className="min-h-[1.25rem] leading-relaxed text-slate-200">
             {elements.length > 0 ? elements : line}
           </p>
         );
@@ -666,11 +666,11 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
       const quoteBody = match[2];
 
       parts.push(
-        <div key={`quote-${match.index}`} className="bg-slate-50 border border-slate-200 border-l-[3px] border-l-[#185886] p-3.5 my-3 rounded-sm text-xs text-slate-600 select-text">
-          <div className="font-bold text-sky-700 dark:text-sky-400 mb-1.5 flex items-center gap-1.5 uppercase tracking-wide text-[10px]">
-            <Quote size={11} className="text-sky-700 dark:text-sky-400" /> {author} dedi ki:
+        <div key={`quote-${match.index}`} className="bg-[#18243A] border border-[#1E293B] p-3.5 my-3 rounded-md text-xs text-slate-300 select-text">
+          <div className="font-semibold text-indigo-400 mb-1.5 flex items-center gap-1.5 uppercase tracking-wide text-[10px]">
+            <Quote size={11} className="text-indigo-400" /> {author} dedi ki:
           </div>
-          <div className="italic text-slate-600 leading-relaxed pl-1">
+          <div className="text-slate-300 leading-relaxed pl-1">
             {renderPostContent(quoteBody)}
           </div>
         </div>
@@ -691,47 +691,47 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 text-slate-100">
       {/* Breadcrumbs */}
-      <div className="bg-slate-50 px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm mb-4 shadow-2xs">
-        <Link href="/" className="hover:text-sky-700 dark:text-sky-400 hover:underline flex items-center gap-1 font-semibold">
+      <div className="bg-[#111B2E] px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-400 border border-[#1E293B] rounded-md mb-2">
+        <Link href="/" className="hover:text-indigo-400 flex items-center gap-1 font-medium transition-colors">
           <Home size={12} />
           Ana Sayfa
         </Link>
-        <span className="opacity-50">/</span>
-        <Link href="/" className="hover:text-sky-700 dark:text-sky-400 hover:underline font-semibold">Forumlar</Link>
+        <span className="opacity-40">/</span>
+        <Link href="/" className="hover:text-indigo-400 font-medium transition-colors">Forumlar</Link>
         {topic.category && (
           <>
-            <span className="opacity-50">/</span>
-            <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-sky-700 dark:text-sky-400 hover:underline font-semibold">{topic.category.name}</Link>
+            <span className="opacity-40">/</span>
+            <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-indigo-400 font-medium transition-colors">{topic.category.name}</Link>
           </>
         )}
-        <span className="opacity-50">/</span>
-        <span className="font-bold text-slate-800 truncate max-w-[200px] sm:max-w-xs">{topic.title}</span>
+        <span className="opacity-40">/</span>
+        <span className="font-semibold text-slate-200 truncate max-w-[200px] sm:max-w-xs">{topic.title}</span>
       </div>
 
       {/* Thread Header */}
-      <div className="mb-2 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-4">
+      <div className="mb-2 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-[#1E293B] pb-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900 mb-1 leading-snug break-words flex items-center flex-wrap gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-white mb-1 leading-snug break-words flex items-center flex-wrap gap-2 font-heading">
             {topic.is_pinned && (
-              <span className="bg-sky-50 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300 border border-sky-200 dark:border-sky-800 text-[10px] px-2 py-0.5 rounded-sm uppercase font-black tracking-wider flex items-center gap-1">
+              <span className="bg-amber-950/40 text-amber-300 border border-amber-700/50 text-[10px] px-2 py-0.5 rounded uppercase font-semibold tracking-wider flex items-center gap-1">
                 <Pin size={10} className="fill-current" /> Sabit
               </span>
             )}
             {topic.is_solved && (
-              <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] px-2 py-0.5 rounded-sm uppercase font-black tracking-wider flex items-center gap-1">
+              <span className="bg-emerald-950/40 text-emerald-300 border border-emerald-700/50 text-[10px] px-2 py-0.5 rounded uppercase font-semibold tracking-wider flex items-center gap-1">
                 <CheckCircle2 size={10} /> ÇÖZÜLDÜ
               </span>
             )}
-            <span className="text-slate-900 font-extrabold">{topic.title}</span>
+            <span>{topic.title}</span>
           </h1>
-          <div className="flex items-center gap-2 text-[11px] sm:text-[12px] text-slate-500 flex-wrap">
-            <span>Konuyu başlatan: <span className="text-sky-700 dark:text-sky-400 hover:underline font-bold">@{topic.author?.username || 'Anonim'}</span></span>
-            <span>•</span>
+          <div className="flex items-center gap-2 text-[11px] sm:text-xs text-slate-400 flex-wrap">
+            <span>Konuyu başlatan: <span className="text-indigo-400 hover:underline font-semibold">@{topic.author?.username || 'Anonim'}</span></span>
+            <span>&middot;</span>
             <span suppressHydrationWarning>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
-            <span>•</span>
-            <span className="font-mono text-slate-500 font-bold">Okunma: {topic.views_count || 1}</span>
+            <span>&middot;</span>
+            <span className="font-mono text-slate-400">Okunma: {topic.views_count || 1}</span>
           </div>
         </div>
 
@@ -740,13 +740,13 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
           <button
             onClick={handleSummarizeTopic}
             disabled={loadingSummary}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-slate-50 hover:bg-slate-100 border border-slate-200 text-sky-700 dark:text-sky-400 text-[11px] font-bold uppercase transition-all shadow-2xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#111B2E] hover:bg-[#18243A] border border-[#1E293B] text-indigo-400 text-xs font-semibold transition-colors cursor-pointer"
             title="Tartışmayı Yeterly AI ile özetle"
           >
             {loadingSummary ? (
-              <Loader2 size={12} className="animate-spin text-sky-700 dark:text-sky-400" />
+              <Loader2 size={12} className="animate-spin text-indigo-400" />
             ) : (
-              <Sparkles size={12} className="text-amber-500 animate-pulse" />
+              <Sparkles size={12} className="text-amber-400" />
             )}
             {topicSummary ? 'Özeti Gizle' : 'Tartışmayı AI ile Özetle'}
           </button>
@@ -755,16 +755,16 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
       {/* Yeterly AI Summary View */}
       {topicSummary && (
-        <div className="bg-sky-50/50 border-l-[4px] border-l-[#185886] border border-sky-100 rounded-sm p-4 text-xs sm:text-sm text-slate-700 mb-2 relative">
+        <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-4 text-xs sm:text-sm text-slate-200 mb-2 relative">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-black text-sky-700 dark:text-sky-400 uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Sparkles size={12} className="text-amber-500" />
+            <span className="font-bold text-indigo-400 uppercase tracking-wider text-xs flex items-center gap-1.5 font-heading">
+              <Sparkles size={13} className="text-amber-400" />
               Yeterly AI Özet
             </span>
             <button
               onClick={() => handleTTS('summary', topicSummary)}
-              className={`p-1 rounded hover:bg-sky-100 transition-colors flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider ${
-                currentlyPlayingId === 'summary' ? 'text-rose-600' : 'text-sky-700 dark:text-sky-400'
+              className={`p-1 rounded hover:bg-[#18243A] transition-colors flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider ${
+                currentlyPlayingId === 'summary' ? 'text-rose-400' : 'text-indigo-400'
               }`}
               title={currentlyPlayingId === 'summary' ? 'Seslendirmeyi durdur' : 'Özeti sesli dinle'}
             >
@@ -772,18 +772,18 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
               {currentlyPlayingId === 'summary' ? 'Sesi Durdur' : 'Özeti Dinle'}
             </button>
           </div>
-          <div className="leading-relaxed font-medium">{topicSummary}</div>
+          <div className="leading-relaxed font-normal text-slate-300">{topicSummary}</div>
         </div>
       )}
 
-      <div className="flex flex-col lg:flex-row gap-5">
+      <div className="flex flex-col lg:flex-row gap-6">
         {/* Main Feed Column */}
         <div className="flex-1 min-w-0 space-y-4">
           
           {/* Main OP Post */}
-          <article className="xf-post bg-white rounded-sm overflow-hidden flex flex-col md:flex-row border border-slate-200 shadow-sm">
+          <article className="bg-[#111B2E] rounded-md overflow-hidden flex flex-col md:flex-row border border-[#1E293B] shadow-sm">
             {/* Mobile Author Info */}
-            <div className="md:hidden bg-slate-50 border-b border-slate-200 p-3 flex items-center justify-between">
+            <div className="md:hidden bg-[#0E1726] border-b border-[#1E293B] p-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <UserAvatar 
                   src={topic.author?.avatar_url}
@@ -792,20 +792,20 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   size="sm"
                 />
                 <div className="flex flex-col">
-                  <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-bold text-sky-700 dark:text-sky-400 hover:underline text-xs">
+                  <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-semibold text-indigo-400 hover:underline text-xs">
                     {topic.author?.full_name || topic.author?.username || 'Anonim'}
                   </Link>
-                  <span className={`text-[9px] px-1.5 py-0.5 rounded-sm font-bold w-fit ${roleColors[mapRole(topic.author?.role || 'user')]}`}>
+                  <span className={`text-[9px] px-1.5 py-0.5 rounded font-semibold w-fit ${roleColors[mapRole(topic.author?.role || 'user')]}`}>
                     {mapRole(topic.author?.role || 'user')}
                   </span>
                 </div>
               </div>
-              <div className="text-[11px] font-mono text-slate-500 font-bold">#1</div>
+              <div className="text-[11px] font-mono text-slate-400 font-medium">#1</div>
             </div>
 
             {/* Desktop Author Column */}
-            <div className="xf-post-author hidden md:flex flex-col items-center bg-slate-50 shrink-0 w-44 p-4 border-r border-slate-200">
-              <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-extrabold text-sky-700 dark:text-sky-400 hover:underline text-sm mb-2 truncate max-w-full">
+            <div className="hidden md:flex flex-col items-center bg-[#0E1726] shrink-0 w-44 p-4 border-r border-[#1E293B]">
+              <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-semibold text-indigo-400 hover:underline text-xs mb-2 truncate max-w-full">
                 @{topic.author?.username || 'Anonim'}
               </Link>
               <UserAvatar 
@@ -815,52 +815,52 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                 size="lg"
                 className="mb-3"
               />
-              <div className={`text-[10px] px-2.5 py-1 rounded-sm font-black uppercase tracking-wider w-full text-center mb-3 ${roleColors[mapRole(topic.author?.role || 'user')]}`}>
+              <div className={`text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider w-full text-center mb-3 ${roleColors[mapRole(topic.author?.role || 'user')]}`}>
                 {mapRole(topic.author?.role || 'user')}
               </div>
-              <div className="w-full flex flex-col gap-1.5 text-[11px] text-slate-500">
-                <div className="flex justify-between border-b border-slate-200/50 pb-1">
+              <div className="w-full flex flex-col gap-1.5 text-xs text-slate-400">
+                <div className="flex justify-between border-b border-[#1E293B] pb-1">
                   <span>Seviye:</span>
-                  <span className="font-bold text-sky-700 dark:text-sky-400">{topic.author?.level || 1}</span>
+                  <span className="font-semibold text-indigo-400">{topic.author?.level || 1}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Puan:</span>
-                  <span className="font-mono font-bold text-slate-700">{topic.author?.xp || 10} XP</span>
+                  <span className="font-mono font-medium text-slate-300">{topic.author?.xp || 10} XP</span>
                 </div>
               </div>
             </div>
 
             {/* Content Column */}
-            <div className="xf-post-content flex-1 p-4 sm:p-5 flex flex-col bg-white">
-              <div className="flex items-center justify-between pb-2 mb-4 border-b border-slate-100 text-[11px] text-slate-500 font-medium">
+            <div className="flex-1 p-4 sm:p-5 flex flex-col bg-[#111B2E]">
+              <div className="flex items-center justify-between pb-2 mb-4 border-b border-[#1E293B] text-[11px] text-slate-400 font-medium">
                 <time suppressHydrationWarning>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</time>
-                <span className="font-mono text-slate-500 font-bold">#1</span>
+                <span className="font-mono text-slate-400">#1</span>
               </div>
 
-              <div className="xf-post-body leading-relaxed text-slate-800 text-xs sm:text-sm flex-1 min-h-[100px]">
+              <div className="leading-relaxed text-slate-200 text-xs sm:text-sm flex-1 min-h-[100px]">
                 {renderPostContent(topic.content)}
               </div>
 
-              <div className="mt-6 pt-4 flex items-center justify-between border-t border-slate-100">
+              <div className="mt-6 pt-4 flex items-center justify-between border-t border-[#1E293B]">
                 <button 
                   onClick={handleLikeTopic}
-                  className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-sm transition-all border ${
+                  className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded transition-all border ${
                     likedTopic 
-                      ? 'bg-rose-50 text-rose-600 border-rose-200' 
-                      : 'text-slate-500 hover:text-sky-700 dark:text-sky-400 border-transparent hover:bg-slate-50'
+                      ? 'bg-rose-950/40 text-rose-300 border-rose-800/60' 
+                      : 'text-slate-400 hover:text-white border-transparent hover:bg-[#18243A]'
                   }`}
                 >
                   <Heart size={14} className={likedTopic ? 'fill-current scale-110' : ''} />
                   Beğen {topic.likes_count > 0 && `(${topic.likes_count})`}
                 </button>
 
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   <button 
                     onClick={() => handleTTS(topic.id, topic.content)}
-                    className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${
+                    className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
                       currentlyPlayingId === topic.id 
-                        ? 'text-rose-600 font-extrabold bg-rose-50 border border-rose-200 px-2.5 py-1.5 rounded-sm' 
-                        : 'text-sky-700 dark:text-sky-400 hover:bg-slate-50 px-2.5 py-1.5 rounded-sm'
+                        ? 'text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/60 px-2.5 py-1.5 rounded' 
+                        : 'text-slate-300 hover:text-white hover:bg-[#18243A] px-2.5 py-1.5 rounded'
                     }`}
                   >
                     {currentlyPlayingId === topic.id ? <VolumeX size={13} className="animate-pulse" /> : <Volume2 size={13} />}
@@ -869,7 +869,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
                   <button 
                     onClick={() => handleQuote(topic.author?.username || 'Anonim', topic.content)}
-                    className="flex items-center gap-1.5 text-xs font-bold text-sky-700 dark:text-sky-400 hover:bg-slate-50 px-2.5 py-1.5 rounded-sm transition-colors"
+                    className="flex items-center gap-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-[#18243A] px-2.5 py-1.5 rounded transition-colors"
                   >
                     <Quote size={13} />
                     Alıntı Yap
@@ -880,7 +880,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
           </article>
 
           {/* Solution & Comments Section */}
-          <div className="space-y-3">
+          <div className="space-y-4">
             {comments.map((comment, index) => {
               const isCommentAuthorOp = comment.author_id === topic.author_id;
               const isOpOrAdmin = user?.id === topic.author_id || profile?.role === 'admin' || profile?.role === 'moderator';
@@ -889,14 +889,14 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                 <article 
                   key={comment.id}
                   id={`comment-${comment.id}`}
-                  className={`xf-post rounded-sm overflow-hidden flex flex-col md:flex-row border transition-all ${
+                  className={`rounded-md overflow-hidden flex flex-col md:flex-row border transition-all ${
                     comment.is_solution 
-                      ? 'border-emerald-500 bg-emerald-50/20 shadow-xs border-2' 
-                      : 'border-slate-200 bg-white'
+                      ? 'border-emerald-500/80 bg-[#111B2E] border-2 shadow-xs' 
+                      : 'border-[#1E293B] bg-[#111B2E]'
                   }`}
                 >
                   {/* Mobile View Author Bar */}
-                  <div className="md:hidden bg-slate-50 border-b border-slate-200 p-3 flex items-center justify-between">
+                  <div className="md:hidden bg-[#0E1726] border-b border-[#1E293B] p-3 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <UserAvatar 
                         src={comment.author?.avatar_url}
@@ -906,29 +906,29 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                       />
                       <div className="flex flex-col">
                         <div className="flex items-center gap-1.5">
-                          <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-bold text-sky-700 dark:text-sky-400 hover:underline text-xs">
+                          <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-semibold text-indigo-400 hover:underline text-xs">
                             {comment.author?.full_name || comment.author?.username || 'Anonim'}
                           </Link>
                           {isCommentAuthorOp && (
-                            <span className="text-[8px] bg-sky-50 text-sky-800 border border-sky-200 px-1 rounded-sm font-bold uppercase">OP</span>
+                            <span className="text-[8px] bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 px-1 rounded uppercase font-semibold">OP</span>
                           )}
                         </div>
-                        <span className={`text-[9px] px-1.5 py-0.5 rounded-sm font-bold w-fit ${roleColors[mapRole(comment.author?.role || 'user')]}`}>
+                        <span className={`text-[9px] px-1.5 py-0.5 rounded font-semibold w-fit ${roleColors[mapRole(comment.author?.role || 'user')]}`}>
                           {mapRole(comment.author?.role || 'user')}
                         </span>
                       </div>
                     </div>
-                    <div className="text-[11px] font-mono text-slate-500 font-bold">#{index + 2}</div>
+                    <div className="text-[11px] font-mono text-slate-400 font-medium">#{index + 2}</div>
                   </div>
 
                   {/* Desktop view Author Column */}
-                  <div className="xf-post-author hidden md:flex flex-col items-center bg-slate-50 shrink-0 w-44 p-4 border-r border-slate-200">
+                  <div className="hidden md:flex flex-col items-center bg-[#0E1726] shrink-0 w-44 p-4 border-r border-[#1E293B]">
                     <div className="flex flex-col items-center max-w-full">
-                      <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-extrabold text-sky-700 dark:text-sky-400 hover:underline text-sm mb-1 truncate max-w-full">
+                      <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-semibold text-indigo-400 hover:underline text-xs mb-1 truncate max-w-full">
                         @{comment.author?.username || 'Anonim'}
                       </Link>
                       {isCommentAuthorOp && (
-                        <span className="text-[9px] bg-sky-50 text-sky-800 border border-sky-200 px-1.5 rounded-sm font-bold uppercase mb-2">Konu Sahibi</span>
+                        <span className="text-[9px] bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 px-1.5 rounded uppercase font-semibold mb-2">Konu Sahibi</span>
                       )}
                     </div>
                     
@@ -940,64 +940,64 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                       className="mb-3"
                     />
                     
-                    <div className={`text-[10px] px-2.5 py-1 rounded-sm font-black uppercase tracking-wider w-full text-center mb-3 ${roleColors[mapRole(comment.author?.role || 'user')]}`}>
+                    <div className={`text-[10px] px-2 py-0.5 rounded font-semibold uppercase tracking-wider w-full text-center mb-3 ${roleColors[mapRole(comment.author?.role || 'user')]}`}>
                       {mapRole(comment.author?.role || 'user')}
                     </div>
                     
-                    <div className="w-full flex flex-col gap-1.5 text-[11px] text-slate-500">
-                      <div className="flex justify-between border-b border-slate-200/50 pb-1">
+                    <div className="w-full flex flex-col gap-1.5 text-xs text-slate-400">
+                      <div className="flex justify-between border-b border-[#1E293B] pb-1">
                         <span>Seviye:</span>
-                        <span className="font-bold text-sky-700 dark:text-sky-400">{comment.author?.level || 1}</span>
+                        <span className="font-semibold text-indigo-400">{comment.author?.level || 1}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Puan:</span>
-                        <span className="font-mono font-bold text-slate-700">{comment.author?.xp || 10} XP</span>
+                        <span className="font-mono font-medium text-slate-300">{comment.author?.xp || 10} XP</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Comment Body */}
-                  <div className="xf-post-content flex-1 p-4 sm:p-5 flex flex-col bg-white">
-                    <div className="flex items-center justify-between pb-2 mb-4 border-b border-slate-100 text-[11px] text-slate-500 font-medium">
+                  <div className="flex-1 p-4 sm:p-5 flex flex-col bg-[#111B2E]">
+                    <div className="flex items-center justify-between pb-2 mb-4 border-b border-[#1E293B] text-[11px] text-slate-400 font-medium">
                       <div className="flex items-center gap-2">
                         <time suppressHydrationWarning>{formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: tr })}</time>
                         {comment.is_solution && (
-                          <span className="inline-flex items-center gap-1.5 text-emerald-800 font-extrabold uppercase text-[9px] tracking-wider bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-sm">
-                            <CheckCircle2 size={10} /> EN İYİ CEVAP / ÇÖZÜM
+                          <span className="inline-flex items-center gap-1.5 text-emerald-300 font-semibold uppercase text-[10px] tracking-wider bg-emerald-950/40 border border-emerald-800/60 px-2 py-0.5 rounded">
+                            <CheckCircle2 size={11} /> Çözüm Olarak Onaylandı
                           </span>
                         )}
                       </div>
-                      <span className="font-mono text-slate-500 font-bold">#{index + 2}</span>
+                      <span className="font-mono text-slate-400">#{index + 2}</span>
                     </div>
 
-                    <div className="xf-post-body leading-relaxed text-slate-700 text-xs sm:text-sm flex-1 min-h-[80px]">
+                    <div className="leading-relaxed text-slate-200 text-xs sm:text-sm flex-1 min-h-[80px]">
                       {renderPostContent(comment.content)}
                     </div>
 
-                    <div className="mt-6 pt-4 flex items-center justify-between border-t border-slate-100">
+                    <div className="mt-6 pt-4 flex items-center justify-between border-t border-[#1E293B]">
                       <div className="flex items-center gap-3">
                         {isOpOrAdmin && (
                           <button 
                             onClick={() => handleToggleSolution(comment.id, comment.is_solution)}
-                            className={`flex items-center gap-1 text-[11px] font-black uppercase tracking-wider px-2.5 py-1.5 rounded-sm transition-all border ${
+                            className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded transition-all border cursor-pointer ${
                               comment.is_solution 
-                                ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
-                                : 'bg-slate-50 border-slate-200 text-slate-500 hover:text-slate-800 hover:border-slate-400'
+                                ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300' 
+                                : 'bg-[#18243A] border-[#1E293B] text-slate-300 hover:text-white hover:border-slate-600'
                             }`}
                           >
-                            <CheckSquare size={12} />
+                            <CheckSquare size={13} />
                             {comment.is_solution ? 'Çözümü İptal Et' : 'Çözüm Olarak İşaretle'}
                           </button>
                         )}
                       </div>
 
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-2">
                         <button 
                           onClick={() => handleTTS(comment.id, comment.content)}
-                          className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${
+                          className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
                             currentlyPlayingId === comment.id 
-                              ? 'text-rose-600 font-extrabold bg-rose-50 border border-rose-200 px-2.5 py-1.5 rounded-sm' 
-                              : 'text-sky-700 dark:text-sky-400 hover:bg-slate-50 px-2.5 py-1.5 rounded-sm'
+                              ? 'text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/60 px-2.5 py-1.5 rounded' 
+                              : 'text-slate-300 hover:text-white hover:bg-[#18243A] px-2.5 py-1.5 rounded'
                           }`}
                         >
                           {currentlyPlayingId === comment.id ? <VolumeX size={13} className="animate-pulse" /> : <Volume2 size={13} />}
@@ -1006,7 +1006,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
                         <button 
                           onClick={() => handleQuote(comment.author?.username || 'Anonim', comment.content)}
-                          className="flex items-center gap-1.5 text-xs font-bold text-sky-700 dark:text-sky-400 hover:bg-slate-50 px-2.5 py-1.5 rounded-sm transition-colors"
+                          className="flex items-center gap-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-[#18243A] px-2.5 py-1.5 rounded transition-colors"
                         >
                           <Quote size={13} />
                           Cevapla
@@ -1020,47 +1020,48 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
           </div>
 
           {/* Quick Reply Form */}
-          <div className="xf-block border border-slate-200 bg-white rounded-sm shadow-sm mt-6">
-            <h2 className="xf-block-header bg-[#eef2f7] border-b border-slate-200 text-sky-700 dark:text-sky-400 font-extrabold uppercase text-[12px] tracking-wider py-2.5 px-3 m-0">Hızlı Cevap Yaz</h2>
-            <div className="p-4 bg-white">
+          <div className="border border-[#1E293B] bg-[#111B2E] rounded-md shadow-sm mt-6 overflow-hidden">
+            <h2 className="bg-[#18243A] border-b border-[#1E293B] text-indigo-400 font-semibold uppercase text-xs tracking-wider py-2.5 px-4 m-0 font-heading">
+              Hızlı Cevap Yaz
+            </h2>
+            <div className="p-4 bg-[#111B2E]">
               {user ? (
                 <form onSubmit={handleReplySubmit}>
                   {/* ACCESSIBLE VOICE TOOLS ACTION BAR (WCAG AAA Support) */}
-                  <div className="flex flex-wrap items-center gap-3 mb-3 pb-3 border-b border-slate-100">
+                  <div className="flex flex-wrap items-center gap-3 mb-3 pb-3 border-b border-[#1E293B]">
                     <div className="flex items-center gap-1">
                       <VoiceInput onTranscript={(text) => setReplyContent(prev => (prev + ' ' + text).trim())} label="Sesle Cevap Yaz" />
-                      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wide">Sesle Yaz (STT)</span>
+                      <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide">Sesle Yaz (STT)</span>
                     </div>
-                    <div className="h-4 w-[1px] bg-slate-200" />
+                    <div className="h-4 w-[1px] bg-[#1E293B]" />
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={isRecording ? stopRecording : startRecording}
-                        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${
+                        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                           isRecording 
-                            ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse' 
-                            : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-sky-600 hover:text-sky-700 dark:text-sky-400'
+                            ? 'bg-rose-950/40 border-rose-700/60 text-rose-300 animate-pulse' 
+                            : 'bg-[#18243A] border-[#1E293B] text-slate-300 hover:border-indigo-400 hover:text-white'
                         }`}
                       >
-                        <Radio size={13} className={isRecording ? 'animate-pulse text-rose-600' : 'text-sky-700 dark:text-sky-400'} />
+                        <Radio size={13} className={isRecording ? 'animate-pulse text-rose-400' : 'text-indigo-400'} />
                         {isRecording ? `${Math.floor(recordingTime / 60).toString().padStart(2, '0')}:${(recordingTime % 60).toString().padStart(2, '0')} Durdur ve Ekle` : 'Sesli Mesaj Kaydet'}
                       </button>
                     </div>
                   </div>
 
                   <textarea 
-                    ref={replyInputRef}
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded p-3 min-h-[140px] text-xs sm:text-sm focus:outline-none focus:border-sky-600 text-slate-800 placeholder:text-slate-400 mb-3 leading-relaxed"
-                    placeholder="Yardımcı veya açıklayıcı bir cevap yazın..."
+                    className="w-full bg-[#18243A] border border-[#1E293B] rounded-md p-3 min-h-[140px] text-xs sm:text-sm focus:outline-none focus:border-indigo-400 text-slate-100 placeholder:text-slate-400 mb-3 leading-relaxed"
+                    placeholder="Yardımcı veya açıklayıcı bir cevap yazın... (@EngelsizAI etiketleyebilirsiniz)"
                     disabled={submitting}
                   />
                   <div className="flex justify-end">
                     <button 
                       type="submit"
                       disabled={submitting || !replyContent.trim()}
-                      className="bg-sky-700 hover:bg-sky-600 disabled:opacity-50 text-white px-6 h-10 rounded-sm text-xs font-black uppercase tracking-wider transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                      className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white px-5 h-9 rounded-md text-xs font-semibold transition-all shadow-md flex items-center gap-2 cursor-pointer"
                     >
                       {submitting ? (
                         <>
@@ -1078,8 +1079,8 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                 </form>
               ) : (
                 <div className="text-center py-6">
-                  <p className="text-slate-500 text-xs sm:text-sm mb-3">Bu konuya cevap yazabilmek için üye girişi yapmanız gerekmektedir.</p>
-                  <Link href="/login" className="bg-sky-700 hover:bg-sky-600 text-white px-5 py-2.5 rounded-sm text-xs font-bold uppercase transition-colors inline-block">
+                  <p className="text-slate-400 text-xs sm:text-sm mb-3">Bu konuya cevap yazabilmek için üye girişi yapmanız gerekmektedir.</p>
+                  <Link href="/login" className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-md text-xs font-semibold transition-colors inline-block">
                     Giriş Yap / Kayıt Ol
                   </Link>
                 </div>
@@ -1088,27 +1089,29 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
           </div>
 
           {/* Bottom Breadcrumbs */}
-          <div className="bg-slate-50 px-4 py-2.5 flex flex-wrap items-center gap-2 text-[12px] text-slate-600 border border-slate-200 rounded-sm mt-4 shadow-2xs">
-            <Link href="/" className="hover:text-sky-700 dark:text-sky-400 hover:underline flex items-center gap-1 font-semibold">
+          <div className="bg-[#111B2E] px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-400 border border-[#1E293B] rounded-md mt-4">
+            <Link href="/" className="hover:text-indigo-400 flex items-center gap-1 font-medium transition-colors">
               <Home size={12} />
               Ana Sayfa
             </Link>
-            <span className="opacity-50">/</span>
-            <Link href="/" className="hover:text-sky-700 dark:text-sky-400 hover:underline font-semibold">Forumlar</Link>
+            <span className="opacity-40">/</span>
+            <Link href="/" className="hover:text-indigo-400 font-medium transition-colors">Forumlar</Link>
             {topic.category && (
               <>
-                <span className="opacity-50">/</span>
-                <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-sky-700 dark:text-sky-400 hover:underline font-semibold">{topic.category.name}</Link>
+                <span className="opacity-40">/</span>
+                <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-indigo-400 font-medium transition-colors">{topic.category.name}</Link>
               </>
             )}
-            <span className="opacity-50">/</span>
-            <span className="font-bold text-slate-800 truncate max-w-[200px] sm:max-w-xs">{topic.title}</span>
+            <span className="opacity-40">/</span>
+            <span className="font-semibold text-slate-200 truncate max-w-[200px] sm:max-w-xs">{topic.title}</span>
           </div>
 
         </div>
 
         {/* Sidebar Component */}
-        <ClassicSidebar />
+        <div className="lg:w-80 shrink-0">
+          <ClassicSidebar />
+        </div>
       </div>
     </div>
   );

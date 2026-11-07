@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState, useMemo } from 'react';
 import { 
   Home, 
@@ -8,7 +10,10 @@ import {
   CheckCircle2, 
   AlertTriangle,
   Info,
-  Building
+  Building,
+  TrendingDown,
+  Wallet,
+  LayoutDashboard
 } from 'lucide-react';
 
 const NET_ASGARI_UCRET_2026 = 22104; // 2026 Tahmini / Gösterge Net Asgari Ücret
@@ -58,34 +63,36 @@ export default function EvdeBakimPage() {
     <div className="space-y-6">
       
       {/* Üst Başlık & Mevzuat Dayanağı */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded bg-rose-50 text-rose-700 flex items-center justify-center font-black">
-              <Home className="w-5 h-5" />
+      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1E293B] pb-5 mb-6">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-lg bg-[#18243A] text-indigo-400 flex items-center justify-center shadow-inner border border-[#1E293B]">
+              <Home className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-slate-900">
-                2026 Evde Bakım Maaşı Gelir Kriteri ve Şart Hesaplama
+              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+                Evde Bakım Maaşı Gelir Testi (2026)
               </h1>
-              <span className="text-xs text-slate-500 font-medium">
-                Dayanak: 2828 sayılı Sosyal Hizmetler Kanunu Ek 7. Madde
-              </span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <Info size={12} className="text-slate-500" />
+                <span className="text-xs text-slate-400 font-medium">
+                  2828 Sayılı Kanun Ek 7. Madde Standardı
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="text-xs font-semibold px-2.5 py-1 rounded bg-rose-50 text-rose-800 border border-rose-200">
-            Kişi Başı Sınır: <strong>{formatCurrency(kisiBasiGelirSiniri)}</strong>
+          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
+            2026 SINIRI: {formatCurrency(kisiBasiGelirSiniri)}
           </div>
         </div>
 
         {/* Girdi Formu */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
-          {/* Hanedeki Kişi Sayısı */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Aynı Hanede İkamet Eden Kişi Sayısı
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              Hanedeki Kişi Sayısı
             </label>
             <div className="relative">
               <input
@@ -94,21 +101,16 @@ export default function EvdeBakimPage() {
                 max="20"
                 value={householdSize || ''}
                 onChange={(e) => setHouseholdSize(Math.max(1, parseInt(e.target.value, 10) || 1))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
+                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
-                Kişi
-              </span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-[10px] uppercase tracking-tighter">KİŞİ</span>
             </div>
-            <span className="text-[11px] text-slate-500 mt-1 block">
-              Aynı adreste MERNİS kayıtlı olan tüm bireyler
-            </span>
+            <span className="text-[10px] text-slate-500 italic block">İkameti aynı olan herkes</span>
           </div>
 
-          {/* Hanenin Aylık Net Toplam Geliri */}
-          <div>
-            <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">
-              Hanenin Aylık Toplam Net Geliri (TL)
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+              Aylık Net Toplam Gelir
             </label>
             <div className="relative">
               <input
@@ -118,51 +120,51 @@ export default function EvdeBakimPage() {
                 step="500"
                 value={totalIncome || ''}
                 onChange={(e) => setTotalIncome(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3.5 py-2.5 rounded border border-slate-300 bg-white text-slate-900 font-bold text-sm focus:outline-none focus:border-sky-600"
+                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
-                TL / Ay
-              </span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-[10px] uppercase">TL</span>
             </div>
-            <span className="text-[11px] text-slate-500 mt-1 block">
-              Maaşlar, emekli aylıkları, kira ve ticari net gelirler
-            </span>
+            <span className="text-[10px] text-slate-500 italic block">Maaş, kira, ticari gelir toplamı</span>
           </div>
 
         </div>
 
         {/* Sağlık ve Rapor Şartları */}
-        <div className="mt-5 pt-4 border-t border-slate-100 space-y-3">
-          <label className="flex items-start gap-3 cursor-pointer select-none p-3 rounded bg-slate-50 border border-slate-200 hover:bg-slate-100/70 transition-colors">
-            <input
-              type="checkbox"
-              checked={isTamBagimli}
-              onChange={(e) => setIsTamBagimli(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-sky-700 dark:text-sky-400 focus:ring-sky-600 border-slate-300"
-            />
-            <div className="text-xs">
-              <span className="font-bold text-slate-900 block">
-                Sağlık Kurulu Raporunda &quot;Tam Bağımlı Engelli Birey&quot; İbaresi Var mı?
+        <div className="mt-6 pt-6 border-t border-[#1E293B] space-y-3">
+          <label className="flex items-start gap-4 cursor-pointer select-none p-4 rounded-lg bg-[#0B1220] border border-[#1E293B] hover:bg-[#18243A]/50 transition-all group">
+            <div className="mt-1">
+              <input
+                type="checkbox"
+                checked={isTamBagimli}
+                onChange={(e) => setIsTamBagimli(e.target.checked)}
+                className="w-4 h-4 rounded-sm text-indigo-500 focus:ring-indigo-500 border-[#1E293B] bg-[#111B2E]"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 transition-colors">
+                Raporunuzda &quot;Tam Bağımlı&quot; İbaresi Var mı?
               </span>
-              <span className="text-slate-600 block mt-0.5">
-                20 Şubat 2019 sonrası raporlarda &quot;Tam Bağımlı&quot;, eski raporlarda ise &quot;Ağır Engelli: EVET&quot; ibaresi kanunen zorunludur. &quot;Kısmi Bağımlı&quot; raporlara evde bakım maaşı bağlanmaz.
+              <span className="text-[11px] text-slate-500 leading-relaxed block">
+                2019 öncesi raporlarda &quot;Ağır Engelli: EVET&quot; ibaresi olması şarttır.
               </span>
             </div>
           </label>
 
-          <label className="flex items-start gap-3 cursor-pointer select-none p-3 rounded bg-slate-50 border border-slate-200 hover:bg-slate-100/70 transition-colors">
-            <input
-              type="checkbox"
-              checked={hasReport}
-              onChange={(e) => setHasReport(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded text-sky-700 dark:text-sky-400 focus:ring-sky-600 border-slate-300"
-            />
-            <div className="text-xs">
-              <span className="font-bold text-slate-900 block">
-                Rapor Süresi Geçerli ve e-Rapor Sisteminde Kayıtlı mı?
+          <label className="flex items-start gap-4 cursor-pointer select-none p-4 rounded-lg bg-[#0B1220] border border-[#1E293B] hover:bg-[#18243A]/50 transition-all group">
+            <div className="mt-1">
+              <input
+                type="checkbox"
+                checked={hasReport}
+                onChange={(e) => setHasReport(e.target.checked)}
+                className="w-4 h-4 rounded-sm text-indigo-500 focus:ring-indigo-500 border-[#1E293B] bg-[#111B2E]"
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 transition-colors">
+                Rapor e-Rapor Sisteminde Kayıtlı mı?
               </span>
-              <span className="text-slate-600 block mt-0.5">
-                Sağlık Bakanlığı veri tabanında teyit edilebilen süresiz veya süresi devam eden resmi kurul raporu.
+              <span className="text-[11px] text-slate-500 leading-relaxed block">
+                Sağlık Bakanlığı veri tabanında teyit edilebilir geçerli rapor durumu.
               </span>
             </div>
           </label>
@@ -170,93 +172,93 @@ export default function EvdeBakimPage() {
       </div>
 
       {/* SONUÇ VE DEĞERLENDİRME KARTI */}
-      <div className={`rounded-2xl border p-6 shadow-xs ${
+      <div className={`rounded-xl border p-6 shadow-xl animate-in zoom-in-95 duration-300 ${
         calculation.isFullyApproved 
-          ? 'bg-emerald-50/70 border-emerald-300' 
-          : 'bg-amber-50/70 border-amber-300'
+          ? 'bg-emerald-950/10 border-emerald-900/50' 
+          : 'bg-indigo-950/10 border-indigo-900/50'
       }`}>
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-5">
           <div className="mt-1">
             {calculation.isFullyApproved ? (
-              <div className="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
-                <CheckCircle2 className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-full bg-emerald-900/30 text-emerald-400 flex items-center justify-center shadow-inner">
+                <CheckCircle2 size={28} />
               </div>
             ) : (
-              <div className="w-10 h-10 rounded-full bg-amber-600 text-white flex items-center justify-center font-bold">
-                <AlertTriangle className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-full bg-indigo-900/30 text-indigo-400 flex items-center justify-center shadow-inner">
+                <AlertTriangle size={28} />
               </div>
             )}
           </div>
 
-          <div className="space-y-2 flex-1">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className={`text-base font-bold ${
-                calculation.isFullyApproved ? 'text-emerald-950' : 'text-amber-950'
-              }`}>
+          <div className="space-y-4 flex-1">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-lg font-bold text-[#F8FAFC] tracking-tight uppercase">
                 {calculation.isFullyApproved 
-                  ? 'TEBRİKLER: Evde Bakım Maaşı Gelir ve Rapor Şartlarını Sağlıyorsunuz' 
-                  : 'DİKKAT: Bazı Kriterler Sağlanamıyor'}
+                  ? 'ŞARTLAR UYGUN: Bakım Maaşı Alabilirsiniz' 
+                  : 'GELİR VEYA RAPOR KRİTERİ EKSİK'}
               </h2>
 
-              <span className={`text-xs px-2.5 py-1 rounded-full font-bold border ${
+              <span className={`text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-wider border ${
                 calculation.isFullyApproved 
-                  ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
-                  : 'bg-amber-100 text-amber-800 border-amber-300'
+                  ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800' 
+                  : 'bg-indigo-950/40 text-indigo-400 border-indigo-800'
               }`}>
-                {calculation.isFullyApproved ? 'Şartlar Uygun' : 'Eksik Kriter Var'}
+                {calculation.isFullyApproved ? 'Kriter Onaylı' : 'Şartlar Sağlanamadı'}
               </span>
             </div>
 
-            <p className="text-xs text-slate-700 leading-relaxed">
+            <div className="text-sm text-[#CBD5E1] leading-relaxed max-w-4xl">
               {calculation.isFullyApproved ? (
                 <>
-                  Hane içi kişi başı aylık geliriniz <strong>{formatCurrency(calculation.kisiBasiDusenGelir)}</strong> olup, 2026 yılı yasal sınırı olan <strong>{formatCurrency(calculation.kisiBasiGelirSiniri)}</strong> tutarının altındadır. 
-                  Tam bağımlı raporunuzla birlikte Aile ve Sosyal Hizmetler İl/İlçe Müdürlüğüne müracaat ederek aylık <strong>{formatCurrency(calculation.aylikTutar)}</strong> bakım yardımından yararlanabilirsiniz.
+                  Hane içi kişi başı aylık geliriniz <strong>{formatCurrency(calculation.kisiBasiDusenGelir)}</strong> olup, yasal sınırın altındadır. 
+                  İlçenizdeki <strong>Aile ve Sosyal Hizmetler Müdürlüğüne</strong> müracaat ederek aylık <strong>{formatCurrency(calculation.aylikTutar)}</strong> ödeme alabilirsiniz.
                 </>
               ) : (
-                <>
+                <div className="space-y-2">
                   {!calculation.isIncomeEligible && (
-                    <span className="block text-red-800 font-semibold mb-1">
-                      • Gelir Kriteri Aşıldı: Hanede kişi başı düşen gelir ({formatCurrency(calculation.kisiBasiDusenGelir)}), kanuni sınır olan {formatCurrency(calculation.kisiBasiGelirSiniri)} tutarından {formatCurrency(-calculation.fark)} fazladır.
-                    </span>
+                    <div className="flex items-center gap-2 text-rose-400 font-bold">
+                      <TrendingDown size={14} />
+                      <span>GELİR KRİTERİ: Kişi başı gelir sınırı {formatCurrency(-calculation.fark)} aşıldı.</span>
+                    </div>
                   )}
                   {!calculation.isMedicallyEligible && (
-                    <span className="block text-amber-900 font-semibold mb-1">
-                      • Sağlık Raporu Uyarısı: Evde bakım maaşı için raporda &quot;Tam Bağımlı Engelli Birey&quot; (Çocuklar için ÇÖZ-GER Çok İleri Düzeyde ÖGV/Belirgin ÖGV) ibaresi zorunludur.
-                    </span>
+                    <div className="flex items-center gap-2 text-amber-400 font-bold">
+                      <ShieldAlert size={14} />
+                      <span>SAĞLIK RAPORU: Evde bakım için &quot;Tam Bağımlı&quot; ibaresi zorunludur.</span>
+                    </div>
                   )}
-                </>
+                </div>
               )}
-            </p>
+            </div>
 
             {/* İstatistikler */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-200/80 text-xs">
-              <div className="p-2 bg-white/80 rounded border border-slate-200">
-                <span className="text-slate-500 block text-[11px]">Kişi Başı Gelir</span>
-                <span className="font-black text-slate-900 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-[#1E293B]">
+              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Kişi Başı Gelir</span>
+                <div className="text-xl font-black text-white">
                   {formatCurrency(calculation.kisiBasiDusenGelir)}
-                </span>
+                </div>
               </div>
 
-              <div className="p-2 bg-white/80 rounded border border-slate-200">
-                <span className="text-slate-500 block text-[11px]">2026 Yasal Sınırı</span>
-                <span className="font-black text-sky-700 dark:text-sky-400 text-sm">
+              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Yasal Sınır</span>
+                <div className="text-xl font-black text-indigo-400">
                   {formatCurrency(calculation.kisiBasiGelirSiniri)}
-                </span>
+                </div>
               </div>
 
-              <div className="p-2 bg-white/80 rounded border border-slate-200">
-                <span className="text-slate-500 block text-[11px]">Kalan Güvenli Limit</span>
-                <span className={`font-black text-sm ${calculation.fark >= 0 ? 'text-emerald-700' : 'text-red-700'}`}>
+              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Kalan Limit</span>
+                <div className={`text-xl font-black ${calculation.fark >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {calculation.fark >= 0 ? '+' + formatCurrency(calculation.fark) : formatCurrency(calculation.fark)}
-                </span>
+                </div>
               </div>
 
-              <div className="p-2 bg-white/80 rounded border border-slate-200">
-                <span className="text-slate-500 block text-[11px]">2026 Aylık Tutar</span>
-                <span className="font-black text-rose-700 text-sm">
-                  {formatCurrency(calculation.aylikTutar)} / ay
-                </span>
+              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Bakım Aylığı</span>
+                <div className="text-xl font-black text-indigo-300">
+                  {formatCurrency(calculation.aylikTutar)} <span className="text-[10px] text-slate-500">/ AY</span>
+                </div>
               </div>
             </div>
 
@@ -265,30 +267,34 @@ export default function EvdeBakimPage() {
       </div>
 
       {/* BAŞVURU ŞARTLARI VE KİMLER BAKICI OLABİLİR? */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
-          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-            <Building className="w-4 h-4 text-sky-700 dark:text-sky-400" />
-            <span>Kimler Bakıcı Olarak Gösterilebilir?</span>
+        <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
+          <h3 className="text-xs font-black text-[#F8FAFC] uppercase tracking-widest mb-4 flex items-center gap-2.5">
+            <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+              <Building size={14} />
+            </div>
+            <span>Kimler Bakıcı Olabilir?</span>
           </h3>
-          <ul className="text-xs text-slate-600 space-y-1.5 leading-relaxed">
-            <li>• Eş, anne, baba, çocuk, kardeş, torun, dede, nine</li>
-            <li>• Amca, hala, teyze, dayı ve bunların çocukları</li>
-            <li>• Gelin, damat, kayınvalide, kayınpeder, görümce, bacanak</li>
-            <li>• Bakıcının haftada en az 8 saat günlük bakımı aksatmayacak şekilde engelliyle fiilen ilgilenmesi zorunludur.</li>
+          <ul className="text-xs text-[#CBD5E1] space-y-2 leading-relaxed font-medium">
+            <li className="flex gap-2"><span>•</span> <span>Eş, anne, baba, çocuk, kardeş, torun, dede, nine.</span></li>
+            <li className="flex gap-2"><span>•</span> <span>Amca, hala, teyze, dayı ve çocukları.</span></li>
+            <li className="flex gap-2"><span>•</span> <span>Gelin, damat, kayınvalide, kayınpeder, görümce.</span></li>
+            <li className="flex gap-2 text-indigo-300"><span>•</span> <span>Bakıcının haftada en az 8 saat fiilen engelliyle ilgilenmesi zorunludur.</span></li>
           </ul>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
-          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-            <ShieldAlert className="w-4 h-4 text-amber-600" />
-            <span>Başvuru ve İnceleme Prosedürü</span>
+        <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
+          <h3 className="text-xs font-black text-[#F8FAFC] uppercase tracking-widest mb-4 flex items-center gap-2.5">
+            <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-400">
+              <ShieldAlert size={14} />
+            </div>
+            <span>Başvuru Prosedürü</span>
           </h3>
-          <ul className="text-xs text-slate-600 space-y-1.5 leading-relaxed">
-            <li>• Başvuru, engellinin ikamet ettiği yerdeki <strong>Sosyal Hizmet Merkezi Müdürlüğüne</strong> veya <strong>e-Devlet</strong> üzerinden yapılır.</li>
-            <li>• Bakım Hizmetleri Değerlendirme Heyeti haneyi yerinde ziyaret ederek bakım raporu tanzim eder.</li>
-            <li>• Evde bakım maaşı haczedilemez, hiçbir vergi veya harca tabi tutulamaz.</li>
+          <ul className="text-xs text-[#CBD5E1] space-y-2 leading-relaxed font-medium">
+            <li className="flex gap-2"><span>•</span> <span>Başvuru Sosyal Hizmet Merkezi Müdürlüğüne veya e-Devlet üzerinden yapılır.</span></li>
+            <li className="flex gap-2"><span>•</span> <span>Değerlendirme heyeti haneyi yerinde ziyaret ederek rapor tanzim eder.</span></li>
+            <li className="flex gap-2"><span>•</span> <span>Maaş hiçbir şekilde haczedilemez ve vergiye tabi tutulamaz.</span></li>
           </ul>
         </div>
 

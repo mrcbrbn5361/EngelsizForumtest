@@ -149,9 +149,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "otv-muafiyeti",
             desc: "2026 yılı 2.873.972 TL üst limit düzenlemesi, tertibat kodları ve vergi istisnası.",
             icon: "Car",
-            topics: 1420,
-            replies: 18940,
-            lastPost: { title: "2026 ÖTV Limiti Resmi Gazete Kararı ve Bayi Süreçleri", author: "Bora", date: "Bugün 11:20" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           },
           {
             id: "sub-emeklilik",
@@ -159,9 +159,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "engelli-emeklilik",
             desc: "Vergi indirimi derecesine göre yaş şartsız emeklilik, prim gün tabloları.",
             icon: "PiggyBank",
-            topics: 890,
-            replies: 11420,
-            lastPost: { title: "Son 1260 gün kuralı ve Bağ-Kur 5510/28 geçişi", author: "Aria", date: "Dün 18:40" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           },
           {
             id: "sub-ayliklar",
@@ -169,9 +169,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "engelli-maaslari",
             desc: "Hane içi kişi başı gelir kriterleri, SED yardımları ve SYDV başvuruları.",
             icon: "CreditCard",
-            topics: 640,
-            replies: 8210,
-            lastPost: { title: "2026 Temmuz evde bakım maaşı zam katsayısı hesabı", author: "Felix", date: "3 gün önce" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           },
           {
             id: "sub-istihdam",
@@ -179,9 +179,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "ekpss-ve-istihdam",
             desc: "Engelli kamu personeli seçme sınavı, kura atamaları, iş kanunu kotaları.",
             icon: "Briefcase",
-            topics: 730,
-            replies: 9800,
-            lastPost: { title: "2026 E-KPSS Branş bazında taban puanlar ve kadro analizi", author: "Bora", date: "4 gün önce" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           }
         ]
       },
@@ -197,9 +197,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "balthazard-ve-saglik-raporu",
             desc: "Birden fazla branş oranının formülle birleştirilmesi ve heyet kararları.",
             icon: "Calculator",
-            topics: 1120,
-            replies: 14350,
-            lastPost: { title: "Ortopedi ve Dahiliye oran birleştirme formül örneği", author: "Bora", date: "Bugün 09:15" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           },
           {
             id: "sub-cozger",
@@ -207,9 +207,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "cozger-rehberi",
             desc: "18 yaş altı özel gereksinim raporları, ÖKGV ve BÖGV kategori hakları.",
             icon: "Stethoscope",
-            topics: 420,
-            replies: 4890,
-            lastPost: { title: "ÇÖZGER rapor yenileme ve RAM raporu eşleştirmesi", author: "Aria", date: "Dün 14:10" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           },
           {
             id: "sub-medikal",
@@ -217,9 +217,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "medikal-cihazlar",
             desc: "Tekerlekli sandalye, işitme cihazı, protez-ortez ve SUT geri ödeme listeleri.",
             icon: "Activity",
-            topics: 310,
-            replies: 3950,
-            lastPost: { title: "Akülü tekerlekli sandalye SGK ödeme baremi 2026", author: "Felix", date: "5 gün önce" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           }
         ]
       },
@@ -235,9 +235,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "ekran-okuyucular",
             desc: "Gelişmiş eklentiler, OCR modülleri ve erişilebilir web deneyimi ipuçları.",
             icon: "Volume2",
-            topics: 480,
-            replies: 6200,
-            lastPost: { title: "NVDA 2026.1 sürümü yenilikleri ve Türkçe ses motoru ayarları", author: "Felix", date: "Dün 20:30" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           },
           {
             id: "sub-web-a11y",
@@ -245,9 +245,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "web-a11y-yazilim",
             desc: "Geliştiriciler için semantik HTML, ARIA desenleri ve WCAG 2.1 AAA standartları.",
             icon: "Code",
-            topics: 290,
-            replies: 3410,
-            lastPost: { title: "React ve Next.js projelerinde tam klavye navigasyonu", author: "Felix", date: "3 gün önce" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           }
         ]
       },
@@ -263,9 +263,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "ortopedik-dayanisma",
             desc: "Mimari erişilebilirlik, rampa standartları ve tekerlekli sandalye yaşamı.",
             icon: "MapPin",
-            topics: 540,
-            replies: 6890,
-            lastPost: { title: "Şehir içi toplu taşımada engelli asansörleri ve şikayet kanalları", author: "Aria", date: "Bugün 08:00" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           },
           {
             id: "sub-gorme-isitme",
@@ -273,9 +273,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "gorme-ve-isitme",
             desc: "Beyaz baston kullanımı, işaret dili eğitimi ve betimleme servisleri.",
             icon: "Eye",
-            topics: 390,
-            replies: 5120,
-            lastPost: { title: "Sesli betimlemeli tiyatro ve sinema etkinlikleri listesi", author: "Aria", date: "2 gün önce" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           },
           {
             id: "sub-norocesitlilik",
@@ -283,27 +283,28 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             slug: "norocesitlilik",
             desc: "Otizm, DEHB ve disleksi alanında aile dayanışması ve eğitim hakları.",
             icon: "Smile",
-            topics: 360,
-            replies: 4500,
-            lastPost: { title: "Bireyselleştirilmiş Eğitim Planı (BEP) hazırlama kılavuzu", author: "Bora", date: "4 gün önce" }
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
           }
         ]
       }
     ];
 
-    // Merge Supabase topics if present
+    // Compute real Supabase topics if present
     if (initialTopics && initialTopics.length > 0) {
       sections.forEach(sec => {
         sec.subforums.forEach(sub => {
           const matched = initialTopics.filter(t => 
             t.category?.slug === sub.slug || 
             t.category_id === sub.id ||
-            t.title.toLowerCase().includes(sub.slug)
+            t.title.toLowerCase().includes(sub.slug.replace(/-/g, ' ')) ||
+            sub.name.toLowerCase().includes(t.category?.name?.toLowerCase() || '')
           );
           if (matched.length > 0) {
             const latest = matched[0];
-            sub.topics = Math.max(sub.topics, matched.length);
-            sub.replies = sub.replies + matched.reduce((acc, t) => acc + (t.comments_count || 0), 0);
+            sub.topics = matched.length;
+            sub.replies = matched.reduce((acc, t) => acc + (t.comments_count || 0), 0);
             sub.lastPost = {
               title: latest.title,
               author: latest.author?.full_name || latest.author?.username || 'Topluluk',
@@ -368,21 +369,21 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
   };
 
   return (
-    <div className="w-full text-zinc-100">
+    <div className="w-full text-slate-100">
       {/* Top Legislation Notice Bar - Flat hairline divider */}
-      <div className="border-b border-zinc-800/80 pb-4 mb-8">
+      <div className="border-b border-[#1E293B] pb-4 mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2.5 text-zinc-400">
-            <span className="font-mono text-[11px] text-zinc-300 font-medium">
+          <div className="flex items-center gap-2.5 text-slate-400">
+            <span className="font-mono text-[11px] text-indigo-400 font-semibold">
               [2026 Mevzuat]
             </span>
             <span>
-              2026 ÖTV Muafiyetli Araç Üst Limiti <strong className="text-zinc-200 font-mono font-normal">2.873.972 TL</strong> olarak yürürlüktedir.
+              2026 ÖTV Muafiyetli Araç Üst Limiti <strong className="text-slate-100 font-mono font-medium">2.873.972 TL</strong> olarak yürürlüktedir.
             </span>
           </div>
           <Link 
             href="/hesaplama" 
-            className="text-xs text-zinc-300 hover:text-white transition-colors flex items-center gap-1 shrink-0 font-medium"
+            className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 shrink-0 font-medium"
           >
             Balthazard ve Limit Robotu <ChevronRight size={13} />
           </Link>
@@ -390,34 +391,34 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
       </div>
 
       {/* Hero Header - Generous whitespace, typographic hierarchy, flat linear inputs */}
-      <header className="py-6 sm:py-10 border-b border-zinc-800/80">
+      <header className="py-6 sm:py-8 border-b border-[#1E293B]">
         <div className="max-w-3xl">
-          <h1 className="text-2xl sm:text-4xl font-semibold tracking-tight text-zinc-100">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-heading">
             {profile ? (
               <>Hoş Geldiniz, {profile.full_name || profile.username}</>
             ) : (
               <>Engelsiz Topluluk ve Bilgi Platformu</>
             )}
           </h1>
-          <p className="mt-3 text-sm text-zinc-400 font-normal leading-relaxed">
+          <p className="mt-2.5 text-sm text-slate-300 font-normal leading-relaxed">
             Engelli hakları, 2026 ÖTV istisnası, sağlık kurulu heyet raporları, erken emeklilik ve günlük dayanışma için Türkiye&apos;nin erişilebilir bağımsız forumu.
           </p>
 
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" size={15} aria-hidden="true" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={15} aria-hidden="true" />
               <input 
                 type="search" 
                 placeholder="Başlıklar, mevzuat ve konularda ara..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 aria-label="Forum genelinde ara"
-                className="w-full pl-9 pr-3 h-9 text-xs rounded-md border border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-500 transition-colors"
+                className="w-full pl-9 pr-3 h-9 text-xs rounded-md border border-[#1E293B] bg-[#111B2E] text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 transition-colors font-sans"
               />
             </div>
             <Link 
               href="/discussions/new" 
-              className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-md bg-zinc-100 hover:bg-white text-zinc-950 font-medium text-xs transition-colors shrink-0"
+              className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors shrink-0"
             >
               <Plus size={14} /> Yeni Konu Aç
             </Link>
@@ -425,15 +426,15 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
         </div>
 
         {/* Minimal Stats Strip */}
-        <div className="mt-8 pt-6 border-t border-zinc-800/50 flex flex-wrap items-center gap-x-8 gap-y-2 text-xs font-mono text-zinc-500">
+        <div className="mt-8 pt-5 border-t border-[#1E293B] flex flex-wrap items-center gap-x-8 gap-y-2 text-xs font-mono text-slate-400">
           <div>
-            <span className="text-zinc-300 font-medium">{stats?.totalTopics !== undefined ? formatCompactNumber(stats.totalTopics) : '0'}</span> Konu
+            <span className="text-slate-200 font-medium">{stats?.totalTopics !== undefined ? formatCompactNumber(stats.totalTopics) : '0'}</span> Konu
           </div>
           <div>
-            <span className="text-zinc-300 font-medium">{stats?.totalComments !== undefined ? formatCompactNumber(stats.totalComments) : '0'}</span> Mesaj
+            <span className="text-slate-200 font-medium">{stats?.totalComments !== undefined ? formatCompactNumber(stats.totalComments) : '0'}</span> Mesaj
           </div>
           <div>
-            <span className="text-zinc-300 font-medium">{stats?.totalMembers !== undefined ? formatCompactNumber(stats.totalMembers) : '0'}</span> Üye
+            <span className="text-slate-200 font-medium">{stats?.totalMembers !== undefined ? formatCompactNumber(stats.totalMembers) : '0'}</span> Üye
           </div>
           <div className="flex items-center gap-1.5 text-emerald-400">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -443,35 +444,35 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
       </header>
 
       {/* Main Forum Grid */}
-      <div className="pt-10 sm:pt-14 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+      <div className="pt-8 sm:pt-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         
         {/* Main Column */}
-        <div className="lg:col-span-8 space-y-14">
+        <div className="lg:col-span-8 space-y-12">
           
           {/* Quick Shortcuts */}
           <div className="flex flex-wrap items-center gap-2">
             <Link 
               href="/hesaplama"
-              className="px-3 py-1.5 rounded-md border border-zinc-800 hover:border-zinc-700 bg-zinc-900/40 text-xs text-zinc-300 hover:text-white transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-md border border-[#1E293B] hover:border-slate-700 bg-[#111B2E] hover:bg-[#18243A] text-xs text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
             >
-              <Scale size={13} className="text-zinc-400" /> Balthazard Robotu
+              <Scale size={13} className="text-indigo-400" /> Balthazard Robotu
             </Link>
             <Link 
               href="/hesaplama"
-              className="px-3 py-1.5 rounded-md border border-zinc-800 hover:border-zinc-700 bg-zinc-900/40 text-xs text-zinc-300 hover:text-white transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-md border border-[#1E293B] hover:border-slate-700 bg-[#111B2E] hover:bg-[#18243A] text-xs text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
             >
-              <Car size={13} className="text-zinc-400" /> 2026 ÖTV Limiti
+              <Car size={13} className="text-emerald-400" /> 2026 ÖTV Limiti
             </Link>
             <Link 
               href="/communities"
-              className="px-3 py-1.5 rounded-md border border-zinc-800 hover:border-zinc-700 bg-zinc-900/40 text-xs text-zinc-300 hover:text-white transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-md border border-[#1E293B] hover:border-slate-700 bg-[#111B2E] hover:bg-[#18243A] text-xs text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
             >
-              <Users size={13} className="text-zinc-400" /> Tanı Grupları
+              <Users size={13} className="text-amber-400" /> Tanı Grupları
             </Link>
           </div>
 
           {/* Forum Categories & Subforums */}
-          <div className="space-y-12">
+          <div className="space-y-10">
             {forumSections.map((section) => {
               const isCollapsed = collapsedCategories[section.id];
               return (
@@ -479,7 +480,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                   {/* Category Header */}
                   <div 
                     onClick={() => toggleCategory(section.id)}
-                    className="flex items-center justify-between border-b border-zinc-800 pb-2 cursor-pointer select-none group"
+                    className="flex items-center justify-between border-b border-[#1E293B] pb-2 cursor-pointer select-none group"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
@@ -491,23 +492,23 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     aria-expanded={!isCollapsed}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400 group-hover:text-zinc-200 transition-colors">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-300 group-hover:text-white transition-colors font-heading">
                         {section.name}
                       </span>
                     </div>
                     <ChevronRight 
                       size={14} 
-                      className={cn("text-zinc-500 transition-transform duration-150", !isCollapsed && "rotate-90")} 
+                      className={cn("text-slate-400 transition-transform duration-150", !isCollapsed && "rotate-90")} 
                     />
                   </div>
 
                   {/* Subforums Flat List */}
                   {!isCollapsed && (
-                    <div className="divide-y divide-zinc-800/60">
+                    <div className="divide-y divide-[#1E293B]/70">
                       {section.subforums.map((subforum) => (
                         <div 
                           key={subforum.id} 
-                          className="py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-zinc-900/20 px-2 -mx-2 transition-colors rounded-sm"
+                          className="py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-[#111B2E]/60 px-2 -mx-2 transition-colors rounded-sm"
                         >
                           <div className="flex items-start gap-3 min-w-0 flex-1">
                             <div className="mt-1 shrink-0">
@@ -516,31 +517,37 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                             <div className="min-w-0 flex-1">
                               <Link 
                                 href={`/category/${subforum.slug}`} 
-                                className="text-xs sm:text-sm font-medium text-zinc-200 hover:text-white transition-colors block truncate"
+                                className="text-xs sm:text-sm font-semibold text-slate-100 hover:text-indigo-400 transition-colors block truncate"
                               >
                                 {subforum.name}
                               </Link>
-                              <p className="text-xs text-zinc-500 mt-0.5 line-clamp-1">
+                              <p className="text-xs text-slate-400 mt-0.5 line-clamp-1">
                                 {subforum.desc}
                               </p>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-6 shrink-0 md:justify-end text-xs text-zinc-500 pl-7 md:pl-0">
+                          <div className="flex items-center gap-6 shrink-0 md:justify-end text-xs text-slate-400 pl-7 md:pl-0">
                             <div className="font-mono text-right shrink-0">
-                              <span className="text-zinc-400 font-medium">{formatCompactNumber(subforum.topics)}</span> k · <span className="text-zinc-400 font-medium">{formatCompactNumber(subforum.replies)}</span> m
+                              <span className="text-slate-200 font-medium">{formatCompactNumber(subforum.topics)}</span> k · <span className="text-slate-200 font-medium">{formatCompactNumber(subforum.replies)}</span> m
                             </div>
                             <div className="text-right truncate max-w-[170px] sm:max-w-[200px]">
-                              <Link 
-                                href={`/discussions`} 
-                                className="text-zinc-400 hover:text-zinc-200 transition-colors truncate block text-xs" 
-                                title={subforum.lastPost.title}
-                              >
-                                {subforum.lastPost.title}
-                              </Link>
-                              <div className="text-[11px] text-zinc-600 truncate mt-0.5">
-                                {subforum.lastPost.author} {subforum.lastPost.date && `· ${subforum.lastPost.date}`}
-                              </div>
+                              {subforum.topics > 0 ? (
+                                <>
+                                  <Link 
+                                    href={`/discussions`} 
+                                    className="text-slate-300 hover:text-indigo-400 transition-colors truncate block text-xs" 
+                                    title={subforum.lastPost.title}
+                                  >
+                                    {subforum.lastPost.title}
+                                  </Link>
+                                  <div className="text-[11px] text-slate-400 truncate mt-0.5">
+                                    {subforum.lastPost.author} {subforum.lastPost.date && `· ${subforum.lastPost.date}`}
+                                  </div>
+                                </>
+                              ) : (
+                                <span className="text-[11px] text-slate-400 italic">Henüz konu yok</span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -553,17 +560,17 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           </div>
 
           {/* Recent Discussions Feed */}
-          <section className="space-y-6 pt-4" aria-label="Son Tartışmalar">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <section className="space-y-5 pt-2" aria-label="Son Tartışmalar">
+            <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
                 Son Tartışmalar
               </h2>
               
-              {/* Tab Switcher - Flat Linear Style */}
+              {/* Tab Switcher */}
               <div className="flex items-center gap-4 text-xs font-medium" role="tablist">
                 {[
                   { id: 'all', label: 'Tümü' }, 
-                  { id: 'pinned', label: 'Sabit' }, 
+                  { id: 'pinned', label: 'Sabitler' }, 
                   { id: 'solved', label: 'Çözülenler' }, 
                   { id: 'popular', label: 'Popüler' }
                 ].map((tab) => (
@@ -573,8 +580,10 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     aria-selected={activeTab === tab.id}
                     onClick={() => setActiveTab(tab.id as any)} 
                     className={cn(
-                      "transition-colors cursor-pointer",
-                      activeTab === tab.id ? "text-zinc-100 font-semibold" : "text-zinc-500 hover:text-zinc-300"
+                      "transition-colors cursor-pointer pb-0.5",
+                      activeTab === tab.id 
+                        ? "text-indigo-400 font-semibold border-b-2 border-indigo-400" 
+                        : "text-slate-400 hover:text-slate-200"
                     )}
                   >
                     {tab.label}
@@ -584,38 +593,38 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             </div>
 
             {/* Flat Thread Rows */}
-            <div className="divide-y divide-zinc-800/60">
+            <div className="divide-y divide-[#1E293B]/70">
               {filteredTopics.length > 0 ? (
                 filteredTopics.map((topic) => (
-                  <article key={topic.id} className="py-4 hover:bg-zinc-900/20 px-2 -mx-2 transition-colors rounded-sm">
+                  <article key={topic.id} className="py-4 hover:bg-[#111B2E]/60 px-2 -mx-2 transition-colors rounded-sm">
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 text-[11px] text-zinc-500 mb-1">
+                        <div className="flex items-center gap-2 text-[11px] text-slate-400 mb-1 flex-wrap">
                           {topic.is_pinned && (
-                            <span className="font-mono text-zinc-300 font-medium">[Sabit]</span>
+                            <span className="font-mono text-amber-300 font-medium">[Sabit]</span>
                           )}
                           {topic.is_solved && (
                             <span className="font-mono text-emerald-400 font-medium">[Çözüldü]</span>
                           )}
-                          <span className="text-zinc-500">{topic.category?.name || 'Genel'}</span>
+                          <span className="text-slate-300 font-medium">{topic.category?.name || 'Genel'}</span>
                           <span>·</span>
-                          <time className="font-mono text-zinc-600">{formatDate(topic.created_at)}</time>
+                          <time className="font-mono text-slate-400">{formatDate(topic.created_at)}</time>
                         </div>
-                        <h3 className="text-sm font-medium text-zinc-200 hover:text-white transition-colors leading-snug">
+                        <h3 className="text-sm font-semibold text-slate-100 hover:text-indigo-400 transition-colors leading-snug">
                           <Link href={`/discussions/${topic.id}`}>{topic.title}</Link>
                         </h3>
                         {topic.content && (
-                          <p className="text-xs text-zinc-500 line-clamp-1 mt-1 leading-relaxed">
+                          <p className="text-xs text-slate-300 line-clamp-1 mt-1 leading-relaxed">
                             {topic.content}
                           </p>
                         )}
-                        <div className="mt-2 flex items-center gap-2 text-xs text-zinc-500">
-                          <span>@{topic.author?.full_name || topic.author?.username || 'Kullanıcı'}</span>
+                        <div className="mt-2 flex items-center gap-2 text-xs text-slate-400">
+                          <span>@{topic.author?.full_name || topic.author?.username || 'Topluluk Üyesi'}</span>
                         </div>
                       </div>
 
-                      <div className="text-right font-mono text-xs text-zinc-500 shrink-0 pt-1">
-                        <span className="text-zinc-300 font-medium">
+                      <div className="text-right font-mono text-xs text-slate-400 shrink-0 pt-1">
+                        <span className="text-slate-200 font-medium">
                           {(topic.comments as any)?.[0]?.count || topic.comments_count || 0}
                         </span> yanıt
                       </div>
@@ -623,7 +632,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                   </article>
                 ))
               ) : (
-                <div className="py-12 text-center text-xs text-zinc-500">
+                <div className="py-12 text-center text-xs text-slate-400">
                   Bu filtrede henüz tartışma bulunmuyor.
                 </div>
               )}
@@ -632,28 +641,28 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
         </div>
 
         {/* Flat Sidebar Column */}
-        <aside className="lg:col-span-4 space-y-10" aria-label="Yan Panel">
+        <aside className="lg:col-span-4 space-y-8" aria-label="Yan Panel">
           
           {/* Action button */}
           <Link 
             href="/discussions/new" 
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-md bg-zinc-100 hover:bg-white text-zinc-950 font-medium text-xs transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors"
           >
             <Plus size={14} /> Yeni Konu Başlat
           </Link>
 
           {/* Quick Balthazard Form */}
-          <section className="space-y-3" aria-label="Balthazard Hesaplama">
-            <div className="border-b border-zinc-800 pb-2 flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <section className="p-4 rounded-lg bg-[#111B2E] border border-[#1E293B] space-y-3" aria-label="Balthazard Hesaplama">
+            <div className="border-b border-[#1E293B] pb-2 flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
                 Balthazard Robotu
               </h3>
-              <span className="text-[11px] font-mono text-zinc-500">2026</span>
+              <span className="text-[11px] font-mono text-indigo-400">2026</span>
             </div>
             <form onSubmit={calculateMiniBalthazard} className="space-y-2.5">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[11px] text-zinc-500 block mb-1">1. Oran %</label>
+                  <label className="text-[11px] text-slate-400 block mb-1">1. Oran %</label>
                   <input 
                     type="number" 
                     min="1" 
@@ -661,12 +670,12 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     value={rate1} 
                     onChange={(e) => setRate1(e.target.value)} 
                     placeholder="Örn: 40" 
-                    className="w-full bg-zinc-900/60 border border-zinc-800 rounded-md px-2.5 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500 font-mono"
+                    className="w-full bg-[#18243A] border border-[#1E293B] rounded-md px-2.5 py-1.5 text-xs text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 font-mono"
                     required
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-zinc-500 block mb-1">2. Oran %</label>
+                  <label className="text-[11px] text-slate-400 block mb-1">2. Oran %</label>
                   <input 
                     type="number" 
                     min="1" 
@@ -674,25 +683,25 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     value={rate2} 
                     onChange={(e) => setRate2(e.target.value)} 
                     placeholder="Örn: 30" 
-                    className="w-full bg-zinc-900/60 border border-zinc-800 rounded-md px-2.5 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500 font-mono"
+                    className="w-full bg-[#18243A] border border-[#1E293B] rounded-md px-2.5 py-1.5 text-xs text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 font-mono"
                     required
                   />
                 </div>
               </div>
 
-              <label className="flex items-center gap-2 text-xs text-zinc-400 cursor-pointer pt-0.5">
+              <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer pt-0.5">
                 <input 
                   type="checkbox" 
                   checked={isOver65} 
                   onChange={(e) => setIsOver65(e.target.checked)} 
-                  className="rounded border-zinc-800 bg-zinc-900 text-zinc-100 focus:ring-0"
+                  className="rounded border-[#1E293B] bg-[#18243A] text-indigo-600 focus:ring-0"
                 />
                 <span>65 yaş veya üzeri (+%10)</span>
               </label>
 
               <button 
                 type="submit" 
-                className="w-full py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 font-medium text-xs rounded-md transition-colors cursor-pointer"
+                className="w-full py-1.5 bg-[#18243A] hover:bg-[#1E293B] border border-[#1E293B] text-slate-100 font-medium text-xs rounded-md transition-colors cursor-pointer"
               >
                 Oranı Birleştir
               </button>
@@ -700,8 +709,8 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
 
             {miniBalthazardResult !== null && (
               <div className="pt-2 text-xs">
-                <div className="text-zinc-400">Nihai Oran: <span className="font-mono text-zinc-100 font-semibold text-sm">%{miniBalthazardResult}</span></div>
-                <div className="text-[11px] text-zinc-500 mt-0.5">
+                <div className="text-slate-300">Nihai Oran: <span className="font-mono text-indigo-400 font-semibold text-sm">%{miniBalthazardResult}</span></div>
+                <div className="text-[11px] text-slate-400 mt-0.5">
                   {miniBalthazardResult >= 90 ? 'Şartsız ÖTV muafiyeti standardı.' : miniBalthazardResult >= 40 ? 'Vergi indirimi ve engelli kimlik hakkı.' : 'Genel sağlık raporu oranı.'}
                 </div>
               </div>
@@ -709,9 +718,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           </section>
 
           {/* User Profile / Auth State */}
-          <section className="space-y-3" aria-label="Profil Bilgisi">
-            <div className="border-b border-zinc-800 pb-2">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <section className="p-4 rounded-lg bg-[#111B2E] border border-[#1E293B] space-y-3" aria-label="Profil Bilgisi">
+            <div className="border-b border-[#1E293B] pb-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
                 Profil
               </h3>
             </div>
@@ -725,23 +734,23 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     size="sm"
                   />
                   <div className="min-w-0">
-                    <div className="font-medium text-zinc-200 truncate">{profile?.full_name || profile?.username}</div>
-                    <div className="text-[11px] text-zinc-500 font-mono">Seviye {profile?.level || 1} · {profile?.xp || 0} XP</div>
+                    <div className="font-medium text-slate-100 truncate">{profile?.full_name || profile?.username}</div>
+                    <div className="text-[11px] text-slate-400 font-mono">Seviye {profile?.level || 1} · {profile?.xp || 0} XP</div>
                   </div>
                 </div>
                 <Link 
                   href="/profile" 
-                  className="block text-xs text-zinc-400 hover:text-zinc-200 transition-colors pt-1"
+                  className="block text-xs text-indigo-400 hover:text-indigo-300 transition-colors pt-1"
                 >
                   Profilimi Yönet →
                 </Link>
               </div>
             ) : (
-              <div className="space-y-2 text-xs text-zinc-400">
+              <div className="space-y-2 text-xs text-slate-300">
                 <p>Sorularınızı sormak ve tartışmalara katılmak için giriş yapın.</p>
                 <Link 
                   href="/login" 
-                  className="inline-block text-xs text-zinc-300 hover:text-white font-medium"
+                  className="inline-block text-xs text-indigo-400 hover:text-indigo-300 font-medium"
                 >
                   Giriş Yap veya Kayıt Ol →
                 </Link>
@@ -750,9 +759,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           </section>
 
           {/* Online Members */}
-          <section className="space-y-3" aria-label="Çevrimiçi Üyeler">
-            <div className="border-b border-zinc-800 pb-2 flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <section className="p-4 rounded-lg bg-[#111B2E] border border-[#1E293B] space-y-3" aria-label="Çevrimiçi Üyeler">
+            <div className="border-b border-[#1E293B] pb-2 flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
                 Çevrimiçi
               </h3>
               <span className="text-[11px] font-mono text-emerald-400">
@@ -760,28 +769,32 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               </span>
             </div>
             <div className="space-y-1.5 text-xs">
-              {onlineMembers.slice(0, 6).map(member => (
-                <div key={member.id} className="flex items-center justify-between text-zinc-400 hover:text-zinc-200">
-                  <span className="truncate">@{member.username}</span>
-                  <span className="text-[10px] text-zinc-600 font-mono">{member.role}</span>
-                </div>
-              ))}
+              {onlineMembers.length > 0 ? (
+                onlineMembers.slice(0, 6).map(member => (
+                  <div key={member.id} className="flex items-center justify-between text-slate-300 hover:text-white">
+                    <span className="truncate">@{member.username}</span>
+                    <span className="text-[10px] text-slate-400 font-mono uppercase">{member.role}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-[11px] text-slate-400 italic">Şu anda çevrimiçi üye bulunmuyor</div>
+              )}
             </div>
           </section>
 
           {/* Quick Legal Help / AI Assistant */}
-          <section className="space-y-3" aria-label="Hukuk Asistanı">
-            <div className="border-b border-zinc-800 pb-2">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <section className="p-4 rounded-lg bg-[#111B2E] border border-[#1E293B] space-y-3" aria-label="Hukuk Asistanı">
+            <div className="border-b border-[#1E293B] pb-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
                 Mevzuat Asistanı
               </h3>
             </div>
-            <p className="text-xs text-zinc-500 leading-relaxed">
+            <p className="text-xs text-slate-400 leading-relaxed">
               ÖTV istisnası veya rapor itirazları hakkında soru sorabilirsiniz.
             </p>
             <div className="space-y-2 max-h-48 overflow-y-auto text-xs">
               {aiAnswers.map((ans, idx) => (
-                <div key={idx} className={cn("text-xs leading-relaxed", ans.sender === 'user' ? "text-zinc-300 font-medium" : "text-zinc-400")}>
+                <div key={idx} className={cn("text-xs leading-relaxed", ans.sender === 'user' ? "text-slate-200 font-medium" : "text-slate-300")}>
                   {ans.sender === 'user' ? 'Siz: ' : 'Asistan: '} {ans.text}
                 </div>
               ))}
@@ -792,12 +805,12 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 value={aiQuestion}
                 onChange={(e) => setAiQuestion(e.target.value)}
                 placeholder="Örn: Sol bacak ÖTV şartı..."
-                className="flex-1 bg-zinc-900/60 border border-zinc-800 rounded-md px-2.5 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:border-zinc-500"
+                className="flex-1 bg-[#18243A] border border-[#1E293B] rounded-md px-2.5 py-1.5 text-xs text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400"
               />
               <button 
                 type="submit" 
                 disabled={aiLoading}
-                className="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white rounded-md text-xs cursor-pointer disabled:opacity-50"
+                className="px-2.5 py-1.5 bg-[#18243A] hover:bg-[#1E293B] border border-[#1E293B] text-slate-300 hover:text-white rounded-md text-xs cursor-pointer disabled:opacity-50"
               >
                 {aiLoading ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
               </button>

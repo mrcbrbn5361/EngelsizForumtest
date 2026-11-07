@@ -1618,17 +1618,17 @@ export function LoginWithEngelsizForum() {
 
                     {/* Dil */}
                     <div className="space-y-1">
-                      <label className="block font-bold text-slate-800 uppercase text-[10px]">
+                      <label className="block font-bold text-slate-400 uppercase text-[10px]">
                         Arayüz Dili:
                       </label>
                       <div className="grid grid-cols-2 gap-1.5">
                         <button
                           type="button"
                           onClick={() => setWidgetLang('tr')}
-                          className={`p-2 rounded-sm border font-bold text-xs text-center cursor-pointer ${
+                          className={`p-2 rounded-md border font-bold text-xs text-center cursor-pointer transition-colors ${
                             widgetLang === 'tr'
-                              ? 'bg-sky-50 border-sky-600 text-[#185886]'
-                              : 'bg-white border-slate-200 text-slate-700'
+                              ? 'bg-indigo-600 border-indigo-500 text-white'
+                              : 'bg-[#18243A] border-[#1E293B] text-slate-300 hover:text-white'
                           }`}
                         >
                           Türkçe (tr)
@@ -1636,10 +1636,10 @@ export function LoginWithEngelsizForum() {
                         <button
                           type="button"
                           onClick={() => setWidgetLang('en')}
-                          className={`p-2 rounded-sm border font-bold text-xs text-center cursor-pointer ${
+                          className={`p-2 rounded-md border font-bold text-xs text-center cursor-pointer transition-colors ${
                             widgetLang === 'en'
-                              ? 'bg-sky-50 border-sky-600 text-[#185886]'
-                              : 'bg-white border-slate-200 text-slate-700'
+                              ? 'bg-indigo-600 border-indigo-500 text-white'
+                              : 'bg-[#18243A] border-[#1E293B] text-slate-300 hover:text-white'
                           }`}
                         >
                           English (en)
@@ -1648,8 +1648,8 @@ export function LoginWithEngelsizForum() {
                     </div>
 
                     {/* Canlı Test Butonları */}
-                    <div className="pt-2 border-t border-slate-200 space-y-2">
-                      <div className="text-[10px] font-bold text-slate-600 uppercase">
+                    <div className="pt-2 border-t border-[#1E293B] space-y-2">
+                      <div className="text-[10px] font-bold text-slate-500 uppercase">
                         Sayfada Canlı Test Et:
                       </div>
                       <div className="flex flex-wrap gap-1.5">
@@ -1663,7 +1663,7 @@ export function LoginWithEngelsizForum() {
                               setTimeout(() => (window as any).EngelsizAccessibility?.open(), 500);
                             }
                           }}
-                          className="px-3 py-1.5 bg-[#185886] hover:bg-[#12466b] text-white rounded-sm font-bold text-xs flex items-center gap-1 cursor-pointer shadow-xs"
+                          className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md font-bold text-xs flex items-center gap-1 cursor-pointer shadow-sm transition-colors"
                         >
                           <Accessibility size={13} />
                           <span>Widget&apos;ı Aç</span>
@@ -1678,7 +1678,7 @@ export function LoginWithEngelsizForum() {
                               runSignatureCheck();
                             }
                           }}
-                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-sm font-bold text-xs cursor-pointer border border-slate-300"
+                          className="px-2.5 py-1.5 bg-[#18243A] hover:bg-[#1E293B] text-slate-200 rounded-md font-bold text-xs cursor-pointer border border-[#1E293B] transition-colors"
                         >
                           Disleksi Fontu
                         </button>
@@ -1692,7 +1692,7 @@ export function LoginWithEngelsizForum() {
                               runSignatureCheck();
                             }
                           }}
-                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-sm font-bold text-xs cursor-pointer border border-slate-300"
+                          className="px-2.5 py-1.5 bg-[#18243A] hover:bg-[#1E293B] text-slate-200 rounded-md font-bold text-xs cursor-pointer border border-[#1E293B] transition-colors"
                         >
                           Okuma Cetveli
                         </button>

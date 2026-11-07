@@ -108,7 +108,7 @@ export default function ClassicNavbar() {
   };
 
   return (
-    <header className="w-full flex flex-col sticky top-0 z-40 bg-[#0d1117] border-b border-[#30363d] text-white">
+    <header className="w-full flex flex-col sticky top-0 z-40 bg-[#0B1220] border-b border-[#1E293B] text-slate-100">
       
       {/* 1. Quick Disability Type Profile Selector */}
       <DisabilityQuickBar />
@@ -116,12 +116,12 @@ export default function ClassicNavbar() {
       {/* 2. Main Navigation Bar */}
       <div className="max-w-7xl mx-auto w-full px-3 sm:px-6 h-14 flex items-center justify-between gap-3">
         
-        {/* Brand Logo & Universal Hamburger Trigger (Available on BOTH desktop & mobile) */}
+        {/* Brand Logo & Universal Hamburger Trigger */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button 
             type="button"
             onClick={() => setIsDrawerOpen(true)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-[#30363d] bg-[#161b22] hover:bg-[#21262d] text-white font-bold text-xs transition-colors cursor-pointer" 
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-[#1E293B] bg-[#111B2E] hover:bg-[#18243A] text-slate-200 font-semibold text-xs transition-colors cursor-pointer" 
             aria-label="Tüm Sayfalar ve Yetki Menüsü"
             aria-expanded={isDrawerOpen}
             title="Tüm Sayfaları Göster (Alt + M)"
@@ -131,26 +131,26 @@ export default function ClassicNavbar() {
           </button>
 
           <Link href="/" className="flex items-center gap-2 group select-none">
-            <div className="w-8 h-8 rounded-md bg-white text-black flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-md bg-indigo-500 text-white flex items-center justify-center font-bold">
               <Accessibility size={20} strokeWidth={2.5} />
             </div>
             <div>
-              <div className="text-base font-bold tracking-tight text-white flex items-center gap-1">
-                ENGELSİZ<span className="text-sky-400 font-bold">FORUM</span>
+              <div className="text-base font-bold tracking-tight text-white flex items-center gap-1 font-heading">
+                ENGELSİZ<span className="text-indigo-400 font-bold">FORUM</span>
               </div>
             </div>
           </Link>
         </div>
 
-        {/* Center Nav Links - High Contrast & Quick Links */}
+        {/* Center Nav Links - High Contrast & Clean Navigation */}
         <nav className="hidden lg:flex items-center gap-1 text-xs">
           <Link 
             href="/" 
             className={cn(
-              "px-2.5 py-1 rounded-md font-semibold transition-colors",
+              "px-3 py-1.5 rounded-md font-medium transition-colors",
               pathname === '/' 
-                ? "bg-[#21262d] text-white border border-[#30363d]" 
-                : "text-slate-200 hover:text-white hover:bg-[#161b22]"
+                ? "bg-[#18243A] text-white border border-[#1E293B]" 
+                : "text-slate-300 hover:text-white hover:bg-[#111B2E]"
             )}
           >
             Forum
@@ -159,23 +159,23 @@ export default function ClassicNavbar() {
           <Link 
             href="/discussions" 
             className={cn(
-              "px-2.5 py-1 rounded-md font-semibold transition-colors flex items-center gap-1",
+              "px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5",
               pathname === '/discussions' 
-                ? "bg-[#21262d] text-white border border-[#30363d]" 
-                : "text-slate-200 hover:text-white hover:bg-[#161b22]"
+                ? "bg-[#18243A] text-white border border-[#1E293B]" 
+                : "text-slate-300 hover:text-white hover:bg-[#111B2E]"
             )}
           >
-            <MessageSquare size={14} className="text-sky-400" />
+            <MessageSquare size={14} className="text-indigo-400" />
             <span>Tartışmalar</span>
           </Link>
 
           <Link 
             href="/hesaplama" 
             className={cn(
-              "px-2.5 py-1 rounded-md font-semibold transition-colors flex items-center gap-1",
+              "px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5",
               pathname?.startsWith('/hesaplama') 
-                ? "bg-[#21262d] text-white border border-[#30363d]" 
-                : "text-slate-200 hover:text-white hover:bg-[#161b22]"
+                ? "bg-[#18243A] text-white border border-[#1E293B]" 
+                : "text-slate-300 hover:text-white hover:bg-[#111B2E]"
             )}
           >
             <Calculator size={14} className="text-emerald-400" />
@@ -185,10 +185,10 @@ export default function ClassicNavbar() {
           <Link 
             href="/about" 
             className={cn(
-              "px-2.5 py-1 rounded-md font-semibold transition-colors",
+              "px-3 py-1.5 rounded-md font-medium transition-colors",
               pathname === '/about' 
-                ? "bg-[#21262d] text-white border border-[#30363d]" 
-                : "text-slate-200 hover:text-white hover:bg-[#161b22]"
+                ? "bg-[#18243A] text-white border border-[#1E293B]" 
+                : "text-slate-300 hover:text-white hover:bg-[#111B2E]"
             )}
           >
             Hakkımızda
@@ -197,10 +197,10 @@ export default function ClassicNavbar() {
           <Link 
             href="/help" 
             className={cn(
-              "px-2.5 py-1 rounded-md font-semibold transition-colors flex items-center gap-1",
+              "px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5",
               pathname === '/help' 
-                ? "bg-[#21262d] text-white border border-[#30363d]" 
-                : "text-slate-200 hover:text-white hover:bg-[#161b22]"
+                ? "bg-[#18243A] text-white border border-[#1E293B]" 
+                : "text-slate-300 hover:text-white hover:bg-[#111B2E]"
             )}
           >
             <HelpCircle size={14} className="text-amber-400" />
@@ -230,7 +230,7 @@ export default function ClassicNavbar() {
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Mevzuat, Balthazard, ÖTV ara..."
             aria-label="Forum ve Mevzuatta Arama Yap"
-            className="w-full h-9 pl-9 pr-3 text-xs bg-[#161b22] border border-[#30363d] rounded-md text-white placeholder-slate-400 focus:outline-none focus:border-sky-400 transition-colors font-sans"
+            className="w-full h-9 pl-9 pr-3 text-xs bg-[#111B2E] border border-[#1E293B] rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-400 transition-colors font-sans"
           />
         </form>
 
@@ -239,9 +239,9 @@ export default function ClassicNavbar() {
           {/* New Topic Button */}
           <Link 
             href="/discussions/new"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white hover:bg-slate-100 text-black text-xs font-bold transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors"
           >
-            <Plus size={15} className="stroke-[3]" />
+            <Plus size={15} className="stroke-[2.5]" />
             <span>Yeni Konu</span>
           </Link>
 
@@ -250,11 +250,11 @@ export default function ClassicNavbar() {
             <button
               type="button"
               onClick={() => setIsAccessibilityOpen(!isAccessibilityOpen)}
-              className="h-9 px-2.5 sm:px-3 rounded-md border border-[#30363d] bg-[#21262d] text-white hover:bg-[#30363d] transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-semibold"
+              className="h-9 px-2.5 sm:px-3 rounded-md border border-[#1E293B] bg-[#111B2E] text-slate-200 hover:bg-[#18243A] hover:text-white transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-medium"
               aria-label="Detaylı Erişilebilirlik Menüsü"
               aria-expanded={isAccessibilityOpen}
             >
-              <SlidersHorizontal size={14} className="text-sky-400" />
+              <SlidersHorizontal size={14} className="text-indigo-400" />
               <span className="hidden sm:inline">Erişilebilirlik</span>
             </button>
             <AccessibilityMenu 
@@ -269,7 +269,7 @@ export default function ClassicNavbar() {
               <button
                 type="button"
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="h-9 flex items-center gap-2 px-2.5 rounded-md border border-[#30363d] hover:bg-[#21262d] cursor-pointer text-xs"
+                className="h-9 flex items-center gap-2 px-2.5 rounded-md border border-[#1E293B] bg-[#111B2E] hover:bg-[#18243A] cursor-pointer text-xs"
                 aria-expanded={isProfileOpen}
               >
                 <UserAvatar
@@ -279,15 +279,15 @@ export default function ClassicNavbar() {
                   size="sm"
                   className="w-5 h-5 rounded"
                 />
-                <span className="hidden sm:inline font-semibold text-white max-w-[90px] truncate">
+                <span className="hidden sm:inline font-semibold text-slate-200 max-w-[90px] truncate">
                   {profile?.username || 'Hesap'}
                 </span>
                 <ChevronDown size={14} className="text-slate-400" />
               </button>
 
               {isProfileOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-[#161b22] border border-[#30363d] rounded-md shadow-xl py-1 z-50 text-xs">
-                  <div className="px-3 py-2 border-b border-[#30363d]">
+                <div className="absolute right-0 mt-2 w-48 bg-[#111B2E] border border-[#1E293B] rounded-md shadow-xl py-1 z-50 text-xs">
+                  <div className="px-3 py-2 border-b border-[#1E293B]">
                     <div className="font-bold text-white truncate">
                       {profile?.username}
                     </div>
@@ -299,7 +299,7 @@ export default function ClassicNavbar() {
                   <Link
                     href={`/profile/${user.id}`}
                     onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-slate-200 hover:bg-[#21262d] hover:text-white"
+                    className="flex items-center gap-2 px-3 py-2 text-slate-200 hover:bg-[#18243A] hover:text-white"
                   >
                     <User size={14} />
                     <span>Profilim</span>
@@ -308,7 +308,7 @@ export default function ClassicNavbar() {
                   <Link
                     href="/messages"
                     onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-slate-200 hover:bg-[#21262d] hover:text-white"
+                    className="flex items-center gap-2 px-3 py-2 text-slate-200 hover:bg-[#18243A] hover:text-white"
                   >
                     <MessageSquare size={14} />
                     <span>Özel Mesajlar</span>
@@ -317,7 +317,7 @@ export default function ClassicNavbar() {
                   <Link
                     href="/profile"
                     onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-slate-200 hover:bg-[#21262d] hover:text-white"
+                    className="flex items-center gap-2 px-3 py-2 text-slate-200 hover:bg-[#18243A] hover:text-white"
                   >
                     <SlidersHorizontal size={14} />
                     <span>Tercihler</span>
@@ -326,7 +326,7 @@ export default function ClassicNavbar() {
                   <Link
                     href="/developers"
                     onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-sky-400 hover:bg-[#21262d] hover:text-sky-300 font-semibold"
+                    className="flex items-center gap-2 px-3 py-2 text-indigo-400 hover:bg-[#18243A] hover:text-indigo-300 font-semibold"
                   >
                     <Code2 size={14} />
                     <span>Geliştirici Portalı</span>
@@ -336,7 +336,7 @@ export default function ClassicNavbar() {
                     <Link
                       href="/admin"
                       onClick={() => setIsProfileOpen(false)}
-                      className="flex items-center gap-2 px-3 py-2 text-amber-300 hover:bg-[#21262d] font-semibold"
+                      className="flex items-center gap-2 px-3 py-2 text-amber-300 hover:bg-[#18243A] font-semibold"
                     >
                       <ShieldCheck size={14} />
                       <span>Yönetim Paneli (ACP)</span>
@@ -346,7 +346,7 @@ export default function ClassicNavbar() {
                   <button
                     type="button"
                     onClick={handleSignOut}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-red-400 hover:bg-[#21262d] text-left cursor-pointer border-t border-[#30363d] mt-1"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-rose-400 hover:bg-[#18243A] text-left cursor-pointer border-t border-[#1E293B] mt-1"
                   >
                     <LogOut size={14} />
                     <span>Çıkış Yap</span>
@@ -358,14 +358,14 @@ export default function ClassicNavbar() {
             <div className="flex items-center gap-1.5">
               <Link 
                 href="/login"
-                className="h-9 px-3 rounded-md bg-[#21262d] border border-[#30363d] hover:bg-[#30363d] text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                className="h-9 px-3 rounded-md bg-[#111B2E] border border-[#1E293B] hover:bg-[#18243A] text-slate-200 text-xs font-medium flex items-center gap-1.5 transition-colors"
               >
                 <LogIn size={14} />
                 <span>Giriş</span>
               </Link>
               <Link 
                 href="/register"
-                className="h-9 px-3 rounded-md bg-white hover:bg-slate-100 text-black text-xs font-bold hidden sm:flex items-center transition-colors"
+                className="h-9 px-3 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold hidden sm:flex items-center transition-colors"
               >
                 Kayıt Ol
               </Link>
