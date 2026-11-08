@@ -194,6 +194,7 @@ function MessagesContent() {
     role: 'user' as const,
     level: 1,
     xp: 0,
+    reputation_points: 0,
     bio: null,
     is_verified: false,
     accessibility_prefs: null,

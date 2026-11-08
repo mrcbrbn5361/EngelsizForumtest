@@ -711,7 +711,7 @@ export default function AdminPage() {
                 </select>
               </div>
               <div className="md:col-span-3">
-                <AdminInput label="Açıklama" value={newCatDesc} onChange={e => setNewCatDesc(e.target.value)} placeholder="Kategori içeriği hakkında kısa bilgi..." />
+                <AdminInput label="Açıklama" value={newCatDesc} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewCatDesc(e.target.value)} placeholder="Kategori içeriği hakkında kısa bilgi..." />
               </div>
               <div className="md:col-span-3">
                 <button
