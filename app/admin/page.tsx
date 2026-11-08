@@ -44,6 +44,9 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Profile, Category } from '@/types/database';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { UserManagementView } from '@/components/admin/user-management';
+import { ContentModerationView } from '@/components/admin/content-moderation';
+import { CategoryManagementView } from '@/components/admin/category-management';
 
 export default function AdminPage() {
   const { user, profile, loading: authLoading, refreshProfile } = useAuth();
@@ -473,22 +476,22 @@ export default function AdminPage() {
                 <QuickActionButton 
                   title="Rol Yönetimi" 
                   desc="Üye yetkilerini düzenle" 
-                  onClick={() => setActiveTab('users')} 
+                  onClick={() => router.push('/admin/users')} 
                 />
                 <QuickActionButton 
-                  title="Yeni Kategori" 
+                  title="İçerik Moderasyonu" 
+                  desc="Konuları sabitle veya kilitle" 
+                  onClick={() => router.push('/admin/content')} 
+                />
+                <QuickActionButton 
+                  title="Kategori Yönetimi" 
                   desc="Forum kapsamını artır" 
-                  onClick={() => setActiveTab('categories')} 
+                  onClick={() => router.push('/admin/categories')} 
                 />
                 <QuickActionButton 
                   title="WebMCP Kontrol" 
                   desc="AI ajanlarını denetle" 
                   onClick={() => setActiveTab('widgets')} 
-                />
-                <QuickActionButton 
-                  title="Erişilebilirlik" 
-                  desc="WCAG raporunu görüntüle" 
-                  onClick={() => setActiveTab('a11y')} 
                 />
               </div>
             </div>
@@ -510,253 +513,13 @@ export default function AdminPage() {
       )}
 
       {/* TAB 2: USERS */}
-      {activeTab === 'users' && (
-        <div className="space-y-5 animate-in fade-in duration-300">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[#111B2E] border border-[#1E293B] rounded-md">
-            <div className="relative flex-1 max-w-md">
-              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
-              <input
-                type="text"
-                value={userSearch}
-                onChange={e => setUserSearch(e.target.value)}
-                placeholder="İsim, kullanıcı adı veya role göre ara..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-md border border-[#1E293B] bg-[#0B1220] text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all font-medium"
-              />
-            </div>
-            <div className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
-              Toplam <strong>{profiles.length}</strong> üye
-            </div>
-          </div>
-
-          <div className="bg-[#111B2E] border border-[#1E293B] rounded-md overflow-hidden shadow-xl">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-[#18243A] text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-[#1E293B]">
-                    <th className="px-5 py-4">Üye Bilgisi</th>
-                    <th className="px-5 py-4">Mevcut Rol</th>
-                    <th className="px-5 py-4">İtibar / XP</th>
-                    <th className="px-5 py-4">Doğrulama</th>
-                    <th className="px-5 py-4 text-right">Rol Atama</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#1E293B]/70">
-                  {profiles
-                    .filter(p => !userSearch || (p.username + (p.full_name || '') + p.role).toLowerCase().includes(userSearch.toLowerCase()))
-                    .map(p => (
-                      <tr key={p.id} className="hover:bg-[#18243A]/40 transition-colors group">
-                        <td className="px-5 py-4">
-                          <div className="font-bold text-white flex items-center gap-2">
-                            <span>{p.username || 'isimsiz'}</span>
-                            {p.is_verified && <CheckCircle2 size={13} className="text-indigo-400 shrink-0" />}
-                          </div>
-                          <div className="text-[10px] text-slate-500 font-mono mt-0.5">{p.id}</div>
-                        </td>
-                        <td className="px-5 py-4">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold border ${
-                            p.role === 'admin' 
-                              ? 'bg-amber-950/40 text-amber-300 border-amber-800/40'
-                              : p.role === 'moderator'
-                              ? 'bg-indigo-950/40 text-indigo-300 border-indigo-800/40'
-                              : 'bg-slate-900/40 text-slate-400 border-slate-800/40'
-                          }`}>
-                            {p.role}
-                          </span>
-                        </td>
-                        <td className="px-5 py-4 font-mono font-bold text-slate-300">
-                          {p.reputation_points || 0} PTS &bull; L{p.level || 1}
-                        </td>
-                        <td className="px-5 py-4">
-                          <button
-                            onClick={() => handleToggleVerify(p.id, !!p.is_verified)}
-                            className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
-                              p.is_verified 
-                                ? 'bg-indigo-950/50 border-indigo-600 text-indigo-300 hover:bg-indigo-900/50'
-                                : 'bg-[#0B1220] border-[#1E293B] text-slate-500 hover:text-white'
-                            }`}
-                          >
-                            {p.is_verified ? 'Doğrulanmış' : 'Onayla'}
-                          </button>
-                        </td>
-                        <td className="px-5 py-4 text-right">
-                          <select
-                            value={p.role}
-                            disabled={roleUpdatingId === p.id}
-                            onChange={e => handleUpdateRole(p.id, e.target.value as any)}
-                            className="bg-[#0B1220] border border-[#1E293B] text-white rounded-md px-3 py-1.5 text-[11px] font-bold focus:outline-none focus:border-indigo-500 cursor-pointer min-h-[32px] appearance-none hover:border-slate-600 transition-all text-center"
-                          >
-                            <option value="user">USER</option>
-                            <option value="moderator">MOD</option>
-                            <option value="admin">ADMIN</option>
-                          </select>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
+      {activeTab === 'users' && <UserManagementView />}
 
       {/* TAB 3: MODERATION */}
-      {activeTab === 'moderation' && (
-        <div className="space-y-5 animate-in fade-in duration-300">
-          <div className="p-5 bg-[#111B2E] border border-[#1E293B] rounded-md flex items-center justify-between shadow-xs">
-            <div className="flex items-center gap-3">
-              <MessageSquare size={20} className="text-indigo-400" />
-              <h2 className="text-sm font-bold text-white uppercase tracking-widest font-heading">İçerik Moderasyon Masası</h2>
-            </div>
-            <div className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
-              {threads.length} konu aktif
-            </div>
-          </div>
-
-          <div className="bg-[#111B2E] border border-[#1E293B] rounded-md overflow-hidden shadow-xl">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-[#18243A] text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-[#1E293B]">
-                    <th className="px-5 py-4">Başlık &amp; Kategori</th>
-                    <th className="px-5 py-4">Yazar</th>
-                    <th className="px-5 py-4">Moderasyon Durumu</th>
-                    <th className="px-5 py-4 text-right">Aksiyonlar</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#1E293B]/70">
-                  {threads.map(t => (
-                    <tr key={t.id} className="hover:bg-[#18243A]/40 transition-colors group">
-                      <td className="px-5 py-4 max-w-md">
-                        <div className="font-bold text-white flex items-center gap-2 truncate">
-                          {t.is_pinned && <Pin size={12} className="text-amber-400 shrink-0" />}
-                          {t.is_locked && <Lock size={12} className="text-rose-400 shrink-0" />}
-                          <span className="truncate group-hover:text-indigo-400 transition-colors">{t.title}</span>
-                        </div>
-                        <div className="text-[10px] text-slate-500 mt-1 font-medium">
-                          {t.category?.name || 'Genel'} &bull; {t.comments_count || 0} yanıt &bull; {t.views_count || 0} izlenme
-                        </div>
-                      </td>
-                      <td className="px-5 py-4 font-bold text-slate-300">
-                        @{t.author?.username || 'Yazar'}
-                      </td>
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-2">
-                          {t.is_pinned && (
-                            <span className="px-2 py-0.5 rounded text-[10px] bg-amber-950/40 text-amber-300 border border-amber-800/40 font-bold uppercase">Sabit</span>
-                          )}
-                          {t.is_locked ? (
-                            <span className="px-2 py-0.5 rounded text-[10px] bg-rose-950/40 text-rose-300 border border-rose-800/40 font-bold uppercase">Kilitli</span>
-                          ) : (
-                            <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 font-bold uppercase tracking-tighter text-[9px]">Aktif</span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-5 py-4 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <ModerationButton 
-                            icon={<Pin size={14} />} 
-                            active={t.is_pinned} 
-                            onClick={() => handleTogglePin(t.id, !!t.is_pinned)} 
-                            activeColor="bg-amber-950/40 text-amber-400 border-amber-800/60"
-                            title="Sabitle"
-                          />
-                          <ModerationButton 
-                            icon={t.is_locked ? <Unlock size={14} /> : <Lock size={14} />} 
-                            active={t.is_locked} 
-                            onClick={() => handleToggleLock(t.id, !!t.is_locked)} 
-                            activeColor="bg-rose-950/40 text-rose-400 border-rose-800/60"
-                            title="Kilitle"
-                          />
-                          <button
-                            onClick={() => handleDeleteThread(t.id)}
-                            className="p-2 rounded-md bg-[#18243A] border border-[#1E293B] text-slate-400 hover:bg-rose-950/40 hover:text-rose-400 hover:border-rose-800/40 transition-all cursor-pointer"
-                            title="Konuyu Sil"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
+      {activeTab === 'moderation' && <ContentModerationView />}
 
       {/* TAB 4: CATEGORIES */}
-      {activeTab === 'categories' && (
-        <div className="space-y-8 animate-in fade-in duration-300">
-          <div className="p-6 bg-[#111B2E] border border-[#1E293B] rounded-md space-y-6 shadow-xs">
-            <h2 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-3">
-              <Plus size={18} className="text-emerald-400" />
-              <span>Yeni Kategori Ekle</span>
-            </h2>
-            <form onSubmit={handleAddCategory} className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              <AdminInput label="Kategori Adı" value={newCatName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewCatName(e.target.value)} placeholder="Örn: Yapay Zeka & WebMCP" required />
-              <AdminInput label="Slug (URL)" value={newCatSlug} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewCatSlug(e.target.value)} placeholder="yazilim-ai" required />
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">İkon</label>
-                <select
-                  value={newCatIcon}
-                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNewCatIcon(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-md border border-[#1E293B] bg-[#0B1220] text-white text-xs focus:outline-none focus:border-indigo-500 font-bold min-h-[44px]"
-                >
-                  <option value="Cpu">Cpu (Yazılım/AI)</option>
-                  <option value="Scale">Scale (Hukuk/Mevzuat)</option>
-                  <option value="Monitor">Monitor (Donanım/Sistem)</option>
-                  <option value="Briefcase">Briefcase (Kariyer/İş)</option>
-                  <option value="MessageSquare">MessageSquare (Sohbet)</option>
-                </select>
-              </div>
-              <div className="md:col-span-3">
-                <AdminInput label="Açıklama" value={newCatDesc} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewCatDesc(e.target.value)} placeholder="Kategori içeriği hakkında kısa bilgi..." />
-              </div>
-              <div className="md:col-span-3">
-                <button
-                  type="submit"
-                  disabled={addingCategory}
-                  className="px-8 py-3 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold uppercase tracking-widest transition-all cursor-pointer shadow-md flex items-center gap-2 min-h-[44px]"
-                >
-                  {addingCategory ? <RefreshCw size={14} className="animate-spin" /> : <Save size={14} />}
-                  <span>Kategoriyi Foruma Ekle</span>
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div className="bg-[#111B2E] border border-[#1E293B] rounded-md overflow-hidden shadow-xl">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="bg-[#18243A] text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-[#1E293B]">
-                    <th className="px-5 py-4 w-16">Sıra</th>
-                    <th className="px-5 py-4">Kategori</th>
-                    <th className="px-5 py-4">Slug (URL)</th>
-                    <th className="px-5 py-4">Açıklama</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#1E293B]/70">
-                  {categories.map((c, idx) => (
-                    <tr key={c.id || idx} className="hover:bg-[#18243A]/40 transition-colors group">
-                      <td className="px-5 py-4 font-mono font-bold text-slate-500">{idx + 1}</td>
-                      <td className="px-5 py-4 font-bold text-white flex items-center gap-3">
-                        <div className="p-2 rounded bg-indigo-950/40 border border-indigo-800/40 text-indigo-400">
-                          <FolderTree size={14} />
-                        </div>
-                        <span className="group-hover:text-indigo-400 transition-colors">{c.name}</span>
-                      </td>
-                      <td className="px-5 py-4 font-mono text-indigo-400 font-semibold">/{c.slug}</td>
-                      <td className="px-5 py-4 text-slate-400 font-normal leading-relaxed">{c.description || '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
+      {activeTab === 'categories' && <CategoryManagementView />}
 
       {/* TAB 5: WIDGETS & WEBMCP */}
       {activeTab === 'widgets' && (
