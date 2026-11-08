@@ -36,7 +36,7 @@ export function UserNav() {
       <Link
         href="/login"
         id="user-nav-login-btn"
-        className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold shadow-xs transition-all active:scale-95"
+        className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-xs transition-all active:scale-95"
       >
         <LogIn size={14} />
         <span>Giriş Yap</span>

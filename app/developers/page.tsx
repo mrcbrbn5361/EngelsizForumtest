@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { 
   Key, 
@@ -40,9 +40,10 @@ import {
   Palette,
   CheckCircle
 } from 'lucide-react';
+import { useAuth } from '@/components/providers/auth-provider';
 import { SiteLayout } from '@/components/layout/site-layout';
-import { createClient } from '@/lib/supabase/client';
 import { EngelsizForumLogo, EngelsizForumLoginButton } from '@/components/ui/engelsizforum-brand';
+import { cn } from '@/lib/utils';
 
 interface OAuthApp {
   client_id: string;
@@ -55,7 +56,7 @@ interface OAuthApp {
 }
 
 export default function DeveloperPortalPage() {
-  const [user, setUser] = useState<any>(null);
+  const { user, loading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [apps, setApps] = useState<OAuthApp[]>([]);
   const [activeTab, setActiveTab] = useState<'apps' | 'docs' | 'button' | 'widget' | 'rest' | 'console' | 'webmcp'>('apps');
@@ -222,32 +223,28 @@ export default function DeveloperPortalPage() {
     setTimeout(() => setCopiedKey(null), 2000);
   };
 
-  // Kullanıcı ve Uygulama verilerini yükle
-  const loadData = async () => {
+  // Uygulama verilerini yükle
+  const loadData = useCallback(async () => {
+    if (!user) return;
     try {
       setLoading(true);
       setLoadError(null);
-      const supabase = createClient();
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      setUser(currentUser);
-
-      if (currentUser) {
-        const res = await fetch('/api/developer/apps');
-        const data = await res.json().catch(() => ({}));
-        if (res.ok) {
-          const loadedApps = data.apps || [];
-          setApps(loadedApps);
-          if (loadedApps.length > 0) {
-            setBtnAppClientId(loadedApps[0].client_id);
-          }
-          setLoadError(null);
-        } else {
-          setLoadError({
-            message: data.message || 'Uygulamalar listelenirken bir hata oluştu.',
-            details: data.details,
-            hint: data.hint,
-          });
+      
+      const res = await fetch('/api/developer/apps');
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        const loadedApps = data.apps || [];
+        setApps(loadedApps);
+        if (loadedApps.length > 0) {
+          setBtnAppClientId(loadedApps[0].client_id);
         }
+        setLoadError(null);
+      } else {
+        setLoadError({
+          message: data.message || 'Uygulamalar listelenirken bir hata oluştu.',
+          details: data.details,
+          hint: data.hint,
+        });
       }
     } catch (err: any) {
       console.error('Veri yükleme hatası:', err);
@@ -258,11 +255,16 @@ export default function DeveloperPortalPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (user) {
+      loadData();
+    } else if (!authLoading) {
+      setLoading(false);
+      setApps([]);
+    }
+  }, [user, authLoading, loadData]);
 
   // Yeni Uygulama Oluşturma
   const handleCreateApp = async (e: React.FormEvent) => {
@@ -409,33 +411,33 @@ export default function DeveloperPortalPage() {
 
   return (
     <SiteLayout>
-      <div className="flex flex-col gap-4">
+      <div className="w-full max-w-7xl mx-auto px-4 py-6 space-y-6 min-w-0">
         {/* Breadcrumb Navigation */}
-        <div className="bg-[#161b22] border border-[#30363d] px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-300 rounded-md">
-          <Link href="/" className="hover:text-white font-bold transition-colors flex items-center gap-1">
-            <Home size={13} />
+        <nav className="bg-[#111B2E]/50 border border-[#1E293B] px-5 py-3 flex flex-wrap items-center gap-3 text-xs text-slate-400 rounded-lg backdrop-blur-sm" aria-label="Breadcrumb">
+          <Link href="/" className="hover:text-indigo-400 font-bold transition-colors flex items-center gap-1.5">
+            <Home size={14} />
             <span>Ana Sayfa</span>
           </Link>
-          <span className="text-slate-600">/</span>
-          <span className="font-bold text-white">Geliştirici Portalı (OAuth 2.0 &amp; REST API)</span>
-        </div>
+          <span className="text-slate-700">/</span>
+          <span className="font-bold text-white uppercase tracking-widest text-[10px]">Geliştirici Portalı</span>
+        </nav>
 
         {/* Developer Portal Header */}
-        <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#161b22]">
-          <div className="bg-[#21262d] text-white font-bold uppercase text-[11px] tracking-wider py-2.5 px-4 flex items-center justify-between border-b border-[#30363d]">
+        <header className="border border-[#1E293B] rounded-xl overflow-hidden bg-[#111B2E] shadow-sm">
+          <div className="bg-[#18243A]/50 text-indigo-300 font-bold uppercase text-[10px] tracking-[0.2em] py-3 px-6 flex flex-wrap items-center justify-between border-b border-[#1E293B] gap-4">
             <div className="flex items-center gap-2">
-              <Code2 size={15} className="text-sky-400" />
-              <span>EngelsizForum Geliştirici Portalı &amp; OAuth 2.0</span>
+              <Code2 size={14} />
+              <span>EngelsizForum Geliştirici Portalı</span>
             </div>
-            <span className="text-[10px] font-mono text-slate-300 bg-[#0d1117] px-2 py-0.5 rounded border border-[#30363d]">
-              RFC 6749 &amp; WebMCP
+            <span className="text-[10px] font-mono text-slate-400">
+              OAuth 2.0 / WebMCP
             </span>
           </div>
 
-          <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="space-y-1.5 max-w-3xl">
-              <div className="flex items-center gap-2">
-                <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+          <div className="p-6 flex flex-col md:flex-row items-start justify-between gap-6">
+            <div className="space-y-2 max-w-3xl">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-xl md:text-2xl font-bold text-white tracking-tight">
                   &ldquo;EngelsizForum ile Giriş Yap&rdquo; &amp; Canlı Mevzuat Entegrasyonu
                 </h1>
                 {user && (
@@ -445,7 +447,7 @@ export default function DeveloperPortalPage() {
                   </span>
                 )}
               </div>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+              <p className="text-xs md:text-sm text-slate-400 leading-relaxed font-normal">
                 Kendi web sitenize, mobil uygulamanıza veya AI asistanlarınıza EngelsizForum OAuth 2.0 kimlik doğrulama, topluluk API&apos;leri ve WebMCP canlı mevzuat akışını entegre edin.
               </p>
             </div>
@@ -460,119 +462,64 @@ export default function DeveloperPortalPage() {
                   setFormError(null);
                   setIsCreateModalOpen(true);
                 }}
-                className="inline-flex items-center gap-1.5 rounded-md bg-white hover:bg-slate-100 text-black px-4 py-2 text-xs font-bold transition-colors whitespace-nowrap cursor-pointer shrink-0 shadow-xs"
+                className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 shadow-sm min-h-[44px]"
               >
-                <Plus size={14} className="stroke-[3]" />
+                <Plus size={16} />
                 <span>Yeni Uygulama Kaydet</span>
               </button>
             ) : (
               <Link
                 href="/login?redirect=/developers"
-                className="inline-flex items-center gap-1.5 rounded-md bg-white hover:bg-slate-100 text-black px-4 py-2 text-xs font-bold transition-colors whitespace-nowrap cursor-pointer shrink-0 shadow-xs"
+                className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 text-xs font-bold transition-all whitespace-nowrap cursor-pointer shrink-0 shadow-sm min-h-[44px]"
               >
-                <LogIn size={14} />
+                <LogIn size={16} />
                 <span>Giriş Yaparak Başla</span>
               </Link>
             )}
           </div>
-        </div>
+        </header>
 
         {/* Tabs Navigation */}
-        <div className="flex flex-wrap gap-1 border border-[#30363d] bg-[#161b22] p-1 rounded-md">
-          <button
-            onClick={() => setActiveTab('apps')}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'apps'
-                ? 'bg-white text-black shadow-xs'
-                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
-            }`}
-          >
-            <Layers size={13} />
-            <span>Kayıtlı Uygulamalarım {apps.length > 0 && `(${apps.length})`}</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('docs')}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'docs'
-                ? 'bg-white text-black shadow-xs'
-                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
-            }`}
-          >
-            <Terminal size={13} />
-            <span>OAuth 2.0 Rehberi</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('button')}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'button'
-                ? 'bg-white text-black shadow-xs'
-                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
-            }`}
-          >
-            <LogIn size={13} />
-            <span>Logolu Giriş Butonu</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setActiveTab('widget');
-              runSignatureCheck();
-            }}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'widget'
-                ? 'bg-white text-black shadow-xs'
-                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
-            }`}
-          >
-            <Accessibility size={13} />
-            <span>Erişilebilirlik Widget&apos;ı</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('rest')}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'rest'
-                ? 'bg-white text-black shadow-xs'
-                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
-            }`}
-          >
-            <Server size={13} />
-            <span>REST API Dokümantasyonu</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('console')}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'console'
-                ? 'bg-white text-black shadow-xs'
-                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
-            }`}
-          >
-            <Play size={13} />
-            <span>Canlı API Test Konsolu</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('webmcp')}
-            className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'webmcp'
-                ? 'bg-white text-black shadow-xs'
-                : 'text-slate-300 hover:text-white hover:bg-[#21262d]'
-            }`}
-          >
-            <Cpu size={13} />
-            <span>WebMCP Ajan Entegrasyonu</span>
-          </button>
-        </div>
+        <nav className="flex flex-wrap gap-1.5 border border-[#1E293B] bg-[#111B2E] p-2 rounded-md shadow-inner overflow-x-auto scrollbar-none" role="tablist">
+          {[
+            { id: 'apps', label: 'Uygulamalarım', icon: Layers },
+            { id: 'docs', label: 'OAuth 2.0 Rehberi', icon: Terminal },
+            { id: 'button', label: 'Giriş Butonu', icon: LogIn },
+            { id: 'widget', label: 'Widget', icon: Accessibility },
+            { id: 'rest', label: 'REST API', icon: Server },
+            { id: 'console', label: 'API Konsolu', icon: Play },
+            { id: 'webmcp', label: 'WebMCP', icon: Cpu },
+          ].map(tab => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id as any);
+                  if (tab.id === 'widget') runSignatureCheck();
+                }}
+                className={cn(
+                  "px-4 py-2 text-xs font-bold rounded-md transition-all cursor-pointer flex items-center gap-2 min-h-[40px] whitespace-nowrap border",
+                  activeTab === tab.id
+                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-md'
+                    : 'text-slate-400 hover:text-white bg-[#18243A] border-[#1E293B] hover:border-slate-600'
+                )}
+              >
+                <Icon size={14} />
+                <span>{tab.label} {tab.id === 'apps' && apps.length > 0 ? `(${apps.length})` : ''}</span>
+              </button>
+            );
+          })}
+        </nav>
 
         {/* TAB 1: APPS LIST */}
         {activeTab === 'apps' && (
           <div className="space-y-4">
             {!user ? (
-              <div className="border border-[#30363d] rounded-md overflow-hidden bg-[#161b22]">
-                <div className="bg-[#21262d] border-b border-[#30363d] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center gap-2">
+              <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E]">
+                <div className="bg-[#18243A] border-b border-[#1E293B] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center gap-2">
                   <Lock size={13} className="text-amber-400" />
                   <span>Geliştirici Girişi Gerekiyor</span>
                 </div>
@@ -582,7 +529,7 @@ export default function DeveloperPortalPage() {
                   </p>
                   <Link
                     href="/login?redirect=/developers"
-                    className="inline-flex items-center gap-1.5 rounded-md bg-white hover:bg-slate-100 text-black px-5 py-2 text-xs font-bold transition-colors shadow-xs"
+                    className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 text-xs font-bold transition-colors shadow-xs"
                   >
                     <LogIn size={13} />
                     <span>Giriş Yap / Üye Ol</span>
@@ -590,40 +537,40 @@ export default function DeveloperPortalPage() {
                 </div>
               </div>
             ) : loading ? (
-              <div className="xf-block border border-slate-200 rounded-sm p-8 text-center text-xs text-slate-500 bg-white">
+              <div className="border border-[#1E293B] rounded-md p-8 text-center text-xs text-slate-400 bg-[#111B2E]">
                 Uygulama listesi yükleniyor...
               </div>
             ) : loadError ? (
-              <div className="xf-block border border-amber-300 rounded-sm overflow-hidden bg-amber-50/40 shadow-xs">
-                <div className="bg-amber-100/80 border-b border-amber-200 text-amber-900 font-bold text-xs uppercase py-2 px-3 flex items-center justify-between">
+              <div className="border border-amber-500/30 rounded-md overflow-hidden bg-[#111B2E] shadow-xs">
+                <div className="bg-amber-950/40 border-b border-amber-800/40 text-amber-200 font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <AlertTriangle size={14} className="text-amber-700" />
+                    <AlertTriangle size={14} className="text-amber-400" />
                     <span>Veritabanı / Şema Uyarısı</span>
                   </div>
                   <button
                     onClick={() => loadData()}
-                    className="text-[11px] font-bold text-[#185886] hover:underline cursor-pointer flex items-center gap-1"
+                    className="text-[11px] font-bold text-indigo-400 hover:underline cursor-pointer flex items-center gap-1"
                   >
                     <RefreshCw size={12} />
                     <span>Tekrar Dene</span>
                   </button>
                 </div>
-                <div className="p-5 space-y-3 text-xs text-slate-700">
-                  <div className="font-semibold text-amber-950 flex items-center gap-2">
+                <div className="p-5 space-y-3 text-xs text-slate-300">
+                  <div className="font-semibold text-amber-200 flex items-center gap-2">
                     <span>{loadError.message}</span>
                   </div>
                   {loadError.details && (
-                    <div className="p-2.5 bg-slate-900 text-amber-300 rounded-sm font-mono text-[11px] break-all border border-slate-800">
+                    <div className="p-2.5 bg-[#0B1220] text-amber-300 rounded-md font-mono text-[11px] break-all border border-[#1E293B]">
                       Hata Detayı: {loadError.details}
                     </div>
                   )}
-                  <p className="text-slate-600 leading-relaxed">
+                  <p className="text-slate-400 leading-relaxed">
                     {loadError.hint || 'Supabase projenizde `oauth_clients` tablosu eksik veya gerekli izinler tanımlanmamış. Lütfen aşağıdaki güncel SQL şemasını Supabase SQL Editöründe çalıştırarak veritabanınızı güncelleyin.'}
                   </p>
                   <div className="pt-2 flex flex-wrap items-center gap-2">
                     <button
                       onClick={() => loadData()}
-                      className="inline-flex items-center gap-1.5 rounded-sm bg-[#185886] hover:bg-[#12466b] text-white px-3.5 py-1.5 text-xs font-bold shadow-xs cursor-pointer"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 text-xs font-bold shadow-xs cursor-pointer min-h-[36px]"
                     >
                       <RefreshCw size={12} />
                       <span>Bağlantıyı Yeniden Kontrol Et</span>
@@ -632,7 +579,7 @@ export default function DeveloperPortalPage() {
                       onClick={() => {
                         setActiveTab('docs');
                       }}
-                      className="inline-flex items-center gap-1.5 rounded-sm bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-3.5 py-1.5 text-xs font-semibold cursor-pointer"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-[#18243A] border border-[#1E293B] hover:bg-[#1E293B] text-slate-200 px-3.5 py-2 text-xs font-semibold cursor-pointer min-h-[36px]"
                     >
                       <Code2 size={12} />
                       <span>Dokümantasyon &amp; Kurulum</span>
@@ -641,17 +588,17 @@ export default function DeveloperPortalPage() {
                 </div>
               </div>
             ) : apps.length === 0 ? (
-              <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-                <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-bold text-xs uppercase py-2 px-3">
+              <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E] shadow-xs">
+                <div className="bg-[#18243A] border-b border-[#1E293B] text-slate-200 font-bold text-xs uppercase py-2.5 px-4">
                   Kayıtlı Uygulama Bulunamadı
                 </div>
                 <div className="p-8 text-center space-y-4">
-                  <div className="w-12 h-12 rounded-sm bg-[#eef2f7] text-[#185886] border border-slate-300 flex items-center justify-center mx-auto">
+                  <div className="w-12 h-12 rounded-md bg-[#18243A] text-indigo-400 border border-[#1E293B] flex items-center justify-center mx-auto">
                     <Key size={24} />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-sm font-bold text-slate-800">Henüz Kayıtlı Bir Uygulamanız Yok</h3>
-                    <p className="text-xs text-slate-600 max-w-md mx-auto">
+                    <h3 className="text-sm font-bold text-white">Henüz Kayıtlı Bir Uygulamanız Yok</h3>
+                    <p className="text-xs text-slate-400 max-w-md mx-auto">
                       Kendi web siteniz veya mobil uygulamanız için ilk OAuth 2.0 istemcinizi oluşturun. Client ID ve Secret anında üretilecektir.
                     </p>
                   </div>
@@ -664,7 +611,7 @@ export default function DeveloperPortalPage() {
                       setFormError(null);
                       setIsCreateModalOpen(true);
                     }}
-                    className="inline-flex items-center gap-1.5 rounded-sm bg-[#185886] hover:bg-[#12466b] text-white px-4 py-2 text-xs font-bold uppercase tracking-wide shadow-xs transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 text-xs font-bold uppercase tracking-wide shadow-xs transition-colors cursor-pointer min-h-[40px]"
                   >
                     <Plus size={14} />
                     <span>İlk Uygulamanızı Oluşturun</span>
@@ -672,16 +619,16 @@ export default function DeveloperPortalPage() {
                 </div>
               </div>
             ) : (
-              <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-                <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-bold text-xs uppercase py-2 px-3 flex items-center justify-between">
+              <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E] shadow-xs">
+                <div className="bg-[#18243A] border-b border-[#1E293B] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between">
                   <span>Kayıtlı OAuth 2.0 İstemcileri ({apps.length})</span>
-                  <span className="text-slate-500 text-[10px] font-normal">İstemci Kimlikleri ve Yönlendirme Adresleri</span>
+                  <span className="text-slate-400 text-[10px] font-normal">İstemci Kimlikleri ve Yönlendirme Adresleri</span>
                 </div>
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[10px] tracking-wider">
+                      <tr className="bg-[#18243A]/80 border-b border-[#1E293B] text-slate-400 font-bold uppercase text-[10px] tracking-wider">
                         <th className="p-3">Uygulama Adı</th>
                         <th className="p-3">Client ID</th>
                         <th className="p-3">Yönlendirme URI (Callback)</th>
@@ -689,30 +636,30 @@ export default function DeveloperPortalPage() {
                         <th className="p-3 text-right">İşlemler</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-200">
+                    <tbody className="divide-y divide-[#1E293B]">
                       {apps.map((app) => (
-                        <tr key={app.client_id} className="hover:bg-[#f8fafc] transition-colors">
-                          <td className="p-3 align-top font-bold text-slate-900">
+                        <tr key={app.client_id} className="hover:bg-[#18243A]/40 transition-colors">
+                          <td className="p-3 align-top font-bold text-white">
                             <div className="flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
                               <span>{app.client_name}</span>
                             </div>
                             {app.description && (
-                              <p className="text-[11px] text-slate-500 font-normal mt-0.5 pl-4">
+                              <p className="text-[11px] text-slate-400 font-normal mt-0.5 pl-4">
                                 {app.description}
                               </p>
                             )}
                           </td>
-                          <td className="p-3 align-top font-mono text-[11px] text-slate-700">
-                            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-2 py-1 rounded-sm w-fit">
-                              <span className="truncate max-w-[160px]">{app.client_id}</span>
+                          <td className="p-3 align-top font-mono text-[11px] text-slate-300">
+                            <div className="flex items-center gap-1.5 bg-[#18243A] border border-[#1E293B] px-2 py-1 rounded-md w-fit">
+                              <span className="truncate max-w-[160px] text-indigo-300">{app.client_id}</span>
                               <button
                                 onClick={() => copyToClipboard(app.client_id, `cid-${app.client_id}`)}
                                 title="Client ID'yi kopyala"
-                                className="text-slate-500 hover:text-[#185886] cursor-pointer"
+                                className="text-slate-400 hover:text-white cursor-pointer"
                               >
                                 {copiedKey === `cid-${app.client_id}` ? (
-                                  <Check size={12} className="text-emerald-600" />
+                                  <Check size={12} className="text-emerald-400" />
                                 ) : (
                                   <Copy size={12} />
                                 )}
@@ -722,13 +669,13 @@ export default function DeveloperPortalPage() {
                           <td className="p-3 align-top">
                             <div className="space-y-1">
                               {app.redirect_uris.map((uri, idx) => (
-                                <div key={idx} className="font-mono text-[11px] text-slate-600 truncate max-w-xs">
+                                <div key={idx} className="font-mono text-[11px] text-slate-400 truncate max-w-xs">
                                   {uri}
                                 </div>
                               ))}
                             </div>
                           </td>
-                          <td className="p-3 align-top text-slate-500 whitespace-nowrap">
+                          <td className="p-3 align-top text-slate-400 whitespace-nowrap">
                             {new Date(app.created_at).toLocaleDateString('tr-TR')}
                           </td>
                           <td className="p-3 align-top text-right whitespace-nowrap">
@@ -738,7 +685,7 @@ export default function DeveloperPortalPage() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 title="OAuth Giriş Ekranını Test Et"
-                                className="inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-[#eef2f7] hover:bg-slate-200 text-[#185886] border border-slate-300 text-[11px] font-bold"
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-[#18243A] hover:bg-[#1E293B] text-indigo-300 border border-[#1E293B] text-[11px] font-bold transition-colors"
                               >
                                 <ExternalLink size={11} />
                                 <span>Test Et</span>
@@ -746,7 +693,7 @@ export default function DeveloperPortalPage() {
                               <button
                                 onClick={() => openEditModal(app)}
                                 title="Uygulamayı Düzenle"
-                                className="inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-[11px] font-bold cursor-pointer"
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-[#18243A] hover:bg-[#1E293B] text-slate-200 border border-[#1E293B] text-[11px] font-bold cursor-pointer transition-colors"
                               >
                                 <Edit3 size={11} />
                                 <span>Düzenle</span>
@@ -754,7 +701,7 @@ export default function DeveloperPortalPage() {
                               <button
                                 onClick={() => handleRotateSecret(app)}
                                 title="Client Secret'i Yenile"
-                                className="inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-white hover:bg-amber-50 text-amber-700 border border-amber-300 text-[11px] font-bold cursor-pointer"
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-[#18243A] hover:bg-amber-950/40 text-amber-300 border border-amber-800/40 text-[11px] font-bold cursor-pointer transition-colors"
                               >
                                 <RefreshCw size={11} />
                                 <span>Secret Yenile</span>
@@ -762,7 +709,7 @@ export default function DeveloperPortalPage() {
                               <button
                                 onClick={() => handleDeleteApp(app)}
                                 title="Uygulamayı Sil"
-                                className="inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-white hover:bg-rose-50 text-rose-700 border border-rose-300 text-[11px] font-bold cursor-pointer"
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-[#18243A] hover:bg-rose-950/40 text-rose-300 border border-rose-800/40 text-[11px] font-bold cursor-pointer transition-colors"
                               >
                                 <Trash2 size={11} />
                                 <span>Sil</span>
@@ -783,64 +730,65 @@ export default function DeveloperPortalPage() {
         {activeTab === 'docs' && (
           <div className="space-y-4">
             {/* Quick Action: Logolu Giriş Butonu Banner */}
-            <div className="p-3 bg-emerald-50/80 border border-emerald-200 rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="p-4 bg-indigo-950/40 border border-indigo-800/40 rounded-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-sm bg-[#00875a] flex items-center justify-center text-white shrink-0 font-bold shadow-2xs">
+                <div className="w-8 h-8 rounded-md bg-indigo-600 flex items-center justify-center text-white shrink-0 font-bold shadow-2xs">
                   <LogIn size={15} />
                 </div>
                 <div>
-                  <div className="font-bold text-emerald-950">Resmi &ldquo;EngelsizForum ile Giriş Yap&rdquo; Butonunu Kullanın</div>
-                  <div className="text-emerald-800 text-[11px]">Standart yeşil stil ve 2. görseldeki resmi kurumsal logomuz ile hazır buton kodunu hemen kopyalayabilirsiniz.</div>
+                  <div className="font-bold text-white">Resmi &ldquo;EngelsizForum ile Giriş Yap&rdquo; Butonunu Kullanın</div>
+                  <div className="text-slate-300 text-[11px]">Standart resmi kurumsal logomuz ile hazır buton kodunu hemen kopyalayabilirsiniz.</div>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveTab('button')}
-                className="px-3 py-1.5 bg-[#00875a] hover:bg-[#00744e] text-white font-bold rounded-xs text-xs whitespace-nowrap cursor-pointer transition-colors shadow-2xs self-start sm:self-auto"
+                className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-md text-xs whitespace-nowrap cursor-pointer transition-colors shadow-2xs self-start sm:self-auto min-h-[36px]"
               >
                 Logolu Buton Kılavuzu &rarr;
               </button>
             </div>
 
             {/* Endpoints Table */}
-            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-              <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-bold text-xs uppercase py-2 px-3">
-                OAuth 2.0 Standart Uç Noktaları (Endpoints)
+            <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E] shadow-sm">
+              <div className="bg-[#18243A] border-b border-[#1E293B] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between">
+                <span>OAuth 2.0 Standart Uç Noktaları (Endpoints)</span>
+                <span className="text-[10px] text-slate-400 font-mono">RFC 6749 Standardı</span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[10px]">
+                    <tr className="bg-[#18243A]/80 border-b border-[#1E293B] text-slate-400 font-bold uppercase text-[10px]">
                       <th className="p-3">Protokol Adımı</th>
                       <th className="p-3">Metot</th>
                       <th className="p-3">Uç Nokta (URL)</th>
                       <th className="p-3">Açıklama</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200">
-                    <tr>
-                      <td className="p-3 font-bold text-slate-800">Yetkilendirme (Authorize)</td>
-                      <td className="p-3 font-mono text-emerald-700 font-bold">GET</td>
-                      <td className="p-3 font-mono text-slate-700 select-all">https://engelsizforum.com/api/oauth/authorize</td>
-                      <td className="p-3 text-slate-600">Kullanıcının izin onayını verdiği web consent sayfası.</td>
+                  <tbody className="divide-y divide-[#1E293B]">
+                    <tr className="hover:bg-[#18243A]/30 transition-colors">
+                      <td className="p-3 font-bold text-white">Yetkilendirme (Authorize)</td>
+                      <td className="p-3 font-mono text-emerald-400 font-bold">GET</td>
+                      <td className="p-3 font-mono text-indigo-300 select-all">https://engelsizforum.com/api/oauth/authorize</td>
+                      <td className="p-3 text-slate-300">Kullanıcının izin onayını verdiği web consent sayfası.</td>
                     </tr>
-                    <tr>
-                      <td className="p-3 font-bold text-slate-800">Erişim Jetonu (Token)</td>
-                      <td className="p-3 font-mono text-blue-700 font-bold">POST</td>
-                      <td className="p-3 font-mono text-slate-700 select-all">https://engelsizforum.com/api/oauth/token</td>
-                      <td className="p-3 text-slate-600">Yetkilendirme kodu (code) ile Bearer Access Token takası.</td>
+                    <tr className="hover:bg-[#18243A]/30 transition-colors">
+                      <td className="p-3 font-bold text-white">Erişim Jetonu (Token)</td>
+                      <td className="p-3 font-mono text-indigo-400 font-bold">POST</td>
+                      <td className="p-3 font-mono text-indigo-300 select-all">https://engelsizforum.com/api/oauth/token</td>
+                      <td className="p-3 text-slate-300">Yetkilendirme kodu (code) ile Bearer Access Token takası.</td>
                     </tr>
-                    <tr>
-                      <td className="p-3 font-bold text-slate-800">Kullanıcı Bilgileri (Userinfo)</td>
-                      <td className="p-3 font-mono text-emerald-700 font-bold">GET</td>
-                      <td className="p-3 font-mono text-slate-700 select-all">https://engelsizforum.com/api/oauth/userinfo</td>
-                      <td className="p-3 text-slate-600">Bearer token ile kullanıcının ID, isim, e-posta ve rollerini alma.</td>
+                    <tr className="hover:bg-[#18243A]/30 transition-colors">
+                      <td className="p-3 font-bold text-white">Kullanıcı Bilgileri (Userinfo)</td>
+                      <td className="p-3 font-mono text-emerald-400 font-bold">GET</td>
+                      <td className="p-3 font-mono text-indigo-300 select-all">https://engelsizforum.com/api/oauth/userinfo</td>
+                      <td className="p-3 text-slate-300">Bearer token ile kullanıcının ID, isim, e-posta ve rollerini alma.</td>
                     </tr>
-                    <tr>
-                      <td className="p-3 font-bold text-slate-800">Jeton İptali (Revoke)</td>
-                      <td className="p-3 font-mono text-blue-700 font-bold">POST</td>
-                      <td className="p-3 font-mono text-slate-700 select-all">https://engelsizforum.com/api/oauth/revoke</td>
-                      <td className="p-3 text-slate-600">Kullanıcı oturumu kapattığında token&apos;ı sunucuda geçersiz kılma.</td>
+                    <tr className="hover:bg-[#18243A]/30 transition-colors">
+                      <td className="p-3 font-bold text-white">Jeton İptali (Revoke)</td>
+                      <td className="p-3 font-mono text-indigo-400 font-bold">POST</td>
+                      <td className="p-3 font-mono text-indigo-300 select-all">https://engelsizforum.com/api/oauth/revoke</td>
+                      <td className="p-3 text-slate-300">Kullanıcı oturumu kapattığında token&apos;ı sunucuda geçersiz kılma.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -848,18 +796,18 @@ export default function DeveloperPortalPage() {
             </div>
 
             {/* Code Examples */}
-            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-bold text-xs uppercase py-2.5 px-3 flex items-center justify-between">
+            <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E] shadow-sm">
+              <div className="bg-[#18243A] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between border-b border-[#1E293B]">
                 <span>Entegrasyon Kod Örnekleri</span>
                 <div className="flex items-center gap-1 text-[11px]">
                   {(['nextauth', 'nodejs', 'python', 'php'] as const).map((lang) => (
                     <button
                       key={lang}
                       onClick={() => setSelectedDocLang(lang)}
-                      className={`px-2 py-0.5 rounded-sm font-bold uppercase cursor-pointer transition-colors ${
+                      className={`px-2.5 py-1 rounded-md font-bold uppercase cursor-pointer transition-colors ${
                         selectedDocLang === lang
-                          ? 'bg-white text-[#185886]'
-                          : 'text-white/80 hover:bg-white/20'
+                          ? 'bg-indigo-600 text-white'
+                          : 'text-slate-300 hover:bg-[#18243A]'
                       }`}
                     >
                       {lang === 'nextauth' ? 'NextAuth.js' : lang}
@@ -868,7 +816,7 @@ export default function DeveloperPortalPage() {
                 </div>
               </div>
 
-              <div className="p-4 bg-[#1e293b] text-slate-100 font-mono text-xs overflow-x-auto relative">
+              <div className="p-4 bg-[#0B1220] text-slate-100 font-mono text-xs overflow-x-auto relative border border-[#1E293B]">
                 <button
                   onClick={() => {
                     const codeSnippets: Record<string, string> = {
@@ -1023,41 +971,41 @@ $result = json_decode(curl_exec($ch), true);`}
         {activeTab === 'button' && (
           <div className="space-y-5">
             {/* Header Block */}
-            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-bold text-xs uppercase py-2.5 px-3 flex items-center justify-between">
+            <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E] shadow-sm">
+              <div className="bg-[#18243A] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between border-b border-[#1E293B]">
                 <div className="flex items-center gap-2">
-                  <LogIn size={14} className="text-emerald-300" />
+                  <LogIn size={14} className="text-indigo-400" />
                   <span>Resmi &ldquo;EngelsizForum ile Giriş Yap&rdquo; Logolu Buton Kılavuzu</span>
                 </div>
-                <span className="text-[11px] font-normal text-white/80 bg-white/10 px-2 py-0.5 rounded-sm border border-white/20">
+                <span className="text-[11px] font-normal text-indigo-300 bg-indigo-950/40 px-2.5 py-0.5 rounded-md border border-indigo-800/40">
                   Marka &amp; UI Standartları
                 </span>
               </div>
 
               <div className="p-4 sm:p-5 space-y-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-[#f8fafc] border border-slate-200 rounded-sm">
-                  <div className="space-y-1 max-w-2xl text-xs sm:text-sm text-slate-700">
-                    <div className="font-bold text-slate-900 flex items-center gap-2">
-                      <Sparkles size={16} className="text-amber-500 shrink-0" />
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-[#18243A]/50 border border-[#1E293B] rounded-md">
+                  <div className="space-y-1 max-w-2xl text-xs sm:text-sm text-slate-300">
+                    <div className="font-bold text-white flex items-center gap-2">
+                      <Sparkles size={16} className="text-amber-400 shrink-0" />
                       <span>Logosuz Düz Butondan &rarr; Resmi Kurumsal Logolu Giriş Butonuna Geçiş</span>
                     </div>
-                    <p className="text-slate-600 text-xs leading-relaxed">
-                      Standart jenerik dünya ikonu yerine, EngelsizForum&apos;un tescilli resmi logosunu (lacivert zemin, kalın beyaz yazı ve camgöbeği noktalı <strong>İ</strong>) taşıyan butonları kullanarak kullanıcılarınızda güven oluşturun.
+                    <p className="text-slate-400 text-xs leading-relaxed">
+                      Standart jenerik dünya ikonu yerine, EngelsizForum&apos;un tescilli resmi logosunu taşıyan butonları kullanarak kullanıcılarınızda güven oluşturun.
                     </p>
                   </div>
-                  <div className="flex items-center gap-3 shrink-0 p-2 bg-white rounded-sm border border-slate-200 shadow-2xs">
+                  <div className="flex items-center gap-3 shrink-0 p-2.5 bg-[#0B1220] rounded-md border border-[#1E293B] shadow-2xs">
                     <div className="text-center">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Önceki (Jenerik)</span>
-                      <div className="bg-[#00875a] text-white px-2.5 py-1 text-[11px] font-semibold rounded-xs flex items-center gap-1 opacity-70">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Önceki (Jenerik)</span>
+                      <div className="bg-slate-800 text-slate-300 px-2.5 py-1 text-[11px] font-semibold rounded-md flex items-center gap-1 opacity-70">
                         <Globe size={11} />
                         <span>Giriş Yap</span>
                       </div>
                     </div>
-                    <span className="text-slate-300 font-bold">&rarr;</span>
+                    <span className="text-slate-600 font-bold">&rarr;</span>
                     <div className="text-center">
-                      <span className="text-[10px] font-bold text-emerald-700 uppercase block mb-1">Yeni (Resmi Logolu)</span>
-                      <div className="bg-[#00875a] text-white px-2.5 py-1 text-[11px] font-bold rounded-xs flex items-center gap-1.5 shadow-xs">
-                        <div className="w-3.5 h-3.5 rounded-xs bg-[#185886] flex items-center justify-center text-[9px] font-black leading-none">
+                      <span className="text-[10px] font-bold text-indigo-400 uppercase block mb-1">Yeni (Resmi Logolu)</span>
+                      <div className="bg-indigo-600 text-white px-2.5 py-1 text-[11px] font-bold rounded-md flex items-center gap-1.5 shadow-xs">
+                        <div className="w-3.5 h-3.5 rounded-sm bg-indigo-900 flex items-center justify-center text-[9px] font-black leading-none">
                           E
                         </div>
                         <span>EngelsizForum</span>
@@ -1069,79 +1017,79 @@ $result = json_decode(curl_exec($ch), true);`}
                 {/* İnteraktif Buton Yapılandırıcı */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-2">
                   {/* Sol Sütun: Ayarlar */}
-                  <div className="lg:col-span-5 space-y-4 bg-slate-50/70 p-4 border border-slate-200 rounded-sm">
-                    <h3 className="text-xs font-black text-[#185886] uppercase tracking-wide border-b border-slate-200 pb-2">
+                  <div className="lg:col-span-5 space-y-4 bg-[#18243A]/40 p-4 border border-[#1E293B] rounded-md">
+                    <h3 className="text-xs font-black text-indigo-400 uppercase tracking-wide border-b border-[#1E293B] pb-2">
                       1. Buton Tasarımını Özelleştirin
                     </h3>
 
                     {/* Tema Seçimi */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-700 block">Tema &amp; Renk Paleti:</label>
+                      <label className="text-xs font-bold text-slate-300 block">Tema &amp; Renk Paleti:</label>
                       <div className="grid grid-cols-2 gap-2">
                         <button
                           type="button"
                           onClick={() => setBtnTheme('green')}
-                          className={`p-2 rounded-sm border text-left flex items-center gap-2 cursor-pointer transition-all ${
+                          className={`p-2 rounded-md border text-left flex items-center gap-2 cursor-pointer transition-all ${
                             btnTheme === 'green'
-                              ? 'border-[#00875a] bg-emerald-50 text-emerald-950 font-bold ring-1 ring-[#00875a]'
-                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                              ? 'border-emerald-500 bg-emerald-950/40 text-emerald-300 font-bold ring-1 ring-emerald-500'
+                              : 'border-[#1E293B] bg-[#18243A] text-slate-300 hover:text-white'
                           }`}
                         >
-                          <span className="w-3.5 h-3.5 rounded-full bg-[#00875a] shrink-0"></span>
-                          <span className="text-xs">Yeşil (Kullanıcı Stili)</span>
+                          <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 shrink-0"></span>
+                          <span className="text-xs">Yeşil (Canlı)</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => setBtnTheme('blue')}
-                          className={`p-2 rounded-sm border text-left flex items-center gap-2 cursor-pointer transition-all ${
+                          className={`p-2 rounded-md border text-left flex items-center gap-2 cursor-pointer transition-all ${
                             btnTheme === 'blue'
-                              ? 'border-[#185886] bg-sky-50 text-sky-950 font-bold ring-1 ring-[#185886]'
-                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                              ? 'border-indigo-500 bg-indigo-950/40 text-indigo-300 font-bold ring-1 ring-indigo-500'
+                              : 'border-[#1E293B] bg-[#18243A] text-slate-300 hover:text-white'
                           }`}
                         >
-                          <span className="w-3.5 h-3.5 rounded-full bg-[#185886] shrink-0"></span>
-                          <span className="text-xs">Klasik Lacivert</span>
+                          <span className="w-3.5 h-3.5 rounded-full bg-indigo-500 shrink-0"></span>
+                          <span className="text-xs">İndigo (Resmi)</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => setBtnTheme('dark')}
-                          className={`p-2 rounded-sm border text-left flex items-center gap-2 cursor-pointer transition-all ${
+                          className={`p-2 rounded-md border text-left flex items-center gap-2 cursor-pointer transition-all ${
                             btnTheme === 'dark'
-                              ? 'border-slate-800 bg-slate-100 text-slate-950 font-bold ring-1 ring-slate-800'
-                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                              ? 'border-slate-500 bg-slate-800 text-white font-bold ring-1 ring-slate-500'
+                              : 'border-[#1E293B] bg-[#18243A] text-slate-300 hover:text-white'
                           }`}
                         >
-                          <span className="w-3.5 h-3.5 rounded-full bg-[#0f172a] shrink-0"></span>
-                          <span className="text-xs">Gece Modu (Koyu)</span>
+                          <span className="w-3.5 h-3.5 rounded-full bg-[#0B1220] border border-slate-700 shrink-0"></span>
+                          <span className="text-xs">Koyu Gece</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => setBtnTheme('white')}
-                          className={`p-2 rounded-sm border text-left flex items-center gap-2 cursor-pointer transition-all ${
+                          className={`p-2 rounded-md border text-left flex items-center gap-2 cursor-pointer transition-all ${
                             btnTheme === 'white'
-                              ? 'border-slate-400 bg-white text-slate-950 font-bold ring-1 ring-slate-400'
-                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                              ? 'border-white bg-white text-slate-950 font-bold ring-1 ring-white'
+                              : 'border-[#1E293B] bg-[#18243A] text-slate-300 hover:text-white'
                           }`}
                         >
-                          <span className="w-3.5 h-3.5 rounded-full bg-white border border-slate-400 shrink-0"></span>
-                          <span className="text-xs">Beyaz (Açık Çerçeveli)</span>
+                          <span className="w-3.5 h-3.5 rounded-full bg-white shrink-0"></span>
+                          <span className="text-xs">Beyaz Çerçeveli</span>
                         </button>
                       </div>
                     </div>
 
                     {/* Boyut Seçimi */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-700 block">Buton Boyutu:</label>
+                      <label className="text-xs font-bold text-slate-300 block">Buton Boyutu:</label>
                       <div className="grid grid-cols-3 gap-2">
                         {(['sm', 'md', 'lg'] as const).map((sz) => (
                           <button
                             key={sz}
                             type="button"
                             onClick={() => setBtnSize(sz)}
-                            className={`py-1.5 px-2 rounded-sm border text-center text-xs cursor-pointer transition-all ${
+                            className={`py-2 px-2 rounded-md border text-center text-xs cursor-pointer transition-all ${
                               btnSize === sz
-                                ? 'border-[#185886] bg-white text-[#185886] font-bold ring-1 ring-[#185886]'
-                                : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                                ? 'border-indigo-500 bg-indigo-950/40 text-indigo-300 font-bold ring-1 ring-indigo-500'
+                                : 'border-[#1E293B] bg-[#18243A] text-slate-300 hover:text-white'
                             }`}
                           >
                             {sz === 'sm' ? 'Küçük (36px)' : sz === 'md' ? 'Standart (44px)' : 'Büyük (52px)'}
@@ -1152,43 +1100,43 @@ $result = json_decode(curl_exec($ch), true);`}
 
                     {/* Logo Düzeni */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-700 block">Logo Düzeni:</label>
+                      <label className="text-xs font-bold text-slate-300 block">Logo Düzeni:</label>
                       <div className="grid grid-cols-2 gap-2">
                         <button
                           type="button"
                           onClick={() => setBtnLayout('split')}
-                          className={`p-2 rounded-sm border text-left text-xs cursor-pointer transition-all ${
+                          className={`p-2 rounded-md border text-left text-xs cursor-pointer transition-all ${
                             btnLayout === 'split'
-                              ? 'border-[#185886] bg-white text-[#185886] font-bold ring-1 ring-[#185886]'
-                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                              ? 'border-indigo-500 bg-indigo-950/40 text-indigo-300 font-bold ring-1 ring-indigo-500'
+                              : 'border-[#1E293B] bg-[#18243A] text-slate-300 hover:text-white'
                           }`}
                         >
                           <span className="block font-bold">Logo Rozeti + Metin</span>
-                          <span className="text-[10px] text-slate-500 font-normal">Kompakt kurumsal rozet</span>
+                          <span className="text-[10px] text-slate-400 font-normal">Kompakt kurumsal rozet</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => setBtnLayout('badge')}
-                          className={`p-2 rounded-sm border text-left text-xs cursor-pointer transition-all ${
+                          className={`p-2 rounded-md border text-left text-xs cursor-pointer transition-all ${
                             btnLayout === 'badge'
-                              ? 'border-[#185886] bg-white text-[#185886] font-bold ring-1 ring-[#185886]'
-                              : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                              ? 'border-indigo-500 bg-indigo-950/40 text-indigo-300 font-bold ring-1 ring-indigo-500'
+                              : 'border-[#1E293B] bg-[#18243A] text-slate-300 hover:text-white'
                           }`}
                         >
                           <span className="block font-bold">Tam Wordmark Logo</span>
-                          <span className="text-[10px] text-slate-500 font-normal">2. Görseldeki tam logo</span>
+                          <span className="text-[10px] text-slate-400 font-normal">Tam kurumsal logo</span>
                         </button>
                       </div>
                     </div>
 
                     {/* Kayıtlı Uygulama Seçimi */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-slate-700 block">Yetkilendirilecek Uygulamanız:</label>
+                      <label className="text-xs font-bold text-slate-300 block">Yetkilendirilecek Uygulamanız:</label>
                       {apps.length > 0 ? (
                         <select
                           value={btnAppClientId}
                           onChange={(e) => setBtnAppClientId(e.target.value)}
-                          className="w-full text-xs p-2 bg-white border border-slate-300 rounded-sm focus:outline-none focus:border-[#185886]"
+                          className="w-full text-xs p-2 bg-[#18243A] border border-[#1E293B] rounded-md text-white focus:outline-none focus:border-indigo-500"
                         >
                           {apps.map((app) => (
                             <option key={app.client_id} value={app.client_id}>
@@ -1202,7 +1150,7 @@ $result = json_decode(curl_exec($ch), true);`}
                           value={btnAppClientId || 'YOUR_CLIENT_ID'}
                           onChange={(e) => setBtnAppClientId(e.target.value)}
                           placeholder="client_id giriniz"
-                          className="w-full text-xs p-2 bg-white border border-slate-300 rounded-sm font-mono focus:outline-none focus:border-[#185886]"
+                          className="w-full text-xs p-2 bg-[#18243A] border border-[#1E293B] rounded-md font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
                         />
                       )}
                     </div>
@@ -1211,8 +1159,8 @@ $result = json_decode(curl_exec($ch), true);`}
                   {/* Sağ Sütun: Canlı Önizleme & Kod Kopyalama */}
                   <div className="lg:col-span-7 space-y-4">
                     {/* Canlı Önizleme Kartı */}
-                    <div className="p-6 bg-[#fcf8fb] border border-slate-200 rounded-sm flex flex-col items-center justify-center gap-4 text-center">
-                      <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                    <div className="p-6 bg-[#0B1220] border border-[#1E293B] rounded-md flex flex-col items-center justify-center gap-4 text-center">
+                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                         Canlı Buton Önizlemesi
                       </span>
 
@@ -1230,7 +1178,7 @@ $result = json_decode(curl_exec($ch), true);`}
                           href={`/oauth/authorize?client_id=${encodeURIComponent(btnAppClientId || 'YOUR_CLIENT_ID')}&redirect_uri=http://localhost:3000/api/auth/callback/engelsizforum&response_type=code&scope=read&state=preview_test`}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs text-[#185886] hover:underline font-bold"
+                          className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 hover:underline font-bold"
                         >
                           <ExternalLink size={13} />
                           <span>Onay Ekranını Test Et (Canlı Logo Önizleme)</span>
@@ -1239,37 +1187,37 @@ $result = json_decode(curl_exec($ch), true);`}
                     </div>
 
                     {/* Kod Kopyalama Sekmeleri */}
-                    <div className="border border-slate-200 rounded-sm overflow-hidden bg-white">
-                      <div className="bg-[#1e293b] text-white p-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E]">
+                      <div className="bg-[#18243A] text-white p-2.5 flex flex-wrap items-center justify-between gap-2 text-xs border-b border-[#1E293B]">
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => setBtnCodeType('html')}
-                            className={`px-2.5 py-1 rounded-sm font-bold uppercase text-[11px] cursor-pointer transition-colors ${
-                              btnCodeType === 'html' ? 'bg-[#00875a] text-white' : 'text-slate-300 hover:bg-slate-700'
+                            className={`px-2.5 py-1.5 rounded-md font-bold uppercase text-[11px] cursor-pointer transition-colors ${
+                              btnCodeType === 'html' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-[#111B2E]'
                             }`}
                           >
                             HTML &amp; CSS
                           </button>
                           <button
                             onClick={() => setBtnCodeType('react')}
-                            className={`px-2.5 py-1 rounded-sm font-bold uppercase text-[11px] cursor-pointer transition-colors ${
-                              btnCodeType === 'react' ? 'bg-[#00875a] text-white' : 'text-slate-300 hover:bg-slate-700'
+                            className={`px-2.5 py-1.5 rounded-md font-bold uppercase text-[11px] cursor-pointer transition-colors ${
+                              btnCodeType === 'react' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-[#111B2E]'
                             }`}
                           >
                             React / Next.js
                           </button>
                           <button
                             onClick={() => setBtnCodeType('svg')}
-                            className={`px-2.5 py-1 rounded-sm font-bold uppercase text-[11px] cursor-pointer transition-colors ${
-                              btnCodeType === 'svg' ? 'bg-[#00875a] text-white' : 'text-slate-300 hover:bg-slate-700'
+                            className={`px-2.5 py-1.5 rounded-md font-bold uppercase text-[11px] cursor-pointer transition-colors ${
+                              btnCodeType === 'svg' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-[#111B2E]'
                             }`}
                           >
                             Doğrudan İmaj (SVG Link)
                           </button>
                           <button
                             onClick={() => setBtnCodeType('logo')}
-                            className={`px-2.5 py-1 rounded-sm font-bold uppercase text-[11px] cursor-pointer transition-colors ${
-                              btnCodeType === 'logo' ? 'bg-[#00875a] text-white' : 'text-slate-300 hover:bg-slate-700'
+                            className={`px-2.5 py-1.5 rounded-md font-bold uppercase text-[11px] cursor-pointer transition-colors ${
+                              btnCodeType === 'logo' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-[#111B2E]'
                             }`}
                           >
                             Resmi Logo (Image 2 SVG)
@@ -1502,38 +1450,38 @@ export function LoginWithEngelsizForum() {
         {activeTab === 'widget' && (
           <div className="space-y-4">
             {/* Header Banner */}
-            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-black uppercase text-[12px] tracking-wider py-2.5 px-3 flex items-center justify-between">
+            <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E] shadow-sm">
+              <div className="bg-[#18243A] text-white font-bold uppercase text-[12px] tracking-wider py-2.5 px-4 flex items-center justify-between border-b border-[#1E293B]">
                 <div className="flex items-center gap-2">
-                  <Accessibility size={16} />
+                  <Accessibility size={16} className="text-indigo-400" />
                   <span>ENGELSİZ ERİŞİLEBİLİRLİK WIDGET&apos;I (EMBED SDK) &amp; WAPPALYZER TESPİTİ</span>
                 </div>
-                <span className="text-[11px] font-normal text-white/80 bg-white/10 px-2 py-0.5 rounded-sm border border-white/20">
+                <span className="text-[11px] font-normal text-indigo-300 bg-indigo-950/40 px-2.5 py-0.5 rounded-md border border-indigo-800/40">
                   WCAG 2.1 AAA • Wappalyzer Kategori 89
                 </span>
               </div>
 
-              <div className="p-4 sm:p-5 space-y-3 text-xs sm:text-sm text-slate-700 bg-white">
+              <div className="p-4 sm:p-5 space-y-3 text-xs sm:text-sm text-slate-300 bg-[#111B2E]">
                 <p className="leading-relaxed">
                   Her web sitesine tek bir satır kod ile tam donanımlı, yerli ve açık kaynaklı <strong>WCAG 2.1 AAA</strong> erişilebilirlik paneli entegre edin. Bu widget harici sitelerde çalışırken <strong>Wappalyzer</strong>, <strong>BuiltWith</strong> ve web tarayıcıları tarafından otomatik olarak tespit edilebilen küresel imzalara sahiptir.
                 </p>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-                  <div className="p-2.5 bg-sky-50 border border-sky-200 rounded-sm">
-                    <div className="text-[10px] font-black uppercase text-sky-800">Görme Desteği</div>
-                    <div className="text-xs font-bold text-sky-950 mt-0.5">Yüksek Kontrast &amp; Büyüteç</div>
+                  <div className="p-2.5 bg-[#18243A] border border-[#1E293B] rounded-md">
+                    <div className="text-[10px] font-black uppercase text-indigo-400">Görme Desteği</div>
+                    <div className="text-xs font-bold text-white mt-0.5">Yüksek Kontrast &amp; Büyüteç</div>
                   </div>
-                  <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-sm">
-                    <div className="text-[10px] font-black uppercase text-emerald-800">Nöroçeşitlilik</div>
-                    <div className="text-xs font-bold text-emerald-950 mt-0.5">OpenDyslexic &amp; Bionic Okuma</div>
+                  <div className="p-2.5 bg-[#18243A] border border-[#1E293B] rounded-md">
+                    <div className="text-[10px] font-black uppercase text-emerald-400">Nöroçeşitlilik</div>
+                    <div className="text-xs font-bold text-white mt-0.5">OpenDyslexic &amp; Bionic Okuma</div>
                   </div>
-                  <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-sm">
-                    <div className="text-[10px] font-black uppercase text-amber-800">Sesli Rehber</div>
-                    <div className="text-xs font-bold text-amber-950 mt-0.5">Ekran Okuyucu (TTS Speech)</div>
+                  <div className="p-2.5 bg-[#18243A] border border-[#1E293B] rounded-md">
+                    <div className="text-[10px] font-black uppercase text-amber-400">Sesli Rehber</div>
+                    <div className="text-xs font-bold text-white mt-0.5">Ekran Okuyucu (TTS Speech)</div>
                   </div>
-                  <div className="p-2.5 bg-purple-50 border border-purple-200 rounded-sm">
-                    <div className="text-[10px] font-black uppercase text-purple-800">Wappalyzer</div>
-                    <div className="text-xs font-bold text-purple-950 mt-0.5">Global İmza &amp; DOM Tespiti</div>
+                  <div className="p-2.5 bg-[#18243A] border border-[#1E293B] rounded-md">
+                    <div className="text-[10px] font-black uppercase text-purple-400">Wappalyzer</div>
+                    <div className="text-xs font-bold text-white mt-0.5">Global İmza &amp; DOM Tespiti</div>
                   </div>
                 </div>
               </div>
@@ -1543,10 +1491,10 @@ export function LoginWithEngelsizForum() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
               {/* Sol Sütun: Yapılandırma */}
               <div className="lg:col-span-5 space-y-4">
-                <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-                  <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-bold text-xs uppercase py-2 px-3 flex items-center justify-between">
+                <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E] shadow-sm">
+                  <div className="bg-[#18243A] border-b border-[#1E293B] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <Sliders size={13} />
+                      <Sliders size={13} className="text-indigo-400" />
                       <span>Widget Ayarlarını Kişiselleştir</span>
                     </div>
                   </div>
@@ -1554,7 +1502,7 @@ export function LoginWithEngelsizForum() {
                   <div className="p-4 space-y-3.5 text-xs">
                     {/* Pozisyon */}
                     <div className="space-y-1">
-                      <label className="block font-bold text-slate-800 uppercase text-[10px]">
+                      <label className="block font-bold text-slate-300 uppercase text-[10px]">
                         Buton Ekran Konumu:
                       </label>
                       <div className="grid grid-cols-2 gap-1.5">
@@ -1568,10 +1516,10 @@ export function LoginWithEngelsizForum() {
                             key={pos.id}
                             type="button"
                             onClick={() => setWidgetPosition(pos.id as any)}
-                            className={`p-2 rounded-sm border text-left font-bold text-xs transition-colors cursor-pointer ${
+                            className={`p-2.5 rounded-md border text-left font-bold text-xs transition-colors cursor-pointer ${
                               widgetPosition === pos.id
-                                ? 'bg-sky-50 border-sky-600 text-[#185886]'
-                                : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-700'
+                                ? 'bg-indigo-600 border-indigo-500 text-white'
+                                : 'bg-[#18243A] border-[#1E293B] hover:bg-[#1E293B] text-slate-300'
                             }`}
                           >
                             {pos.label}
@@ -1582,15 +1530,15 @@ export function LoginWithEngelsizForum() {
 
                     {/* Ana Tema Rengi */}
                     <div className="space-y-1.5">
-                      <label className="block font-bold text-slate-800 uppercase text-[10px]">
+                      <label className="block font-bold text-slate-300 uppercase text-[10px]">
                         Tema Rengi:
                       </label>
                       <div className="flex flex-wrap items-center gap-2">
                         {[
+                          { color: '#4F46E5', name: 'İndigo' },
                           { color: '#185886', name: 'Engelsiz Mavisi' },
                           { color: '#00875a', name: 'Zümrüt Yeşili' },
                           { color: '#f2930d', name: 'Turuncu' },
-                          { color: '#0f172a', name: 'Gece Siyahı' },
                           { color: '#7c3aed', name: 'Mor' }
                         ].map((t) => (
                           <button
@@ -1598,7 +1546,7 @@ export function LoginWithEngelsizForum() {
                             type="button"
                             onClick={() => setWidgetColor(t.color)}
                             className={`w-7 h-7 rounded-full border-2 transition-transform cursor-pointer flex items-center justify-center ${
-                              widgetColor === t.color ? 'scale-110 border-slate-900 shadow-sm' : 'border-white hover:scale-105'
+                              widgetColor === t.color ? 'scale-110 border-white shadow-sm' : 'border-transparent hover:scale-105'
                             }`}
                             style={{ backgroundColor: t.color }}
                             title={t.name}
@@ -1610,8 +1558,8 @@ export function LoginWithEngelsizForum() {
                           type="text"
                           value={widgetColor}
                           onChange={(e) => setWidgetColor(e.target.value)}
-                          placeholder="#185886"
-                          className="w-24 px-2 py-1 text-xs border border-slate-300 rounded-sm font-mono"
+                          placeholder="#4F46E5"
+                          className="w-24 px-2.5 py-1 text-xs border border-[#1E293B] rounded-md font-mono bg-[#18243A] text-white"
                         />
                       </div>
                     </div>
@@ -1704,10 +1652,10 @@ export function LoginWithEngelsizForum() {
 
               {/* Sağ Sütun: Kod Üretici & Entegrasyon */}
               <div className="lg:col-span-7 space-y-4">
-                <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-                  <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-bold text-xs uppercase py-2 px-3 flex items-center justify-between">
+                <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E] shadow-sm">
+                  <div className="bg-[#18243A] border-b border-[#1E293B] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <Code2 size={13} />
+                      <Code2 size={13} className="text-indigo-400" />
                       <span>Hazır Entegrasyon Kodları (Kopyala &amp; Yapıştır)</span>
                     </div>
 
@@ -1716,10 +1664,10 @@ export function LoginWithEngelsizForum() {
                         <button
                           key={tab}
                           onClick={() => setWidgetCodeTab(tab)}
-                          className={`px-2 py-0.5 rounded-xs text-[10px] font-bold uppercase transition-colors cursor-pointer ${
+                          className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase transition-colors cursor-pointer ${
                             widgetCodeTab === tab
-                              ? 'bg-[#185886] text-white'
-                              : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
+                              ? 'bg-indigo-600 text-white'
+                              : 'bg-[#18243A] border border-[#1E293B] text-slate-300 hover:text-white'
                           }`}
                         >
                           {tab === 'html' && 'HTML / Web'}
@@ -1735,11 +1683,11 @@ export function LoginWithEngelsizForum() {
                     {/* HTML TAB */}
                     {widgetCodeTab === 'html' && (
                       <div className="space-y-2">
-                        <p className="text-slate-600">
-                          Sitenizin <code className="bg-slate-100 px-1 py-0.5 rounded text-rose-600">&lt;body&gt;</code> kapanış etiketinden hemen önce aşağıdaki tek satır scripti eklemeniz yeterlidir:
+                        <p className="text-slate-300">
+                          Sitenizin <code className="bg-[#18243A] px-1.5 py-0.5 rounded text-indigo-300 font-mono">&lt;body&gt;</code> kapanış etiketinden hemen önce aşağıdaki tek satır scripti eklemeniz yeterlidir:
                         </p>
                         <div className="relative">
-                          <pre className="bg-[#0b1320] text-sky-200 p-3.5 rounded-sm font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-slate-800">
+                          <pre className="bg-[#0B1220] text-indigo-200 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-[#1E293B]">
 {`<!-- EngelsizForum WCAG 2.1 AAA Erişilebilirlik Widget'ı -->
 <script
   src="https://engelsizforum.com/widget/engelsiz-accessibility.js"
@@ -1752,14 +1700,14 @@ export function LoginWithEngelsizForum() {
                           </pre>
                           <button
                             onClick={() => copyToClipboard(`<!-- EngelsizForum WCAG 2.1 AAA Erişilebilirlik Widget'ı -->\n<script\n  src="https://engelsizforum.com/widget/engelsiz-accessibility.js"\n  data-position="${widgetPosition}"\n  data-color="${widgetColor}"\n  data-lang="${widgetLang}"\n  async\n  defer>\n</script>`, 'html-widget')}
-                            className="absolute top-2 right-2 px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-sm text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                            className="absolute top-2 right-2 px-2.5 py-1 bg-[#18243A] hover:bg-[#1E293B] text-white rounded-md text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors border border-[#1E293B]"
                           >
                             {copiedKey === 'html-widget' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
                             <span>Kopyala</span>
                           </button>
                         </div>
-                        <div className="p-2.5 bg-amber-50 border border-amber-200 text-amber-900 rounded-sm text-[11px] flex items-center gap-2">
-                          <Info size={14} className="shrink-0 text-amber-700" />
+                        <div className="p-3 bg-indigo-950/40 border border-indigo-800/40 text-slate-300 rounded-md text-[11px] flex items-center gap-2">
+                          <Info size={14} className="shrink-0 text-indigo-400" />
                           <span>WordPress, Shopify, Wix veya özel e-ticaret sitelerinin tüm tema dosyalarıyla %100 uyumludur. Sıfır dış kütüphane gerektirir.</span>
                         </div>
                       </div>
@@ -1768,11 +1716,11 @@ export function LoginWithEngelsizForum() {
                     {/* REACT / NEXT.JS TAB */}
                     {widgetCodeTab === 'react' && (
                       <div className="space-y-2">
-                        <p className="text-slate-600">
-                          Next.js App Router veya React uygulamalarında <code className="bg-slate-100 px-1 py-0.5 rounded text-rose-600">app/layout.tsx</code> dosyanıza ekleyin:
+                        <p className="text-slate-300">
+                          Next.js App Router veya React uygulamalarında <code className="bg-[#18243A] px-1.5 py-0.5 rounded text-indigo-300 font-mono">app/layout.tsx</code> dosyanıza ekleyin:
                         </p>
                         <div className="relative">
-                          <pre className="bg-[#0b1320] text-sky-200 p-3.5 rounded-sm font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-slate-800">
+                          <pre className="bg-[#0B1220] text-indigo-200 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-[#1E293B]">
 {`import Script from 'next/script';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -1794,7 +1742,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                           </pre>
                           <button
                             onClick={() => copyToClipboard(`import Script from 'next/script';\n\nexport default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <html lang="${widgetLang}">\n      <body>\n        {children}\n        <Script\n          src="https://engelsizforum.com/widget/engelsiz-accessibility.js"\n          data-position="${widgetPosition}"\n          data-color="${widgetColor}"\n          data-lang="${widgetLang}"\n          strategy="lazyOnload"\n        />\n      </body>\n    </html>\n  );\n}`, 'react-widget')}
-                            className="absolute top-2 right-2 px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-sm text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                            className="absolute top-2 right-2 px-2.5 py-1 bg-[#18243A] hover:bg-[#1E293B] text-white rounded-md text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors border border-[#1E293B]"
                           >
                             {copiedKey === 'react-widget' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
                             <span>Kopyala</span>
@@ -1806,11 +1754,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     {/* JAVASCRIPT API TAB */}
                     {widgetCodeTab === 'api' && (
                       <div className="space-y-2">
-                        <p className="text-slate-600">
-                          Widget yüklendikten sonra <code className="bg-slate-100 px-1 py-0.5 rounded font-mono font-bold text-sky-700">window.EngelsizAccessibility</code> küresel nesnesi üzerinden kodla yönetebilirsiniz:
+                        <p className="text-slate-300">
+                          Widget yüklendikten sonra <code className="bg-[#18243A] px-1.5 py-0.5 rounded font-mono font-bold text-indigo-400">window.EngelsizAccessibility</code> küresel nesnesi üzerinden kodla yönetebilirsiniz:
                         </p>
                         <div className="relative">
-                          <pre className="bg-[#0b1320] text-sky-200 p-3.5 rounded-sm font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-slate-800">
+                          <pre className="bg-[#0B1220] text-indigo-200 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-[#1E293B]">
 {`// Menüyü programatik aç / kapat
 window.EngelsizAccessibility.open();
 window.EngelsizAccessibility.close();
@@ -1835,7 +1783,7 @@ const state = window.EngelsizAccessibility.getState();`}
                           </pre>
                           <button
                             onClick={() => copyToClipboard(`window.EngelsizAccessibility.open();\nwindow.EngelsizAccessibility.setFontSize(2);\nwindow.EngelsizAccessibility.setContrast('high-contrast');\nwindow.EngelsizAccessibility.toggleDyslexicFont();\nwindow.EngelsizAccessibility.speak('EngelsizForum Erişilebilirlik');`, 'api-widget')}
-                            className="absolute top-2 right-2 px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-sm text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                            className="absolute top-2 right-2 px-2.5 py-1 bg-[#18243A] hover:bg-[#1E293B] text-white rounded-md text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors border border-[#1E293B]"
                           >
                             {copiedKey === 'api-widget' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
                             <span>Kopyala</span>
@@ -1848,20 +1796,20 @@ const state = window.EngelsizAccessibility.getState();`}
                     {widgetCodeTab === 'wappalyzer' && (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <p className="text-slate-600">
-                            Wappalyzer resmi tanım parçası (<code className="bg-slate-100 px-1 py-0.5 rounded font-mono text-[10px]">src/technologies/e.json</code> içine eklenir):
+                          <p className="text-slate-300">
+                            Wappalyzer resmi tanım parçası (<code className="bg-[#18243A] px-1.5 py-0.5 rounded font-mono text-[10px] text-indigo-300">src/technologies/e.json</code> içine eklenir):
                           </p>
                           <a
                             href="/widget/wappalyzer-engelsiz-accessibility.json"
                             download="engelsiz-accessibility.json"
-                            className="text-xs text-[#185886] font-bold hover:underline flex items-center gap-1"
+                            className="text-xs text-indigo-400 font-bold hover:underline flex items-center gap-1"
                           >
                             <Download size={12} />
                             <span>JSON İndir</span>
                           </a>
                         </div>
                         <div className="relative">
-                          <pre className="bg-[#0b1320] text-sky-200 p-3.5 rounded-sm font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-slate-800">
+                          <pre className="bg-[#0B1220] text-indigo-200 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-[#1E293B]">
 {`"Engelsiz Erişilebilirlik": {
   "cats": [68],
   "description": "EngelsizForum open-source universal WCAG 2.1 AAA web accessibility widget for visually impaired, neurodivergent, and motor-disabled users.",
@@ -1886,7 +1834,7 @@ const state = window.EngelsizAccessibility.getState();`}
                           </pre>
                           <button
                             onClick={() => copyToClipboard(`"Engelsiz Erişilebilirlik": {\n  "cats": [68],\n  "description": "EngelsizForum open-source universal WCAG 2.1 AAA web accessibility widget for visually impaired, neurodivergent, and motor-disabled users.",\n  "icon": "default.svg",\n  "pricing": ["open-source"],\n  "website": "https://engelsizforum.com",\n  "js": {\n    "EngelsizAccessibility": "",\n    "EngelsizAccessibility.version": "(.*)\\\\;version:\\\\1",\n    "__ENGELSIZ_WIDGET_VERSION__": "(.*)\\\\;version:\\\\1"\n  },\n  "dom": {\n    "#engelsiz-accessibility-widget": {\n      "attributes": { "data-engelsiz-version": "(.*)\\\\;version:\\\\1" }\n    },\n    "meta[name='engelsiz-accessibility']": {\n      "attributes": { "content": "active" }\n    }\n  },\n  "scripts": "(?:/widget/|/api/widget/)engelsiz-accessibility(?:\\\\.min)?\\\\.js"\n}`, 'wapp-json')}
-                            className="absolute top-2 right-2 px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-sm text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                            className="absolute top-2 right-2 px-2.5 py-1 bg-[#18243A] hover:bg-[#1E293B] text-white rounded-md text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors border border-[#1E293B]"
                           >
                             {copiedKey === 'wapp-json' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
                             <span>Kopyala</span>
@@ -1900,22 +1848,22 @@ const state = window.EngelsizAccessibility.getState();`}
             </div>
 
             {/* WAPPALYZER VE TEKNOLOJİ TESPİTİ DERİNLEMESİNE İNCELEME */}
-            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-bold text-xs uppercase py-2.5 px-3 flex items-center justify-between">
+            <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E] shadow-sm">
+              <div className="bg-[#18243A] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between border-b border-[#1E293B]">
                 <div className="flex items-center gap-2">
-                  <Shield size={14} />
+                  <Shield size={14} className="text-indigo-400" />
                   <span>Wappalyzer &amp; Web Tarayıcı Teknoloji Tespiti Nasıl Çalışır?</span>
                 </div>
                 <button
                   onClick={runSignatureCheck}
-                  className="px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-sm text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
                 >
                   <RefreshCw size={12} className={widgetSignatureCheck.checked ? '' : 'animate-spin'} />
                   <span>Tarayıcımda İmzaları Denetle</span>
                 </button>
               </div>
 
-              <div className="p-4 sm:p-5 space-y-4 text-xs sm:text-sm text-slate-700 bg-white">
+              <div className="p-4 sm:p-5 space-y-4 text-xs sm:text-sm text-slate-300 bg-[#111B2E]">
                 <p className="leading-relaxed">
                   <strong>Wappalyzer</strong>, <strong>BuiltWith</strong>, <strong>WhatRuns</strong> gibi tarayıcı eklentileri sitenizdeki yazılımları 4 farklı katmanda tespit eder. EngelsizForum Widget&apos;ı bu 4 katmanın tamamında doğrulanabilir iz bırakır:
                 </p>
@@ -1923,181 +1871,173 @@ const state = window.EngelsizAccessibility.getState();`}
                 {/* 4 Katman Kartları */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                   {/* Katman 1 */}
-                  <div className="p-3 border border-slate-200 rounded-sm bg-slate-50 space-y-1.5">
+                  <div className="p-3 border border-[#1E293B] rounded-md bg-[#18243A]/60 space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase text-slate-500">1. JS Global Nesnesi</span>
+                      <span className="text-[10px] font-black uppercase text-slate-400">1. JS Global Nesnesi</span>
                       {widgetSignatureCheck.hasWindowGlobal ? (
-                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded flex items-center gap-0.5">
+                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
                           <Check size={10} /> Aktif
                         </span>
                       ) : (
-                        <span className="text-[10px] font-bold text-slate-500 bg-slate-200 px-1.5 py-0.2 rounded">Hazır</span>
+                        <span className="text-[10px] font-bold text-slate-400 bg-[#18243A] px-1.5 py-0.5 rounded border border-[#1E293B]">Hazır</span>
                       )}
                     </div>
-                    <div className="font-mono text-[11px] font-bold text-sky-900 bg-white p-1.5 rounded border border-slate-200 select-all">
+                    <div className="font-mono text-[11px] font-bold text-indigo-300 bg-[#0B1220] p-1.5 rounded-md border border-[#1E293B] select-all">
                       window.EngelsizAccessibility
                     </div>
-                    <p className="text-[11px] text-slate-600">
-                      Wappalyzer&apos;ın <code className="font-mono text-[10px]">js</code> anahtarı bunu tarar ve sürümü okur (<code className="font-mono text-[10px]">v{widgetSignatureCheck.version}</code>).
+                    <p className="text-[11px] text-slate-400">
+                      Wappalyzer&apos;ın <code className="font-mono text-[10px] text-indigo-300">js</code> anahtarı bunu tarar ve sürümü okur (<code className="font-mono text-[10px]">v{widgetSignatureCheck.version}</code>).
                     </p>
                   </div>
 
                   {/* Katman 2 */}
-                  <div className="p-3 border border-slate-200 rounded-sm bg-slate-50 space-y-1.5">
+                  <div className="p-3 border border-[#1E293B] rounded-md bg-[#18243A]/60 space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase text-slate-500">2. DOM Kök Elemanı</span>
+                      <span className="text-[10px] font-black uppercase text-slate-400">2. DOM Kök Elemanı</span>
                       {widgetSignatureCheck.hasDomElement ? (
-                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded flex items-center gap-0.5">
+                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
                           <Check size={10} /> Aktif
                         </span>
                       ) : (
-                        <span className="text-[10px] font-bold text-slate-500 bg-slate-200 px-1.5 py-0.2 rounded">Hazır</span>
+                        <span className="text-[10px] font-bold text-slate-400 bg-[#18243A] px-1.5 py-0.5 rounded border border-[#1E293B]">Hazır</span>
                       )}
                     </div>
-                    <div className="font-mono text-[11px] font-bold text-sky-900 bg-white p-1.5 rounded border border-slate-200 select-all">
+                    <div className="font-mono text-[11px] font-bold text-indigo-300 bg-[#0B1220] p-1.5 rounded-md border border-[#1E293B] select-all">
                       #engelsiz-accessibility-widget
                     </div>
-                    <p className="text-[11px] text-slate-600">
-                      DOM ağacında <code className="font-mono text-[10px]">data-engelsiz-version</code> özniteliği ile tespit edilir.
+                    <p className="text-[11px] text-slate-400">
+                      DOM ağacında <code className="font-mono text-[10px] text-indigo-300">data-engelsiz-version</code> özniteliği ile tespit edilir.
                     </p>
                   </div>
 
                   {/* Katman 3 */}
-                  <div className="p-3 border border-slate-200 rounded-sm bg-slate-50 space-y-1.5">
+                  <div className="p-3 border border-[#1E293B] rounded-md bg-[#18243A]/60 space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase text-slate-500">3. HTML Meta Etiketi</span>
+                      <span className="text-[10px] font-black uppercase text-slate-400">3. HTML Meta Etiketi</span>
                       {widgetSignatureCheck.hasMetaTag ? (
-                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded flex items-center gap-0.5">
+                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
                           <Check size={10} /> Aktif
                         </span>
                       ) : (
-                        <span className="text-[10px] font-bold text-slate-500 bg-slate-200 px-1.5 py-0.2 rounded">Hazır</span>
+                        <span className="text-[10px] font-bold text-slate-400 bg-[#18243A] px-1.5 py-0.5 rounded border border-[#1E293B]">Hazır</span>
                       )}
                     </div>
-                    <div className="font-mono text-[10px] font-bold text-sky-900 bg-white p-1.5 rounded border border-slate-200 select-all truncate">
+                    <div className="font-mono text-[10px] font-bold text-indigo-300 bg-[#0B1220] p-1.5 rounded-md border border-[#1E293B] select-all truncate">
                       &lt;meta name=&quot;engelsiz-accessibility&quot;&gt;
                     </div>
-                    <p className="text-[11px] text-slate-600">
+                    <p className="text-[11px] text-slate-400">
                       Sayfa başlığında otomatik enjekte edilir. Arama motorları ve botlar tarafından indekslenir.
                     </p>
                   </div>
 
                   {/* Katman 4 */}
-                  <div className="p-3 border border-slate-200 rounded-sm bg-slate-50 space-y-1.5">
+                  <div className="p-3 border border-[#1E293B] rounded-md bg-[#18243A]/60 space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase text-slate-500">4. Script URL Regex</span>
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded flex items-center gap-0.5">
+                      <span className="text-[10px] font-black uppercase text-slate-400">4. Script URL Regex</span>
+                      <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
                         <Check size={10} /> CDN
                       </span>
                     </div>
-                    <div className="font-mono text-[10px] font-bold text-sky-900 bg-white p-1.5 rounded border border-slate-200 select-all truncate">
+                    <div className="font-mono text-[10px] font-bold text-indigo-300 bg-[#0B1220] p-1.5 rounded-md border border-[#1E293B] select-all truncate">
                       /widget/engelsiz-accessibility.js
                     </div>
-                    <p className="text-[11px] text-slate-600">
-                      Wappalyzer <code className="font-mono text-[10px]">scripts</code> regex kuralı ile dosya yolunu anında eşleştirir.
+                    <p className="text-[11px] text-slate-400">
+                      Wappalyzer <code className="font-mono text-[10px] text-indigo-300">scripts</code> regex kuralı ile dosya yolunu anında eşleştirir.
                     </p>
                   </div>
                 </div>
 
                 {/* Wappalyzer Pull Request Rehberi */}
-                <div className="p-3.5 bg-slate-50 border border-slate-300 rounded-sm space-y-2.5">
+                <div className="p-4 bg-[#18243A]/50 border border-[#1E293B] rounded-md space-y-2.5">
                   <div className="flex items-center justify-between flex-wrap gap-2">
-                    <div className="font-bold text-slate-900 text-xs uppercase flex items-center gap-1.5">
-                      <Terminal size={14} className="text-[#185886]" />
+                    <div className="font-bold text-white text-xs uppercase flex items-center gap-1.5">
+                      <Terminal size={14} className="text-indigo-400" />
                       <span>Wappalyzer Resmi Deposu için 1-Tıkla PR (Pull Request) Adımları:</span>
                     </div>
                     <a
                       href="https://github.com/enthec/webappanalyzer/edit/main/src/technologies/e.json"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs bg-[#185886] text-white px-2.5 py-1 rounded-sm font-bold hover:bg-[#12466b] flex items-center gap-1 transition-colors"
+                      className="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-md font-bold hover:bg-indigo-500 flex items-center gap-1 transition-colors"
                     >
                       <span>Doğrudan GitHub&apos;da e.json Düzenle</span>
                       <ExternalLink size={12} />
                     </a>
                   </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Wappalyzer teknolojileri harf dosyaları halinde saklar. E harfiyle başlayan teknolojiler doğrudan <code className="bg-white px-1.5 py-0.5 rounded border border-slate-300 text-[11px] font-mono font-bold text-sky-800">src/technologies/e.json</code> dosyasında yer alır (Kategori: <strong>68 - Accessibility</strong>).
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Wappalyzer teknolojileri harf dosyaları halinde saklar. E harfiyle başlayan teknolojiler doğrudan <code className="bg-[#0B1220] px-1.5 py-0.5 rounded border border-[#1E293B] text-[11px] font-mono font-bold text-indigo-300">src/technologies/e.json</code> dosyasında yer alır (Kategori: <strong>68 - Accessibility</strong>).
                   </p>
-                  <div className="bg-white p-2.5 rounded border border-slate-200 text-xs space-y-1 text-slate-700">
-                    <div className="font-bold text-[#185886]">Hızlı 3 Adım:</div>
-                    <ol className="list-decimal pl-4 space-y-1">
-                      <li>Yukarıdaki <strong>&quot;Doğrudan GitHub&apos;da e.json Düzenle&quot;</strong> butonuna tıklayın. (GitHub otomatik olarak düzenleme sayfasını açar).</li>
-                      <li>Dosyanın en altındaki kapanış süslü parantezinden (<code className="font-mono text-[11px]">&quot;&#125;&quot;</code>) hemen önce virgül koyup yukarıdaki JSON kodunu yapıştırın.</li>
-                      <li>Sayfanın altındaki <strong>&quot;Propose changes&quot;</strong> butonuna, ardından <strong>&quot;Create pull request&quot;</strong> butonuna tıklayın.</li>
-                    </ol>
-                  </div>
                 </div>
               </div>
             </div>
 
             {/* WCAG 2.1 AAA ve TEKNOFEST 2027 UYUM TABLOSU */}
-            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-              <div className="bg-gradient-to-b from-[#f8f9fa] to-[#eef2f7] border-b border-slate-200 text-[#185886] font-bold text-xs uppercase py-2 px-3 flex items-center gap-1.5">
-                <CheckCircle2 size={13} className="text-emerald-600" />
+            <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E] shadow-sm">
+              <div className="bg-[#18243A] border-b border-[#1E293B] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="text-emerald-400" />
                 <span>Sağlanan WCAG 2.1 AAA Standartları ve Erişilebilirlik Özellikleri</span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold uppercase text-[10px]">
-                      <th className="p-2.5">WCAG Kriteri</th>
-                      <th className="p-2.5">Özellik Adı</th>
-                      <th className="p-2.5">Hedef Kitle</th>
-                      <th className="p-2.5">Teknik İşleyiş</th>
-                      <th className="p-2.5">Uyumluluk</th>
+                    <tr className="bg-[#18243A]/80 border-b border-[#1E293B] text-slate-400 font-bold uppercase text-[10px]">
+                      <th className="p-3">WCAG Kriteri</th>
+                      <th className="p-3">Özellik Adı</th>
+                      <th className="p-3">Hedef Kitle</th>
+                      <th className="p-3">Teknik İşleyiş</th>
+                      <th className="p-3">Uyumluluk</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200 text-slate-700">
-                    <tr className="hover:bg-slate-50/50">
-                      <td className="p-2.5 font-mono font-bold text-sky-800">1.4.3 / 1.4.6</td>
-                      <td className="p-2.5 font-bold">Yüksek Kontrast Modları</td>
-                      <td className="p-2.5">Az Görenler / Yaşlılar</td>
-                      <td className="p-2.5 text-slate-500">Derin siyah/beyaz ve sarı/siyah yüksek kontrast filtreleri</td>
-                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                  <tbody className="divide-y divide-[#1E293B] text-slate-300">
+                    <tr className="hover:bg-[#18243A]/30">
+                      <td className="p-3 font-mono font-bold text-indigo-300">1.4.3 / 1.4.6</td>
+                      <td className="p-3 font-bold text-white">Yüksek Kontrast Modları</td>
+                      <td className="p-3">Az Görenler / Yaşlılar</td>
+                      <td className="p-3 text-slate-400">Derin siyah/beyaz ve sarı/siyah yüksek kontrast filtreleri</td>
+                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
-                    <tr className="hover:bg-slate-50/50">
-                      <td className="p-2.5 font-mono font-bold text-sky-800">1.4.4</td>
-                      <td className="p-2.5 font-bold">Yazı Boyutu Ölçekleme</td>
-                      <td className="p-2.5">Miyop / Hipermetrop</td>
-                      <td className="p-2.5 text-slate-500">Düzeni bozmadan %90 - %140 font ölçekleme</td>
-                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    <tr className="hover:bg-[#18243A]/30">
+                      <td className="p-3 font-mono font-bold text-indigo-300">1.4.4</td>
+                      <td className="p-3 font-bold text-white">Yazı Boyutu Ölçekleme</td>
+                      <td className="p-3">Miyop / Hipermetrop</td>
+                      <td className="p-3 text-slate-400">Düzeni bozmadan %90 - %140 font ölçekleme</td>
+                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
-                    <tr className="hover:bg-slate-50/50">
-                      <td className="p-2.5 font-mono font-bold text-sky-800">Cognitive AAA</td>
-                      <td className="p-2.5 font-bold">OpenDyslexic &amp; Bionic Okuma</td>
-                      <td className="p-2.5">Disleksi / DEHB / Nöroçeşitlilik</td>
-                      <td className="p-2.5 text-slate-500">Özel harf taban ağırlıkları ve kelime başlangıç hece vurguları</td>
-                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    <tr className="hover:bg-[#18243A]/30">
+                      <td className="p-3 font-mono font-bold text-indigo-300">Cognitive AAA</td>
+                      <td className="p-3 font-bold text-white">OpenDyslexic &amp; Bionic Okuma</td>
+                      <td className="p-3">Disleksi / DEHB / Nöroçeşitlilik</td>
+                      <td className="p-3 text-slate-400">Özel harf taban ağırlıkları ve kelime başlangıç hece vurguları</td>
+                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
-                    <tr className="hover:bg-slate-50/50">
-                      <td className="p-2.5 font-mono font-bold text-sky-800">1.4.8</td>
-                      <td className="p-2.5 font-bold">Okuma Cetveli (Focus Guide)</td>
-                      <td className="p-2.5">Konsantrasyon / DEHB</td>
-                      <td className="p-2.5 text-slate-500">Fare hareketini takip eden yatay görsel odaklama barı</td>
-                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    <tr className="hover:bg-[#18243A]/30">
+                      <td className="p-3 font-mono font-bold text-indigo-300">1.4.8</td>
+                      <td className="p-3 font-bold text-white">Okuma Cetveli (Focus Guide)</td>
+                      <td className="p-3">Konsantrasyon / DEHB</td>
+                      <td className="p-3 text-slate-400">Fare hareketini takip eden yatay görsel odaklama barı</td>
+                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
-                    <tr className="hover:bg-slate-50/50">
-                      <td className="p-2.5 font-mono font-bold text-sky-800">1.4.1</td>
-                      <td className="p-2.5 font-bold">Renk Körlüğü Filtreleri</td>
-                      <td className="p-2.5">Protanopi, Döteranopi, Tritanopi</td>
-                      <td className="p-2.5 text-slate-500">feColorMatrix tabanlı gerçek zamanlı SVG renk matris dönüşümü</td>
-                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    <tr className="hover:bg-[#18243A]/30">
+                      <td className="p-3 font-mono font-bold text-indigo-300">1.4.1</td>
+                      <td className="p-3 font-bold text-white">Renk Körlüğü Filtreleri</td>
+                      <td className="p-3">Protanopi, Döteranopi, Tritanopi</td>
+                      <td className="p-3 text-slate-400">feColorMatrix tabanlı gerçek zamanlı SVG renk matris dönüşümü</td>
+                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
-                    <tr className="hover:bg-slate-50/50">
-                      <td className="p-2.5 font-mono font-bold text-sky-800">3.1.2</td>
-                      <td className="p-2.5 font-bold">Sesli Ekran Okuyucu (TTS)</td>
-                      <td className="p-2.5">Görme Engelliler</td>
-                      <td className="p-2.5 text-slate-500">Web Speech Synthesis API ile paragrafları ve seçilen metni Türkçe seslendirme</td>
-                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    <tr className="hover:bg-[#18243A]/30">
+                      <td className="p-3 font-mono font-bold text-indigo-300">3.1.2</td>
+                      <td className="p-3 font-bold text-white">Sesli Ekran Okuyucu (TTS)</td>
+                      <td className="p-3">Görme Engelliler</td>
+                      <td className="p-3 text-slate-400">Web Speech Synthesis API ile paragrafları ve seçilen metni Türkçe seslendirme</td>
+                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
-                    <tr className="hover:bg-slate-50/50">
-                      <td className="p-2.5 font-mono font-bold text-sky-800">2.1.1</td>
-                      <td className="p-2.5 font-bold">Klavye Erişilebilirliği</td>
-                      <td className="p-2.5">Ortopedik / Motor Engeli</td>
-                      <td className="p-2.5 text-slate-500">Alt+A / Alt+E kısayolları, Escape ile kapatma ve odak kapanı (focus trap)</td>
-                      <td className="p-2.5"><span className="bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded text-[10px] font-bold">AAA Uyumlu</span></td>
+                    <tr className="hover:bg-[#18243A]/30">
+                      <td className="p-3 font-mono font-bold text-indigo-300">2.1.1</td>
+                      <td className="p-3 font-bold text-white">Klavye Erişilebilirliği</td>
+                      <td className="p-3">Ortopedik / Motor Engeli</td>
+                      <td className="p-3 text-slate-400">Alt+A / Alt+E kısayolları, Escape ile kapatma ve odak kapanı (focus trap)</td>
+                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
                   </tbody>
                 </table>
@@ -2109,74 +2049,74 @@ const state = window.EngelsizAccessibility.getState();`}
         {/* TAB 3: REST API DOCUMENTATION */}
         {activeTab === 'rest' && (
           <div className="space-y-4">
-            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-bold text-xs uppercase py-2.5 px-3 flex items-center justify-between">
+            <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E]">
+              <div className="bg-[#18243A] text-white border-b border-[#1E293B] font-semibold text-xs uppercase tracking-wider py-3 px-4 flex items-center justify-between">
                 <span>EngelsizForum REST API Başvuru Kılavuzu</span>
-                <span className="text-[11px] font-normal text-white/80">JSON / UTF-8</span>
+                <span className="text-[11px] font-mono text-slate-400">JSON / UTF-8</span>
               </div>
 
-              <div className="divide-y divide-slate-200">
+              <div className="divide-y divide-[#1E293B]">
                 {/* Endpoint 1 */}
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded-sm text-[11px]">GET</span>
-                    <span className="font-mono text-xs font-bold text-slate-800">/api/oauth/userinfo</span>
+                <div className="p-4 sm:p-5 space-y-2.5 hover:bg-[#18243A]/20 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <span className="px-2 py-0.5 bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 font-mono font-semibold rounded-md text-[11px]">GET</span>
+                    <span className="font-mono text-xs font-bold text-white">/api/oauth/userinfo</span>
                   </div>
-                  <p className="text-xs text-slate-600">
+                  <p className="text-xs text-slate-300">
                     Bearer token ile doğrulanan kullanıcının takma ad, e-posta, erişilebilirlik profil tercihleri ve rollerini döner.
                   </p>
-                  <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-sm font-mono text-[11px] text-slate-700">
+                  <div className="bg-[#0B1220] border border-[#1E293B] p-3 rounded-md font-mono text-[11px] text-indigo-300">
                     Authorization: Bearer &lt;ACCESS_TOKEN&gt;
                   </div>
                 </div>
 
                 {/* Endpoint 2 */}
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-blue-100 text-blue-800 font-bold rounded-sm text-[11px]">POST</span>
-                    <span className="font-mono text-xs font-bold text-slate-800">/api/oauth/token</span>
+                <div className="p-4 sm:p-5 space-y-2.5 hover:bg-[#18243A]/20 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <span className="px-2 py-0.5 bg-indigo-950/40 text-indigo-400 border border-indigo-800/40 font-mono font-semibold rounded-md text-[11px]">POST</span>
+                    <span className="font-mono text-xs font-bold text-white">/api/oauth/token</span>
                   </div>
-                  <p className="text-xs text-slate-600">
+                  <p className="text-xs text-slate-300">
                     Yetkilendirme kodu (Authorization Code) ile kalıcı Bearer Access Token üretir.
                   </p>
-                  <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-sm font-mono text-[11px] text-slate-700">
+                  <div className="bg-[#0B1220] border border-[#1E293B] p-3 rounded-md font-mono text-[11px] text-indigo-300 leading-relaxed break-all">
                     Content-Type: application/x-www-form-urlencoded<br />
                     grant_type=authorization_code&amp;client_id=...&amp;client_secret=...&amp;code=...&amp;redirect_uri=...
                   </div>
                 </div>
 
                 {/* Endpoint 3 */}
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded-sm text-[11px]">GET</span>
-                    <span className="font-mono text-xs font-bold text-slate-800">/api/discussions</span>
+                <div className="p-4 sm:p-5 space-y-2.5 hover:bg-[#18243A]/20 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <span className="px-2 py-0.5 bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 font-mono font-semibold rounded-md text-[11px]">GET</span>
+                    <span className="font-mono text-xs font-bold text-white">/api/discussions</span>
                   </div>
-                  <p className="text-xs text-slate-600">
+                  <p className="text-xs text-slate-300">
                     Forumdaki herkese açık güncel konuları, kategorileri ve yanıt sayılarını sayfalanmış JSON formatında listeler.
                   </p>
                 </div>
 
                 {/* Endpoint 4 */}
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-bold rounded-sm text-[11px]">GET</span>
-                    <span className="font-mono text-xs font-bold text-slate-800">/api/webmcp/manifest</span>
+                <div className="p-4 sm:p-5 space-y-2.5 hover:bg-[#18243A]/20 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <span className="px-2 py-0.5 bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 font-mono font-semibold rounded-md text-[11px]">GET</span>
+                    <span className="font-mono text-xs font-bold text-white">/api/webmcp/manifest</span>
                   </div>
-                  <p className="text-xs text-slate-600">
+                  <p className="text-xs text-slate-300">
                     Yapay zeka asistanları (Cursor, Claude, Gemini) için canlı Model Context Protocol (MCP) manifest dosyasını döner.
                   </p>
                 </div>
 
                 {/* Endpoint 5: Balthazard */}
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 bg-blue-100 text-blue-800 font-bold rounded-sm text-[11px]">POST</span>
-                    <span className="font-mono text-xs font-bold text-slate-800">/api/v1/calculate/balthazard</span>
+                <div className="p-4 sm:p-5 space-y-2.5 hover:bg-[#18243A]/20 transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <span className="px-2 py-0.5 bg-indigo-950/40 text-indigo-400 border border-indigo-800/40 font-mono font-semibold rounded-md text-[11px]">POST</span>
+                    <span className="font-mono text-xs font-bold text-white">/api/v1/calculate/balthazard</span>
                   </div>
-                  <p className="text-xs text-slate-600">
+                  <p className="text-xs text-slate-300">
                     Birden çok engel oranını Resmi Gazete Balthazard formülü standardına göre birleştirir ve yasal hak eşiklerini (ÖTV muafiyeti, erken emeklilik, vergi indirimi derecesi) anında döner.
                   </p>
-                  <div className="bg-slate-50 border border-slate-200 p-2.5 rounded-sm font-mono text-[11px] text-slate-700">
+                  <div className="bg-[#0B1220] border border-[#1E293B] p-3 rounded-md font-mono text-[11px] text-indigo-300">
                     Örnek Gövde: {`{ "rates": [40, 20, 10] }`}
                   </div>
                 </div>
@@ -2188,96 +2128,101 @@ const state = window.EngelsizAccessibility.getState();`}
         {/* TAB: INTERACTIVE API TEST CONSOLE */}
         {activeTab === 'console' && (
           <div className="space-y-4">
-            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-bold text-xs uppercase py-2.5 px-3 flex items-center justify-between">
+            <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E]">
+              <div className="bg-[#18243A] text-white border-b border-[#1E293B] font-semibold text-xs uppercase tracking-wider py-3 px-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Play size={13} className="text-emerald-400" />
                   <span>Canlı API Test Konsolu &amp; Geliştirici Sandbox</span>
                 </div>
-                <span className="text-[11px] font-normal text-white/80">Canlı İstek &amp; Yanıt</span>
+                <span className="text-[11px] font-mono text-slate-400">Canlı İstek &amp; Yanıt</span>
               </div>
 
-              <div className="p-4 sm:p-5 space-y-5 text-xs text-slate-700">
-                <p className="leading-relaxed text-slate-600">
+              <div className="p-4 sm:p-5 space-y-5 text-xs text-slate-300">
+                <p className="leading-relaxed text-slate-300">
                   EngelsizForum açık API ve OAuth endpoint&apos;lerini tarayıcı içerisinden canlı test edebilir, parametreleri anlık değiştirebilir ve yanıt sürelerini analiz edebilirsiniz.
                 </p>
 
                 {/* Preset Endpoint Chips */}
                 <div className="space-y-2">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Hızlı Endpoint Seçimi:</span>
+                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Hızlı Endpoint Seçimi:</span>
                   <div className="flex flex-wrap gap-2">
                     <button
+                      type="button"
                       onClick={() => handleSelectEndpoint('balthazard')}
-                      className={`px-3 py-1.5 rounded-xs font-mono text-xs border transition-colors cursor-pointer flex items-center gap-1.5 ${
+                      className={`px-3 py-2 rounded-md font-mono text-xs border transition-colors cursor-pointer flex items-center gap-1.5 min-h-[40px] ${
                         consoleEndpoint === 'balthazard'
-                          ? 'bg-[#185886] text-white border-[#185886] shadow-xs'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                          ? 'bg-indigo-600 text-white border-indigo-500 shadow-xs'
+                          : 'bg-[#18243A] hover:bg-[#1E293B] text-slate-300 border-[#1E293B]'
                       }`}
                     >
-                      <span className="font-bold text-[10px] px-1 py-0.2 rounded-xs bg-blue-800 text-white">POST</span>
+                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-indigo-950 text-indigo-300 border border-indigo-700/50">POST</span>
                       <span>Balthazard Hesapla</span>
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => handleSelectEndpoint('discussions')}
-                      className={`px-3 py-1.5 rounded-xs font-mono text-xs border transition-colors cursor-pointer flex items-center gap-1.5 ${
+                      className={`px-3 py-2 rounded-md font-mono text-xs border transition-colors cursor-pointer flex items-center gap-1.5 min-h-[40px] ${
                         consoleEndpoint === 'discussions'
-                          ? 'bg-[#185886] text-white border-[#185886] shadow-xs'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                          ? 'bg-indigo-600 text-white border-indigo-500 shadow-xs'
+                          : 'bg-[#18243A] hover:bg-[#1E293B] text-slate-300 border-[#1E293B]'
                       }`}
                     >
-                      <span className="font-bold text-[10px] px-1 py-0.2 rounded-xs bg-emerald-700 text-white">GET</span>
+                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-700/50">GET</span>
                       <span>Tartışmalar Beslemesi</span>
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => handleSelectEndpoint('userinfo')}
-                      className={`px-3 py-1.5 rounded-xs font-mono text-xs border transition-colors cursor-pointer flex items-center gap-1.5 ${
+                      className={`px-3 py-2 rounded-md font-mono text-xs border transition-colors cursor-pointer flex items-center gap-1.5 min-h-[40px] ${
                         consoleEndpoint === 'userinfo'
-                          ? 'bg-[#185886] text-white border-[#185886] shadow-xs'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                          ? 'bg-indigo-600 text-white border-indigo-500 shadow-xs'
+                          : 'bg-[#18243A] hover:bg-[#1E293B] text-slate-300 border-[#1E293B]'
                       }`}
                     >
-                      <span className="font-bold text-[10px] px-1 py-0.2 rounded-xs bg-emerald-700 text-white">GET</span>
+                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-700/50">GET</span>
                       <span>OAuth UserInfo</span>
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => handleSelectEndpoint('openid')}
-                      className={`px-3 py-1.5 rounded-xs font-mono text-xs border transition-colors cursor-pointer flex items-center gap-1.5 ${
+                      className={`px-3 py-2 rounded-md font-mono text-xs border transition-colors cursor-pointer flex items-center gap-1.5 min-h-[40px] ${
                         consoleEndpoint === 'openid'
-                          ? 'bg-[#185886] text-white border-[#185886] shadow-xs'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                          ? 'bg-indigo-600 text-white border-indigo-500 shadow-xs'
+                          : 'bg-[#18243A] hover:bg-[#1E293B] text-slate-300 border-[#1E293B]'
                       }`}
                     >
-                      <span className="font-bold text-[10px] px-1 py-0.2 rounded-xs bg-emerald-700 text-white">GET</span>
+                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-700/50">GET</span>
                       <span>OIDC Discovery</span>
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => handleSelectEndpoint('webmcp')}
-                      className={`px-3 py-1.5 rounded-xs font-mono text-xs border transition-colors cursor-pointer flex items-center gap-1.5 ${
+                      className={`px-3 py-2 rounded-md font-mono text-xs border transition-colors cursor-pointer flex items-center gap-1.5 min-h-[40px] ${
                         consoleEndpoint === 'webmcp'
-                          ? 'bg-[#185886] text-white border-[#185886] shadow-xs'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                          ? 'bg-indigo-600 text-white border-indigo-500 shadow-xs'
+                          : 'bg-[#18243A] hover:bg-[#1E293B] text-slate-300 border-[#1E293B]'
                       }`}
                     >
-                      <span className="font-bold text-[10px] px-1 py-0.2 rounded-xs bg-emerald-700 text-white">GET</span>
+                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-700/50">GET</span>
                       <span>WebMCP JSON</span>
                     </button>
                   </div>
                 </div>
 
                 {/* Request Config Box */}
-                <div className="p-4 bg-slate-50 border border-slate-300 rounded-sm space-y-3">
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-2">
+                <div className="p-4 bg-[#18243A]/40 border border-[#1E293B] rounded-md space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
                     {/* Method */}
-                    <div className="md:col-span-2">
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">Metot</label>
+                    <div className="md:col-span-3">
+                      <label className="block text-[11px] font-semibold text-slate-300 mb-1.5">Metot</label>
                       <select
                         value={consoleMethod}
                         onChange={(e) => setConsoleMethod(e.target.value as any)}
-                        className="w-full border border-slate-300 rounded-xs px-2 py-1.5 bg-white text-xs font-bold"
+                        className="w-full border border-[#1E293B] rounded-md px-3 py-2.5 bg-[#0B1220] text-xs font-bold text-white focus:outline-none focus:border-indigo-500"
                       >
                         <option value="GET">GET</option>
                         <option value="POST">POST</option>
@@ -2285,24 +2230,25 @@ const state = window.EngelsizAccessibility.getState();`}
                     </div>
 
                     {/* URL */}
-                    <div className="md:col-span-10">
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">Endpoint URL</label>
-                      <div className="flex items-center gap-2">
+                    <div className="md:col-span-9">
+                      <label className="block text-[11px] font-semibold text-slate-300 mb-1.5">Endpoint URL</label>
+                      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                         <input
                           type="text"
                           value={consoleUrl}
                           onChange={(e) => setConsoleUrl(e.target.value)}
-                          className="flex-1 border border-slate-300 rounded-xs px-3 py-1.5 font-mono text-xs bg-white text-slate-900"
+                          className="flex-1 border border-[#1E293B] rounded-md px-3 py-2.5 font-mono text-xs bg-[#0B1220] text-indigo-200 focus:outline-none focus:border-indigo-500"
                         />
                         <button
+                          type="button"
                           onClick={handleExecuteConsoleRequest}
                           disabled={consoleLoading}
-                          className="px-4 py-1.5 bg-sky-700 hover:bg-sky-600 text-white font-bold text-xs rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 shrink-0"
+                          className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-md flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 shrink-0 min-h-[44px]"
                         >
                           {consoleLoading ? (
-                            <RefreshCw size={13} className="animate-spin" />
+                            <RefreshCw size={14} className="animate-spin" />
                           ) : (
-                            <Send size={13} />
+                            <Send size={14} />
                           )}
                           <span>İsteği Gönder</span>
                         </button>
@@ -2312,7 +2258,7 @@ const state = window.EngelsizAccessibility.getState();`}
 
                   {/* Auth Header (Optional) */}
                   <div>
-                    <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                    <label className="block text-[11px] font-semibold text-slate-300 mb-1.5">
                       Authorization Header (İsteğe Bağlı Bearer Token):
                     </label>
                     <input
@@ -2320,24 +2266,25 @@ const state = window.EngelsizAccessibility.getState();`}
                       placeholder="ef_at_... (Örn: OAuth erişim belirteci)"
                       value={consoleToken}
                       onChange={(e) => setConsoleToken(e.target.value)}
-                      className="w-full border border-slate-300 rounded-xs px-3 py-1.5 font-mono text-xs bg-white text-slate-800 placeholder:text-slate-400"
+                      className="w-full border border-[#1E293B] rounded-md px-3 py-2 font-mono text-xs bg-[#0B1220] text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
                     />
                   </div>
 
                   {/* Request Body (For POST) */}
                   {consoleMethod === 'POST' && (
                     <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-[11px] font-bold text-slate-600">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="text-[11px] font-semibold text-slate-300">
                           JSON İstek Gövdesi (Body):
                         </label>
                         <button
+                          type="button"
                           onClick={() => {
                             try {
                               setConsoleBody(JSON.stringify(JSON.parse(consoleBody), null, 2));
                             } catch {}
                           }}
-                          className="text-[11px] text-sky-700 dark:text-sky-400 hover:underline cursor-pointer font-semibold"
+                          className="text-[11px] text-indigo-400 hover:text-indigo-300 hover:underline cursor-pointer font-semibold"
                         >
                           JSON Biçimlendir
                         </button>
@@ -2346,7 +2293,7 @@ const state = window.EngelsizAccessibility.getState();`}
                         rows={5}
                         value={consoleBody}
                         onChange={(e) => setConsoleBody(e.target.value)}
-                        className="w-full border border-slate-300 rounded-xs p-3 font-mono text-xs bg-[#1e293b] text-emerald-400"
+                        className="w-full border border-[#1E293B] rounded-md p-3 font-mono text-xs bg-[#0B1220] text-emerald-400 focus:outline-none focus:border-indigo-500"
                       />
                     </div>
                   )}
@@ -2354,56 +2301,58 @@ const state = window.EngelsizAccessibility.getState();`}
 
                 {/* Response Section */}
                 {consoleResponse !== null && (
-                  <div className="space-y-2 pt-2 animate-in fade-in duration-200">
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-xs text-slate-700">Sunucu Yanıtı:</span>
+                  <div className="space-y-3 pt-2">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#1E293B] pb-2.5">
+                      <div className="flex items-center gap-2.5">
+                        <span className="font-semibold text-xs text-white">Sunucu Yanıtı:</span>
                         {consoleStatus && (
                           <span
-                            className={`px-2 py-0.5 rounded-xs font-mono text-[11px] font-bold ${
+                            className={`px-2 py-0.5 rounded-md font-mono text-[11px] font-bold ${
                               consoleStatus >= 200 && consoleStatus < 300
-                                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/50'
                                 : consoleStatus >= 400 && consoleStatus < 500
-                                ? 'bg-amber-100 text-amber-800 border border-amber-300'
-                                : 'bg-rose-100 text-rose-800 border border-rose-300'
+                                ? 'bg-amber-950/60 text-amber-300 border border-amber-800/50'
+                                : 'bg-rose-950/60 text-rose-300 border border-rose-800/50'
                             }`}
                           >
                             HTTP {consoleStatus}
                           </span>
                         )}
                         {consoleLatency !== null && (
-                          <span className="inline-flex items-center gap-1 text-[11px] text-slate-500 font-mono">
+                          <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 font-mono tabular-nums">
                             <Clock size={11} />
                             {consoleLatency} ms
                           </span>
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <button
+                          type="button"
                           onClick={() => copyToClipboard(JSON.stringify(consoleResponse, null, 2), 'resp-json')}
-                          className="text-xs text-slate-600 hover:text-[#185886] flex items-center gap-1 font-bold cursor-pointer"
+                          className="text-xs text-slate-400 hover:text-indigo-400 flex items-center gap-1 font-semibold cursor-pointer transition-colors"
                         >
-                          {copiedKey === 'resp-json' ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
+                          {copiedKey === 'resp-json' ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
                           <span>JSON Kopyala</span>
                         </button>
-                        <span className="text-slate-300">•</span>
+                        <span className="text-slate-600">·</span>
                         <button
+                          type="button"
                           onClick={() => {
                             const curlCmd = `curl -X ${consoleMethod} "${window.location.origin}${consoleUrl}" ${
                               consoleToken ? `-H "Authorization: Bearer ${consoleToken}" ` : ''
                             }${consoleMethod === 'POST' ? `-H "Content-Type: application/json" -d '${consoleBody.replace(/\n/g, '')}'` : ''}`;
                             copyToClipboard(curlCmd, 'curl-cmd');
                           }}
-                          className="text-xs text-slate-600 hover:text-[#185886] flex items-center gap-1 font-bold cursor-pointer"
+                          className="text-xs text-slate-400 hover:text-indigo-400 flex items-center gap-1 font-semibold cursor-pointer transition-colors"
                         >
-                          {copiedKey === 'curl-cmd' ? <Check size={12} className="text-emerald-600" /> : <Terminal size={12} />}
+                          {copiedKey === 'curl-cmd' ? <Check size={12} className="text-emerald-400" /> : <Terminal size={12} />}
                           <span>cURL Kopyala</span>
                         </button>
                       </div>
                     </div>
 
-                    <div className="max-h-[380px] overflow-y-auto bg-[#0b1320] text-sky-200 p-4 rounded-sm font-mono text-xs border border-slate-300">
+                    <div className="max-h-[380px] overflow-y-auto bg-[#0B1220] text-indigo-200 p-4 rounded-md font-mono text-xs border border-[#1E293B]">
                       <pre className="leading-relaxed select-all whitespace-pre-wrap">
                         {typeof consoleResponse === 'string'
                           ? consoleResponse
@@ -2420,34 +2369,35 @@ const state = window.EngelsizAccessibility.getState();`}
         {/* TAB 4: WEBMCP INTEGRATION */}
         {activeTab === 'webmcp' && (
           <div className="space-y-4">
-            <div className="xf-block border border-slate-200 rounded-sm overflow-hidden bg-white shadow-xs">
-              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-bold text-xs uppercase py-2.5 px-3 flex items-center justify-between">
+            <div className="border border-[#1E293B] rounded-md overflow-hidden bg-[#111B2E]">
+              <div className="bg-[#18243A] text-white border-b border-[#1E293B] font-semibold text-xs uppercase tracking-wider py-3 px-4 flex items-center justify-between">
                 <span>WebMCP (Model Context Protocol) ile Canlı Bilgi Akışı</span>
-                <span className="text-[11px] font-normal text-white/80">Yapay Zeka Ajanları</span>
+                <span className="text-[11px] font-mono text-slate-400">Yapay Zeka Ajanları</span>
               </div>
 
-              <div className="p-4 sm:p-5 space-y-4 text-xs sm:text-sm text-slate-700">
+              <div className="p-4 sm:p-5 space-y-4 text-xs sm:text-sm text-slate-300">
                 <p className="leading-relaxed">
                   EngelsizForum, Türkiye&apos;de engelli mevzuatı ve Balthazard hesaplama algoritmalarını harici yapay zeka ajanlarına açan ilk forumdur. Claude Desktop, Cursor veya özel Python ajanlarınız doğrudan platformumuzun araçlarını çağırabilir.
                 </p>
 
-                <div className="p-3 bg-slate-50 border border-slate-300 rounded-sm space-y-2">
-                  <div className="font-bold text-sky-700 dark:text-sky-400 uppercase text-xs">Canlı MCP Manifest URL:</div>
-                  <div className="flex items-center justify-between gap-2 bg-white border border-slate-300 p-2 rounded-sm font-mono text-xs">
-                    <span className="select-all">https://engelsizforum.com/webmcp/mcp.json</span>
+                <div className="p-4 bg-[#18243A]/40 border border-[#1E293B] rounded-md space-y-2.5">
+                  <div className="font-semibold text-indigo-400 uppercase text-xs tracking-wider">Canlı MCP Manifest URL:</div>
+                  <div className="flex items-center justify-between gap-2 bg-[#0B1220] border border-[#1E293B] p-3 rounded-md font-mono text-xs text-indigo-200">
+                    <span className="select-all break-all">https://engelsizforum.com/webmcp/mcp.json</span>
                     <button
+                      type="button"
                       onClick={() => copyToClipboard('https://engelsizforum.com/webmcp/mcp.json', 'mcp-url')}
-                      className="text-slate-600 hover:text-sky-700 font-bold text-[11px] flex items-center gap-1 cursor-pointer shrink-0"
+                      className="text-slate-400 hover:text-indigo-400 font-semibold text-xs flex items-center gap-1 cursor-pointer shrink-0 transition-colors"
                     >
-                      {copiedKey === 'mcp-url' ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
+                      {copiedKey === 'mcp-url' ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
                       <span>Kopyala</span>
                     </button>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="font-bold text-slate-900 text-xs uppercase">Claude Desktop / Cursor Entegrasyon Yapılandırması:</h3>
-                  <div className="p-3 bg-[#1e293b] text-slate-100 font-mono text-xs rounded-sm overflow-x-auto">
+                  <h3 className="font-semibold text-white text-xs uppercase tracking-wider">Claude Desktop / Cursor Entegrasyon Yapılandırması:</h3>
+                  <div className="p-4 bg-[#0B1220] text-indigo-200 font-mono text-xs rounded-md border border-[#1E293B] overflow-x-auto">
 {`{
   "mcpServers": {
     "engelsizforum": {
@@ -2468,27 +2418,28 @@ const state = window.EngelsizAccessibility.getState();`}
 
         {/* CREATE APP MODAL */}
         {isCreateModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-lg bg-white border border-slate-300 rounded-sm shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+            <div className="w-full max-w-lg bg-[#111B2E] border border-[#1E293B] rounded-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              <div className="bg-[#18243A] text-white border-b border-[#1E293B] font-semibold text-xs uppercase tracking-wider py-3 px-4 flex items-center justify-between">
                 <span>Yeni OAuth 2.0 İstemcisi Kaydet</span>
                 <button
+                  type="button"
                   onClick={() => setIsCreateModalOpen(false)}
-                  className="text-white/80 hover:text-white font-bold cursor-pointer"
+                  className="text-slate-400 hover:text-white font-bold cursor-pointer transition-colors p-1"
                 >
                   ✕
                 </button>
               </div>
 
-              <form onSubmit={handleCreateApp} className="p-4 space-y-3.5 text-xs">
+              <form onSubmit={handleCreateApp} className="p-4 sm:p-5 space-y-4 text-xs">
                 {formError && (
-                  <div className="p-2.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-sm font-medium">
+                  <div className="p-3 bg-rose-950/40 border border-rose-800/40 text-rose-300 rounded-md font-medium">
                     {formError}
                   </div>
                 )}
 
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-700 uppercase text-[11px]">
+                <div className="space-y-1.5">
+                  <label className="block font-semibold text-slate-300 text-xs">
                     Uygulama Adı *
                   </label>
                   <input
@@ -2497,12 +2448,12 @@ const state = window.EngelsizAccessibility.getState();`}
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
                     placeholder="Örn: Engelsiz Mobil Asistan"
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-sky-600 text-slate-800"
+                    className="w-full px-3 py-2 bg-[#18243A] border border-[#1E293B] rounded-md focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-500 text-xs"
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-700 uppercase text-[11px]">
+                <div className="space-y-1.5">
+                  <label className="block font-semibold text-slate-300 text-xs">
                     Yönlendirme URI&apos;leri (Redirect URIs) *
                   </label>
                   <textarea
@@ -2511,15 +2462,15 @@ const state = window.EngelsizAccessibility.getState();`}
                     value={formRedirectUris}
                     onChange={(e) => setFormRedirectUris(e.target.value)}
                     placeholder="https://uygulamaniz.com/auth/callback (Her satıra bir URI)"
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-sky-600 text-slate-800 font-mono text-[11px]"
+                    className="w-full px-3 py-2 bg-[#18243A] border border-[#1E293B] rounded-md focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-500 font-mono text-xs"
                   />
-                  <p className="text-[10px] text-slate-500">
+                  <p className="text-[11px] text-slate-400">
                     Kullanıcı izin verdikten sonra yönlendirileceği adres. Birden fazla adres için her satıra bir adet yazın.
                   </p>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-700 uppercase text-[11px]">
+                <div className="space-y-1.5">
+                  <label className="block font-semibold text-slate-300 text-xs">
                     Açıklama (İsteğe bağlı)
                   </label>
                   <input
@@ -2527,12 +2478,12 @@ const state = window.EngelsizAccessibility.getState();`}
                     value={formDescription}
                     onChange={(e) => setFormDescription(e.target.value)}
                     placeholder="Uygulamanızın ne yaptığını kısaca özetleyin"
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-sky-600 text-slate-800"
+                    className="w-full px-3 py-2 bg-[#18243A] border border-[#1E293B] rounded-md focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-500 text-xs"
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-700 uppercase text-[11px]">
+                <div className="space-y-1.5">
+                  <label className="block font-semibold text-slate-300 text-xs">
                     Logo URL (İsteğe bağlı)
                   </label>
                   <input
@@ -2540,22 +2491,22 @@ const state = window.EngelsizAccessibility.getState();`}
                     value={formLogoUrl}
                     onChange={(e) => setFormLogoUrl(e.target.value)}
                     placeholder="https://uygulamaniz.com/logo.png"
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-sky-600 text-slate-800"
+                    className="w-full px-3 py-2 bg-[#18243A] border border-[#1E293B] rounded-md focus:outline-none focus:border-indigo-500 text-white placeholder:text-slate-500 text-xs"
                   />
                 </div>
 
-                <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-200">
+                <div className="pt-3 flex items-center justify-end gap-2.5 border-t border-[#1E293B]">
                   <button
                     type="button"
                     onClick={() => setIsCreateModalOpen(false)}
-                    className="px-3.5 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-sm font-bold uppercase hover:bg-slate-50 cursor-pointer"
+                    className="px-4 py-2 bg-[#18243A] border border-[#1E293B] text-slate-300 rounded-md font-semibold hover:bg-[#1E293B] hover:text-white cursor-pointer transition-colors min-h-[40px]"
                   >
                     İptal
                   </button>
                   <button
                     type="submit"
                     disabled={formSubmitting}
-                    className="px-4 py-1.5 bg-[#185886] hover:bg-[#12466b] text-white rounded-sm font-bold uppercase shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md font-semibold transition-colors cursor-pointer disabled:opacity-50 min-h-[40px] shadow-xs"
                   >
                     {formSubmitting ? 'Kaydediliyor...' : 'Uygulamayı Kaydet'}
                   </button>
@@ -2567,27 +2518,28 @@ const state = window.EngelsizAccessibility.getState();`}
 
         {/* EDIT APP MODAL */}
         {isEditModalOpen && editingApp && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-            <div className="w-full max-w-lg bg-white border border-slate-300 rounded-sm shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-              <div className="bg-gradient-to-b from-[#185886] to-[#12466b] text-white font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+            <div className="w-full max-w-lg bg-[#111B2E] border border-[#1E293B] rounded-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              <div className="bg-[#18243A] text-white border-b border-[#1E293B] font-semibold text-xs uppercase tracking-wider py-3 px-4 flex items-center justify-between">
                 <span>Uygulamayı Düzenle: {editingApp.client_name}</span>
                 <button
+                  type="button"
                   onClick={() => setIsEditModalOpen(false)}
-                  className="text-white/80 hover:text-white font-bold cursor-pointer"
+                  className="text-slate-400 hover:text-white font-bold cursor-pointer transition-colors p-1"
                 >
                   ✕
                 </button>
               </div>
 
-              <form onSubmit={handleUpdateApp} className="p-4 space-y-3.5 text-xs">
+              <form onSubmit={handleUpdateApp} className="p-4 sm:p-5 space-y-4 text-xs">
                 {formError && (
-                  <div className="p-2.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-sm font-medium">
+                  <div className="p-3 bg-rose-950/40 border border-rose-800/40 text-rose-300 rounded-md font-medium">
                     {formError}
                   </div>
                 )}
 
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-700 uppercase text-[11px]">
+                <div className="space-y-1.5">
+                  <label className="block font-semibold text-slate-300 text-xs">
                     Uygulama Adı *
                   </label>
                   <input
@@ -2595,12 +2547,12 @@ const state = window.EngelsizAccessibility.getState();`}
                     required
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-[#185886] text-slate-800"
+                    className="w-full px-3 py-2 bg-[#18243A] border border-[#1E293B] rounded-md focus:outline-none focus:border-indigo-500 text-white text-xs"
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-700 uppercase text-[11px]">
+                <div className="space-y-1.5">
+                  <label className="block font-semibold text-slate-300 text-xs">
                     Yönlendirme URI&apos;leri *
                   </label>
                   <textarea
@@ -2608,34 +2560,34 @@ const state = window.EngelsizAccessibility.getState();`}
                     rows={3}
                     value={formRedirectUris}
                     onChange={(e) => setFormRedirectUris(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-[#185886] text-slate-800 font-mono text-[11px]"
+                    className="w-full px-3 py-2 bg-[#18243A] border border-[#1E293B] rounded-md focus:outline-none focus:border-indigo-500 text-white font-mono text-xs"
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-700 uppercase text-[11px]">
+                <div className="space-y-1.5">
+                  <label className="block font-semibold text-slate-300 text-xs">
                     Açıklama
                   </label>
                   <input
                     type="text"
                     value={formDescription}
                     onChange={(e) => setFormDescription(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded-sm focus:outline-none focus:border-[#185886] text-slate-800"
+                    className="w-full px-3 py-2 bg-[#18243A] border border-[#1E293B] rounded-md focus:outline-none focus:border-indigo-500 text-white text-xs"
                   />
                 </div>
 
-                <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-200">
+                <div className="pt-3 flex items-center justify-end gap-2.5 border-t border-[#1E293B]">
                   <button
                     type="button"
                     onClick={() => setIsEditModalOpen(false)}
-                    className="px-3.5 py-1.5 bg-white border border-slate-300 text-slate-700 rounded-sm font-bold uppercase hover:bg-slate-50 cursor-pointer"
+                    className="px-4 py-2 bg-[#18243A] border border-[#1E293B] text-slate-300 rounded-md font-semibold hover:bg-[#1E293B] hover:text-white cursor-pointer transition-colors min-h-[40px]"
                   >
                     İptal
                   </button>
                   <button
                     type="submit"
                     disabled={formSubmitting}
-                    className="px-4 py-1.5 bg-[#185886] hover:bg-[#12466b] text-white rounded-sm font-bold uppercase shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md font-semibold transition-colors cursor-pointer disabled:opacity-50 min-h-[40px] shadow-xs"
                   >
                     {formSubmitting ? 'Güncelleniyor...' : 'Değişiklikleri Kaydet'}
                   </button>
@@ -2647,41 +2599,43 @@ const state = window.EngelsizAccessibility.getState();`}
 
         {/* SECRET REVEAL MODAL (SADECE BİR KEZ GÖSTERİLİR) */}
         {secretModalData && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-            <div className="w-full max-w-lg bg-white border-2 border-amber-500 rounded-sm shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-              <div className="bg-gradient-to-b from-amber-600 to-amber-700 text-white font-black uppercase text-xs py-2.5 px-4 flex items-center gap-2">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs">
+            <div className="w-full max-w-lg bg-[#111B2E] border border-amber-500/50 rounded-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+              <div className="bg-amber-600 text-white font-bold uppercase text-xs py-3 px-4 flex items-center gap-2">
                 <AlertTriangle size={16} />
-                <span>GİZLİ ANAHTARINIZI (CLIENT SECRET) ŞİMDİ KOPYALAYIN!</span>
+                <span>GİZLİ ANAHTARINIZI (CLIENT SECRET) ŞİMDİ KOPYALAYIN</span>
               </div>
 
               <div className="p-5 space-y-4 text-xs">
-                <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-sm font-medium leading-relaxed">
+                <div className="p-3.5 bg-amber-950/40 border border-amber-800/40 text-amber-300 rounded-md leading-relaxed">
                   Güvenliğiniz gereği bu gizli anahtar veri tabanımızda tek yönlü şifrelenmiştir (hash). <strong>Bu pencereyi kapattıktan sonra anahtarı bir daha ASLA görüntüleyemezsiniz!</strong> Lütfen hemen güvenli bir yere kaydedin.
                 </div>
 
-                <div className="space-y-1">
-                  <label className="block font-bold text-slate-700 uppercase text-[10px]">Client ID:</label>
-                  <div className="flex items-center gap-2 bg-slate-50 border border-slate-300 p-2 rounded-sm font-mono text-[11px] text-slate-800">
-                    <span className="flex-1 select-all">{secretModalData.clientId}</span>
+                <div className="space-y-1.5">
+                  <label className="block font-semibold text-slate-300 text-xs">Client ID:</label>
+                  <div className="flex items-center gap-2 bg-[#0B1220] border border-[#1E293B] p-2.5 rounded-md font-mono text-xs text-white">
+                    <span className="flex-1 select-all break-all">{secretModalData.clientId}</span>
                     <button
+                      type="button"
                       onClick={() => copyToClipboard(secretModalData.clientId, 'modal-cid')}
-                      className="px-2 py-1 bg-white border border-slate-300 hover:bg-slate-100 rounded-sm font-bold flex items-center gap-1 cursor-pointer"
+                      className="px-2.5 py-1.5 bg-[#18243A] border border-[#1E293B] hover:bg-[#1E293B] text-slate-300 hover:text-white rounded-md font-semibold flex items-center gap-1 cursor-pointer transition-colors shrink-0"
                     >
-                      {copiedKey === 'modal-cid' ? <Check size={11} className="text-emerald-600" /> : <Copy size={11} />}
+                      {copiedKey === 'modal-cid' ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
                       <span>Kopyala</span>
                     </button>
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="block font-bold text-rose-700 uppercase text-[10px]">Client Secret (Gizli Anahtar):</label>
-                  <div className="flex items-center gap-2 bg-rose-50 border border-rose-300 p-2 rounded-sm font-mono text-[11px] text-rose-900">
-                    <span className="flex-1 select-all font-bold">{secretModalData.clientSecret}</span>
+                <div className="space-y-1.5">
+                  <label className="block font-semibold text-rose-400 text-xs">Client Secret (Gizli Anahtar):</label>
+                  <div className="flex items-center gap-2 bg-[#0B1220] border border-rose-900/50 p-2.5 rounded-md font-mono text-xs text-rose-300">
+                    <span className="flex-1 select-all font-bold break-all">{secretModalData.clientSecret}</span>
                     <button
+                      type="button"
                       onClick={() => copyToClipboard(secretModalData.clientSecret, 'modal-sec')}
-                      className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-sm font-bold flex items-center gap-1 cursor-pointer shadow-xs"
+                      className="px-3 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-md font-semibold flex items-center gap-1 cursor-pointer shadow-xs transition-colors shrink-0"
                     >
-                      {copiedKey === 'modal-sec' ? <Check size={11} /> : <Copy size={11} />}
+                      {copiedKey === 'modal-sec' ? <Check size={12} /> : <Copy size={12} />}
                       <span>Kopyala</span>
                     </button>
                   </div>
@@ -2689,8 +2643,9 @@ const state = window.EngelsizAccessibility.getState();`}
 
                 <div className="pt-2">
                   <button
+                    type="button"
                     onClick={() => setSecretModalData(null)}
-                    className="w-full py-2 bg-[#185886] hover:bg-[#12466b] text-white rounded-sm font-black uppercase tracking-wider text-xs shadow-xs transition-colors cursor-pointer"
+                    className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md font-semibold tracking-wide text-xs shadow-xs transition-colors cursor-pointer min-h-[44px]"
                   >
                     Anahtarı Güvenle Kaydettim, Pencereyi Kapat
                   </button>

@@ -30,7 +30,8 @@ import {
   ExternalLink,
   Home,
   MessageSquare,
-  ShieldCheck
+  ShieldCheck,
+  Check
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -97,8 +98,6 @@ export default function ProfileManagementPage() {
     setFormSuccess(null);
     setFormError(null);
   };
-
-  // If not signed in and loading finishes, handled gracefully below without bounce loop
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,8 +169,8 @@ export default function ProfileManagementPage() {
   if (authLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-12 min-h-[400px]">
-        <Loader2 className="animate-spin text-sky-600 size-10 mb-3" aria-hidden="true" />
-        <p className="text-xs text-slate-500 font-medium">Profil bilgileri yükleniyor...</p>
+        <Loader2 className="animate-spin text-indigo-500 size-10 mb-3" aria-hidden="true" />
+        <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">Profil bilgileri yükleniyor...</p>
       </div>
     );
   }
@@ -179,16 +178,16 @@ export default function ProfileManagementPage() {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center max-w-md mx-auto min-h-[400px]">
-        <div className="w-16 h-16 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border-2 border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 flex items-center justify-center mb-4 mx-auto shadow-xs">
-          <User size={32} />
+        <div className="w-20 h-20 rounded-3xl bg-[#111B2E] border border-[#1E293B] text-indigo-400 flex items-center justify-center mb-6 mx-auto shadow-sm">
+          <User size={40} />
         </div>
-        <h1 className="text-xl font-black text-slate-950 dark:text-white mb-2">Profil ve Tercih Yönetimi</h1>
-        <p className="text-xs text-slate-600 dark:text-slate-400 mb-6 leading-relaxed font-medium">
+        <h1 className="text-2xl font-bold text-white mb-3">Profil ve Tercih Yönetimi</h1>
+        <p className="text-sm text-slate-400 mb-8 leading-relaxed">
           Profil bilgilerinizi, erişilebilirlik ayarlarınızı ve bildirim tercihlerinizi düzenleyebilmek için lütfen oturum açın.
         </p>
         <Link
           href="/login?redirect=/profile"
-          className="px-6 py-2.5 rounded-xl bg-sky-700 hover:bg-sky-600 text-white font-bold text-xs transition-colors shadow-md"
+          className="px-8 py-3 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition-all shadow-md min-h-[44px] flex items-center justify-center"
         >
           Giriş Yap
         </Link>
@@ -197,60 +196,60 @@ export default function ProfileManagementPage() {
   }
 
   return (
-    <div className="flex flex-col gap-5 max-w-7xl mx-auto w-full">
+    <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full text-slate-100">
       {/* Breadcrumbs */}
-      <div className="bg-white dark:bg-slate-900 px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-600 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-800 rounded-xl shadow-xs">
-        <Link href="/" className="hover:text-sky-600 flex items-center gap-1 font-bold">
+      <nav className="bg-[#111B2E] px-5 py-3 flex items-center gap-2.5 text-xs text-slate-400 border border-[#1E293B] rounded-md shadow-xs" aria-label="Breadcrumb">
+        <Link href="/" className="hover:text-indigo-400 flex items-center gap-1.5 transition-colors font-medium">
           <Home size={14} />
           <span>Ana Sayfa</span>
         </Link>
-        <span className="opacity-40">/</span>
-        <span className="hover:text-sky-600 font-semibold">Hesabım</span>
-        <span className="opacity-40">/</span>
-        <span className="font-extrabold text-slate-950 dark:text-white">Profil &amp; Tercih Ayarları</span>
-      </div>
+        <span className="text-slate-600">/</span>
+        <span className="text-slate-300 font-semibold uppercase tracking-wider text-[10px]">Profil & Ayarlar</span>
+      </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Main Content Form */}
-        <div className="lg:col-span-8 space-y-6">
+        <div className="lg:col-span-8 space-y-8">
           
           {/* Header summary banner */}
-          <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-7 shadow-xs">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <UserAvatar
-                  src={avatarUrl || profile?.avatar_url}
-                  username={username || profile?.username}
-                  name={fullName || profile?.full_name}
-                  size="xl"
-                  className="ring-4 ring-slate-100 dark:ring-slate-800 rounded-2xl shadow-sm"
-                />
+          <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 shadow-xs">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+              <div className="flex items-center gap-5">
+                <div className="relative group">
+                  <UserAvatar
+                    src={avatarUrl || profile?.avatar_url}
+                    username={username || profile?.username}
+                    name={fullName || profile?.full_name}
+                    size="xl"
+                    className="ring-2 ring-indigo-500/20 rounded-md shadow-sm transition-all group-hover:ring-indigo-500/40"
+                  />
+                </div>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h1 className="text-base sm:text-lg font-black text-slate-950 dark:text-white tracking-tight truncate">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <h1 className="text-xl font-bold text-white tracking-tight truncate">
                       {fullName || profile?.full_name || username || 'Kullanıcı Profili'}
                     </h1>
                     <UserRoleBadge role={profile?.role} size="xs" />
                   </div>
-                  <p className="text-xs text-slate-500 font-mono mt-0.5">@{username || profile?.username}</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5 truncate max-w-xs sm:max-w-md">{user?.email}</p>
+                  <p className="text-xs text-indigo-400 font-mono mt-1 font-semibold">@{username || profile?.username}</p>
+                  <p className="text-[11px] text-slate-500 mt-1 truncate max-w-xs sm:max-w-md">{user?.email}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 flex-wrap">
+              <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
                 {user?.id && (
-                  <Link href={`/profile/${user.id}`}>
-                    <Button variant="outline" size="sm" className="gap-1.5 font-bold">
+                  <Link href={`/profile/${user.id}`} className="flex-1 sm:flex-none">
+                    <Button variant="outline" size="sm" className="w-full gap-2 font-bold text-[11px] uppercase tracking-wider border-[#1E293B] hover:bg-[#18243A]">
                       <ExternalLink size={14} />
                       <span>Herkese Açık Profil</span>
                     </Button>
                   </Link>
                 )}
-                <Link href="/messages">
-                  <Button variant="primary" size="sm" className="gap-1.5 font-bold">
+                <Link href="/messages" className="flex-1 sm:flex-none">
+                  <Button variant="primary" size="sm" className="w-full gap-2 font-bold text-[11px] uppercase tracking-wider bg-indigo-600 hover:bg-indigo-500">
                     <MessageSquare size={14} />
-                    <span>Özel Mesajlar (DM)</span>
+                    <span>Özel Mesajlar</span>
                   </Button>
                 </Link>
               </div>
@@ -262,9 +261,9 @@ export default function ProfileManagementPage() {
             <div 
               id={alertId}
               role="alert"
-              className="flex items-start gap-2.5 p-4 rounded-xl bg-destructive/10 text-destructive border-2 border-destructive/20 font-bold text-xs leading-relaxed"
+              className="flex items-start gap-3 p-5 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold text-xs leading-relaxed animate-in fade-in slide-in-from-top-1"
             >
-              <AlertCircle size={16} className="shrink-0 mt-0.5" />
+              <AlertCircle size={18} className="shrink-0" />
               <span>{formError}</span>
             </div>
           )}
@@ -272,26 +271,26 @@ export default function ProfileManagementPage() {
           {formSuccess && (
             <div 
               role="status"
-              className="flex items-start gap-2.5 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-2 border-emerald-300 dark:border-emerald-800 font-bold text-xs leading-relaxed"
+              className="flex items-start gap-3 p-5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-xs leading-relaxed animate-in fade-in slide-in-from-top-1"
             >
-              <CheckCircle2 size={16} className="shrink-0 mt-0.5" />
+              <CheckCircle2 size={18} className="shrink-0" />
               <span>{formSuccess}</span>
             </div>
           )}
 
           {/* Profile Settings Form */}
-          <form onSubmit={handleSave} className="space-y-6" noValidate>
+          <form onSubmit={handleSave} className="space-y-8" noValidate>
             
             {/* Card 1: Temel Bilgiler */}
-            <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-sky-700 dark:text-sky-400 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 shadow-xs space-y-6">
+              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 border-b border-[#1E293B] pb-4">
                 <User size={16} />
                 <span>Temel Profil Bilgileri</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label htmlFor={usernameId} className="text-xs font-bold text-slate-800 dark:text-slate-200">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label htmlFor={usernameId} className="text-xs font-bold text-slate-300">
                     Kullanıcı Adı <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -300,14 +299,14 @@ export default function ProfileManagementPage() {
                     required
                     value={username}
                     onChange={(e) => handleFieldChange(setUsername, e.target.value)}
-                    className="w-full h-10 px-3.5 text-xs font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-600 transition-colors"
+                    className="w-full h-11 px-4 text-xs font-medium rounded-md border border-[#1E293B] bg-[#0B1220] text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all"
                     placeholder="ornek_kullanici"
                     maxLength={30}
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label htmlFor={fullNameId} className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                <div className="space-y-2">
+                  <label htmlFor={fullNameId} className="text-xs font-bold text-slate-300">
                     Ad Soyad
                   </label>
                   <input
@@ -315,14 +314,14 @@ export default function ProfileManagementPage() {
                     type="text"
                     value={fullName}
                     onChange={(e) => handleFieldChange(setFullName, e.target.value)}
-                    className="w-full h-10 px-3.5 text-xs font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-600 transition-colors"
+                    className="w-full h-11 px-4 text-xs font-medium rounded-md border border-[#1E293B] bg-[#0B1220] text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all"
                     placeholder="Adınız Soyadınız"
                     maxLength={70}
                   />
                 </div>
 
-                <div className="sm:col-span-2 space-y-1.5">
-                  <label htmlFor={avatarId} className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                <div className="sm:col-span-2 space-y-2">
+                  <label htmlFor={avatarId} className="text-xs font-bold text-slate-300">
                     Profil Resmi / Avatar URL
                   </label>
                   <input
@@ -330,24 +329,24 @@ export default function ProfileManagementPage() {
                     type="url"
                     value={avatarUrl}
                     onChange={(e) => handleFieldChange(setAvatarUrl, e.target.value)}
-                    className="w-full h-10 px-3.5 text-xs font-semibold rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-600 transition-colors"
+                    className="w-full h-11 px-4 text-xs font-medium rounded-md border border-[#1E293B] bg-[#0B1220] text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all"
                     placeholder="https://... (boş bırakırsanız otomatik oluşturulur)"
                   />
                 </div>
 
-                <div className="sm:col-span-2 space-y-1.5">
+                <div className="sm:col-span-2 space-y-2">
                   <div className="flex justify-between items-center">
-                    <label htmlFor={bioId} className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                    <label htmlFor={bioId} className="text-xs font-bold text-slate-300">
                       Biyografi &bull; Kendinizden Bahsedin
                     </label>
-                    <span className="text-[10px] text-slate-400 font-mono">{bio.length}/300</span>
+                    <span className="text-[10px] text-slate-500 font-mono">{bio.length}/300</span>
                   </div>
                   <textarea
                     id={bioId}
-                    rows={3}
+                    rows={4}
                     value={bio}
                     onChange={(e) => handleFieldChange(setBio, e.target.value)}
-                    className="w-full p-3 text-xs font-medium rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-950 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-sky-600 transition-colors resize-none"
+                    className="w-full p-4 text-xs font-medium rounded-md border border-[#1E293B] bg-[#0B1220] text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all resize-none leading-relaxed"
                     placeholder="Deneyimleriniz, ilgi duyduğunuz mevzuatlar veya engelsiz yaşam tecrübeleriniz..."
                     maxLength={300}
                   />
@@ -356,20 +355,20 @@ export default function ProfileManagementPage() {
             </div>
 
             {/* Card 2: Erişilebilirlik Tercihleri */}
-            <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-sky-700 dark:text-sky-400 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 shadow-xs space-y-6">
+              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 border-b border-[#1E293B] pb-4">
                 <Accessibility size={16} />
-                <span>Kişisel Erişilebilirlik Ayarları</span>
+                <span>Erişilebilirlik Ayarları</span>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {/* Font Size */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
-                  <div>
-                    <p className="text-xs font-bold text-slate-900 dark:text-white">Yazı Büyüklüğü (Font Size)</p>
-                    <p className="text-[11px] text-slate-500">Platform genelindeki varsayılan metin boyutu</p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-md bg-[#18243A]/50 border border-[#1E293B]">
+                  <div className="space-y-1">
+                    <p className="text-xs font-bold text-white uppercase tracking-wider">Yazı Büyüklüğü</p>
+                    <p className="text-[11px] text-slate-400">Platform genelindeki varsayılan metin boyutu</p>
                   </div>
-                  <div className="grid grid-cols-4 gap-1.5 sm:w-64">
+                  <div className="grid grid-cols-4 gap-2 w-full md:w-72">
                     {(['sm', 'md', 'lg', 'xl'] as const).map((size) => (
                       <button
                         key={size}
@@ -379,10 +378,10 @@ export default function ProfileManagementPage() {
                           setHasUnsavedChanges(true);
                         }}
                         className={cn(
-                          "py-1.5 text-xs font-bold uppercase rounded-lg border-2 transition-colors cursor-pointer",
+                          "h-10 text-[10px] font-bold uppercase rounded-md border transition-all cursor-pointer flex items-center justify-center",
                           fontSize === size 
-                            ? "bg-sky-700 text-white border-sky-700 font-black" 
-                            : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-100"
+                            ? "bg-indigo-600 text-white border-indigo-600 shadow-sm" 
+                            : "bg-[#0B1220] text-slate-400 border-[#1E293B] hover:border-slate-500"
                         )}
                         aria-pressed={fontSize === size}
                       >
@@ -393,7 +392,7 @@ export default function ProfileManagementPage() {
                 </div>
 
                 {/* Toggles */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <PreferenceToggle
                     icon={<Contrast size={14} />}
                     title="Yüksek Kontrast"
@@ -439,24 +438,24 @@ export default function ProfileManagementPage() {
             </div>
 
             {/* Card 3: Bildirim Tercihleri */}
-            <div className="bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-sky-700 dark:text-sky-400 border-b border-slate-200 dark:border-slate-800 pb-3">
+            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 shadow-xs space-y-6">
+              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 border-b border-[#1E293B] pb-4">
                 <Bell size={16} />
                 <span>Bildirim Tercihleri</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <PreferenceToggle
                   icon={<Bell size={14} />}
                   title="E-posta Bildirimleri"
-                  desc="Mesaj ve konu yanıtlarında e-posta al"
+                  desc="Yanıt ve mentionlarda e-posta al"
                   active={emailNotifications}
                   onToggle={() => handleFieldChange(setEmailNotifications, !emailNotifications)}
                 />
                 <PreferenceToggle
                   icon={<Eye size={14} />}
-                  title="Tarayıcı Bildirimleri"
-                  desc="Anlık web bildirimleri al"
+                  title="Anlık Bildirimler"
+                  desc="Web üzerinden anlık bildirim al"
                   active={browserNotifications}
                   onToggle={() => handleFieldChange(setBrowserNotifications, !browserNotifications)}
                 />
@@ -464,7 +463,7 @@ export default function ProfileManagementPage() {
             </div>
 
             {/* Action Bar */}
-            <div className="flex items-center justify-end gap-3 pt-2">
+            <div className="flex items-center justify-end gap-4 pt-4">
               <button
                 type="button"
                 onClick={() => {
@@ -479,9 +478,9 @@ export default function ProfileManagementPage() {
                   }
                 }}
                 disabled={!hasUnsavedChanges || isSubmitting}
-                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all disabled:opacity-40 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md border border-[#1E293B] bg-[#18243A] hover:bg-[#1E293B] text-slate-300 hover:text-white text-xs font-bold transition-all disabled:opacity-40 cursor-pointer min-h-[44px]"
               >
-                <RotateCcw size={14} /> 
+                <RotateCcw size={16} /> 
                 <span>Vazgeç</span>
               </button>
 
@@ -490,9 +489,9 @@ export default function ProfileManagementPage() {
                 disabled={isSubmitting || !hasUnsavedChanges}
                 variant="primary"
                 size="default"
-                className="gap-2 font-bold"
+                className="gap-2 font-bold px-8 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md min-h-[44px]"
               >
-                {isSubmitting ? <Loader2 className="animate-spin" size={15} /> : <Save size={15} />}
+                {isSubmitting ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
                 <span>{isSubmitting ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}</span>
               </Button>
             </div>
@@ -528,25 +527,28 @@ function PreferenceToggle({
       type="button"
       onClick={onToggle}
       className={cn(
-        "flex items-center justify-between p-3 rounded-xl border-2 transition-all text-left w-full outline-none cursor-pointer",
+        "flex items-center justify-between p-4 rounded-md border transition-all text-left w-full outline-none cursor-pointer group",
         active 
-          ? "bg-sky-50 dark:bg-sky-950/60 border-sky-400 dark:border-sky-800 text-sky-900 dark:text-sky-200" 
-          : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100"
+          ? "bg-indigo-950/20 border-indigo-500/40 text-white" 
+          : "bg-[#0B1220] border-[#1E293B] text-slate-400 hover:border-slate-700"
       )}
       aria-pressed={active}
     >
-      <div className="flex items-center gap-2.5 pr-2">
-        <div className={cn("p-2 rounded-lg shrink-0", active ? "bg-sky-700 text-white" : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400")}>
+      <div className="flex items-center gap-3.5 pr-2">
+        <div className={cn(
+          "p-2.5 rounded-md shrink-0 transition-colors", 
+          active ? "bg-indigo-600 text-white" : "bg-[#18243A] text-slate-500 group-hover:text-slate-300"
+        )}>
           {icon}
         </div>
         <div>
-          <p className="text-xs font-bold text-slate-900 dark:text-white">{title}</p>
-          <p className="text-[11px] text-slate-500 leading-tight">{desc}</p>
+          <p className={cn("text-[11px] font-bold uppercase tracking-wider", active ? "text-white" : "text-slate-300")}>{title}</p>
+          <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{desc}</p>
         </div>
       </div>
       <div className={cn(
         "h-4 w-7 rounded-full border relative transition-colors shrink-0",
-        active ? "bg-sky-600 border-sky-600" : "bg-slate-300 dark:bg-slate-700 border-slate-400 dark:border-slate-600"
+        active ? "bg-indigo-600 border-indigo-600" : "bg-slate-800 border-slate-700"
       )}>
         <div className={cn(
           "absolute top-0.5 left-0.5 h-2.5 w-2.5 rounded-full bg-white transition-transform",

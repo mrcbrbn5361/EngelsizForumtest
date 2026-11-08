@@ -6,6 +6,7 @@ export type Profile = {
   role: 'admin' | 'moderator' | 'user';
   level: number;
   xp: number;
+  reputation_points: number;
   bio: string | null;
   is_verified: boolean;
   accessibility_prefs: any | null;

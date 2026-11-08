@@ -243,7 +243,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             id: "sub-web-a11y",
             name: "Web Erişilebilirliği (WCAG) & Kodlama",
             slug: "web-a11y-yazilim",
-            desc: "Geliştiriciler için semantik HTML, ARIA desenleri ve WCAG 2.1 AAA standartları.",
+            desc: "Geliştiriciler için semantik HTML, ARIA desenleri ve WCAG 2.2 AAA standartları.",
             icon: "Code",
             topics: 0,
             replies: 0,
@@ -291,6 +291,37 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
       }
     ];
 
+    // Map DB categories that didn't fit into subforums above
+    const matchedSlugs = new Set(sections.flatMap(s => s.subforums.map(sub => sub.slug)));
+    const extraSubforums: any[] = [];
+
+    if (initialCategories && initialCategories.length > 0) {
+      initialCategories.forEach(cat => {
+        if (!matchedSlugs.has(cat.slug)) {
+          extraSubforums.push({
+            id: cat.id,
+            name: cat.name,
+            slug: cat.slug,
+            desc: cat.description || "Genel kategori tartışmaları.",
+            icon: cat.icon || "FolderTree",
+            topics: 0,
+            replies: 0,
+            lastPost: { title: "Henüz konu bulunmuyor", author: "Topluluk", date: "" }
+          });
+        }
+      });
+    }
+
+    if (extraSubforums.length > 0) {
+      sections.push({
+        id: "sec-other",
+        name: "Diğer Forum Kategorileri",
+        description: "Platformdaki diğer tartışma alanları ve güncel konular.",
+        icon: "FolderTree",
+        subforums: extraSubforums
+      });
+    }
+
     // Compute real Supabase topics if present
     if (initialTopics && initialTopics.length > 0) {
       sections.forEach(sec => {
@@ -299,7 +330,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             t.category?.slug === sub.slug || 
             t.category_id === sub.id ||
             t.title.toLowerCase().includes(sub.slug.replace(/-/g, ' ')) ||
-            sub.name.toLowerCase().includes(t.category?.name?.toLowerCase() || '')
+            (sub.name && t.category?.name?.toLowerCase().includes(sub.name.toLowerCase()))
           );
           if (matched.length > 0) {
             const latest = matched[0];

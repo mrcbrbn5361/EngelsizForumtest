@@ -129,7 +129,13 @@ html.achromatopsia {
   filter: grayscale(100%);
 }
 
-/* Professional Discussion Surfaces & Acrylic Effects */
+/* WCAG 2.2 Focus Appearance (Enhanced Visibility) */
+:focus-visible {
+  outline: 3px solid #818cf8 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.2) !important;
+}
+
 .fluent-acrylic {
   background: rgba(17, 27, 46, 0.8);
   backdrop-filter: blur(20px) saturate(160%);

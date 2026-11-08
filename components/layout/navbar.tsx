@@ -110,11 +110,11 @@ export function Navbar() {
         id="prototype-announcement-bar"
         className="bg-[#0b0f19] border-b border-white/[0.08] px-2.5 sm:px-4 py-1.5 text-center text-xs font-medium text-slate-300 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2"
       >
-        <span className="inline-flex items-center justify-center bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold shrink-0">
+        <span className="inline-flex items-center justify-center bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-semibold shrink-0">
           Rehber &amp; Topluluk
         </span>
         <span className="text-slate-300 text-[11px] sm:text-xs leading-snug">
-          EngelsizForum DEMO SÜRÜMÜDÜR. Canlı veriler ve tüm modüller aktiftir.
+          EngelsizForum • Türkiye&apos;nin İlk Erişilebilir Topluluk ve Hak Arama Platformu
         </span>
       </div>
 
@@ -253,7 +253,7 @@ export function Navbar() {
             <Link
               href="/login"
               id="navbar-login-button"
-              className="inline-flex items-center justify-center whitespace-nowrap shrink-0 h-8.5 sm:h-9 px-3 sm:px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs sm:text-sm font-bold shadow-xs transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-sky-500"
+              className="inline-flex items-center justify-center whitespace-nowrap shrink-0 h-8.5 sm:h-9 px-3 sm:px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-bold shadow-xs transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-indigo-500"
               aria-label="Giriş Yap veya Kayıt Ol"
             >
               <LogIn size={14} aria-hidden="true" className="mr-1.5 shrink-0" />
@@ -424,7 +424,7 @@ export function Navbar() {
                         <Link
                           href="/login"
                           onClick={() => setIsOpen(false)}
-                          className="flex items-center justify-center gap-2 rounded-xl bg-sky-500 hover:bg-sky-400 px-4 py-3 text-sm font-bold text-slate-950 shadow-xs transition-colors min-h-[44px]"
+                          className="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-4 py-3 text-sm font-bold text-white shadow-xs transition-colors min-h-[44px]"
                         >
                           <LogIn size={16} /> Giriş Yap / Kayıt Ol
                         </Link>

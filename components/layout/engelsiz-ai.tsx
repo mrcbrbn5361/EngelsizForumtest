@@ -229,7 +229,7 @@ export function EngelsizAI() {
             setIsOpen(!isOpen);
             stopAudio();
           }}
-          className="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl shadow-xl pointer-events-auto flex items-center justify-center bg-sky-700 hover:bg-sky-600 text-white transition-transform hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-sky-500 outline-none relative group border-2 border-white/20"
+          className="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl shadow-xl pointer-events-auto flex items-center justify-center bg-indigo-600 hover:bg-indigo-500 text-white transition-transform hover:scale-105 active:scale-95 focus-visible:ring-2 focus-visible:ring-indigo-500 outline-none relative group border-2 border-white/20"
           aria-label="EngelsizAI Yapay Zeka Asistanı"
           aria-expanded={isOpen}
         >
@@ -254,7 +254,7 @@ export function EngelsizAI() {
             aria-label="EngelsizAI Yapay Zeka Asistanı Sohbet Penceresi"
           >
             {/* Header */}
-            <div className="bg-sky-800 dark:bg-slate-950 text-white py-3.5 px-4 flex items-center justify-between border-b border-sky-700 dark:border-slate-800">
+            <div className="bg-[#111B2E] text-white py-3.5 px-4 flex items-center justify-between border-b border-[#1E293B]">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center">
                   <Sparkles size={16} className="text-amber-300 animate-pulse" />
@@ -289,7 +289,7 @@ export function EngelsizAI() {
                   <div 
                     className={`max-w-[85%] rounded-xl p-3 text-xs sm:text-sm shadow-xs border relative group ${
                       msg.role === 'user' 
-                        ? 'bg-sky-700 dark:bg-sky-600 text-white border-sky-800 dark:border-sky-500' 
+                        ? 'bg-indigo-600 text-white border-indigo-500' 
                         : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border-slate-200 dark:border-slate-700'
                     }`}
                   >
@@ -302,7 +302,7 @@ export function EngelsizAI() {
                         className={`p-1 rounded transition-colors ${
                           msg.role === 'user'
                             ? 'text-white/80 hover:text-white hover:bg-white/10'
-                            : 'text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                            : 'text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                         }`}
                         title={currentlyPlayingId === msg.id ? 'Seslendirmeyi durdur' : 'Sesli oku (Yeterly AI)'}
                         aria-label={currentlyPlayingId === msg.id ? 'Seslendirmeyi durdur' : 'Mesajı seslendir'}
@@ -321,7 +321,7 @@ export function EngelsizAI() {
               {loading && (
                 <div className="flex justify-start">
                   <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-slate-600 dark:text-slate-300 text-xs flex items-center gap-2 shadow-xs">
-                    <Loader2 size={14} className="animate-spin text-sky-600 dark:text-sky-400" />
+                    <Loader2 size={14} className="animate-spin text-indigo-600 dark:text-indigo-400" />
                     <span>EngelsizAI düşünüyor...</span>
                   </div>
                 </div>
@@ -340,7 +340,7 @@ export function EngelsizAI() {
                     <button
                       key={s}
                       onClick={() => handleSendMessage(s)}
-                      className="text-[10px] font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-sky-500 hover:text-sky-700 dark:hover:text-sky-300 rounded-lg px-2 py-1 text-left transition-all"
+                      className="text-[10px] font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 rounded-lg px-2 py-1 text-left transition-all"
                     >
                       {s}
                     </button>
@@ -364,7 +364,7 @@ export function EngelsizAI() {
                   className={`p-2.5 rounded-xl border transition-all shrink-0 ${
                     isListening 
                       ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse shadow-xs' 
-                      : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-sky-600 hover:border-sky-500'
+                      : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-indigo-600 hover:border-indigo-500'
                   }`}
                   title={isListening ? 'Dinlemeyi Durdur' : 'Sesle Soru Sor'}
                   aria-label={isListening ? 'Mikrofonu durdur' : 'Sesle yazmayı etkinleştir'}
@@ -379,14 +379,14 @@ export function EngelsizAI() {
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder={isListening ? 'Konuşmanız dinleniyor...' : 'Asistana sorun...'}
                   disabled={loading}
-                  className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-sky-500 text-slate-900 dark:text-white placeholder:text-slate-400"
+                  className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white placeholder:text-slate-400"
                   aria-label="Asistana gönderilecek mesaj"
                 />
 
                 <button
                   type="submit"
                   disabled={loading || !inputValue.trim()}
-                  className="p-2.5 rounded-xl bg-sky-700 hover:bg-sky-600 text-white disabled:opacity-40 transition-all shadow-sm shrink-0 cursor-pointer"
+                  className="p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white disabled:opacity-40 transition-all shadow-sm shrink-0 cursor-pointer"
                   aria-label="Gönder"
                 >
                   <Send size={15} />

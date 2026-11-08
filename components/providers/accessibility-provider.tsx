@@ -44,7 +44,7 @@ const defaultSettings: AccessibilitySettings = {
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
 
 /**
- * Universal Barrier-Free Accessibility Provider (WCAG 2.1 AAA Compliant).
+ * Universal Barrier-Free Accessibility Provider (WCAG 2.2 AAA Compliant).
  * Designed for TEKNOFEST 2027 Engelsiz Yaşam Teknolojileri.
  * 
  * Supports:

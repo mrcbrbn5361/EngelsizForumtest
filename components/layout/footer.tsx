@@ -135,7 +135,7 @@ export function Footer() {
         <div className="text-left md:text-right space-y-1 text-xs text-slate-400 font-mono">
           <div className="font-normal text-slate-300">&copy; {currentYear} EngelsizForum &middot; Tüm hakları saklıdır.</div>
           <div className="text-[11px] text-slate-400">
-            Aria &bull; Bora &bull; Felix &bull; MiracBirben &bull; TEKNOFEST 2027
+            MiracBirben &bull; TEKNOFEST 2027
           </div>
         </div>
 
