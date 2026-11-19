@@ -7,11 +7,11 @@ Durum: ⬜ karar bekliyor · ✅ yapıldı · ⏸ ileride kullanılacak, şimdil
 
 | # | Bulgu | Öneri | Durum |
 |---|-------|-------|-------|
-| A1 | `/api/check-profiles` herkese açık; servis anahtarıyla (RLS'yi atlayarak) 10 üyenin profil kaydının tamamını döndürüyor | Sil | ⬜ |
-| A2 | `/api/check-schema` herkese açık; `visitors` tablosundan kayıt döndürüyor | Sil | ⬜ |
-| A3 | `/api/migrate` hiçbir şey yapmıyor ("raw SQL çalıştırılamaz" mesajı döndürüyor) | Sil | ⬜ |
-| A4 | `/api/mcp-sync` hiç yetki kontrolü yapmıyor; herkes `mcp_servers` tablosuna yazma tetikleyebilir. `CRON_SECRET` yoksa koda gömülü yedek şifre kullanılıyor | `CRON_SECRET` zorunlu, `Authorization` kontrolü eklensin | ⬜ |
-| A5 | `/api/visitor-update` koda gömülü token kullanıyor, kodda hiçbir yerden çağrılmıyor | Harici bir cihaz kullanmıyorsa silinsin | ⬜ |
+| A1 | `/api/check-profiles` herkese açık; servis anahtarıyla (RLS'yi atlayarak) 10 üyenin profil kaydının tamamını döndürüyor | Sil | ✅ |
+| A2 | `/api/check-schema` herkese açık; `visitors` tablosundan kayıt döndürüyor | Sil | ✅ |
+| A3 | `/api/migrate` hiçbir şey yapmıyor ("raw SQL çalıştırılamaz" mesajı döndürüyor) | Sil | ✅ |
+| A4 | `/api/mcp-sync` hiç yetki kontrolü yapmıyor; herkes `mcp_servers` tablosuna yazma tetikleyebilir. `CRON_SECRET` yoksa koda gömülü yedek şifre kullanılıyor | `CRON_SECRET` zorunlu, `Authorization` kontrolü eklensin | ✅ |
+| A5 | `/api/visitor-update` koda gömülü token kullanıyor, kodda hiçbir yerden çağrılmıyor | Harici bir cihaz kullanmıyorsa silinsin | ✅ |
 
 ## B. Hiçbir yerden kullanılmayan dosyalar (25 dosya, ~3.100 satır)
 

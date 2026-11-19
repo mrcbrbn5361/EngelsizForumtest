@@ -1,3 +1,4 @@
+import { timingSafeEqual } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { INITIAL_MCP_DIRECTORY } from '@/lib/mcp-directory';
 import { supabaseServer } from '@/lib/supabase-server';
@@ -17,9 +18,21 @@ export async function GET(req: NextRequest) {
   return handleSync(req);
 }
 
+/**
+ * Accepts the request only when CRON_SECRET is configured and sent as a Bearer token.
+ */
+function isAuthorized(req: NextRequest): boolean {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) return false;
+  const expected = Buffer.from(`Bearer ${cronSecret}`);
+  const received = Buffer.from(req.headers.get('authorization') || '');
+  return expected.length === received.length && timingSafeEqual(expected, received);
+}
+
 async function handleSync(req: NextRequest) {
-  const authHeader = req.headers.get('authorization');
-  const cronSecret = process.env.CRON_SECRET || 'engelsizforum-mcp-sync-secret';
+  if (!isAuthorized(req)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
   // Perform automated sync routines
   const now = new Date();
