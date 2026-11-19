@@ -30,7 +30,7 @@ export default function ClassicThreadRow({ topic }: ClassicThreadRowProps) {
   const authorName = topic.author?.username || 'Anonim';
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3.5 border-b border-[#1E293B] hover:bg-[#111B2E]/60 px-3 -mx-3 rounded-md transition-colors group">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 py-3.5 border-b border-line hover:bg-surface-raised/60 px-3 -mx-3 rounded-md transition-colors group">
       {/* Title & Author Info */}
       <div className="min-w-0 flex-1 space-y-1">
         <div className="flex items-center gap-2 flex-wrap">
@@ -40,48 +40,48 @@ export default function ClassicThreadRow({ topic }: ClassicThreadRowProps) {
             </span>
           )}
           {topic.is_locked && (
-            <span className="inline-flex items-center gap-1 text-[11px] font-mono uppercase font-semibold text-slate-300 bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded">
+            <span className="inline-flex items-center gap-1 text-[11px] font-mono uppercase font-semibold text-fg-3 bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded">
               <Lock size={11} /> Kilitli
             </span>
           )}
           <Link 
             href={`/discussions/${topic.id}`} 
-            className="text-sm sm:text-base font-semibold text-white group-hover:text-indigo-400 transition-colors block"
+            className="text-sm sm:text-base font-semibold text-fg group-hover:text-indigo-400 transition-colors block"
           >
             {topic.title}
           </Link>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-slate-400">
+        <div className="flex items-center gap-2 text-xs text-fg-4">
           <span className="font-semibold text-indigo-400">@{authorName}</span>
-          <span className="text-slate-600">&middot;</span>
-          <span className="font-mono text-slate-400">{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
+          <span className="text-fg-6">&middot;</span>
+          <span className="font-mono text-fg-4">{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
         </div>
       </div>
 
       {/* Stats - Clear Numbers */}
       <div className="flex items-center gap-6 shrink-0 text-right self-end sm:self-center font-mono">
         <div>
-          <div className="text-sm font-semibold text-slate-100 tabular-nums">
+          <div className="text-sm font-semibold text-fg-1 tabular-nums">
             {topic.replyCount}
           </div>
-          <div className="text-[10px] uppercase font-bold text-slate-400">
+          <div className="text-[10px] uppercase font-bold text-fg-4">
             Yanıt
           </div>
         </div>
 
         <div>
-          <div className="text-sm font-semibold text-slate-100 tabular-nums">
+          <div className="text-sm font-semibold text-fg-1 tabular-nums">
             {topic.viewCount}
           </div>
-          <div className="text-[10px] uppercase font-bold text-slate-400">
+          <div className="text-[10px] uppercase font-bold text-fg-4">
             Görüntüleme
           </div>
         </div>
 
         <Link 
           href={`/discussions/${topic.id}`}
-          className="p-1 rounded text-slate-400 group-hover:text-white transition-colors"
+          className="p-1 rounded text-fg-4 group-hover:text-fg transition-colors"
           aria-label={`${topic.title} konusuna git`}
         >
           <ChevronRight size={18} />

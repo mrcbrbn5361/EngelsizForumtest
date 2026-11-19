@@ -70,7 +70,7 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge,
         role="img"
         aria-label={name || username || 'Kullanıcı Avatarı'}
         className={cn(
-          "rounded-md border border-[#1E293B] overflow-hidden bg-[#18243A] relative flex items-center justify-center transition-all",
+          "rounded-md border border-line overflow-hidden bg-surface-hover relative flex items-center justify-center transition-all",
           sizeMap[size]
         )}
       >

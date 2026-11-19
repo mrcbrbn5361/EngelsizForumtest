@@ -178,10 +178,10 @@ export default function ErkenEmeklilikPage() {
       </div>
 
       {/* Başlık ve Girdi Formu */}
-      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1E293B] pb-5 mb-6">
+      <div className="bg-surface-raised rounded-xl border border-line p-6 shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-5 mb-6">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-lg bg-[#18243A] text-indigo-400 flex items-center justify-center shadow-inner border border-[#1E293B]">
+            <div className="w-12 h-12 rounded-lg bg-surface-hover text-indigo-400 flex items-center justify-center shadow-inner border border-line">
               <Calendar className="w-7 h-7" />
             </div>
             <div>
@@ -189,15 +189,15 @@ export default function ErkenEmeklilikPage() {
                 Engelli Erken Emeklilik Şartları Hesaplama
               </h1>
               <div className="flex items-center gap-2 mt-0.5">
-                <Info size={12} className="text-slate-500" />
-                <span className="text-xs text-slate-400 font-medium">
+                <Info size={12} className="text-fg-5" />
+                <span className="text-xs text-fg-4 font-medium">
                   506 SK Geçici 18. Madde ve 5510 SK 28. Madde Uyumluluğu
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-emerald-400 border border-emerald-800/50 shadow-sm uppercase tracking-wider">
+          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-surface text-emerald-400 border border-emerald-800/50 shadow-sm uppercase tracking-wider">
             YAŞ ŞARTI ARANMAZ
           </div>
         </div>
@@ -206,62 +206,62 @@ export default function ErkenEmeklilikPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
           <div className="space-y-2">
-            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+            <label className="block text-[11px] font-black text-fg-4 uppercase tracking-widest">
               İşe Giriş Tarihi
             </label>
             <input
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+              className="w-full px-3 py-2 bg-surface border border-line rounded-md text-fg text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
             />
-            <span className="text-[10px] text-slate-500 italic block">İlk primin yattığı gün</span>
+            <span className="text-[10px] text-fg-5 italic block">İlk primin yattığı gün</span>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+            <label className="block text-[11px] font-black text-fg-4 uppercase tracking-widest">
               Sigorta Statüsü
             </label>
             <div className="relative">
               <select
                 value={insuranceType}
                 onChange={(e) => setInsuranceType(e.target.value as InsuranceType)}
-                className="w-full pl-3 pr-10 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full pl-3 pr-10 py-2 bg-surface border border-line rounded-md text-fg text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               >
                 <option value="4a">4A - SSK (Hizmet Akdi)</option>
                 <option value="4b">4B - Bağ-Kur (Esnaf)</option>
                 <option value="4c">4C - Emekli Sandığı (Memur)</option>
               </select>
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-fg-5">
                 <ChevronRight size={14} className="rotate-90" />
               </div>
             </div>
-            <span className="text-[10px] text-slate-500 italic block">Son 2520 gün ağırlığı</span>
+            <span className="text-[10px] text-fg-5 italic block">Son 2520 gün ağırlığı</span>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+            <label className="block text-[11px] font-black text-fg-4 uppercase tracking-widest">
               Engel Derecesi
             </label>
             <div className="relative">
               <select
                 value={disabilityDegree}
                 onChange={(e) => setDisabilityDegree(parseInt(e.target.value, 10))}
-                className="w-full pl-3 pr-10 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full pl-3 pr-10 py-2 bg-surface border border-line rounded-md text-fg text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               >
                 <option value={1}>1. Derece (%80+)</option>
                 <option value={2}>2. Derece (%60-79)</option>
                 <option value={3}>3. Derece (%40-59)</option>
               </select>
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-fg-5">
                 <ChevronRight size={14} className="rotate-90" />
               </div>
             </div>
-            <span className="text-[10px] text-slate-500 italic block">Kurulca saptanan oran</span>
+            <span className="text-[10px] text-fg-5 italic block">Kurulca saptanan oran</span>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+            <label className="block text-[11px] font-black text-fg-4 uppercase tracking-widest">
               Ödenmiş Prim Günü
             </label>
             <input
@@ -270,9 +270,9 @@ export default function ErkenEmeklilikPage() {
               max="15000"
               value={currentPaidDays || ''}
               onChange={(e) => setCurrentPaidDays(Math.max(0, parseInt(e.target.value, 10) || 0))}
-              className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+              className="w-full px-3 py-2 bg-surface border border-line rounded-md text-fg text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
             />
-            <span className="text-[10px] text-slate-500 italic block">Hizmet dökümü toplamı</span>
+            <span className="text-[10px] text-fg-5 italic block">Hizmet dökümü toplamı</span>
           </div>
 
         </div>
@@ -330,11 +330,11 @@ export default function ErkenEmeklilikPage() {
               </p>
 
               {/* 4'lü İstatistik Paneli */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-[#1E293B]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-line">
                 
-                <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
-                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Sigorta Süresi</span>
-                  <div className="text-xl font-black text-white">
+                <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
+                  <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Sigorta Süresi</span>
+                  <div className="text-xl font-black text-fg">
                     {calculation.reqYears} Yıl
                   </div>
                   <div className={`text-[11px] mt-1 font-bold ${calculation.isYearsSatisfied ? 'text-emerald-400' : 'text-amber-400'}`}>
@@ -342,41 +342,41 @@ export default function ErkenEmeklilikPage() {
                   </div>
                 </div>
 
-                <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
-                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Gereken Prim</span>
+                <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
+                  <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Gereken Prim</span>
                   <div className="text-xl font-black text-indigo-400">
                     {calculation.reqDays} Gün
                   </div>
-                  <div className={`text-[11px] mt-1 font-bold ${calculation.isDaysSatisfied ? 'text-emerald-400' : 'text-slate-400'}`}>
+                  <div className={`text-[11px] mt-1 font-bold ${calculation.isDaysSatisfied ? 'text-emerald-400' : 'text-fg-4'}`}>
                     Mevcut: {currentPaidDays} gün
                   </div>
                 </div>
 
-                <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
-                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Kalan İhtiyaç</span>
+                <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
+                  <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Kalan İhtiyaç</span>
                   <div className={`text-xl font-black ${calculation.remainingDays === 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                     {calculation.remainingDays === 0 ? 'TAMAM' : `${calculation.remainingDays} Gün`}
                   </div>
-                  <div className="text-[11px] text-slate-500 mt-1 font-medium">
+                  <div className="text-[11px] text-fg-5 mt-1 font-medium">
                     {calculation.remainingDays > 0 ? `~${(calculation.remainingDays / 30).toFixed(1)} ay kaldı` : 'Kriter sağlandı'}
                   </div>
                 </div>
 
-                <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
-                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Vergi İndirimi</span>
-                  <div className={`text-xl font-black ${calculation.isTaxDiscountMandatory ? 'text-indigo-300' : 'text-slate-400'}`}>
+                <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
+                  <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Vergi İndirimi</span>
+                  <div className={`text-xl font-black ${calculation.isTaxDiscountMandatory ? 'text-indigo-300' : 'text-fg-4'}`}>
                     {calculation.isTaxDiscountMandatory ? 'ZORUNLU' : 'GEREKMEZ'}
                   </div>
-                  <div className="text-[11px] text-slate-500 mt-1 font-medium italic">
+                  <div className="text-[11px] text-fg-5 mt-1 font-medium italic">
                     {calculation.isTaxDiscountMandatory ? 'Maliye onayı şart' : 'SGK Kurul sevki'}
                   </div>
                 </div>
 
               </div>
 
-              <div className="flex items-center gap-2 p-3 bg-[#18243A]/50 rounded-lg border border-[#1E293B]/50">
+              <div className="flex items-center gap-2 p-3 bg-surface-hover/50 rounded-lg border border-line/50">
                 <History size={14} className="text-indigo-400" />
-                <p className="text-[11px] text-slate-400 italic">
+                <p className="text-[11px] text-fg-4 italic">
                   {calculation.note}
                 </p>
               </div>
@@ -389,7 +389,7 @@ export default function ErkenEmeklilikPage() {
       {/* YASAL MEVZUAT VE DETAY BİLGİLENDİRME BLOKLARI */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         
-        <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
+        <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
           <h3 className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-4 flex items-center gap-2.5">
             <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20">
               <Award size={14} />
@@ -397,16 +397,16 @@ export default function ErkenEmeklilikPage() {
             <span>Malulen vs Erken Emeklilik</span>
           </h3>
           <ul className="text-xs text-[#CBD5E1] space-y-3 leading-relaxed font-medium">
-            <li className="p-3 bg-[#0B1220] rounded border border-[#1E293B]">
+            <li className="p-3 bg-surface rounded border border-line">
               <strong className="text-indigo-300 block mb-1">Malulen Emeklilik:</strong> Sonradan %60+ kayıp yaşayanlara tanınır. Emekli olan kişi tekrar sigortalı çalışamaz, çalışırsa aylığı kesilir.
             </li>
-            <li className="p-3 bg-[#0B1220] rounded border border-[#1E293B]">
+            <li className="p-3 bg-surface rounded border border-line">
               <strong className="text-indigo-300 block mb-1">Engelli Erken Emekliliği:</strong> Hem emekli maaşını alıp hem de Sosyal Güvenlik Destek Primi (SGDP) ödeyerek çalışmaya devam edebilirler.
             </li>
           </ul>
         </div>
 
-        <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
+        <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
           <h3 className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-4 flex items-center gap-2.5">
             <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20">
               <FileText size={14} />
@@ -420,7 +420,7 @@ export default function ErkenEmeklilikPage() {
               "İşyerinizden 'Emeklilik Nedeniyle İşten Ayrılış' (Kod 08) düzenlemesini isteyin.",
               "Başvuruyu takip eden ay başından itibaren emekli maaşınız birikmeye başlar."
             ].map((step, idx) => (
-              <div key={idx} className="flex items-start gap-3 p-2.5 bg-[#0B1220] rounded border border-[#1E293B]">
+              <div key={idx} className="flex items-start gap-3 p-2.5 bg-surface rounded border border-line">
                 <span className="text-indigo-400 font-black font-mono text-sm leading-none mt-0.5">{idx + 1}.</span>
                 <p className="text-xs text-[#CBD5E1] font-medium leading-relaxed">{step}</p>
               </div>

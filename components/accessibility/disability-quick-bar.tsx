@@ -141,7 +141,7 @@ export function DisabilityQuickBar() {
 
   return (
     <div 
-      className="w-full bg-[#111b2e] border-b border-[#1e293b] px-3 sm:px-6 py-1.5 overflow-x-hidden"
+      className="w-full bg-surface-raised border-b border-line px-3 sm:px-6 py-1.5 overflow-x-hidden"
       role="region" 
       aria-label="Erişilebilirlik ve Engel Türü Hızlı Seçici"
     >
@@ -149,7 +149,7 @@ export function DisabilityQuickBar() {
         
         {/* Left Label */}
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="text-[11px] font-bold text-slate-200 tracking-wide">
+          <span className="text-[11px] font-bold text-fg-2 tracking-wide">
             Erişilebilirlik:
           </span>
         </div>
@@ -167,12 +167,12 @@ export function DisabilityQuickBar() {
                 className={`flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-md transition-colors shrink-0 cursor-pointer border ${
                   isSelected 
                     ? 'bg-indigo-600 text-white border-indigo-500 font-bold shadow-xs' 
-                    : 'bg-[#18243a] text-slate-200 border-[#29364b] hover:bg-[#202f4a] hover:text-white'
+                    : 'bg-surface-hover text-fg-2 border-[#29364b] hover:bg-[#202f4a] hover:text-white'
                 }`}
                 title={`${p.title} - ${p.description}`}
                 aria-pressed={isSelected}
               >
-                <Icon size={13} className={isSelected ? 'text-white' : 'text-indigo-400'} />
+                <Icon size={13} className={isSelected ? 'text-fg' : 'text-indigo-400'} />
                 <span>{p.title}</span>
                 {isSelected && <Check size={11} className="stroke-[3]" />}
               </button>
@@ -184,7 +184,7 @@ export function DisabilityQuickBar() {
             <button
               type="button"
               onClick={decreaseFont}
-              className="px-1.5 py-0.5 bg-[#18243a] hover:bg-[#202f4a] text-slate-200 hover:text-white border border-[#29364b] rounded-md text-[11px] font-bold transition-colors cursor-pointer"
+              className="px-1.5 py-0.5 bg-surface-hover hover:bg-[#202f4a] text-fg-2 hover:text-white border border-[#29364b] rounded-md text-[11px] font-bold transition-colors cursor-pointer"
               title="Yazı Boyutunu Küçült"
               aria-label="Yazı boyutunu küçült"
             >
@@ -193,7 +193,7 @@ export function DisabilityQuickBar() {
             <button
               type="button"
               onClick={increaseFont}
-              className="px-1.5 py-0.5 bg-[#18243a] hover:bg-[#202f4a] text-slate-200 hover:text-white border border-[#29364b] rounded-md text-[11px] font-bold transition-colors cursor-pointer"
+              className="px-1.5 py-0.5 bg-surface-hover hover:bg-[#202f4a] text-fg-2 hover:text-white border border-[#29364b] rounded-md text-[11px] font-bold transition-colors cursor-pointer"
               title="Yazı Boyutunu Büyüt"
               aria-label="Yazı boyutunu büyüt"
             >
@@ -204,7 +204,7 @@ export function DisabilityQuickBar() {
           <button
             type="button"
             onClick={resetSettings}
-            className="flex items-center gap-1 px-2 py-0.5 text-[11px] text-slate-400 hover:text-slate-200 transition-colors ml-1 font-medium shrink-0 cursor-pointer"
+            className="flex items-center gap-1 px-2 py-0.5 text-[11px] text-fg-4 hover:text-fg-2 transition-colors ml-1 font-medium shrink-0 cursor-pointer"
             title="Ayarları Sıfırla"
             aria-label="Tüm erişilebilirlik ayarlarını varsayılana sıfırla"
           >

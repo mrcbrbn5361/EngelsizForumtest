@@ -105,13 +105,13 @@ export default function HesaplamaNav({
     <div className="w-full flex flex-col gap-5 max-w-7xl mx-auto">
       
       {/* 1. ÜST BİLGİ VE BREADCRUMB ÇUBUĞU */}
-      <div className="bg-[#111B2E] border border-[#1E293B] rounded-lg px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="bg-surface-raised border border-line rounded-lg px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 font-medium text-slate-400" aria-label="Erişim Yolu">
+        <nav className="flex items-center gap-1.5 font-medium text-fg-4" aria-label="Erişim Yolu">
           <Link href="/" className="hover:text-indigo-400 font-semibold transition-colors">
             Ana Sayfa
           </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
+          <ChevronRight className="w-3.5 h-3.5 text-fg-6" />
           <Link 
             href="/hesaplama" 
             className={`hover:text-indigo-400 transition-colors ${isHubPage ? 'font-bold text-indigo-400' : ''}`}
@@ -120,8 +120,8 @@ export default function HesaplamaNav({
           </Link>
           {currentTool && (
             <>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-              <span className="font-semibold text-slate-200">
+              <ChevronRight className="w-3.5 h-3.5 text-fg-6" />
+              <span className="font-semibold text-fg-2">
                 {currentTool.name}
               </span>
             </>
@@ -135,7 +135,7 @@ export default function HesaplamaNav({
             <span>2026 Mevzuatı</span>
           </span>
           <span className="hidden sm:inline-block text-slate-700">|</span>
-          <span className="hidden sm:inline-block text-slate-400 text-xs">
+          <span className="hidden sm:inline-block text-fg-4 text-xs">
             Resmî Gazete &amp; Sağlık Bakanlığı
           </span>
         </div>
@@ -146,10 +146,10 @@ export default function HesaplamaNav({
         
         {/* SIDEBAR */}
         <aside className="w-full lg:w-72 shrink-0">
-          <div className="bg-[#111B2E] rounded-lg border border-[#1E293B] overflow-hidden">
+          <div className="bg-surface-raised rounded-lg border border-line overflow-hidden">
             
             {/* Sidebar Başlığı */}
-            <div className="bg-[#18243A] text-white px-4 py-3 flex items-center justify-between border-b border-[#1E293B]">
+            <div className="bg-surface-hover text-fg px-4 py-3 flex items-center justify-between border-b border-line">
               <div className="flex items-center gap-2 font-bold text-xs uppercase tracking-wider font-heading">
                 <Calculator className="w-4 h-4 text-indigo-400" />
                 <span>HESAPLAMA ARAÇLARI</span>
@@ -160,7 +160,7 @@ export default function HesaplamaNav({
             </div>
 
             {/* Mobilde Yatay Kaydırma / Masaüstünde Dikey Liste */}
-            <nav className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-visible divide-x lg:divide-x-0 lg:divide-y divide-[#1E293B]/70 p-1.5 lg:p-0">
+            <nav className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-visible divide-x lg:divide-x-0 lg:divide-y divide-line/70 p-1.5 lg:p-0">
               
               {/* Ana Hub Bağlantısı */}
               <Link
@@ -168,15 +168,15 @@ export default function HesaplamaNav({
                 className={`shrink-0 lg:shrink flex items-center justify-between px-3.5 py-2.5 text-xs font-medium transition-all rounded-md lg:rounded-none whitespace-nowrap lg:whitespace-normal min-h-[38px] ${
                   isHubPage
                     ? 'bg-indigo-950/50 text-indigo-300 border-l-0 lg:border-l-2 lg:border-indigo-400'
-                    : 'text-slate-300 hover:bg-[#18243A] hover:text-white'
+                    : 'text-fg-3 hover:bg-surface-hover hover:text-white'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <Calculator className={`w-4 h-4 shrink-0 ${isHubPage ? 'text-indigo-400' : 'text-slate-400'}`} />
+                  <Calculator className={`w-4 h-4 shrink-0 ${isHubPage ? 'text-indigo-400' : 'text-fg-4'}`} />
                   <span>Tüm Araçlar Merkezi</span>
                 </div>
                 <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono uppercase ${
-                  isHubPage ? 'bg-indigo-900/60 text-indigo-200' : 'bg-[#18243A] text-slate-400'
+                  isHubPage ? 'bg-indigo-900/60 text-indigo-200' : 'bg-surface-hover text-fg-4'
                 }`}>
                   Hub
                 </span>
@@ -194,11 +194,11 @@ export default function HesaplamaNav({
                     className={`shrink-0 lg:shrink flex items-center justify-between px-3.5 py-2.5 text-xs font-medium transition-all rounded-md lg:rounded-none whitespace-nowrap lg:whitespace-normal min-h-[38px] ${
                       isActive
                         ? 'bg-indigo-950/50 text-indigo-300 border-l-0 lg:border-l-2 lg:border-indigo-400 font-semibold'
-                        : 'text-slate-300 hover:bg-[#18243A] hover:text-white'
+                        : 'text-fg-3 hover:bg-surface-hover hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} />
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-indigo-400' : 'text-fg-4'}`} />
                       <span className="truncate">{tool.name}</span>
                     </div>
 
@@ -206,7 +206,7 @@ export default function HesaplamaNav({
                       <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono shrink-0 ml-2 hidden sm:inline-block border ${
                         isActive 
                           ? 'bg-indigo-900/60 text-indigo-200 border-indigo-700/60' 
-                          : 'bg-[#18243A] text-slate-400 border-[#1E293B]'
+                          : 'bg-surface-hover text-fg-4 border-line'
                       }`}>
                         {tool.badge}
                       </span>
@@ -217,8 +217,8 @@ export default function HesaplamaNav({
             </nav>
 
             {/* Sidebar Alt Bilgi Kutusu */}
-            <div className="hidden lg:block p-3.5 bg-[#18243A]/60 border-t border-[#1E293B] text-[11px] text-slate-400 leading-relaxed font-normal">
-              <div className="flex items-center gap-1.5 font-semibold text-slate-200 mb-1">
+            <div className="hidden lg:block p-3.5 bg-surface-hover/60 border-t border-line text-[11px] text-fg-4 leading-relaxed font-normal">
+              <div className="flex items-center gap-1.5 font-semibold text-fg-2 mb-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Resmi ve Güvenli</span>
               </div>

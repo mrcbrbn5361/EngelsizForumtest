@@ -137,7 +137,7 @@ export function CookieConsentBanner() {
       role="dialog"
       aria-modal="false"
       aria-label="Çerez ve Gizlilik Tercihleri"
-      className="fixed bottom-0 left-0 right-0 z-50 p-3 sm:p-4 bg-[#0B1220]/95 backdrop-blur-md border-t border-[#1E293B] shadow-2xl text-white font-sans transition-all animate-in fade-in slide-in-from-bottom-4 duration-300"
+      className="fixed bottom-0 left-0 right-0 z-50 p-3 sm:p-4 bg-surface/95 backdrop-blur-md border-t border-line shadow-2xl text-fg font-sans transition-all animate-in fade-in slide-in-from-bottom-4 duration-300"
     >
       <div className="max-w-7xl mx-auto flex flex-col gap-3">
         {/* Main Banner Bar */}
@@ -147,13 +147,13 @@ export function CookieConsentBanner() {
               <Cookie size={17} />
             </div>
             <div className="space-y-1">
-              <h2 className="text-xs sm:text-sm font-semibold text-white flex items-center gap-2 font-heading">
+              <h2 className="text-xs sm:text-sm font-semibold text-fg flex items-center gap-2 font-heading">
                 <span>Çerez ve Gizlilik Tercihleriniz</span>
                 <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-800/40">
                   KVKK &amp; Google Consent Mode v2
                 </span>
               </h2>
-              <p className="text-xs text-slate-300 leading-relaxed font-normal">
+              <p className="text-xs text-fg-3 leading-relaxed font-normal">
                 EngelsizForum&apos;da deneyiminizi geliştirmek, erişilebilirlik tercihlerinizi hatırlamak ve anonim site trafiğini analiz etmek için birinci ve üçüncü taraf çerezleri kullanıyoruz. İsteğinize göre ayarları özelleştirebilir veya tümünü kabul edebilirsiniz.{' '}
                 <Link
                   href="/privacy"
@@ -172,17 +172,17 @@ export function CookieConsentBanner() {
             <button
               type="button"
               onClick={() => setShowCustomize(!showCustomize)}
-              className="px-3 py-2 text-xs font-medium rounded-md border border-[#1E293B] bg-[#18243A] hover:bg-[#1E293B] text-slate-300 transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-2 text-xs font-medium rounded-md border border-line bg-surface-hover hover:bg-line text-fg-3 transition-colors flex items-center gap-1.5 cursor-pointer"
               aria-expanded={showCustomize}
             >
-              <SlidersHorizontal size={13} className="text-slate-400" />
+              <SlidersHorizontal size={13} className="text-fg-4" />
               <span>{showCustomize ? 'Kapat' : 'Özelleştir'}</span>
             </button>
 
             <button
               type="button"
               onClick={handleRejectAll}
-              className="px-3.5 py-2 text-xs font-medium rounded-md border border-[#1E293B] bg-[#18243A] hover:bg-[#1E293B] text-slate-300 transition-colors cursor-pointer"
+              className="px-3.5 py-2 text-xs font-medium rounded-md border border-line bg-surface-hover hover:bg-line text-fg-3 transition-colors cursor-pointer"
             >
               Reddet
             </button>
@@ -199,11 +199,11 @@ export function CookieConsentBanner() {
 
         {/* Detailed Customization Panel */}
         {showCustomize && (
-          <div className="pt-3 border-t border-[#1E293B] grid grid-cols-1 md:grid-cols-3 gap-3 animate-in fade-in duration-200">
+          <div className="pt-3 border-t border-line grid grid-cols-1 md:grid-cols-3 gap-3 animate-in fade-in duration-200">
             {/* 1. Necessary */}
-            <div className="p-3 rounded-lg border border-[#1E293B] bg-[#111B2E] space-y-1.5">
+            <div className="p-3 rounded-lg border border-line bg-surface-raised space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-white flex items-center gap-1.5">
+                <span className="text-xs font-semibold text-fg flex items-center gap-1.5">
                   <ShieldCheck size={14} className="text-emerald-400" />
                   Zorunlu Çerezler
                 </span>
@@ -211,15 +211,15 @@ export function CookieConsentBanner() {
                   Daima Aktif
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-normal font-normal">
+              <p className="text-[11px] text-fg-4 leading-normal font-normal">
                 Oturum güvenliği, CSRF koruması ve temel erişilebilirlik ayarlarının (yüksek kontrast vb.) çalışması için gereklidir.
               </p>
             </div>
 
             {/* 2. Analytics */}
-            <div className="p-3 rounded-lg border border-[#1E293B] bg-[#111B2E] space-y-1.5">
+            <div className="p-3 rounded-lg border border-line bg-surface-raised space-y-1.5">
               <div className="flex items-center justify-between">
-                <label htmlFor="consent-analytics" className="text-xs font-semibold text-white flex items-center gap-1.5 cursor-pointer">
+                <label htmlFor="consent-analytics" className="text-xs font-semibold text-fg flex items-center gap-1.5 cursor-pointer">
                   <span>Analitik ve Performans</span>
                 </label>
                 <input
@@ -229,18 +229,18 @@ export function CookieConsentBanner() {
                   onChange={(e) =>
                     setPreferences((prev) => ({ ...prev, analytics: e.target.checked }))
                   }
-                  className="w-4 h-4 rounded border-[#1E293B] text-indigo-600 focus:ring-indigo-500 bg-[#18243A] cursor-pointer"
+                  className="w-4 h-4 rounded border-line text-indigo-600 focus:ring-indigo-500 bg-surface-hover cursor-pointer"
                 />
               </div>
-              <p className="text-[11px] text-slate-400 leading-normal font-normal">
+              <p className="text-[11px] text-fg-4 leading-normal font-normal">
                 Google Analytics ile sayfa görüntülenme, en çok okunan mevzuat başlıkları ve ziyaret istatistiklerini anonim ölçümler.
               </p>
             </div>
 
             {/* 3. Marketing */}
-            <div className="p-3 rounded-lg border border-[#1E293B] bg-[#111B2E] space-y-1.5">
+            <div className="p-3 rounded-lg border border-line bg-surface-raised space-y-1.5">
               <div className="flex items-center justify-between">
-                <label htmlFor="consent-marketing" className="text-xs font-semibold text-white flex items-center gap-1.5 cursor-pointer">
+                <label htmlFor="consent-marketing" className="text-xs font-semibold text-fg flex items-center gap-1.5 cursor-pointer">
                   <span>Pazarlama ve Reklam</span>
                 </label>
                 <input
@@ -250,10 +250,10 @@ export function CookieConsentBanner() {
                   onChange={(e) =>
                     setPreferences((prev) => ({ ...prev, marketing: e.target.checked }))
                   }
-                  className="w-4 h-4 rounded border-[#1E293B] text-indigo-600 focus:ring-indigo-500 bg-[#18243A] cursor-pointer"
+                  className="w-4 h-4 rounded border-line text-indigo-600 focus:ring-indigo-500 bg-surface-hover cursor-pointer"
                 />
               </div>
-              <p className="text-[11px] text-slate-400 leading-normal font-normal">
+              <p className="text-[11px] text-fg-4 leading-normal font-normal">
                 Google AdSense reklamlarının kişiselleştirilmesi ve size özel alakalı içeriklerin gösterilmesi için kullanılır.
               </p>
             </div>
