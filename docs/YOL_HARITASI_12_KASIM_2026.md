@@ -29,7 +29,7 @@ Yeni özellik eklemeden önce mevcut sitenin doğru çalışması gerekiyor.
 | 1.2 | Yüksek kontrast modunu düzenleme (S2-13) | Yapıldı: yüksek kontrast artık aktif temayı güçlendiriyor. 8 sayfada AA hatası 337 → 0 (açık tema). `npm run audit:contrast` eklendi | ✅ |
 | 1.3 | Tema ve yazı fontları farklı (S3-19) | Yapıldı: fontlar hiç yüklenmiyordu (tüm site Times New Roman). Plus Jakarta Sans + Atkinson Hyperlegible Next + JetBrains Mono bağlandı, Türkçe karakterler dahil | ✅ |
 | 1.4 | Yazı tipi eklentisi — erişilebilirlik (S3-20) | Yapıldı: menüde Okuma Fontu seçimi (Varsayılan / Lexend / OpenDyslexic). Fontlar yalnızca seçilince iniyor. Eski 'Disleksi Fontu' anahtarı aslında font değiştirmiyordu | ✅ |
-| 1.5 | Görme ve işitme desteği, görme engelliler için kütüphaneler (S1-3) | Ekran okuyucu uyumu, altyazı, işaret dili | ⬜ |
+| 1.5 | Görme ve işitme desteği, görme engelliler için kütüphaneler (S1-3) | Yapıldı: tüm özellikler tek tek test edildi. Renk körlüğü filtreleri (çalışmıyordu → düzeltme filtresi), biyonik okuma, Türkçe sayfa duyurusu, axe-core: 10 sayfa × 3 tema 0 ihlal. `npm run audit:axe` eklendi. Sesli mesaj dökümü 3.2'de | ✅ |
 
 ## Faz 2 — Hesap, güvenlik ve gizlilik
 | # | Madde | Not | Durum |

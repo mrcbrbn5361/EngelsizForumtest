@@ -260,7 +260,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     } catch {}
   }, []);
 
-  const accessibilityClasses = !isInitialLoad && settings.highContrast ? 'dark contrast-more' : '';
+  const accessibilityClasses = !isInitialLoad && settings.highContrast ? 'contrast-more' : '';
 
   const contextValue = React.useMemo(() => ({
     ...settings,
@@ -307,17 +307,17 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
 
         {children}
         
-        {/* Hidden SVG Filters for Color Blindness Accommodation */}
+        {/* Colour-vision correction (daltonization) filters: shift confusable hues apart */}
         <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
           <defs>
-            <filter id="protanopia">
-              <feColorMatrix type="matrix" values="0.567, 0.433, 0, 0, 0, 0.558, 0.442, 0, 0, 0, 0, 0.242, 0.758, 0, 0, 0, 0, 0, 1, 0" />
+            <filter id="protanopia" colorInterpolationFilters="sRGB">
+              <feColorMatrix type="matrix" values="1 0 0 0 0  -0.255 1.255 0 0 0  0.303 -0.545 1.242 0 0  0 0 0 1 0" />
             </filter>
-            <filter id="deuteranopia">
-              <feColorMatrix type="matrix" values="0.625, 0.375, 0, 0, 0, 0.7, 0.3, 0, 0, 0, 0, 0.3, 0.7, 0, 0, 0, 0, 0, 1, 0" />
+            <filter id="deuteranopia" colorInterpolationFilters="sRGB">
+              <feColorMatrix type="matrix" values="1 0 0 0 0  -0.438 1.438 0 0 0  0.262 -0.562 1.3 0 0  0 0 0 1 0" />
             </filter>
-            <filter id="tritanopia">
-              <feColorMatrix type="matrix" values="0.95, 0.05, 0, 0, 0, 0.433, 0.567, 0, 0, 0, 0.475, 0.525, 0, 0, 0, 0, 0, 1, 0" />
+            <filter id="tritanopia" colorInterpolationFilters="sRGB">
+              <feColorMatrix type="matrix" values="1.05 -0.382 0.332 0 0  0 1.234 -0.234 0 0  0 0 1 0 0  0 0 0 1 0" />
             </filter>
             <filter id="achromatopsia">
               <feColorMatrix type="matrix" values="0.299, 0.587, 0.114, 0, 0, 0.299, 0.587, 0.114, 0, 0, 0.299, 0.587, 0.114, 0, 0, 0, 0, 0, 1, 0" />

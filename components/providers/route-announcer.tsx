@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 /**
- * RouteAnnouncer: SPA sayfa geçişlerini ekran okuyuculara bildirir.
+ * RouteAnnouncer: SPA sayfa geçişlerini ekran okuyuculara sayfanın Türkçe başlığıyla bildirir.
  */
 export function RouteAnnouncer() {
   const pathname = usePathname();
@@ -12,13 +12,12 @@ export function RouteAnnouncer() {
 
   useEffect(() => {
     if (!pathname) return;
-
-    const pageName = pathname === '/' 
-      ? 'Anasayfa' 
-      : pathname.split('/').filter(Boolean).pop()?.replace(/-/g, ' ') || 'Sayfa';
-    
-    const capitalized = pageName.charAt(0).toUpperCase() + pageName.slice(1);
-    setAnnouncement(`${capitalized} sayfası yüklendi`);
+    const timer = setTimeout(() => {
+      const title = document.title.split('|')[0].trim();
+      const fallback = pathname === '/' ? 'Anasayfa' : 'Sayfa';
+      setAnnouncement(`${title || fallback} sayfası yüklendi`);
+    }, 400);
+    return () => clearTimeout(timer);
   }, [pathname]);
 
   return (

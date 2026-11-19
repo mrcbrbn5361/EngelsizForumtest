@@ -203,6 +203,7 @@ function SearchContent() {
                     <button
                       type="button"
                       onClick={() => setQuery('')}
+                      aria-label="Aramayı temizle"
                       className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                     >
                       <X size={15} />
@@ -308,7 +309,7 @@ function SearchContent() {
 
               <div className="flex flex-col divide-y divide-slate-100 dark:divide-slate-800">
                 {loading ? (
-                  <div className="p-10 text-center text-slate-500 flex flex-col items-center justify-center gap-2">
+                  <div className="p-10 text-center text-slate-600 dark:text-slate-400 flex flex-col items-center justify-center gap-2">
                     <Loader2 size={24} className="animate-spin text-sky-600" />
                     <span className="text-xs font-medium">Sonuçlar taranıyor...</span>
                   </div>
@@ -348,7 +349,7 @@ function SearchContent() {
                     </article>
                   ))
                 ) : (
-                  <div className="p-10 text-center text-slate-500 italic text-xs bg-slate-50/50 dark:bg-slate-800/20">
+                  <div className="p-10 text-center text-slate-600 dark:text-slate-400 italic text-xs bg-slate-50/50 dark:bg-slate-800/20">
                     "{query}" için arama kriterlerinize uygun hiçbir sonuç bulunamadı.
                   </div>
                 )}

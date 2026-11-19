@@ -1,5 +1,6 @@
 'use client';
 
+import { BionicText } from '@/components/ui/bionic-text';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   ThumbsUp, Quote, Flag, MessageSquare, ExternalLink, ShieldCheck, 
@@ -631,19 +632,19 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
         while ((match = boldRegex.exec(line)) !== null) {
           if (match.index > lastIdx) {
-            elements.push(line.substring(lastIdx, match.index));
+            elements.push(<BionicText key={`t${lastIdx}`} text={line.substring(lastIdx, match.index)} />);
           }
           elements.push(<strong key={match.index} className="font-semibold text-fg">{match[1]}</strong>);
           lastIdx = boldRegex.lastIndex;
         }
 
         if (lastIdx < line.length) {
-          elements.push(line.substring(lastIdx));
+          elements.push(<BionicText key={`t${lastIdx}`} text={line.substring(lastIdx)} />);
         }
 
         return (
           <p key={lineIdx} className="min-h-[1.25rem] leading-relaxed text-fg-2">
-            {elements.length > 0 ? elements : line}
+            {elements}
           </p>
         );
       });
