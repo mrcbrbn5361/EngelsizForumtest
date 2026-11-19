@@ -21,7 +21,7 @@ export default function ClassicSidebar() {
     topics: 0,
     comments: 0,
     users: 0,
-    latestUser: 'Sistem',
+    latestUser: '',
     latestUserId: '',
   });
   const [realUsers, setRealUsers] = useState<ActiveProfile[]>([]);
@@ -33,7 +33,7 @@ export default function ClassicSidebar() {
           topics: 0,
           comments: 0,
           users: 0,
-          latestUser: 'Kullanıcı',
+          latestUser: '',
           latestUserId: '',
         });
         setRealUsers([]);
@@ -53,7 +53,7 @@ export default function ClassicSidebar() {
           topics: topicsRes.count || 0,
           comments: commentsRes.count || 0,
           users: profilesCountRes.count || 0,
-          latestUser: latestProfileRes.data?.username || 'Topluluk Üyesi',
+          latestUser: latestProfileRes.data?.username || '',
           latestUserId: latestProfileRes.data?.id || '',
         });
 

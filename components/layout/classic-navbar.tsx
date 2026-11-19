@@ -143,7 +143,7 @@ export default function ClassicNavbar() {
         </div>
 
         {/* Center Nav Links - High Contrast & Clean Navigation */}
-        <nav className="hidden lg:flex items-center gap-1 text-xs">
+        <nav className="hidden xl:flex items-center gap-1 text-xs">
           <Link 
             href="/" 
             className={cn(
