@@ -14,7 +14,7 @@ Yeni özellik eklemeden önce mevcut sitenin doğru çalışması gerekiyor.
 
 | # | Madde | Not | Durum |
 |---|-------|-----|-------|
-| 0.1 | Sahte verileri silmek (S1-2) | `app/demo-thread`, mock profiller, demo içerikler | ⬜ |
+| 0.1 | Sahte verileri silmek (S1-2) | Kod tarafı temizlendi (kategori auto-seed, demo sayfası, yedek navbar). DB tarafı: `supabase/maintenance/01_sahte_veri_tespit.sql` sonucu bekleniyor | 🟨 |
 | 0.2 | Hangileri mock data bilinmiyor (S3-24) | 0.1 ile birlikte: tüm sahte veri kaynaklarının listesi çıkarılacak | ⬜ |
 | 0.3 | Yokken mesaj var gibi görünüyor (S2-14) | Okunmamış mesaj sayacı / boş durum hatası | ⬜ |
 | 0.4 | Başlıklarda silinmiş ama gösterenler var (S3-25) | Silinen başlıklar listelerde filtrelenmeli | ⬜ |

@@ -28,6 +28,15 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'www.engelsizforum.com' },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/demo-thread',
+        destination: '/discussions',
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return [
       {
