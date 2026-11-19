@@ -199,7 +199,7 @@ export function EngelsizForumLoginButton({
       textHighlight: 'font-extrabold',
     },
     dark: {
-      container: 'bg-[#0f172a] hover:bg-line text-white border border-slate-700 shadow-xs active:bg-[#020617]',
+      container: 'bg-surface hover:bg-line text-white border border-slate-700 shadow-xs active:bg-[#020617]',
       badgeBg: 'bg-[#185886] border border-slate-600',
       textHighlight: 'font-extrabold',
     },

@@ -162,7 +162,7 @@ export function ProfileViewClient({ targetProfile, stats, recentTopics }: Profil
               </div>
 
               {targetProfile.bio && (
-                <p className="text-sm text-[#CBD5E1] max-w-xl font-medium leading-relaxed pt-1">
+                <p className="text-sm text-fg-3 max-w-xl font-medium leading-relaxed pt-1">
                   {targetProfile.bio}
                 </p>
               )}
@@ -276,7 +276,7 @@ export function ProfileViewClient({ targetProfile, stats, recentTopics }: Profil
                       <div className="space-y-2 min-w-0">
                         <Link 
                           href={`/discussions/${topic.id}`}
-                          className="text-base font-bold text-[#F8FAFC] group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors line-clamp-1 tracking-tight"
+                          className="text-base font-bold text-fg-0 group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors line-clamp-1 tracking-tight"
                         >
                           {topic.title}
                         </Link>
@@ -343,7 +343,7 @@ export function ProfileViewClient({ targetProfile, stats, recentTopics }: Profil
                   <UserIcon size={16} className="text-indigo-400 light:text-indigo-700" />
                   <h2 className="text-sm font-black uppercase tracking-widest text-fg">Biyografi</h2>
                 </div>
-                <div className="bg-surface-hover border border-line rounded-xl p-6 text-sm text-[#CBD5E1] leading-relaxed font-medium min-h-[160px] shadow-sm italic">
+                <div className="bg-surface-hover border border-line rounded-xl p-6 text-sm text-fg-3 leading-relaxed font-medium min-h-[160px] shadow-sm italic">
                   {targetProfile.bio || 'Kullanıcı henüz kendisi hakkında bir bilgi girmemiş.'}
                 </div>
               </div>

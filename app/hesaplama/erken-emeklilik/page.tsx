@@ -169,7 +169,7 @@ export default function ErkenEmeklilikPage() {
             <h2 className="font-bold text-lg text-indigo-400 light:text-indigo-700 tracking-tight">
               Erken Emeklilikte 01.10.2008 Tarihi Neden Önemlidir?
             </h2>
-            <p className="text-sm text-[#CBD5E1] leading-relaxed">
+            <p className="text-sm text-fg-3 leading-relaxed">
               <strong>01.10.2008 öncesi SSK (4A) sigortalılar</strong> için emeklilikte yaş aranmaz ancak <strong>Gelir İdaresi Başkanlığı onaylı Vergi İndirim Belgesi</strong> almak zorunludur. 
               <strong>01.10.2008 sonrasında</strong> ise vergi indirimi aranmaz; müracaat doğrudan SGK&apos;ya yapılır.
             </p>
@@ -185,7 +185,7 @@ export default function ErkenEmeklilikPage() {
               <Calendar className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+              <h1 className="text-xl font-bold text-fg-0 tracking-tight">
                 Engelli Erken Emeklilik Şartları Hesaplama
               </h1>
               <div className="flex items-center gap-2 mt-0.5">
@@ -300,7 +300,7 @@ export default function ErkenEmeklilikPage() {
 
             <div className="space-y-4 flex-1">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-lg font-bold text-[#F8FAFC] tracking-tight">
+                <h2 className="text-lg font-bold text-fg-0 tracking-tight">
                   {calculation.isReadyForRetirement 
                     ? 'TEBRİKLER: Emeklilik Şartlarını Eksiksiz Tamamladınız!' 
                     : 'EMEKLİLİK İÇİN GEREKLİ ŞARTLAR VE KALAN SÜRE'}
@@ -315,7 +315,7 @@ export default function ErkenEmeklilikPage() {
                 </span>
               </div>
 
-              <p className="text-sm text-[#CBD5E1] leading-relaxed max-w-4xl">
+              <p className="text-sm text-fg-3 leading-relaxed max-w-4xl">
                 {calculation.isReadyForRetirement ? (
                   <>
                     Hem <strong>{calculation.reqYears} yıllık</strong> sigortalılık süresini hem de aranan <strong>{calculation.reqDays} prim gününü</strong> başarıyla doldurdunuz. 
@@ -396,7 +396,7 @@ export default function ErkenEmeklilikPage() {
             </div>
             <span>Malulen vs Erken Emeklilik</span>
           </h3>
-          <ul className="text-xs text-[#CBD5E1] space-y-3 leading-relaxed font-medium">
+          <ul className="text-xs text-fg-3 space-y-3 leading-relaxed font-medium">
             <li className="p-3 bg-surface rounded border border-line">
               <strong className="text-indigo-300 light:text-indigo-700 block mb-1">Malulen Emeklilik:</strong> Sonradan %60+ kayıp yaşayanlara tanınır. Emekli olan kişi tekrar sigortalı çalışamaz, çalışırsa aylığı kesilir.
             </li>
@@ -422,7 +422,7 @@ export default function ErkenEmeklilikPage() {
             ].map((step, idx) => (
               <div key={idx} className="flex items-start gap-3 p-2.5 bg-surface rounded border border-line">
                 <span className="text-indigo-400 light:text-indigo-700 font-black font-mono text-sm leading-none mt-0.5">{idx + 1}.</span>
-                <p className="text-xs text-[#CBD5E1] font-medium leading-relaxed">{step}</p>
+                <p className="text-xs text-fg-3 font-medium leading-relaxed">{step}</p>
               </div>
             ))}
           </div>

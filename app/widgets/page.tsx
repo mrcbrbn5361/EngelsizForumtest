@@ -80,7 +80,7 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-8 space-y-10 text-[#F8FAFC] font-sans">
+    <div className="w-full max-w-6xl mx-auto px-4 py-8 space-y-10 text-fg-0 font-sans">
       
       {/* 1. Header */}
       <div className="relative overflow-hidden rounded-xl border border-line bg-surface-raised p-8 shadow-2xl">
@@ -91,11 +91,11 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
             <span>Açık Kaynak Widget & SDK Sistemi</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-[#F8FAFC]">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-fg-0">
             Erişilebilirlik & <span className="text-indigo-400 light:text-indigo-700">WebMCP</span> Widget'ı
           </h1>
 
-          <p className="text-sm sm:text-base text-[#CBD5E1] max-w-3xl leading-relaxed">
+          <p className="text-sm sm:text-base text-fg-3 max-w-3xl leading-relaxed">
             Tek satır HTML koduyla dilediğiniz web sitesine WCAG 2.2 AA uyumlu sesli okuma, disleksi modu, yüksek kontrast ve WebMCP yapay zeka ajan yeteneklerini tamamen ücretsiz ekleyin.
           </p>
 
@@ -125,8 +125,8 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
           <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 light:text-indigo-700 flex items-center justify-center font-bold">
             <Accessibility size={20} />
           </div>
-          <h2 className="text-base font-bold text-[#F8FAFC]">WCAG 2.2 AA Standartları</h2>
-          <p className="text-xs text-[#CBD5E1] leading-relaxed">
+          <h2 className="text-base font-bold text-fg-0">WCAG 2.2 AA Standartları</h2>
+          <p className="text-xs text-fg-3 leading-relaxed">
             Sesli okuma, yazı ölçekleme, disleksi fontu ve yüksek kontrast ile tüm erişilebilirlik gereksinimlerini tek tıkla sağlar.
           </p>
         </div>
@@ -135,8 +135,8 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
           <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 light:text-emerald-700 flex items-center justify-center font-bold">
             <Zap size={20} />
           </div>
-          <h2 className="text-base font-bold text-[#F8FAFC]">Sıfır Maliyet & Yüksek Hız</h2>
-          <p className="text-xs text-[#CBD5E1] leading-relaxed">
+          <h2 className="text-base font-bold text-fg-0">Sıfır Maliyet & Yüksek Hız</h2>
+          <p className="text-xs text-fg-3 leading-relaxed">
             Abonelik yok. Edge CDN üzerinden ultra hafif vanilla JS mimarisiyle sitenizin performansını etkilemeden çalışır.
           </p>
         </div>
@@ -145,8 +145,8 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
           <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 light:text-amber-800 flex items-center justify-center font-bold">
             <Bot size={20} />
           </div>
-          <h2 className="text-base font-bold text-[#F8FAFC]">WebMCP Yapay Zeka</h2>
-          <p className="text-xs text-[#CBD5E1] leading-relaxed">
+          <h2 className="text-base font-bold text-fg-0">WebMCP Yapay Zeka</h2>
+          <p className="text-xs text-fg-3 leading-relaxed">
             Model Context Protocol entegrasyonu sayesinde harici siteler ÖTV 2026, Balthazard ve mevzuat robotlarını API olarak çağırabilir.
           </p>
         </div>
@@ -156,11 +156,11 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
       <div className="p-6 rounded-xl border border-line bg-surface-raised space-y-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-4">
           <div>
-            <h2 className="text-lg font-bold text-[#F8FAFC] flex items-center gap-2">
+            <h2 className="text-lg font-bold text-fg-0 flex items-center gap-2">
               <Code2 size={18} className="text-indigo-400 light:text-indigo-700" />
               <span>HTML Entegrasyon Kodu</span>
             </h2>
-            <p className="text-xs text-[#CBD5E1]">
+            <p className="text-xs text-fg-3">
               Web sitenizin &lt;/body&gt; kapanış etiketinden hemen önce ekleyin.
             </p>
           </div>
@@ -180,7 +180,7 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
           </pre>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-[#CBD5E1]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-fg-3">
           <div className="flex items-start gap-2">
             <CheckCircle2 size={16} className="text-emerald-400 light:text-emerald-700 shrink-0 mt-0.5" />
             <span>WordPress, React, Vue, Next.js ve tüm web altyapıları ile %100 uyumludur.</span>
@@ -196,11 +196,11 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
       <div className="p-6 rounded-xl border border-line bg-surface-raised space-y-6 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-4">
           <div>
-            <h2 className="text-lg font-bold text-[#F8FAFC] flex items-center gap-2">
+            <h2 className="text-lg font-bold text-fg-0 flex items-center gap-2">
               <Terminal size={18} className="text-emerald-400 light:text-emerald-700" />
               <span>WebMCP Ajanı Entegrasyonu (JSON-RPC)</span>
             </h2>
-            <p className="text-xs text-[#CBD5E1]">
+            <p className="text-xs text-fg-3">
               Harici platformlar ve AI ajanları için 2026 mevzuat hesaplama aracı.
             </p>
           </div>

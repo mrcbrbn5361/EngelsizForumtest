@@ -25,10 +25,10 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
   if (!clientId || !redirectUri) {
     return (
       <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4" style={{ fontFamily: 'sans-serif' }}>
-        <div className="bg-white border-2 border-rose-200 rounded-3xl p-8 max-w-md w-full text-center shadow-xl">
+        <div className="bg-white border-2 border-rose-200 light:border-rose-800 rounded-3xl p-8 max-w-md w-full text-center shadow-xl">
           <AlertTriangle className="w-16 h-16 text-rose-600 mx-auto mb-4" />
           <h1 className="text-xl font-black mb-2 text-slate-800">Eksik OAuth Parametreleri</h1>
-          <p className="text-sm text-slate-600 mb-6">
+          <p className="text-sm text-fg-6 mb-6">
             Yetkilendirme isteğinde <code className="bg-slate-100 px-2 py-0.5 rounded text-rose-600 font-mono">client_id</code> ve <code className="bg-slate-100 px-2 py-0.5 rounded text-rose-600 font-mono">redirect_uri</code> parametreleri zorunludur.
           </p>
           <a href="/" className="inline-block px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold uppercase tracking-wider">
@@ -72,10 +72,10 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
   if (!isClientValid) {
     return (
       <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4" style={{ fontFamily: 'sans-serif' }}>
-        <div className="bg-white border-2 border-rose-200 rounded-3xl p-8 max-w-md w-full text-center shadow-xl">
+        <div className="bg-white border-2 border-rose-200 light:border-rose-800 rounded-3xl p-8 max-w-md w-full text-center shadow-xl">
           <AlertTriangle className="w-16 h-16 text-rose-600 mx-auto mb-4" />
           <h1 className="text-xl font-black mb-2 text-slate-800">Geçersiz İstemci (Client)</h1>
-          <p className="text-sm text-slate-600 mb-6">
+          <p className="text-sm text-fg-6 mb-6">
             <code className="font-mono text-xs bg-slate-100 p-1 rounded">{clientId}</code> kimliğine sahip kayıtlı bir OAuth istemcisi bulunamadı.
           </p>
           <a href="/" className="inline-block px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold uppercase tracking-wider">
@@ -90,10 +90,10 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
   if (!isUriAllowed) {
     return (
       <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4" style={{ fontFamily: 'sans-serif' }}>
-        <div className="bg-white border-2 border-rose-200 rounded-3xl p-8 max-w-md w-full text-center shadow-xl">
+        <div className="bg-white border-2 border-rose-200 light:border-rose-800 rounded-3xl p-8 max-w-md w-full text-center shadow-xl">
           <AlertTriangle className="w-16 h-16 text-rose-600 mx-auto mb-4" />
           <h1 className="text-xl font-black mb-2 text-slate-800">Geçersiz Yönlendirme Adresi</h1>
-          <p className="text-sm text-slate-600 mb-6">
+          <p className="text-sm text-fg-6 mb-6">
             İstenen yönlendirme adresi (<code className="font-mono text-xs bg-slate-100 p-1 rounded break-all">{redirectUri}</code>) bu istemcinin kayıtlı izinli adresleri ile eşleşmiyor.
           </p>
           <a href="/" className="inline-block px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold uppercase tracking-wider">
@@ -181,7 +181,7 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
           <div className="bg-[#f0edf0] p-4 rounded-xl font-mono text-xs border border-[#bdc9c6] break-all select-all font-bold text-[#005c55]">
             {oobCode}
           </div>
-          <p className="text-[10px] text-slate-500 mt-4 font-bold">EngelsizForum Güvenli OAuth 2.0 Sağlayıcısı (5 dakika geçerlidir)</p>
+          <p className="text-[10px] text-fg-5 mt-4 font-bold">EngelsizForum Güvenli OAuth 2.0 Sağlayıcısı (5 dakika geçerlidir)</p>
         </div>
       </div>
     );
@@ -195,8 +195,8 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
           <div className="flex justify-center mb-3">
             <EngelsizForumLogo size="lg" showBackground={false} />
           </div>
-          <h1 className="text-xl font-black text-white tracking-tight">EngelsizForum ile Giriş Yap</h1>
-          <p className="text-xs text-sky-200 font-semibold uppercase tracking-wider mt-1">
+          <h1 className="text-xl font-black text-fg tracking-tight">EngelsizForum ile Giriş Yap</h1>
+          <p className="text-xs text-sky-200 light:text-sky-800 font-semibold uppercase tracking-wider mt-1">
             OAuth 2.0 Güvenli Kimlik Doğrulama
           </p>
         </div>
@@ -219,7 +219,7 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
             <div className="p-3 bg-white border border-[#bdc9c6] rounded-xl text-xs font-bold text-[#005c55] uppercase tracking-wider flex items-center gap-2">
               <span>🔑</span>
               <span>{scope}</span>
-              <span className="text-slate-400 text-[11px] font-normal lowercase">(profil kimlik ve okuma izni)</span>
+              <span className="text-fg-4 text-[11px] font-normal lowercase">(profil kimlik ve okuma izni)</span>
             </div>
           </div>
 

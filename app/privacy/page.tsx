@@ -51,10 +51,10 @@ export default function PrivacyPage() {
               <Lock size={13} />
               <span>KVKK &amp; GDPR Uyumluluğu</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#F8FAFC] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-fg-0 tracking-tight">
               Verilerinizin Güvenliği ve Mahremiyeti
             </h1>
-            <p className="text-xs sm:text-sm text-[#CBD5E1] leading-relaxed max-w-2xl">
+            <p className="text-xs sm:text-sm text-fg-3 leading-relaxed max-w-2xl">
               EngelsizForum olarak engelli bireylerin mahremiyetine en yüksek hassasiyeti gösteriyoruz. Bu sayfa, platformumuzda toplanan verilerin mahiyetini, kullanım sınırlarını ve haklarınızı şeffaf biçimde açıklar.
             </p>
           </div>
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
                 <Eye size={15} />
                 <span>Sıfır Reklam Takibi</span>
               </div>
-              <p className="text-xs text-[#CBD5E1] leading-relaxed">
+              <p className="text-xs text-fg-3 leading-relaxed">
                 Verileriniz asla reklam hedeflemesi amacıyla kullanılmaz, üçüncü şahıslara veya veri simsarlarına satılmaz.
               </p>
             </div>
@@ -76,7 +76,7 @@ export default function PrivacyPage() {
                 <Database size={15} />
                 <span>Tam Veri Kontrolü</span>
               </div>
-              <p className="text-xs text-[#CBD5E1] leading-relaxed">
+              <p className="text-xs text-fg-3 leading-relaxed">
                 Hesap ayarlarınızdan verilerinizi dışa aktarabilir veya üyeliğinizi tüm içeriklerinizle birlikte kalıcı olarak silebilirsiniz.
               </p>
             </div>
@@ -86,7 +86,7 @@ export default function PrivacyPage() {
                 <FileText size={15} />
                 <span>Açık ve Sade Şeffaflık</span>
               </div>
-              <p className="text-xs text-[#CBD5E1] leading-relaxed">
+              <p className="text-xs text-fg-3 leading-relaxed">
                 Karmaşık hukuk jargonu yerine her kullanıcımızın kolayca anlayabileceği sade ve açık bir dil kullanıyoruz.
               </p>
             </div>
@@ -101,28 +101,28 @@ export default function PrivacyPage() {
             <div className="divide-y divide-line">
               <div className="p-5 space-y-1.5">
                 <h2 className="text-xs sm:text-sm font-bold text-fg">1. Toplanan Kişisel Veriler</h2>
-                <p className="text-xs text-[#CBD5E1] leading-relaxed">
+                <p className="text-xs text-fg-3 leading-relaxed">
                   Hesap oluştururken belirlediğiniz kullanıcı adı, e-posta adresi ve isteğe bağlı profil bilgileriniz güvenli bir şekilde saklanır. Sağlık raporu ve engel oranı hesaplamaları tamamen yerel tarayıcınızda (istemci tarafında) işlenir, sunucu veritabanına kaydedilmez.
                 </p>
               </div>
 
               <div className="p-5 space-y-1.5">
                 <h2 className="text-xs sm:text-sm font-bold text-fg">2. Verilerin İşlenme Amacı</h2>
-                <p className="text-xs text-[#CBD5E1] leading-relaxed">
+                <p className="text-xs text-fg-3 leading-relaxed">
                   Toplanan veriler yalnızca topluluk etkileşimlerini sürdürmek, tartışma bildirimlerini iletmek ve tercih ettiğiniz erişilebilirlik profilini (yüksek kontrast, font büyüklüğü) sonraki oturumlarınızda hatırlamak için kullanılır.
                 </p>
               </div>
 
               <div className="p-5 space-y-1.5">
                 <h2 className="text-xs sm:text-sm font-bold text-fg">3. Çerez ve Yerel Depolama (localStorage) Kullanımı</h2>
-                <p className="text-xs text-[#CBD5E1] leading-relaxed">
+                <p className="text-xs text-fg-3 leading-relaxed">
                   Platformumuz oturum güvenliği ve erişilebilirlik tercihleri (yüksek kontrast, biyonik okuma, disleksi fontu) için minimum düzeyde birinci taraf çerezleri ve yerel depolama mekanizmalarını kullanır.
                 </p>
               </div>
 
               <div className="p-5 space-y-1.5">
                 <h2 className="text-xs sm:text-sm font-bold text-fg">4. İletişim ve Hak Arama</h2>
-                <p className="text-xs text-[#CBD5E1] leading-relaxed">
+                <p className="text-xs text-fg-3 leading-relaxed">
                   Gizlilik politikamız ve kişisel verilerinizle ilgili her türlü soru veya talep için <a href="mailto:miracbirben@gmail.com" className="text-indigo-400 light:text-indigo-700 font-bold hover:underline">miracbirben@gmail.com</a> e-posta adresi üzerinden yönetim ekibimize ulaşabilirsiniz.
                 </p>
               </div>

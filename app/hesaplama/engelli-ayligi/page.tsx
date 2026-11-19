@@ -97,7 +97,7 @@ export default function EngelliAyligiPage() {
               <Users className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+              <h1 className="text-xl font-bold text-fg-0 tracking-tight">
                 2022 Engelli Aylığı Muhtaçlık Testi (2026)
               </h1>
               <div className="flex items-center gap-2 mt-0.5">
@@ -184,7 +184,7 @@ export default function EngelliAyligiPage() {
               />
             </div>
             <div className="space-y-1">
-              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
+              <span className="text-xs font-bold text-fg-0 block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
                 Aktif SGK Kaydı veya Emekli Aylığı Var mı?
               </span>
               <span className="text-[11px] text-fg-5 leading-relaxed block">
@@ -203,7 +203,7 @@ export default function EngelliAyligiPage() {
               />
             </div>
             <div className="space-y-1">
-              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
+              <span className="text-xs font-bold text-fg-0 block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
                 Hanede Evde Bakım Maaşı Alan Var mı? (+11.400 TL Gelire Eklenir)
               </span>
               <span className="text-[11px] text-fg-5 leading-relaxed block">
@@ -236,7 +236,7 @@ export default function EngelliAyligiPage() {
 
           <div className="space-y-4 flex-1">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-bold text-[#F8FAFC] tracking-tight uppercase">
+              <h2 className="text-lg font-bold text-fg-0 tracking-tight uppercase">
                 {calculation.isApproved 
                   ? 'GELİR KRİTERİ UYGUN: Aylık Bağlanabilir' 
                   : 'YASAL ŞARTLAR VEYA GELİR KRİTERİ AŞILDI'}
@@ -251,7 +251,7 @@ export default function EngelliAyligiPage() {
               </span>
             </div>
 
-            <div className="text-sm text-[#CBD5E1] leading-relaxed max-w-4xl">
+            <div className="text-sm text-fg-3 leading-relaxed max-w-4xl">
               {calculation.isApproved ? (
                 <>
                   Hane içi kişi başı net geliriniz <strong>{formatCurrency(calculation.kisiBasiGelir)}</strong> olup, kanuni muhtaçlık sınırı olan <strong>{formatCurrency(calculation.kisiBasiSinir)}</strong> tutarının altındadır. 
@@ -338,9 +338,9 @@ export default function EngelliAyligiPage() {
                 <th className="p-4 text-right">2026 Aylık Tutarı</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-line text-[#CBD5E1]">
+            <tbody className="divide-y divide-line text-fg-3">
               <tr className={`hover:bg-white/5 transition-colors ${disabilityRate >= 40 && disabilityRate < 70 ? 'bg-indigo-950/20 light:bg-indigo-50/20' : ''}`}>
-                <td className="p-4 font-bold text-[#F8FAFC]">%40 - %69 Engelli Aylığı</td>
+                <td className="p-4 font-bold text-fg-0">%40 - %69 Engelli Aylığı</td>
                 <td className="p-4 text-fg-4 font-medium">%40 ile %69 arası raporu olanlar</td>
                 <td className="p-4 text-fg-5 font-mono text-[10px]">Kişi başı &lt; {formatCurrency(kisiBasiSinir)}</td>
                 <td className="p-4 text-right font-black text-indigo-400 light:text-indigo-700 text-sm">
@@ -348,7 +348,7 @@ export default function EngelliAyligiPage() {
                 </td>
               </tr>
               <tr className={`hover:bg-white/5 transition-colors ${disabilityRate >= 70 ? 'bg-emerald-950/20 light:bg-emerald-50/20' : ''}`}>
-                <td className="p-4 font-bold text-[#F8FAFC]">%70 ve Üzeri Bakıma Muhtaç</td>
+                <td className="p-4 font-bold text-fg-0">%70 ve Üzeri Bakıma Muhtaç</td>
                 <td className="p-4 text-fg-4 font-medium">%70 ve üzeri ağır engelli bireyler</td>
                 <td className="p-4 text-fg-5 font-mono text-[10px]">Kişi başı &lt; {formatCurrency(kisiBasiSinir)}</td>
                 <td className="p-4 text-right font-black text-emerald-400 light:text-emerald-700 text-sm">
@@ -356,7 +356,7 @@ export default function EngelliAyligiPage() {
                 </td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="p-4 font-bold text-[#F8FAFC]">18 Yaş Altı Engelli Yakını</td>
+                <td className="p-4 font-bold text-fg-0">18 Yaş Altı Engelli Yakını</td>
                 <td className="p-4 text-fg-4 font-medium">Özel gereksinimli çocuk ebeveyni</td>
                 <td className="p-4 text-fg-5 font-mono text-[10px]">Kişi başı &lt; {formatCurrency(kisiBasiSinir)}</td>
                 <td className="p-4 text-right font-black text-indigo-400 light:text-indigo-700 text-sm">

@@ -783,7 +783,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
           {/* Main OP Post */}
           <article className="bg-surface-raised rounded-md overflow-hidden flex flex-col md:flex-row border border-line shadow-sm">
             {/* Mobile Author Info */}
-            <div className="md:hidden bg-[#0E1726] border-b border-line p-3 flex items-center justify-between">
+            <div className="md:hidden bg-surface border-b border-line p-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <UserAvatar 
                   src={topic.author?.avatar_url}
@@ -804,7 +804,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
             </div>
 
             {/* Desktop Author Column */}
-            <div className="hidden md:flex flex-col items-center bg-[#0E1726] shrink-0 w-44 p-4 border-r border-line">
+            <div className="hidden md:flex flex-col items-center bg-surface shrink-0 w-44 p-4 border-r border-line">
               <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-semibold text-indigo-400 light:text-indigo-700 hover:underline text-xs mb-2 truncate max-w-full">
                 @{topic.author?.username || 'Anonim'}
               </Link>
@@ -896,7 +896,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   }`}
                 >
                   {/* Mobile View Author Bar */}
-                  <div className="md:hidden bg-[#0E1726] border-b border-line p-3 flex items-center justify-between">
+                  <div className="md:hidden bg-surface border-b border-line p-3 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <UserAvatar 
                         src={comment.author?.avatar_url}
@@ -922,7 +922,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   </div>
 
                   {/* Desktop view Author Column */}
-                  <div className="hidden md:flex flex-col items-center bg-[#0E1726] shrink-0 w-44 p-4 border-r border-line">
+                  <div className="hidden md:flex flex-col items-center bg-surface shrink-0 w-44 p-4 border-r border-line">
                     <div className="flex flex-col items-center max-w-full">
                       <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-semibold text-indigo-400 light:text-indigo-700 hover:underline text-xs mb-1 truncate max-w-full">
                         @{comment.author?.username || 'Anonim'}

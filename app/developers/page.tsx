@@ -1301,7 +1301,7 @@ export function LoginWithEngelsizForum() {
                         </button>
                       </div>
 
-                      <div className="p-3 bg-[#0f172a] text-fg-2 font-mono text-[11px] overflow-x-auto max-h-[220px]">
+                      <div className="p-3 bg-surface text-fg-2 font-mono text-[11px] overflow-x-auto max-h-[220px]">
                         {btnCodeType === 'html' && (
                           <pre className="leading-relaxed">
 {`<!-- EngelsizForum ile Giriş Yap - Logolu Resmi Buton -->

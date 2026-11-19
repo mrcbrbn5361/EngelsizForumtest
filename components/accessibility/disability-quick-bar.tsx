@@ -167,7 +167,7 @@ export function DisabilityQuickBar() {
                 className={`flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-md transition-colors shrink-0 cursor-pointer border ${
                   isSelected 
                     ? 'bg-indigo-600 text-white border-indigo-500 font-bold shadow-xs' 
-                    : 'bg-surface-hover text-fg-2 border-[#29364b] hover:bg-[#202f4a] hover:text-white'
+                    : 'bg-surface-hover text-fg-2 border-line-strong hover:bg-surface-active hover:text-white'
                 }`}
                 title={`${p.title} - ${p.description}`}
                 aria-pressed={isSelected}
@@ -180,11 +180,11 @@ export function DisabilityQuickBar() {
           })}
 
           {/* Quick Font Size Controls (A- / A+) */}
-          <div className="flex items-center gap-1 border-l border-[#29364b] pl-2 ml-1 shrink-0">
+          <div className="flex items-center gap-1 border-l border-line-strong pl-2 ml-1 shrink-0">
             <button
               type="button"
               onClick={decreaseFont}
-              className="px-1.5 py-0.5 bg-surface-hover hover:bg-[#202f4a] text-fg-2 hover:text-white border border-[#29364b] rounded-md text-[11px] font-bold transition-colors cursor-pointer"
+              className="px-1.5 py-0.5 bg-surface-hover hover:bg-surface-active text-fg-2 hover:text-fg border border-line-strong rounded-md text-[11px] font-bold transition-colors cursor-pointer"
               title="Yazı Boyutunu Küçült"
               aria-label="Yazı boyutunu küçült"
             >
@@ -193,7 +193,7 @@ export function DisabilityQuickBar() {
             <button
               type="button"
               onClick={increaseFont}
-              className="px-1.5 py-0.5 bg-surface-hover hover:bg-[#202f4a] text-fg-2 hover:text-white border border-[#29364b] rounded-md text-[11px] font-bold transition-colors cursor-pointer"
+              className="px-1.5 py-0.5 bg-surface-hover hover:bg-surface-active text-fg-2 hover:text-fg border border-line-strong rounded-md text-[11px] font-bold transition-colors cursor-pointer"
               title="Yazı Boyutunu Büyüt"
               aria-label="Yazı boyutunu büyüt"
             >

@@ -153,7 +153,7 @@ export default function HelpPage() {
                 <BookOpen size={15} className="text-sky-400" />
                 <span>SIKÇA SORULAN SORULAR (SSS)</span>
               </div>
-              <span className="text-xs font-bold text-slate-400">
+              <span className="text-xs font-bold text-slate-300">
                 5 Madde
               </span>
             </div>

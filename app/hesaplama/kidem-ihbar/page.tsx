@@ -121,7 +121,7 @@ export default function KidemIhbarPage() {
             <h2 className="font-bold text-lg text-indigo-400 light:text-indigo-700 tracking-tight">
               Haklı Fesih Hakkı (4857 İş Kanunu m.24/I-a)
             </h2>
-            <p className="text-sm text-[#CBD5E1] leading-relaxed">
+            <p className="text-sm text-fg-3 leading-relaxed">
               Engelli çalışanlar, işin sağlıkları için tehlike oluşturduğunu <strong>sağlık kurulu raporuyla</strong> belgeledikleri takdirde, iş sözleşmesini feshederek <strong>kıdem tazminatını alıp istifa edebilirler</strong>.
             </p>
           </div>
@@ -136,7 +136,7 @@ export default function KidemIhbarPage() {
               <Briefcase className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+              <h1 className="text-xl font-bold text-fg-0 tracking-tight">
                 Kıdem ve İhbar Tazminatı Hesaplama (2026)
               </h1>
               <div className="flex items-center gap-2 mt-0.5">
@@ -248,7 +248,7 @@ export default function KidemIhbarPage() {
               />
             </div>
             <div className="space-y-1">
-              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
+              <span className="text-xs font-bold text-fg-0 block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
                 Sağlık Sebebiyle Haklı Fesih / İstifa (m.24/I-a)
               </span>
               <span className="text-[11px] text-fg-5 leading-relaxed block">
@@ -268,7 +268,7 @@ export default function KidemIhbarPage() {
                 />
               </div>
               <div className="space-y-1">
-                <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
+                <span className="text-xs font-bold text-fg-0 block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
                   Bildirimsiz İşten Çıkarılma (İhbar Dahil)
                 </span>
                 <span className="text-[11px] text-fg-5 leading-relaxed block">
@@ -354,9 +354,9 @@ export default function KidemIhbarPage() {
                 <th className="p-4 text-right text-emerald-400 light:text-emerald-700 bg-emerald-950/20 light:bg-emerald-50/20 font-black">Net Tutar</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-line text-[#CBD5E1]">
+            <tbody className="divide-y divide-line text-fg-3">
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="p-4 font-bold text-[#F8FAFC]">Kıdem Tazminatı</td>
+                <td className="p-4 font-bold text-fg-0">Kıdem Tazminatı</td>
                 <td className="p-4 text-fg-5 italic">{formatCurrency(calculation.kidemBazUcret)}</td>
                 <td className="p-4 text-right font-medium">{formatCurrency(calculation.brutKidem)}</td>
                 <td className="p-4 text-right text-fg-6">MUAF</td>
@@ -364,14 +364,14 @@ export default function KidemIhbarPage() {
                 <td className="p-4 text-right font-black text-emerald-400 light:text-emerald-700 bg-emerald-950/20 light:bg-emerald-50/20">{formatCurrency(calculation.netKidem)}</td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="p-4 font-bold text-[#F8FAFC]">İhbar Tazminatı</td>
+                <td className="p-4 font-bold text-fg-0">İhbar Tazminatı</td>
                 <td className="p-4 text-fg-5 italic">{formatCurrency(calculation.giydirilmisBrut)}</td>
                 <td className="p-4 text-right font-medium">{formatCurrency(calculation.brutIhbar)}</td>
                 <td className="p-4 text-right text-rose-400 light:text-rose-700">-{formatCurrency(calculation.ihbarGelirVergisi)}</td>
                 <td className="p-4 text-right text-rose-400 light:text-rose-700">-{formatCurrency(calculation.ihbarDamgaVergisi)}</td>
                 <td className="p-4 text-right font-black text-emerald-400 light:text-emerald-700 bg-emerald-950/20 light:bg-emerald-50/20">{formatCurrency(calculation.netIhbar)}</td>
               </tr>
-              <tr className="bg-surface-hover font-black text-[#F8FAFC] border-t border-indigo-500/30">
+              <tr className="bg-surface-hover font-black text-fg-0 border-t border-indigo-500/30">
                 <td className="p-4 text-sm uppercase" colSpan={2}>GENEL TOPLAMLAR</td>
                 <td className="p-4 text-right text-sm">{formatCurrency(calculation.toplamBrutTazminat)}</td>
                 <td className="p-4 text-right text-rose-400 light:text-rose-700">-{formatCurrency(calculation.ihbarGelirVergisi)}</td>

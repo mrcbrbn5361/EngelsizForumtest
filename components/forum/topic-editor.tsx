@@ -167,14 +167,14 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-sky-950/80 border-2 border-dashed border-sky-400 z-50 flex flex-col items-center justify-center backdrop-blur-xs pointer-events-none"
+            className="absolute inset-0 bg-sky-950/80 light:bg-sky-50/80 border-2 border-dashed border-sky-400 light:border-sky-700 z-50 flex flex-col items-center justify-center backdrop-blur-xs pointer-events-none"
           >
             <div className="bg-slate-900 border border-sky-500/30 p-6 rounded-2xl shadow-xl flex flex-col items-center gap-3 text-center max-w-sm mx-4">
-              <div className="size-12 rounded-full bg-sky-500/20 flex items-center justify-center text-sky-400">
+              <div className="size-12 rounded-full bg-sky-500/20 flex items-center justify-center text-sky-400 light:text-sky-700">
                 <ImageIcon size={24} />
               </div>
-              <h3 className="text-sm font-bold text-slate-100">Görseli Bırakın</h3>
-              <p className="text-xs text-slate-400">
+              <h3 className="text-sm font-bold text-fg-1">Görseli Bırakın</h3>
+              <p className="text-xs text-fg-4">
                 Ekran okuyucu kullanıcıları için otomatik AI betimlemesi oluşturulacaktır.
               </p>
             </div>
@@ -210,8 +210,8 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
           </div>
 
           {!isPreview && (
-            <label className="cursor-pointer size-8 rounded-lg bg-slate-900 flex items-center justify-center text-slate-400 hover:text-sky-400 hover:bg-sky-500/10 transition-all border border-white/[0.06] hover:border-sky-500/30">
-              {isUploading ? <Loader2 size={15} className="animate-spin text-sky-400" /> : <ImageIcon size={15} />}
+            <label className="cursor-pointer size-8 rounded-lg bg-slate-900 flex items-center justify-center text-slate-400 hover:text-sky-400 light:hover:text-sky-700 hover:bg-sky-500/10 transition-all border border-white/[0.06] hover:border-sky-500/30">
+              {isUploading ? <Loader2 size={15} className="animate-spin text-sky-400 light:text-sky-700" /> : <ImageIcon size={15} />}
               <input 
                 type="file" 
                 className="hidden" 
@@ -223,7 +223,7 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
             </label>
           )}
         </div>
-        <div className="text-[10px] text-slate-500 text-center font-normal">
+        <div className="text-[10px] text-fg-5 text-center font-normal">
           Sürükle-bırak görsel &amp; Markdown desteklenir
         </div>
       </div>
@@ -248,7 +248,7 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder || 'Konu detaylarını buraya yazın... (Görselleri doğrudan buraya sürükleyip bırakabilirsiniz)'}
-                className="w-full min-h-[220px] md:min-h-[280px] p-4 outline-none bg-transparent resize-y text-slate-200 text-xs sm:text-sm font-normal leading-relaxed placeholder:text-slate-500"
+                className="w-full min-h-[220px] md:min-h-[280px] p-4 outline-none bg-transparent resize-y text-fg-2 text-xs sm:text-sm font-normal leading-relaxed placeholder:text-fg-5"
                 aria-label="Tartışma İçeriği"
               />
             </motion.div>
@@ -260,11 +260,11 @@ export function TopicEditor({ value, onChange, placeholder }: TopicEditorProps) 
               exit={{ opacity: 0 }}
               className="w-full h-full p-4 bg-slate-950/20"
             >
-              <div className="markdown-body prose prose-invert prose-sm max-w-none break-words overflow-hidden min-h-[220px] md:min-h-[280px] text-slate-200 text-xs sm:text-sm">
+              <div className="markdown-body prose prose-invert prose-sm max-w-none break-words overflow-hidden min-h-[220px] md:min-h-[280px] text-fg-2 text-xs sm:text-sm">
                 {value ? (
                   <BionicMarkdown content={value} />
                 ) : (
-                  <p className="text-slate-500 italic text-xs">Henüz bir şey yazmadınız. Önizleme alanı boş.</p>
+                  <p className="text-fg-5 italic text-xs">Henüz bir şey yazmadınız. Önizleme alanı boş.</p>
                 )}
               </div>
             </motion.div>

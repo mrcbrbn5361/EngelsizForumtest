@@ -106,7 +106,7 @@ export function AudioMessagePlayer({ audioUrl, duration = 0, isMe = false }: Aud
     return (
       <div className={cn(
         "flex items-center gap-2 p-2.5 rounded-2xl text-xs",
-        isMe ? "bg-rose-950/40 border border-rose-500/30 text-rose-300" : "bg-[#161f33] border border-white/[0.08] text-rose-400"
+        isMe ? "bg-rose-950/40 light:bg-rose-50/40 border border-rose-500/30 text-rose-300 light:text-rose-700" : "bg-surface-raised border border-white/[0.08] text-rose-400 light:text-rose-700"
       )}>
         <AlertCircle size={15} className="shrink-0" aria-hidden="true" />
         <span className="text-[11px] font-medium">Ses dosyası oynatılamadı</span>
@@ -125,7 +125,7 @@ export function AudioMessagePlayer({ audioUrl, duration = 0, isMe = false }: Aud
     <div 
       className={cn(
         "flex items-center gap-3 p-2.5 rounded-2xl min-w-[220px] max-w-[300px]",
-        isMe ? "bg-sky-500 text-slate-950 shadow-md font-medium" : "bg-[#161f33] border border-white/[0.08] text-slate-100"
+        isMe ? "bg-sky-500 text-slate-950 shadow-md font-medium" : "bg-surface-raised border border-white/[0.08] text-fg-1"
       )}
       role="region"
       aria-label="Sesli Mesaj Çalıcı"
@@ -145,10 +145,10 @@ export function AudioMessagePlayer({ audioUrl, duration = 0, isMe = false }: Aud
         type="button"
         onClick={togglePlay}
         className={cn(
-          "w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform active:scale-95 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-sky-400",
+          "w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-transform active:scale-95 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-sky-400 light:focus-visible:ring-sky-700",
           isMe 
-            ? "bg-slate-950 text-sky-400 hover:bg-slate-900 shadow-md" 
-            : "bg-sky-500 text-slate-950 hover:bg-sky-400 font-black shadow-md shadow-sky-500/20"
+            ? "bg-slate-950 text-sky-400 light:text-sky-700 hover:bg-slate-900 shadow-md" 
+            : "bg-sky-500 text-slate-950 hover:bg-sky-400 light:hover:bg-sky-700 font-black shadow-md shadow-sky-500/20"
         )}
         aria-label={isPlaying ? "Sesli mesajı duraklat" : "Sesli mesajı oynat"}
       >
@@ -180,7 +180,7 @@ export function AudioMessagePlayer({ audioUrl, duration = 0, isMe = false }: Aud
               onClick={cyclePlaybackRate}
               className={cn(
                 "px-1.5 py-0.2 rounded text-[9px] font-bold font-mono transition-colors cursor-pointer",
-                isMe ? "bg-slate-950/20 hover:bg-slate-950/40 text-slate-950" : "bg-white/[0.08] hover:bg-white/[0.15] text-slate-300"
+                isMe ? "bg-slate-950/20 hover:bg-slate-950/40 text-slate-950" : "bg-white/[0.08] hover:bg-white/[0.15] text-fg-3"
               )}
               title="Oynatma Hızını Değiştir"
               aria-label={`Oynatma hızı: ${playbackRate} katı`}
@@ -188,7 +188,7 @@ export function AudioMessagePlayer({ audioUrl, duration = 0, isMe = false }: Aud
               {playbackRate}x
             </button>
             <div className="flex items-center gap-1">
-              <Volume2 size={11} className={isPlaying ? "text-sky-300 animate-pulse" : "opacity-60"} aria-hidden="true" />
+              <Volume2 size={11} className={isPlaying ? "text-sky-300 light:text-sky-700 animate-pulse" : "opacity-60"} aria-hidden="true" />
               <span>{formatTime(totalDuration)}</span>
             </div>
           </div>
