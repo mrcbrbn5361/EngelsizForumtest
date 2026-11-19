@@ -173,7 +173,7 @@ export default function OtvHesaplamaPage() {
               <Car className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+              <h1 className="text-xl font-bold text-fg-0 tracking-tight">
                 Engelli ÖTV İndirimli Araç Hesaplama (2026)
               </h1>
               <div className="flex items-center gap-2 mt-0.5">
@@ -369,9 +369,9 @@ export default function OtvHesaplamaPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-line text-[#CBD5E1]">
+            <tbody className="divide-y divide-line text-fg-3">
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="p-4 font-bold text-[#F8FAFC]">1. Ham Fabrika Bedeli</td>
+                <td className="p-4 font-bold text-fg-0">1. Ham Fabrika Bedeli</td>
                 <td className="p-4 text-fg-5 font-mono text-[10px]">
                   KDV Hariç / (1 + ÖTV Oranı)
                 </td>
@@ -383,7 +383,7 @@ export default function OtvHesaplamaPage() {
                 </td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="p-4 font-bold text-[#F8FAFC]">
+                <td className="p-4 font-bold text-fg-0">
                   2. Özel Tüketim Vergisi (ÖTV)
                 </td>
                 <td className="p-4 text-fg-5 font-mono text-[10px]">
@@ -392,12 +392,12 @@ export default function OtvHesaplamaPage() {
                 <td className="p-4 text-right font-medium text-rose-400 light:text-rose-700">
                   +{formatCurrency(calculation.normalOtvTutari)}
                 </td>
-                <td className="p-4 text-right font-black text-emerald-500 bg-emerald-950/20 light:bg-emerald-50/20">
+                <td className="p-4 text-right font-black text-emerald-500 light:text-emerald-800 bg-emerald-950/20 light:bg-emerald-50/20">
                   0 ₺ (İSTİSNA)
                 </td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="p-4 font-bold text-[#F8FAFC]">
+                <td className="p-4 font-bold text-fg-0">
                   3. Katma Değer Vergisi (%20 KDV)
                 </td>
                 <td className="p-4 text-fg-5 font-mono text-[10px]">
@@ -410,7 +410,7 @@ export default function OtvHesaplamaPage() {
                   +{formatCurrency(calculation.engelliKdvTutari)}
                 </td>
               </tr>
-              <tr className="bg-surface-hover font-black text-[#F8FAFC] border-t border-indigo-500/30">
+              <tr className="bg-surface-hover font-black text-fg-0 border-t border-indigo-500/30">
                 <td className="p-4 text-sm uppercase">Anahtar Teslim Toplam</td>
                 <td className="p-4 text-indigo-300 light:text-indigo-700 font-mono text-[10px] uppercase">
                   Nihai Satış Fiyatı

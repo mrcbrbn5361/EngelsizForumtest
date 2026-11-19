@@ -68,7 +68,7 @@ export function TextToSpeechControls({ text, title = "Metni Seslendir", classNam
     return (
       <p className="text-xs md:text-sm leading-relaxed text-slate-300 select-text">
         {start}
-        <mark className="bg-sky-500/30 text-sky-200 px-1 py-0.5 rounded font-semibold border-b border-sky-400 transition-all duration-75">
+        <mark className="bg-sky-500/30 text-sky-200 light:text-sky-800 px-1 py-0.5 rounded font-semibold border-b border-sky-400 light:border-sky-700 transition-all duration-75">
           {word}
         </mark>
         {end}
@@ -88,14 +88,14 @@ export function TextToSpeechControls({ text, title = "Metni Seslendir", classNam
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-3.5 mb-3.5">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="p-2.5 bg-sky-500/10 text-sky-400 rounded-xl shrink-0 border border-sky-500/20">
+          <div className="p-2.5 bg-sky-500/10 text-sky-400 light:text-sky-700 rounded-xl shrink-0 border border-sky-500/20">
             <Volume2 size={18} aria-hidden="true" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h4 className="font-semibold text-xs text-slate-100 truncate" title={title}>{title}</h4>
               {isPlaying && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-sky-500/15 text-sky-300 border border-sky-500/30 animate-pulse">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono bg-sky-500/15 text-sky-300 light:text-sky-700 border border-sky-500/30 animate-pulse">
                   <Sparkles size={10} />
                   {audioSource === 'yeterly' ? 'Yeterly AI Doğal Ses' : 'Seslendiriliyor'}
                 </span>
@@ -114,7 +114,7 @@ export function TextToSpeechControls({ text, title = "Metni Seslendir", classNam
             className={cn(
               "flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold tracking-wide transition-all cursor-pointer",
               isPlaying && !isPaused
-                ? "bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold shadow-lg shadow-amber-500/20"
+                ? "bg-amber-500 hover:bg-amber-400 light:hover:bg-amber-800 text-slate-950 font-bold shadow-lg shadow-amber-500/20"
                 : "bg-sky-600 hover:bg-sky-500 text-white shadow-lg shadow-sky-500/20"
             )}
             aria-label={isPlaying && !isPaused ? "Seslendirmeyi duraklat" : "Seslendirmeyi başlat"}
@@ -128,7 +128,7 @@ export function TextToSpeechControls({ text, title = "Metni Seslendir", classNam
               id="tts-stop-button"
               type="button"
               onClick={stop}
-              className="p-2 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-all border border-rose-500/20 cursor-pointer"
+              className="p-2 rounded-xl bg-rose-500/10 text-rose-400 light:text-rose-700 hover:bg-rose-500/20 transition-all border border-rose-500/20 cursor-pointer"
               aria-label="Seslendirmeyi durdur"
             >
               <Square size={13} />
@@ -142,7 +142,7 @@ export function TextToSpeechControls({ text, title = "Metni Seslendir", classNam
             className={cn(
               "p-2 rounded-xl transition-all border cursor-pointer",
               showSettings 
-                ? "bg-slate-800 border-sky-500/40 text-sky-400" 
+                ? "bg-slate-800 border-sky-500/40 text-sky-400 light:text-sky-700" 
                 : "bg-slate-900 border-white/[0.08] text-slate-400 hover:text-slate-200"
             )}
             aria-expanded={showSettings}
@@ -160,7 +160,7 @@ export function TextToSpeechControls({ text, title = "Metni Seslendir", classNam
           <div className="space-y-1.5">
             <label htmlFor="voice-select" className="text-[10px] font-semibold tracking-wider text-slate-400 flex items-center justify-between">
               <span>SES MOTORU</span>
-              <span className="font-mono text-sky-400">({voices.length || 1} ses)</span>
+              <span className="font-mono text-sky-400 light:text-sky-700">({voices.length || 1} ses)</span>
             </label>
             <div className="relative">
               <select
@@ -170,7 +170,7 @@ export function TextToSpeechControls({ text, title = "Metni Seslendir", classNam
                   const voice = voices.find(v => v.name === e.target.value);
                   if (voice) setSelectedVoice(voice);
                 }}
-                className="w-full bg-[#111726] border border-white/[0.08] text-slate-200 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:border-sky-500 appearance-none cursor-pointer pr-7"
+                className="w-full bg-surface-raised border border-white/[0.08] text-slate-200 rounded-lg px-2.5 py-1.5 text-xs outline-none focus:border-sky-500 appearance-none cursor-pointer pr-7"
               >
                 {trVoices.length > 0 ? (
                   <optgroup label="Türkçe Sesler">
@@ -189,15 +189,15 @@ export function TextToSpeechControls({ text, title = "Metni Seslendir", classNam
                   </optgroup>
                 )}
               </select>
-              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={13} />
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-fg-4 pointer-events-none" size={13} />
             </div>
           </div>
 
           {/* Speed slider */}
           <div className="space-y-1.5">
-            <label htmlFor="speed-slider" className="text-[10px] font-semibold tracking-wider text-slate-400 flex justify-between">
+            <label htmlFor="speed-slider" className="text-[10px] font-semibold tracking-wider text-fg-4 flex justify-between">
               <span>OKUMA HIZI</span>
-              <span className="font-mono text-sky-400">{rate}x</span>
+              <span className="font-mono text-sky-400 light:text-sky-700">{rate}x</span>
             </label>
             <input
               id="speed-slider"
@@ -213,9 +213,9 @@ export function TextToSpeechControls({ text, title = "Metni Seslendir", classNam
 
           {/* Pitch slider */}
           <div className="space-y-1.5">
-            <label htmlFor="pitch-slider" className="text-[10px] font-semibold tracking-wider text-slate-400 flex justify-between">
+            <label htmlFor="pitch-slider" className="text-[10px] font-semibold tracking-wider text-fg-4 flex justify-between">
               <span>SES TONU</span>
-              <span className="font-mono text-sky-400">{pitch}</span>
+              <span className="font-mono text-sky-400 light:text-sky-700">{pitch}</span>
             </label>
             <input
               id="pitch-slider"

@@ -136,7 +136,7 @@ export default function AuthCallbackPage() {
         <main 
           role="status" 
           aria-live="polite" 
-          className="p-10 text-center space-y-6 max-w-md w-full shadow-2xl rounded-3xl border border-white/[0.08] bg-[#111726]/90 backdrop-blur-md"
+          className="p-10 text-center space-y-6 max-w-md w-full shadow-2xl rounded-3xl border border-white/[0.08] bg-surface-raised/90 backdrop-blur-md"
         >
           <div className="flex justify-center">
             {status === 'error' ? (
@@ -144,17 +144,17 @@ export default function AuthCallbackPage() {
                 <AlertCircle size={30} aria-hidden="true" />
               </div>
             ) : status === 'success' ? (
-              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-400 light:text-emerald-700 flex items-center justify-center border border-emerald-500/20">
                 <CheckCircle2 size={30} aria-hidden="true" />
               </div>
             ) : (
-              <div className="w-14 h-14 rounded-2xl bg-sky-500/10 text-sky-400 flex items-center justify-center border border-sky-500/20">
+              <div className="w-14 h-14 rounded-2xl bg-sky-500/10 text-sky-400 light:text-sky-700 flex items-center justify-center border border-sky-500/20">
                 <Loader2 className="animate-spin" size={30} aria-hidden="true" />
               </div>
             )}
           </div>
-          <h1 className="text-lg sm:text-xl font-bold text-slate-100">{message}</h1>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+          <h1 className="text-lg sm:text-xl font-bold text-fg-1">{message}</h1>
+          <p className="text-[10px] text-fg-4 font-bold uppercase tracking-widest">
             ENGELSİZFORUM GÜVENLİ KİMLİK DOĞRULAMA
           </p>
         </main>

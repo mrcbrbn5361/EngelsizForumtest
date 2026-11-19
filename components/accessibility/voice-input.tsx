@@ -141,7 +141,7 @@ export function VoiceInput({ onTranscript, lang = 'tr-TR', label = 'Sesle Yaz' }
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
             >
-              <Mic className={`w-5 h-5 ${isListening ? 'text-white' : 'text-primary'}`} />
+              <Mic className={`w-5 h-5 ${isListening ? 'text-fg' : 'text-primary'}`} />
             </motion.div>
           )}
         </AnimatePresence>

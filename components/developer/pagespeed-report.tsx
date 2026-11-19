@@ -30,7 +30,7 @@ export function PageSpeedReport() {
       </button>
       
       {data && data.lighthouseResult && (
-        <div className="mt-2 text-xs text-slate-600">
+        <div className="mt-2 text-xs text-fg-6">
           <p>LCP: {data.lighthouseResult.audits['largest-contentful-paint']?.displayValue}</p>
           <p>TBT: {data.lighthouseResult.audits['total-blocking-time']?.displayValue}</p>
         </div>

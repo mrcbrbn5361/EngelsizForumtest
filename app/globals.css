@@ -16,7 +16,10 @@
   --color-surface-raised: var(--ef-surface-raised);
   --color-surface-hover: var(--ef-surface-hover);
   --color-line: var(--ef-line);
+  --color-line-strong: var(--ef-line-strong);
+  --color-surface-active: var(--ef-surface-active);
   --color-fg: var(--ef-fg);
+  --color-fg-0: var(--ef-fg-0);
   --color-fg-1: var(--ef-fg-1);
   --color-fg-2: var(--ef-fg-2);
   --color-fg-3: var(--ef-fg-3);
@@ -30,7 +33,10 @@
   --ef-surface-raised: #111b2e;
   --ef-surface-hover: #18243a;
   --ef-line: #1e293b;
+  --ef-line-strong: #29364b;
+  --ef-surface-active: #202f4a;
   --ef-fg: #ffffff;
+  --ef-fg-0: #f8fafc;
   --ef-fg-1: #f1f5f9;
   --ef-fg-2: #e2e8f0;
   --ef-fg-3: #cbd5e1;
@@ -49,7 +55,10 @@
   --ef-surface-raised: #ffffff;
   --ef-surface-hover: #e2e8f0;
   --ef-line: #cbd5e1;
+  --ef-line-strong: #94a3b8;
+  --ef-surface-active: #cbd5e1;
   --ef-fg: #0f172a;
+  --ef-fg-0: #172033;
   --ef-fg-1: #1e293b;
   --ef-fg-2: #273449;
   --ef-fg-3: #334155;
@@ -64,7 +73,10 @@
   --ef-surface-raised: #faf4e6;
   --ef-surface-hover: #ebe0c8;
   --ef-line: #d8c8a6;
+  --ef-line-strong: #b8a47c;
+  --ef-surface-active: #e0d2b4;
   --ef-fg: #2b2116;
+  --ef-fg-0: #2f2418;
   --ef-fg-1: #33281b;
   --ef-fg-2: #3d3122;
   --ef-fg-3: #4a3c2a;
@@ -158,18 +170,142 @@ html.dyslexic-font button {
   line-height: 1.85 !important;
 }
 
-/* Accessibility: High Contrast AAA Mode */
-html.high-contrast,
-html.high-contrast body {
-  background-color: #000000 !important;
-  color: #ffffff !important;
+/* ---------------------------------------------------------------------------
+   HIGH CONTRAST (html.high-contrast): strengthens the active theme instead of
+   replacing it. Secondary text becomes full-strength, borders become solid,
+   accent shades move one step further from the background (WCAG AAA 7:1 target).
+   --------------------------------------------------------------------------- */
+html.high-contrast[data-theme="dark"] {
+  --ef-surface: #000000;
+  --ef-surface-raised: #000000;
+  --ef-surface-hover: #1f1f1f;
+  --ef-line: #ffffff;
+  --ef-line-strong: #ffffff;
+  --ef-surface-active: #333333;
+  --ef-fg: #ffffff;
+  --ef-fg-0: #ffffff;
+  --ef-fg-1: #ffffff;
+  --ef-fg-2: #ffffff;
+  --ef-fg-3: #ffffff;
+  --ef-fg-4: #f1f5f9;
+  --ef-fg-5: #e2e8f0;
+  --ef-fg-6: #e2e8f0;
+  --color-slate-300: #ffffff;
+  --color-slate-400: #f1f5f9;
+  --color-slate-500: #e2e8f0;
+  --ef-focus: #facc15;
+  --color-indigo-400: oklch(78.5% 0.115 274.713);
+  --color-indigo-500: oklch(67.3% 0.182 276.935);
+  --color-sky-400: oklch(82.8% 0.111 230.318);
+  --color-sky-500: oklch(74.6% 0.16 232.661);
+  --color-emerald-400: oklch(84.5% 0.143 164.978);
+  --color-emerald-500: oklch(76.5% 0.177 163.223);
+  --color-red-400: oklch(80.8% 0.114 19.571);
+  --color-red-500: oklch(70.4% 0.191 22.216);
+  --color-rose-400: oklch(81% 0.117 11.638);
+  --color-rose-500: oklch(71.2% 0.194 13.428);
+  --color-amber-400: oklch(87.9% 0.169 91.605);
+  --color-amber-500: oklch(82.8% 0.189 84.429);
+  --color-purple-400: oklch(82.7% 0.119 306.383);
+  --color-purple-500: oklch(71.4% 0.203 305.504);
+  --color-violet-400: oklch(81.1% 0.111 293.571);
+  --color-violet-500: oklch(70.2% 0.183 293.541);
+  --color-blue-400: oklch(80.9% 0.105 251.813);
+  --color-blue-500: oklch(70.7% 0.165 254.624);
+  --color-green-400: oklch(87.1% 0.15 154.449);
+  --color-green-500: oklch(79.2% 0.209 151.711);
+  --color-teal-400: oklch(85.5% 0.138 181.071);
+  --color-teal-500: oklch(77.7% 0.152 181.912);
+  --color-cyan-400: oklch(86.5% 0.127 207.078);
+  --color-cyan-500: oklch(78.9% 0.154 211.53);
+  --color-orange-400: oklch(83.7% 0.128 66.29);
+  --color-orange-500: oklch(75% 0.183 55.934);
+  --color-pink-400: oklch(82.3% 0.12 346.018);
+  --color-pink-500: oklch(71.8% 0.202 349.761);
+  --color-fuchsia-400: oklch(83.3% 0.145 321.434);
+  --color-fuchsia-500: oklch(74% 0.238 322.16);
+  --color-lime-400: oklch(89.7% 0.196 126.665);
+  --color-lime-500: oklch(84.1% 0.238 128.85);
+  --color-yellow-400: oklch(90.5% 0.182 98.111);
+  --color-yellow-500: oklch(85.2% 0.199 91.936);
 }
-html.high-contrast * {
-  border-color: #facc15 !important;
+
+html.high-contrast[data-theme="light"],
+html.high-contrast[data-theme="sepia"] {
+  --ef-surface: #ffffff;
+  --ef-surface-raised: #ffffff;
+  --ef-surface-hover: #e5e7eb;
+  --ef-line: #000000;
+  --ef-line-strong: #000000;
+  --ef-surface-active: #d1d5db;
+  --ef-fg: #000000;
+  --ef-fg-0: #000000;
+  --ef-fg-1: #000000;
+  --ef-fg-2: #000000;
+  --ef-fg-3: #000000;
+  --ef-fg-4: #111111;
+  --ef-fg-5: #1f1f1f;
+  --ef-fg-6: #1f1f1f;
+  --color-slate-400: #1f1f1f;
+  --color-slate-500: #1f1f1f;
+  --color-slate-600: #111111;
+  --color-slate-700: #000000;
+  --ef-focus: #1d4ed8;
+  --color-indigo-600: oklch(39.8% 0.195 277.366);
+  --color-indigo-700: oklch(35.9% 0.144 278.697);
+  --color-sky-600: oklch(44.3% 0.11 240.79);
+  --color-sky-700: oklch(39.1% 0.09 240.876);
+  --color-emerald-600: oklch(43.2% 0.095 166.913);
+  --color-emerald-700: oklch(37.8% 0.077 168.94);
+  --color-red-600: oklch(44.4% 0.177 26.899);
+  --color-red-700: oklch(39.6% 0.141 25.723);
+  --color-rose-600: oklch(45.5% 0.188 13.697);
+  --color-rose-700: oklch(41% 0.159 10.272);
+  --color-amber-600: oklch(47.3% 0.137 46.201);
+  --color-amber-700: oklch(41.4% 0.112 45.904);
+  --color-purple-600: oklch(43.8% 0.218 303.724);
+  --color-purple-700: oklch(38.1% 0.176 304.987);
+  --color-violet-600: oklch(43.2% 0.232 292.759);
+  --color-violet-700: oklch(38% 0.189 293.745);
+  --color-blue-600: oklch(42.4% 0.199 265.638);
+  --color-blue-700: oklch(37.9% 0.146 265.522);
+  --color-green-600: oklch(44.8% 0.119 151.328);
+  --color-green-700: oklch(39.3% 0.095 152.535);
+  --color-teal-600: oklch(43.7% 0.078 188.216);
+  --color-teal-700: oklch(38.6% 0.063 188.416);
+  --color-cyan-600: oklch(45% 0.085 224.283);
+  --color-cyan-700: oklch(39.8% 0.07 227.392);
+  --color-orange-600: oklch(47% 0.157 37.304);
+  --color-orange-700: oklch(40.8% 0.123 38.172);
+  --color-pink-600: oklch(45.9% 0.187 3.815);
+  --color-pink-700: oklch(40.8% 0.153 2.432);
+  --color-fuchsia-600: oklch(45.2% 0.211 324.591);
+  --color-fuchsia-700: oklch(40.1% 0.17 325.612);
+  --color-lime-600: oklch(45.3% 0.124 130.933);
+  --color-lime-700: oklch(40.5% 0.101 131.063);
+  --color-yellow-600: oklch(47.6% 0.114 61.907);
+  --color-yellow-700: oklch(42.1% 0.095 57.708);
 }
-html.high-contrast a,
-html.high-contrast button {
-  color: #facc15 !important;
+
+html.high-contrast[data-theme="sepia"] {
+  --ef-surface: #fff8e7;
+  --ef-surface-raised: #fffdf6;
+  --ef-surface-hover: #f1e6cc;
+}
+
+html.high-contrast main a:not([class*="bg-"]) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+html.high-contrast :focus-visible {
+  outline: 3px solid var(--ef-focus) !important;
+  outline-offset: 2px !important;
+}
+
+html.high-contrast ::placeholder {
+  color: var(--ef-fg-4) !important;
+  opacity: 1;
 }
 
 /* Accessibility: Large Yellow Cursor */

@@ -23,10 +23,10 @@ export default function TermsPage() {
               <Scale size={13} />
               <span>Topluluk Sözleşmesi</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#F8FAFC] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-fg-0 tracking-tight">
               Eşit, Güvenli ve Saygılı Bir Topluluk İçin Kurallarımız
             </h1>
-            <p className="text-xs sm:text-sm text-[#CBD5E1] leading-relaxed max-w-2xl">
+            <p className="text-xs sm:text-sm text-fg-3 leading-relaxed max-w-2xl">
               EngelsizForum platformunu ziyaret eden veya üye olan her birey aşağıdaki ortak ilkeleri ve kullanım şartlarını kabul etmiş sayılır. Amacımız engelli hakları ve dayanışma alanında güvenli bir bilgi havuzu oluşturmaktır.
             </p>
           </div>
@@ -38,7 +38,7 @@ export default function TermsPage() {
                 <HeartHandshake size={15} />
                 <span>Saygı ve Kapsayıcılık</span>
               </div>
-              <p className="text-xs text-[#CBD5E1] leading-relaxed">
+              <p className="text-xs text-fg-3 leading-relaxed">
                 Her türlü ayrımcılık, nefret söylemi, aşağılama ve ötekileştirme kesinlikle yasaktır ve anında engellenir.
               </p>
             </div>
@@ -48,7 +48,7 @@ export default function TermsPage() {
                 <Scale size={15} />
                 <span>Doğru ve Teyitli Bilgi</span>
               </div>
-              <p className="text-xs text-[#CBD5E1] leading-relaxed">
+              <p className="text-xs text-fg-3 leading-relaxed">
                 Mevzuat, rapor süreçleri ve hak kazanımları paylaşımlarında teyitsiz veya yanıltıcı bilgilerden kaçınılmalıdır.
               </p>
             </div>
@@ -58,7 +58,7 @@ export default function TermsPage() {
                 <AlertCircle size={15} />
                 <span>Erişilebilir İçerik</span>
               </div>
-              <p className="text-xs text-[#CBD5E1] leading-relaxed">
+              <p className="text-xs text-fg-3 leading-relaxed">
                 Görsel paylaşırken alternatif metin (alt text) eklenmesi ve açık bir dil kullanılması topluluk standardımızdır.
               </p>
             </div>
@@ -73,28 +73,28 @@ export default function TermsPage() {
             <div className="divide-y divide-line">
               <div className="p-5 space-y-1.5">
                 <h2 className="text-xs sm:text-sm font-bold text-fg">1. Hizmet Şartlarının Kabulü</h2>
-                <p className="text-xs text-[#CBD5E1] leading-relaxed">
+                <p className="text-xs text-fg-3 leading-relaxed">
                   EngelsizForum&apos;a üye olarak veya platformu ziyaretçi olarak kullanarak bu şartlara uyacağınızı taahhüt edersiniz. Bu şartlar resmi mevzuat veya platform yeniliklerine göre periyodik olarak güncellenebilir.
                 </p>
               </div>
 
               <div className="p-5 space-y-1.5">
                 <h2 className="text-xs sm:text-sm font-bold text-fg">2. Üyelik ve Hesap Güvenliği</h2>
-                <p className="text-xs text-[#CBD5E1] leading-relaxed">
+                <p className="text-xs text-fg-3 leading-relaxed">
                   Kullanıcılar hesaplarının şifre güvenliğinden kendileri sorumludur. Başkası adına yanıltıcı hesap açmak veya yetkisiz erişim teşebbüsünde bulunmak yasaktır.
                 </p>
               </div>
 
               <div className="p-5 space-y-1.5">
                 <h2 className="text-xs sm:text-sm font-bold text-fg">3. İçerik Sorumluluğu &amp; Tıbbi/Hukuki Sorumluluk Reddi</h2>
-                <p className="text-xs text-[#CBD5E1] leading-relaxed">
+                <p className="text-xs text-fg-3 leading-relaxed">
                   Forum üyelerinin paylaştığı deneyim ve görüşler kişisel nitelikte olup doğrudan resmi hukuki veya tıbbi reçete yerine geçmez. Moderasyon ekibimiz yasalara aykırı içerikleri kaldırma hakkına sahiptir.
                 </p>
               </div>
 
               <div className="p-5 space-y-1.5">
                 <h2 className="text-xs sm:text-sm font-bold text-fg">4. İletişim ve Kural İhlali Bildirimi</h2>
-                <p className="text-xs text-[#CBD5E1] leading-relaxed">
+                <p className="text-xs text-fg-3 leading-relaxed">
                   Kullanım kuralları ile ilgili her türlü soru veya kural ihlali bildirimi için <a href="mailto:miracbirben@gmail.com" className="text-indigo-400 light:text-indigo-700 font-bold hover:underline">miracbirben@gmail.com</a> adresiyle iletişim kurabilirsiniz.
                 </p>
               </div>

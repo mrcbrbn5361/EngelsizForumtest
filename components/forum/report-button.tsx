@@ -97,7 +97,7 @@ export function ReportButton({ topicId, commentId }: { topicId?: string; comment
             onKeyDown={(e) => e.key === 'Escape' && setIsOpen(false)}
           >
             <div className="flex items-center justify-between border-b border-border/80 pb-3">
-              <div className="flex items-center gap-2 text-rose-400 font-bold text-sm">
+              <div className="flex items-center gap-2 text-rose-400 light:text-rose-700 font-bold text-sm">
                 <AlertTriangle size={18} />
                 <h3 id="report-dialog-title" className="text-foreground">İçeriği Raporla</h3>
               </div>
@@ -121,7 +121,7 @@ export function ReportButton({ topicId, commentId }: { topicId?: string; comment
                       key={r} 
                       className={`flex items-center gap-2 p-2 rounded-xl border text-xs cursor-pointer transition-all ${
                         selectedReason === r 
-                          ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 font-semibold' 
+                          ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 light:text-rose-700 font-semibold' 
                           : 'bg-muted/40 border-border/60 text-muted-foreground hover:bg-muted'
                       }`}
                     >

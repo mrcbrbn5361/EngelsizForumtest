@@ -131,7 +131,7 @@ export default function VergiIndirimiPage() {
               <Receipt className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+              <h1 className="text-xl font-bold text-fg-0 tracking-tight">
                 Engelli Gelir Vergisi İndirimi Hesaplama (2026)
               </h1>
               <div className="flex items-center gap-2 mt-0.5">
@@ -220,7 +220,7 @@ export default function VergiIndirimiPage() {
 
         {/* İsteğe Bağlı Özel İndirim Tutarı */}
         <div className="mt-6 pt-4 border-t border-line flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5 text-xs text-[#CBD5E1]">
+          <div className="flex items-center gap-2.5 text-xs text-fg-3">
             <Calculator className="w-4 h-4 text-indigo-400 light:text-indigo-700" />
             <span>2026 Matrah İndirimi: <strong className="text-fg">{formatCurrency(degreeObj.officialDiscount2026)} / ay</strong></span>
           </div>
@@ -315,15 +315,15 @@ export default function VergiIndirimiPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-line text-[#CBD5E1]">
+            <tbody className="divide-y divide-line text-fg-3">
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="p-4 font-bold text-[#F8FAFC]">1. Aylık Brüt Ücret</td>
+                <td className="p-4 font-bold text-fg-0">1. Aylık Brüt Ücret</td>
                 <td className="p-4 text-fg-5 italic">Sözleşme Tutarı</td>
                 <td className="p-4 text-right font-medium">{formatCurrency(calculation.gross)}</td>
                 <td className="p-4 text-right font-black text-emerald-400 light:text-emerald-700 bg-emerald-950/20 light:bg-emerald-50/20">{formatCurrency(calculation.gross)}</td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="p-4 font-bold text-[#F8FAFC]">2. SGK + İşsizlik Payı (%15)</td>
+                <td className="p-4 font-bold text-fg-0">2. SGK + İşsizlik Payı (%15)</td>
                 <td className="p-4 text-fg-5 italic">Zorunlu Kesinti</td>
                 <td className="p-4 text-right text-rose-400 light:text-rose-700">-{formatCurrency(calculation.sgkKesintisi)}</td>
                 <td className="p-4 text-right text-rose-400 light:text-rose-700 bg-emerald-950/20 light:bg-emerald-50/20">-{formatCurrency(calculation.sgkKesintisi)}</td>
@@ -337,7 +337,7 @@ export default function VergiIndirimiPage() {
                 </td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="p-4 font-bold text-[#F8FAFC]">4. Gelir Vergisi Matrahı</td>
+                <td className="p-4 font-bold text-fg-0">4. Gelir Vergisi Matrahı</td>
                 <td className="p-4 text-fg-5 italic">Vergi Matrahı</td>
                 <td className="p-4 text-right font-medium">{formatCurrency(calculation.standartMatrah)}</td>
                 <td className="p-4 text-right font-black text-emerald-400 light:text-emerald-700 bg-emerald-950/20 light:bg-emerald-50/20">
@@ -345,14 +345,14 @@ export default function VergiIndirimiPage() {
                 </td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
-                <td className="p-4 font-bold text-[#F8FAFC]">5. Gelir Vergisi (%{taxRate})</td>
+                <td className="p-4 font-bold text-fg-0">5. Gelir Vergisi (%{taxRate})</td>
                 <td className="p-4 text-fg-5 italic">Kesilen Vergi</td>
                 <td className="p-4 text-right text-rose-400 light:text-rose-700 font-medium">-{formatCurrency(calculation.standartGelirVergisi)}</td>
                 <td className="p-4 text-right font-black text-emerald-400 light:text-emerald-700 bg-emerald-950/20 light:bg-emerald-50/20">
                   -{formatCurrency(calculation.indirimliGelirVergisi)}
                 </td>
               </tr>
-              <tr className="bg-surface-hover font-black text-[#F8FAFC] border-t border-indigo-500/30">
+              <tr className="bg-surface-hover font-black text-fg-0 border-t border-indigo-500/30">
                 <td className="p-4 text-sm uppercase">NET MAAŞA YANSIYAN FARK</td>
                 <td className="p-4 text-indigo-300 light:text-indigo-700 font-mono text-[10px] uppercase">
                   AYLIK TASARRUF
@@ -369,7 +369,7 @@ export default function VergiIndirimiPage() {
 
       {/* BAŞVURU REHBERİ */}
       <div className="bg-surface-raised rounded-xl border border-line p-6 shadow-md">
-        <h3 className="text-xs font-black text-[#F8FAFC] uppercase tracking-widest mb-5 flex items-center gap-2.5">
+        <h3 className="text-xs font-black text-fg-0 uppercase tracking-widest mb-5 flex items-center gap-2.5">
           <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 light:text-indigo-700">
             <ShieldCheck size={16} />
           </div>
@@ -379,19 +379,19 @@ export default function VergiIndirimiPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div className="p-4 bg-surface rounded-lg border border-line space-y-2 group hover:border-indigo-500/30 transition-colors">
             <span className="text-[10px] font-black text-indigo-400 light:text-indigo-700 uppercase tracking-widest block">1. Başvuru Makamı</span>
-            <p className="text-xs text-[#CBD5E1] leading-relaxed font-medium">
+            <p className="text-xs text-fg-3 leading-relaxed font-medium">
               İşyerinizin bağlı olduğu Vergi Dairesi Başkanlığına veya e-Devlet İnteraktif Vergi Dairesi üzerinden müracaat edilir.
             </p>
           </div>
           <div className="p-4 bg-surface rounded-lg border border-line space-y-2 group hover:border-indigo-500/30 transition-colors">
             <span className="text-[10px] font-black text-indigo-400 light:text-indigo-700 uppercase tracking-widest block">2. Gerekli Evraklar</span>
-            <p className="text-xs text-[#CBD5E1] leading-relaxed font-medium">
+            <p className="text-xs text-fg-3 leading-relaxed font-medium">
               İşyerinden alınmış çalışma belgesi, geçerli Erişkin Sağlık Kurulu Raporu ve dilekçe gerekmektedir.
             </p>
           </div>
           <div className="p-4 bg-surface rounded-lg border border-line space-y-2 group hover:border-indigo-500/30 transition-colors">
             <span className="text-[10px] font-black text-indigo-400 light:text-indigo-700 uppercase tracking-widest block">3. Emekliliğe Etkisi</span>
-            <p className="text-xs text-[#CBD5E1] leading-relaxed font-medium">
+            <p className="text-xs text-fg-3 leading-relaxed font-medium">
               01.10.2008 öncesi 4A&apos;lılar için vergi indirim belgesi almak, <strong>erken emeklilik hakkı için yasal bir ön şarttır</strong>.
             </p>
           </div>

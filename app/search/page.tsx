@@ -181,7 +181,7 @@ function SearchContent() {
               <Search size={20} className="text-sky-700 dark:text-sky-400" />
               <span>FORUMDA ARA</span>
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
               Mevzuat maddesi, başlık veya anahtar kelimelere göre gelişmiş forum araması
             </p>
           </div>

@@ -127,11 +127,11 @@ export default function BalthazardPage() {
         <div className="lg:col-span-8 space-y-8">
           
           <div className="pb-4 border-b border-line">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#F8FAFC] flex items-center gap-2.5">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-fg-0 flex items-center gap-2.5">
               <Percent size={24} className="text-indigo-400 light:text-indigo-700" />
               <span>Balthazard Oran Birleştirme Robotu</span>
             </h1>
-            <p className="text-sm text-[#CBD5E1] mt-1 font-medium">
+            <p className="text-sm text-fg-3 mt-1 font-medium">
               20 Şubat 2019 tarih ve 30692 sayılı Resmî Gazete Erişkinler İçin Engellilik Değerlendirmesi Ek-2 Cetveli.
             </p>
           </div>
@@ -226,7 +226,7 @@ export default function BalthazardPage() {
                 <div className="text-sm font-bold text-indigo-300 light:text-indigo-700">
                   {calculation.degree > 0 ? `${calculation.degree}. Derece Engelli` : 'Derece Dışı (%40 Altı)'}
                 </div>
-                <div className="text-xs text-[#CBD5E1] font-medium">
+                <div className="text-xs text-fg-3 font-medium">
                   {calculation.finalScore >= 90 && 'ÖTV Muafiyeti Şartsız Geçerli (%90+)'}
                   {calculation.finalScore >= 40 && calculation.finalScore < 90 && 'Engelli Kimlik Kartı & Vergi İndirimi Şartı Sağlandı'}
                   {calculation.finalScore < 40 && 'Yasal haklar için asgari %40 oranı gereklidir'}
@@ -239,7 +239,7 @@ export default function BalthazardPage() {
               <div className="text-xs font-bold uppercase tracking-wider text-fg">
                 Adım Adım Balthazard Çözümü
               </div>
-              <div className="space-y-1.5 font-mono text-xs text-[#CBD5E1] divide-y divide-line/60">
+              <div className="space-y-1.5 font-mono text-xs text-fg-3 divide-y divide-line/60">
                 {calculation.steps.map((st) => (
                   <div key={st.step} className="pt-2 flex items-center justify-between">
                     <span>Adım {st.step}: {st.formula}</span>
@@ -251,7 +251,7 @@ export default function BalthazardPage() {
           </div>
 
           {/* Legal Notes */}
-          <div className="text-xs text-[#CBD5E1] space-y-2 leading-relaxed bg-surface-raised p-4 rounded-md border border-line">
+          <div className="text-xs text-fg-3 space-y-2 leading-relaxed bg-surface-raised p-4 rounded-md border border-line">
             <div className="font-bold text-fg">Önemli Yasal Hatırlatma:</div>
             <p>
               Balthazard formülünde oranlar büyükten küçüğe sıralanır. En büyük oran temel alınır, kalan vücut fonksiyon kaybı yüzdesi üzerinden diğer oranlar sırayla eklenir. Raporunuzdaki tüm oranları sisteme tek tek girerek resmi heyet sonucunuzu doğrulayabilirsiniz.

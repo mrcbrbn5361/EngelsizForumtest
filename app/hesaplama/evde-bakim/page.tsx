@@ -70,7 +70,7 @@ export default function EvdeBakimPage() {
               <Home className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
+              <h1 className="text-xl font-bold text-fg-0 tracking-tight">
                 Evde Bakım Maaşı Gelir Testi (2026)
               </h1>
               <div className="flex items-center gap-2 mt-0.5">
@@ -141,7 +141,7 @@ export default function EvdeBakimPage() {
               />
             </div>
             <div className="space-y-1">
-              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
+              <span className="text-xs font-bold text-fg-0 block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
                 Raporunuzda &quot;Tam Bağımlı&quot; İbaresi Var mı?
               </span>
               <span className="text-[11px] text-fg-5 leading-relaxed block">
@@ -160,7 +160,7 @@ export default function EvdeBakimPage() {
               />
             </div>
             <div className="space-y-1">
-              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
+              <span className="text-xs font-bold text-fg-0 block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
                 Rapor e-Rapor Sisteminde Kayıtlı mı?
               </span>
               <span className="text-[11px] text-fg-5 leading-relaxed block">
@@ -192,7 +192,7 @@ export default function EvdeBakimPage() {
 
           <div className="space-y-4 flex-1">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-bold text-[#F8FAFC] tracking-tight uppercase">
+              <h2 className="text-lg font-bold text-fg-0 tracking-tight uppercase">
                 {calculation.isFullyApproved 
                   ? 'ŞARTLAR UYGUN: Bakım Maaşı Alabilirsiniz' 
                   : 'GELİR VEYA RAPOR KRİTERİ EKSİK'}
@@ -207,7 +207,7 @@ export default function EvdeBakimPage() {
               </span>
             </div>
 
-            <div className="text-sm text-[#CBD5E1] leading-relaxed max-w-4xl">
+            <div className="text-sm text-fg-3 leading-relaxed max-w-4xl">
               {calculation.isFullyApproved ? (
                 <>
                   Hane içi kişi başı aylık geliriniz <strong>{formatCurrency(calculation.kisiBasiDusenGelir)}</strong> olup, yasal sınırın altındadır. 
@@ -270,13 +270,13 @@ export default function EvdeBakimPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         
         <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
-          <h3 className="text-xs font-black text-[#F8FAFC] uppercase tracking-widest mb-4 flex items-center gap-2.5">
+          <h3 className="text-xs font-black text-fg-0 uppercase tracking-widest mb-4 flex items-center gap-2.5">
             <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 light:text-indigo-700">
               <Building size={14} />
             </div>
             <span>Kimler Bakıcı Olabilir?</span>
           </h3>
-          <ul className="text-xs text-[#CBD5E1] space-y-2 leading-relaxed font-medium">
+          <ul className="text-xs text-fg-3 space-y-2 leading-relaxed font-medium">
             <li className="flex gap-2"><span>•</span> <span>Eş, anne, baba, çocuk, kardeş, torun, dede, nine.</span></li>
             <li className="flex gap-2"><span>•</span> <span>Amca, hala, teyze, dayı ve çocukları.</span></li>
             <li className="flex gap-2"><span>•</span> <span>Gelin, damat, kayınvalide, kayınpeder, görümce.</span></li>
@@ -285,13 +285,13 @@ export default function EvdeBakimPage() {
         </div>
 
         <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
-          <h3 className="text-xs font-black text-[#F8FAFC] uppercase tracking-widest mb-4 flex items-center gap-2.5">
+          <h3 className="text-xs font-black text-fg-0 uppercase tracking-widest mb-4 flex items-center gap-2.5">
             <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-400 light:text-amber-800">
               <ShieldAlert size={14} />
             </div>
             <span>Başvuru Prosedürü</span>
           </h3>
-          <ul className="text-xs text-[#CBD5E1] space-y-2 leading-relaxed font-medium">
+          <ul className="text-xs text-fg-3 space-y-2 leading-relaxed font-medium">
             <li className="flex gap-2"><span>•</span> <span>Başvuru Sosyal Hizmet Merkezi Müdürlüğüne veya e-Devlet üzerinden yapılır.</span></li>
             <li className="flex gap-2"><span>•</span> <span>Değerlendirme heyeti haneyi yerinde ziyaret ederek rapor tanzim eder.</span></li>
             <li className="flex gap-2"><span>•</span> <span>Maaş hiçbir şekilde haczedilemez ve vergiye tabi tutulamaz.</span></li>

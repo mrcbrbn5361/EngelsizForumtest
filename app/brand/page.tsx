@@ -57,14 +57,14 @@ export default function BrandPage() {
       <div className="vibe-container py-8 sm:py-12 space-y-8">
         {/* Header */}
         <div className="space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-sky-500/10 border border-sky-500/20 text-sky-400 light:text-sky-700 text-xs font-semibold">
             <Sparkles size={14} />
             <span>Marka Varlıkları & İkonlar</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-fg-1 tracking-tight">
             EngelsizForum Görsel Kimlik ve Varlık Rehberi
           </h1>
-          <p className="text-slate-400 text-sm max-w-2xl">
+          <p className="text-fg-4 text-sm max-w-2xl">
             Tüm logolar, faviconlar ve sosyal medya kartları 32-bit Truecolor RGBA formatında ve kurumsal fütüristik elektrik mavisi paletinde üretilmiştir.
           </p>
         </div>
@@ -74,23 +74,23 @@ export default function BrandPage() {
           {assets.map((asset) => (
             <div
               key={asset.file}
-              className="p-5 sm:p-6 bg-[#111726]/90 backdrop-blur-md rounded-2xl border border-white/[0.08] shadow-lg flex flex-col justify-between space-y-4"
+              className="p-5 sm:p-6 bg-surface-raised/90 backdrop-blur-md rounded-2xl border border-white/[0.08] shadow-lg flex flex-col justify-between space-y-4"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
-                    <CheckCircle2 size={16} className="text-sky-400" />
+                  <h2 className="text-base font-bold text-fg-1 flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-sky-400 light:text-sky-700" />
                     {asset.name}
                   </h2>
-                  <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-white/[0.05] text-slate-400 border border-white/[0.06]">
+                  <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-white/[0.05] text-fg-4 border border-white/[0.06]">
                     {asset.width}x{asset.height}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400">{asset.desc}</p>
+                <p className="text-xs text-fg-4">{asset.desc}</p>
               </div>
 
               {/* Preview Container */}
-              <div className="p-4 rounded-xl bg-[#090a0f] border border-white/[0.06] flex items-center justify-center min-h-[140px] overflow-hidden">
+              <div className="p-4 rounded-xl bg-surface border border-white/[0.06] flex items-center justify-center min-h-[140px] overflow-hidden">
                 <div className={`relative ${asset.displaySize} rounded-lg overflow-hidden flex items-center justify-center bg-slate-900/50`}>
                   <Image
                     src={asset.file}
@@ -110,7 +110,7 @@ export default function BrandPage() {
                   href={asset.file}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/20 text-xs font-semibold transition-colors"
+                  className="flex-1 inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 light:text-sky-700 border border-sky-500/20 text-xs font-semibold transition-colors"
                 >
                   <ExternalLink size={14} />
                   Yeni Sekmede Aç
@@ -118,7 +118,7 @@ export default function BrandPage() {
                 <a
                   href={asset.file}
                   download
-                  className="inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 border border-white/[0.08] text-xs font-medium transition-colors"
+                  className="inline-flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-fg-3 border border-white/[0.08] text-xs font-medium transition-colors"
                 >
                   <Download size={14} />
                   İndir
