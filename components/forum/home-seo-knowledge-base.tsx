@@ -99,8 +99,8 @@ export default function HomeSeoKnowledgeBase() {
 
       {/* Ana Başlık ve Giriş Alanı */}
       <div className="max-w-3xl space-y-2.5">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400 font-heading">
-          <BookOpen size={14} className="text-indigo-400" />
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400 light:text-indigo-700 font-heading">
+          <BookOpen size={14} className="text-indigo-400 light:text-indigo-700" />
           <span>Mevzuat ve Başvuru Kılavuzu</span>
         </div>
         <h2 id="mevzuat-portal-title" className="text-xl sm:text-2xl font-bold tracking-tight text-fg font-heading">
@@ -117,7 +117,7 @@ export default function HomeSeoKnowledgeBase() {
         <article className="space-y-4">
           <div className="border-b border-line pb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 flex items-center gap-2 font-heading">
-              <Calculator size={14} className="text-indigo-400" />
+              <Calculator size={14} className="text-indigo-400 light:text-indigo-700" />
               <span>Balthazard Formülü (ESKR &amp; ÇÖZGER)</span>
             </h3>
             <span className="text-[11px] font-mono text-fg-4">Ek-2</span>
@@ -140,7 +140,7 @@ export default function HomeSeoKnowledgeBase() {
 
           <Link 
             href="/hesaplama" 
-            className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 font-medium transition-colors pt-1"
+            className="inline-flex items-center gap-1.5 text-xs text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 font-medium transition-colors pt-1"
           >
             <span>Canlı Balthazard Robotunu Aç</span>
             <ArrowRight size={13} />
@@ -151,10 +151,10 @@ export default function HomeSeoKnowledgeBase() {
         <article className="space-y-4">
           <div className="border-b border-line pb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 flex items-center gap-2 font-heading">
-              <Car size={14} className="text-emerald-400" />
+              <Car size={14} className="text-emerald-400 light:text-emerald-700" />
               <span>2026 ÖTV &amp; MTV İstisnası</span>
             </h3>
-            <span className="text-[11px] font-mono text-emerald-400">2.873.972 TL</span>
+            <span className="text-[11px] font-mono text-emerald-400 light:text-emerald-700">2.873.972 TL</span>
           </div>
 
           <p className="text-xs sm:text-sm text-fg-3 leading-relaxed font-normal">
@@ -177,7 +177,7 @@ export default function HomeSeoKnowledgeBase() {
 
           <Link 
             href="/hesaplama" 
-            className="inline-flex items-center gap-1.5 text-xs text-emerald-400 hover:text-emerald-300 font-medium transition-colors pt-1"
+            className="inline-flex items-center gap-1.5 text-xs text-emerald-400 light:text-emerald-700 hover:text-emerald-300 light:hover:text-emerald-700 font-medium transition-colors pt-1"
           >
             <span>ÖTV Muafiyet ve Hesaplama Detayları</span>
             <ArrowRight size={13} />
@@ -191,10 +191,10 @@ export default function HomeSeoKnowledgeBase() {
         <article className="space-y-4">
           <div className="border-b border-line pb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 flex items-center gap-2 font-heading">
-              <Calendar size={14} className="text-amber-400" />
+              <Calendar size={14} className="text-amber-400 light:text-amber-800" />
               <span>SGK Engelli Erken Emeklilik</span>
             </h3>
-            <span className="text-[11px] font-mono text-amber-400">Yaş Şartsız</span>
+            <span className="text-[11px] font-mono text-amber-400 light:text-amber-800">Yaş Şartsız</span>
           </div>
 
           <p className="text-xs sm:text-sm text-fg-3 leading-relaxed font-normal">
@@ -239,7 +239,7 @@ export default function HomeSeoKnowledgeBase() {
         <article className="space-y-4">
           <div className="border-b border-line pb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 flex items-center gap-2 font-heading">
-              <HeartHandshake size={14} className="text-indigo-400" />
+              <HeartHandshake size={14} className="text-indigo-400 light:text-indigo-700" />
               <span>Evde Bakım ve 2022 Aylığı Kriterleri</span>
             </h3>
             <span className="text-[11px] font-mono text-fg-4">Gelir Testi</span>
@@ -265,7 +265,7 @@ export default function HomeSeoKnowledgeBase() {
       {/* Sıkça Sorulan Sorular */}
       <section className="space-y-5 pt-2" aria-label="Sıkça Sorulan Sorular">
         <div className="border-b border-line pb-3 flex items-center gap-2">
-          <HelpCircle size={15} className="text-indigo-400" />
+          <HelpCircle size={15} className="text-indigo-400 light:text-indigo-700" />
           <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 font-heading">
             Sıkça Sorulan Sorular
           </h3>
@@ -327,7 +327,7 @@ export default function HomeSeoKnowledgeBase() {
       {/* Terimler Sözlüğü */}
       <section className="space-y-4 pt-2" aria-label="Terimler Sözlüğü">
         <div className="border-b border-line pb-2 flex items-center gap-2">
-          <FileText size={14} className="text-indigo-400" />
+          <FileText size={14} className="text-indigo-400 light:text-indigo-700" />
           <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 font-heading">
             Terimler ve Kısaltmalar
           </h3>

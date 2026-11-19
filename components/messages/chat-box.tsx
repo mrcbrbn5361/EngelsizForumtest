@@ -478,7 +478,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
             <h2 className="font-bold text-xs text-fg leading-none mb-0.5 truncate">
               {otherUser?.full_name || otherUser?.username || 'Kullanıcı'}
             </h2>
-            <p className="text-[10px] text-indigo-400 font-mono font-medium truncate">@{otherUser?.username || 'isimsiz'}</p>
+            <p className="text-[10px] text-indigo-400 light:text-indigo-700 font-mono font-medium truncate">@{otherUser?.username || 'isimsiz'}</p>
           </div>
         </div>
 
@@ -501,16 +501,16 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       >
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full gap-2">
-            <Loader2 className="animate-spin text-indigo-400" size={24} aria-hidden="true" />
+            <Loader2 className="animate-spin text-indigo-400 light:text-indigo-700" size={24} aria-hidden="true" />
             <p className="text-xs text-fg-4 font-normal">Mesajlar yükleniyor...</p>
           </div>
         ) : error ? (
           <div className="flex flex-col items-center justify-center h-full text-center p-6">
-            <AlertCircle size={32} className="text-rose-400 mb-2" aria-hidden="true" />
+            <AlertCircle size={32} className="text-rose-400 light:text-rose-700 mb-2" aria-hidden="true" />
             <p className="text-xs font-medium text-fg-3">{error}</p>
             <button
               onClick={fetchMessages}
-              className="mt-3 px-3.5 py-1.5 rounded-md bg-surface-hover hover:bg-line text-xs text-indigo-400 font-medium border border-line cursor-pointer inline-flex items-center gap-1.5"
+              className="mt-3 px-3.5 py-1.5 rounded-md bg-surface-hover hover:bg-line text-xs text-indigo-400 light:text-indigo-700 font-medium border border-line cursor-pointer inline-flex items-center gap-1.5"
             >
               <RefreshCw size={13} aria-hidden="true" />
               Tekrar Dene
@@ -518,7 +518,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-fg-4 text-center p-6">
-            <div className="w-12 h-12 rounded-md bg-surface-hover flex items-center justify-center border border-line mb-3 text-indigo-400">
+            <div className="w-12 h-12 rounded-md bg-surface-hover flex items-center justify-center border border-line mb-3 text-indigo-400 light:text-indigo-700">
               <User size={24} aria-hidden="true" />
             </div>
             <p className="text-xs font-semibold text-fg">Henüz mesaj yok</p>
@@ -563,7 +563,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
                       <div className={`flex flex-col gap-2 p-3 rounded-md text-xs ${
                         isMe ? 'bg-indigo-600 text-white font-medium' : 'bg-surface-hover border border-line text-fg-2'
                       }`}>
-                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-rose-400">
+                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-rose-400 light:text-rose-700">
                           <AlertCircle size={14} aria-hidden="true" />
                           <span>Sesli mesaj yüklenemedi.</span>
                         </div>
@@ -582,7 +582,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
                       <div className={`flex flex-col gap-2 p-3 rounded-md text-xs ${
                         isMe ? 'bg-indigo-600 text-white font-medium' : 'bg-surface-hover border border-line text-fg-2'
                       }`}>
-                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-rose-400">
+                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-rose-400 light:text-rose-700">
                           <AlertCircle size={14} aria-hidden="true" />
                           <span>Sesli mesaj dosyası bulunamadı.</span>
                         </div>
@@ -623,17 +623,17 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
       {/* Input Area */}
       <div className="p-3 border-t border-line bg-surface-raised">
         {isRecording ? (
-          <div className="flex items-center justify-between gap-3 bg-rose-950/30 border border-rose-800/60 rounded-md px-4 py-2.5 text-xs">
+          <div className="flex items-center justify-between gap-3 bg-rose-950/30 light:bg-rose-50/30 border border-rose-800/60 rounded-md px-4 py-2.5 text-xs">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" aria-hidden="true" />
-              <span className="font-semibold text-rose-300">Ses Kaydediliyor...</span>
+              <span className="font-semibold text-rose-300 light:text-rose-700">Ses Kaydediliyor...</span>
               <span className="font-mono text-fg-4">({formatSecs(recordingTime)})</span>
             </div>
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={cancelRecording}
-                className="p-1.5 rounded-md text-fg-4 hover:text-rose-400 hover:bg-rose-900/30 transition-colors cursor-pointer"
+                className="p-1.5 rounded-md text-fg-4 hover:text-rose-400 light:hover:text-rose-700 hover:bg-rose-900/30 light:hover:bg-rose-100/30 transition-colors cursor-pointer"
                 title="İptal Et"
                 aria-label="Ses Kaydını İptal Et"
               >
@@ -659,7 +659,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
               <button
                 type="button"
                 onClick={cancelRecording}
-                className="p-2 rounded-md text-fg-4 hover:text-rose-400 hover:bg-rose-950/30 transition-colors cursor-pointer"
+                className="p-2 rounded-md text-fg-4 hover:text-rose-400 light:hover:text-rose-700 hover:bg-rose-950/30 light:hover:bg-rose-50/30 transition-colors cursor-pointer"
                 title="Sil"
                 aria-label="Kaydı Sil"
               >
@@ -686,7 +686,7 @@ export function ChatBox({ conversationId, currentUserProfile, otherUser, onBack 
               placeholder="Mesajınızı buraya yazın..."
               disabled={sending}
               aria-label="Mesaj metni"
-              className="flex-1 h-10 px-3.5 text-xs font-medium rounded-md bg-surface-hover border border-line text-fg placeholder:text-fg-5 focus:outline-none focus:border-indigo-400 transition-colors"
+              className="flex-1 h-10 px-3.5 text-xs font-medium rounded-md bg-surface-hover border border-line text-fg placeholder:text-fg-5 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700 transition-colors"
             />
 
             {/* Voice Record Button */}

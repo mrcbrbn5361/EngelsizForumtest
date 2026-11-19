@@ -4,10 +4,14 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from './auth-provider';
 import { RouteAnnouncer } from './route-announcer';
+import { resolveTheme, type ThemePreference } from '@/lib/theme';
+
+export { resolveTheme, type ThemePreference };
 
 export type FontSize = 'sm' | 'md' | 'lg' | 'xl';
 
 export interface AccessibilitySettings {
+  theme: ThemePreference;
   fontSize: FontSize;
   highContrast: boolean;
   dyslexicFont: boolean;
@@ -28,6 +32,7 @@ interface AccessibilityContextType extends AccessibilitySettings {
 }
 
 const defaultSettings: AccessibilitySettings = {
+  theme: 'dark',
   fontSize: 'md',
   highContrast: false,
   dyslexicFont: false,
@@ -91,7 +96,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
           if (error) {
             console.warn('Could not fetch prefs from Supabase:', error.message);
           } else if (data?.accessibility_prefs) {
-            const cloudSettings = data.accessibility_prefs as AccessibilitySettings;
+            const cloudSettings = { ...defaultSettings, ...(data.accessibility_prefs as Partial<AccessibilitySettings>) };
             setSettings(cloudSettings);
             lastSyncedSettings.current = JSON.stringify(cloudSettings);
           }
@@ -105,12 +110,21 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     }
   }, [user]);
 
+  useEffect(() => {
+    if (settings.theme !== 'system') return;
+    const media = window.matchMedia('(prefers-color-scheme: light)');
+    const apply = () => document.documentElement.setAttribute('data-theme', resolveTheme('system'));
+    media.addEventListener('change', apply);
+    return () => media.removeEventListener('change', apply);
+  }, [settings.theme]);
+
   // Apply settings to DOM and persist locally & cloud
   useEffect(() => {
     if (isInitialLoad) return;
 
     try {
       const root = document.documentElement;
+      root.setAttribute('data-theme', resolveTheme(settings.theme));
       root.setAttribute('data-font-size', settings.fontSize);
       root.classList.toggle('high-contrast', settings.highContrast);
       root.classList.toggle('dyslexic-font', settings.dyslexicFont);

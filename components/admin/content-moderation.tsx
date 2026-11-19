@@ -129,7 +129,7 @@ export function ContentModerationView() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-surface-raised border border-line rounded-md shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-md bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+          <div className="p-2.5 rounded-md bg-indigo-600/20 text-indigo-400 light:text-indigo-700 border border-indigo-500/30">
             <MessageSquare size={20} />
           </div>
           <div>
@@ -143,7 +143,7 @@ export function ContentModerationView() {
           disabled={loading}
           className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-surface-hover hover:bg-line text-fg-2 border border-line text-xs font-bold transition-all cursor-pointer min-h-[38px] self-start sm:self-auto"
         >
-          <RefreshCw size={14} className={loading ? 'animate-spin text-indigo-400' : ''} />
+          <RefreshCw size={14} className={loading ? 'animate-spin text-indigo-400 light:text-indigo-700' : ''} />
           <span>Yenile</span>
         </button>
       </div>
@@ -192,9 +192,9 @@ export function ContentModerationView() {
                   <tr key={t.id} className="hover:bg-surface-hover/40 transition-colors group">
                     <td className="px-5 py-4 max-w-md">
                       <div className="font-bold text-fg flex items-center gap-2 truncate">
-                        {t.is_pinned && <Pin size={12} className="text-amber-400 shrink-0" />}
-                        {t.is_locked && <Lock size={12} className="text-rose-400 shrink-0" />}
-                        <span className="truncate group-hover:text-indigo-400 transition-colors">{t.title}</span>
+                        {t.is_pinned && <Pin size={12} className="text-amber-400 light:text-amber-800 shrink-0" />}
+                        {t.is_locked && <Lock size={12} className="text-rose-400 light:text-rose-700 shrink-0" />}
+                        <span className="truncate group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">{t.title}</span>
                       </div>
                       <div className="text-[10px] text-fg-5 mt-1 font-medium">
                         {t.category?.name || 'Genel'} &bull; {t.comments_count || 0} yanıt &bull; {t.views_count || 0} izlenme
@@ -206,12 +206,12 @@ export function ContentModerationView() {
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
                         {t.is_pinned && (
-                          <span className="px-2 py-0.5 rounded text-[10px] bg-amber-950/40 text-amber-300 border border-amber-800/40 font-bold uppercase">Sabit</span>
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-amber-950/40 light:bg-amber-50/40 text-amber-300 light:text-amber-800 border border-amber-800/40 font-bold uppercase">Sabit</span>
                         )}
                         {t.is_locked ? (
-                          <span className="px-2 py-0.5 rounded text-[10px] bg-rose-950/40 text-rose-300 border border-rose-800/40 font-bold uppercase">Kilitli</span>
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-rose-950/40 light:bg-rose-50/40 text-rose-300 light:text-rose-700 border border-rose-800/40 font-bold uppercase">Kilitli</span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 font-bold uppercase tracking-tighter text-[9px]">Aktif</span>
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 font-bold uppercase tracking-tighter text-[9px]">Aktif</span>
                         )}
                       </div>
                     </td>
@@ -221,7 +221,7 @@ export function ContentModerationView() {
                           onClick={() => handleTogglePin(t.id, !!t.is_pinned)}
                           className={cn(
                             "p-2 rounded-md border transition-all cursor-pointer",
-                            t.is_pinned ? "bg-amber-950/40 text-amber-400 border-amber-800/60" : "bg-surface-hover border-line text-fg-4 hover:text-fg"
+                            t.is_pinned ? "bg-amber-950/40 light:bg-amber-50/40 text-amber-400 light:text-amber-800 border-amber-800/60" : "bg-surface-hover border-line text-fg-4 hover:text-fg"
                           )}
                           title="Sabitle"
                         >
@@ -231,7 +231,7 @@ export function ContentModerationView() {
                           onClick={() => handleToggleLock(t.id, !!t.is_locked)}
                           className={cn(
                             "p-2 rounded-md border transition-all cursor-pointer",
-                            t.is_locked ? "bg-rose-950/40 text-rose-400 border-rose-800/60" : "bg-surface-hover border-line text-fg-4 hover:text-fg"
+                            t.is_locked ? "bg-rose-950/40 light:bg-rose-50/40 text-rose-400 light:text-rose-700 border-rose-800/60" : "bg-surface-hover border-line text-fg-4 hover:text-fg"
                           )}
                           title="Kilitle"
                         >
@@ -239,7 +239,7 @@ export function ContentModerationView() {
                         </button>
                         <button
                           onClick={() => handleDeleteThread(t.id)}
-                          className="p-2 rounded-md bg-surface-hover border border-line text-fg-4 hover:bg-rose-950/40 hover:text-rose-400 hover:border-rose-800/40 transition-all cursor-pointer"
+                          className="p-2 rounded-md bg-surface-hover border border-line text-fg-4 hover:bg-rose-950/40 light:hover:bg-rose-50/40 hover:text-rose-400 light:hover:text-rose-700 hover:border-rose-800/40 transition-all cursor-pointer"
                           title="Konuyu Sil"
                         >
                           <Trash2 size={14} />

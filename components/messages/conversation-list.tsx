@@ -68,7 +68,7 @@ export function ConversationList({ conversations, selectedId, onSelect, loading,
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Sohbetlerde ara..."
-            className="w-full bg-surface-raised border border-line rounded-md pl-8 pr-3 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 outline-none focus:border-indigo-400 transition-colors font-medium"
+            className="w-full bg-surface-raised border border-line rounded-md pl-8 pr-3 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 outline-none focus:border-indigo-400 light:focus:border-indigo-700 transition-colors font-medium"
             aria-label="Sohbetlerde arama yap"
           />
         </div>
@@ -86,7 +86,7 @@ export function ConversationList({ conversations, selectedId, onSelect, loading,
 
       {conversations.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-8 text-center text-fg-4 flex-1">
-          <div className="w-12 h-12 rounded-md bg-surface-hover border border-line flex items-center justify-center mb-3 text-indigo-400">
+          <div className="w-12 h-12 rounded-md bg-surface-hover border border-line flex items-center justify-center mb-3 text-indigo-400 light:text-indigo-700">
             <MessageSquare size={22} aria-hidden="true" />
           </div>
           <p className="text-xs font-semibold text-fg-2">Henüz sohbetiniz yok</p>

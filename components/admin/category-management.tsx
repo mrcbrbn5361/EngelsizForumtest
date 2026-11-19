@@ -82,7 +82,7 @@ export function CategoryManagementView() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-surface-raised border border-line rounded-md shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-md bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+          <div className="p-2.5 rounded-md bg-indigo-600/20 text-indigo-400 light:text-indigo-700 border border-indigo-500/30">
             <FolderTree size={20} />
           </div>
           <div>
@@ -96,7 +96,7 @@ export function CategoryManagementView() {
           disabled={loading}
           className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-surface-hover hover:bg-line text-fg-2 border border-line text-xs font-bold transition-all cursor-pointer min-h-[38px] self-start sm:self-auto"
         >
-          <RefreshCw size={14} className={loading ? 'animate-spin text-indigo-400' : ''} />
+          <RefreshCw size={14} className={loading ? 'animate-spin text-indigo-400 light:text-indigo-700' : ''} />
           <span>Yenile</span>
         </button>
       </div>
@@ -104,7 +104,7 @@ export function CategoryManagementView() {
       {/* Add Form */}
       <div className="p-6 bg-surface-raised border border-line rounded-md space-y-6 shadow-xs">
         <h2 className="text-sm font-bold text-fg uppercase tracking-widest flex items-center gap-3">
-          <Plus size={18} className="text-emerald-400" />
+          <Plus size={18} className="text-emerald-400 light:text-emerald-700" />
           <span>Yeni Kategori Ekle</span>
         </h2>
         <form onSubmit={handleAddCategory} className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -190,12 +190,12 @@ export function CategoryManagementView() {
                   <tr key={c.id || idx} className="hover:bg-surface-hover/40 transition-colors group">
                     <td className="px-5 py-4 font-mono font-bold text-fg-5">{idx + 1}</td>
                     <td className="px-5 py-4 font-bold text-fg flex items-center gap-3">
-                      <div className="p-2 rounded bg-indigo-950/40 border border-indigo-800/40 text-indigo-400">
+                      <div className="p-2 rounded bg-indigo-950/40 light:bg-indigo-50/40 border border-indigo-800/40 text-indigo-400 light:text-indigo-700">
                         <FolderTree size={14} />
                       </div>
-                      <span className="group-hover:text-indigo-400 transition-colors">{c.name}</span>
+                      <span className="group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">{c.name}</span>
                     </td>
-                    <td className="px-5 py-4 font-mono text-indigo-400 font-semibold">/{c.slug}</td>
+                    <td className="px-5 py-4 font-mono text-indigo-400 light:text-indigo-700 font-semibold">/{c.slug}</td>
                     <td className="px-5 py-4 text-fg-4 font-normal leading-relaxed">{c.description || '-'}</td>
                   </tr>
                 ))}

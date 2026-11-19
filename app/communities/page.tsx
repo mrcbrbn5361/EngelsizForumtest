@@ -318,7 +318,7 @@ export default function CommunitiesPage() {
   }, [communities, searchQuery, selectedGroup]);
 
   const getIcon = (iconName?: string) => {
-    const cls = "text-indigo-400";
+    const cls = "text-indigo-400 light:text-indigo-700";
     switch (iconName?.toLowerCase()) {
       case 'stethoscope': return <Stethoscope size={16} className={cls} />;
       case 'bookopen':
@@ -364,7 +364,7 @@ export default function CommunitiesPage() {
     <div className="container mx-auto px-4 py-6 max-w-7xl space-y-6 text-fg">
       {/* Breadcrumb */}
       <div className="bg-surface-raised border border-line px-4 py-2.5 rounded-lg flex items-center gap-2 text-xs text-fg-4">
-        <Link href="/" className="hover:text-indigo-400 font-semibold transition-colors">
+        <Link href="/" className="hover:text-indigo-400 light:hover:text-indigo-700 font-semibold transition-colors">
           Ana Sayfa
         </Link>
         <ChevronRight size={13} className="text-fg-6" />
@@ -374,7 +374,7 @@ export default function CommunitiesPage() {
       {/* Header Banner */}
       <div className="border-b border-line pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1.5 max-w-3xl">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 text-[11px] font-mono font-medium uppercase">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 light:bg-indigo-50/60 text-indigo-300 light:text-indigo-700 border border-indigo-800/60 text-[11px] font-mono font-medium uppercase">
             <Sparkles size={12} />
             <span>Akran Dayanışması &amp; Tanı Grupları</span>
           </div>
@@ -421,14 +421,14 @@ export default function CommunitiesPage() {
                 value={newCommunity.name}
                 onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
                 required
-                className="w-full p-2.5 rounded-md border border-line bg-surface-hover text-fg text-xs outline-none focus:border-indigo-400"
+                className="w-full p-2.5 rounded-md border border-line bg-surface-hover text-fg text-xs outline-none focus:border-indigo-400 light:focus:border-indigo-700"
               />
             </div>
             <div className="space-y-1">
               <label htmlFor="community-icon" className="text-xs font-semibold text-fg-3">İkon</label>
               <select 
                 id="community-icon"
-                className="w-full p-2.5 rounded-md border border-line bg-surface-hover text-fg text-xs outline-none focus:border-indigo-400 cursor-pointer"
+                className="w-full p-2.5 rounded-md border border-line bg-surface-hover text-fg text-xs outline-none focus:border-indigo-400 light:focus:border-indigo-700 cursor-pointer"
                 value={newCommunity.icon}
                 onChange={(e) => setNewCommunity({...newCommunity, icon: e.target.value})}
               >
@@ -450,7 +450,7 @@ export default function CommunitiesPage() {
               value={newCommunity.description}
               onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
               required
-              className="w-full p-2.5 rounded-md border border-line bg-surface-hover text-fg text-xs outline-none focus:border-indigo-400 min-h-[80px]"
+              className="w-full p-2.5 rounded-md border border-line bg-surface-hover text-fg text-xs outline-none focus:border-indigo-400 light:focus:border-indigo-700 min-h-[80px]"
             />
           </div>
           <div className="flex justify-end gap-2 pt-2">
@@ -500,7 +500,7 @@ export default function CommunitiesPage() {
               placeholder="Topluluklarda ara..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3.5 py-1.5 rounded-md border border-line bg-surface-raised text-xs text-fg placeholder-fg-4 focus:outline-none focus:border-indigo-400"
+              className="w-full pl-9 pr-3.5 py-1.5 rounded-md border border-line bg-surface-raised text-xs text-fg placeholder-fg-4 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700"
             />
           </div>
         </div>
@@ -537,16 +537,16 @@ export default function CommunitiesPage() {
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2.5">
-                      <div className="p-2 bg-surface-hover border border-line rounded-md text-indigo-400">
+                      <div className="p-2 bg-surface-hover border border-line rounded-md text-indigo-400 light:text-indigo-700">
                         {getIcon(community.icon || 'users')}
                       </div>
                       <div>
                         {meta.featured && (
-                          <span className="text-[10px] font-mono text-amber-400 uppercase font-semibold">
+                          <span className="text-[10px] font-mono text-amber-400 light:text-amber-800 uppercase font-semibold">
                             Öne Çıkan
                           </span>
                         )}
-                        <h3 className="text-sm font-bold text-fg hover:text-indigo-400 transition-colors font-heading">
+                        <h3 className="text-sm font-bold text-fg hover:text-indigo-400 light:hover:text-indigo-700 transition-colors font-heading">
                           <Link href={`/communities/${community.slug || community.id}`}>
                             {community.name}
                           </Link>
@@ -596,7 +596,7 @@ export default function CommunitiesPage() {
                     onClick={(e) => toggleJoin(community.id, community.name, e)}
                     className={`flex items-center gap-1.5 h-7 px-2.5 rounded text-xs font-medium transition-colors cursor-pointer ${
                       isJoined 
-                        ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800'
+                        ? 'bg-emerald-950/60 light:bg-emerald-50/60 text-emerald-300 light:text-emerald-700 border border-emerald-800'
                         : 'bg-surface-hover text-fg-2 hover:bg-line border border-line'
                     }`}
                   >
@@ -620,7 +620,7 @@ export default function CommunitiesPage() {
                     </Link>
                     <Link 
                       href={`/communities/${community.slug || community.id}`}
-                      className="flex items-center gap-0.5 text-xs font-semibold text-indigo-400 hover:text-indigo-300"
+                      className="flex items-center gap-0.5 text-xs font-semibold text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700"
                     >
                       <span>İncele</span>
                       <ChevronRight size={13} />
@@ -639,7 +639,7 @@ export default function CommunitiesPage() {
           <div className="bg-surface-raised border border-line rounded-lg max-w-lg w-full p-6 space-y-4 text-fg shadow-2xl">
             <div className="flex items-center justify-between border-b border-line pb-3">
               <h2 className="text-sm font-bold text-fg flex items-center gap-2 font-heading">
-                <Shield size={16} className="text-indigo-400" />
+                <Shield size={16} className="text-indigo-400 light:text-indigo-700" />
                 <span>{activeRulesCommunity.name} Kuralları</span>
               </h2>
               <button 
@@ -653,7 +653,7 @@ export default function CommunitiesPage() {
             <div className="space-y-2 text-xs text-fg-3">
               {getMeta(activeRulesCommunity.slug).rules.map((rule, idx) => (
                 <div key={idx} className="flex items-start gap-2">
-                  <span className="font-mono text-indigo-400 text-[11px] shrink-0">{idx + 1}.</span>
+                  <span className="font-mono text-indigo-400 light:text-indigo-700 text-[11px] shrink-0">{idx + 1}.</span>
                   <p className="leading-relaxed">{rule}</p>
                 </div>
               ))}

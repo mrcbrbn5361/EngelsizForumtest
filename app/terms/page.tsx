@@ -19,7 +19,7 @@ export default function TermsPage() {
         <div className="lg:col-span-8 space-y-8">
           {/* Header */}
           <div className="border-b border-line pb-6 space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 text-indigo-300 border border-indigo-800 text-[11px] font-mono font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-indigo-950/60 light:bg-indigo-50/60 text-indigo-300 light:text-indigo-700 border border-indigo-800 text-[11px] font-mono font-bold uppercase tracking-wider">
               <Scale size={13} />
               <span>Topluluk Sözleşmesi</span>
             </div>
@@ -34,7 +34,7 @@ export default function TermsPage() {
           {/* Core Pillars */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-surface-raised border border-line p-5 rounded-md space-y-2">
-              <div className="flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-wide">
+              <div className="flex items-center gap-2 text-indigo-400 light:text-indigo-700 font-bold text-xs uppercase tracking-wide">
                 <HeartHandshake size={15} />
                 <span>Saygı ve Kapsayıcılık</span>
               </div>
@@ -44,7 +44,7 @@ export default function TermsPage() {
             </div>
 
             <div className="bg-surface-raised border border-line p-5 rounded-md space-y-2">
-              <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wide">
+              <div className="flex items-center gap-2 text-emerald-400 light:text-emerald-700 font-bold text-xs uppercase tracking-wide">
                 <Scale size={15} />
                 <span>Doğru ve Teyitli Bilgi</span>
               </div>
@@ -54,7 +54,7 @@ export default function TermsPage() {
             </div>
 
             <div className="bg-surface-raised border border-line p-5 rounded-md space-y-2">
-              <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wide">
+              <div className="flex items-center gap-2 text-amber-400 light:text-amber-800 font-bold text-xs uppercase tracking-wide">
                 <AlertCircle size={15} />
                 <span>Erişilebilir İçerik</span>
               </div>
@@ -95,7 +95,7 @@ export default function TermsPage() {
               <div className="p-5 space-y-1.5">
                 <h2 className="text-xs sm:text-sm font-bold text-fg">4. İletişim ve Kural İhlali Bildirimi</h2>
                 <p className="text-xs text-[#CBD5E1] leading-relaxed">
-                  Kullanım kuralları ile ilgili her türlü soru veya kural ihlali bildirimi için <a href="mailto:miracbirben@gmail.com" className="text-indigo-400 font-bold hover:underline">miracbirben@gmail.com</a> adresiyle iletişim kurabilirsiniz.
+                  Kullanım kuralları ile ilgili her türlü soru veya kural ihlali bildirimi için <a href="mailto:miracbirben@gmail.com" className="text-indigo-400 light:text-indigo-700 font-bold hover:underline">miracbirben@gmail.com</a> adresiyle iletişim kurabilirsiniz.
                 </p>
               </div>
             </div>

@@ -12,7 +12,7 @@ export default function LoginPage() {
   return (
     <Suspense fallback={
       <div className="flex flex-col items-center justify-center min-h-[360px] gap-2">
-        <Loader2 className="animate-spin text-indigo-400 size-6" />
+        <Loader2 className="animate-spin text-indigo-400 light:text-indigo-700 size-6" />
         <span className="text-xs text-fg-4 font-mono">Giriş ekranı hazırlanıyor...</span>
       </div>
     }>
@@ -73,7 +73,7 @@ function LoginForm() {
     <div className="flex flex-col gap-5 max-w-lg mx-auto w-full py-6 sm:py-10 px-4">
       {/* Breadcrumb Navigation */}
       <div className="bg-surface-raised border border-line px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-fg-4 rounded-md font-mono">
-        <Link href="/" className="hover:text-indigo-400 flex items-center gap-1.5 font-sans font-medium transition-colors">
+        <Link href="/" className="hover:text-indigo-400 light:hover:text-indigo-700 flex items-center gap-1.5 font-sans font-medium transition-colors">
           <Home size={13} />
           <span>Ana Sayfa</span>
         </Link>
@@ -86,7 +86,7 @@ function LoginForm() {
         {/* Card Header */}
         <div className="bg-surface-hover text-fg p-5 sm:p-6 border-b border-line flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-md bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-md bg-indigo-500/20 text-indigo-400 light:text-indigo-700 border border-indigo-500/30 flex items-center justify-center shrink-0">
               <LogIn size={20} strokeWidth={2.2} />
             </div>
             <div>
@@ -98,7 +98,7 @@ function LoginForm() {
               </p>
             </div>
           </div>
-          <span className="hidden sm:inline-flex text-[11px] font-mono font-medium text-indigo-300 bg-indigo-950/60 border border-indigo-800/60 px-2 py-0.5 rounded">
+          <span className="hidden sm:inline-flex text-[11px] font-mono font-medium text-indigo-300 light:text-indigo-700 bg-indigo-950/60 light:bg-indigo-50/60 border border-indigo-800/60 px-2 py-0.5 rounded">
             WCAG 2.2 AA
           </span>
         </div>
@@ -111,7 +111,7 @@ function LoginForm() {
                 htmlFor="login-email" 
                 className="block text-xs font-semibold text-fg-3 uppercase tracking-wider"
               >
-                E-posta Adresi <span className="text-rose-400">*</span>
+                E-posta Adresi <span className="text-rose-400 light:text-rose-700">*</span>
               </label>
               <div className="relative">
                 <input 
@@ -119,7 +119,7 @@ function LoginForm() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-surface-hover border border-line rounded-md text-fg placeholder-fg-5 focus:outline-none focus:border-indigo-400 transition-colors"
+                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-surface-hover border border-line rounded-md text-fg placeholder-fg-5 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700 transition-colors"
                   placeholder="ornek@engelsizforum.com"
                   autoComplete="email"
                   required
@@ -134,11 +134,11 @@ function LoginForm() {
                   htmlFor="login-password" 
                   className="block text-xs font-semibold text-fg-3 uppercase tracking-wider"
                 >
-                  Şifre <span className="text-rose-400">*</span>
+                  Şifre <span className="text-rose-400 light:text-rose-700">*</span>
                 </label>
                 <Link 
                   href="/auth/forgot-password" 
-                  className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
+                  className="text-xs font-medium text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 transition-colors"
                 >
                   Şifremi Unuttum?
                 </Link>
@@ -149,7 +149,7 @@ function LoginForm() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-surface-hover border border-line rounded-md text-fg placeholder-fg-5 focus:outline-none focus:border-indigo-400 transition-colors"
+                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-surface-hover border border-line rounded-md text-fg placeholder-fg-5 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700 transition-colors"
                   placeholder="••••••••"
                   autoComplete="current-password"
                   required
@@ -194,7 +194,7 @@ function LoginForm() {
                 href="/register" 
                 className="text-xs font-medium text-fg-4 hover:text-fg transition-colors"
               >
-                Hesabınız yok mu? <span className="text-indigo-400 font-semibold underline underline-offset-4">Hemen Kayıt Olun</span>
+                Hesabınız yok mu? <span className="text-indigo-400 light:text-indigo-700 font-semibold underline underline-offset-4">Hemen Kayıt Olun</span>
               </Link>
             </div>
           </form>

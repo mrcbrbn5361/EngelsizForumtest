@@ -66,7 +66,7 @@ export default function EvdeBakimPage() {
       <div className="bg-surface-raised rounded-xl border border-line p-6 shadow-md">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-5 mb-6">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-lg bg-surface-hover text-indigo-400 flex items-center justify-center shadow-inner border border-line">
+            <div className="w-12 h-12 rounded-lg bg-surface-hover text-indigo-400 light:text-indigo-700 flex items-center justify-center shadow-inner border border-line">
               <Home className="w-7 h-7" />
             </div>
             <div>
@@ -82,7 +82,7 @@ export default function EvdeBakimPage() {
             </div>
           </div>
 
-          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-surface text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
+          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-surface text-indigo-300 light:text-indigo-700 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
             2026 SINIRI: {formatCurrency(kisiBasiGelirSiniri)}
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function EvdeBakimPage() {
               />
             </div>
             <div className="space-y-1">
-              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 transition-colors">
+              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
                 Raporunuzda &quot;Tam Bağımlı&quot; İbaresi Var mı?
               </span>
               <span className="text-[11px] text-fg-5 leading-relaxed block">
@@ -160,7 +160,7 @@ export default function EvdeBakimPage() {
               />
             </div>
             <div className="space-y-1">
-              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 transition-colors">
+              <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">
                 Rapor e-Rapor Sisteminde Kayıtlı mı?
               </span>
               <span className="text-[11px] text-fg-5 leading-relaxed block">
@@ -174,17 +174,17 @@ export default function EvdeBakimPage() {
       {/* SONUÇ VE DEĞERLENDİRME KARTI */}
       <div className={`rounded-xl border p-6 shadow-xl animate-in zoom-in-95 duration-300 ${
         calculation.isFullyApproved 
-          ? 'bg-emerald-950/10 border-emerald-900/50' 
-          : 'bg-indigo-950/10 border-indigo-900/50'
+          ? 'bg-emerald-950/10 light:bg-emerald-50/10 border-emerald-900/50 light:border-emerald-200/50' 
+          : 'bg-indigo-950/10 light:bg-indigo-50/10 border-indigo-900/50 light:border-indigo-200/50'
       }`}>
         <div className="flex items-start gap-5">
           <div className="mt-1">
             {calculation.isFullyApproved ? (
-              <div className="w-12 h-12 rounded-full bg-emerald-900/30 text-emerald-400 flex items-center justify-center shadow-inner">
+              <div className="w-12 h-12 rounded-full bg-emerald-900/30 light:bg-emerald-100/30 text-emerald-400 light:text-emerald-700 flex items-center justify-center shadow-inner">
                 <CheckCircle2 size={28} />
               </div>
             ) : (
-              <div className="w-12 h-12 rounded-full bg-indigo-900/30 text-indigo-400 flex items-center justify-center shadow-inner">
+              <div className="w-12 h-12 rounded-full bg-indigo-900/30 light:bg-indigo-100/30 text-indigo-400 light:text-indigo-700 flex items-center justify-center shadow-inner">
                 <AlertTriangle size={28} />
               </div>
             )}
@@ -200,8 +200,8 @@ export default function EvdeBakimPage() {
 
               <span className={`text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-wider border ${
                 calculation.isFullyApproved 
-                  ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800' 
-                  : 'bg-indigo-950/40 text-indigo-400 border-indigo-800'
+                  ? 'bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border-emerald-800' 
+                  : 'bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-400 light:text-indigo-700 border-indigo-800'
               }`}>
                 {calculation.isFullyApproved ? 'Kriter Onaylı' : 'Şartlar Sağlanamadı'}
               </span>
@@ -216,13 +216,13 @@ export default function EvdeBakimPage() {
               ) : (
                 <div className="space-y-2">
                   {!calculation.isIncomeEligible && (
-                    <div className="flex items-center gap-2 text-rose-400 font-bold">
+                    <div className="flex items-center gap-2 text-rose-400 light:text-rose-700 font-bold">
                       <TrendingDown size={14} />
                       <span>GELİR KRİTERİ: Kişi başı gelir sınırı {formatCurrency(-calculation.fark)} aşıldı.</span>
                     </div>
                   )}
                   {!calculation.isMedicallyEligible && (
-                    <div className="flex items-center gap-2 text-amber-400 font-bold">
+                    <div className="flex items-center gap-2 text-amber-400 light:text-amber-800 font-bold">
                       <ShieldAlert size={14} />
                       <span>SAĞLIK RAPORU: Evde bakım için &quot;Tam Bağımlı&quot; ibaresi zorunludur.</span>
                     </div>
@@ -242,21 +242,21 @@ export default function EvdeBakimPage() {
 
               <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
                 <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Yasal Sınır</span>
-                <div className="text-xl font-black text-indigo-400">
+                <div className="text-xl font-black text-indigo-400 light:text-indigo-700">
                   {formatCurrency(calculation.kisiBasiGelirSiniri)}
                 </div>
               </div>
 
               <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
                 <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Kalan Limit</span>
-                <div className={`text-xl font-black ${calculation.fark >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                <div className={`text-xl font-black ${calculation.fark >= 0 ? 'text-emerald-400 light:text-emerald-700' : 'text-rose-400 light:text-rose-700'}`}>
                   {calculation.fark >= 0 ? '+' + formatCurrency(calculation.fark) : formatCurrency(calculation.fark)}
                 </div>
               </div>
 
               <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
                 <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Bakım Aylığı</span>
-                <div className="text-xl font-black text-indigo-300">
+                <div className="text-xl font-black text-indigo-300 light:text-indigo-700">
                   {formatCurrency(calculation.aylikTutar)} <span className="text-[10px] text-fg-5">/ AY</span>
                 </div>
               </div>
@@ -271,7 +271,7 @@ export default function EvdeBakimPage() {
         
         <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
           <h3 className="text-xs font-black text-[#F8FAFC] uppercase tracking-widest mb-4 flex items-center gap-2.5">
-            <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+            <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 light:text-indigo-700">
               <Building size={14} />
             </div>
             <span>Kimler Bakıcı Olabilir?</span>
@@ -280,13 +280,13 @@ export default function EvdeBakimPage() {
             <li className="flex gap-2"><span>•</span> <span>Eş, anne, baba, çocuk, kardeş, torun, dede, nine.</span></li>
             <li className="flex gap-2"><span>•</span> <span>Amca, hala, teyze, dayı ve çocukları.</span></li>
             <li className="flex gap-2"><span>•</span> <span>Gelin, damat, kayınvalide, kayınpeder, görümce.</span></li>
-            <li className="flex gap-2 text-indigo-300"><span>•</span> <span>Bakıcının haftada en az 8 saat fiilen engelliyle ilgilenmesi zorunludur.</span></li>
+            <li className="flex gap-2 text-indigo-300 light:text-indigo-700"><span>•</span> <span>Bakıcının haftada en az 8 saat fiilen engelliyle ilgilenmesi zorunludur.</span></li>
           </ul>
         </div>
 
         <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
           <h3 className="text-xs font-black text-[#F8FAFC] uppercase tracking-widest mb-4 flex items-center gap-2.5">
-            <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-400">
+            <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-400 light:text-amber-800">
               <ShieldAlert size={14} />
             </div>
             <span>Başvuru Prosedürü</span>

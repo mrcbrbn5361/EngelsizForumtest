@@ -17,10 +17,21 @@ import {
   BookOpen,
   BellRing,
   HelpCircle,
-  Keyboard
+  Keyboard,
+  Moon,
+  Sun,
+  Glasses,
+  Monitor
 } from 'lucide-react';
-import { useAccessibility } from '@/components/providers/accessibility-provider';
+import { useAccessibility, type ThemePreference } from '@/components/providers/accessibility-provider';
 import { motion, AnimatePresence } from 'motion/react';
+
+const THEME_OPTIONS: { id: ThemePreference; label: string; hint: string; Icon: typeof Moon }[] = [
+  { id: 'dark', label: 'Gece', hint: 'Koyu tema', Icon: Moon },
+  { id: 'light', label: 'Gündüz', hint: 'Açık tema', Icon: Sun },
+  { id: 'sepia', label: 'Göz yormama', hint: 'Sıcak, düşük mavi ışıklı kâğıt tonu', Icon: Glasses },
+  { id: 'system', label: 'Sistem', hint: 'Cihazın açık/koyu ayarını izler', Icon: Monitor },
+];
 
 interface AccessibilityMenuProps {
   isOpen: boolean;
@@ -39,6 +50,7 @@ interface AccessibilityMenuProps {
  */
 export function AccessibilityMenu({ isOpen, onClose }: AccessibilityMenuProps) {
   const { 
+    theme,
     fontSize, 
     highContrast, 
     dyslexicFont, 
@@ -147,6 +159,37 @@ export function AccessibilityMenu({ isOpen, onClose }: AccessibilityMenuProps) {
                 <div className="grid grid-cols-2 gap-1.5">
                   <button onClick={() => { updateSettings({ reducedMotion: true, visualAlerts: false }); }} className="text-xs p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border">Nöbet Güvenli</button>
                   <button onClick={() => { updateSettings({ fontSize: 'xl', highContrast: true }); }} className="text-xs p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border">Görme Engelli</button>
+                </div>
+              </section>
+
+              <section className="space-y-2 pt-3.5">
+                <span id="theme-picker-label" className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                  <Palette size={15} className="text-sky-700 dark:text-sky-400" />
+                  Tema
+                </span>
+                <div
+                  role="radiogroup"
+                  aria-labelledby="theme-picker-label"
+                  className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700"
+                >
+                  {THEME_OPTIONS.map(({ id, label, hint, Icon }) => (
+                    <button
+                      key={id}
+                      type="button"
+                      role="radio"
+                      aria-checked={theme === id}
+                      onClick={() => updateSettings({ theme: id })}
+                      title={hint}
+                      className={`min-h-[44px] px-2 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                        theme === id
+                          ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
+                          : 'text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      <Icon size={14} aria-hidden="true" />
+                      {label}
+                    </button>
+                  ))}
                 </div>
               </section>
 

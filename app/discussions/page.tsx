@@ -189,7 +189,7 @@ function DiscussionsContent() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="h-9 bg-surface-raised border border-line rounded-md px-2.5 text-xs font-medium text-fg-2 focus:outline-none focus:border-indigo-400 cursor-pointer"
+                className="h-9 bg-surface-raised border border-line rounded-md px-2.5 text-xs font-medium text-fg-2 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700 cursor-pointer"
                 aria-label="Kategori filtresi"
               >
                 <option value="">Tüm Kategoriler</option>
@@ -205,7 +205,7 @@ function DiscussionsContent() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Başlıklarda ara..."
-                  className="w-full h-9 pl-8 pr-2.5 text-xs bg-surface-raised border border-line rounded-md text-fg-1 placeholder-fg-4 focus:outline-none focus:border-indigo-400"
+                  className="w-full h-9 pl-8 pr-2.5 text-xs bg-surface-raised border border-line rounded-md text-fg-1 placeholder-fg-4 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700"
                 />
               </div>
             </div>

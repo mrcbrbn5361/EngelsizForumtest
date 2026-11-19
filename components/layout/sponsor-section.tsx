@@ -19,7 +19,7 @@ export function SponsorSection({ compact = false }: SponsorSectionProps) {
           <h2 className="text-xs font-semibold uppercase tracking-wider text-fg-2 font-heading">
             Proje Destekçileri &amp; Partnerler
           </h2>
-          <span className="text-[10px] font-mono font-medium bg-surface-hover border border-line text-indigo-400 px-2 py-0.5 rounded">
+          <span className="text-[10px] font-mono font-medium bg-surface-hover border border-line text-indigo-400 light:text-indigo-700 px-2 py-0.5 rounded">
             Topluluk
           </span>
         </div>
@@ -46,8 +46,8 @@ export function SponsorSection({ compact = false }: SponsorSectionProps) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface-hover hover:bg-line text-fg-2 hover:text-fg font-medium border border-line transition-colors shadow-2xs group"
           >
-            <Sparkles size={13} className="text-amber-400" />
-            <span className="group-hover:text-indigo-400 transition-colors">yeterly.ai</span>
+            <Sparkles size={13} className="text-amber-400 light:text-amber-800" />
+            <span className="group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">yeterly.ai</span>
             <ExternalLink size={11} className="text-fg-4" />
           </a>
 
@@ -57,7 +57,7 @@ export function SponsorSection({ compact = false }: SponsorSectionProps) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface-hover hover:bg-line text-fg-2 hover:text-fg font-medium border border-line transition-colors shadow-2xs group"
           >
-            <span className="group-hover:text-indigo-400 transition-colors">goldhost.com.tr</span>
+            <span className="group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">goldhost.com.tr</span>
             <ExternalLink size={11} className="text-fg-4" />
           </a>
         </div>

@@ -414,7 +414,7 @@ export default function DeveloperPortalPage() {
       <div className="w-full max-w-7xl mx-auto px-4 py-6 space-y-6 min-w-0">
         {/* Breadcrumb Navigation */}
         <nav className="bg-surface-raised/50 border border-line px-5 py-3 flex flex-wrap items-center gap-3 text-xs text-fg-4 rounded-lg backdrop-blur-sm" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-indigo-400 font-bold transition-colors flex items-center gap-1.5">
+          <Link href="/" className="hover:text-indigo-400 light:hover:text-indigo-700 font-bold transition-colors flex items-center gap-1.5">
             <Home size={14} />
             <span>Ana Sayfa</span>
           </Link>
@@ -424,7 +424,7 @@ export default function DeveloperPortalPage() {
 
         {/* Developer Portal Header */}
         <header className="border border-line rounded-xl overflow-hidden bg-surface-raised shadow-sm">
-          <div className="bg-surface-hover/50 text-indigo-300 font-bold uppercase text-[10px] tracking-[0.2em] py-3 px-6 flex flex-wrap items-center justify-between border-b border-line gap-4">
+          <div className="bg-surface-hover/50 text-indigo-300 light:text-indigo-700 font-bold uppercase text-[10px] tracking-[0.2em] py-3 px-6 flex flex-wrap items-center justify-between border-b border-line gap-4">
             <div className="flex items-center gap-2">
               <Code2 size={14} />
               <span>EngelsizForum Geliştirici Portalı</span>
@@ -441,7 +441,7 @@ export default function DeveloperPortalPage() {
                   &ldquo;EngelsizForum ile Giriş Yap&rdquo; &amp; Canlı Mevzuat Entegrasyonu
                 </h1>
                 {user && (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-2 py-0.5 rounded font-bold">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-mono text-emerald-400 light:text-emerald-700 bg-emerald-950/60 light:bg-emerald-50/60 border border-emerald-800 px-2 py-0.5 rounded font-bold">
                     <CheckCircle2 size={11} />
                     <span>Aktif Oturum</span>
                   </span>
@@ -520,7 +520,7 @@ export default function DeveloperPortalPage() {
             {!user ? (
               <div className="border border-line rounded-md overflow-hidden bg-surface-raised">
                 <div className="bg-surface-hover border-b border-line text-fg font-bold text-xs uppercase py-2.5 px-4 flex items-center gap-2">
-                  <Lock size={13} className="text-amber-400" />
+                  <Lock size={13} className="text-amber-400 light:text-amber-800" />
                   <span>Geliştirici Girişi Gerekiyor</span>
                 </div>
                 <div className="p-8 text-center space-y-3">
@@ -542,25 +542,25 @@ export default function DeveloperPortalPage() {
               </div>
             ) : loadError ? (
               <div className="border border-amber-500/30 rounded-md overflow-hidden bg-surface-raised shadow-xs">
-                <div className="bg-amber-950/40 border-b border-amber-800/40 text-amber-200 font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between">
+                <div className="bg-amber-950/40 light:bg-amber-50/40 border-b border-amber-800/40 text-amber-200 light:text-amber-800 font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <AlertTriangle size={14} className="text-amber-400" />
+                    <AlertTriangle size={14} className="text-amber-400 light:text-amber-800" />
                     <span>Veritabanı / Şema Uyarısı</span>
                   </div>
                   <button
                     onClick={() => loadData()}
-                    className="text-[11px] font-bold text-indigo-400 hover:underline cursor-pointer flex items-center gap-1"
+                    className="text-[11px] font-bold text-indigo-400 light:text-indigo-700 hover:underline cursor-pointer flex items-center gap-1"
                   >
                     <RefreshCw size={12} />
                     <span>Tekrar Dene</span>
                   </button>
                 </div>
                 <div className="p-5 space-y-3 text-xs text-fg-3">
-                  <div className="font-semibold text-amber-200 flex items-center gap-2">
+                  <div className="font-semibold text-amber-200 light:text-amber-800 flex items-center gap-2">
                     <span>{loadError.message}</span>
                   </div>
                   {loadError.details && (
-                    <div className="p-2.5 bg-surface text-amber-300 rounded-md font-mono text-[11px] break-all border border-line">
+                    <div className="p-2.5 bg-surface text-amber-300 light:text-amber-800 rounded-md font-mono text-[11px] break-all border border-line">
                       Hata Detayı: {loadError.details}
                     </div>
                   )}
@@ -593,7 +593,7 @@ export default function DeveloperPortalPage() {
                   Kayıtlı Uygulama Bulunamadı
                 </div>
                 <div className="p-8 text-center space-y-4">
-                  <div className="w-12 h-12 rounded-md bg-surface-hover text-indigo-400 border border-line flex items-center justify-center mx-auto">
+                  <div className="w-12 h-12 rounded-md bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line flex items-center justify-center mx-auto">
                     <Key size={24} />
                   </div>
                   <div className="space-y-1">
@@ -641,7 +641,7 @@ export default function DeveloperPortalPage() {
                         <tr key={app.client_id} className="hover:bg-surface-hover/40 transition-colors">
                           <td className="p-3 align-top font-bold text-fg">
                             <div className="flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                              <span className="w-2 h-2 rounded-full bg-emerald-400 light:bg-emerald-700 shrink-0" />
                               <span>{app.client_name}</span>
                             </div>
                             {app.description && (
@@ -652,14 +652,14 @@ export default function DeveloperPortalPage() {
                           </td>
                           <td className="p-3 align-top font-mono text-[11px] text-fg-3">
                             <div className="flex items-center gap-1.5 bg-surface-hover border border-line px-2 py-1 rounded-md w-fit">
-                              <span className="truncate max-w-[160px] text-indigo-300">{app.client_id}</span>
+                              <span className="truncate max-w-[160px] text-indigo-300 light:text-indigo-700">{app.client_id}</span>
                               <button
                                 onClick={() => copyToClipboard(app.client_id, `cid-${app.client_id}`)}
                                 title="Client ID'yi kopyala"
                                 className="text-fg-4 hover:text-fg cursor-pointer"
                               >
                                 {copiedKey === `cid-${app.client_id}` ? (
-                                  <Check size={12} className="text-emerald-400" />
+                                  <Check size={12} className="text-emerald-400 light:text-emerald-700" />
                                 ) : (
                                   <Copy size={12} />
                                 )}
@@ -685,7 +685,7 @@ export default function DeveloperPortalPage() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 title="OAuth Giriş Ekranını Test Et"
-                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-surface-hover hover:bg-line text-indigo-300 border border-line text-[11px] font-bold transition-colors"
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-surface-hover hover:bg-line text-indigo-300 light:text-indigo-700 border border-line text-[11px] font-bold transition-colors"
                               >
                                 <ExternalLink size={11} />
                                 <span>Test Et</span>
@@ -701,7 +701,7 @@ export default function DeveloperPortalPage() {
                               <button
                                 onClick={() => handleRotateSecret(app)}
                                 title="Client Secret'i Yenile"
-                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-surface-hover hover:bg-amber-950/40 text-amber-300 border border-amber-800/40 text-[11px] font-bold cursor-pointer transition-colors"
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-surface-hover hover:bg-amber-950/40 light:hover:bg-amber-50/40 text-amber-300 light:text-amber-800 border border-amber-800/40 text-[11px] font-bold cursor-pointer transition-colors"
                               >
                                 <RefreshCw size={11} />
                                 <span>Secret Yenile</span>
@@ -709,7 +709,7 @@ export default function DeveloperPortalPage() {
                               <button
                                 onClick={() => handleDeleteApp(app)}
                                 title="Uygulamayı Sil"
-                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-surface-hover hover:bg-rose-950/40 text-rose-300 border border-rose-800/40 text-[11px] font-bold cursor-pointer transition-colors"
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-surface-hover hover:bg-rose-950/40 light:hover:bg-rose-50/40 text-rose-300 light:text-rose-700 border border-rose-800/40 text-[11px] font-bold cursor-pointer transition-colors"
                               >
                                 <Trash2 size={11} />
                                 <span>Sil</span>
@@ -730,7 +730,7 @@ export default function DeveloperPortalPage() {
         {activeTab === 'docs' && (
           <div className="space-y-4">
             {/* Quick Action: Logolu Giriş Butonu Banner */}
-            <div className="p-4 bg-indigo-950/40 border border-indigo-800/40 rounded-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="p-4 bg-indigo-950/40 light:bg-indigo-50/40 border border-indigo-800/40 rounded-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-md bg-indigo-600 flex items-center justify-center text-white shrink-0 font-bold shadow-2xs">
                   <LogIn size={15} />
@@ -768,26 +768,26 @@ export default function DeveloperPortalPage() {
                   <tbody className="divide-y divide-line">
                     <tr className="hover:bg-surface-hover/30 transition-colors">
                       <td className="p-3 font-bold text-fg">Yetkilendirme (Authorize)</td>
-                      <td className="p-3 font-mono text-emerald-400 font-bold">GET</td>
-                      <td className="p-3 font-mono text-indigo-300 select-all">https://engelsizforum.com/api/oauth/authorize</td>
+                      <td className="p-3 font-mono text-emerald-400 light:text-emerald-700 font-bold">GET</td>
+                      <td className="p-3 font-mono text-indigo-300 light:text-indigo-700 select-all">https://engelsizforum.com/api/oauth/authorize</td>
                       <td className="p-3 text-fg-3">Kullanıcının izin onayını verdiği web consent sayfası.</td>
                     </tr>
                     <tr className="hover:bg-surface-hover/30 transition-colors">
                       <td className="p-3 font-bold text-fg">Erişim Jetonu (Token)</td>
-                      <td className="p-3 font-mono text-indigo-400 font-bold">POST</td>
-                      <td className="p-3 font-mono text-indigo-300 select-all">https://engelsizforum.com/api/oauth/token</td>
+                      <td className="p-3 font-mono text-indigo-400 light:text-indigo-700 font-bold">POST</td>
+                      <td className="p-3 font-mono text-indigo-300 light:text-indigo-700 select-all">https://engelsizforum.com/api/oauth/token</td>
                       <td className="p-3 text-fg-3">Yetkilendirme kodu (code) ile Bearer Access Token takası.</td>
                     </tr>
                     <tr className="hover:bg-surface-hover/30 transition-colors">
                       <td className="p-3 font-bold text-fg">Kullanıcı Bilgileri (Userinfo)</td>
-                      <td className="p-3 font-mono text-emerald-400 font-bold">GET</td>
-                      <td className="p-3 font-mono text-indigo-300 select-all">https://engelsizforum.com/api/oauth/userinfo</td>
+                      <td className="p-3 font-mono text-emerald-400 light:text-emerald-700 font-bold">GET</td>
+                      <td className="p-3 font-mono text-indigo-300 light:text-indigo-700 select-all">https://engelsizforum.com/api/oauth/userinfo</td>
                       <td className="p-3 text-fg-3">Bearer token ile kullanıcının ID, isim, e-posta ve rollerini alma.</td>
                     </tr>
                     <tr className="hover:bg-surface-hover/30 transition-colors">
                       <td className="p-3 font-bold text-fg">Jeton İptali (Revoke)</td>
-                      <td className="p-3 font-mono text-indigo-400 font-bold">POST</td>
-                      <td className="p-3 font-mono text-indigo-300 select-all">https://engelsizforum.com/api/oauth/revoke</td>
+                      <td className="p-3 font-mono text-indigo-400 light:text-indigo-700 font-bold">POST</td>
+                      <td className="p-3 font-mono text-indigo-300 light:text-indigo-700 select-all">https://engelsizforum.com/api/oauth/revoke</td>
                       <td className="p-3 text-fg-3">Kullanıcı oturumu kapattığında token&apos;ı sunucuda geçersiz kılma.</td>
                     </tr>
                   </tbody>
@@ -882,7 +882,7 @@ $result = json_decode(curl_exec($ch), true);`,
                   }}
                   className="absolute top-3 right-3 px-2 py-1 bg-slate-700 hover:bg-slate-600 text-fg rounded-sm text-[11px] font-bold flex items-center gap-1 cursor-pointer"
                 >
-                  {copiedKey === 'code-snippet' ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                  {copiedKey === 'code-snippet' ? <Check size={12} className="text-emerald-400 light:text-emerald-700" /> : <Copy size={12} />}
                   <span>Kopyala</span>
                 </button>
 
@@ -974,10 +974,10 @@ $result = json_decode(curl_exec($ch), true);`}
             <div className="border border-line rounded-md overflow-hidden bg-surface-raised shadow-sm">
               <div className="bg-surface-hover text-fg font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between border-b border-line">
                 <div className="flex items-center gap-2">
-                  <LogIn size={14} className="text-indigo-400" />
+                  <LogIn size={14} className="text-indigo-400 light:text-indigo-700" />
                   <span>Resmi &ldquo;EngelsizForum ile Giriş Yap&rdquo; Logolu Buton Kılavuzu</span>
                 </div>
-                <span className="text-[11px] font-normal text-indigo-300 bg-indigo-950/40 px-2.5 py-0.5 rounded-md border border-indigo-800/40">
+                <span className="text-[11px] font-normal text-indigo-300 light:text-indigo-700 bg-indigo-950/40 light:bg-indigo-50/40 px-2.5 py-0.5 rounded-md border border-indigo-800/40">
                   Marka &amp; UI Standartları
                 </span>
               </div>
@@ -986,7 +986,7 @@ $result = json_decode(curl_exec($ch), true);`}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-surface-hover/50 border border-line rounded-md">
                   <div className="space-y-1 max-w-2xl text-xs sm:text-sm text-fg-3">
                     <div className="font-bold text-fg flex items-center gap-2">
-                      <Sparkles size={16} className="text-amber-400 shrink-0" />
+                      <Sparkles size={16} className="text-amber-400 light:text-amber-800 shrink-0" />
                       <span>Logosuz Düz Butondan &rarr; Resmi Kurumsal Logolu Giriş Butonuna Geçiş</span>
                     </div>
                     <p className="text-fg-4 text-xs leading-relaxed">
@@ -1003,9 +1003,9 @@ $result = json_decode(curl_exec($ch), true);`}
                     </div>
                     <span className="text-fg-6 font-bold">&rarr;</span>
                     <div className="text-center">
-                      <span className="text-[10px] font-bold text-indigo-400 uppercase block mb-1">Yeni (Resmi Logolu)</span>
+                      <span className="text-[10px] font-bold text-indigo-400 light:text-indigo-700 uppercase block mb-1">Yeni (Resmi Logolu)</span>
                       <div className="bg-indigo-600 text-white px-2.5 py-1 text-[11px] font-bold rounded-md flex items-center gap-1.5 shadow-xs">
-                        <div className="w-3.5 h-3.5 rounded-sm bg-indigo-900 flex items-center justify-center text-[9px] font-black leading-none">
+                        <div className="w-3.5 h-3.5 rounded-sm bg-indigo-900 light:bg-indigo-100 flex items-center justify-center text-[9px] font-black leading-none">
                           E
                         </div>
                         <span>EngelsizForum</span>
@@ -1018,7 +1018,7 @@ $result = json_decode(curl_exec($ch), true);`}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-2">
                   {/* Sol Sütun: Ayarlar */}
                   <div className="lg:col-span-5 space-y-4 bg-surface-hover/40 p-4 border border-line rounded-md">
-                    <h3 className="text-xs font-black text-indigo-400 uppercase tracking-wide border-b border-line pb-2">
+                    <h3 className="text-xs font-black text-indigo-400 light:text-indigo-700 uppercase tracking-wide border-b border-line pb-2">
                       1. Buton Tasarımını Özelleştirin
                     </h3>
 
@@ -1031,7 +1031,7 @@ $result = json_decode(curl_exec($ch), true);`}
                           onClick={() => setBtnTheme('green')}
                           className={`p-2 rounded-md border text-left flex items-center gap-2 cursor-pointer transition-all ${
                             btnTheme === 'green'
-                              ? 'border-emerald-500 bg-emerald-950/40 text-emerald-300 font-bold ring-1 ring-emerald-500'
+                              ? 'border-emerald-500 bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-300 light:text-emerald-700 font-bold ring-1 ring-emerald-500'
                               : 'border-line bg-surface-hover text-fg-3 hover:text-white'
                           }`}
                         >
@@ -1043,7 +1043,7 @@ $result = json_decode(curl_exec($ch), true);`}
                           onClick={() => setBtnTheme('blue')}
                           className={`p-2 rounded-md border text-left flex items-center gap-2 cursor-pointer transition-all ${
                             btnTheme === 'blue'
-                              ? 'border-indigo-500 bg-indigo-950/40 text-indigo-300 font-bold ring-1 ring-indigo-500'
+                              ? 'border-indigo-500 bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-300 light:text-indigo-700 font-bold ring-1 ring-indigo-500'
                               : 'border-line bg-surface-hover text-fg-3 hover:text-white'
                           }`}
                         >
@@ -1088,7 +1088,7 @@ $result = json_decode(curl_exec($ch), true);`}
                             onClick={() => setBtnSize(sz)}
                             className={`py-2 px-2 rounded-md border text-center text-xs cursor-pointer transition-all ${
                               btnSize === sz
-                                ? 'border-indigo-500 bg-indigo-950/40 text-indigo-300 font-bold ring-1 ring-indigo-500'
+                                ? 'border-indigo-500 bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-300 light:text-indigo-700 font-bold ring-1 ring-indigo-500'
                                 : 'border-line bg-surface-hover text-fg-3 hover:text-white'
                             }`}
                           >
@@ -1107,7 +1107,7 @@ $result = json_decode(curl_exec($ch), true);`}
                           onClick={() => setBtnLayout('split')}
                           className={`p-2 rounded-md border text-left text-xs cursor-pointer transition-all ${
                             btnLayout === 'split'
-                              ? 'border-indigo-500 bg-indigo-950/40 text-indigo-300 font-bold ring-1 ring-indigo-500'
+                              ? 'border-indigo-500 bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-300 light:text-indigo-700 font-bold ring-1 ring-indigo-500'
                               : 'border-line bg-surface-hover text-fg-3 hover:text-white'
                           }`}
                         >
@@ -1119,7 +1119,7 @@ $result = json_decode(curl_exec($ch), true);`}
                           onClick={() => setBtnLayout('badge')}
                           className={`p-2 rounded-md border text-left text-xs cursor-pointer transition-all ${
                             btnLayout === 'badge'
-                              ? 'border-indigo-500 bg-indigo-950/40 text-indigo-300 font-bold ring-1 ring-indigo-500'
+                              ? 'border-indigo-500 bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-300 light:text-indigo-700 font-bold ring-1 ring-indigo-500'
                               : 'border-line bg-surface-hover text-fg-3 hover:text-white'
                           }`}
                         >
@@ -1178,7 +1178,7 @@ $result = json_decode(curl_exec($ch), true);`}
                           href={`/oauth/authorize?client_id=${encodeURIComponent(btnAppClientId || 'YOUR_CLIENT_ID')}&redirect_uri=http://localhost:3000/api/auth/callback/engelsizforum&response_type=code&scope=read&state=preview_test`}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 hover:underline font-bold"
+                          className="inline-flex items-center gap-1.5 text-xs text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 hover:underline font-bold"
                         >
                           <ExternalLink size={13} />
                           <span>Onay Ekranını Test Et (Canlı Logo Önizleme)</span>
@@ -1296,7 +1296,7 @@ export function LoginWithEngelsizForum() {
                           }}
                           className="px-2.5 py-1 bg-slate-700 hover:bg-slate-600 text-fg rounded-xs font-bold text-[11px] flex items-center gap-1 cursor-pointer"
                         >
-                          {copiedKey === 'btn-snippet' ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                          {copiedKey === 'btn-snippet' ? <Check size={12} className="text-emerald-400 light:text-emerald-700" /> : <Copy size={12} />}
                           <span>Kodu Kopyala</span>
                         </button>
                       </div>
@@ -1453,10 +1453,10 @@ export function LoginWithEngelsizForum() {
             <div className="border border-line rounded-md overflow-hidden bg-surface-raised shadow-sm">
               <div className="bg-surface-hover text-fg font-bold uppercase text-[12px] tracking-wider py-2.5 px-4 flex items-center justify-between border-b border-line">
                 <div className="flex items-center gap-2">
-                  <Accessibility size={16} className="text-indigo-400" />
+                  <Accessibility size={16} className="text-indigo-400 light:text-indigo-700" />
                   <span>ENGELSİZ ERİŞİLEBİLİRLİK WIDGET&apos;I (EMBED SDK) &amp; WAPPALYZER TESPİTİ</span>
                 </div>
-                <span className="text-[11px] font-normal text-indigo-300 bg-indigo-950/40 px-2.5 py-0.5 rounded-md border border-indigo-800/40">
+                <span className="text-[11px] font-normal text-indigo-300 light:text-indigo-700 bg-indigo-950/40 light:bg-indigo-50/40 px-2.5 py-0.5 rounded-md border border-indigo-800/40">
                   WCAG 2.1 AAA • Wappalyzer Kategori 89
                 </span>
               </div>
@@ -1468,19 +1468,19 @@ export function LoginWithEngelsizForum() {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
                   <div className="p-2.5 bg-surface-hover border border-line rounded-md">
-                    <div className="text-[10px] font-black uppercase text-indigo-400">Görme Desteği</div>
+                    <div className="text-[10px] font-black uppercase text-indigo-400 light:text-indigo-700">Görme Desteği</div>
                     <div className="text-xs font-bold text-fg mt-0.5">Yüksek Kontrast &amp; Büyüteç</div>
                   </div>
                   <div className="p-2.5 bg-surface-hover border border-line rounded-md">
-                    <div className="text-[10px] font-black uppercase text-emerald-400">Nöroçeşitlilik</div>
+                    <div className="text-[10px] font-black uppercase text-emerald-400 light:text-emerald-700">Nöroçeşitlilik</div>
                     <div className="text-xs font-bold text-fg mt-0.5">OpenDyslexic &amp; Bionic Okuma</div>
                   </div>
                   <div className="p-2.5 bg-surface-hover border border-line rounded-md">
-                    <div className="text-[10px] font-black uppercase text-amber-400">Sesli Rehber</div>
+                    <div className="text-[10px] font-black uppercase text-amber-400 light:text-amber-800">Sesli Rehber</div>
                     <div className="text-xs font-bold text-fg mt-0.5">Ekran Okuyucu (TTS Speech)</div>
                   </div>
                   <div className="p-2.5 bg-surface-hover border border-line rounded-md">
-                    <div className="text-[10px] font-black uppercase text-purple-400">Wappalyzer</div>
+                    <div className="text-[10px] font-black uppercase text-purple-400 light:text-purple-700">Wappalyzer</div>
                     <div className="text-xs font-bold text-fg mt-0.5">Global İmza &amp; DOM Tespiti</div>
                   </div>
                 </div>
@@ -1494,7 +1494,7 @@ export function LoginWithEngelsizForum() {
                 <div className="border border-line rounded-md overflow-hidden bg-surface-raised shadow-sm">
                   <div className="bg-surface-hover border-b border-line text-fg font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <Sliders size={13} className="text-indigo-400" />
+                      <Sliders size={13} className="text-indigo-400 light:text-indigo-700" />
                       <span>Widget Ayarlarını Kişiselleştir</span>
                     </div>
                   </div>
@@ -1655,7 +1655,7 @@ export function LoginWithEngelsizForum() {
                 <div className="border border-line rounded-md overflow-hidden bg-surface-raised shadow-sm">
                   <div className="bg-surface-hover border-b border-line text-fg font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <Code2 size={13} className="text-indigo-400" />
+                      <Code2 size={13} className="text-indigo-400 light:text-indigo-700" />
                       <span>Hazır Entegrasyon Kodları (Kopyala &amp; Yapıştır)</span>
                     </div>
 
@@ -1684,10 +1684,10 @@ export function LoginWithEngelsizForum() {
                     {widgetCodeTab === 'html' && (
                       <div className="space-y-2">
                         <p className="text-fg-3">
-                          Sitenizin <code className="bg-surface-hover px-1.5 py-0.5 rounded text-indigo-300 font-mono">&lt;body&gt;</code> kapanış etiketinden hemen önce aşağıdaki tek satır scripti eklemeniz yeterlidir:
+                          Sitenizin <code className="bg-surface-hover px-1.5 py-0.5 rounded text-indigo-300 light:text-indigo-700 font-mono">&lt;body&gt;</code> kapanış etiketinden hemen önce aşağıdaki tek satır scripti eklemeniz yeterlidir:
                         </p>
                         <div className="relative">
-                          <pre className="bg-surface text-indigo-200 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-line">
+                          <pre className="bg-surface text-indigo-200 light:text-indigo-800 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-line">
 {`<!-- EngelsizForum WCAG 2.1 AAA Erişilebilirlik Widget'ı -->
 <script
   src="https://engelsizforum.com/widget/engelsiz-accessibility.js"
@@ -1702,12 +1702,12 @@ export function LoginWithEngelsizForum() {
                             onClick={() => copyToClipboard(`<!-- EngelsizForum WCAG 2.1 AAA Erişilebilirlik Widget'ı -->\n<script\n  src="https://engelsizforum.com/widget/engelsiz-accessibility.js"\n  data-position="${widgetPosition}"\n  data-color="${widgetColor}"\n  data-lang="${widgetLang}"\n  async\n  defer>\n</script>`, 'html-widget')}
                             className="absolute top-2 right-2 px-2.5 py-1 bg-surface-hover hover:bg-line text-fg rounded-md text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors border border-line"
                           >
-                            {copiedKey === 'html-widget' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                            {copiedKey === 'html-widget' ? <Check size={11} className="text-emerald-400 light:text-emerald-700" /> : <Copy size={11} />}
                             <span>Kopyala</span>
                           </button>
                         </div>
-                        <div className="p-3 bg-indigo-950/40 border border-indigo-800/40 text-fg-3 rounded-md text-[11px] flex items-center gap-2">
-                          <Info size={14} className="shrink-0 text-indigo-400" />
+                        <div className="p-3 bg-indigo-950/40 light:bg-indigo-50/40 border border-indigo-800/40 text-fg-3 rounded-md text-[11px] flex items-center gap-2">
+                          <Info size={14} className="shrink-0 text-indigo-400 light:text-indigo-700" />
                           <span>WordPress, Shopify, Wix veya özel e-ticaret sitelerinin tüm tema dosyalarıyla %100 uyumludur. Sıfır dış kütüphane gerektirir.</span>
                         </div>
                       </div>
@@ -1717,10 +1717,10 @@ export function LoginWithEngelsizForum() {
                     {widgetCodeTab === 'react' && (
                       <div className="space-y-2">
                         <p className="text-fg-3">
-                          Next.js App Router veya React uygulamalarında <code className="bg-surface-hover px-1.5 py-0.5 rounded text-indigo-300 font-mono">app/layout.tsx</code> dosyanıza ekleyin:
+                          Next.js App Router veya React uygulamalarında <code className="bg-surface-hover px-1.5 py-0.5 rounded text-indigo-300 light:text-indigo-700 font-mono">app/layout.tsx</code> dosyanıza ekleyin:
                         </p>
                         <div className="relative">
-                          <pre className="bg-surface text-indigo-200 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-line">
+                          <pre className="bg-surface text-indigo-200 light:text-indigo-800 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-line">
 {`import Script from 'next/script';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -1744,7 +1744,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                             onClick={() => copyToClipboard(`import Script from 'next/script';\n\nexport default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <html lang="${widgetLang}">\n      <body>\n        {children}\n        <Script\n          src="https://engelsizforum.com/widget/engelsiz-accessibility.js"\n          data-position="${widgetPosition}"\n          data-color="${widgetColor}"\n          data-lang="${widgetLang}"\n          strategy="lazyOnload"\n        />\n      </body>\n    </html>\n  );\n}`, 'react-widget')}
                             className="absolute top-2 right-2 px-2.5 py-1 bg-surface-hover hover:bg-line text-fg rounded-md text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors border border-line"
                           >
-                            {copiedKey === 'react-widget' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                            {copiedKey === 'react-widget' ? <Check size={11} className="text-emerald-400 light:text-emerald-700" /> : <Copy size={11} />}
                             <span>Kopyala</span>
                           </button>
                         </div>
@@ -1755,10 +1755,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     {widgetCodeTab === 'api' && (
                       <div className="space-y-2">
                         <p className="text-fg-3">
-                          Widget yüklendikten sonra <code className="bg-surface-hover px-1.5 py-0.5 rounded font-mono font-bold text-indigo-400">window.EngelsizAccessibility</code> küresel nesnesi üzerinden kodla yönetebilirsiniz:
+                          Widget yüklendikten sonra <code className="bg-surface-hover px-1.5 py-0.5 rounded font-mono font-bold text-indigo-400 light:text-indigo-700">window.EngelsizAccessibility</code> küresel nesnesi üzerinden kodla yönetebilirsiniz:
                         </p>
                         <div className="relative">
-                          <pre className="bg-surface text-indigo-200 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-line">
+                          <pre className="bg-surface text-indigo-200 light:text-indigo-800 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-line">
 {`// Menüyü programatik aç / kapat
 window.EngelsizAccessibility.open();
 window.EngelsizAccessibility.close();
@@ -1785,7 +1785,7 @@ const state = window.EngelsizAccessibility.getState();`}
                             onClick={() => copyToClipboard(`window.EngelsizAccessibility.open();\nwindow.EngelsizAccessibility.setFontSize(2);\nwindow.EngelsizAccessibility.setContrast('high-contrast');\nwindow.EngelsizAccessibility.toggleDyslexicFont();\nwindow.EngelsizAccessibility.speak('EngelsizForum Erişilebilirlik');`, 'api-widget')}
                             className="absolute top-2 right-2 px-2.5 py-1 bg-surface-hover hover:bg-line text-fg rounded-md text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors border border-line"
                           >
-                            {copiedKey === 'api-widget' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                            {copiedKey === 'api-widget' ? <Check size={11} className="text-emerald-400 light:text-emerald-700" /> : <Copy size={11} />}
                             <span>Kopyala</span>
                           </button>
                         </div>
@@ -1797,19 +1797,19 @@ const state = window.EngelsizAccessibility.getState();`}
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <p className="text-fg-3">
-                            Wappalyzer resmi tanım parçası (<code className="bg-surface-hover px-1.5 py-0.5 rounded font-mono text-[10px] text-indigo-300">src/technologies/e.json</code> içine eklenir):
+                            Wappalyzer resmi tanım parçası (<code className="bg-surface-hover px-1.5 py-0.5 rounded font-mono text-[10px] text-indigo-300 light:text-indigo-700">src/technologies/e.json</code> içine eklenir):
                           </p>
                           <a
                             href="/widget/wappalyzer-engelsiz-accessibility.json"
                             download="engelsiz-accessibility.json"
-                            className="text-xs text-indigo-400 font-bold hover:underline flex items-center gap-1"
+                            className="text-xs text-indigo-400 light:text-indigo-700 font-bold hover:underline flex items-center gap-1"
                           >
                             <Download size={12} />
                             <span>JSON İndir</span>
                           </a>
                         </div>
                         <div className="relative">
-                          <pre className="bg-surface text-indigo-200 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-line">
+                          <pre className="bg-surface text-indigo-200 light:text-indigo-800 p-3.5 rounded-md font-mono text-[11px] leading-relaxed overflow-x-auto select-all border border-line">
 {`"Engelsiz Erişilebilirlik": {
   "cats": [68],
   "description": "EngelsizForum open-source universal WCAG 2.1 AAA web accessibility widget for visually impaired, neurodivergent, and motor-disabled users.",
@@ -1836,7 +1836,7 @@ const state = window.EngelsizAccessibility.getState();`}
                             onClick={() => copyToClipboard(`"Engelsiz Erişilebilirlik": {\n  "cats": [68],\n  "description": "EngelsizForum open-source universal WCAG 2.1 AAA web accessibility widget for visually impaired, neurodivergent, and motor-disabled users.",\n  "icon": "default.svg",\n  "pricing": ["open-source"],\n  "website": "https://engelsizforum.com",\n  "js": {\n    "EngelsizAccessibility": "",\n    "EngelsizAccessibility.version": "(.*)\\\\;version:\\\\1",\n    "__ENGELSIZ_WIDGET_VERSION__": "(.*)\\\\;version:\\\\1"\n  },\n  "dom": {\n    "#engelsiz-accessibility-widget": {\n      "attributes": { "data-engelsiz-version": "(.*)\\\\;version:\\\\1" }\n    },\n    "meta[name='engelsiz-accessibility']": {\n      "attributes": { "content": "active" }\n    }\n  },\n  "scripts": "(?:/widget/|/api/widget/)engelsiz-accessibility(?:\\\\.min)?\\\\.js"\n}`, 'wapp-json')}
                             className="absolute top-2 right-2 px-2.5 py-1 bg-surface-hover hover:bg-line text-fg rounded-md text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors border border-line"
                           >
-                            {copiedKey === 'wapp-json' ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                            {copiedKey === 'wapp-json' ? <Check size={11} className="text-emerald-400 light:text-emerald-700" /> : <Copy size={11} />}
                             <span>Kopyala</span>
                           </button>
                         </div>
@@ -1851,7 +1851,7 @@ const state = window.EngelsizAccessibility.getState();`}
             <div className="border border-line rounded-md overflow-hidden bg-surface-raised shadow-sm">
               <div className="bg-surface-hover text-fg font-bold text-xs uppercase py-2.5 px-4 flex items-center justify-between border-b border-line">
                 <div className="flex items-center gap-2">
-                  <Shield size={14} className="text-indigo-400" />
+                  <Shield size={14} className="text-indigo-400 light:text-indigo-700" />
                   <span>Wappalyzer &amp; Web Tarayıcı Teknoloji Tespiti Nasıl Çalışır?</span>
                 </div>
                 <button
@@ -1875,18 +1875,18 @@ const state = window.EngelsizAccessibility.getState();`}
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-black uppercase text-fg-4">1. JS Global Nesnesi</span>
                       {widgetSignatureCheck.hasWindowGlobal ? (
-                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
+                        <span className="text-[10px] font-bold text-emerald-400 light:text-emerald-700 bg-emerald-950/40 light:bg-emerald-50/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
                           <Check size={10} /> Aktif
                         </span>
                       ) : (
                         <span className="text-[10px] font-bold text-fg-4 bg-surface-hover px-1.5 py-0.5 rounded border border-line">Hazır</span>
                       )}
                     </div>
-                    <div className="font-mono text-[11px] font-bold text-indigo-300 bg-surface p-1.5 rounded-md border border-line select-all">
+                    <div className="font-mono text-[11px] font-bold text-indigo-300 light:text-indigo-700 bg-surface p-1.5 rounded-md border border-line select-all">
                       window.EngelsizAccessibility
                     </div>
                     <p className="text-[11px] text-fg-4">
-                      Wappalyzer&apos;ın <code className="font-mono text-[10px] text-indigo-300">js</code> anahtarı bunu tarar ve sürümü okur (<code className="font-mono text-[10px]">v{widgetSignatureCheck.version}</code>).
+                      Wappalyzer&apos;ın <code className="font-mono text-[10px] text-indigo-300 light:text-indigo-700">js</code> anahtarı bunu tarar ve sürümü okur (<code className="font-mono text-[10px]">v{widgetSignatureCheck.version}</code>).
                     </p>
                   </div>
 
@@ -1895,18 +1895,18 @@ const state = window.EngelsizAccessibility.getState();`}
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-black uppercase text-fg-4">2. DOM Kök Elemanı</span>
                       {widgetSignatureCheck.hasDomElement ? (
-                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
+                        <span className="text-[10px] font-bold text-emerald-400 light:text-emerald-700 bg-emerald-950/40 light:bg-emerald-50/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
                           <Check size={10} /> Aktif
                         </span>
                       ) : (
                         <span className="text-[10px] font-bold text-fg-4 bg-surface-hover px-1.5 py-0.5 rounded border border-line">Hazır</span>
                       )}
                     </div>
-                    <div className="font-mono text-[11px] font-bold text-indigo-300 bg-surface p-1.5 rounded-md border border-line select-all">
+                    <div className="font-mono text-[11px] font-bold text-indigo-300 light:text-indigo-700 bg-surface p-1.5 rounded-md border border-line select-all">
                       #engelsiz-accessibility-widget
                     </div>
                     <p className="text-[11px] text-fg-4">
-                      DOM ağacında <code className="font-mono text-[10px] text-indigo-300">data-engelsiz-version</code> özniteliği ile tespit edilir.
+                      DOM ağacında <code className="font-mono text-[10px] text-indigo-300 light:text-indigo-700">data-engelsiz-version</code> özniteliği ile tespit edilir.
                     </p>
                   </div>
 
@@ -1915,14 +1915,14 @@ const state = window.EngelsizAccessibility.getState();`}
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-black uppercase text-fg-4">3. HTML Meta Etiketi</span>
                       {widgetSignatureCheck.hasMetaTag ? (
-                        <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
+                        <span className="text-[10px] font-bold text-emerald-400 light:text-emerald-700 bg-emerald-950/40 light:bg-emerald-50/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
                           <Check size={10} /> Aktif
                         </span>
                       ) : (
                         <span className="text-[10px] font-bold text-fg-4 bg-surface-hover px-1.5 py-0.5 rounded border border-line">Hazır</span>
                       )}
                     </div>
-                    <div className="font-mono text-[10px] font-bold text-indigo-300 bg-surface p-1.5 rounded-md border border-line select-all truncate">
+                    <div className="font-mono text-[10px] font-bold text-indigo-300 light:text-indigo-700 bg-surface p-1.5 rounded-md border border-line select-all truncate">
                       &lt;meta name=&quot;engelsiz-accessibility&quot;&gt;
                     </div>
                     <p className="text-[11px] text-fg-4">
@@ -1934,15 +1934,15 @@ const state = window.EngelsizAccessibility.getState();`}
                   <div className="p-3 border border-line rounded-md bg-surface-hover/60 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-black uppercase text-fg-4">4. Script URL Regex</span>
-                      <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
+                      <span className="text-[10px] font-bold text-emerald-400 light:text-emerald-700 bg-emerald-950/40 light:bg-emerald-50/40 px-1.5 py-0.5 rounded flex items-center gap-0.5 border border-emerald-800/40">
                         <Check size={10} /> CDN
                       </span>
                     </div>
-                    <div className="font-mono text-[10px] font-bold text-indigo-300 bg-surface p-1.5 rounded-md border border-line select-all truncate">
+                    <div className="font-mono text-[10px] font-bold text-indigo-300 light:text-indigo-700 bg-surface p-1.5 rounded-md border border-line select-all truncate">
                       /widget/engelsiz-accessibility.js
                     </div>
                     <p className="text-[11px] text-fg-4">
-                      Wappalyzer <code className="font-mono text-[10px] text-indigo-300">scripts</code> regex kuralı ile dosya yolunu anında eşleştirir.
+                      Wappalyzer <code className="font-mono text-[10px] text-indigo-300 light:text-indigo-700">scripts</code> regex kuralı ile dosya yolunu anında eşleştirir.
                     </p>
                   </div>
                 </div>
@@ -1951,7 +1951,7 @@ const state = window.EngelsizAccessibility.getState();`}
                 <div className="p-4 bg-surface-hover/50 border border-line rounded-md space-y-2.5">
                   <div className="flex items-center justify-between flex-wrap gap-2">
                     <div className="font-bold text-fg text-xs uppercase flex items-center gap-1.5">
-                      <Terminal size={14} className="text-indigo-400" />
+                      <Terminal size={14} className="text-indigo-400 light:text-indigo-700" />
                       <span>Wappalyzer Resmi Deposu için 1-Tıkla PR (Pull Request) Adımları:</span>
                     </div>
                     <a
@@ -1965,7 +1965,7 @@ const state = window.EngelsizAccessibility.getState();`}
                     </a>
                   </div>
                   <p className="text-xs text-fg-4 leading-relaxed">
-                    Wappalyzer teknolojileri harf dosyaları halinde saklar. E harfiyle başlayan teknolojiler doğrudan <code className="bg-surface px-1.5 py-0.5 rounded border border-line text-[11px] font-mono font-bold text-indigo-300">src/technologies/e.json</code> dosyasında yer alır (Kategori: <strong>68 - Accessibility</strong>).
+                    Wappalyzer teknolojileri harf dosyaları halinde saklar. E harfiyle başlayan teknolojiler doğrudan <code className="bg-surface px-1.5 py-0.5 rounded border border-line text-[11px] font-mono font-bold text-indigo-300 light:text-indigo-700">src/technologies/e.json</code> dosyasında yer alır (Kategori: <strong>68 - Accessibility</strong>).
                   </p>
                 </div>
               </div>
@@ -1974,7 +1974,7 @@ const state = window.EngelsizAccessibility.getState();`}
             {/* WCAG 2.1 AAA ve TEKNOFEST 2027 UYUM TABLOSU */}
             <div className="border border-line rounded-md overflow-hidden bg-surface-raised shadow-sm">
               <div className="bg-surface-hover border-b border-line text-fg font-bold text-xs uppercase py-2.5 px-4 flex items-center gap-1.5">
-                <CheckCircle2 size={13} className="text-emerald-400" />
+                <CheckCircle2 size={13} className="text-emerald-400 light:text-emerald-700" />
                 <span>Sağlanan WCAG 2.1 AAA Standartları ve Erişilebilirlik Özellikleri</span>
               </div>
 
@@ -1991,53 +1991,53 @@ const state = window.EngelsizAccessibility.getState();`}
                   </thead>
                   <tbody className="divide-y divide-line text-fg-3">
                     <tr className="hover:bg-surface-hover/30">
-                      <td className="p-3 font-mono font-bold text-indigo-300">1.4.3 / 1.4.6</td>
+                      <td className="p-3 font-mono font-bold text-indigo-300 light:text-indigo-700">1.4.3 / 1.4.6</td>
                       <td className="p-3 font-bold text-fg">Yüksek Kontrast Modları</td>
                       <td className="p-3">Az Görenler / Yaşlılar</td>
                       <td className="p-3 text-fg-4">Derin siyah/beyaz ve sarı/siyah yüksek kontrast filtreleri</td>
-                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
+                      <td className="p-3"><span className="bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
                     <tr className="hover:bg-surface-hover/30">
-                      <td className="p-3 font-mono font-bold text-indigo-300">1.4.4</td>
+                      <td className="p-3 font-mono font-bold text-indigo-300 light:text-indigo-700">1.4.4</td>
                       <td className="p-3 font-bold text-fg">Yazı Boyutu Ölçekleme</td>
                       <td className="p-3">Miyop / Hipermetrop</td>
                       <td className="p-3 text-fg-4">Düzeni bozmadan %90 - %140 font ölçekleme</td>
-                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
+                      <td className="p-3"><span className="bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
                     <tr className="hover:bg-surface-hover/30">
-                      <td className="p-3 font-mono font-bold text-indigo-300">Cognitive AAA</td>
+                      <td className="p-3 font-mono font-bold text-indigo-300 light:text-indigo-700">Cognitive AAA</td>
                       <td className="p-3 font-bold text-fg">OpenDyslexic &amp; Bionic Okuma</td>
                       <td className="p-3">Disleksi / DEHB / Nöroçeşitlilik</td>
                       <td className="p-3 text-fg-4">Özel harf taban ağırlıkları ve kelime başlangıç hece vurguları</td>
-                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
+                      <td className="p-3"><span className="bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
                     <tr className="hover:bg-surface-hover/30">
-                      <td className="p-3 font-mono font-bold text-indigo-300">1.4.8</td>
+                      <td className="p-3 font-mono font-bold text-indigo-300 light:text-indigo-700">1.4.8</td>
                       <td className="p-3 font-bold text-fg">Okuma Cetveli (Focus Guide)</td>
                       <td className="p-3">Konsantrasyon / DEHB</td>
                       <td className="p-3 text-fg-4">Fare hareketini takip eden yatay görsel odaklama barı</td>
-                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
+                      <td className="p-3"><span className="bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
                     <tr className="hover:bg-surface-hover/30">
-                      <td className="p-3 font-mono font-bold text-indigo-300">1.4.1</td>
+                      <td className="p-3 font-mono font-bold text-indigo-300 light:text-indigo-700">1.4.1</td>
                       <td className="p-3 font-bold text-fg">Renk Körlüğü Filtreleri</td>
                       <td className="p-3">Protanopi, Döteranopi, Tritanopi</td>
                       <td className="p-3 text-fg-4">feColorMatrix tabanlı gerçek zamanlı SVG renk matris dönüşümü</td>
-                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
+                      <td className="p-3"><span className="bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
                     <tr className="hover:bg-surface-hover/30">
-                      <td className="p-3 font-mono font-bold text-indigo-300">3.1.2</td>
+                      <td className="p-3 font-mono font-bold text-indigo-300 light:text-indigo-700">3.1.2</td>
                       <td className="p-3 font-bold text-fg">Sesli Ekran Okuyucu (TTS)</td>
                       <td className="p-3">Görme Engelliler</td>
                       <td className="p-3 text-fg-4">Web Speech Synthesis API ile paragrafları ve seçilen metni Türkçe seslendirme</td>
-                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
+                      <td className="p-3"><span className="bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
                     <tr className="hover:bg-surface-hover/30">
-                      <td className="p-3 font-mono font-bold text-indigo-300">2.1.1</td>
+                      <td className="p-3 font-mono font-bold text-indigo-300 light:text-indigo-700">2.1.1</td>
                       <td className="p-3 font-bold text-fg">Klavye Erişilebilirliği</td>
                       <td className="p-3">Ortopedik / Motor Engeli</td>
                       <td className="p-3 text-fg-4">Alt+A / Alt+E kısayolları, Escape ile kapatma ve odak kapanı (focus trap)</td>
-                      <td className="p-3"><span className="bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
+                      <td className="p-3"><span className="bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 px-2 py-0.5 rounded-md text-[10px] font-bold">AAA Uyumlu</span></td>
                     </tr>
                   </tbody>
                 </table>
@@ -2059,13 +2059,13 @@ const state = window.EngelsizAccessibility.getState();`}
                 {/* Endpoint 1 */}
                 <div className="p-4 sm:p-5 space-y-2.5 hover:bg-surface-hover/20 transition-colors">
                   <div className="flex items-center gap-2.5">
-                    <span className="px-2 py-0.5 bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 font-mono font-semibold rounded-md text-[11px]">GET</span>
+                    <span className="px-2 py-0.5 bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 font-mono font-semibold rounded-md text-[11px]">GET</span>
                     <span className="font-mono text-xs font-bold text-fg">/api/oauth/userinfo</span>
                   </div>
                   <p className="text-xs text-fg-3">
                     Bearer token ile doğrulanan kullanıcının takma ad, e-posta, erişilebilirlik profil tercihleri ve rollerini döner.
                   </p>
-                  <div className="bg-surface border border-line p-3 rounded-md font-mono text-[11px] text-indigo-300">
+                  <div className="bg-surface border border-line p-3 rounded-md font-mono text-[11px] text-indigo-300 light:text-indigo-700">
                     Authorization: Bearer &lt;ACCESS_TOKEN&gt;
                   </div>
                 </div>
@@ -2073,13 +2073,13 @@ const state = window.EngelsizAccessibility.getState();`}
                 {/* Endpoint 2 */}
                 <div className="p-4 sm:p-5 space-y-2.5 hover:bg-surface-hover/20 transition-colors">
                   <div className="flex items-center gap-2.5">
-                    <span className="px-2 py-0.5 bg-indigo-950/40 text-indigo-400 border border-indigo-800/40 font-mono font-semibold rounded-md text-[11px]">POST</span>
+                    <span className="px-2 py-0.5 bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-400 light:text-indigo-700 border border-indigo-800/40 font-mono font-semibold rounded-md text-[11px]">POST</span>
                     <span className="font-mono text-xs font-bold text-fg">/api/oauth/token</span>
                   </div>
                   <p className="text-xs text-fg-3">
                     Yetkilendirme kodu (Authorization Code) ile kalıcı Bearer Access Token üretir.
                   </p>
-                  <div className="bg-surface border border-line p-3 rounded-md font-mono text-[11px] text-indigo-300 leading-relaxed break-all">
+                  <div className="bg-surface border border-line p-3 rounded-md font-mono text-[11px] text-indigo-300 light:text-indigo-700 leading-relaxed break-all">
                     Content-Type: application/x-www-form-urlencoded<br />
                     grant_type=authorization_code&amp;client_id=...&amp;client_secret=...&amp;code=...&amp;redirect_uri=...
                   </div>
@@ -2088,7 +2088,7 @@ const state = window.EngelsizAccessibility.getState();`}
                 {/* Endpoint 3 */}
                 <div className="p-4 sm:p-5 space-y-2.5 hover:bg-surface-hover/20 transition-colors">
                   <div className="flex items-center gap-2.5">
-                    <span className="px-2 py-0.5 bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 font-mono font-semibold rounded-md text-[11px]">GET</span>
+                    <span className="px-2 py-0.5 bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 font-mono font-semibold rounded-md text-[11px]">GET</span>
                     <span className="font-mono text-xs font-bold text-fg">/api/discussions</span>
                   </div>
                   <p className="text-xs text-fg-3">
@@ -2099,7 +2099,7 @@ const state = window.EngelsizAccessibility.getState();`}
                 {/* Endpoint 4 */}
                 <div className="p-4 sm:p-5 space-y-2.5 hover:bg-surface-hover/20 transition-colors">
                   <div className="flex items-center gap-2.5">
-                    <span className="px-2 py-0.5 bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 font-mono font-semibold rounded-md text-[11px]">GET</span>
+                    <span className="px-2 py-0.5 bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 font-mono font-semibold rounded-md text-[11px]">GET</span>
                     <span className="font-mono text-xs font-bold text-fg">/api/webmcp/manifest</span>
                   </div>
                   <p className="text-xs text-fg-3">
@@ -2110,13 +2110,13 @@ const state = window.EngelsizAccessibility.getState();`}
                 {/* Endpoint 5: Balthazard */}
                 <div className="p-4 sm:p-5 space-y-2.5 hover:bg-surface-hover/20 transition-colors">
                   <div className="flex items-center gap-2.5">
-                    <span className="px-2 py-0.5 bg-indigo-950/40 text-indigo-400 border border-indigo-800/40 font-mono font-semibold rounded-md text-[11px]">POST</span>
+                    <span className="px-2 py-0.5 bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-400 light:text-indigo-700 border border-indigo-800/40 font-mono font-semibold rounded-md text-[11px]">POST</span>
                     <span className="font-mono text-xs font-bold text-fg">/api/v1/calculate/balthazard</span>
                   </div>
                   <p className="text-xs text-fg-3">
                     Birden çok engel oranını Resmi Gazete Balthazard formülü standardına göre birleştirir ve yasal hak eşiklerini (ÖTV muafiyeti, erken emeklilik, vergi indirimi derecesi) anında döner.
                   </p>
-                  <div className="bg-surface border border-line p-3 rounded-md font-mono text-[11px] text-indigo-300">
+                  <div className="bg-surface border border-line p-3 rounded-md font-mono text-[11px] text-indigo-300 light:text-indigo-700">
                     Örnek Gövde: {`{ "rates": [40, 20, 10] }`}
                   </div>
                 </div>
@@ -2131,7 +2131,7 @@ const state = window.EngelsizAccessibility.getState();`}
             <div className="border border-line rounded-md overflow-hidden bg-surface-raised">
               <div className="bg-surface-hover text-fg border-b border-line font-semibold text-xs uppercase tracking-wider py-3 px-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Play size={13} className="text-emerald-400" />
+                  <Play size={13} className="text-emerald-400 light:text-emerald-700" />
                   <span>Canlı API Test Konsolu &amp; Geliştirici Sandbox</span>
                 </div>
                 <span className="text-[11px] font-mono text-fg-4">Canlı İstek &amp; Yanıt</span>
@@ -2155,7 +2155,7 @@ const state = window.EngelsizAccessibility.getState();`}
                           : 'bg-surface-hover hover:bg-line text-fg-3 border-line'
                       }`}
                     >
-                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-indigo-950 text-indigo-300 border border-indigo-700/50">POST</span>
+                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-indigo-950 light:bg-indigo-50 text-indigo-300 light:text-indigo-700 border border-indigo-700/50">POST</span>
                       <span>Balthazard Hesapla</span>
                     </button>
 
@@ -2168,7 +2168,7 @@ const state = window.EngelsizAccessibility.getState();`}
                           : 'bg-surface-hover hover:bg-line text-fg-3 border-line'
                       }`}
                     >
-                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-700/50">GET</span>
+                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 light:bg-emerald-50 text-emerald-300 light:text-emerald-700 border border-emerald-700/50">GET</span>
                       <span>Tartışmalar Beslemesi</span>
                     </button>
 
@@ -2181,7 +2181,7 @@ const state = window.EngelsizAccessibility.getState();`}
                           : 'bg-surface-hover hover:bg-line text-fg-3 border-line'
                       }`}
                     >
-                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-700/50">GET</span>
+                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 light:bg-emerald-50 text-emerald-300 light:text-emerald-700 border border-emerald-700/50">GET</span>
                       <span>OAuth UserInfo</span>
                     </button>
 
@@ -2194,7 +2194,7 @@ const state = window.EngelsizAccessibility.getState();`}
                           : 'bg-surface-hover hover:bg-line text-fg-3 border-line'
                       }`}
                     >
-                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-700/50">GET</span>
+                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 light:bg-emerald-50 text-emerald-300 light:text-emerald-700 border border-emerald-700/50">GET</span>
                       <span>OIDC Discovery</span>
                     </button>
 
@@ -2207,7 +2207,7 @@ const state = window.EngelsizAccessibility.getState();`}
                           : 'bg-surface-hover hover:bg-line text-fg-3 border-line'
                       }`}
                     >
-                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 text-emerald-300 border border-emerald-700/50">GET</span>
+                      <span className="font-bold text-[10px] px-1.5 py-0.5 rounded-sm bg-emerald-950 light:bg-emerald-50 text-emerald-300 light:text-emerald-700 border border-emerald-700/50">GET</span>
                       <span>WebMCP JSON</span>
                     </button>
                   </div>
@@ -2237,7 +2237,7 @@ const state = window.EngelsizAccessibility.getState();`}
                           type="text"
                           value={consoleUrl}
                           onChange={(e) => setConsoleUrl(e.target.value)}
-                          className="flex-1 border border-line rounded-md px-3 py-2.5 font-mono text-xs bg-surface text-indigo-200 focus:outline-none focus:border-indigo-500"
+                          className="flex-1 border border-line rounded-md px-3 py-2.5 font-mono text-xs bg-surface text-indigo-200 light:text-indigo-800 focus:outline-none focus:border-indigo-500"
                         />
                         <button
                           type="button"
@@ -2284,7 +2284,7 @@ const state = window.EngelsizAccessibility.getState();`}
                               setConsoleBody(JSON.stringify(JSON.parse(consoleBody), null, 2));
                             } catch {}
                           }}
-                          className="text-[11px] text-indigo-400 hover:text-indigo-300 hover:underline cursor-pointer font-semibold"
+                          className="text-[11px] text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 hover:underline cursor-pointer font-semibold"
                         >
                           JSON Biçimlendir
                         </button>
@@ -2293,7 +2293,7 @@ const state = window.EngelsizAccessibility.getState();`}
                         rows={5}
                         value={consoleBody}
                         onChange={(e) => setConsoleBody(e.target.value)}
-                        className="w-full border border-line rounded-md p-3 font-mono text-xs bg-surface text-emerald-400 focus:outline-none focus:border-indigo-500"
+                        className="w-full border border-line rounded-md p-3 font-mono text-xs bg-surface text-emerald-400 light:text-emerald-700 focus:outline-none focus:border-indigo-500"
                       />
                     </div>
                   )}
@@ -2309,10 +2309,10 @@ const state = window.EngelsizAccessibility.getState();`}
                           <span
                             className={`px-2 py-0.5 rounded-md font-mono text-[11px] font-bold ${
                               consoleStatus >= 200 && consoleStatus < 300
-                                ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/50'
+                                ? 'bg-emerald-950/60 light:bg-emerald-50/60 text-emerald-300 light:text-emerald-700 border border-emerald-800/50'
                                 : consoleStatus >= 400 && consoleStatus < 500
-                                ? 'bg-amber-950/60 text-amber-300 border border-amber-800/50'
-                                : 'bg-rose-950/60 text-rose-300 border border-rose-800/50'
+                                ? 'bg-amber-950/60 light:bg-amber-50/60 text-amber-300 light:text-amber-800 border border-amber-800/50'
+                                : 'bg-rose-950/60 light:bg-rose-50/60 text-rose-300 light:text-rose-700 border border-rose-800/50'
                             }`}
                           >
                             HTTP {consoleStatus}
@@ -2330,9 +2330,9 @@ const state = window.EngelsizAccessibility.getState();`}
                         <button
                           type="button"
                           onClick={() => copyToClipboard(JSON.stringify(consoleResponse, null, 2), 'resp-json')}
-                          className="text-xs text-fg-4 hover:text-indigo-400 flex items-center gap-1 font-semibold cursor-pointer transition-colors"
+                          className="text-xs text-fg-4 hover:text-indigo-400 light:hover:text-indigo-700 flex items-center gap-1 font-semibold cursor-pointer transition-colors"
                         >
-                          {copiedKey === 'resp-json' ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                          {copiedKey === 'resp-json' ? <Check size={12} className="text-emerald-400 light:text-emerald-700" /> : <Copy size={12} />}
                           <span>JSON Kopyala</span>
                         </button>
                         <span className="text-fg-6">·</span>
@@ -2344,15 +2344,15 @@ const state = window.EngelsizAccessibility.getState();`}
                             }${consoleMethod === 'POST' ? `-H "Content-Type: application/json" -d '${consoleBody.replace(/\n/g, '')}'` : ''}`;
                             copyToClipboard(curlCmd, 'curl-cmd');
                           }}
-                          className="text-xs text-fg-4 hover:text-indigo-400 flex items-center gap-1 font-semibold cursor-pointer transition-colors"
+                          className="text-xs text-fg-4 hover:text-indigo-400 light:hover:text-indigo-700 flex items-center gap-1 font-semibold cursor-pointer transition-colors"
                         >
-                          {copiedKey === 'curl-cmd' ? <Check size={12} className="text-emerald-400" /> : <Terminal size={12} />}
+                          {copiedKey === 'curl-cmd' ? <Check size={12} className="text-emerald-400 light:text-emerald-700" /> : <Terminal size={12} />}
                           <span>cURL Kopyala</span>
                         </button>
                       </div>
                     </div>
 
-                    <div className="max-h-[380px] overflow-y-auto bg-surface text-indigo-200 p-4 rounded-md font-mono text-xs border border-line">
+                    <div className="max-h-[380px] overflow-y-auto bg-surface text-indigo-200 light:text-indigo-800 p-4 rounded-md font-mono text-xs border border-line">
                       <pre className="leading-relaxed select-all whitespace-pre-wrap">
                         {typeof consoleResponse === 'string'
                           ? consoleResponse
@@ -2381,15 +2381,15 @@ const state = window.EngelsizAccessibility.getState();`}
                 </p>
 
                 <div className="p-4 bg-surface-hover/40 border border-line rounded-md space-y-2.5">
-                  <div className="font-semibold text-indigo-400 uppercase text-xs tracking-wider">Canlı MCP Manifest URL:</div>
-                  <div className="flex items-center justify-between gap-2 bg-surface border border-line p-3 rounded-md font-mono text-xs text-indigo-200">
+                  <div className="font-semibold text-indigo-400 light:text-indigo-700 uppercase text-xs tracking-wider">Canlı MCP Manifest URL:</div>
+                  <div className="flex items-center justify-between gap-2 bg-surface border border-line p-3 rounded-md font-mono text-xs text-indigo-200 light:text-indigo-800">
                     <span className="select-all break-all">https://engelsizforum.com/webmcp/mcp.json</span>
                     <button
                       type="button"
                       onClick={() => copyToClipboard('https://engelsizforum.com/webmcp/mcp.json', 'mcp-url')}
-                      className="text-fg-4 hover:text-indigo-400 font-semibold text-xs flex items-center gap-1 cursor-pointer shrink-0 transition-colors"
+                      className="text-fg-4 hover:text-indigo-400 light:hover:text-indigo-700 font-semibold text-xs flex items-center gap-1 cursor-pointer shrink-0 transition-colors"
                     >
-                      {copiedKey === 'mcp-url' ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                      {copiedKey === 'mcp-url' ? <Check size={12} className="text-emerald-400 light:text-emerald-700" /> : <Copy size={12} />}
                       <span>Kopyala</span>
                     </button>
                   </div>
@@ -2397,7 +2397,7 @@ const state = window.EngelsizAccessibility.getState();`}
 
                 <div className="space-y-2">
                   <h3 className="font-semibold text-fg text-xs uppercase tracking-wider">Claude Desktop / Cursor Entegrasyon Yapılandırması:</h3>
-                  <div className="p-4 bg-surface text-indigo-200 font-mono text-xs rounded-md border border-line overflow-x-auto">
+                  <div className="p-4 bg-surface text-indigo-200 light:text-indigo-800 font-mono text-xs rounded-md border border-line overflow-x-auto">
 {`{
   "mcpServers": {
     "engelsizforum": {
@@ -2433,7 +2433,7 @@ const state = window.EngelsizAccessibility.getState();`}
 
               <form onSubmit={handleCreateApp} className="p-4 sm:p-5 space-y-4 text-xs">
                 {formError && (
-                  <div className="p-3 bg-rose-950/40 border border-rose-800/40 text-rose-300 rounded-md font-medium">
+                  <div className="p-3 bg-rose-950/40 light:bg-rose-50/40 border border-rose-800/40 text-rose-300 light:text-rose-700 rounded-md font-medium">
                     {formError}
                   </div>
                 )}
@@ -2533,7 +2533,7 @@ const state = window.EngelsizAccessibility.getState();`}
 
               <form onSubmit={handleUpdateApp} className="p-4 sm:p-5 space-y-4 text-xs">
                 {formError && (
-                  <div className="p-3 bg-rose-950/40 border border-rose-800/40 text-rose-300 rounded-md font-medium">
+                  <div className="p-3 bg-rose-950/40 light:bg-rose-50/40 border border-rose-800/40 text-rose-300 light:text-rose-700 rounded-md font-medium">
                     {formError}
                   </div>
                 )}
@@ -2607,7 +2607,7 @@ const state = window.EngelsizAccessibility.getState();`}
               </div>
 
               <div className="p-5 space-y-4 text-xs">
-                <div className="p-3.5 bg-amber-950/40 border border-amber-800/40 text-amber-300 rounded-md leading-relaxed">
+                <div className="p-3.5 bg-amber-950/40 light:bg-amber-50/40 border border-amber-800/40 text-amber-300 light:text-amber-800 rounded-md leading-relaxed">
                   Güvenliğiniz gereği bu gizli anahtar veri tabanımızda tek yönlü şifrelenmiştir (hash). <strong>Bu pencereyi kapattıktan sonra anahtarı bir daha ASLA görüntüleyemezsiniz!</strong> Lütfen hemen güvenli bir yere kaydedin.
                 </div>
 
@@ -2620,15 +2620,15 @@ const state = window.EngelsizAccessibility.getState();`}
                       onClick={() => copyToClipboard(secretModalData.clientId, 'modal-cid')}
                       className="px-2.5 py-1.5 bg-surface-hover border border-line hover:bg-line text-fg-3 hover:text-fg rounded-md font-semibold flex items-center gap-1 cursor-pointer transition-colors shrink-0"
                     >
-                      {copiedKey === 'modal-cid' ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                      {copiedKey === 'modal-cid' ? <Check size={12} className="text-emerald-400 light:text-emerald-700" /> : <Copy size={12} />}
                       <span>Kopyala</span>
                     </button>
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="block font-semibold text-rose-400 text-xs">Client Secret (Gizli Anahtar):</label>
-                  <div className="flex items-center gap-2 bg-surface border border-rose-900/50 p-2.5 rounded-md font-mono text-xs text-rose-300">
+                  <label className="block font-semibold text-rose-400 light:text-rose-700 text-xs">Client Secret (Gizli Anahtar):</label>
+                  <div className="flex items-center gap-2 bg-surface border border-rose-900/50 light:border-rose-200/50 p-2.5 rounded-md font-mono text-xs text-rose-300 light:text-rose-700">
                     <span className="flex-1 select-all font-bold break-all">{secretModalData.clientSecret}</span>
                     <button
                       type="button"

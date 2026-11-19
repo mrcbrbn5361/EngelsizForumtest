@@ -257,7 +257,7 @@ export function EngelsizAI() {
             <div className="bg-surface-raised text-fg py-3.5 px-4 flex items-center justify-between border-b border-line">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center">
-                  <Sparkles size={16} className="text-amber-300 animate-pulse" />
+                  <Sparkles size={16} className="text-amber-300 light:text-amber-800 animate-pulse" />
                 </div>
                 <div>
                   <h3 className="text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
@@ -363,7 +363,7 @@ export function EngelsizAI() {
                   onClick={toggleListening}
                   className={`p-2.5 rounded-xl border transition-all shrink-0 ${
                     isListening 
-                      ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse shadow-xs' 
+                      ? 'bg-rose-50 border-rose-300 light:border-rose-700 text-rose-600 animate-pulse shadow-xs' 
                       : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-fg-6 dark:text-fg-3 hover:text-indigo-600 hover:border-indigo-500'
                   }`}
                   title={isListening ? 'Dinlemeyi Durdur' : 'Sesle Soru Sor'}

@@ -143,13 +143,13 @@ export function CookieConsentBanner() {
         {/* Main Banner Bar */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
           <div className="flex items-start gap-3 max-w-3xl">
-            <div className="w-8 h-8 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
+            <div className="w-8 h-8 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 light:text-indigo-700 flex items-center justify-center shrink-0 mt-0.5">
               <Cookie size={17} />
             </div>
             <div className="space-y-1">
               <h2 className="text-xs sm:text-sm font-semibold text-fg flex items-center gap-2 font-heading">
                 <span>Çerez ve Gizlilik Tercihleriniz</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950/60 text-emerald-400 border border-emerald-800/40">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-950/60 light:bg-emerald-50/60 text-emerald-400 light:text-emerald-700 border border-emerald-800/40">
                   KVKK &amp; Google Consent Mode v2
                 </span>
               </h2>
@@ -157,7 +157,7 @@ export function CookieConsentBanner() {
                 EngelsizForum&apos;da deneyiminizi geliştirmek, erişilebilirlik tercihlerinizi hatırlamak ve anonim site trafiğini analiz etmek için birinci ve üçüncü taraf çerezleri kullanıyoruz. İsteğinize göre ayarları özelleştirebilir veya tümünü kabul edebilirsiniz.{' '}
                 <Link
                   href="/privacy"
-                  className="text-indigo-400 hover:text-indigo-300 hover:underline font-medium inline-flex items-center gap-0.5"
+                  className="text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 hover:underline font-medium inline-flex items-center gap-0.5"
                   target="_blank"
                 >
                   <span>Gizlilik Politikası</span>
@@ -204,10 +204,10 @@ export function CookieConsentBanner() {
             <div className="p-3 rounded-lg border border-line bg-surface-raised space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-fg flex items-center gap-1.5">
-                  <ShieldCheck size={14} className="text-emerald-400" />
+                  <ShieldCheck size={14} className="text-emerald-400 light:text-emerald-700" />
                   Zorunlu Çerezler
                 </span>
-                <span className="text-[10px] font-mono text-emerald-400 uppercase bg-emerald-950/60 border border-emerald-800/40 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-mono text-emerald-400 light:text-emerald-700 uppercase bg-emerald-950/60 light:bg-emerald-50/60 border border-emerald-800/40 px-1.5 py-0.5 rounded">
                   Daima Aktif
                 </span>
               </div>

@@ -405,7 +405,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
       <div className="border-b border-line pb-4 mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2.5 text-fg-4">
-            <span className="font-mono text-[11px] text-indigo-400 font-semibold">
+            <span className="font-mono text-[11px] text-indigo-400 light:text-indigo-700 font-semibold">
               [2026 Mevzuat]
             </span>
             <span>
@@ -414,7 +414,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           </div>
           <Link 
             href="/hesaplama" 
-            className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1 shrink-0 font-medium"
+            className="text-xs text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 transition-colors flex items-center gap-1 shrink-0 font-medium"
           >
             Balthazard ve Limit Robotu <ChevronRight size={13} />
           </Link>
@@ -444,7 +444,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 aria-label="Forum genelinde ara"
-                className="w-full pl-9 pr-3 h-9 text-xs rounded-md border border-line bg-surface-raised text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400 transition-colors font-sans"
+                className="w-full pl-9 pr-3 h-9 text-xs rounded-md border border-line bg-surface-raised text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700 transition-colors font-sans"
               />
             </div>
             <Link 
@@ -467,7 +467,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           <div>
             <span className="text-fg-2 font-medium">{stats?.totalMembers !== undefined ? formatCompactNumber(stats.totalMembers) : '0'}</span> Üye
           </div>
-          <div className="flex items-center gap-1.5 text-emerald-400">
+          <div className="flex items-center gap-1.5 text-emerald-400 light:text-emerald-700">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
             <span>{stats?.onlineCount !== undefined ? stats.onlineCount : onlineMembers.length} Çevrimiçi</span>
           </div>
@@ -486,19 +486,19 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               href="/hesaplama"
               className="px-3 py-1.5 rounded-md border border-line hover:border-slate-700 bg-surface-raised hover:bg-surface-hover text-xs text-fg-3 hover:text-fg transition-colors flex items-center gap-1.5"
             >
-              <Scale size={13} className="text-indigo-400" /> Balthazard Robotu
+              <Scale size={13} className="text-indigo-400 light:text-indigo-700" /> Balthazard Robotu
             </Link>
             <Link 
               href="/hesaplama"
               className="px-3 py-1.5 rounded-md border border-line hover:border-slate-700 bg-surface-raised hover:bg-surface-hover text-xs text-fg-3 hover:text-fg transition-colors flex items-center gap-1.5"
             >
-              <Car size={13} className="text-emerald-400" /> 2026 ÖTV Limiti
+              <Car size={13} className="text-emerald-400 light:text-emerald-700" /> 2026 ÖTV Limiti
             </Link>
             <Link 
               href="/communities"
               className="px-3 py-1.5 rounded-md border border-line hover:border-slate-700 bg-surface-raised hover:bg-surface-hover text-xs text-fg-3 hover:text-fg transition-colors flex items-center gap-1.5"
             >
-              <Users size={13} className="text-amber-400" /> Tanı Grupları
+              <Users size={13} className="text-amber-400 light:text-amber-800" /> Tanı Grupları
             </Link>
           </div>
 
@@ -548,7 +548,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                             <div className="min-w-0 flex-1">
                               <Link 
                                 href={`/category/${subforum.slug}`} 
-                                className="text-xs sm:text-sm font-semibold text-fg-1 hover:text-indigo-400 transition-colors block truncate"
+                                className="text-xs sm:text-sm font-semibold text-fg-1 hover:text-indigo-400 light:hover:text-indigo-700 transition-colors block truncate"
                               >
                                 {subforum.name}
                               </Link>
@@ -567,7 +567,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                                 <>
                                   <Link 
                                     href={`/discussions`} 
-                                    className="text-fg-3 hover:text-indigo-400 transition-colors truncate block text-xs" 
+                                    className="text-fg-3 hover:text-indigo-400 light:hover:text-indigo-700 transition-colors truncate block text-xs" 
                                     title={subforum.lastPost.title}
                                   >
                                     {subforum.lastPost.title}
@@ -613,7 +613,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     className={cn(
                       "transition-colors cursor-pointer pb-0.5",
                       activeTab === tab.id 
-                        ? "text-indigo-400 font-semibold border-b-2 border-indigo-400" 
+                        ? "text-indigo-400 light:text-indigo-700 font-semibold border-b-2 border-indigo-400 light:border-indigo-700" 
                         : "text-fg-4 hover:text-fg-2"
                     )}
                   >
@@ -632,16 +632,16 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 text-[11px] text-fg-4 mb-1 flex-wrap">
                           {topic.is_pinned && (
-                            <span className="font-mono text-amber-300 font-medium">[Sabit]</span>
+                            <span className="font-mono text-amber-300 light:text-amber-800 font-medium">[Sabit]</span>
                           )}
                           {topic.is_solved && (
-                            <span className="font-mono text-emerald-400 font-medium">[Çözüldü]</span>
+                            <span className="font-mono text-emerald-400 light:text-emerald-700 font-medium">[Çözüldü]</span>
                           )}
                           <span className="text-fg-3 font-medium">{topic.category?.name || 'Genel'}</span>
                           <span>·</span>
                           <time className="font-mono text-fg-4">{formatDate(topic.created_at)}</time>
                         </div>
-                        <h3 className="text-sm font-semibold text-fg-1 hover:text-indigo-400 transition-colors leading-snug">
+                        <h3 className="text-sm font-semibold text-fg-1 hover:text-indigo-400 light:hover:text-indigo-700 transition-colors leading-snug">
                           <Link href={`/discussions/${topic.id}`}>{topic.title}</Link>
                         </h3>
                         {topic.content && (
@@ -688,7 +688,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 font-heading">
                 Balthazard Robotu
               </h3>
-              <span className="text-[11px] font-mono text-indigo-400">2026</span>
+              <span className="text-[11px] font-mono text-indigo-400 light:text-indigo-700">2026</span>
             </div>
             <form onSubmit={calculateMiniBalthazard} className="space-y-2.5">
               <div className="grid grid-cols-2 gap-2">
@@ -701,7 +701,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     value={rate1} 
                     onChange={(e) => setRate1(e.target.value)} 
                     placeholder="Örn: 40" 
-                    className="w-full bg-surface-hover border border-line rounded-md px-2.5 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400 font-mono"
+                    className="w-full bg-surface-hover border border-line rounded-md px-2.5 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700 font-mono"
                     required
                   />
                 </div>
@@ -714,7 +714,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     value={rate2} 
                     onChange={(e) => setRate2(e.target.value)} 
                     placeholder="Örn: 30" 
-                    className="w-full bg-surface-hover border border-line rounded-md px-2.5 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400 font-mono"
+                    className="w-full bg-surface-hover border border-line rounded-md px-2.5 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700 font-mono"
                     required
                   />
                 </div>
@@ -740,7 +740,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
 
             {miniBalthazardResult !== null && (
               <div className="pt-2 text-xs">
-                <div className="text-fg-3">Nihai Oran: <span className="font-mono text-indigo-400 font-semibold text-sm">%{miniBalthazardResult}</span></div>
+                <div className="text-fg-3">Nihai Oran: <span className="font-mono text-indigo-400 light:text-indigo-700 font-semibold text-sm">%{miniBalthazardResult}</span></div>
                 <div className="text-[11px] text-fg-4 mt-0.5">
                   {miniBalthazardResult >= 90 ? 'Şartsız ÖTV muafiyeti standardı.' : miniBalthazardResult >= 40 ? 'Vergi indirimi ve engelli kimlik hakkı.' : 'Genel sağlık raporu oranı.'}
                 </div>
@@ -771,7 +771,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 </div>
                 <Link 
                   href="/profile" 
-                  className="block text-xs text-indigo-400 hover:text-indigo-300 transition-colors pt-1"
+                  className="block text-xs text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 transition-colors pt-1"
                 >
                   Profilimi Yönet →
                 </Link>
@@ -781,7 +781,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 <p>Sorularınızı sormak ve tartışmalara katılmak için giriş yapın.</p>
                 <Link 
                   href="/login" 
-                  className="inline-block text-xs text-indigo-400 hover:text-indigo-300 font-medium"
+                  className="inline-block text-xs text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 font-medium"
                 >
                   Giriş Yap veya Kayıt Ol →
                 </Link>
@@ -795,7 +795,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 font-heading">
                 Çevrimiçi
               </h3>
-              <span className="text-[11px] font-mono text-emerald-400">
+              <span className="text-[11px] font-mono text-emerald-400 light:text-emerald-700">
                 {stats?.onlineCount !== undefined ? stats.onlineCount : onlineMembers.length} Aktif
               </span>
             </div>
@@ -836,7 +836,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 value={aiQuestion}
                 onChange={(e) => setAiQuestion(e.target.value)}
                 placeholder="Örn: Sol bacak ÖTV şartı..."
-                className="flex-1 bg-surface-hover border border-line rounded-md px-2.5 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400"
+                className="flex-1 bg-surface-hover border border-line rounded-md px-2.5 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700"
               />
               <button 
                 type="submit" 

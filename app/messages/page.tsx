@@ -17,7 +17,7 @@ export default function MessagesPage() {
   return (
     <Suspense fallback={
       <div className="flex flex-col items-center justify-center p-12 min-h-[400px]">
-        <Loader2 className="animate-spin text-indigo-400 mb-2 size-7" />
+        <Loader2 className="animate-spin text-indigo-400 light:text-indigo-700 mb-2 size-7" />
         <p className="text-xs text-fg-4 font-mono">Mesajlar yükleniyor...</p>
       </div>
     }>
@@ -204,7 +204,7 @@ function MessagesContent() {
   if (authLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-12 min-h-[400px]">
-        <Loader2 className="animate-spin text-indigo-400 mb-2 size-7" />
+        <Loader2 className="animate-spin text-indigo-400 light:text-indigo-700 mb-2 size-7" />
         <p className="text-xs text-fg-4 font-mono">Oturum kontrol ediliyor...</p>
       </div>
     );
@@ -213,7 +213,7 @@ function MessagesContent() {
   if (!user || !activeProfile) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center max-w-md mx-auto min-h-[400px]">
-        <div className="w-16 h-16 rounded-md bg-surface-hover border border-line text-indigo-400 flex items-center justify-center mb-4 mx-auto shadow-sm">
+        <div className="w-16 h-16 rounded-md bg-surface-hover border border-line text-indigo-400 light:text-indigo-700 flex items-center justify-center mb-4 mx-auto shadow-sm">
           <MessageSquare size={32} />
         </div>
         <h1 className="text-xl font-bold text-fg mb-2 font-heading">Özel Mesajlar (DM)</h1>
@@ -255,14 +255,14 @@ function MessagesContent() {
               value={searchMemberQuery}
               onChange={(e) => handleSearchMembers(e.target.value)}
               placeholder="Üye adı veya kullanıcı adı ara..."
-              className="w-full bg-surface-hover border border-line rounded-md px-3.5 py-2 text-xs font-medium text-fg placeholder:text-fg-5 outline-none focus:border-indigo-400"
+              className="w-full bg-surface-hover border border-line rounded-md px-3.5 py-2 text-xs font-medium text-fg placeholder:text-fg-5 outline-none focus:border-indigo-400 light:focus:border-indigo-700"
               autoFocus
             />
 
             <div className="max-h-60 overflow-y-auto divide-y divide-line space-y-1">
               {searchLoading ? (
                 <div className="py-6 text-center text-xs text-fg-4 font-medium">
-                  <Loader2 className="size-4 animate-spin mx-auto mb-1 text-indigo-400" />
+                  <Loader2 className="size-4 animate-spin mx-auto mb-1 text-indigo-400 light:text-indigo-700" />
                   Aranıyor...
                 </div>
               ) : searchedProfiles.length > 0 ? (
@@ -275,12 +275,12 @@ function MessagesContent() {
                     }}
                     className="w-full p-2.5 rounded-md hover:bg-surface-hover flex items-center gap-3 text-left transition-colors cursor-pointer"
                   >
-                    <div className="size-8 rounded-md bg-indigo-950/60 border border-indigo-800/60 text-indigo-400 flex items-center justify-center font-bold text-xs shrink-0">
+                    <div className="size-8 rounded-md bg-indigo-950/60 light:bg-indigo-50/60 border border-indigo-800/60 text-indigo-400 light:text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">
                       {(p.full_name || p.username || 'U')[0]?.toUpperCase()}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="text-xs font-semibold text-fg truncate">{p.full_name || p.username}</div>
-                      <div className="text-[10px] text-indigo-400 font-mono truncate">@{p.username || 'isimsiz'}</div>
+                      <div className="text-[10px] text-indigo-400 light:text-indigo-700 font-mono truncate">@{p.username || 'isimsiz'}</div>
                     </div>
                   </button>
                 ))
@@ -297,7 +297,7 @@ function MessagesContent() {
       <div className="flex-1 flex flex-col min-h-0 py-2">
         <div className="flex items-center justify-between gap-2.5 mb-3 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-md bg-surface-hover border border-line text-indigo-400 shadow-sm">
+            <div className="p-2 rounded-md bg-surface-hover border border-line text-indigo-400 light:text-indigo-700 shadow-sm">
               <MessageSquare size={18} />
             </div>
             <div>
@@ -322,7 +322,7 @@ function MessagesContent() {
               <span className="text-xs font-semibold text-fg-2 uppercase tracking-wider font-heading">Sohbetler</span>
               <button
                 onClick={() => setIsNewChatModalOpen(true)}
-                className="text-[11px] text-indigo-400 hover:text-indigo-300 font-semibold cursor-pointer"
+                className="text-[11px] text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 font-semibold cursor-pointer"
               >
                 + Yeni
               </button>
@@ -352,7 +352,7 @@ function MessagesContent() {
               />
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center p-8 text-fg-4">
-                <MessageSquare size={48} className="mb-3 opacity-30 text-indigo-400" />
+                <MessageSquare size={48} className="mb-3 opacity-30 text-indigo-400 light:text-indigo-700" />
                 <h2 className="text-sm font-semibold text-fg font-heading">Bir sohbet seçin</h2>
                 <p className="text-xs text-fg-4 mt-1 max-w-xs leading-relaxed mb-4 font-normal">
                   Yazışmaya başlamak için sol listeden bir görüşme seçin veya yeni mesaj başlatın.

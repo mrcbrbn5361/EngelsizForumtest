@@ -288,9 +288,15 @@ const jsonLd = {
   ]
 };
 
+/**
+ * Applies the saved theme (data-theme on <html>) before first paint so light-theme
+ * visitors never see a flash of the dark theme. Mirrors resolveTheme() in lib/theme.ts.
+ */
+const THEME_BOOTSTRAP_SCRIPT = `(function(){try{var t='dark';var s=localStorage.getItem('engelsiz_a11y_prefs');if(s){var p=JSON.parse(s);if(p&&p.theme)t=p.theme;}if(t==='system'){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}if(t!=='light'&&t!=='sepia')t='dark';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className="h-full" suppressHydrationWarning>
+    <html lang="tr" data-theme="dark" className="h-full" suppressHydrationWarning>
       <head>
         {/* Google tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-XBFZ4BS7GJ" />
@@ -326,10 +332,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
         <style dangerouslySetInnerHTML={{ __html: `
-          body { background-color: #0B1220 !important; color: #CBD5E1 !important; margin: 0; }
+          body { background-color: var(--ef-surface, #0B1220) !important; color: var(--ef-fg-3, #CBD5E1) !important; margin: 0; }
           .min-h-screen { min-height: 100vh; }
-          .bg-background { background-color: #0B1220; }
+          .bg-background { background-color: var(--ef-surface, #0B1220); }
         `}} />
         <link rel="preconnect" href="https://vtmozdquvamjeniwhonm.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://vtmozdquvamjeniwhonm.supabase.co" />

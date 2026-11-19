@@ -275,7 +275,7 @@ export default function CommunityDetailPage() {
   };
 
   const getIcon = (iconName?: string) => {
-    const cls = "text-indigo-400";
+    const cls = "text-indigo-400 light:text-indigo-700";
     switch (iconName?.toLowerCase()) {
       case 'stethoscope': return <Stethoscope size={20} className={cls} aria-hidden="true" />;
       case 'bookopen':
@@ -339,7 +339,7 @@ export default function CommunityDetailPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-fg-4" role="status">
-        <Loader2 className="animate-spin text-indigo-400" size={36} aria-hidden="true" />
+        <Loader2 className="animate-spin text-indigo-400 light:text-indigo-700" size={36} aria-hidden="true" />
         <p className="mt-4 text-xs font-mono">Topluluk verileri yükleniyor...</p>
       </div>
     );
@@ -348,7 +348,7 @@ export default function CommunityDetailPage() {
   if (!community) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center px-6 space-y-4 max-w-md mx-auto" role="alert">
-        <AlertCircle className="w-12 h-12 text-rose-400" aria-hidden="true" />
+        <AlertCircle className="w-12 h-12 text-rose-400 light:text-rose-700" aria-hidden="true" />
         <h1 className="text-xl font-bold text-fg font-heading">Topluluk Bulunamadı</h1>
         <p className="text-xs text-fg-4 leading-relaxed font-normal">
           {fetchError || 'Aradığınız topluluk mevcut değil veya taşınmış olabilir.'}
@@ -378,7 +378,7 @@ export default function CommunityDetailPage() {
       
       {/* Navigation Breadcrumb */}
       <nav aria-label="Erişim yolu" className="bg-surface-raised border border-line px-4 py-2.5 rounded-lg flex items-center gap-2 text-xs text-fg-4 font-mono">
-        <Link href="/communities" className="inline-flex items-center gap-1.5 hover:text-indigo-400 transition-colors">
+        <Link href="/communities" className="inline-flex items-center gap-1.5 hover:text-indigo-400 light:hover:text-indigo-700 transition-colors">
           <ArrowLeft size={13} aria-hidden="true" /> Topluluklar
         </Link>
         <span className="text-fg-6" aria-hidden="true">/</span>
@@ -389,11 +389,11 @@ export default function CommunityDetailPage() {
       <header className="bg-surface-raised border border-line rounded-lg p-6 sm:p-7 space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-surface-hover border border-line rounded-lg text-indigo-400 shrink-0">
+            <div className="p-3 bg-surface-hover border border-line rounded-lg text-indigo-400 light:text-indigo-700 shrink-0">
               {getIcon(community.icon || 'users')}
             </div>
             <div className="space-y-1.5">
-              <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 text-[10px] font-mono uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded bg-indigo-950/60 light:bg-indigo-50/60 text-indigo-300 light:text-indigo-700 border border-indigo-800/60 text-[10px] font-mono uppercase tracking-wider">
                 Topluluk &amp; Akran Dayanışması
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-fg font-heading">
@@ -410,7 +410,7 @@ export default function CommunityDetailPage() {
               onClick={toggleJoin}
               className={`inline-flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
                 isJoined 
-                  ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800'
+                  ? 'bg-emerald-950/60 light:bg-emerald-50/60 text-emerald-300 light:text-emerald-700 border border-emerald-800'
                   : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs'
               }`}
               aria-label={isJoined ? `${community.name} topluluğundan ayrıl` : `${community.name} topluluğuna katıl`}
@@ -455,7 +455,7 @@ export default function CommunityDetailPage() {
                 placeholder={`${community.name} konularında ara...`}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3.5 py-1.5 rounded-md border border-line bg-surface-hover text-xs text-fg placeholder-fg-4 focus:outline-none focus:border-indigo-400"
+                className="w-full pl-9 pr-3.5 py-1.5 rounded-md border border-line bg-surface-hover text-xs text-fg placeholder-fg-4 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700"
               />
             </div>
 
@@ -529,13 +529,13 @@ export default function CommunityDetailPage() {
           {/* Rules Card */}
           <div className="bg-surface-raised border border-line rounded-lg p-5 space-y-3">
             <div className="flex items-center gap-2 text-xs font-semibold text-fg-2 uppercase tracking-wider font-heading">
-              <Shield size={15} className="text-indigo-400" aria-hidden="true" />
+              <Shield size={15} className="text-indigo-400 light:text-indigo-700" aria-hidden="true" />
               <span>Topluluk Kuralları</span>
             </div>
             <ul className="space-y-2.5 text-xs text-fg-3 leading-relaxed font-normal">
               {meta.rules.map((rule, idx) => (
                 <li key={idx} className="flex items-start gap-2">
-                  <span className="text-indigo-400 font-mono text-[11px] shrink-0" aria-hidden="true">{idx + 1}.</span>
+                  <span className="text-indigo-400 light:text-indigo-700 font-mono text-[11px] shrink-0" aria-hidden="true">{idx + 1}.</span>
                   <span>{rule}</span>
                 </li>
               ))}
@@ -547,22 +547,22 @@ export default function CommunityDetailPage() {
             <div className="text-xs font-semibold text-fg-2 uppercase tracking-wider font-heading">Topluluk İstatistikleri</div>
             <div className="space-y-2 text-xs">
               <div className="flex items-center justify-between py-1.5 border-b border-line">
-                <span className="text-fg-4 flex items-center gap-2"><Users size={14} className="text-indigo-400" aria-hidden="true" /> Üyeler</span>
+                <span className="text-fg-4 flex items-center gap-2"><Users size={14} className="text-indigo-400 light:text-indigo-700" aria-hidden="true" /> Üyeler</span>
                 <span className="font-mono font-medium text-fg-2">
                   {formatCompactNumber(memberCount)}
                 </span>
               </div>
               <div className="flex items-center justify-between py-1.5 border-b border-line">
-                <span className="text-fg-4 flex items-center gap-2"><MessageSquare size={14} className="text-indigo-400" aria-hidden="true" /> Konular</span>
+                <span className="text-fg-4 flex items-center gap-2"><MessageSquare size={14} className="text-indigo-400 light:text-indigo-700" aria-hidden="true" /> Konular</span>
                 <span className="font-mono font-medium text-fg-2">{topics.length}</span>
               </div>
               <div className="flex items-center justify-between py-1.5 border-b border-line">
-                <span className="text-fg-4 flex items-center gap-2"><Globe size={14} className="text-indigo-400" aria-hidden="true" /> Görünürlük</span>
-                <span className="text-indigo-400 font-mono font-medium text-xs">Açık Topluluk</span>
+                <span className="text-fg-4 flex items-center gap-2"><Globe size={14} className="text-indigo-400 light:text-indigo-700" aria-hidden="true" /> Görünürlük</span>
+                <span className="text-indigo-400 light:text-indigo-700 font-mono font-medium text-xs">Açık Topluluk</span>
               </div>
               <div className="flex items-center justify-between pt-1">
-                <span className="text-fg-4 flex items-center gap-2"><Shield size={14} className="text-indigo-400" aria-hidden="true" /> Moderasyon</span>
-                <span className="text-emerald-400 font-mono font-medium text-xs">Doğrulanmış</span>
+                <span className="text-fg-4 flex items-center gap-2"><Shield size={14} className="text-indigo-400 light:text-indigo-700" aria-hidden="true" /> Moderasyon</span>
+                <span className="text-emerald-400 light:text-emerald-700 font-mono font-medium text-xs">Doğrulanmış</span>
               </div>
             </div>
           </div>
@@ -570,7 +570,7 @@ export default function CommunityDetailPage() {
           {/* Quick Contact Card */}
           <div className="bg-surface-raised border border-line rounded-lg p-5 space-y-3">
             <div className="flex items-center gap-2 text-xs font-semibold text-fg-2 uppercase tracking-wider font-heading">
-              <HelpCircle size={15} className="text-indigo-400" aria-hidden="true" /> Destek &amp; Moderasyon
+              <HelpCircle size={15} className="text-indigo-400 light:text-indigo-700" aria-hidden="true" /> Destek &amp; Moderasyon
             </div>
             <p className="text-xs text-fg-4 leading-relaxed font-normal">
               Bu topluluk ile ilgili hak ihlali, yanıltıcı bilgi veya erişilebilirlik sorunu yaşarsanız moderatör ekibimizle iletişime geçebilirsiniz.
