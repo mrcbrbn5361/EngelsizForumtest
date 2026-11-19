@@ -35,7 +35,7 @@ Yeni özellik eklemeden önce mevcut sitenin doğru çalışması gerekiyor.
 | # | Madde | Not | Durum |
 |---|-------|-----|-------|
 | 2.1 | Şifre değiştirme / şifremi unuttum (S3-22) | Kod tamam: başka cihazda açılan sıfırlama bağlantısı artık çalışıyor (`/auth/confirm`), profile 'Şifre Değiştir', tek şifre kuralı, açık yönlendirme açığı kapatıldı. 17 uçtan uca test. **Miraç: e-posta şablonları güncellenmeli** (`SUPABASE_EMAIL_TEMPLATES.md`) | 🟨 |
-| 2.2 | Oturum açık kalsın mı? (S3-21) | "Beni hatırla" seçeneği; kapalıysa oturum tarayıcı kapanınca biter | ⬜ |
+| 2.2 | Oturum açık kalsın mı? (S3-21) | Yapıldı: giriş sayfasındaki kutu hiçbir şeye bağlı değildi (oturum her zaman 400 gün). Artık işaretsizse oturum tarayıcı kapanınca bitiyor; sunucu yenilemesinde de korunuyor. 9 uçtan uca test | ✅ |
 | 2.3 | Telefon doğrulama, e-posta doğrulama (S3-23) | Supabase Auth (telefon için SMS sağlayıcı gerekir) | ⬜ |
 | 2.4 | Profil resmi ve avatar ekleme (S2-12) | Supabase Storage | ⬜ |
 | 2.5 | Anonim kullanıcı ekleme (S2-8) | Anonim paylaşım / Supabase anonymous sign-in | ⬜ |

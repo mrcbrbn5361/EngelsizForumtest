@@ -1,5 +1,7 @@
 'use client';
 
+import { sanitizeRedirectPath } from '@/lib/auth-utils';
+import { rememberCookieString } from '@/lib/session-persistence';
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -25,11 +27,16 @@ function LoginForm() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const destination = searchParams?.get('redirect') || searchParams?.get('redirectTo') || '/';
+  const destination = sanitizeRedirectPath(searchParams?.get('redirect') || searchParams?.get('redirectTo'), '/');
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [remember, setRemember] = useState(true);
+
+  const saveRememberChoice = () => {
+    document.cookie = rememberCookieString(remember, window.location.protocol === 'https:');
+  };
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -42,6 +49,7 @@ function LoginForm() {
     e.preventDefault();
     setLoading(true);
     try {
+      saveRememberChoice();
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       
       if (signInError) throw signInError;
@@ -57,6 +65,7 @@ function LoginForm() {
 
   const handleGoogleLogin = async () => {
     try {
+      saveRememberChoice();
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -162,12 +171,18 @@ function LoginForm() {
               <input 
                 type="checkbox" 
                 id="remember" 
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+                aria-describedby="remember-hint"
                 className="w-4 h-4 rounded border-line bg-surface-hover text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0 cursor-pointer" 
               />
               <label htmlFor="remember" className="text-xs font-normal text-fg-3 cursor-pointer select-none">
                 Oturumumu bu cihazda açık tut
               </label>
             </div>
+            <p id="remember-hint" className="text-[11px] text-fg-4 -mt-1 pl-6">
+              Ortak bir bilgisayardaysanız işareti kaldırın; tarayıcı kapanınca oturumunuz kapanır.
+            </p>
 
             <div className="pt-2">
               <button 

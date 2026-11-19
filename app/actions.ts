@@ -5,6 +5,7 @@ import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { supabaseServer, getSupabaseServer } from '@/lib/supabase-server';
 import { generateUUID, slugify, generateUniqueSlug } from '@/lib/utils';
+import { REMEMBER_COOKIE, withRememberPreference } from '@/lib/session-persistence';
 
 /**
  * Creates an authenticated Supabase server client bound to request cookies.
@@ -20,8 +21,9 @@ async function getSupabaseServerClient() {
           return cookieStore.getAll();
         },
         setAll(cookiesToSet) {
+          const remember = cookieStore.get(REMEMBER_COOKIE)?.value;
           cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
+            cookieStore.set(name, value, withRememberPreference(options, remember))
           );
         },
       },
