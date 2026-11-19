@@ -13,3 +13,14 @@ export function resolveTheme(preference: ThemePreference | undefined): ResolvedT
   }
   return 'dark';
 }
+
+/** Body/heading typeface chosen in the accessibility menu. */
+export type ReadingFont = 'default' | 'lexend' | 'opendyslexic';
+
+/**
+ * Normalises a stored reading-font value; unknown values fall back to the default typeface.
+ * Keep in sync with THEME_BOOTSTRAP_SCRIPT in app/layout.tsx.
+ */
+export function resolveReadingFont(value: string | undefined): ReadingFont {
+  return value === 'lexend' || value === 'opendyslexic' ? value : 'default';
+}

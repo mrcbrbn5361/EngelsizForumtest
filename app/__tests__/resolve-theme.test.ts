@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { resolveTheme } from '@/lib/theme';
+import { resolveReadingFont, resolveTheme } from '@/lib/theme';
 
 /**
  * Stubs window.matchMedia so "prefers-color-scheme: light" reports the given value.
@@ -28,5 +28,17 @@ describe('resolveTheme', () => {
     expect(resolveTheme('system')).toBe('light');
     osPrefersLight(false);
     expect(resolveTheme('system')).toBe('dark');
+  });
+});
+
+describe('resolveReadingFont', () => {
+  it('keeps supported fonts', () => {
+    expect(resolveReadingFont('lexend')).toBe('lexend');
+    expect(resolveReadingFont('opendyslexic')).toBe('opendyslexic');
+  });
+
+  it('falls back to the default typeface', () => {
+    expect(resolveReadingFont(undefined)).toBe('default');
+    expect(resolveReadingFont('comic-sans')).toBe('default');
   });
 });
