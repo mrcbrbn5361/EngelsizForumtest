@@ -1054,31 +1054,6 @@ export async function getUserConversationsAction() {
   }
 }
 
-export async function getVisitorStatsAction() {
-  try {
-    const supabase = await getSupabaseServerClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return { success: false, error: 'Unauthorized', total_visitors: 12450, active_visitors: 42 };
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile || (profile.role !== 'admin' && profile.role !== 'staff')) {
-      return { success: false, error: 'Forbidden', total_visitors: 12450, active_visitors: 42 };
-    }
-
-    const stats = await getVisitorStats();
-    return { success: true, ...stats };
-  } catch (err: any) {
-    return { success: false, error: err?.message, total_visitors: 12450, active_visitors: 42 };
-  }
-}
-
 /**
  * Server Action: Uploads voice message buffer via admin serviceClient (bypassing RLS) and records in DB.
  */

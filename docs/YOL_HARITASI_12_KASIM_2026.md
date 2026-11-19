@@ -18,7 +18,7 @@ Yeni özellik eklemeden önce mevcut sitenin doğru çalışması gerekiyor.
 | 0.2 | Hangileri mock data bilinmiyor (S3-24) | 0.1 ile birlikte: tüm sahte veri kaynaklarının listesi çıkarılacak | ⬜ |
 | 0.3 | Yokken mesaj var gibi görünüyor (S2-14) | Okunmamış mesaj sayacı / boş durum hatası | ⬜ |
 | 0.4 | Başlıklarda silinmiş ama gösterenler var (S3-25) | Silinen başlıklar listelerde filtrelenmeli | ⬜ |
-| 0.5 | Visitors problemi + 404 hatası (S1-5, S1-6) | `components/layout/visitor-tracker.tsx`, `/api/visitor-stats` | ⬜ |
+| 0.5 | Visitors problemi + 404 hatası (S1-5, S1-6) | Kod düzeltildi (token uyumsuzluğu, yutulan hatalar, sahte 12450/42). DB: `supabase/maintenance/02_visitors_tablosu.sql` çalıştırılmalı. 404'ün hangi adreste çıktığı netleştirilmeli | 🟨 |
 | 0.6 | Arama'ya tıklayınca sayfa düzeni bozuluyor (S2-17) | Header arama alanı / mobil düzen | ⬜ |
 | 0.7 | Kodu optimize etmek (S1-1) | Kullanılmayan kod, bundle boyutu, PageSpeed | ⬜ |
 

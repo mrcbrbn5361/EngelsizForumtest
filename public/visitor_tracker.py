@@ -4,14 +4,12 @@ import time
 # Uygulama Bilgileri
 # Lütfen buradaki URL'yi kendi yayındaki URL'nizle güncelleyin
 API_URL = "https://www.engelsizforum.com/api/visitor-stats"
-TOKEN = "engelsizforumteknofesttanitim"
 
 def veriyi_cek():
     try:
         # Sadece istatistikleri çekiyoruz (GET isteği), ziyaretçi olarak sayılmıyoruz
         response = requests.get(
             API_URL,
-            headers={"Authorization": f"Bearer {TOKEN}"},
             timeout=10
         )
         
