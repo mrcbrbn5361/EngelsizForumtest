@@ -17,7 +17,7 @@ Yeni özellik eklemeden önce mevcut sitenin doğru çalışması gerekiyor.
 | 0.1 | Sahte verileri silmek (S1-2) | Kod tarafı temizlendi (kategori auto-seed, demo sayfası, yedek navbar). DB tarafı: `supabase/maintenance/01_sahte_veri_tespit.sql` sonucu bekleniyor | 🟨 |
 | 0.2 | Hangileri mock data bilinmiyor (S3-24) | 0.1 ile birlikte: tüm sahte veri kaynaklarının listesi çıkarılacak | ⬜ |
 | 0.3 | Yokken mesaj var gibi görünüyor (S2-14) | Düzeltildi: hiç mesajı olmayan sohbetler (profilden 'Mesaj gönder'e basınca açılan) karşı tarafın listesinde görünüyordu | ✅ |
-| 0.4 | Başlıklarda silinmiş ama gösterenler var (S3-25) | Silinen başlıklar listelerde filtrelenmeli | ⬜ |
+| 0.4 | Başlıklarda silinmiş ama gösterenler var (S3-25) | Silme artık topics + threads'ten birlikte yapılıp doğrulanıyor (testli). Mevcut kalıntılar: `supabase/maintenance/03_threads_topics_tespit.sql` sonucu bekleniyor | 🟨 |
 | 0.5 | Visitors problemi + 404 hatası (S1-5, S1-6) | Kod düzeltildi (token uyumsuzluğu, yutulan hatalar, sahte 12450/42). DB: `supabase/maintenance/02_visitors_tablosu.sql` çalıştırılmalı. 404'ün hangi adreste çıktığı netleştirilmeli | 🟨 |
 | 0.6 | Arama'ya tıklayınca sayfa düzeni bozuluyor (S2-17) | Düzeltildi: arama sayfasında kenar çubuğu içeriği eziyordu; 1024px'te üst menü ekrandan taşıyordu | ✅ |
 | 0.7 | Kodu optimize etmek (S1-1) | Kullanılmayan kod, bundle boyutu, PageSpeed | ⬜ |
