@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Plus_Jakarta_Sans, Atkinson_Hyperlegible, JetBrains_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Atkinson_Hyperlegible_Next, JetBrains_Mono } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { WebMCPProvider } from '@/components/providers/webmcp-provider';
@@ -16,22 +16,24 @@ import AccessibilityInspector from '@/components/accessibility/lazy-accessibilit
 import CookieConsentBanner from '@/components/layout/lazy-cookie-consent';
 
 const headingFont = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-heading',
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-jakarta',
   display: 'swap',
 });
 
-const bodyFont = Atkinson_Hyperlegible({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-  variable: '--font-body',
+const bodyFont = Atkinson_Hyperlegible_Next({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-atkinson',
   display: 'swap',
+  adjustFontFallback: false,
+  fallback: ['Verdana', 'Segoe UI', 'Arial', 'sans-serif'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-jetbrains',
   display: 'swap',
+  preload: false,
 });
 
 export const viewport: Viewport = {
@@ -296,7 +298,7 @@ const THEME_BOOTSTRAP_SCRIPT = `(function(){try{var t='dark';var s=localStorage.
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" data-theme="dark" className="h-full" suppressHydrationWarning>
+    <html lang="tr" data-theme="dark" className={`h-full ${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         {/* Google tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-XBFZ4BS7GJ" />

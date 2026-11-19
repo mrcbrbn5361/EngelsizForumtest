@@ -24,7 +24,7 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
   // 2. Zorunlu Parametre Doğrulaması
   if (!clientId || !redirectUri) {
     return (
-      <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4" style={{ fontFamily: 'sans-serif' }}>
+      <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4">
         <div className="bg-white border-2 border-rose-200 light:border-rose-800 rounded-3xl p-8 max-w-md w-full text-center shadow-xl">
           <AlertTriangle className="w-16 h-16 text-rose-600 mx-auto mb-4" />
           <h1 className="text-xl font-black mb-2 text-slate-800">Eksik OAuth Parametreleri</h1>
@@ -71,7 +71,7 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
 
   if (!isClientValid) {
     return (
-      <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4" style={{ fontFamily: 'sans-serif' }}>
+      <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4">
         <div className="bg-white border-2 border-rose-200 light:border-rose-800 rounded-3xl p-8 max-w-md w-full text-center shadow-xl">
           <AlertTriangle className="w-16 h-16 text-rose-600 mx-auto mb-4" />
           <h1 className="text-xl font-black mb-2 text-slate-800">Geçersiz İstemci (Client)</h1>
@@ -89,7 +89,7 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
   const isUriAllowed = allowedUris.some((uri) => uri === redirectUri || (uri.includes('urn:ietf:wg:oauth:2.0:oob') && redirectUri.includes('urn:ietf:wg:oauth:2.0:oob')));
   if (!isUriAllowed) {
     return (
-      <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4" style={{ fontFamily: 'sans-serif' }}>
+      <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4">
         <div className="bg-white border-2 border-rose-200 light:border-rose-800 rounded-3xl p-8 max-w-md w-full text-center shadow-xl">
           <AlertTriangle className="w-16 h-16 text-rose-600 mx-auto mb-4" />
           <h1 className="text-xl font-black mb-2 text-slate-800">Geçersiz Yönlendirme Adresi</h1>
@@ -173,7 +173,7 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
   const oobCode = resolvedParams.show_oob_code as string;
   if (oobCode) {
     return (
-      <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4" style={{ fontFamily: 'sans-serif' }}>
+      <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4">
         <div className="bg-white border-2 border-[#bdc9c6] rounded-[2.5rem] p-8 max-w-md w-full text-center shadow-xl">
           <Check className="w-16 h-16 text-[#005c55] mx-auto mb-4 stroke-[3]" />
           <h1 className="text-2xl font-black mb-2 text-[#1c1b1d]">Yetkilendirme Başarılı!</h1>
@@ -189,7 +189,7 @@ export default async function OAuthAuthorizePage({ searchParams }: PageProps) {
 
   // 7. Standart Onay / İzin Arayüzü (Consent Screen)
   return (
-    <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4 w-full" style={{ fontFamily: 'sans-serif' }}>
+    <div className="min-h-screen bg-[#fcf8fb] flex items-center justify-center p-4 w-full">
       <div className="bg-white border-2 border-[#bdc9c6] rounded-[2.5rem] max-w-lg w-full shadow-2xl overflow-hidden">
         <div className="bg-[#185886] p-6 text-center border-b border-[#12466b] text-white">
           <div className="flex justify-center mb-3">
