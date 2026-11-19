@@ -15,7 +15,7 @@ Durum: ⬜ karar bekliyor · ✅ yapıldı · ⏸ ileride kullanılacak, şimdil
 
 ## B. Hiçbir yerden kullanılmayan dosyalar (25 dosya, ~3.100 satır)
 
-**Silinebilir:**
+**Silinebilir:** ✅ 19 dosyanın hepsi silindi (build + testler geçti)
 
 | Dosya | Satır | Not |
 |-------|------:|-----|
@@ -67,11 +67,11 @@ Kullanılıyor görünmeyen ama gerekli olanlar: `react-dom` (Next.js ister), `p
 
 | Dosya | Boyut | Öneri |
 |-------|------:|-------|
-| `performance_result.json`, `performance_score.json` | 774 KB | Eski PageSpeed çıktısı; silinsin |
-| `tsconfig.tsbuildinfo` | 246 KB | Her derlemede değişen önbellek; git'ten çıkarılıp `.gitignore`'a eklensin |
-| `bun.lock` + `package-lock.json` | — | İki ayrı paket yöneticisi kilidi var; Vercel hangisini kullanıyorsa o kalsın |
+| `performance_result.json`, `performance_score.json` | 774 KB | ✅ Silindi |
+| `tsconfig.tsbuildinfo` | 246 KB | ✅ Git'ten çıkarıldı, `.gitignore`'a eklendi |
+| `bun.lock` + `package-lock.json` | — | ⬜ Vercel'in hangisini kullandığı Miraç'a sorulmalı; ikisi de şimdilik duruyor |
 | `components/layout/navbar.tsx.bak_demo_text` | — | ✅ Silindi |
-| Kök dizindeki eski prompt/plan metinleri (`*_PROMPT.txt`, `forum_logic.txt`, `project_*.txt`) | 30 KB | `docs/arsiv/` altına taşınsın |
+| Kök dizindeki eski prompt/plan metinleri (`*_PROMPT.txt`, `forum_logic.txt`, `project_*.txt`) | 30 KB | ✅ `docs/arsiv/` altına taşındı |
 
 ## E. Performans
 
