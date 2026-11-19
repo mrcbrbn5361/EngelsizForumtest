@@ -213,7 +213,7 @@ export default function OtvHesaplamaPage() {
                 className={`w-full pl-11 pr-12 py-3 rounded-lg border text-lg font-bold transition-all outline-hidden focus:ring-2 focus:ring-indigo-500/30 ${
                   calculation.isExceeded 
                     ? 'border-rose-800 bg-rose-950/20 light:bg-rose-50/20 text-rose-200 light:text-rose-800' 
-                    : 'border-line bg-surface text-white'
+                    : 'border-line bg-surface text-fg'
                 }`}
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-fg-5 font-bold text-sm">
@@ -243,11 +243,12 @@ export default function OtvHesaplamaPage() {
 
           {/* Motor Tipi Seçimi */}
           <div className="space-y-3">
-            <label className="block text-xs font-black text-fg-4 uppercase tracking-widest">
+            <label htmlFor="otv-engine-type" className="block text-xs font-black text-fg-4 uppercase tracking-widest">
               Motor Tipi ve Vergi Dilimi
             </label>
             <div className="relative">
               <select
+                id="otv-engine-type"
                 value={selectedEngine}
                 onChange={(e) => setSelectedEngine(e.target.value)}
                 className="w-full pl-4 pr-10 py-3 rounded-lg border border-line bg-surface text-fg text-sm font-bold appearance-none outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all"
@@ -418,7 +419,7 @@ export default function OtvHesaplamaPage() {
                 <td className="p-4 text-right text-sm">
                   {formatCurrency(listPrice)}
                 </td>
-                <td className="p-4 text-right text-sm text-emerald-400 light:text-emerald-700 bg-emerald-500/10 shadow-inner">
+                <td className="p-4 text-right text-sm text-emerald-400 light:text-emerald-800 bg-emerald-500/10 shadow-inner">
                   {calculation.isExceeded ? 'TAVAN AŞILDI' : formatCurrency(calculation.engelliOdenecekTutar)}
                 </td>
               </tr>

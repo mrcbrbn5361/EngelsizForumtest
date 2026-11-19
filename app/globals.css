@@ -52,8 +52,8 @@ html[data-reading-font="opendyslexic"] {
   --ef-fg-2: #e2e8f0;
   --ef-fg-3: #cbd5e1;
   --ef-fg-4: #94a3b8;
-  --ef-fg-5: #64748b;
-  --ef-fg-6: #475569;
+  --ef-fg-5: #8391a7;
+  --ef-fg-6: #7c8aa0;
   color-scheme: dark;
 }
 
@@ -336,13 +336,13 @@ html.reduced-motion *::after {
 
 /* Color Blindness Filters */
 html.protanopia {
-  filter: url('#protanopia-filter');
+  filter: url('#protanopia');
 }
 html.deuteranopia {
-  filter: url('#deuteranopia-filter');
+  filter: url('#deuteranopia');
 }
 html.tritanopia {
-  filter: url('#tritanopia-filter');
+  filter: url('#tritanopia');
 }
 html.achromatopsia {
   filter: grayscale(100%);
