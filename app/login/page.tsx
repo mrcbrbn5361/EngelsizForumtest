@@ -13,7 +13,7 @@ export default function LoginPage() {
     <Suspense fallback={
       <div className="flex flex-col items-center justify-center min-h-[360px] gap-2">
         <Loader2 className="animate-spin text-indigo-400 size-6" />
-        <span className="text-xs text-slate-400 font-mono">Giriş ekranı hazırlanıyor...</span>
+        <span className="text-xs text-fg-4 font-mono">Giriş ekranı hazırlanıyor...</span>
       </div>
     }>
       <LoginForm />
@@ -72,28 +72,28 @@ function LoginForm() {
   return (
     <div className="flex flex-col gap-5 max-w-lg mx-auto w-full py-6 sm:py-10 px-4">
       {/* Breadcrumb Navigation */}
-      <div className="bg-[#111B2E] border border-[#1E293B] px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-400 rounded-md font-mono">
+      <div className="bg-surface-raised border border-line px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-fg-4 rounded-md font-mono">
         <Link href="/" className="hover:text-indigo-400 flex items-center gap-1.5 font-sans font-medium transition-colors">
           <Home size={13} />
           <span>Ana Sayfa</span>
         </Link>
-        <span className="text-slate-600">/</span>
-        <span className="font-semibold text-slate-200 font-sans">Giriş Yap</span>
+        <span className="text-fg-6">/</span>
+        <span className="font-semibold text-fg-2 font-sans">Giriş Yap</span>
       </div>
 
       {/* Main Login Card */}
-      <div className="bg-[#111B2E] border border-[#1E293B] rounded-lg overflow-hidden shadow-xl">
+      <div className="bg-surface-raised border border-line rounded-lg overflow-hidden shadow-xl">
         {/* Card Header */}
-        <div className="bg-[#18243A] text-white p-5 sm:p-6 border-b border-[#1E293B] flex items-center justify-between">
+        <div className="bg-surface-hover text-fg p-5 sm:p-6 border-b border-line flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-md bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
               <LogIn size={20} strokeWidth={2.2} />
             </div>
             <div>
-              <h1 className="text-base sm:text-lg font-bold tracking-tight text-white font-heading">
+              <h1 className="text-base sm:text-lg font-bold tracking-tight text-fg font-heading">
                 Üye Girişi
               </h1>
-              <p className="text-xs text-slate-400 font-normal">
+              <p className="text-xs text-fg-4 font-normal">
                 EngelsizForum bağımsız topluluk hesabınıza erişin
               </p>
             </div>
@@ -109,7 +109,7 @@ function LoginForm() {
             <div className="space-y-1.5">
               <label 
                 htmlFor="login-email" 
-                className="block text-xs font-semibold text-slate-300 uppercase tracking-wider"
+                className="block text-xs font-semibold text-fg-3 uppercase tracking-wider"
               >
                 E-posta Adresi <span className="text-rose-400">*</span>
               </label>
@@ -119,12 +119,12 @@ function LoginForm() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-[#18243A] border border-[#1E293B] rounded-md text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors"
+                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-surface-hover border border-line rounded-md text-fg placeholder-fg-5 focus:outline-none focus:border-indigo-400 transition-colors"
                   placeholder="ornek@engelsizforum.com"
                   autoComplete="email"
                   required
                 />
-                <Mail size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
+                <Mail size={16} className="absolute left-3.5 top-3.5 text-fg-4 pointer-events-none" />
               </div>
             </div>
 
@@ -132,7 +132,7 @@ function LoginForm() {
               <div className="flex justify-between items-center">
                 <label 
                   htmlFor="login-password" 
-                  className="block text-xs font-semibold text-slate-300 uppercase tracking-wider"
+                  className="block text-xs font-semibold text-fg-3 uppercase tracking-wider"
                 >
                   Şifre <span className="text-rose-400">*</span>
                 </label>
@@ -149,12 +149,12 @@ function LoginForm() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-[#18243A] border border-[#1E293B] rounded-md text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors"
+                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-surface-hover border border-line rounded-md text-fg placeholder-fg-5 focus:outline-none focus:border-indigo-400 transition-colors"
                   placeholder="••••••••"
                   autoComplete="current-password"
                   required
                 />
-                <Lock size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
+                <Lock size={16} className="absolute left-3.5 top-3.5 text-fg-4 pointer-events-none" />
               </div>
             </div>
 
@@ -162,9 +162,9 @@ function LoginForm() {
               <input 
                 type="checkbox" 
                 id="remember" 
-                className="w-4 h-4 rounded border-[#1E293B] bg-[#18243A] text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0 cursor-pointer" 
+                className="w-4 h-4 rounded border-line bg-surface-hover text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0 cursor-pointer" 
               />
-              <label htmlFor="remember" className="text-xs font-normal text-slate-300 cursor-pointer select-none">
+              <label htmlFor="remember" className="text-xs font-normal text-fg-3 cursor-pointer select-none">
                 Oturumumu bu cihazda açık tut
               </label>
             </div>
@@ -192,7 +192,7 @@ function LoginForm() {
             <div className="text-center pt-2">
               <Link 
                 href="/register" 
-                className="text-xs font-medium text-slate-400 hover:text-white transition-colors"
+                className="text-xs font-medium text-fg-4 hover:text-fg transition-colors"
               >
                 Hesabınız yok mu? <span className="text-indigo-400 font-semibold underline underline-offset-4">Hemen Kayıt Olun</span>
               </Link>
@@ -200,14 +200,14 @@ function LoginForm() {
           </form>
 
           {/* Social Sign-in Divider */}
-          <div className="pt-5 border-t border-[#1E293B] space-y-3">
-            <p className="text-[11px] text-slate-500 font-mono font-semibold uppercase text-center tracking-wider">
+          <div className="pt-5 border-t border-line space-y-3">
+            <p className="text-[11px] text-fg-5 font-mono font-semibold uppercase text-center tracking-wider">
               Veya Alternatif Giriş
             </p>
             <button 
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full h-11 border border-[#1E293B] bg-[#18243A] hover:bg-[#1E293B] rounded-md px-4 flex items-center justify-center gap-2.5 transition-colors text-xs font-medium text-slate-200 cursor-pointer"
+              className="w-full h-11 border border-line bg-surface-hover hover:bg-line rounded-md px-4 flex items-center justify-center gap-2.5 transition-colors text-xs font-medium text-fg-2 cursor-pointer"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden="true">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

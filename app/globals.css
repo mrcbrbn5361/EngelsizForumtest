@@ -6,6 +6,36 @@
   --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
+/* Semantic theme tokens: components use bg-surface, text-fg, border-line ... instead of fixed hex values.
+   fg is the strongest text colour; fg-1 … fg-6 get progressively dimmer. */
+@theme inline {
+  --color-surface: var(--ef-surface);
+  --color-surface-raised: var(--ef-surface-raised);
+  --color-surface-hover: var(--ef-surface-hover);
+  --color-line: var(--ef-line);
+  --color-fg: var(--ef-fg);
+  --color-fg-1: var(--ef-fg-1);
+  --color-fg-2: var(--ef-fg-2);
+  --color-fg-3: var(--ef-fg-3);
+  --color-fg-4: var(--ef-fg-4);
+  --color-fg-5: var(--ef-fg-5);
+  --color-fg-6: var(--ef-fg-6);
+}
+
+:root {
+  --ef-surface: #0b1220;
+  --ef-surface-raised: #111b2e;
+  --ef-surface-hover: #18243a;
+  --ef-line: #1e293b;
+  --ef-fg: #ffffff;
+  --ef-fg-1: #f1f5f9;
+  --ef-fg-2: #e2e8f0;
+  --ef-fg-3: #cbd5e1;
+  --ef-fg-4: #94a3b8;
+  --ef-fg-5: #64748b;
+  --ef-fg-6: #475569;
+}
+
 :root {
   --bg-color: #0b1220;
   --surface-main: #111b2e;

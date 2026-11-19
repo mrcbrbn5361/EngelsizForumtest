@@ -64,28 +64,28 @@ export default function RegisterPage() {
   return (
     <div className="flex flex-col gap-5 max-w-lg mx-auto w-full py-6 sm:py-10 px-4">
       {/* Breadcrumb Navigation */}
-      <div className="bg-[#111B2E] border border-[#1E293B] px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-400 rounded-md font-mono">
+      <div className="bg-surface-raised border border-line px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-fg-4 rounded-md font-mono">
         <Link href="/" className="hover:text-indigo-400 flex items-center gap-1.5 font-sans font-medium transition-colors">
           <Home size={13} />
           <span>Ana Sayfa</span>
         </Link>
-        <span className="text-slate-600">/</span>
-        <span className="font-semibold text-slate-200 font-sans">Kayıt Ol</span>
+        <span className="text-fg-6">/</span>
+        <span className="font-semibold text-fg-2 font-sans">Kayıt Ol</span>
       </div>
 
       {/* Main Register Card */}
-      <div className="bg-[#111B2E] border border-[#1E293B] rounded-lg overflow-hidden shadow-xl">
+      <div className="bg-surface-raised border border-line rounded-lg overflow-hidden shadow-xl">
         {/* Card Header */}
-        <div className="bg-[#18243A] text-white p-5 sm:p-6 border-b border-[#1E293B] flex items-center justify-between">
+        <div className="bg-surface-hover text-fg p-5 sm:p-6 border-b border-line flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-md bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
               <UserPlus size={20} strokeWidth={2.2} />
             </div>
             <div>
-              <h1 className="text-base sm:text-lg font-bold tracking-tight text-white font-heading">
+              <h1 className="text-base sm:text-lg font-bold tracking-tight text-fg font-heading">
                 Topluluğa Katıl
               </h1>
-              <p className="text-xs text-slate-400 font-normal">
+              <p className="text-xs text-fg-4 font-normal">
                 Ücretsiz ve bağımsız EngelsizForum hesabı oluşturun
               </p>
             </div>
@@ -101,7 +101,7 @@ export default function RegisterPage() {
             <div className="space-y-1.5">
               <label 
                 htmlFor="reg-username" 
-                className="block text-xs font-semibold text-slate-300 uppercase tracking-wider"
+                className="block text-xs font-semibold text-fg-3 uppercase tracking-wider"
               >
                 Kullanıcı Adı <span className="text-rose-400">*</span>
               </label>
@@ -111,14 +111,14 @@ export default function RegisterPage() {
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-[#18243A] border border-[#1E293B] rounded-md text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors"
+                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-surface-hover border border-line rounded-md text-fg placeholder-fg-5 focus:outline-none focus:border-indigo-400 transition-colors"
                   placeholder="kullanici_adiniz"
                   autoComplete="username"
                   required
                 />
-                <User size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
+                <User size={16} className="absolute left-3.5 top-3.5 text-fg-4 pointer-events-none" />
               </div>
-              <p className="text-[11px] text-slate-500 font-normal">
+              <p className="text-[11px] text-fg-5 font-normal">
                 Sitedeki paylaşımlarınızda ve tartışmalarda bu ad görünecektir.
               </p>
             </div>
@@ -126,7 +126,7 @@ export default function RegisterPage() {
             <div className="space-y-1.5">
               <label 
                 htmlFor="reg-email" 
-                className="block text-xs font-semibold text-slate-300 uppercase tracking-wider"
+                className="block text-xs font-semibold text-fg-3 uppercase tracking-wider"
               >
                 E-posta Adresi <span className="text-rose-400">*</span>
               </label>
@@ -136,19 +136,19 @@ export default function RegisterPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-[#18243A] border border-[#1E293B] rounded-md text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors"
+                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-surface-hover border border-line rounded-md text-fg placeholder-fg-5 focus:outline-none focus:border-indigo-400 transition-colors"
                   placeholder="adiniz@ornek.com"
                   autoComplete="email"
                   required
                 />
-                <Mail size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
+                <Mail size={16} className="absolute left-3.5 top-3.5 text-fg-4 pointer-events-none" />
               </div>
             </div>
 
             <div className="space-y-1.5">
               <label 
                 htmlFor="reg-password" 
-                className="block text-xs font-semibold text-slate-300 uppercase tracking-wider"
+                className="block text-xs font-semibold text-fg-3 uppercase tracking-wider"
               >
                 Şifre (En az 6 karakter) <span className="text-rose-400">*</span>
               </label>
@@ -158,13 +158,13 @@ export default function RegisterPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-[#18243A] border border-[#1E293B] rounded-md text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 transition-colors"
+                  className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-surface-hover border border-line rounded-md text-fg placeholder-fg-5 focus:outline-none focus:border-indigo-400 transition-colors"
                   placeholder="••••••••"
                   autoComplete="new-password"
                   minLength={6}
                   required
                 />
-                <Lock size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
+                <Lock size={16} className="absolute left-3.5 top-3.5 text-fg-4 pointer-events-none" />
               </div>
             </div>
 
@@ -174,10 +174,10 @@ export default function RegisterPage() {
                 id="terms" 
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="w-4 h-4 mt-0.5 rounded border-[#1E293B] bg-[#18243A] text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0 cursor-pointer" 
+                className="w-4 h-4 mt-0.5 rounded border-line bg-surface-hover text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0 cursor-pointer" 
                 required 
               />
-              <label htmlFor="terms" className="text-xs text-slate-300 leading-snug cursor-pointer select-none">
+              <label htmlFor="terms" className="text-xs text-fg-3 leading-snug cursor-pointer select-none">
                 <Link href="/terms" className="text-indigo-400 hover:underline">Kullanım şartlarını</Link> ve <Link href="/privacy" className="text-indigo-400 hover:underline">gizlilik politikasını</Link> okudum, kabul ediyorum.
               </label>
             </div>
@@ -205,7 +205,7 @@ export default function RegisterPage() {
             <div className="text-center pt-2">
               <Link 
                 href="/login" 
-                className="text-xs font-medium text-slate-400 hover:text-white transition-colors"
+                className="text-xs font-medium text-fg-4 hover:text-fg transition-colors"
               >
                 Zaten hesabınız var mı? <span className="text-indigo-400 font-semibold underline underline-offset-4">Giriş Yapın</span>
               </Link>

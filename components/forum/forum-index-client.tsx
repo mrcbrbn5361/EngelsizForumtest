@@ -400,16 +400,16 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
   };
 
   return (
-    <div className="w-full text-slate-100">
+    <div className="w-full text-fg-1">
       {/* Top Legislation Notice Bar - Flat hairline divider */}
-      <div className="border-b border-[#1E293B] pb-4 mb-8">
+      <div className="border-b border-line pb-4 mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2.5 text-slate-400">
+          <div className="flex items-center gap-2.5 text-fg-4">
             <span className="font-mono text-[11px] text-indigo-400 font-semibold">
               [2026 Mevzuat]
             </span>
             <span>
-              2026 ÖTV Muafiyetli Araç Üst Limiti <strong className="text-slate-100 font-mono font-medium">2.873.972 TL</strong> olarak yürürlüktedir.
+              2026 ÖTV Muafiyetli Araç Üst Limiti <strong className="text-fg-1 font-mono font-medium">2.873.972 TL</strong> olarak yürürlüktedir.
             </span>
           </div>
           <Link 
@@ -422,29 +422,29 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
       </div>
 
       {/* Hero Header - Generous whitespace, typographic hierarchy, flat linear inputs */}
-      <header className="py-6 sm:py-8 border-b border-[#1E293B]">
+      <header className="py-6 sm:py-8 border-b border-line">
         <div className="max-w-3xl">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-heading">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-fg font-heading">
             {profile ? (
               <>Hoş Geldiniz, {profile.full_name || profile.username}</>
             ) : (
               <>Engelsiz Topluluk ve Bilgi Platformu</>
             )}
           </h1>
-          <p className="mt-2.5 text-sm text-slate-300 font-normal leading-relaxed">
+          <p className="mt-2.5 text-sm text-fg-3 font-normal leading-relaxed">
             Engelli hakları, 2026 ÖTV istisnası, sağlık kurulu heyet raporları, erken emeklilik ve günlük dayanışma için Türkiye&apos;nin erişilebilir bağımsız forumu.
           </p>
 
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={15} aria-hidden="true" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-4 pointer-events-none" size={15} aria-hidden="true" />
               <input 
                 type="search" 
                 placeholder="Başlıklar, mevzuat ve konularda ara..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 aria-label="Forum genelinde ara"
-                className="w-full pl-9 pr-3 h-9 text-xs rounded-md border border-[#1E293B] bg-[#111B2E] text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 transition-colors font-sans"
+                className="w-full pl-9 pr-3 h-9 text-xs rounded-md border border-line bg-surface-raised text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400 transition-colors font-sans"
               />
             </div>
             <Link 
@@ -457,15 +457,15 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
         </div>
 
         {/* Minimal Stats Strip */}
-        <div className="mt-8 pt-5 border-t border-[#1E293B] flex flex-wrap items-center gap-x-8 gap-y-2 text-xs font-mono text-slate-400">
+        <div className="mt-8 pt-5 border-t border-line flex flex-wrap items-center gap-x-8 gap-y-2 text-xs font-mono text-fg-4">
           <div>
-            <span className="text-slate-200 font-medium">{stats?.totalTopics !== undefined ? formatCompactNumber(stats.totalTopics) : '0'}</span> Konu
+            <span className="text-fg-2 font-medium">{stats?.totalTopics !== undefined ? formatCompactNumber(stats.totalTopics) : '0'}</span> Konu
           </div>
           <div>
-            <span className="text-slate-200 font-medium">{stats?.totalComments !== undefined ? formatCompactNumber(stats.totalComments) : '0'}</span> Mesaj
+            <span className="text-fg-2 font-medium">{stats?.totalComments !== undefined ? formatCompactNumber(stats.totalComments) : '0'}</span> Mesaj
           </div>
           <div>
-            <span className="text-slate-200 font-medium">{stats?.totalMembers !== undefined ? formatCompactNumber(stats.totalMembers) : '0'}</span> Üye
+            <span className="text-fg-2 font-medium">{stats?.totalMembers !== undefined ? formatCompactNumber(stats.totalMembers) : '0'}</span> Üye
           </div>
           <div className="flex items-center gap-1.5 text-emerald-400">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -484,19 +484,19 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           <div className="flex flex-wrap items-center gap-2">
             <Link 
               href="/hesaplama"
-              className="px-3 py-1.5 rounded-md border border-[#1E293B] hover:border-slate-700 bg-[#111B2E] hover:bg-[#18243A] text-xs text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-md border border-line hover:border-slate-700 bg-surface-raised hover:bg-surface-hover text-xs text-fg-3 hover:text-fg transition-colors flex items-center gap-1.5"
             >
               <Scale size={13} className="text-indigo-400" /> Balthazard Robotu
             </Link>
             <Link 
               href="/hesaplama"
-              className="px-3 py-1.5 rounded-md border border-[#1E293B] hover:border-slate-700 bg-[#111B2E] hover:bg-[#18243A] text-xs text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-md border border-line hover:border-slate-700 bg-surface-raised hover:bg-surface-hover text-xs text-fg-3 hover:text-fg transition-colors flex items-center gap-1.5"
             >
               <Car size={13} className="text-emerald-400" /> 2026 ÖTV Limiti
             </Link>
             <Link 
               href="/communities"
-              className="px-3 py-1.5 rounded-md border border-[#1E293B] hover:border-slate-700 bg-[#111B2E] hover:bg-[#18243A] text-xs text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-md border border-line hover:border-slate-700 bg-surface-raised hover:bg-surface-hover text-xs text-fg-3 hover:text-fg transition-colors flex items-center gap-1.5"
             >
               <Users size={13} className="text-amber-400" /> Tanı Grupları
             </Link>
@@ -511,7 +511,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                   {/* Category Header */}
                   <div 
                     onClick={() => toggleCategory(section.id)}
-                    className="flex items-center justify-between border-b border-[#1E293B] pb-2 cursor-pointer select-none group"
+                    className="flex items-center justify-between border-b border-line pb-2 cursor-pointer select-none group"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
@@ -523,23 +523,23 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     aria-expanded={!isCollapsed}
                   >
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-300 group-hover:text-white transition-colors font-heading">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-fg-3 group-hover:text-fg transition-colors font-heading">
                         {section.name}
                       </span>
                     </div>
                     <ChevronRight 
                       size={14} 
-                      className={cn("text-slate-400 transition-transform duration-150", !isCollapsed && "rotate-90")} 
+                      className={cn("text-fg-4 transition-transform duration-150", !isCollapsed && "rotate-90")} 
                     />
                   </div>
 
                   {/* Subforums Flat List */}
                   {!isCollapsed && (
-                    <div className="divide-y divide-[#1E293B]/70">
+                    <div className="divide-y divide-line/70">
                       {section.subforums.map((subforum) => (
                         <div 
                           key={subforum.id} 
-                          className="py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-[#111B2E]/60 px-2 -mx-2 transition-colors rounded-sm"
+                          className="py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:bg-surface-raised/60 px-2 -mx-2 transition-colors rounded-sm"
                         >
                           <div className="flex items-start gap-3 min-w-0 flex-1">
                             <div className="mt-1 shrink-0">
@@ -548,36 +548,36 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                             <div className="min-w-0 flex-1">
                               <Link 
                                 href={`/category/${subforum.slug}`} 
-                                className="text-xs sm:text-sm font-semibold text-slate-100 hover:text-indigo-400 transition-colors block truncate"
+                                className="text-xs sm:text-sm font-semibold text-fg-1 hover:text-indigo-400 transition-colors block truncate"
                               >
                                 {subforum.name}
                               </Link>
-                              <p className="text-xs text-slate-400 mt-0.5 line-clamp-1">
+                              <p className="text-xs text-fg-4 mt-0.5 line-clamp-1">
                                 {subforum.desc}
                               </p>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-6 shrink-0 md:justify-end text-xs text-slate-400 pl-7 md:pl-0">
+                          <div className="flex items-center gap-6 shrink-0 md:justify-end text-xs text-fg-4 pl-7 md:pl-0">
                             <div className="font-mono text-right shrink-0">
-                              <span className="text-slate-200 font-medium">{formatCompactNumber(subforum.topics)}</span> k · <span className="text-slate-200 font-medium">{formatCompactNumber(subforum.replies)}</span> m
+                              <span className="text-fg-2 font-medium">{formatCompactNumber(subforum.topics)}</span> k · <span className="text-fg-2 font-medium">{formatCompactNumber(subforum.replies)}</span> m
                             </div>
                             <div className="text-right truncate max-w-[170px] sm:max-w-[200px]">
                               {subforum.topics > 0 ? (
                                 <>
                                   <Link 
                                     href={`/discussions`} 
-                                    className="text-slate-300 hover:text-indigo-400 transition-colors truncate block text-xs" 
+                                    className="text-fg-3 hover:text-indigo-400 transition-colors truncate block text-xs" 
                                     title={subforum.lastPost.title}
                                   >
                                     {subforum.lastPost.title}
                                   </Link>
-                                  <div className="text-[11px] text-slate-400 truncate mt-0.5">
+                                  <div className="text-[11px] text-fg-4 truncate mt-0.5">
                                     {subforum.lastPost.author} {subforum.lastPost.date && `· ${subforum.lastPost.date}`}
                                   </div>
                                 </>
                               ) : (
-                                <span className="text-[11px] text-slate-400 italic">Henüz konu yok</span>
+                                <span className="text-[11px] text-fg-4 italic">Henüz konu yok</span>
                               )}
                             </div>
                           </div>
@@ -592,8 +592,8 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
 
           {/* Recent Discussions Feed */}
           <section className="space-y-5 pt-2" aria-label="Son Tartışmalar">
-            <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
+            <div className="flex items-center justify-between border-b border-line pb-3">
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-fg-3 font-heading">
                 Son Tartışmalar
               </h2>
               
@@ -614,7 +614,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                       "transition-colors cursor-pointer pb-0.5",
                       activeTab === tab.id 
                         ? "text-indigo-400 font-semibold border-b-2 border-indigo-400" 
-                        : "text-slate-400 hover:text-slate-200"
+                        : "text-fg-4 hover:text-fg-2"
                     )}
                   >
                     {tab.label}
@@ -624,38 +624,38 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             </div>
 
             {/* Flat Thread Rows */}
-            <div className="divide-y divide-[#1E293B]/70">
+            <div className="divide-y divide-line/70">
               {filteredTopics.length > 0 ? (
                 filteredTopics.map((topic) => (
-                  <article key={topic.id} className="py-4 hover:bg-[#111B2E]/60 px-2 -mx-2 transition-colors rounded-sm">
+                  <article key={topic.id} className="py-4 hover:bg-surface-raised/60 px-2 -mx-2 transition-colors rounded-sm">
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 text-[11px] text-slate-400 mb-1 flex-wrap">
+                        <div className="flex items-center gap-2 text-[11px] text-fg-4 mb-1 flex-wrap">
                           {topic.is_pinned && (
                             <span className="font-mono text-amber-300 font-medium">[Sabit]</span>
                           )}
                           {topic.is_solved && (
                             <span className="font-mono text-emerald-400 font-medium">[Çözüldü]</span>
                           )}
-                          <span className="text-slate-300 font-medium">{topic.category?.name || 'Genel'}</span>
+                          <span className="text-fg-3 font-medium">{topic.category?.name || 'Genel'}</span>
                           <span>·</span>
-                          <time className="font-mono text-slate-400">{formatDate(topic.created_at)}</time>
+                          <time className="font-mono text-fg-4">{formatDate(topic.created_at)}</time>
                         </div>
-                        <h3 className="text-sm font-semibold text-slate-100 hover:text-indigo-400 transition-colors leading-snug">
+                        <h3 className="text-sm font-semibold text-fg-1 hover:text-indigo-400 transition-colors leading-snug">
                           <Link href={`/discussions/${topic.id}`}>{topic.title}</Link>
                         </h3>
                         {topic.content && (
-                          <p className="text-xs text-slate-300 line-clamp-1 mt-1 leading-relaxed">
+                          <p className="text-xs text-fg-3 line-clamp-1 mt-1 leading-relaxed">
                             {topic.content}
                           </p>
                         )}
-                        <div className="mt-2 flex items-center gap-2 text-xs text-slate-400">
+                        <div className="mt-2 flex items-center gap-2 text-xs text-fg-4">
                           <span>@{topic.author?.full_name || topic.author?.username || 'Topluluk Üyesi'}</span>
                         </div>
                       </div>
 
-                      <div className="text-right font-mono text-xs text-slate-400 shrink-0 pt-1">
-                        <span className="text-slate-200 font-medium">
+                      <div className="text-right font-mono text-xs text-fg-4 shrink-0 pt-1">
+                        <span className="text-fg-2 font-medium">
                           {(topic.comments as any)?.[0]?.count || topic.comments_count || 0}
                         </span> yanıt
                       </div>
@@ -663,7 +663,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                   </article>
                 ))
               ) : (
-                <div className="py-12 text-center text-xs text-slate-400">
+                <div className="py-12 text-center text-xs text-fg-4">
                   Bu filtrede henüz tartışma bulunmuyor.
                 </div>
               )}
@@ -683,9 +683,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           </Link>
 
           {/* Quick Balthazard Form */}
-          <section className="p-4 rounded-lg bg-[#111B2E] border border-[#1E293B] space-y-3" aria-label="Balthazard Hesaplama">
-            <div className="border-b border-[#1E293B] pb-2 flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
+          <section className="p-4 rounded-lg bg-surface-raised border border-line space-y-3" aria-label="Balthazard Hesaplama">
+            <div className="border-b border-line pb-2 flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 font-heading">
                 Balthazard Robotu
               </h3>
               <span className="text-[11px] font-mono text-indigo-400">2026</span>
@@ -693,7 +693,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             <form onSubmit={calculateMiniBalthazard} className="space-y-2.5">
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">1. Oran %</label>
+                  <label className="text-[11px] text-fg-4 block mb-1">1. Oran %</label>
                   <input 
                     type="number" 
                     min="1" 
@@ -701,12 +701,12 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     value={rate1} 
                     onChange={(e) => setRate1(e.target.value)} 
                     placeholder="Örn: 40" 
-                    className="w-full bg-[#18243A] border border-[#1E293B] rounded-md px-2.5 py-1.5 text-xs text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 font-mono"
+                    className="w-full bg-surface-hover border border-line rounded-md px-2.5 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400 font-mono"
                     required
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">2. Oran %</label>
+                  <label className="text-[11px] text-fg-4 block mb-1">2. Oran %</label>
                   <input 
                     type="number" 
                     min="1" 
@@ -714,25 +714,25 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     value={rate2} 
                     onChange={(e) => setRate2(e.target.value)} 
                     placeholder="Örn: 30" 
-                    className="w-full bg-[#18243A] border border-[#1E293B] rounded-md px-2.5 py-1.5 text-xs text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 font-mono"
+                    className="w-full bg-surface-hover border border-line rounded-md px-2.5 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400 font-mono"
                     required
                   />
                 </div>
               </div>
 
-              <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer pt-0.5">
+              <label className="flex items-center gap-2 text-xs text-fg-3 cursor-pointer pt-0.5">
                 <input 
                   type="checkbox" 
                   checked={isOver65} 
                   onChange={(e) => setIsOver65(e.target.checked)} 
-                  className="rounded border-[#1E293B] bg-[#18243A] text-indigo-600 focus:ring-0"
+                  className="rounded border-line bg-surface-hover text-indigo-600 focus:ring-0"
                 />
                 <span>65 yaş veya üzeri (+%10)</span>
               </label>
 
               <button 
                 type="submit" 
-                className="w-full py-1.5 bg-[#18243A] hover:bg-[#1E293B] border border-[#1E293B] text-slate-100 font-medium text-xs rounded-md transition-colors cursor-pointer"
+                className="w-full py-1.5 bg-surface-hover hover:bg-line border border-line text-fg-1 font-medium text-xs rounded-md transition-colors cursor-pointer"
               >
                 Oranı Birleştir
               </button>
@@ -740,8 +740,8 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
 
             {miniBalthazardResult !== null && (
               <div className="pt-2 text-xs">
-                <div className="text-slate-300">Nihai Oran: <span className="font-mono text-indigo-400 font-semibold text-sm">%{miniBalthazardResult}</span></div>
-                <div className="text-[11px] text-slate-400 mt-0.5">
+                <div className="text-fg-3">Nihai Oran: <span className="font-mono text-indigo-400 font-semibold text-sm">%{miniBalthazardResult}</span></div>
+                <div className="text-[11px] text-fg-4 mt-0.5">
                   {miniBalthazardResult >= 90 ? 'Şartsız ÖTV muafiyeti standardı.' : miniBalthazardResult >= 40 ? 'Vergi indirimi ve engelli kimlik hakkı.' : 'Genel sağlık raporu oranı.'}
                 </div>
               </div>
@@ -749,9 +749,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           </section>
 
           {/* User Profile / Auth State */}
-          <section className="p-4 rounded-lg bg-[#111B2E] border border-[#1E293B] space-y-3" aria-label="Profil Bilgisi">
-            <div className="border-b border-[#1E293B] pb-2">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
+          <section className="p-4 rounded-lg bg-surface-raised border border-line space-y-3" aria-label="Profil Bilgisi">
+            <div className="border-b border-line pb-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 font-heading">
                 Profil
               </h3>
             </div>
@@ -765,8 +765,8 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                     size="sm"
                   />
                   <div className="min-w-0">
-                    <div className="font-medium text-slate-100 truncate">{profile?.full_name || profile?.username}</div>
-                    <div className="text-[11px] text-slate-400 font-mono">Seviye {profile?.level || 1} · {profile?.xp || 0} XP</div>
+                    <div className="font-medium text-fg-1 truncate">{profile?.full_name || profile?.username}</div>
+                    <div className="text-[11px] text-fg-4 font-mono">Seviye {profile?.level || 1} · {profile?.xp || 0} XP</div>
                   </div>
                 </div>
                 <Link 
@@ -777,7 +777,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 </Link>
               </div>
             ) : (
-              <div className="space-y-2 text-xs text-slate-300">
+              <div className="space-y-2 text-xs text-fg-3">
                 <p>Sorularınızı sormak ve tartışmalara katılmak için giriş yapın.</p>
                 <Link 
                   href="/login" 
@@ -790,9 +790,9 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           </section>
 
           {/* Online Members */}
-          <section className="p-4 rounded-lg bg-[#111B2E] border border-[#1E293B] space-y-3" aria-label="Çevrimiçi Üyeler">
-            <div className="border-b border-[#1E293B] pb-2 flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
+          <section className="p-4 rounded-lg bg-surface-raised border border-line space-y-3" aria-label="Çevrimiçi Üyeler">
+            <div className="border-b border-line pb-2 flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 font-heading">
                 Çevrimiçi
               </h3>
               <span className="text-[11px] font-mono text-emerald-400">
@@ -802,30 +802,30 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             <div className="space-y-1.5 text-xs">
               {onlineMembers.length > 0 ? (
                 onlineMembers.slice(0, 6).map(member => (
-                  <div key={member.id} className="flex items-center justify-between text-slate-300 hover:text-white">
+                  <div key={member.id} className="flex items-center justify-between text-fg-3 hover:text-fg">
                     <span className="truncate">@{member.username}</span>
-                    <span className="text-[10px] text-slate-400 font-mono uppercase">{member.role}</span>
+                    <span className="text-[10px] text-fg-4 font-mono uppercase">{member.role}</span>
                   </div>
                 ))
               ) : (
-                <div className="text-[11px] text-slate-400 italic">Şu anda çevrimiçi üye bulunmuyor</div>
+                <div className="text-[11px] text-fg-4 italic">Şu anda çevrimiçi üye bulunmuyor</div>
               )}
             </div>
           </section>
 
           {/* Quick Legal Help / AI Assistant */}
-          <section className="p-4 rounded-lg bg-[#111B2E] border border-[#1E293B] space-y-3" aria-label="Hukuk Asistanı">
-            <div className="border-b border-[#1E293B] pb-2">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
+          <section className="p-4 rounded-lg bg-surface-raised border border-line space-y-3" aria-label="Hukuk Asistanı">
+            <div className="border-b border-line pb-2">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-3 font-heading">
                 Mevzuat Asistanı
               </h3>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-fg-4 leading-relaxed">
               ÖTV istisnası veya rapor itirazları hakkında soru sorabilirsiniz.
             </p>
             <div className="space-y-2 max-h-48 overflow-y-auto text-xs">
               {aiAnswers.map((ans, idx) => (
-                <div key={idx} className={cn("text-xs leading-relaxed", ans.sender === 'user' ? "text-slate-200 font-medium" : "text-slate-300")}>
+                <div key={idx} className={cn("text-xs leading-relaxed", ans.sender === 'user' ? "text-fg-2 font-medium" : "text-fg-3")}>
                   {ans.sender === 'user' ? 'Siz: ' : 'Asistan: '} {ans.text}
                 </div>
               ))}
@@ -836,12 +836,12 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 value={aiQuestion}
                 onChange={(e) => setAiQuestion(e.target.value)}
                 placeholder="Örn: Sol bacak ÖTV şartı..."
-                className="flex-1 bg-[#18243A] border border-[#1E293B] rounded-md px-2.5 py-1.5 text-xs text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400"
+                className="flex-1 bg-surface-hover border border-line rounded-md px-2.5 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 focus:outline-none focus:border-indigo-400"
               />
               <button 
                 type="submit" 
                 disabled={aiLoading}
-                className="px-2.5 py-1.5 bg-[#18243A] hover:bg-[#1E293B] border border-[#1E293B] text-slate-300 hover:text-white rounded-md text-xs cursor-pointer disabled:opacity-50"
+                className="px-2.5 py-1.5 bg-surface-hover hover:bg-line border border-line text-fg-3 hover:text-fg rounded-md text-xs cursor-pointer disabled:opacity-50"
               >
                 {aiLoading ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
               </button>

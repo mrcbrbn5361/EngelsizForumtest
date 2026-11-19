@@ -124,10 +124,10 @@ export default function VergiIndirimiPage() {
     <div className="space-y-6">
       
       {/* Üst Başlık & Mevzuat Dayanağı */}
-      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1E293B] pb-5 mb-6">
+      <div className="bg-surface-raised rounded-xl border border-line p-6 shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-5 mb-6">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-lg bg-[#18243A] text-indigo-400 flex items-center justify-center shadow-inner border border-[#1E293B]">
+            <div className="w-12 h-12 rounded-lg bg-surface-hover text-indigo-400 flex items-center justify-center shadow-inner border border-line">
               <Receipt className="w-7 h-7" />
             </div>
             <div>
@@ -135,15 +135,15 @@ export default function VergiIndirimiPage() {
                 Engelli Gelir Vergisi İndirimi Hesaplama (2026)
               </h1>
               <div className="flex items-center gap-2 mt-0.5">
-                <Info size={12} className="text-slate-500" />
-                <span className="text-xs text-slate-400 font-medium">
+                <Info size={12} className="text-fg-5" />
+                <span className="text-xs text-fg-4 font-medium">
                   193 Sayılı GVK 31. Madde ve GİB Tebliğ Standartları
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
+          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-surface text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
             {degreeObj.name.split(' (')[0]}
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function VergiIndirimiPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           <div className="space-y-2">
-            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+            <label className="block text-[11px] font-black text-fg-4 uppercase tracking-widest">
               Aylık Brüt Maaş
             </label>
             <div className="relative">
@@ -163,22 +163,22 @@ export default function VergiIndirimiPage() {
                 step="500"
                 value={grossSalary || ''}
                 onChange={(e) => setGrossSalary(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full px-3 py-2 bg-surface border border-line rounded-md text-fg text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-[10px]">TL</span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-5 font-bold text-[10px]">TL</span>
             </div>
-            <span className="text-[10px] text-slate-500 italic block">SGK&apos;ya tabi brüt ücret</span>
+            <span className="text-[10px] text-fg-5 italic block">SGK&apos;ya tabi brüt ücret</span>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+            <label className="block text-[11px] font-black text-fg-4 uppercase tracking-widest">
               Engellilik Derecesi
             </label>
             <div className="relative">
               <select
                 value={selectedDegree}
                 onChange={(e) => setSelectedDegree(parseInt(e.target.value, 10))}
-                className="w-full pl-3 pr-10 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full pl-3 pr-10 py-2 bg-surface border border-line rounded-md text-fg text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               >
                 {DEGREES.map((deg) => (
                   <option key={deg.degree} value={deg.degree}>
@@ -186,22 +186,22 @@ export default function VergiIndirimiPage() {
                   </option>
                 ))}
               </select>
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-fg-5">
                 <ChevronRight size={14} className="rotate-90" />
               </div>
             </div>
-            <span className="text-[10px] text-slate-500 italic block">GİB onaylı resmi derece</span>
+            <span className="text-[10px] text-fg-5 italic block">GİB onaylı resmi derece</span>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+            <label className="block text-[11px] font-black text-fg-4 uppercase tracking-widest">
               Vergi Dilimi
             </label>
             <div className="relative">
               <select
                 value={taxRate}
                 onChange={(e) => setTaxRate(parseInt(e.target.value, 10))}
-                className="w-full pl-3 pr-10 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full pl-3 pr-10 py-2 bg-surface border border-line rounded-md text-fg text-xs font-bold appearance-none outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               >
                 {TAX_BRACKETS.map((tb) => (
                   <option key={tb.rate} value={tb.rate}>
@@ -209,30 +209,30 @@ export default function VergiIndirimiPage() {
                   </option>
                 ))}
               </select>
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-fg-5">
                 <ChevronRight size={14} className="rotate-90" />
               </div>
             </div>
-            <span className="text-[10px] text-slate-500 italic block">Kümülatif matrah dilimi</span>
+            <span className="text-[10px] text-fg-5 italic block">Kümülatif matrah dilimi</span>
           </div>
 
         </div>
 
         {/* İsteğe Bağlı Özel İndirim Tutarı */}
-        <div className="mt-6 pt-4 border-t border-[#1E293B] flex flex-wrap items-center justify-between gap-4">
+        <div className="mt-6 pt-4 border-t border-line flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 text-xs text-[#CBD5E1]">
             <Calculator className="w-4 h-4 text-indigo-400" />
-            <span>2026 Matrah İndirimi: <strong className="text-white">{formatCurrency(degreeObj.officialDiscount2026)} / ay</strong></span>
+            <span>2026 Matrah İndirimi: <strong className="text-fg">{formatCurrency(degreeObj.officialDiscount2026)} / ay</strong></span>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Özel Tutar:</span>
+            <span className="text-[11px] font-bold text-fg-5 uppercase tracking-wider">Özel Tutar:</span>
             <input
               type="number"
               value={customDiscount}
               onChange={(e) => setCustomDiscount(e.target.value)}
               placeholder={degreeObj.officialDiscount2026.toString()}
-              className="w-28 px-3 py-1 bg-[#0B1220] border border-[#1E293B] rounded text-white text-xs font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+              className="w-28 px-3 py-1 bg-surface border border-line rounded text-fg text-xs font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
             />
           </div>
         </div>
@@ -247,7 +247,7 @@ export default function VergiIndirimiPage() {
               <div className="w-8 h-8 rounded-full bg-emerald-900/30 text-emerald-400 flex items-center justify-center">
                 <TrendingUp size={18} />
               </div>
-              <span className="text-xs uppercase font-black text-slate-400 tracking-widest">
+              <span className="text-xs uppercase font-black text-fg-4 tracking-widest">
                 Aylık Net Maaş Artışı
               </span>
             </div>
@@ -260,7 +260,7 @@ export default function VergiIndirimiPage() {
             +{formatCurrency(calculation.aylikNetKazanc)}
           </div>
 
-          <p className="text-xs text-slate-400 leading-relaxed font-medium">
+          <p className="text-xs text-fg-4 leading-relaxed font-medium">
             Gelir verginiz bu tutar kadar azalır ve doğrudan net maaşınıza eklenir.
           </p>
         </div>
@@ -271,11 +271,11 @@ export default function VergiIndirimiPage() {
               <div className="w-8 h-8 rounded-full bg-indigo-900/30 text-indigo-400 flex items-center justify-center">
                 <Receipt size={18} />
               </div>
-              <span className="text-xs uppercase font-black text-slate-400 tracking-widest">
+              <span className="text-xs uppercase font-black text-fg-4 tracking-widest">
                 Yıllık Toplam Tasarruf
               </span>
             </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#18243A] text-indigo-300 border border-[#1E293B] uppercase">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-surface-hover text-indigo-300 border border-line uppercase">
               12 Aylık
             </span>
           </div>
@@ -284,7 +284,7 @@ export default function VergiIndirimiPage() {
             +{formatCurrency(calculation.yillikToplamKazanc)}
           </div>
 
-          <p className="text-xs text-slate-400 leading-relaxed font-medium">
+          <p className="text-xs text-fg-4 leading-relaxed font-medium">
             Bir takvim yılı boyunca sağlanan kümülatif net vergi muafiyeti toplamıdır.
           </p>
         </div>
@@ -292,8 +292,8 @@ export default function VergiIndirimiPage() {
       </div>
 
       {/* KARŞILAŞTIRMALI BOR DRO VE VERGİ MATRAHI TABLOSU */}
-      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] overflow-hidden shadow-xl">
-        <div className="bg-[#18243A] text-white px-5 py-3.5 flex items-center justify-between border-b border-[#1E293B]">
+      <div className="bg-surface-raised rounded-xl border border-line overflow-hidden shadow-xl">
+        <div className="bg-surface-hover text-fg px-5 py-3.5 flex items-center justify-between border-b border-line">
           <div className="flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider">
             <Scale className="w-4 h-4 text-indigo-400" />
             <span>Karşılaştırmalı Bordro Simülasyonu</span>
@@ -306,7 +306,7 @@ export default function VergiIndirimiPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-[#0B1220] text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-[#1E293B]">
+              <tr className="bg-surface text-fg-4 font-bold uppercase text-[10px] tracking-widest border-b border-line">
                 <th className="p-4">Bordro Kalemi</th>
                 <th className="p-4">Yasal Dayanak</th>
                 <th className="p-4 text-right">Standart Çalışan</th>
@@ -315,30 +315,30 @@ export default function VergiIndirimiPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1E293B] text-[#CBD5E1]">
+            <tbody className="divide-y divide-line text-[#CBD5E1]">
               <tr className="hover:bg-white/5 transition-colors">
                 <td className="p-4 font-bold text-[#F8FAFC]">1. Aylık Brüt Ücret</td>
-                <td className="p-4 text-slate-500 italic">Sözleşme Tutarı</td>
+                <td className="p-4 text-fg-5 italic">Sözleşme Tutarı</td>
                 <td className="p-4 text-right font-medium">{formatCurrency(calculation.gross)}</td>
                 <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">{formatCurrency(calculation.gross)}</td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
                 <td className="p-4 font-bold text-[#F8FAFC]">2. SGK + İşsizlik Payı (%15)</td>
-                <td className="p-4 text-slate-500 italic">Zorunlu Kesinti</td>
+                <td className="p-4 text-fg-5 italic">Zorunlu Kesinti</td>
                 <td className="p-4 text-right text-rose-400">-{formatCurrency(calculation.sgkKesintisi)}</td>
                 <td className="p-4 text-right text-rose-400 bg-emerald-950/20">-{formatCurrency(calculation.sgkKesintisi)}</td>
               </tr>
-              <tr className="bg-[#18243A]/50 transition-colors border-y border-indigo-500/20">
+              <tr className="bg-surface-hover/50 transition-colors border-y border-indigo-500/20">
                 <td className="p-4 font-bold text-indigo-400">3. Engellilik İndirimi (GVK 31)</td>
                 <td className="p-4 text-indigo-500 italic font-mono text-[10px]">Matrahtan Düşülen</td>
-                <td className="p-4 text-right text-slate-600">0 ₺</td>
+                <td className="p-4 text-right text-fg-6">0 ₺</td>
                 <td className="p-4 text-right font-black text-indigo-300">
                   -{formatCurrency(calculation.uygulananIndirim)}
                 </td>
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
                 <td className="p-4 font-bold text-[#F8FAFC]">4. Gelir Vergisi Matrahı</td>
-                <td className="p-4 text-slate-500 italic">Vergi Matrahı</td>
+                <td className="p-4 text-fg-5 italic">Vergi Matrahı</td>
                 <td className="p-4 text-right font-medium">{formatCurrency(calculation.standartMatrah)}</td>
                 <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">
                   {formatCurrency(calculation.indirimliMatrah)}
@@ -346,18 +346,18 @@ export default function VergiIndirimiPage() {
               </tr>
               <tr className="hover:bg-white/5 transition-colors">
                 <td className="p-4 font-bold text-[#F8FAFC]">5. Gelir Vergisi (%{taxRate})</td>
-                <td className="p-4 text-slate-500 italic">Kesilen Vergi</td>
+                <td className="p-4 text-fg-5 italic">Kesilen Vergi</td>
                 <td className="p-4 text-right text-rose-400 font-medium">-{formatCurrency(calculation.standartGelirVergisi)}</td>
                 <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">
                   -{formatCurrency(calculation.indirimliGelirVergisi)}
                 </td>
               </tr>
-              <tr className="bg-[#18243A] font-black text-[#F8FAFC] border-t border-indigo-500/30">
+              <tr className="bg-surface-hover font-black text-[#F8FAFC] border-t border-indigo-500/30">
                 <td className="p-4 text-sm uppercase">NET MAAŞA YANSIYAN FARK</td>
                 <td className="p-4 text-indigo-300 font-mono text-[10px] uppercase">
                   AYLIK TASARRUF
                 </td>
-                <td className="p-4 text-right text-slate-500 italic">Baz Alınan</td>
+                <td className="p-4 text-right text-fg-5 italic">Baz Alınan</td>
                 <td className="p-4 text-right text-sm text-emerald-400 bg-emerald-500/10 shadow-inner">
                   +{formatCurrency(calculation.aylikNetKazanc)} / ay
                 </td>
@@ -368,7 +368,7 @@ export default function VergiIndirimiPage() {
       </div>
 
       {/* BAŞVURU REHBERİ */}
-      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">
+      <div className="bg-surface-raised rounded-xl border border-line p-6 shadow-md">
         <h3 className="text-xs font-black text-[#F8FAFC] uppercase tracking-widest mb-5 flex items-center gap-2.5">
           <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
             <ShieldCheck size={16} />
@@ -377,19 +377,19 @@ export default function VergiIndirimiPage() {
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] space-y-2 group hover:border-indigo-500/30 transition-colors">
+          <div className="p-4 bg-surface rounded-lg border border-line space-y-2 group hover:border-indigo-500/30 transition-colors">
             <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block">1. Başvuru Makamı</span>
             <p className="text-xs text-[#CBD5E1] leading-relaxed font-medium">
               İşyerinizin bağlı olduğu Vergi Dairesi Başkanlığına veya e-Devlet İnteraktif Vergi Dairesi üzerinden müracaat edilir.
             </p>
           </div>
-          <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] space-y-2 group hover:border-indigo-500/30 transition-colors">
+          <div className="p-4 bg-surface rounded-lg border border-line space-y-2 group hover:border-indigo-500/30 transition-colors">
             <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block">2. Gerekli Evraklar</span>
             <p className="text-xs text-[#CBD5E1] leading-relaxed font-medium">
               İşyerinden alınmış çalışma belgesi, geçerli Erişkin Sağlık Kurulu Raporu ve dilekçe gerekmektedir.
             </p>
           </div>
-          <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] space-y-2 group hover:border-indigo-500/30 transition-colors">
+          <div className="p-4 bg-surface rounded-lg border border-line space-y-2 group hover:border-indigo-500/30 transition-colors">
             <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block">3. Emekliliğe Etkisi</span>
             <p className="text-xs text-[#CBD5E1] leading-relaxed font-medium">
               01.10.2008 öncesi 4A&apos;lılar için vergi indirim belgesi almak, <strong>erken emeklilik hakkı için yasal bir ön şarttır</strong>.

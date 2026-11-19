@@ -63,10 +63,10 @@ export default function EvdeBakimPage() {
     <div className="space-y-6">
       
       {/* Üst Başlık & Mevzuat Dayanağı */}
-      <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#1E293B] pb-5 mb-6">
+      <div className="bg-surface-raised rounded-xl border border-line p-6 shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-5 mb-6">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-lg bg-[#18243A] text-indigo-400 flex items-center justify-center shadow-inner border border-[#1E293B]">
+            <div className="w-12 h-12 rounded-lg bg-surface-hover text-indigo-400 flex items-center justify-center shadow-inner border border-line">
               <Home className="w-7 h-7" />
             </div>
             <div>
@@ -74,15 +74,15 @@ export default function EvdeBakimPage() {
                 Evde Bakım Maaşı Gelir Testi (2026)
               </h1>
               <div className="flex items-center gap-2 mt-0.5">
-                <Info size={12} className="text-slate-500" />
-                <span className="text-xs text-slate-400 font-medium">
+                <Info size={12} className="text-fg-5" />
+                <span className="text-xs text-fg-4 font-medium">
                   2828 Sayılı Kanun Ek 7. Madde Standardı
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
+          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-surface text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
             2026 SINIRI: {formatCurrency(kisiBasiGelirSiniri)}
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function EvdeBakimPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
           <div className="space-y-2">
-            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+            <label className="block text-[11px] font-black text-fg-4 uppercase tracking-widest">
               Hanedeki Kişi Sayısı
             </label>
             <div className="relative">
@@ -101,15 +101,15 @@ export default function EvdeBakimPage() {
                 max="20"
                 value={householdSize || ''}
                 onChange={(e) => setHouseholdSize(Math.max(1, parseInt(e.target.value, 10) || 1))}
-                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full px-3 py-2 bg-surface border border-line rounded-md text-fg text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-[10px] uppercase tracking-tighter">KİŞİ</span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-5 font-bold text-[10px] uppercase tracking-tighter">KİŞİ</span>
             </div>
-            <span className="text-[10px] text-slate-500 italic block">İkameti aynı olan herkes</span>
+            <span className="text-[10px] text-fg-5 italic block">İkameti aynı olan herkes</span>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest">
+            <label className="block text-[11px] font-black text-fg-4 uppercase tracking-widest">
               Aylık Net Toplam Gelir
             </label>
             <div className="relative">
@@ -120,50 +120,50 @@ export default function EvdeBakimPage() {
                 step="500"
                 value={totalIncome || ''}
                 onChange={(e) => setTotalIncome(Math.max(0, parseInt(e.target.value, 10) || 0))}
-                className="w-full px-3 py-2 bg-[#0B1220] border border-[#1E293B] rounded-md text-white text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
+                className="w-full px-3 py-2 bg-surface border border-line rounded-md text-fg text-sm font-bold outline-hidden focus:ring-1 focus:ring-indigo-500 transition-all"
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-[10px] uppercase">TL</span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-5 font-bold text-[10px] uppercase">TL</span>
             </div>
-            <span className="text-[10px] text-slate-500 italic block">Maaş, kira, ticari gelir toplamı</span>
+            <span className="text-[10px] text-fg-5 italic block">Maaş, kira, ticari gelir toplamı</span>
           </div>
 
         </div>
 
         {/* Sağlık ve Rapor Şartları */}
-        <div className="mt-6 pt-6 border-t border-[#1E293B] space-y-3">
-          <label className="flex items-start gap-4 cursor-pointer select-none p-4 rounded-lg bg-[#0B1220] border border-[#1E293B] hover:bg-[#18243A]/50 transition-all group">
+        <div className="mt-6 pt-6 border-t border-line space-y-3">
+          <label className="flex items-start gap-4 cursor-pointer select-none p-4 rounded-lg bg-surface border border-line hover:bg-surface-hover/50 transition-all group">
             <div className="mt-1">
               <input
                 type="checkbox"
                 checked={isTamBagimli}
                 onChange={(e) => setIsTamBagimli(e.target.checked)}
-                className="w-4 h-4 rounded-sm text-indigo-500 focus:ring-indigo-500 border-[#1E293B] bg-[#111B2E]"
+                className="w-4 h-4 rounded-sm text-indigo-500 focus:ring-indigo-500 border-line bg-surface-raised"
               />
             </div>
             <div className="space-y-1">
               <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 transition-colors">
                 Raporunuzda &quot;Tam Bağımlı&quot; İbaresi Var mı?
               </span>
-              <span className="text-[11px] text-slate-500 leading-relaxed block">
+              <span className="text-[11px] text-fg-5 leading-relaxed block">
                 2019 öncesi raporlarda &quot;Ağır Engelli: EVET&quot; ibaresi olması şarttır.
               </span>
             </div>
           </label>
 
-          <label className="flex items-start gap-4 cursor-pointer select-none p-4 rounded-lg bg-[#0B1220] border border-[#1E293B] hover:bg-[#18243A]/50 transition-all group">
+          <label className="flex items-start gap-4 cursor-pointer select-none p-4 rounded-lg bg-surface border border-line hover:bg-surface-hover/50 transition-all group">
             <div className="mt-1">
               <input
                 type="checkbox"
                 checked={hasReport}
                 onChange={(e) => setHasReport(e.target.checked)}
-                className="w-4 h-4 rounded-sm text-indigo-500 focus:ring-indigo-500 border-[#1E293B] bg-[#111B2E]"
+                className="w-4 h-4 rounded-sm text-indigo-500 focus:ring-indigo-500 border-line bg-surface-raised"
               />
             </div>
             <div className="space-y-1">
               <span className="text-xs font-bold text-[#F8FAFC] block uppercase tracking-wide group-hover:text-indigo-400 transition-colors">
                 Rapor e-Rapor Sisteminde Kayıtlı mı?
               </span>
-              <span className="text-[11px] text-slate-500 leading-relaxed block">
+              <span className="text-[11px] text-fg-5 leading-relaxed block">
                 Sağlık Bakanlığı veri tabanında teyit edilebilir geçerli rapor durumu.
               </span>
             </div>
@@ -232,32 +232,32 @@ export default function EvdeBakimPage() {
             </div>
 
             {/* İstatistikler */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-[#1E293B]">
-              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Kişi Başı Gelir</span>
-                <div className="text-xl font-black text-white">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-line">
+              <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
+                <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Kişi Başı Gelir</span>
+                <div className="text-xl font-black text-fg">
                   {formatCurrency(calculation.kisiBasiDusenGelir)}
                 </div>
               </div>
 
-              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Yasal Sınır</span>
+              <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
+                <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Yasal Sınır</span>
                 <div className="text-xl font-black text-indigo-400">
                   {formatCurrency(calculation.kisiBasiGelirSiniri)}
                 </div>
               </div>
 
-              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Kalan Limit</span>
+              <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
+                <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Kalan Limit</span>
                 <div className={`text-xl font-black ${calculation.fark >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {calculation.fark >= 0 ? '+' + formatCurrency(calculation.fark) : formatCurrency(calculation.fark)}
                 </div>
               </div>
 
-              <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Bakım Aylığı</span>
+              <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
+                <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Bakım Aylığı</span>
                 <div className="text-xl font-black text-indigo-300">
-                  {formatCurrency(calculation.aylikTutar)} <span className="text-[10px] text-slate-500">/ AY</span>
+                  {formatCurrency(calculation.aylikTutar)} <span className="text-[10px] text-fg-5">/ AY</span>
                 </div>
               </div>
             </div>
@@ -269,7 +269,7 @@ export default function EvdeBakimPage() {
       {/* BAŞVURU ŞARTLARI VE KİMLER BAKICI OLABİLİR? */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         
-        <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
+        <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
           <h3 className="text-xs font-black text-[#F8FAFC] uppercase tracking-widest mb-4 flex items-center gap-2.5">
             <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
               <Building size={14} />
@@ -284,7 +284,7 @@ export default function EvdeBakimPage() {
           </ul>
         </div>
 
-        <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
+        <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
           <h3 className="text-xs font-black text-[#F8FAFC] uppercase tracking-widest mb-4 flex items-center gap-2.5">
             <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-400">
               <ShieldAlert size={14} />

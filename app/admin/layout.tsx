@@ -33,7 +33,7 @@ export default function AdminLayout({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0B1220] flex items-center justify-center">
+      <div className="min-h-screen bg-surface flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
       </div>
     );
@@ -44,17 +44,17 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-[#0B1220]">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-surface">
       {/* Mobile Header Bar */}
-      <div className="lg:hidden bg-[#111B2E] border-b border-[#1E293B] p-4 flex flex-col gap-3">
+      <div className="lg:hidden bg-surface-raised border-b border-line p-4 flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-white font-bold text-xs uppercase tracking-widest">
+          <div className="flex items-center gap-2 text-fg font-bold text-xs uppercase tracking-widest">
             <ShieldCheck size={18} className="text-indigo-400" />
             <span>ACP Konsolu</span>
           </div>
           <Link
             href="/"
-            className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-white font-bold"
+            className="flex items-center gap-1 text-[11px] text-fg-4 hover:text-fg font-bold"
           >
             <ArrowLeft size={14} /> Siteye Dön
           </Link>
@@ -71,7 +71,7 @@ export default function AdminLayout({
                   "flex items-center gap-1.5 px-3 py-2 rounded-md text-[10px] font-bold uppercase tracking-wider whitespace-nowrap transition-all border shrink-0",
                   isActive
                     ? "bg-indigo-600 text-white border-indigo-600"
-                    : "text-slate-400 bg-[#18243A] border-[#1E293B]"
+                    : "text-fg-4 bg-surface-hover border-line"
                 )}
               >
                 <Icon size={14} />
@@ -83,13 +83,13 @@ export default function AdminLayout({
       </div>
 
       {/* Admin Sidebar (Desktop) */}
-      <aside className="hidden lg:flex w-72 flex-col bg-[#111B2E] border-r border-[#1E293B] sticky top-0 h-screen overflow-y-auto">
-        <div className="p-6 border-b border-[#1E293B] bg-[#18243A]/30">
+      <aside className="hidden lg:flex w-72 flex-col bg-surface-raised border-r border-line sticky top-0 h-screen overflow-y-auto">
+        <div className="p-6 border-b border-line bg-surface-hover/30">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-md bg-indigo-600 text-white shadow-lg shadow-indigo-950/20">
               <ShieldCheck size={20} />
             </div>
-            <h2 className="text-sm font-bold text-white uppercase tracking-[0.2em]">ACP Konsolu</h2>
+            <h2 className="text-sm font-bold text-fg uppercase tracking-[0.2em]">ACP Konsolu</h2>
           </div>
         </div>
 
@@ -105,20 +105,20 @@ export default function AdminLayout({
                   "flex items-center gap-3 px-4 py-3 rounded-md text-xs font-bold transition-all group min-h-[44px]",
                   isActive
                     ? "bg-indigo-600 text-white shadow-md shadow-indigo-950/40"
-                    : "text-slate-400 hover:text-white hover:bg-[#18243A]"
+                    : "text-fg-4 hover:text-fg hover:bg-surface-hover"
                 )}
               >
-                <Icon size={18} className={cn(isActive ? "text-white" : "text-slate-500 group-hover:text-indigo-400")} />
+                <Icon size={18} className={cn(isActive ? "text-fg" : "text-fg-5 group-hover:text-indigo-400")} />
                 <span className="uppercase tracking-widest text-[10px]">{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-[#1E293B] space-y-2">
+        <div className="p-4 border-t border-line space-y-2">
           <Link
             href="/"
-            className="flex items-center gap-3 px-4 py-3 rounded-md text-[10px] font-bold text-slate-400 hover:text-white hover:bg-[#18243A] uppercase tracking-widest transition-all min-h-[44px]"
+            className="flex items-center gap-3 px-4 py-3 rounded-md text-[10px] font-bold text-fg-4 hover:text-fg hover:bg-surface-hover uppercase tracking-widest transition-all min-h-[44px]"
           >
             <ArrowLeft size={16} />
             <span>Siteye Geri Dön</span>

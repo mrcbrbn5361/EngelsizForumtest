@@ -131,12 +131,12 @@ function DiscussionsContent() {
   return (
     <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
-        <Link href="/" className="hover:text-white transition-colors">
+      <div className="flex items-center gap-2 text-xs text-fg-4 font-mono">
+        <Link href="/" className="hover:text-fg transition-colors">
           Forum
         </Link>
         <span>/</span>
-        <span className="text-white font-semibold">Tartışmalar</span>
+        <span className="text-fg font-semibold">Tartışmalar</span>
       </div>
 
       {/* Main Grid */}
@@ -145,12 +145,12 @@ function DiscussionsContent() {
         <div className="lg:col-span-8 space-y-6">
           
           {/* Header Section */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#1E293B]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-line">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-heading">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-fg font-heading">
                 Topluluk Tartışmaları
               </h1>
-              <p className="text-sm text-slate-300 mt-1 font-normal">
+              <p className="text-sm text-fg-3 mt-1 font-normal">
                 Engelli hakları, ÖTV muafiyeti, Balthazard ve mevzuat deneyim paylaşımları.
               </p>
             </div>
@@ -164,7 +164,7 @@ function DiscussionsContent() {
           </div>
 
           {/* Filter Toolbar */}
-          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between pb-3 border-b border-[#1E293B]">
+          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between pb-3 border-b border-line">
             <div className="flex items-center gap-1.5 overflow-x-auto text-xs">
               {[
                 { id: 'all', label: 'Tümü' },
@@ -177,7 +177,7 @@ function DiscussionsContent() {
                   className={`px-3 py-1.5 rounded-md font-medium transition-colors cursor-pointer whitespace-nowrap ${
                     activeTab === tab.id
                       ? 'bg-indigo-600 text-white'
-                      : 'text-slate-300 hover:text-white hover:bg-[#18243A] bg-[#111B2E] border border-[#1E293B]'
+                      : 'text-fg-3 hover:text-white hover:bg-surface-hover bg-surface-raised border border-line'
                   }`}
                 >
                   {tab.label}
@@ -189,7 +189,7 @@ function DiscussionsContent() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="h-9 bg-[#111B2E] border border-[#1E293B] rounded-md px-2.5 text-xs font-medium text-slate-200 focus:outline-none focus:border-indigo-400 cursor-pointer"
+                className="h-9 bg-surface-raised border border-line rounded-md px-2.5 text-xs font-medium text-fg-2 focus:outline-none focus:border-indigo-400 cursor-pointer"
                 aria-label="Kategori filtresi"
               >
                 <option value="">Tüm Kategoriler</option>
@@ -199,13 +199,13 @@ function DiscussionsContent() {
               </select>
 
               <div className="relative flex-1 sm:w-48">
-                <Search size={14} className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
+                <Search size={14} className="absolute left-2.5 top-2.5 text-fg-4 pointer-events-none" />
                 <input
                   type="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Başlıklarda ara..."
-                  className="w-full h-9 pl-8 pr-2.5 text-xs bg-[#111B2E] border border-[#1E293B] rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-400"
+                  className="w-full h-9 pl-8 pr-2.5 text-xs bg-surface-raised border border-line rounded-md text-fg-1 placeholder-fg-4 focus:outline-none focus:border-indigo-400"
                 />
               </div>
             </div>
@@ -213,7 +213,7 @@ function DiscussionsContent() {
 
           {/* Topics List */}
           {loading ? (
-            <div className="py-12 text-center text-sm font-medium text-slate-400">
+            <div className="py-12 text-center text-sm font-medium text-fg-4">
               Tartışmalar yükleniyor...
             </div>
           ) : filteredTopics.length > 0 ? (
@@ -226,7 +226,7 @@ function DiscussionsContent() {
                 <div className="pt-6 text-center">
                   <button
                     onClick={() => fetchTopics(true)}
-                    className="px-4 py-2 rounded-md bg-[#111B2E] border border-[#1E293B] hover:bg-[#18243A] text-xs font-semibold text-slate-200 transition-colors cursor-pointer"
+                    className="px-4 py-2 rounded-md bg-surface-raised border border-line hover:bg-surface-hover text-xs font-semibold text-fg-2 transition-colors cursor-pointer"
                   >
                     Daha Fazla Göster
                   </button>
@@ -234,8 +234,8 @@ function DiscussionsContent() {
               )}
             </div>
           ) : (
-            <div className="py-16 text-center text-slate-400 space-y-2">
-              <MessageSquare size={28} className="mx-auto text-slate-500" />
+            <div className="py-16 text-center text-fg-4 space-y-2">
+              <MessageSquare size={28} className="mx-auto text-fg-5" />
               <div className="text-sm font-medium">Bu kriterlerde konu bulunamadı.</div>
             </div>
           )}
@@ -253,7 +253,7 @@ function DiscussionsContent() {
 
 export default function DiscussionsPage() {
   return (
-    <Suspense fallback={<div className="py-12 text-center text-sm text-slate-300 font-bold">Yükleniyor...</div>}>
+    <Suspense fallback={<div className="py-12 text-center text-sm text-fg-3 font-bold">Yükleniyor...</div>}>
       <DiscussionsContent />
     </Suspense>
   );
