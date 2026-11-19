@@ -1030,22 +1030,24 @@ export async function getUserConversationsAction() {
       return { success: false, error: convErr.message };
     }
 
-    const processed = (convData || []).map(conv => {
-      const otherMember = conv.members?.find((m: any) => m?.user_id !== user.id || m?.user?.id !== user.id);
-      const messagesList = conv.messages || [];
-      const lastMsg = messagesList.length > 0
-        ? [...messagesList].sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
-        : null;
+    const processed = (convData || [])
+      .filter(conv => (conv.messages || []).length > 0)
+      .map(conv => {
+        const otherMember = conv.members?.find((m: any) => m?.user_id !== user.id);
+        const messagesList = conv.messages || [];
+        const lastMsg = messagesList.length > 0
+          ? [...messagesList].sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
+          : null;
 
-      return {
-        id: conv.id,
-        created_at: conv.created_at,
-        updated_at: conv.updated_at,
-        other_user: otherMember?.user || null,
-        last_message: lastMsg,
-        unread_count: 0
-      };
-    });
+        return {
+          id: conv.id,
+          created_at: conv.created_at,
+          updated_at: conv.updated_at,
+          other_user: otherMember?.user || null,
+          last_message: lastMsg,
+          unread_count: 0
+        };
+      });
 
     return { success: true, conversations: processed };
   } catch (err: any) {
