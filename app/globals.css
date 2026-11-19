@@ -9,6 +9,17 @@
   --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
+/* Reading font chosen in the accessibility menu (data-reading-font on <html>). */
+html[data-reading-font="lexend"] {
+  --font-sans: var(--font-lexend), var(--font-atkinson), "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-lexend), var(--font-jakarta), "Segoe UI", Roboto, sans-serif;
+}
+
+html[data-reading-font="opendyslexic"] {
+  --font-sans: "OpenDyslexic", var(--font-atkinson), "Segoe UI", Roboto, sans-serif;
+  --font-heading: "OpenDyslexic", var(--font-jakarta), "Segoe UI", Roboto, sans-serif;
+}
+
 /* Semantic theme tokens: components use bg-surface, text-fg, border-line ... instead of fixed hex values.
    fg is the strongest text colour; fg-1 … fg-6 get progressively dimmer. */
 @theme inline {

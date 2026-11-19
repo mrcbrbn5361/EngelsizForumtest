@@ -96,6 +96,7 @@ export function DisabilityQuickBar() {
           largeCursor: true,
           audioGuide: true,
           dyslexicFont: false,
+          readingFont: 'default',
           readingRuler: false,
           reducedMotion: false,
         });
@@ -111,6 +112,7 @@ export function DisabilityQuickBar() {
       case 'neuro':
         updateSettings({
           dyslexicFont: true,
+          readingFont: 'lexend',
           readingRuler: true,
           fontSize: 'lg',
           highContrast: false,

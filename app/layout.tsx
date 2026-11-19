@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
-import { Plus_Jakarta_Sans, Atkinson_Hyperlegible_Next, JetBrains_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Atkinson_Hyperlegible_Next, JetBrains_Mono, Lexend } from 'next/font/google';
+import '@fontsource/opendyslexic/400.css';
+import '@fontsource/opendyslexic/700.css';
 import Script from 'next/script';
 import './globals.css';
 import { WebMCPProvider } from '@/components/providers/webmcp-provider';
@@ -32,6 +34,13 @@ const bodyFont = Atkinson_Hyperlegible_Next({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-jetbrains',
+  display: 'swap',
+  preload: false,
+});
+
+const lexendFont = Lexend({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-lexend',
   display: 'swap',
   preload: false,
 });
@@ -291,14 +300,15 @@ const jsonLd = {
 };
 
 /**
- * Applies the saved theme (data-theme on <html>) before first paint so light-theme
- * visitors never see a flash of the dark theme. Mirrors resolveTheme() in lib/theme.ts.
+ * Applies the saved theme and reading font (data-theme / data-reading-font on <html>)
+ * before first paint so visitors never see a flash of the default look.
+ * Mirrors resolveTheme() and resolveReadingFont() in lib/theme.ts.
  */
-const THEME_BOOTSTRAP_SCRIPT = `(function(){try{var t='dark';var s=localStorage.getItem('engelsiz_a11y_prefs');if(s){var p=JSON.parse(s);if(p&&p.theme)t=p.theme;}if(t==='system'){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}if(t!=='light'&&t!=='sepia')t='dark';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();`;
+const THEME_BOOTSTRAP_SCRIPT = `(function(){var d=document.documentElement;try{var t='dark',f='default';var s=localStorage.getItem('engelsiz_a11y_prefs');if(s){var p=JSON.parse(s);if(p&&p.theme)t=p.theme;if(p&&(p.readingFont==='lexend'||p.readingFont==='opendyslexic'))f=p.readingFont;}if(t==='system'){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}if(t!=='light'&&t!=='sepia')t='dark';d.setAttribute('data-theme',t);d.setAttribute('data-reading-font',f);}catch(e){d.setAttribute('data-theme','dark');}})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" data-theme="dark" className={`h-full ${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+    <html lang="tr" data-theme="dark" className={`h-full ${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} ${lexendFont.variable}`} suppressHydrationWarning>
       <head>
         {/* Google tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-XBFZ4BS7GJ" />
