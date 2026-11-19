@@ -5,16 +5,10 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { SiteLayout } from '@/components/layout/site-layout';
 import { Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { formatAuthError } from '@/lib/auth-utils';
+import { formatAuthError, sanitizeRedirectPath as sanitizeRedirectUrl } from '@/lib/auth-utils';
 
-function sanitizeRedirectUrl(url: string | null): string {
-  if (!url) return '/discussions';
-  // Allow internal relative paths only (must start with / and not //)
-  if (url.startsWith('/') && !url.startsWith('//') && !url.includes('javascript:')) {
-    return url;
-  }
-  return '/discussions';
-}
+const CROSS_DEVICE_RECOVERY_ERROR =
+  'Şifre sıfırlama bağlantısı doğrulanamadı. Bağlantıyı, sıfırlamayı istediğiniz tarayıcıda açın ya da yeni bir bağlantı isteyin.';
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -55,6 +49,14 @@ export default function AuthCallbackPage() {
             const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
             if (exchangeError) {
               console.error('Code exchange error:', exchangeError);
+              if (urlParams.get('type') === 'recovery') {
+                if (mounted) {
+                  setStatus('error');
+                  setMessage(CROSS_DEVICE_RECOVERY_ERROR);
+                }
+                router.replace(`/auth/forgot-password?error=${encodeURIComponent(CROSS_DEVICE_RECOVERY_ERROR)}`);
+                return;
+              }
             }
           }
         }

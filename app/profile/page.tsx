@@ -9,6 +9,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
 import { updateProfileServerAction } from '@/app/actions';
 import { UserAvatar } from '@/components/ui/user-avatar';
+import { ChangePasswordCard } from '@/components/profile/change-password-card';
 import { UserRoleBadge } from '@/components/ui/user-badge';
 import { 
   User, 
@@ -496,6 +497,8 @@ export default function ProfileManagementPage() {
               </Button>
             </div>
           </form>
+
+          {user && <ChangePasswordCard user={user} />}
 
         </div>
 

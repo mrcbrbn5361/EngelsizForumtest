@@ -6,7 +6,7 @@ import { Lock, Eye, EyeOff, AlertCircle, CheckCircle2, Loader2, ArrowLeft, Shiel
 import { motion } from 'motion/react';
 import { SiteLayout } from '@/components/layout/site-layout';
 import Link from 'next/link';
-import { formatAuthError } from '@/lib/auth-utils';
+import { formatAuthError, validatePasswordStrength } from '@/lib/auth-utils';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -45,8 +45,7 @@ export default function ResetPasswordPage() {
     };
   }, []);
 
-  const hasLength = password.length >= 8;
-  const hasNumberOrSpecial = /[0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+  const { hasLength, hasNumberOrSpecial } = validatePasswordStrength(password);
   const isMatching = password.length > 0 && password === confirmPassword;
 
   const handleReset = async (e: React.FormEvent) => {

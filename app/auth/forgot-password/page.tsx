@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Mail, ArrowLeft, AlertCircle, CheckCircle2, Loader2, KeyRound } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -13,6 +13,11 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [sentCount, setSentCount] = useState(0);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  useEffect(() => {
+    const linkError = new URLSearchParams(window.location.search).get('error');
+    if (linkError) setMessage({ type: 'error', text: linkError });
+  }, []);
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();

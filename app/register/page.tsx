@@ -1,5 +1,6 @@
 'use client';
 
+import { PASSWORD_MIN_LENGTH, validatePasswordStrength } from '@/lib/auth-utils';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -37,6 +38,10 @@ export default function RegisterPage() {
       const cleanUsername = username.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
       if (cleanUsername.length < 3) {
         throw new Error('Kullanıcı adı en az 3 karakter olmalıdır.');
+      }
+      const passwordCheck = validatePasswordStrength(password);
+      if (!passwordCheck.isValid) {
+        throw new Error(passwordCheck.errors.join(' '));
       }
 
       const { error: signUpError } = await supabase.auth.signUp({ 
@@ -150,7 +155,7 @@ export default function RegisterPage() {
                 htmlFor="reg-password" 
                 className="block text-xs font-semibold text-fg-3 uppercase tracking-wider"
               >
-                Şifre (En az 6 karakter) <span className="text-rose-400 light:text-rose-700">*</span>
+                Şifre (en az {PASSWORD_MIN_LENGTH} karakter, bir rakam veya özel karakter) <span className="text-rose-400 light:text-rose-700">*</span>
               </label>
               <div className="relative">
                 <input 
@@ -161,7 +166,7 @@ export default function RegisterPage() {
                   className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-surface-hover border border-line rounded-md text-fg placeholder-fg-5 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700 transition-colors"
                   placeholder="••••••••"
                   autoComplete="new-password"
-                  minLength={6}
+                  minLength={PASSWORD_MIN_LENGTH}
                   required
                 />
                 <Lock size={16} className="absolute left-3.5 top-3.5 text-fg-4 pointer-events-none" />
