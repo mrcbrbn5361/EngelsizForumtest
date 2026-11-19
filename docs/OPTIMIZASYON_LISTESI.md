@@ -50,7 +50,7 @@ Durum: ⬜ karar bekliyor · ✅ yapıldı · ⏸ ileride kullanılacak, şimdil
 
 ## C. Kullanılmayan paketler (`package.json`)
 
-Silmeden önce her biri `next build` ile doğrulanacak.
+✅ 10 paket kaldırıldı; `package-lock.json` ve `bun.lock` birlikte güncellendi, `next build` + testler geçti. `voice-input.tsx` tarayıcı konuşma tanıma tipini `@types/react-speech-recognition` üzerinden dolaylı alıyordu; diğer iki dosyadaki gibi `window as any` kullanacak şekilde düzeltildi.
 
 | Paket | Not |
 |-------|-----|

@@ -23,7 +23,7 @@ export function VoiceInput({ onTranscript, lang = 'tr-TR', label = 'Sesle Yaz' }
   const timerRef = React.useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setIsSupported(false);
       return;
