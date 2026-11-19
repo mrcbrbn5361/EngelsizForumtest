@@ -95,7 +95,7 @@ export function UserManagementView() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-surface-raised border border-line rounded-md shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-md bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+          <div className="p-2.5 rounded-md bg-indigo-600/20 text-indigo-400 light:text-indigo-700 border border-indigo-500/30">
             <Users size={20} />
           </div>
           <div>
@@ -109,7 +109,7 @@ export function UserManagementView() {
           disabled={loading}
           className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-surface-hover hover:bg-line text-fg-2 border border-line text-xs font-bold transition-all cursor-pointer min-h-[38px] self-start sm:self-auto"
         >
-          <RefreshCw size={14} className={loading ? 'animate-spin text-indigo-400' : ''} />
+          <RefreshCw size={14} className={loading ? 'animate-spin text-indigo-400 light:text-indigo-700' : ''} />
           <span>Yenile</span>
         </button>
       </div>
@@ -160,16 +160,16 @@ export function UserManagementView() {
                     <td className="px-5 py-4">
                       <div className="font-bold text-fg flex items-center gap-2">
                         <span>{p.username || p.full_name || 'isimsiz'}</span>
-                        {p.is_verified && <CheckCircle2 size={13} className="text-indigo-400 shrink-0" />}
+                        {p.is_verified && <CheckCircle2 size={13} className="text-indigo-400 light:text-indigo-700 shrink-0" />}
                       </div>
                       <div className="text-[10px] text-fg-5 font-mono mt-0.5">{p.id}</div>
                     </td>
                     <td className="px-5 py-4">
                       <span className={`px-2.5 py-1 rounded text-[10px] font-mono uppercase font-bold border ${
                         p.role === 'admin'
-                          ? 'bg-amber-950/40 text-amber-300 border-amber-800/40'
+                          ? 'bg-amber-950/40 light:bg-amber-50/40 text-amber-300 light:text-amber-800 border-amber-800/40'
                           : p.role === 'moderator'
-                          ? 'bg-indigo-950/40 text-indigo-300 border-indigo-800/40'
+                          ? 'bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-300 light:text-indigo-700 border-indigo-800/40'
                           : 'bg-slate-900/40 text-fg-4 border-slate-800/40'
                       }`}>
                         {p.role || 'user'}
@@ -183,7 +183,7 @@ export function UserManagementView() {
                         onClick={() => handleToggleVerify(p.id, !!p.is_verified)}
                         className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
                           p.is_verified
-                            ? 'bg-indigo-950/50 border-indigo-600 text-indigo-300 hover:bg-indigo-900/50'
+                            ? 'bg-indigo-950/50 light:bg-indigo-50/50 border-indigo-600 text-indigo-300 light:text-indigo-700 hover:bg-indigo-900/50 light:hover:bg-indigo-100/50'
                             : 'bg-surface border-line text-fg-5 hover:text-white'
                         }`}
                       >

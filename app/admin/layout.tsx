@@ -49,7 +49,7 @@ export default function AdminLayout({
       <div className="lg:hidden bg-surface-raised border-b border-line p-4 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-fg font-bold text-xs uppercase tracking-widest">
-            <ShieldCheck size={18} className="text-indigo-400" />
+            <ShieldCheck size={18} className="text-indigo-400 light:text-indigo-700" />
             <span>ACP Konsolu</span>
           </div>
           <Link
@@ -108,7 +108,7 @@ export default function AdminLayout({
                     : "text-fg-4 hover:text-fg hover:bg-surface-hover"
                 )}
               >
-                <Icon size={18} className={cn(isActive ? "text-fg" : "text-fg-5 group-hover:text-indigo-400")} />
+                <Icon size={18} className={cn(isActive ? "text-fg" : "text-fg-5 group-hover:text-indigo-400 light:group-hover:text-indigo-700")} />
                 <span className="uppercase tracking-widest text-[10px]">{item.label}</span>
               </Link>
             );

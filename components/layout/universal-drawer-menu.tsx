@@ -110,7 +110,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 Navigasyon &amp; Yetki Menüsü
               </h2>
               <div className="text-[11px] font-mono text-fg-4">
-                Rol: <span className="text-indigo-400 font-semibold uppercase">{isLoggedIn ? role : 'Ziyaretçi'}</span>
+                Rol: <span className="text-indigo-400 light:text-indigo-700 font-semibold uppercase">{isLoggedIn ? role : 'Ziyaretçi'}</span>
               </div>
             </div>
           </div>
@@ -148,11 +148,11 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               href="/"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/' ? 'bg-surface-hover text-indigo-400 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
+                pathname === '/' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Home size={15} className="text-indigo-400" />
+                <Home size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Forum Ana Sayfası</span>
               </span>
               <ChevronRight size={13} className="text-fg-6" />
@@ -162,11 +162,11 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               href="/discussions"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/discussions' ? 'bg-surface-hover text-indigo-400 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
+                pathname === '/discussions' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <MessageSquare size={15} className="text-indigo-400" />
+                <MessageSquare size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Tüm Tartışmalar</span>
               </span>
               <ChevronRight size={13} className="text-fg-6" />
@@ -176,11 +176,11 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               href="/communities"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname?.startsWith('/communities') ? 'bg-surface-hover text-indigo-400 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
+                pathname?.startsWith('/communities') ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Users size={15} className="text-indigo-400" />
+                <Users size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Tanı &amp; Dayanışma Toplulukları</span>
               </span>
               <ChevronRight size={13} className="text-fg-6" />
@@ -197,11 +197,11 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               href="/hesaplama"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama' ? 'bg-surface-hover text-indigo-400 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
+                pathname === '/hesaplama' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Calculator size={15} className="text-indigo-400" />
+                <Calculator size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Tüm Robotlar Dizini</span>
               </span>
               <ChevronRight size={13} className="text-fg-6" />
@@ -211,11 +211,11 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               href="/hesaplama/balthazard"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama/balthazard' ? 'bg-surface-hover text-indigo-400 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
+                pathname === '/hesaplama/balthazard' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Percent size={15} className="text-indigo-400" />
+                <Percent size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Balthazard Oran Robotu</span>
               </span>
               <span className="text-[10px] font-mono text-fg-5">Resmî Ek-2</span>
@@ -225,25 +225,25 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               href="/hesaplama/otv"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama/otv' ? 'bg-surface-hover text-indigo-400 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
+                pathname === '/hesaplama/otv' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Car size={15} className="text-indigo-400" />
+                <Car size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>2026 ÖTV Muafiyetli Araç</span>
               </span>
-              <span className="text-[10px] font-mono text-emerald-400">2.87M ₺</span>
+              <span className="text-[10px] font-mono text-emerald-400 light:text-emerald-700">2.87M ₺</span>
             </Link>
 
             <Link
               href="/hesaplama/erken-emeklilik"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama/erken-emeklilik' ? 'bg-surface-hover text-indigo-400 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
+                pathname === '/hesaplama/erken-emeklilik' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Calendar size={15} className="text-indigo-400" />
+                <Calendar size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Engelli Erken Emeklilik</span>
               </span>
               <span className="text-[10px] font-mono text-fg-5">5510 m.28</span>
@@ -253,11 +253,11 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               href="/hesaplama/vergi-indirimi"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama/vergi-indirimi' ? 'bg-surface-hover text-indigo-400 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
+                pathname === '/hesaplama/vergi-indirimi' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Receipt size={15} className="text-indigo-400" />
+                <Receipt size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Gelir Vergisi İndirimi</span>
               </span>
               <span className="text-[10px] font-mono text-fg-5">GVK 31</span>
@@ -267,11 +267,11 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               href="/hesaplama/engelli-ayligi"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama/engelli-ayligi' ? 'bg-surface-hover text-indigo-400 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
+                pathname === '/hesaplama/engelli-ayligi' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <HeartHandshake size={15} className="text-indigo-400" />
+                <HeartHandshake size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>2022 Engelli Maaşı Kriteri</span>
               </span>
               <span className="text-[10px] font-mono text-fg-5">SYDV</span>
@@ -291,7 +291,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-raised hover:text-fg transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <User size={15} className="text-indigo-400" />
+                  <User size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>Kullanıcı Profilim &amp; Konularım</span>
                 </span>
                 <ChevronRight size={13} className="text-fg-6" />
@@ -303,7 +303,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-raised hover:text-fg transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <MessageSquare size={15} className="text-indigo-400" />
+                  <MessageSquare size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>Özel Mesajlarım (DM)</span>
                 </span>
                 <ChevronRight size={13} className="text-fg-6" />
@@ -315,7 +315,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-raised hover:text-fg transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <SlidersHorizontal size={15} className="text-indigo-400" />
+                  <SlidersHorizontal size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>Profil &amp; Erişilebilirlik Ayarları</span>
                 </span>
                 <ChevronRight size={13} className="text-fg-6" />
@@ -325,14 +325,14 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 href="/developers"
                 onClick={onClose}
                 className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                  pathname === '/developers' ? 'bg-surface-hover text-indigo-400 border border-line' : 'text-indigo-300 hover:bg-surface-raised hover:text-fg'
+                  pathname === '/developers' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-indigo-300 light:text-indigo-700 hover:bg-surface-raised hover:text-fg'
                 }`}
               >
                 <span className="flex items-center gap-2.5">
-                  <BookOpen size={15} className="text-indigo-400" />
+                  <BookOpen size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>Geliştirici Portalı (OAuth &amp; API)</span>
                 </span>
-                <span className="text-[10px] font-mono uppercase bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-mono uppercase bg-indigo-950/60 light:bg-indigo-50/60 text-indigo-300 light:text-indigo-700 border border-indigo-800/60 px-1.5 py-0.5 rounded">
                   Dev Portal
                 </span>
               </Link>
@@ -342,7 +342,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
           {/* 4. Yetkili / Moderatör / Admin Paneli (Sadece Yetkili Rollere) */}
           {isMod && (
             <div className="space-y-1.5 pt-2 border-t border-line">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-amber-400 px-2 pb-1 flex items-center gap-1.5 font-heading">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-amber-400 light:text-amber-800 px-2 pb-1 flex items-center gap-1.5 font-heading">
                 <ShieldCheck size={14} />
                 <span>Yönetim Yetkileri ({role.toUpperCase()})</span>
               </div>
@@ -350,10 +350,10 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               <Link
                 href="/admin"
                 onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-bold text-amber-300 bg-amber-950/40 border border-amber-800/60 hover:bg-amber-900/60 transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded-md font-bold text-amber-300 light:text-amber-800 bg-amber-950/40 light:bg-amber-50/40 border border-amber-800/60 hover:bg-amber-900/60 light:hover:bg-amber-100/60 transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <Shield size={15} className="text-amber-400" />
+                  <Shield size={15} className="text-amber-400 light:text-amber-800" />
                   <span>Yönetim Kontrol Paneli (ACP)</span>
                 </span>
                 <span className="text-[10px] font-mono uppercase bg-amber-500 text-black px-1.5 py-0.5 rounded font-black">
@@ -367,7 +367,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-raised hover:text-fg transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <Activity size={15} className="text-purple-400" />
+                  <Activity size={15} className="text-purple-400 light:text-purple-700" />
                   <span>Canlı Ziyaretçi İstatistikleri</span>
                 </span>
                 <ChevronRight size={13} className="text-fg-6" />
@@ -379,7 +379,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-raised hover:text-fg transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <BookOpen size={15} className="text-indigo-400" />
+                  <BookOpen size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>Geliştirici &amp; WebMCP Ajan API</span>
                 </span>
                 <ChevronRight size={13} className="text-fg-6" />
@@ -388,13 +388,13 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               <Link
                 href="/widgets"
                 onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-indigo-400 hover:bg-surface-raised hover:text-indigo-300 transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-indigo-400 light:text-indigo-700 hover:bg-surface-raised hover:text-indigo-300 light:hover:text-indigo-700 transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <Sparkles size={15} className="text-indigo-400" />
+                  <Sparkles size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>0 TL Erişilebilirlik &amp; WebMCP Widget</span>
                 </span>
-                <span className="text-[10px] font-mono uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">
+                <span className="text-[10px] font-mono uppercase bg-indigo-500/20 text-indigo-300 light:text-indigo-700 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">
                   0 TL
                 </span>
               </Link>
@@ -460,7 +460,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
           <div className="p-3 rounded-md bg-surface-raised border border-line space-y-2">
             <div className="flex items-center justify-between text-[11px] font-bold text-fg">
               <span className="flex items-center gap-1.5">
-                <Sparkles size={13} className="text-amber-400" />
+                <Sparkles size={13} className="text-amber-400 light:text-amber-800" />
                 <span>Proje Destekçileri</span>
               </span>
               <span className="text-[10px] text-fg-4 font-mono">Topluluk</span>
@@ -470,7 +470,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 href="https://yeterly.ai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300 hover:underline flex items-center gap-1"
+                className="text-[11px] font-semibold text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 hover:underline flex items-center gap-1"
               >
                 <span>yeterly.ai</span>
                 <ExternalLink size={10} />
@@ -480,7 +480,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 href="https://goldhost.com.tr"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300 hover:underline flex items-center gap-1"
+                className="text-[11px] font-semibold text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 hover:underline flex items-center gap-1"
               >
                 <span>goldhost.com.tr</span>
                 <ExternalLink size={10} />
@@ -500,7 +500,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               <Link
                 href="/auth/signout"
                 onClick={onClose}
-                className="text-xs font-semibold text-rose-400 hover:text-rose-300 flex items-center gap-1"
+                className="text-xs font-semibold text-rose-400 light:text-rose-700 hover:text-rose-300 light:hover:text-rose-700 flex items-center gap-1"
               >
                 <LogOut size={13} />
                 <span>Çıkış</span>

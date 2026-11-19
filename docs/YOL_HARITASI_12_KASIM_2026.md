@@ -25,7 +25,7 @@ Yeni özellik eklemeden önce mevcut sitenin doğru çalışması gerekiyor.
 ## Faz 1 — Erişilebilirlik ve görünüm
 | # | Madde | Not | Durum |
 |---|-------|-----|-------|
-| 1.1 | Gece / gündüz / göz yormama modu — seçilebilir (S2-6) | `next-themes` zaten kurulu | ⬜ |
+| 1.1 | Gece / gündüz / göz yormama modu — seçilebilir (S2-6) | Yapıldı: Erişilebilirlik menüsünde Gece / Gündüz / Göz yormama / Sistem. Tercih hesaba kaydediliyor, sayfa yüklenirken titreme yok | ✅ |
 | 1.2 | Yüksek kontrast modunu düzenleme (S2-13) | `accessibility-provider.tsx` → `high-contrast` sınıfı | ⬜ |
 | 1.3 | Tema ve yazı fontları farklı (S3-19) | Tutarsız fontların tek sisteme bağlanması | ⬜ |
 | 1.4 | Yazı tipi eklentisi — erişilebilirlik (S3-20) | Ör. disleksi dostu font seçeneği | ⬜ |

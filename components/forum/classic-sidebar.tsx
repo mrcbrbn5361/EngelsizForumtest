@@ -95,8 +95,8 @@ export default function ClassicSidebar() {
             href="/hesaplama/balthazard"
             className="flex items-center justify-between p-2 rounded-md hover:bg-surface-raised transition-colors text-xs text-fg-3 group"
           >
-            <span className="flex items-center gap-2 group-hover:text-indigo-400 font-medium">
-              <Percent size={14} className="text-indigo-400" />
+            <span className="flex items-center gap-2 group-hover:text-indigo-400 light:group-hover:text-indigo-700 font-medium">
+              <Percent size={14} className="text-indigo-400 light:text-indigo-700" />
               <span>Balthazard Robotu</span>
             </span>
             <span className="text-[11px] font-mono text-fg-4">2019/30692</span>
@@ -106,8 +106,8 @@ export default function ClassicSidebar() {
             href="/hesaplama/otv"
             className="flex items-center justify-between p-2 rounded-md hover:bg-surface-raised transition-colors text-xs text-fg-3 group"
           >
-            <span className="flex items-center gap-2 group-hover:text-emerald-400 font-medium">
-              <Car size={14} className="text-emerald-400" />
+            <span className="flex items-center gap-2 group-hover:text-emerald-400 light:group-hover:text-emerald-700 font-medium">
+              <Car size={14} className="text-emerald-400 light:text-emerald-700" />
               <span>2026 ÖTV Muafiyeti</span>
             </span>
             <span className="text-[11px] font-mono text-fg-4">2.87M ₺</span>
@@ -117,8 +117,8 @@ export default function ClassicSidebar() {
             href="/hesaplama/erken-emeklilik"
             className="flex items-center justify-between p-2 rounded-md hover:bg-surface-raised transition-colors text-xs text-fg-3 group"
           >
-            <span className="flex items-center gap-2 group-hover:text-amber-400 font-medium">
-              <FileText size={14} className="text-amber-400" />
+            <span className="flex items-center gap-2 group-hover:text-amber-400 light:group-hover:text-amber-800 font-medium">
+              <FileText size={14} className="text-amber-400 light:text-amber-800" />
               <span>Erken Emeklilik Tablosu</span>
             </span>
             <span className="text-[11px] font-mono text-fg-4">5510 m.28</span>
@@ -130,7 +130,7 @@ export default function ClassicSidebar() {
       <div className="space-y-3 pb-6 border-b border-line">
         <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-fg-3 font-heading">
           <span>Topluluk Durumu</span>
-          <span className="text-xs text-emerald-400 font-mono flex items-center gap-1.5">
+          <span className="text-xs text-emerald-400 light:text-emerald-700 font-mono flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             Canlı
           </span>
@@ -183,10 +183,10 @@ export default function ClassicSidebar() {
                 className="flex items-center justify-between p-1.5 rounded hover:bg-surface-raised transition-colors text-xs"
               >
                 <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 light:bg-indigo-700" />
                   <span className="font-medium text-fg-3">@{usr.username}</span>
                 </div>
-                <span className="text-[11px] font-mono font-semibold text-indigo-400 uppercase">
+                <span className="text-[11px] font-mono font-semibold text-indigo-400 light:text-indigo-700 uppercase">
                   {usr.role}
                 </span>
               </Link>

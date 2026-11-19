@@ -128,7 +128,7 @@ export default function BalthazardPage() {
           
           <div className="pb-4 border-b border-line">
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#F8FAFC] flex items-center gap-2.5">
-              <Percent size={24} className="text-indigo-400" />
+              <Percent size={24} className="text-indigo-400 light:text-indigo-700" />
               <span>Balthazard Oran Birleştirme Robotu</span>
             </h1>
             <p className="text-sm text-[#CBD5E1] mt-1 font-medium">
@@ -165,7 +165,7 @@ export default function BalthazardPage() {
                       value={rate === 0 ? '' : rate}
                       onChange={(e) => updateRate(idx, parseInt(e.target.value) || 0)}
                       placeholder="0"
-                      className="w-full h-10 pl-3.5 pr-8 bg-surface-hover border border-line rounded-md text-base font-mono font-bold text-fg focus:outline-none focus:border-indigo-400"
+                      className="w-full h-10 pl-3.5 pr-8 bg-surface-hover border border-line rounded-md text-base font-mono font-bold text-fg focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700"
                     />
                     <span className="absolute right-3.5 top-2.5 text-xs font-mono font-bold text-fg-4">%</span>
                   </div>
@@ -173,7 +173,7 @@ export default function BalthazardPage() {
                     <button
                       type="button"
                       onClick={() => removeRate(idx)}
-                      className="p-2 text-fg-4 hover:text-rose-400 transition-colors cursor-pointer"
+                      className="p-2 text-fg-4 hover:text-rose-400 light:hover:text-rose-700 transition-colors cursor-pointer"
                       title="Bu oranı sil"
                       aria-label="Oranı sil"
                     >
@@ -223,7 +223,7 @@ export default function BalthazardPage() {
               </div>
 
               <div className="text-left sm:text-right space-y-1">
-                <div className="text-sm font-bold text-indigo-300">
+                <div className="text-sm font-bold text-indigo-300 light:text-indigo-700">
                   {calculation.degree > 0 ? `${calculation.degree}. Derece Engelli` : 'Derece Dışı (%40 Altı)'}
                 </div>
                 <div className="text-xs text-[#CBD5E1] font-medium">

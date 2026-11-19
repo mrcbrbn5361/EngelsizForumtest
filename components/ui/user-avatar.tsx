@@ -95,7 +95,7 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge,
       </div>
       {isOnline && (
         <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#090a0f] ring-2 ring-[#090a0f] z-10" title="Çevrimiçi">
-          <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 opacity-75" />
+          <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-400 light:bg-emerald-700 opacity-75" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
         </span>
       )}

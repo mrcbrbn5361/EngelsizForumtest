@@ -172,7 +172,7 @@ export function DisabilityQuickBar() {
                 title={`${p.title} - ${p.description}`}
                 aria-pressed={isSelected}
               >
-                <Icon size={13} className={isSelected ? 'text-fg' : 'text-indigo-400'} />
+                <Icon size={13} className={isSelected ? 'text-fg' : 'text-indigo-400 light:text-indigo-700'} />
                 <span>{p.title}</span>
                 {isSelected && <Check size={11} className="stroke-[3]" />}
               </button>

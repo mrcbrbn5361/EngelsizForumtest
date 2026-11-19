@@ -160,13 +160,13 @@ export default function ErkenEmeklilikPage() {
     <div className="space-y-6">
       
       {/* 01.10.2008 Milat Uyarısı */}
-      <div className="bg-indigo-950/20 border border-indigo-800 p-5 rounded-lg shadow-lg">
+      <div className="bg-indigo-950/20 light:bg-indigo-50/20 border border-indigo-800 p-5 rounded-lg shadow-lg">
         <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-full bg-indigo-900/50 flex items-center justify-center shrink-0">
-            <ShieldAlert className="w-6 h-6 text-indigo-400" />
+          <div className="w-10 h-10 rounded-full bg-indigo-900/50 light:bg-indigo-100/50 flex items-center justify-center shrink-0">
+            <ShieldAlert className="w-6 h-6 text-indigo-400 light:text-indigo-700" />
           </div>
           <div className="space-y-1.5">
-            <h2 className="font-bold text-lg text-indigo-400 tracking-tight">
+            <h2 className="font-bold text-lg text-indigo-400 light:text-indigo-700 tracking-tight">
               Erken Emeklilikte 01.10.2008 Tarihi Neden Önemlidir?
             </h2>
             <p className="text-sm text-[#CBD5E1] leading-relaxed">
@@ -181,7 +181,7 @@ export default function ErkenEmeklilikPage() {
       <div className="bg-surface-raised rounded-xl border border-line p-6 shadow-md">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-5 mb-6">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-lg bg-surface-hover text-indigo-400 flex items-center justify-center shadow-inner border border-line">
+            <div className="w-12 h-12 rounded-lg bg-surface-hover text-indigo-400 light:text-indigo-700 flex items-center justify-center shadow-inner border border-line">
               <Calendar className="w-7 h-7" />
             </div>
             <div>
@@ -197,7 +197,7 @@ export default function ErkenEmeklilikPage() {
             </div>
           </div>
 
-          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-surface text-emerald-400 border border-emerald-800/50 shadow-sm uppercase tracking-wider">
+          <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-surface text-emerald-400 light:text-emerald-700 border border-emerald-800/50 shadow-sm uppercase tracking-wider">
             YAŞ ŞARTI ARANMAZ
           </div>
         </div>
@@ -282,17 +282,17 @@ export default function ErkenEmeklilikPage() {
       {calculation && (
         <div className={`rounded-xl border p-6 shadow-xl animate-in zoom-in-95 duration-300 ${
           calculation.isReadyForRetirement 
-            ? 'bg-emerald-950/10 border-emerald-900/50' 
-            : 'bg-indigo-950/10 border-indigo-900/50'
+            ? 'bg-emerald-950/10 light:bg-emerald-50/10 border-emerald-900/50 light:border-emerald-200/50' 
+            : 'bg-indigo-950/10 light:bg-indigo-50/10 border-indigo-900/50 light:border-indigo-200/50'
         }`}>
           <div className="flex items-start gap-5">
             <div className="mt-1">
               {calculation.isReadyForRetirement ? (
-                <div className="w-12 h-12 rounded-full bg-emerald-900/30 text-emerald-400 flex items-center justify-center shadow-inner">
+                <div className="w-12 h-12 rounded-full bg-emerald-900/30 light:bg-emerald-100/30 text-emerald-400 light:text-emerald-700 flex items-center justify-center shadow-inner">
                   <CheckCircle2 size={28} />
                 </div>
               ) : (
-                <div className="w-12 h-12 rounded-full bg-indigo-900/30 text-indigo-400 flex items-center justify-center shadow-inner">
+                <div className="w-12 h-12 rounded-full bg-indigo-900/30 light:bg-indigo-100/30 text-indigo-400 light:text-indigo-700 flex items-center justify-center shadow-inner">
                   <Clock size={28} />
                 </div>
               )}
@@ -308,8 +308,8 @@ export default function ErkenEmeklilikPage() {
 
                 <span className={`text-[10px] px-2.5 py-1 rounded-full font-black uppercase tracking-wider border ${
                   calculation.isReadyForRetirement 
-                    ? 'bg-emerald-950/40 text-emerald-400 border-emerald-800' 
-                    : 'bg-indigo-950/40 text-indigo-400 border-indigo-800'
+                    ? 'bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border-emerald-800' 
+                    : 'bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-400 light:text-indigo-700 border-indigo-800'
                 }`}>
                   {calculation.isReadyForRetirement ? 'Hak Kazanıldı' : 'Süreç Devam Ediyor'}
                 </span>
@@ -337,24 +337,24 @@ export default function ErkenEmeklilikPage() {
                   <div className="text-xl font-black text-fg">
                     {calculation.reqYears} Yıl
                   </div>
-                  <div className={`text-[11px] mt-1 font-bold ${calculation.isYearsSatisfied ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  <div className={`text-[11px] mt-1 font-bold ${calculation.isYearsSatisfied ? 'text-emerald-400 light:text-emerald-700' : 'text-amber-400 light:text-amber-800'}`}>
                     {calculation.completionDate}
                   </div>
                 </div>
 
                 <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
                   <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Gereken Prim</span>
-                  <div className="text-xl font-black text-indigo-400">
+                  <div className="text-xl font-black text-indigo-400 light:text-indigo-700">
                     {calculation.reqDays} Gün
                   </div>
-                  <div className={`text-[11px] mt-1 font-bold ${calculation.isDaysSatisfied ? 'text-emerald-400' : 'text-fg-4'}`}>
+                  <div className={`text-[11px] mt-1 font-bold ${calculation.isDaysSatisfied ? 'text-emerald-400 light:text-emerald-700' : 'text-fg-4'}`}>
                     Mevcut: {currentPaidDays} gün
                   </div>
                 </div>
 
                 <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
                   <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Kalan İhtiyaç</span>
-                  <div className={`text-xl font-black ${calculation.remainingDays === 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  <div className={`text-xl font-black ${calculation.remainingDays === 0 ? 'text-emerald-400 light:text-emerald-700' : 'text-rose-400 light:text-rose-700'}`}>
                     {calculation.remainingDays === 0 ? 'TAMAM' : `${calculation.remainingDays} Gün`}
                   </div>
                   <div className="text-[11px] text-fg-5 mt-1 font-medium">
@@ -364,7 +364,7 @@ export default function ErkenEmeklilikPage() {
 
                 <div className="p-4 bg-surface rounded-lg border border-line shadow-sm">
                   <span className="text-[10px] font-black text-fg-5 uppercase tracking-widest block mb-1">Vergi İndirimi</span>
-                  <div className={`text-xl font-black ${calculation.isTaxDiscountMandatory ? 'text-indigo-300' : 'text-fg-4'}`}>
+                  <div className={`text-xl font-black ${calculation.isTaxDiscountMandatory ? 'text-indigo-300 light:text-indigo-700' : 'text-fg-4'}`}>
                     {calculation.isTaxDiscountMandatory ? 'ZORUNLU' : 'GEREKMEZ'}
                   </div>
                   <div className="text-[11px] text-fg-5 mt-1 font-medium italic">
@@ -375,7 +375,7 @@ export default function ErkenEmeklilikPage() {
               </div>
 
               <div className="flex items-center gap-2 p-3 bg-surface-hover/50 rounded-lg border border-line/50">
-                <History size={14} className="text-indigo-400" />
+                <History size={14} className="text-indigo-400 light:text-indigo-700" />
                 <p className="text-[11px] text-fg-4 italic">
                   {calculation.note}
                 </p>
@@ -390,7 +390,7 @@ export default function ErkenEmeklilikPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         
         <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
-          <h3 className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-4 flex items-center gap-2.5">
+          <h3 className="text-xs font-black text-indigo-400 light:text-indigo-700 uppercase tracking-widest mb-4 flex items-center gap-2.5">
             <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20">
               <Award size={14} />
             </div>
@@ -398,16 +398,16 @@ export default function ErkenEmeklilikPage() {
           </h3>
           <ul className="text-xs text-[#CBD5E1] space-y-3 leading-relaxed font-medium">
             <li className="p-3 bg-surface rounded border border-line">
-              <strong className="text-indigo-300 block mb-1">Malulen Emeklilik:</strong> Sonradan %60+ kayıp yaşayanlara tanınır. Emekli olan kişi tekrar sigortalı çalışamaz, çalışırsa aylığı kesilir.
+              <strong className="text-indigo-300 light:text-indigo-700 block mb-1">Malulen Emeklilik:</strong> Sonradan %60+ kayıp yaşayanlara tanınır. Emekli olan kişi tekrar sigortalı çalışamaz, çalışırsa aylığı kesilir.
             </li>
             <li className="p-3 bg-surface rounded border border-line">
-              <strong className="text-indigo-300 block mb-1">Engelli Erken Emekliliği:</strong> Hem emekli maaşını alıp hem de Sosyal Güvenlik Destek Primi (SGDP) ödeyerek çalışmaya devam edebilirler.
+              <strong className="text-indigo-300 light:text-indigo-700 block mb-1">Engelli Erken Emekliliği:</strong> Hem emekli maaşını alıp hem de Sosyal Güvenlik Destek Primi (SGDP) ödeyerek çalışmaya devam edebilirler.
             </li>
           </ul>
         </div>
 
         <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
-          <h3 className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-4 flex items-center gap-2.5">
+          <h3 className="text-xs font-black text-indigo-400 light:text-indigo-700 uppercase tracking-widest mb-4 flex items-center gap-2.5">
             <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20">
               <FileText size={14} />
             </div>
@@ -421,7 +421,7 @@ export default function ErkenEmeklilikPage() {
               "Başvuruyu takip eden ay başından itibaren emekli maaşınız birikmeye başlar."
             ].map((step, idx) => (
               <div key={idx} className="flex items-start gap-3 p-2.5 bg-surface rounded border border-line">
-                <span className="text-indigo-400 font-black font-mono text-sm leading-none mt-0.5">{idx + 1}.</span>
+                <span className="text-indigo-400 light:text-indigo-700 font-black font-mono text-sm leading-none mt-0.5">{idx + 1}.</span>
                 <p className="text-xs text-[#CBD5E1] font-medium leading-relaxed">{step}</p>
               </div>
             ))}

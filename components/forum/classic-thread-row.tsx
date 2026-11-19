@@ -35,8 +35,8 @@ export default function ClassicThreadRow({ topic }: ClassicThreadRowProps) {
       <div className="min-w-0 flex-1 space-y-1">
         <div className="flex items-center gap-2 flex-wrap">
           {topic.is_pinned && (
-            <span className="inline-flex items-center gap-1 text-[11px] font-mono uppercase font-semibold text-amber-300 bg-amber-950/40 border border-amber-700/50 px-1.5 py-0.5 rounded">
-              <Pin size={11} className="fill-amber-300" /> Sabit
+            <span className="inline-flex items-center gap-1 text-[11px] font-mono uppercase font-semibold text-amber-300 light:text-amber-800 bg-amber-950/40 light:bg-amber-50/40 border border-amber-700/50 px-1.5 py-0.5 rounded">
+              <Pin size={11} className="fill-amber-300 light:fill-amber-800" /> Sabit
             </span>
           )}
           {topic.is_locked && (
@@ -46,14 +46,14 @@ export default function ClassicThreadRow({ topic }: ClassicThreadRowProps) {
           )}
           <Link 
             href={`/discussions/${topic.id}`} 
-            className="text-sm sm:text-base font-semibold text-fg group-hover:text-indigo-400 transition-colors block"
+            className="text-sm sm:text-base font-semibold text-fg group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors block"
           >
             {topic.title}
           </Link>
         </div>
 
         <div className="flex items-center gap-2 text-xs text-fg-4">
-          <span className="font-semibold text-indigo-400">@{authorName}</span>
+          <span className="font-semibold text-indigo-400 light:text-indigo-700">@{authorName}</span>
           <span className="text-fg-6">&middot;</span>
           <span className="font-mono text-fg-4">{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
         </div>

@@ -26,7 +26,7 @@ export function Footer() {
       <div className="bg-surface-raised border-b border-line py-3.5 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
-            <Heart size={14} className="text-rose-400 fill-rose-400 shrink-0" />
+            <Heart size={14} className="text-rose-400 light:text-rose-700 fill-rose-400 light:fill-rose-700 shrink-0" />
             <span className="font-semibold text-fg-2 uppercase text-[11px] tracking-wider font-heading">
               Resmi Destekçiler &amp; Sponsorlar:
             </span>
@@ -39,7 +39,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-surface-hover hover:bg-line hover:border-indigo-500/60 text-fg-2 font-medium border border-line transition-colors"
             >
-              <Sparkles size={12} className="text-amber-400" />
+              <Sparkles size={12} className="text-amber-400 light:text-amber-800" />
               <span>yeterly.ai</span>
               <ExternalLink size={10} className="text-fg-4" />
             </a>
@@ -56,7 +56,7 @@ export function Footer() {
 
             <a
               href="mailto:miracbirben@engelsizforum.com"
-              className="text-[11px] text-indigo-400 hover:text-indigo-300 hover:underline font-medium"
+              className="text-[11px] text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 hover:underline font-medium"
             >
               Sponsor Olun &rarr;
             </a>
@@ -123,7 +123,7 @@ export function Footer() {
             <span className="font-bold text-fg text-sm font-heading tracking-tight">
               ENGELSİZ FORUM
             </span>
-            <span className="text-[11px] font-mono font-medium text-indigo-400 uppercase bg-indigo-950/60 border border-indigo-800/60 px-1.5 py-0.5 rounded">
+            <span className="text-[11px] font-mono font-medium text-indigo-400 light:text-indigo-700 uppercase bg-indigo-950/60 light:bg-indigo-50/60 border border-indigo-800/60 px-1.5 py-0.5 rounded">
               WCAG 2.2 AA
             </span>
           </div>

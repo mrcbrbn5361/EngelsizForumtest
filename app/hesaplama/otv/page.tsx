@@ -147,17 +147,17 @@ export default function OtvHesaplamaPage() {
       
       {/* 2026 Üst Limit Aşıldı Uyarısı */}
       {calculation.isExceeded && (
-        <div className="bg-rose-950/20 border border-rose-800 p-5 rounded-lg shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="bg-rose-950/20 light:bg-rose-50/20 border border-rose-800 p-5 rounded-lg shadow-lg animate-in fade-in slide-in-from-top-2 duration-300">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-rose-900/50 flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-full bg-rose-900/50 light:bg-rose-100/50 flex items-center justify-center shrink-0">
               <AlertTriangle className="w-6 h-6 text-rose-500" />
             </div>
             <div className="space-y-1.5">
-              <h2 className="font-bold text-lg text-rose-400 tracking-tight">
+              <h2 className="font-bold text-lg text-rose-400 light:text-rose-700 tracking-tight">
                 2026 Yılı Resmi ÖTV İstisna Tavanı Aşılmıştır!
               </h2>
-              <p className="text-sm text-rose-200/80 leading-relaxed">
-                Girdiğiniz anahtar teslim fiyat ({formatCurrency(listPrice)}), 2026 yılı için belirlenen <strong className="text-rose-300">2.873.972 TL</strong> üst sınırını <strong className="text-rose-300">{formatCurrency(listPrice - OTV_LIMIT_2026)}</strong> aşmaktadır.
+              <p className="text-sm text-rose-200/80 light:text-rose-800/80 leading-relaxed">
+                Girdiğiniz anahtar teslim fiyat ({formatCurrency(listPrice)}), 2026 yılı için belirlenen <strong className="text-rose-300 light:text-rose-700">2.873.972 TL</strong> üst sınırını <strong className="text-rose-300 light:text-rose-700">{formatCurrency(listPrice - OTV_LIMIT_2026)}</strong> aşmaktadır.
                 Kanun gereğince bu limiti 1 TL dahi aşan araçlar için ÖTV muafiyeti uygulanamaz.
               </p>
             </div>
@@ -169,7 +169,7 @@ export default function OtvHesaplamaPage() {
       <div className="bg-surface-raised rounded-xl border border-line p-6 shadow-md">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-5 mb-6">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-lg bg-surface-hover text-indigo-400 flex items-center justify-center shadow-inner border border-line">
+            <div className="w-12 h-12 rounded-lg bg-surface-hover text-indigo-400 light:text-indigo-700 flex items-center justify-center shadow-inner border border-line">
               <Car className="w-7 h-7" />
             </div>
             <div>
@@ -185,7 +185,7 @@ export default function OtvHesaplamaPage() {
             </div>
           </div>
 
-          <div className="text-xs font-mono font-bold px-3 py-1.5 rounded-md bg-surface text-indigo-300 border border-line shadow-sm">
+          <div className="text-xs font-mono font-bold px-3 py-1.5 rounded-md bg-surface text-indigo-300 light:text-indigo-700 border border-line shadow-sm">
             2026 ÜST LİMİT: {OTV_LIMIT_2026.toLocaleString('tr-TR')} ₺
           </div>
         </div>
@@ -199,7 +199,7 @@ export default function OtvHesaplamaPage() {
               Araç Anahtar Teslim Liste Fiyatı
             </label>
             <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-fg-5 group-focus-within:text-indigo-400 transition-colors">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-fg-5 group-focus-within:text-indigo-400 light:group-focus-within:text-indigo-700 transition-colors">
                 <Receipt size={18} />
               </div>
               <input
@@ -212,7 +212,7 @@ export default function OtvHesaplamaPage() {
                 placeholder="Örn: 1850000"
                 className={`w-full pl-11 pr-12 py-3 rounded-lg border text-lg font-bold transition-all outline-hidden focus:ring-2 focus:ring-indigo-500/30 ${
                   calculation.isExceeded 
-                    ? 'border-rose-800 bg-rose-950/20 text-rose-200' 
+                    ? 'border-rose-800 bg-rose-950/20 light:bg-rose-50/20 text-rose-200 light:text-rose-800' 
                     : 'border-line bg-surface text-white'
                 }`}
               />
@@ -263,7 +263,7 @@ export default function OtvHesaplamaPage() {
               </div>
             </div>
             <div className="flex items-start gap-2 p-3 bg-surface-hover/50 rounded-lg border border-line/50">
-              <Info size={14} className="text-indigo-400 mt-0.5 shrink-0" />
+              <Info size={14} className="text-indigo-400 light:text-indigo-700 mt-0.5 shrink-0" />
               <p className="text-[11px] text-fg-4 leading-relaxed italic">
                 {currentEngine.desc}
               </p>
@@ -279,30 +279,30 @@ export default function OtvHesaplamaPage() {
         {/* Sol Kart: Engelli Bireyin Ödeyeceği Tutar */}
         <div className={`p-6 rounded-xl border shadow-lg transition-all animate-in zoom-in-95 duration-300 ${
           calculation.isExceeded 
-            ? 'bg-rose-950/10 border-rose-900/50' 
-            : 'bg-emerald-950/10 border-emerald-900/50'
+            ? 'bg-rose-950/10 light:bg-rose-50/10 border-rose-900/50 light:border-rose-200/50' 
+            : 'bg-emerald-950/10 light:bg-emerald-50/10 border-emerald-900/50 light:border-emerald-200/50'
         }`}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${calculation.isExceeded ? 'bg-rose-900/30 text-rose-400' : 'bg-emerald-900/30 text-emerald-400'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${calculation.isExceeded ? 'bg-rose-900/30 light:bg-rose-100/30 text-rose-400 light:text-rose-700' : 'bg-emerald-900/30 light:bg-emerald-100/30 text-emerald-400 light:text-emerald-700'}`}>
                 <FileCheck2 size={18} />
               </div>
               <span className="text-xs uppercase font-black text-fg-4 tracking-widest">
                 Muafiyetli Net Fiyat
               </span>
             </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-950/60 text-indigo-300 border border-indigo-800">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-950/60 light:bg-indigo-50/60 text-indigo-300 light:text-indigo-700 border border-indigo-800">
               ÖTV MUAF (%0)
             </span>
           </div>
 
-          <div className={`text-4xl font-black mb-3 tracking-tighter ${calculation.isExceeded ? 'text-rose-500' : 'text-emerald-400'}`}>
+          <div className={`text-4xl font-black mb-3 tracking-tighter ${calculation.isExceeded ? 'text-rose-500' : 'text-emerald-400 light:text-emerald-700'}`}>
             {calculation.isExceeded ? 'GEÇERSİZ' : formatCurrency(calculation.engelliOdenecekTutar)}
           </div>
 
           <div className="text-xs text-fg-4 leading-relaxed font-medium">
             {calculation.isExceeded ? (
-              <span className="text-rose-400 flex items-center gap-1.5">
+              <span className="text-rose-400 light:text-rose-700 flex items-center gap-1.5">
                 <AlertTriangle size={12} />
                 Araç fiyatı istisna üst sınırını aşıyor.
               </span>
@@ -316,10 +316,10 @@ export default function OtvHesaplamaPage() {
         </div>
 
         {/* Sağ Kart: Sağlanan Toplam Vergi Avantajı */}
-        <div className="p-6 rounded-xl border border-indigo-900/50 bg-indigo-950/10 shadow-lg animate-in zoom-in-95 duration-300 delay-100">
+        <div className="p-6 rounded-xl border border-indigo-900/50 light:border-indigo-200/50 bg-indigo-950/10 light:bg-indigo-50/10 shadow-lg animate-in zoom-in-95 duration-300 delay-100">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-indigo-900/30 text-indigo-400 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-indigo-900/30 light:bg-indigo-100/30 text-indigo-400 light:text-indigo-700 flex items-center justify-center">
                 <TrendingDown size={18} />
               </div>
               <span className="text-xs uppercase font-black text-fg-4 tracking-widest">
@@ -333,12 +333,12 @@ export default function OtvHesaplamaPage() {
             </div>
           </div>
 
-          <div className="text-4xl font-black text-indigo-400 mb-3 tracking-tighter">
+          <div className="text-4xl font-black text-indigo-400 light:text-indigo-700 mb-3 tracking-tighter">
             {calculation.isExceeded ? '0 ₺' : formatCurrency(calculation.toplamVergiAvantaji)}
           </div>
 
           <div className="text-xs text-fg-4 leading-relaxed font-medium flex items-center gap-1.5">
-            <Sparkles size={12} className="text-amber-400" />
+            <Sparkles size={12} className="text-amber-400 light:text-amber-800" />
             ÖTV muafiyeti sayesinde ödemediğiniz toplam vergi tutarıdır.
           </div>
         </div>
@@ -349,10 +349,10 @@ export default function OtvHesaplamaPage() {
       <div className="bg-surface-raised rounded-xl border border-line overflow-hidden shadow-xl">
         <div className="bg-surface-hover text-fg px-5 py-3.5 flex items-center justify-between border-b border-line">
           <div className="flex items-center gap-2.5 font-bold text-xs sm:text-sm uppercase tracking-wider">
-            <Scale className="w-4 h-4 text-indigo-400" />
+            <Scale className="w-4 h-4 text-indigo-400 light:text-indigo-700" />
             <span>Resmi Ters Matematik Dağılımı</span>
           </div>
-          <span className="text-[11px] font-mono font-bold text-indigo-300 bg-indigo-950/50 border border-indigo-800/60 px-2 py-0.5 rounded">
+          <span className="text-[11px] font-mono font-bold text-indigo-300 light:text-indigo-700 bg-indigo-950/50 light:bg-indigo-50/50 border border-indigo-800/60 px-2 py-0.5 rounded">
             {currentEngine.badge}
           </span>
         </div>
@@ -364,7 +364,7 @@ export default function OtvHesaplamaPage() {
                 <th className="p-4">Mali Kalem</th>
                 <th className="p-4">Hesaplama Mantığı</th>
                 <th className="p-4 text-right">Standart Bayi Satışı</th>
-                <th className="p-4 text-right text-emerald-400 bg-emerald-950/20 font-black">
+                <th className="p-4 text-right text-emerald-400 light:text-emerald-700 bg-emerald-950/20 light:bg-emerald-50/20 font-black">
                   Engelli Birey İçin
                 </th>
               </tr>
@@ -378,7 +378,7 @@ export default function OtvHesaplamaPage() {
                 <td className="p-4 text-right font-medium">
                   {formatCurrency(calculation.hamFabrikaFiyati)}
                 </td>
-                <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">
+                <td className="p-4 text-right font-black text-emerald-400 light:text-emerald-700 bg-emerald-950/20 light:bg-emerald-50/20">
                   {formatCurrency(calculation.hamFabrikaFiyati)}
                 </td>
               </tr>
@@ -389,10 +389,10 @@ export default function OtvHesaplamaPage() {
                 <td className="p-4 text-fg-5 font-mono text-[10px]">
                   Ham Bedel × %{currentEngine.rate}
                 </td>
-                <td className="p-4 text-right font-medium text-rose-400">
+                <td className="p-4 text-right font-medium text-rose-400 light:text-rose-700">
                   +{formatCurrency(calculation.normalOtvTutari)}
                 </td>
-                <td className="p-4 text-right font-black text-emerald-500 bg-emerald-950/20">
+                <td className="p-4 text-right font-black text-emerald-500 bg-emerald-950/20 light:bg-emerald-50/20">
                   0 ₺ (İSTİSNA)
                 </td>
               </tr>
@@ -406,19 +406,19 @@ export default function OtvHesaplamaPage() {
                 <td className="p-4 text-right font-medium">
                   +{formatCurrency(calculation.normalKdvTutari)}
                 </td>
-                <td className="p-4 text-right font-black text-emerald-400 bg-emerald-950/20">
+                <td className="p-4 text-right font-black text-emerald-400 light:text-emerald-700 bg-emerald-950/20 light:bg-emerald-50/20">
                   +{formatCurrency(calculation.engelliKdvTutari)}
                 </td>
               </tr>
               <tr className="bg-surface-hover font-black text-[#F8FAFC] border-t border-indigo-500/30">
                 <td className="p-4 text-sm uppercase">Anahtar Teslim Toplam</td>
-                <td className="p-4 text-indigo-300 font-mono text-[10px] uppercase">
+                <td className="p-4 text-indigo-300 light:text-indigo-700 font-mono text-[10px] uppercase">
                   Nihai Satış Fiyatı
                 </td>
                 <td className="p-4 text-right text-sm">
                   {formatCurrency(listPrice)}
                 </td>
-                <td className="p-4 text-right text-sm text-emerald-400 bg-emerald-500/10 shadow-inner">
+                <td className="p-4 text-right text-sm text-emerald-400 light:text-emerald-700 bg-emerald-500/10 shadow-inner">
                   {calculation.isExceeded ? 'TAVAN AŞILDI' : formatCurrency(calculation.engelliOdenecekTutar)}
                 </td>
               </tr>
@@ -431,7 +431,7 @@ export default function OtvHesaplamaPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         
         <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
-          <div className="flex items-center gap-2.5 text-indigo-400 font-bold text-xs uppercase mb-3 tracking-wider">
+          <div className="flex items-center gap-2.5 text-indigo-400 light:text-indigo-700 font-bold text-xs uppercase mb-3 tracking-wider">
             <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20">
               <FileCheck2 size={14} />
             </div>
@@ -443,7 +443,7 @@ export default function OtvHesaplamaPage() {
         </div>
 
         <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
-          <div className="flex items-center gap-2.5 text-indigo-400 font-bold text-xs uppercase mb-3 tracking-wider">
+          <div className="flex items-center gap-2.5 text-indigo-400 light:text-indigo-700 font-bold text-xs uppercase mb-3 tracking-wider">
             <div className="p-1.5 rounded bg-indigo-500/10 border border-indigo-500/20">
               <ShieldCheck size={14} />
             </div>
@@ -455,7 +455,7 @@ export default function OtvHesaplamaPage() {
         </div>
 
         <div className="bg-surface-raised rounded-xl border border-line p-5 shadow-lg group hover:border-indigo-500/50 transition-colors">
-          <div className="flex items-center gap-2.5 text-amber-400 font-bold text-xs uppercase mb-3 tracking-wider">
+          <div className="flex items-center gap-2.5 text-amber-400 light:text-amber-800 font-bold text-xs uppercase mb-3 tracking-wider">
             <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/20">
               <AlertTriangle size={14} />
             </div>

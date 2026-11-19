@@ -548,9 +548,9 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
   };
 
   const roleColors = {
-    'YÖNETİCİ': 'bg-rose-950/40 text-rose-300 border border-rose-800/60 font-semibold',
-    'MODERATÖR': 'bg-emerald-950/40 text-emerald-300 border border-emerald-800/60 font-semibold',
-    'UZMAN': 'bg-indigo-950/40 text-indigo-300 border border-indigo-800/60 font-semibold',
+    'YÖNETİCİ': 'bg-rose-950/40 light:bg-rose-50/40 text-rose-300 light:text-rose-700 border border-rose-800/60 font-semibold',
+    'MODERATÖR': 'bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-300 light:text-emerald-700 border border-emerald-800/60 font-semibold',
+    'UZMAN': 'bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-300 light:text-indigo-700 border border-indigo-800/60 font-semibold',
     'ÜYE': 'bg-surface-hover text-fg-3 border border-line font-medium'
   };
 
@@ -573,8 +573,8 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
             const audioUrl = audioMatch[1];
             return (
               <div key={lineIdx} className="my-3 p-3 bg-surface-hover border border-line rounded-md flex items-center gap-3 max-w-sm">
-                <div className="w-8 h-8 rounded-md bg-indigo-950/60 border border-indigo-800/50 flex items-center justify-center shrink-0">
-                  <Volume2 size={16} className="text-indigo-400" />
+                <div className="w-8 h-8 rounded-md bg-indigo-950/60 light:bg-indigo-50/60 border border-indigo-800/50 flex items-center justify-center shrink-0">
+                  <Volume2 size={16} className="text-indigo-400 light:text-indigo-700" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[10px] font-semibold text-fg-4 uppercase tracking-wider mb-1">Sesli Mesaj</p>
@@ -588,21 +588,21 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
         // Markdown Headers
         if (line.startsWith('### ')) {
           return (
-            <h4 key={lineIdx} className="text-sm font-bold text-indigo-400 mt-3 mb-1.5 uppercase tracking-wide font-heading">
+            <h4 key={lineIdx} className="text-sm font-bold text-indigo-400 light:text-indigo-700 mt-3 mb-1.5 uppercase tracking-wide font-heading">
               {line.substring(4)}
             </h4>
           );
         }
         if (line.startsWith('## ')) {
           return (
-            <h3 key={lineIdx} className="text-base font-bold text-indigo-400 mt-4 mb-2 uppercase tracking-wide border-b border-line pb-1 font-heading">
+            <h3 key={lineIdx} className="text-base font-bold text-indigo-400 light:text-indigo-700 mt-4 mb-2 uppercase tracking-wide border-b border-line pb-1 font-heading">
               {line.substring(3)}
             </h3>
           );
         }
         if (line.startsWith('# ')) {
           return (
-            <h2 key={lineIdx} className="text-lg font-bold text-indigo-400 mt-5 mb-2 uppercase tracking-wide border-b border-line pb-1 font-heading">
+            <h2 key={lineIdx} className="text-lg font-bold text-indigo-400 light:text-indigo-700 mt-5 mb-2 uppercase tracking-wide border-b border-line pb-1 font-heading">
               {line.substring(2)}
             </h2>
           );
@@ -617,7 +617,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
             .replace(/\\frac{([^}]+)}{([^}]+)}/g, '($1 / $2)');
 
           return (
-            <div key={lineIdx} className="my-3 p-3.5 bg-surface-hover border border-line rounded-md font-mono text-center text-xs sm:text-sm text-indigo-300 font-medium select-all tracking-wide">
+            <div key={lineIdx} className="my-3 p-3.5 bg-surface-hover border border-line rounded-md font-mono text-center text-xs sm:text-sm text-indigo-300 light:text-indigo-700 font-medium select-all tracking-wide">
               {displayMath}
             </div>
           );
@@ -667,8 +667,8 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
       parts.push(
         <div key={`quote-${match.index}`} className="bg-surface-hover border border-line p-3.5 my-3 rounded-md text-xs text-fg-3 select-text">
-          <div className="font-semibold text-indigo-400 mb-1.5 flex items-center gap-1.5 uppercase tracking-wide text-[10px]">
-            <Quote size={11} className="text-indigo-400" /> {author} dedi ki:
+          <div className="font-semibold text-indigo-400 light:text-indigo-700 mb-1.5 flex items-center gap-1.5 uppercase tracking-wide text-[10px]">
+            <Quote size={11} className="text-indigo-400 light:text-indigo-700" /> {author} dedi ki:
           </div>
           <div className="text-fg-3 leading-relaxed pl-1">
             {renderPostContent(quoteBody)}
@@ -694,16 +694,16 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
     <div className="flex flex-col gap-4 text-fg-1">
       {/* Breadcrumbs */}
       <div className="bg-surface-raised px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-fg-4 border border-line rounded-md mb-2">
-        <Link href="/" className="hover:text-indigo-400 flex items-center gap-1 font-medium transition-colors">
+        <Link href="/" className="hover:text-indigo-400 light:hover:text-indigo-700 flex items-center gap-1 font-medium transition-colors">
           <Home size={12} />
           Ana Sayfa
         </Link>
         <span className="opacity-40">/</span>
-        <Link href="/" className="hover:text-indigo-400 font-medium transition-colors">Forumlar</Link>
+        <Link href="/" className="hover:text-indigo-400 light:hover:text-indigo-700 font-medium transition-colors">Forumlar</Link>
         {topic.category && (
           <>
             <span className="opacity-40">/</span>
-            <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-indigo-400 font-medium transition-colors">{topic.category.name}</Link>
+            <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-indigo-400 light:hover:text-indigo-700 font-medium transition-colors">{topic.category.name}</Link>
           </>
         )}
         <span className="opacity-40">/</span>
@@ -715,19 +715,19 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-fg mb-1 leading-snug break-words flex items-center flex-wrap gap-2 font-heading">
             {topic.is_pinned && (
-              <span className="bg-amber-950/40 text-amber-300 border border-amber-700/50 text-[10px] px-2 py-0.5 rounded uppercase font-semibold tracking-wider flex items-center gap-1">
+              <span className="bg-amber-950/40 light:bg-amber-50/40 text-amber-300 light:text-amber-800 border border-amber-700/50 text-[10px] px-2 py-0.5 rounded uppercase font-semibold tracking-wider flex items-center gap-1">
                 <Pin size={10} className="fill-current" /> Sabit
               </span>
             )}
             {topic.is_solved && (
-              <span className="bg-emerald-950/40 text-emerald-300 border border-emerald-700/50 text-[10px] px-2 py-0.5 rounded uppercase font-semibold tracking-wider flex items-center gap-1">
+              <span className="bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-300 light:text-emerald-700 border border-emerald-700/50 text-[10px] px-2 py-0.5 rounded uppercase font-semibold tracking-wider flex items-center gap-1">
                 <CheckCircle2 size={10} /> ÇÖZÜLDÜ
               </span>
             )}
             <span>{topic.title}</span>
           </h1>
           <div className="flex items-center gap-2 text-[11px] sm:text-xs text-fg-4 flex-wrap">
-            <span>Konuyu başlatan: <span className="text-indigo-400 hover:underline font-semibold">@{topic.author?.username || 'Anonim'}</span></span>
+            <span>Konuyu başlatan: <span className="text-indigo-400 light:text-indigo-700 hover:underline font-semibold">@{topic.author?.username || 'Anonim'}</span></span>
             <span>&middot;</span>
             <span suppressHydrationWarning>{formatDistanceToNow(new Date(topic.created_at), { addSuffix: true, locale: tr })}</span>
             <span>&middot;</span>
@@ -740,13 +740,13 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
           <button
             onClick={handleSummarizeTopic}
             disabled={loadingSummary}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface-raised hover:bg-surface-hover border border-line text-indigo-400 text-xs font-semibold transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface-raised hover:bg-surface-hover border border-line text-indigo-400 light:text-indigo-700 text-xs font-semibold transition-colors cursor-pointer"
             title="Tartışmayı Yeterly AI ile özetle"
           >
             {loadingSummary ? (
-              <Loader2 size={12} className="animate-spin text-indigo-400" />
+              <Loader2 size={12} className="animate-spin text-indigo-400 light:text-indigo-700" />
             ) : (
-              <Sparkles size={12} className="text-amber-400" />
+              <Sparkles size={12} className="text-amber-400 light:text-amber-800" />
             )}
             {topicSummary ? 'Özeti Gizle' : 'Tartışmayı AI ile Özetle'}
           </button>
@@ -757,14 +757,14 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
       {topicSummary && (
         <div className="bg-surface-raised border border-line rounded-md p-4 text-xs sm:text-sm text-fg-2 mb-2 relative">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-bold text-indigo-400 uppercase tracking-wider text-xs flex items-center gap-1.5 font-heading">
-              <Sparkles size={13} className="text-amber-400" />
+            <span className="font-bold text-indigo-400 light:text-indigo-700 uppercase tracking-wider text-xs flex items-center gap-1.5 font-heading">
+              <Sparkles size={13} className="text-amber-400 light:text-amber-800" />
               Yeterly AI Özet
             </span>
             <button
               onClick={() => handleTTS('summary', topicSummary)}
               className={`p-1 rounded hover:bg-surface-hover transition-colors flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider ${
-                currentlyPlayingId === 'summary' ? 'text-rose-400' : 'text-indigo-400'
+                currentlyPlayingId === 'summary' ? 'text-rose-400 light:text-rose-700' : 'text-indigo-400 light:text-indigo-700'
               }`}
               title={currentlyPlayingId === 'summary' ? 'Seslendirmeyi durdur' : 'Özeti sesli dinle'}
             >
@@ -792,7 +792,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   size="sm"
                 />
                 <div className="flex flex-col">
-                  <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-semibold text-indigo-400 hover:underline text-xs">
+                  <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-semibold text-indigo-400 light:text-indigo-700 hover:underline text-xs">
                     {topic.author?.full_name || topic.author?.username || 'Anonim'}
                   </Link>
                   <span className={`text-[9px] px-1.5 py-0.5 rounded font-semibold w-fit ${roleColors[mapRole(topic.author?.role || 'user')]}`}>
@@ -805,7 +805,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
             {/* Desktop Author Column */}
             <div className="hidden md:flex flex-col items-center bg-[#0E1726] shrink-0 w-44 p-4 border-r border-line">
-              <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-semibold text-indigo-400 hover:underline text-xs mb-2 truncate max-w-full">
+              <Link href={`/profile/${topic.author?.username || topic.author_id}`} className="font-semibold text-indigo-400 light:text-indigo-700 hover:underline text-xs mb-2 truncate max-w-full">
                 @{topic.author?.username || 'Anonim'}
               </Link>
               <UserAvatar 
@@ -821,7 +821,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
               <div className="w-full flex flex-col gap-1.5 text-xs text-fg-4">
                 <div className="flex justify-between border-b border-line pb-1">
                   <span>Seviye:</span>
-                  <span className="font-semibold text-indigo-400">{topic.author?.level || 1}</span>
+                  <span className="font-semibold text-indigo-400 light:text-indigo-700">{topic.author?.level || 1}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Puan:</span>
@@ -846,7 +846,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   onClick={handleLikeTopic}
                   className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded transition-all border ${
                     likedTopic 
-                      ? 'bg-rose-950/40 text-rose-300 border-rose-800/60' 
+                      ? 'bg-rose-950/40 light:bg-rose-50/40 text-rose-300 light:text-rose-700 border-rose-800/60' 
                       : 'text-fg-4 hover:text-white border-transparent hover:bg-surface-hover'
                   }`}
                 >
@@ -859,7 +859,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                     onClick={() => handleTTS(topic.id, topic.content)}
                     className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
                       currentlyPlayingId === topic.id 
-                        ? 'text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/60 px-2.5 py-1.5 rounded' 
+                        ? 'text-rose-400 light:text-rose-700 font-semibold bg-rose-950/40 light:bg-rose-50/40 border border-rose-800/60 px-2.5 py-1.5 rounded' 
                         : 'text-fg-3 hover:text-white hover:bg-surface-hover px-2.5 py-1.5 rounded'
                     }`}
                   >
@@ -906,11 +906,11 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                       />
                       <div className="flex flex-col">
                         <div className="flex items-center gap-1.5">
-                          <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-semibold text-indigo-400 hover:underline text-xs">
+                          <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-semibold text-indigo-400 light:text-indigo-700 hover:underline text-xs">
                             {comment.author?.full_name || comment.author?.username || 'Anonim'}
                           </Link>
                           {isCommentAuthorOp && (
-                            <span className="text-[8px] bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 px-1 rounded uppercase font-semibold">OP</span>
+                            <span className="text-[8px] bg-indigo-950/60 light:bg-indigo-50/60 text-indigo-300 light:text-indigo-700 border border-indigo-800/60 px-1 rounded uppercase font-semibold">OP</span>
                           )}
                         </div>
                         <span className={`text-[9px] px-1.5 py-0.5 rounded font-semibold w-fit ${roleColors[mapRole(comment.author?.role || 'user')]}`}>
@@ -924,11 +924,11 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   {/* Desktop view Author Column */}
                   <div className="hidden md:flex flex-col items-center bg-[#0E1726] shrink-0 w-44 p-4 border-r border-line">
                     <div className="flex flex-col items-center max-w-full">
-                      <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-semibold text-indigo-400 hover:underline text-xs mb-1 truncate max-w-full">
+                      <Link href={`/profile/${comment.author?.username || comment.author_id}`} className="font-semibold text-indigo-400 light:text-indigo-700 hover:underline text-xs mb-1 truncate max-w-full">
                         @{comment.author?.username || 'Anonim'}
                       </Link>
                       {isCommentAuthorOp && (
-                        <span className="text-[9px] bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 px-1.5 rounded uppercase font-semibold mb-2">Konu Sahibi</span>
+                        <span className="text-[9px] bg-indigo-950/60 light:bg-indigo-50/60 text-indigo-300 light:text-indigo-700 border border-indigo-800/60 px-1.5 rounded uppercase font-semibold mb-2">Konu Sahibi</span>
                       )}
                     </div>
                     
@@ -947,7 +947,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                     <div className="w-full flex flex-col gap-1.5 text-xs text-fg-4">
                       <div className="flex justify-between border-b border-line pb-1">
                         <span>Seviye:</span>
-                        <span className="font-semibold text-indigo-400">{comment.author?.level || 1}</span>
+                        <span className="font-semibold text-indigo-400 light:text-indigo-700">{comment.author?.level || 1}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Puan:</span>
@@ -962,7 +962,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                       <div className="flex items-center gap-2">
                         <time suppressHydrationWarning>{formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: tr })}</time>
                         {comment.is_solution && (
-                          <span className="inline-flex items-center gap-1.5 text-emerald-300 font-semibold uppercase text-[10px] tracking-wider bg-emerald-950/40 border border-emerald-800/60 px-2 py-0.5 rounded">
+                          <span className="inline-flex items-center gap-1.5 text-emerald-300 light:text-emerald-700 font-semibold uppercase text-[10px] tracking-wider bg-emerald-950/40 light:bg-emerald-50/40 border border-emerald-800/60 px-2 py-0.5 rounded">
                             <CheckCircle2 size={11} /> Çözüm Olarak Onaylandı
                           </span>
                         )}
@@ -981,7 +981,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                             onClick={() => handleToggleSolution(comment.id, comment.is_solution)}
                             className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded transition-all border cursor-pointer ${
                               comment.is_solution 
-                                ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300' 
+                                ? 'bg-emerald-950/40 light:bg-emerald-50/40 border-emerald-800/60 text-emerald-300 light:text-emerald-700' 
                                 : 'bg-surface-hover border-line text-fg-3 hover:text-white hover:border-slate-600'
                             }`}
                           >
@@ -996,7 +996,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                           onClick={() => handleTTS(comment.id, comment.content)}
                           className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
                             currentlyPlayingId === comment.id 
-                              ? 'text-rose-400 font-semibold bg-rose-950/40 border border-rose-800/60 px-2.5 py-1.5 rounded' 
+                              ? 'text-rose-400 light:text-rose-700 font-semibold bg-rose-950/40 light:bg-rose-50/40 border border-rose-800/60 px-2.5 py-1.5 rounded' 
                               : 'text-fg-3 hover:text-white hover:bg-surface-hover px-2.5 py-1.5 rounded'
                           }`}
                         >
@@ -1021,7 +1021,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
           {/* Quick Reply Form */}
           <div className="border border-line bg-surface-raised rounded-md shadow-sm mt-6 overflow-hidden">
-            <h2 className="bg-surface-hover border-b border-line text-indigo-400 font-semibold uppercase text-xs tracking-wider py-2.5 px-4 m-0 font-heading">
+            <h2 className="bg-surface-hover border-b border-line text-indigo-400 light:text-indigo-700 font-semibold uppercase text-xs tracking-wider py-2.5 px-4 m-0 font-heading">
               Hızlı Cevap Yaz
             </h2>
             <div className="p-4 bg-surface-raised">
@@ -1040,11 +1040,11 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                         onClick={isRecording ? stopRecording : startRecording}
                         className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                           isRecording 
-                            ? 'bg-rose-950/40 border-rose-700/60 text-rose-300 animate-pulse' 
-                            : 'bg-surface-hover border-line text-fg-3 hover:border-indigo-400 hover:text-white'
+                            ? 'bg-rose-950/40 light:bg-rose-50/40 border-rose-700/60 text-rose-300 light:text-rose-700 animate-pulse' 
+                            : 'bg-surface-hover border-line text-fg-3 hover:border-indigo-400 light:hover:border-indigo-700 hover:text-white'
                         }`}
                       >
-                        <Radio size={13} className={isRecording ? 'animate-pulse text-rose-400' : 'text-indigo-400'} />
+                        <Radio size={13} className={isRecording ? 'animate-pulse text-rose-400 light:text-rose-700' : 'text-indigo-400 light:text-indigo-700'} />
                         {isRecording ? `${Math.floor(recordingTime / 60).toString().padStart(2, '0')}:${(recordingTime % 60).toString().padStart(2, '0')} Durdur ve Ekle` : 'Sesli Mesaj Kaydet'}
                       </button>
                     </div>
@@ -1053,7 +1053,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   <textarea 
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
-                    className="w-full bg-surface-hover border border-line rounded-md p-3 min-h-[140px] text-xs sm:text-sm focus:outline-none focus:border-indigo-400 text-fg-1 placeholder:text-fg-4 mb-3 leading-relaxed"
+                    className="w-full bg-surface-hover border border-line rounded-md p-3 min-h-[140px] text-xs sm:text-sm focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700 text-fg-1 placeholder:text-fg-4 mb-3 leading-relaxed"
                     placeholder="Yardımcı veya açıklayıcı bir cevap yazın... (@EngelsizAI etiketleyebilirsiniz)"
                     disabled={submitting}
                   />
@@ -1090,16 +1090,16 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
           {/* Bottom Breadcrumbs */}
           <div className="bg-surface-raised px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-fg-4 border border-line rounded-md mt-4">
-            <Link href="/" className="hover:text-indigo-400 flex items-center gap-1 font-medium transition-colors">
+            <Link href="/" className="hover:text-indigo-400 light:hover:text-indigo-700 flex items-center gap-1 font-medium transition-colors">
               <Home size={12} />
               Ana Sayfa
             </Link>
             <span className="opacity-40">/</span>
-            <Link href="/" className="hover:text-indigo-400 font-medium transition-colors">Forumlar</Link>
+            <Link href="/" className="hover:text-indigo-400 light:hover:text-indigo-700 font-medium transition-colors">Forumlar</Link>
             {topic.category && (
               <>
                 <span className="opacity-40">/</span>
-                <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-indigo-400 font-medium transition-colors">{topic.category.name}</Link>
+                <Link href={`/discussions?kategori=${topic.category.slug}`} className="hover:text-indigo-400 light:hover:text-indigo-700 font-medium transition-colors">{topic.category.name}</Link>
               </>
             )}
             <span className="opacity-40">/</span>

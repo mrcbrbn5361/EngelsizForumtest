@@ -136,7 +136,7 @@ export default function ClassicNavbar() {
             </div>
             <div>
               <div className="text-base font-bold tracking-tight text-fg flex items-center gap-1 font-heading">
-                ENGELSİZ<span className="text-indigo-400 font-bold">FORUM</span>
+                ENGELSİZ<span className="text-indigo-400 light:text-indigo-700 font-bold">FORUM</span>
               </div>
             </div>
           </Link>
@@ -165,7 +165,7 @@ export default function ClassicNavbar() {
                 : "text-fg-3 hover:text-fg hover:bg-surface-raised"
             )}
           >
-            <MessageSquare size={14} className="text-indigo-400" />
+            <MessageSquare size={14} className="text-indigo-400 light:text-indigo-700" />
             <span>Tartışmalar</span>
           </Link>
 
@@ -178,7 +178,7 @@ export default function ClassicNavbar() {
                 : "text-fg-3 hover:text-fg hover:bg-surface-raised"
             )}
           >
-            <Calculator size={14} className="text-emerald-400" />
+            <Calculator size={14} className="text-emerald-400 light:text-emerald-700" />
             <span>Hesaplama</span>
           </Link>
 
@@ -203,7 +203,7 @@ export default function ClassicNavbar() {
                 : "text-fg-3 hover:text-fg hover:bg-surface-raised"
             )}
           >
-            <HelpCircle size={14} className="text-amber-400" />
+            <HelpCircle size={14} className="text-amber-400 light:text-amber-800" />
             <span>Rehber</span>
           </Link>
 
@@ -211,8 +211,8 @@ export default function ClassicNavbar() {
             <Link 
               href="/admin" 
               className={cn(
-                "px-2.5 py-1 rounded-md font-bold transition-colors flex items-center gap-1 text-amber-300 border border-amber-600/60 bg-amber-950/40",
-                pathname.startsWith('/admin') && "bg-amber-900/60 text-white border-amber-400"
+                "px-2.5 py-1 rounded-md font-bold transition-colors flex items-center gap-1 text-amber-300 light:text-amber-800 border border-amber-600/60 bg-amber-950/40 light:bg-amber-50/40",
+                pathname.startsWith('/admin') && "bg-amber-900/60 light:bg-amber-100/60 text-white border-amber-400 light:border-amber-800"
               )}
             >
               <ShieldCheck size={14} />
@@ -230,7 +230,7 @@ export default function ClassicNavbar() {
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Mevzuat, Balthazard, ÖTV ara..."
             aria-label="Forum ve Mevzuatta Arama Yap"
-            className="w-full h-9 pl-9 pr-3 text-xs bg-surface-raised border border-line rounded-md text-fg-1 placeholder-fg-4 focus:outline-none focus:border-indigo-400 transition-colors font-sans"
+            className="w-full h-9 pl-9 pr-3 text-xs bg-surface-raised border border-line rounded-md text-fg-1 placeholder-fg-4 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700 transition-colors font-sans"
           />
         </form>
 
@@ -254,7 +254,7 @@ export default function ClassicNavbar() {
               aria-label="Detaylı Erişilebilirlik Menüsü"
               aria-expanded={isAccessibilityOpen}
             >
-              <SlidersHorizontal size={14} className="text-indigo-400" />
+              <SlidersHorizontal size={14} className="text-indigo-400 light:text-indigo-700" />
               <span className="hidden sm:inline">Erişilebilirlik</span>
             </button>
             <AccessibilityMenu 
@@ -326,7 +326,7 @@ export default function ClassicNavbar() {
                   <Link
                     href="/developers"
                     onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-indigo-400 hover:bg-surface-hover hover:text-indigo-300 font-semibold"
+                    className="flex items-center gap-2 px-3 py-2 text-indigo-400 light:text-indigo-700 hover:bg-surface-hover hover:text-indigo-300 light:hover:text-indigo-700 font-semibold"
                   >
                     <Code2 size={14} />
                     <span>Geliştirici Portalı</span>
@@ -336,7 +336,7 @@ export default function ClassicNavbar() {
                     <Link
                       href="/admin"
                       onClick={() => setIsProfileOpen(false)}
-                      className="flex items-center gap-2 px-3 py-2 text-amber-300 hover:bg-surface-hover font-semibold"
+                      className="flex items-center gap-2 px-3 py-2 text-amber-300 light:text-amber-800 hover:bg-surface-hover font-semibold"
                     >
                       <ShieldCheck size={14} />
                       <span>Yönetim Paneli (ACP)</span>
@@ -346,7 +346,7 @@ export default function ClassicNavbar() {
                   <button
                     type="button"
                     onClick={handleSignOut}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-rose-400 hover:bg-surface-hover text-left cursor-pointer border-t border-line mt-1"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-rose-400 light:text-rose-700 hover:bg-surface-hover text-left cursor-pointer border-t border-line mt-1"
                   >
                     <LogOut size={14} />
                     <span>Çıkış Yap</span>

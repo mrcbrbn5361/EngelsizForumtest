@@ -97,7 +97,7 @@ export default function HesaplamaIndexPage() {
     <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs text-fg-4 font-mono">
-        <Link href="/" className="hover:text-indigo-400 transition-colors">
+        <Link href="/" className="hover:text-indigo-400 light:hover:text-indigo-700 transition-colors">
           Forum
         </Link>
         <span className="text-fg-6">/</span>
@@ -125,16 +125,16 @@ export default function HesaplamaIndexPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="space-y-1 min-w-0">
                       <div className="flex items-center gap-2.5 flex-wrap">
-                        <div className="w-8 h-8 rounded-md bg-surface-hover border border-line flex items-center justify-center text-indigo-400 shrink-0">
+                        <div className="w-8 h-8 rounded-md bg-surface-hover border border-line flex items-center justify-center text-indigo-400 light:text-indigo-700 shrink-0">
                           <Icon size={16} />
                         </div>
                         <Link 
                           href={tool.href}
-                          className="text-base sm:text-lg font-bold text-fg group-hover:text-indigo-400 transition-colors font-heading"
+                          className="text-base sm:text-lg font-bold text-fg group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors font-heading"
                         >
                           {tool.title}
                         </Link>
-                        <span className="text-[11px] font-mono font-medium text-indigo-300 bg-indigo-950/50 border border-indigo-800/60 px-2 py-0.5 rounded">
+                        <span className="text-[11px] font-mono font-medium text-indigo-300 light:text-indigo-700 bg-indigo-950/50 light:bg-indigo-50/50 border border-indigo-800/60 px-2 py-0.5 rounded">
                           {tool.tag}
                         </span>
                       </div>
@@ -159,7 +159,7 @@ export default function HesaplamaIndexPage() {
                   <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1 text-xs text-fg-4">
                     {tool.keyPoints.map((pt, i) => (
                       <span key={i} className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 light:bg-indigo-700" />
                         <span className="text-fg-3">{pt}</span>
                       </span>
                     ))}
