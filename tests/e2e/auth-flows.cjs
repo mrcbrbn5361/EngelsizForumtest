@@ -5,7 +5,6 @@
  * 1. node tests/e2e/mock-supabase.cjs
  * 2. NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_ANON_KEY=test npx next dev -p 3124
  * 3. npm run test:e2e:auth
- * Restart the mock between runs (it keeps the changed password in memory).
  */
 const { chromium } = require('playwright');
 const B = process.env.BASE_URL || 'http://localhost:3124';
@@ -14,6 +13,7 @@ let pass = 0, fail = 0;
 const check = (name, ok, extra = '') => { ok ? pass++ : fail++; console.log(`${ok ? 'GEÇTİ ' : 'KALDI '} ${name}${extra ? '  → ' + extra : ''}`); };
 (async () => {
   const b = await chromium.launch();
+  await fetch(`${(process.env.MOCK_URL || 'http://localhost:54321')}/__reset`);
   const fresh = () => b.newContext({ bypassCSP: true, viewport: { width: 1280, height: 900 } });
 
   { const ctx = await fresh(); const p = await ctx.newPage();

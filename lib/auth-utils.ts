@@ -115,8 +115,8 @@ function mapErrorMessage(msg: string, fallback: string): string {
   if (lower.includes('user already registered') || lower.includes('already exists') || lower.includes('unique constraint') || lower.includes('user_already_exists')) {
     return 'Bu e-posta adresi veya kullanıcı adı ile zaten kayıtlı bir hesap bulunmaktadır. Lütfen giriş yapın.';
   }
-  if (lower.includes('password should be at least')) {
-    return 'Şifre en az 6 karakter uzunluğunda olmalıdır.';
+  if (lower.includes('password should be at least') || lower.includes('weak_password')) {
+    return `Şifre en az ${PASSWORD_MIN_LENGTH} karakter olmalı ve bir rakam veya özel karakter içermelidir.`;
   }
   if (lower.includes('signup requires a valid password')) {
     return 'Geçerli bir şifre girmeniz gerekmektedir.';

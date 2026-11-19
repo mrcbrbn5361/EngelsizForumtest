@@ -1,6 +1,7 @@
 'use client';
 
-import { sanitizeRedirectPath } from '@/lib/auth-utils';
+import { formatAuthError, sanitizeRedirectPath } from '@/lib/auth-utils';
+import { VerifyEmailNotice } from '@/components/auth/verify-email-notice';
 import { rememberCookieString } from '@/lib/session-persistence';
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -33,6 +34,7 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [remember, setRemember] = useState(true);
+  const [unconfirmedEmail, setUnconfirmedEmail] = useState<string | null>(null);
 
   const saveRememberChoice = () => {
     document.cookie = rememberCookieString(remember, window.location.protocol === 'https:');
@@ -57,7 +59,11 @@ function LoginForm() {
       toast.success('Giriş başarılı! Yönlendiriliyorsunuz...');
       router.push(destination);
     } catch (err: any) {
-      toast.error('Giriş yapılamadı: ' + (err.message || 'Geçersiz e-posta veya şifre'));
+      if (err?.code === 'email_not_confirmed' || /email not confirmed/i.test(err?.message || '')) {
+        setUnconfirmedEmail(email.trim());
+        return;
+      }
+      toast.error('Giriş yapılamadı: ' + formatAuthError(err, 'Geçersiz e-posta veya şifre'));
     } finally {
       setLoading(false);
     }
@@ -74,7 +80,7 @@ function LoginForm() {
       });
       if (error) throw error;
     } catch (err: any) {
-      toast.error('Google ile giriş hatası: ' + err.message);
+      toast.error('Google ile giriş hatası: ' + formatAuthError(err, 'Lütfen tekrar deneyin.'));
     }
   };
 
@@ -114,6 +120,11 @@ function LoginForm() {
         
         {/* Card Body */}
         <div className="p-6 sm:p-7 space-y-6">
+          {unconfirmedEmail && (
+            <div role="alert" className="p-4 rounded-md border border-amber-500/40 bg-amber-500/10">
+              <VerifyEmailNotice email={unconfirmedEmail} startWithCooldown={false} />
+            </div>
+          )}
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-1.5">
               <label 

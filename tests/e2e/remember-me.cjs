@@ -25,6 +25,7 @@ async function login(b, { remember, redirect = '' }) {
 
 (async () => {
   const b = await chromium.launch();
+  await fetch(`${(process.env.MOCK_URL || 'http://localhost:54321')}/__reset`);
   await fetch(`${MOCK}/__ttl?s=3600`);
 
   { const { ctx } = await login(b, { remember: true });

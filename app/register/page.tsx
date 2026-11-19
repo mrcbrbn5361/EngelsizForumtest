@@ -1,6 +1,7 @@
 'use client';
 
-import { PASSWORD_MIN_LENGTH, validatePasswordStrength } from '@/lib/auth-utils';
+import { formatAuthError, PASSWORD_MIN_LENGTH, validatePasswordStrength } from '@/lib/auth-utils';
+import { VerifyEmailNotice } from '@/components/auth/verify-email-notice';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -26,6 +27,8 @@ export default function RegisterPage() {
     }
   }, [user, authLoading, router]);
 
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!termsAccepted) {
@@ -44,10 +47,11 @@ export default function RegisterPage() {
         throw new Error(passwordCheck.errors.join(' '));
       }
 
-      const { error: signUpError } = await supabase.auth.signUp({ 
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ 
         email: email.trim(), 
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/discussions`,
           data: {
             username: cleanUsername,
             full_name: username.trim()
@@ -57,10 +61,14 @@ export default function RegisterPage() {
 
       if (signUpError) throw signUpError;
 
-      toast.success('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
-      router.push('/login');
+      if (signUpData.session) {
+        toast.success('Kayıt başarılı! Topluluğa hoş geldin.');
+        router.push('/discussions');
+      } else {
+        setPendingEmail(email.trim());
+      }
     } catch (err: any) {
-      toast.error('Kayıt yapılamadı: ' + (err.message || 'Lütfen bilgilerinizi kontrol edin.'));
+      toast.error('Kayıt yapılamadı: ' + formatAuthError(err, 'Lütfen bilgilerinizi kontrol edin.'));
     } finally {
       setLoading(false);
     }
@@ -102,6 +110,9 @@ export default function RegisterPage() {
         
         {/* Card Body */}
         <div className="p-6 sm:p-7 space-y-6">
+          {pendingEmail ? (
+            <VerifyEmailNotice email={pendingEmail} />
+          ) : (
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="space-y-1.5">
               <label 
@@ -216,6 +227,7 @@ export default function RegisterPage() {
               </Link>
             </div>
           </form>
+          )}
         </div>
       </div>
     </div>
