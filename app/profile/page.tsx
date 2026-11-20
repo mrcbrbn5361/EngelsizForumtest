@@ -10,6 +10,7 @@ import { useAccessibility } from '@/components/providers/accessibility-provider'
 import { updateProfileServerAction } from '@/app/actions';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { ChangePasswordCard } from '@/components/profile/change-password-card';
+import { AvatarUploader } from '@/components/profile/avatar-uploader';
 import { UserRoleBadge } from '@/components/ui/user-badge';
 import { 
   User, 
@@ -42,6 +43,7 @@ import { cn } from '@/lib/utils';
 
 export default function ProfileManagementPage() {
   const { user, profile, loading: authLoading, refreshProfile } = useAuth();
+  const accessibility = useAccessibility();
   const { 
     fontSize, 
     highContrast, 
@@ -50,7 +52,7 @@ export default function ProfileManagementPage() {
     bionicReading, 
     focusMode,
     updateSettings 
-  } = useAccessibility();
+  } = accessibility;
   const router = useRouter();
 
   // Form State
@@ -73,7 +75,6 @@ export default function ProfileManagementPage() {
   const usernameId = useId();
   const fullNameId = useId();
   const bioId = useId();
-  const avatarId = useId();
   const alertId = useId();
 
   // Populate form from authenticated profile
@@ -129,20 +130,12 @@ export default function ProfileManagementPage() {
     setIsSubmitting(true);
 
     try {
-      const accessPrefs = {
-        fontSize,
-        highContrast,
-        dyslexicFont,
-        reducedMotion,
-        bionicReading,
-        focusMode
-      };
+      const { updateSettings: _update, resetSettings: _reset, triggerVisualAlert: _alert, ...accessPrefs } = accessibility;
 
       const result = await updateProfileServerAction({
         username: cleanUsername,
         fullName: fullName.trim() || null,
         bio: bio.trim() || null,
-        avatarUrl: avatarUrl.trim() || null,
         accessibilityPrefs: accessPrefs,
         notificationPrefs: {
           email: emailNotifications,
@@ -321,19 +314,15 @@ export default function ProfileManagementPage() {
                   />
                 </div>
 
-                <div className="sm:col-span-2 space-y-2">
-                  <label htmlFor={avatarId} className="text-xs font-bold text-fg-3">
-                    Profil Resmi / Avatar URL
-                  </label>
-                  <input
-                    id={avatarId}
-                    type="url"
-                    value={avatarUrl}
-                    onChange={(e) => handleFieldChange(setAvatarUrl, e.target.value)}
-                    className="w-full h-11 px-4 text-xs font-medium rounded-md border border-line bg-surface text-fg placeholder:text-fg-6 focus:outline-none focus:border-indigo-500 transition-all"
-                    placeholder="https://... (boş bırakırsanız otomatik oluşturulur)"
+                {user && (
+                  <AvatarUploader
+                    userId={user.id}
+                    avatarUrl={avatarUrl || null}
+                    name={fullName || profile?.full_name}
+                    username={username || profile?.username}
+                    onChanged={refreshProfile}
                   />
-                </div>
+                )}
 
                 <div className="sm:col-span-2 space-y-2">
                   <div className="flex justify-between items-center">

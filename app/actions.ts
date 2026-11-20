@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { supabaseServer, getSupabaseServer } from '@/lib/supabase-server';
 import { generateUUID, slugify, generateUniqueSlug } from '@/lib/utils';
 import { REMEMBER_COOKIE, withRememberPreference } from '@/lib/session-persistence';
+import { AVATAR_BUCKET, avatarPublicPrefix, isAllowedAvatarUrl } from '@/lib/avatar';
 
 /**
  * Creates an authenticated Supabase server client bound to request cookies.
@@ -315,7 +316,12 @@ export async function updateProfileServerAction(profileData: {
   }
 
   if (profileData.avatarUrl !== undefined) {
-    updates.avatar_url = profileData.avatarUrl?.trim() || null;
+    const nextAvatar = profileData.avatarUrl?.trim() || null;
+    const { data: current } = await supabase.from('profiles').select('avatar_url').eq('id', user.id).maybeSingle();
+    if (!isAllowedAvatarUrl(nextAvatar, { supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL || '', userId: user.id, currentUrl: current?.avatar_url })) {
+      return { success: false, error: 'Profil resmi yalnızca bu sayfadaki "Fotoğraf yükle" ile eklenebilir.' };
+    }
+    updates.avatar_url = nextAvatar;
   }
 
   if (profileData.accessibilityPrefs !== undefined) {
@@ -334,6 +340,42 @@ export async function updateProfileServerAction(profileData: {
   if (updateError) {
     console.error('Error updating profile in server action:', updateError);
     return { success: false, error: updateError.message || 'Profil güncellenemedi.' };
+  }
+
+  revalidatePath('/profile');
+  revalidatePath(`/profile/${user.id}`);
+  return { success: true };
+}
+
+/**
+ * Server Action: Sets (or clears) the profile picture. Only pictures this user uploaded to the
+ * "avatars" bucket are accepted, then older pictures in the user's folder are removed.
+ */
+export async function updateAvatarAction(avatarUrl: string | null) {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  if (authError || !user) {
+    return { success: false, error: 'Profil resmini değiştirmek için oturum açmalısınız.' };
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+  if (!isAllowedAvatarUrl(avatarUrl, { supabaseUrl, userId: user.id })) {
+    return { success: false, error: 'Geçersiz profil resmi.' };
+  }
+
+  const { error: updateError } = await supabase
+    .from('profiles')
+    .update({ avatar_url: avatarUrl, updated_at: new Date().toISOString() })
+    .eq('id', user.id);
+  if (updateError) {
+    return { success: false, error: 'Profil resmi kaydedilemedi. Lütfen tekrar deneyin.' };
+  }
+
+  const keep = avatarUrl ? avatarUrl.slice(avatarPublicPrefix(supabaseUrl, user.id).length) : null;
+  const { data: files } = await supabase.storage.from(AVATAR_BUCKET).list(user.id, { limit: 100 });
+  const stale = (files || []).map((f) => f.name).filter((name) => name !== keep).map((name) => `${user.id}/${name}`);
+  if (stale.length) {
+    await supabase.storage.from(AVATAR_BUCKET).remove(stale);
   }
 
   revalidatePath('/profile');

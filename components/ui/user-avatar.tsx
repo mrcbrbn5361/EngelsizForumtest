@@ -25,15 +25,11 @@ const sizeMap = {
 };
 
 export function UserAvatar({ src, name, username, size = 'md', className, badge, isOnline, fit = 'cover' }: UserAvatarProps) {
-  const [errorCount, setErrorCount] = useState(0);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    setErrorCount(0);
+    setFailed(false);
   }, [src]);
-
-  const cleanUsername = (username || name || 'user').trim();
-  const safeSeed = encodeURIComponent(cleanUsername);
-  const dicebearUrl = `https://api.dicebear.com/7.x/bottts/svg?seed=${safeSeed}`;
 
   const getInitials = () => {
     if (name) {
@@ -49,26 +45,14 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge,
 
   const initials = getInitials();
 
-  // Determine current image source based on errors
-  const isMockUrl = src?.startsWith('/avatars/') || src?.includes('localhost');
-  const validCustomSrc = src && !isMockUrl ? src : null;
-
-  let currentImgSrc: string | null = null;
-  if (errorCount === 0) {
-    currentImgSrc = validCustomSrc || dicebearUrl;
-  } else if (errorCount === 1) {
-    // If custom image failed, try dicebear fallback
-    currentImgSrc = validCustomSrc ? dicebearUrl : null;
-  } else {
-    // If dicebear also failed, fallback to initials
-    currentImgSrc = null;
-  }
+  const isMockUrl = src?.startsWith('/avatars/');
+  const currentImgSrc = src && !isMockUrl && !failed ? src : null;
 
   return (
     <div className={cn("relative shrink-0 select-none inline-flex items-center justify-center", className)}>
       <div 
         role="img"
-        aria-label={name || username || 'Kullanıcı Avatarı'}
+        aria-label={name || username ? `${name || username} profil resmi` : 'Kullanıcı profil resmi'}
         className={cn(
           "rounded-md border border-line overflow-hidden bg-surface-hover relative flex items-center justify-center transition-all",
           sizeMap[size]
@@ -77,18 +61,18 @@ export function UserAvatar({ src, name, username, size = 'md', className, badge,
         {currentImgSrc ? (
           <img
             src={currentImgSrc}
-            alt={name || username || 'Kullanıcı'}
+            alt=""
             loading="lazy"
             decoding="async"
             referrerPolicy="no-referrer"
-            onError={() => setErrorCount(prev => prev + 1)}
+            onError={() => setFailed(true)}
             className={cn(
               "w-full h-full",
               fit === 'contain' ? "object-contain object-center" : "object-cover object-center"
             )}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center font-black text-sky-800 dark:text-sky-300 bg-sky-100 dark:bg-sky-950/70 select-none">
+          <div aria-hidden="true" className="w-full h-full flex items-center justify-center font-black text-sky-800 dark:text-sky-300 bg-sky-100 dark:bg-sky-950/70 select-none">
             {initials || <UserIcon size={14} />}
           </div>
         )}
