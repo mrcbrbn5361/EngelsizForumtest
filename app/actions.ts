@@ -7,6 +7,7 @@ import { supabaseServer, getSupabaseServer } from '@/lib/supabase-server';
 import { generateUUID, slugify, generateUniqueSlug } from '@/lib/utils';
 import { REMEMBER_COOKIE, withRememberPreference } from '@/lib/session-persistence';
 import { AVATAR_BUCKET, avatarPublicPrefix, isAllowedAvatarUrl } from '@/lib/avatar';
+import { normalizeNotificationPrefs, normalizePrivacyPrefs, wantsNotification, type NotificationPrefs, type PrivacyPrefs } from '@/lib/preferences';
 
 /**
  * Creates an authenticated Supabase server client bound to request cookies.
@@ -348,6 +349,50 @@ export async function updateProfileServerAction(profileData: {
 }
 
 /**
+ * Server Action: Returns the signed-in user's notification and privacy preferences.
+ */
+export async function getPreferencesAction(): Promise<
+  { success: true; notifications: NotificationPrefs; privacy: PrivacyPrefs } | { success: false; error: string }
+> {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Tercihlerinizi görmek için oturum açmalısınız.' };
+  const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
+  return {
+    success: true,
+    notifications: normalizeNotificationPrefs(data?.notification_prefs),
+    privacy: normalizePrivacyPrefs(data?.privacy_prefs),
+  };
+}
+
+/**
+ * Server Action: Saves notification and/or privacy preferences for the signed-in user.
+ */
+export async function updatePreferencesAction(input: { notifications?: NotificationPrefs; privacy?: PrivacyPrefs }) {
+  const supabase = await getSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: 'Tercihlerinizi kaydetmek için oturum açmalısınız.' };
+
+  const updates: Record<string, unknown> = {};
+  if (input.notifications) updates.notification_prefs = normalizeNotificationPrefs(input.notifications);
+  if (input.privacy) updates.privacy_prefs = normalizePrivacyPrefs(input.privacy);
+  if (!Object.keys(updates).length) return { success: true };
+
+  const { error } = await supabase.from('profiles').update(updates).eq('id', user.id);
+  if (error) {
+    const missingColumn = /column|schema cache|42703|PGRST204/i.test(`${error.code} ${error.message}`);
+    return {
+      success: false,
+      error: missingColumn
+        ? 'Tercihler henüz kaydedilemiyor: veritabanı güncellemesi bekleniyor (05_tercih_sutunlari.sql).'
+        : 'Tercihler kaydedilemedi. Lütfen tekrar deneyin.',
+    };
+  }
+  revalidatePath(`/profile/${user.id}`);
+  return { success: true };
+}
+
+/**
  * Server Action: Sets (or clears) the profile picture. Only pictures this user uploaded to the
  * "avatars" bucket are accepted, then older pictures in the user's folder are removed.
  */
@@ -589,7 +634,7 @@ export async function toggleFollowAction(targetUserId: string) {
 
       const senderName = senderProfile?.full_name || senderProfile?.username || user.email?.split('@')[0] || 'Bir üye';
 
-      await serviceClient.from('notifications').insert({
+      if (await recipientWantsNotification(serviceClient, targetUserId, 'follow')) await serviceClient.from('notifications').insert({
         id: generateUUID(),
         user_id: targetUserId,
         sender_id: user.id,
@@ -818,6 +863,7 @@ export async function sendMessageAction(params: {
 
       for (const other of otherMembers) {
         if (!other?.user_id) continue;
+        if (!(await recipientWantsNotification(serviceClient, other.user_id, 'message'))) continue;
         await serviceClient.from('notifications').insert({
           id: generateUUID(),
           user_id: other.user_id,
@@ -1259,15 +1305,28 @@ export async function sendVoiceMessageAction(params: {
 }
 
 /**
- * Server Action: Securely creates a notification using the serviceClient to bypass RLS policies
+ * True when the recipient has not turned this notification type off on /tercihler.
+ * Fails open (sends) when preferences cannot be read.
  */
-export async function createNotificationAction(payload: {
-  recipientId: string;
-  type: string;
-  content: string;
-  data?: any;
-}) {
+async function recipientWantsNotification(serviceClient: ReturnType<typeof getSupabaseServer>, recipientId: string, type: string): Promise<boolean> {
   try {
+    const { data } = await serviceClient.from('profiles').select('notification_prefs').eq('id', recipientId).maybeSingle();
+    return wantsNotification(data?.notification_prefs, type);
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Server Action: Notifies a topic's author that the current user liked or answered it.
+ * The recipient, text and link are built on the server from the topic, so a client cannot
+ * send arbitrary notifications (e.g. phishing links) to other members.
+ */
+export async function createNotificationAction(payload: { type: 'like' | 'comment'; topicId: string }) {
+  try {
+    if (payload.type !== 'like' && payload.type !== 'comment') {
+      return { success: false, error: 'Geçersiz bildirim türü.' };
+    }
     const supabase = await getSupabaseServerClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -1275,35 +1334,42 @@ export async function createNotificationAction(payload: {
     }
 
     const serviceClient = getSupabaseServer();
+    const { data: topic } = await serviceClient.from('topics').select('id, title, author_id').eq('id', payload.topicId).maybeSingle();
+    if (!topic?.author_id || topic.author_id === user.id) {
+      return { success: true, skipped: true };
+    }
+    if (!(await recipientWantsNotification(serviceClient, topic.author_id, payload.type))) {
+      return { success: true, skipped: true };
+    }
 
     const { data: senderProfile } = await serviceClient
       .from('profiles')
       .select('full_name, username')
       .eq('id', user.id)
       .maybeSingle();
-
-    const senderName = senderProfile?.full_name || senderProfile?.username || user.email?.split('@')[0] || 'Bir üye';
+    const senderName = senderProfile?.full_name || senderProfile?.username || 'Bir üye';
+    const verb = payload.type === 'like' ? 'konunuzu beğendi' : 'konunuza cevap yazdı';
 
     const { error } = await serviceClient.from('notifications').insert({
       id: generateUUID(),
-      user_id: payload.recipientId,
+      user_id: topic.author_id,
       sender_id: user.id,
       type: payload.type,
-      content: payload.content,
+      content: `${senderName} "${topic.title}" ${verb}.`,
       is_read: false,
-      data: payload.data || {},
+      data: { link: `/discussions/${topic.id}` },
       created_at: new Date().toISOString()
     });
 
     if (error) {
       console.error('Error inserting notification via serviceClient:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: 'Bildirim gönderilemedi.' };
     }
 
     return { success: true };
   } catch (err: any) {
     console.error('Fatal error in createNotificationAction:', err);
-    return { success: false, error: err?.message || 'Bildirim gönderilemedi.' };
+    return { success: false, error: 'Bildirim gönderilemedi.' };
   }
 }
 

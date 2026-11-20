@@ -385,12 +385,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
         // Send push notification to topic author
         if (topic.author_id !== user.id) {
-          createNotificationAction({
-            recipientId: topic.author_id,
-            type: 'like',
-            content: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuzu beğendi.`,
-            data: { link: `/discussions/${topic.id}` }
-          }).catch(notifErr => console.warn("Notification insert warning:", notifErr));
+          createNotificationAction({ type: 'like', topicId: topic.id }).catch(notifErr => console.warn("Notification insert warning:", notifErr));
         }
       }
     } catch (err) {
@@ -463,12 +458,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
         // Notify topic author
         if (topic.author_id !== user.id) {
-          createNotificationAction({
-            recipientId: topic.author_id,
-            type: 'comment',
-            content: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuza cevap yazdı.`,
-            data: { link: `/discussions/${topic.id}` }
-          }).catch(notifErr => console.warn("Notification insert warning:", notifErr));
+          createNotificationAction({ type: 'comment', topicId: topic.id }).catch(notifErr => console.warn("Notification insert warning:", notifErr));
         }
 
         // Check if @EngelsizAI is mentioned

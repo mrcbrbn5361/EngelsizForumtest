@@ -54,7 +54,7 @@ Yeni özellik eklemeden önce mevcut sitenin doğru çalışması gerekiyor.
 | # | Madde | Not | Durum |
 |---|-------|-----|-------|
 | 4.1 | Kullanıcıların topluluk oluşturması (S2-15) | `app/communities` mevcut — kullanıcıya açılacak | ⬜ |
-| 4.2 | Tercihler (S2-16) | ❓ Ne kastedildiği netleştirilmeli | ❓ |
+| 4.2 | Tercihler (S2-16) | Yapıldı (karar: ayrı Tercihler sayfası). /tercihler: bildirim türleri (sunucuda uygulanıyor), profil görünürlüğü, okuyanlar listesi, çerezler. Sahte bildirim açığı kapatıldı, çerez onayı varsayılan kapalı. 16 uçtan uca test. **Miraç: `05_tercih_sutunlari.sql`** | 🟨 |
 | 4.3 | Haberi siteye aktarma ve kaynağa yönlendirme — resmi web siteleri için (S1-Ek4) | Özet + "Kaynağa git" bağlantısı | ⬜ |
 | 4.4 | Akran mentor eşleştirmesi; e-Devlet belki eklenebilir (S2-10) | e-Devlet entegrasyonu resmi başvuru gerektirir | ⬜ |
 | 4.5 | Randevuyu götür — PDF oluşturma (S2-7) | ❓ Hangi randevu? Hastane/rapor için yanında götürülecek özet belge mi? | ❓ |

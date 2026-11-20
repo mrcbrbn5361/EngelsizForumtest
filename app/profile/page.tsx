@@ -62,8 +62,6 @@ export default function ProfileManagementPage() {
   const [avatarUrl, setAvatarUrl] = useState('');
 
   // Notification & Accessibility preferences local state
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [browserNotifications, setBrowserNotifications] = useState(true);
 
   // Form UI state
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -85,9 +83,6 @@ export default function ProfileManagementPage() {
       setBio(profile.bio || '');
       setAvatarUrl(profile.avatar_url || '');
 
-      const notifPrefs = (profile as any).notification_prefs || {};
-      if (typeof notifPrefs.email === 'boolean') setEmailNotifications(notifPrefs.email);
-      if (typeof notifPrefs.browser === 'boolean') setBrowserNotifications(notifPrefs.browser);
 
       setHasUnsavedChanges(false);
     }
@@ -137,10 +132,6 @@ export default function ProfileManagementPage() {
         fullName: fullName.trim() || null,
         bio: bio.trim() || null,
         accessibilityPrefs: accessPrefs,
-        notificationPrefs: {
-          email: emailNotifications,
-          browser: browserNotifications,
-        }
       });
 
       if (!result.success) {
@@ -344,127 +335,11 @@ export default function ProfileManagementPage() {
               </div>
             </div>
 
-            {/* Card 2: Erişilebilirlik Tercihleri */}
-            <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 shadow-xs space-y-6">
-              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 light:text-indigo-700 border-b border-line pb-4">
-                <Accessibility size={16} />
-                <span>Erişilebilirlik Ayarları</span>
-              </div>
-
-              <div className="space-y-4">
-                {/* Font Size */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-md bg-surface-hover/50 border border-line">
-                  <div className="space-y-1">
-                    <p className="text-xs font-bold text-fg uppercase tracking-wider">Yazı Büyüklüğü</p>
-                    <p className="text-[11px] text-fg-4">Platform genelindeki varsayılan metin boyutu</p>
-                  </div>
-                  <div className="grid grid-cols-4 gap-2 w-full md:w-72">
-                    {(['sm', 'md', 'lg', 'xl'] as const).map((size) => (
-                      <button
-                        key={size}
-                        type="button"
-                        onClick={() => {
-                          updateSettings({ fontSize: size });
-                          setHasUnsavedChanges(true);
-                        }}
-                        className={cn(
-                          "h-10 text-[10px] font-bold uppercase rounded-md border transition-all cursor-pointer flex items-center justify-center",
-                          fontSize === size 
-                            ? "bg-indigo-600 text-white border-indigo-600 shadow-sm" 
-                            : "bg-surface text-fg-4 border-line hover:border-slate-500"
-                        )}
-                        aria-pressed={fontSize === size}
-                      >
-                        {size}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Toggles */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <PreferenceToggle
-                    icon={<Contrast size={14} />}
-                    title="Yüksek Kontrast"
-                    desc="Zıtlığı artırır (WCAG AAA)"
-                    active={highContrast}
-                    onToggle={() => {
-                      updateSettings({ highContrast: !highContrast });
-                      setHasUnsavedChanges(true);
-                    }}
-                  />
-                  <PreferenceToggle
-                    icon={<Type size={14} />}
-                    title="Disleksi Uyumlu Font"
-                    desc="Okumayı kolaylaştıran özel font"
-                    active={dyslexicFont}
-                    onToggle={() => {
-                      updateSettings({ dyslexicFont: !dyslexicFont });
-                      setHasUnsavedChanges(true);
-                    }}
-                  />
-                  <PreferenceToggle
-                    icon={<Sparkles size={14} />}
-                    title="Biyonik Okuma"
-                    desc="Kelimelerin baş harflerini vurgular"
-                    active={bionicReading}
-                    onToggle={() => {
-                      updateSettings({ bionicReading: !bionicReading });
-                      setHasUnsavedChanges(true);
-                    }}
-                  />
-                  <PreferenceToggle
-                    icon={<MoveHorizontal size={14} />}
-                    title="Hareketi Azalt"
-                    desc="Arayüz animasyonlarını durdurur"
-                    active={reducedMotion}
-                    onToggle={() => {
-                      updateSettings({ reducedMotion: !reducedMotion });
-                      setHasUnsavedChanges(true);
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3: Bildirim Tercihleri */}
-            <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 shadow-xs space-y-6">
-              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 light:text-indigo-700 border-b border-line pb-4">
-                <Bell size={16} />
-                <span>Bildirim Tercihleri</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <PreferenceToggle
-                  icon={<Bell size={14} />}
-                  title="E-posta Bildirimleri"
-                  desc="Yanıt ve mentionlarda e-posta al"
-                  active={emailNotifications}
-                  onToggle={() => handleFieldChange(setEmailNotifications, !emailNotifications)}
-                />
-                <PreferenceToggle
-                  icon={<Eye size={14} />}
-                  title="Anlık Bildirimler"
-                  desc="Web üzerinden anlık bildirim al"
-                  active={browserNotifications}
-                  onToggle={() => handleFieldChange(setBrowserNotifications, !browserNotifications)}
-                />
-              </div>
-            </div>
-
-            {/* Card 4: Gizlilik */}
-            <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 shadow-xs space-y-6">
-              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 light:text-indigo-700 border-b border-line pb-4">
-                <Shield size={16} />
-                <span>Gizlilik</span>
-              </div>
-              <PreferenceToggle
-                icon={<Eye size={14} />}
-                title="Okuduğum konularda adımı göster"
-                desc="Kapalıysa konuların altındaki 'okuyanlar' listesinde adınız yerine 'gizli üye' yazar. Sağlıkla ilgili konuları okuduğunuzun bilinmesini istemiyorsanız kapatın."
-                active={accessibility.showReadingPresence}
-                onToggle={() => updateSettings({ showReadingPresence: !accessibility.showReadingPresence })}
-              />
+            <div className="bg-surface-raised border border-line rounded-md p-5 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm text-fg-3">Bildirim, gizlilik, çerez ve erişilebilirlik ayarlarınız artık ayrı bir sayfada.</p>
+              <Link href="/tercihler" className="inline-flex items-center gap-2 min-h-[44px] px-4 rounded-md border border-line bg-surface-hover hover:bg-surface-active text-fg text-xs font-bold">
+                <Settings size={15} aria-hidden="true" /> Tercihlere git
+              </Link>
             </div>
 
             {/* Action Bar */}
@@ -513,55 +388,5 @@ export default function ProfileManagementPage() {
 
       </div>
     </div>
-  );
-}
-
-function PreferenceToggle({
-  icon,
-  title,
-  desc,
-  active,
-  onToggle
-}: {
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-  active: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onToggle}
-      className={cn(
-        "flex items-center justify-between p-4 rounded-md border transition-all text-left w-full outline-none cursor-pointer group",
-        active 
-          ? "bg-indigo-950/20 light:bg-indigo-50/20 border-indigo-500/40 text-white" 
-          : "bg-surface border-line text-fg-4 hover:border-slate-700"
-      )}
-      aria-pressed={active}
-    >
-      <div className="flex items-center gap-3.5 pr-2">
-        <div className={cn(
-          "p-2.5 rounded-md shrink-0 transition-colors", 
-          active ? "bg-indigo-600 text-white" : "bg-surface-hover text-fg-5 group-hover:text-fg-3"
-        )}>
-          {icon}
-        </div>
-        <div>
-          <p className={cn("text-[11px] font-bold uppercase tracking-wider", active ? "text-fg" : "text-fg-3")}>{title}</p>
-          <p className="text-[10px] text-fg-5 mt-0.5 leading-tight">{desc}</p>
-        </div>
-      </div>
-      <div className={cn(
-        "h-4 w-7 rounded-full border relative transition-colors shrink-0",
-        active ? "bg-indigo-600 border-indigo-600" : "bg-slate-800 border-slate-700"
-      )}>
-        <div className={cn(
-          "absolute top-0.5 left-0.5 h-2.5 w-2.5 rounded-full bg-white transition-transform",
-          active ? "translate-x-3" : "translate-x-0"
-        )} />
-      </div>
-    </button>
   );
 }
