@@ -4,6 +4,7 @@
  * GET /__ttl?s=30 makes new tokens expire after 30 s (forces refreshes); GET /__autoconfirm?on=1 makes
  * sign-up return a session (email confirmation disabled). dogrulanmamis@ornek.test is an unconfirmed account.
  * GET /__reset restores the initial state; every e2e suite calls it first.
+ * One sample topic (id aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee) is served from /rest/v1/topics.
  * Storage: 'avatars' bucket upload/list/delete/public read; GET /__storage and /__profile for inspection.
  *
  * Run:  node tests/e2e/mock-supabase.cjs   (listens on MOCK_PORT, default 54321)
@@ -16,6 +17,7 @@ let ttl = 3600;
 let autoConfirm = false;
 const storage = new Map();
 let profileRow = null;
+const TOPIC = { id: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', slug: 'test-konusu', title: 'Engelli raporu yenileme', content: 'Raporumu nasıl yenilerim?', created_at: '2026-11-01T10:00:00Z', updated_at: '2026-11-01T10:00:00Z', author_id: USER.id, category_id: null, is_pinned: false, is_locked: false, is_solved: false, views_count: 3, likes_count: 0, category: { id: 'c1', name: 'Genel', slug: 'genel' }, author: { id: USER.id, username: 'uye', full_name: 'Örnek Üye', avatar_url: null, role: 'user', level: 1, xp: 10 } };
 const freshProfile = () => ({ id: USER.id, username: 'uye', full_name: 'Örnek Üye', role: 'user', avatar_url: null, bio: '' });
 const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
 const jwt = () => `${b64({ alg: 'HS256', typ: 'JWT' })}.${b64({ sub: USER.id, email: USER.email, role: 'authenticated', aud: 'authenticated', exp: Math.floor(Date.now() / 1000) + ttl, session_id: 's1' })}.sig`;
@@ -64,6 +66,7 @@ http.createServer((req, res) => {
     if (url.pathname === '/storage/v1/object/avatars' && req.method === 'DELETE') { (body.prefixes || []).forEach((k) => storage.delete(k)); return send(res, 200, (body.prefixes || []).map((name) => ({ name }))); }
     if (url.pathname.startsWith('/storage/v1/object/avatars/') && req.method === 'POST') { const key = decodeURIComponent(url.pathname.slice('/storage/v1/object/avatars/'.length)); storage.set(key, fileFromUpload(req, buf)); return send(res, 200, { Key: 'avatars/' + key, Id: key }); }
     if (url.pathname.startsWith('/rest/v1/profiles') && req.method === 'PATCH') { Object.assign(profileRow, body); return send(res, 204); }
+    if (url.pathname.startsWith('/rest/v1/topics') && req.method === 'GET') { const one = (req.headers.accept || '').includes('vnd.pgrst.object'); return send(res, 200, one ? TOPIC : [TOPIC]); }
     if (url.pathname.startsWith('/rest/v1/profiles')) { const one = (req.headers.accept || '').includes('vnd.pgrst.object'); const p = profileRow || (profileRow = freshProfile()); return send(res, 200, one ? p : [p]); }
     if (url.pathname.startsWith('/rest/v1/')) { const one = (req.headers.accept || '').includes('vnd.pgrst.object'); return one ? send(res, 406, { code: 'PGRST116', message: 'no rows' }) : send(res, 200, []); }
     if (url.pathname.startsWith('/realtime')) return send(res, 404, {});

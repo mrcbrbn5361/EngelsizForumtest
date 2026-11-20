@@ -13,6 +13,7 @@ export type FontSize = 'sm' | 'md' | 'lg' | 'xl';
 export interface AccessibilitySettings {
   theme: ThemePreference;
   readingFont: ReadingFont;
+  showReadingPresence: boolean;
   fontSize: FontSize;
   highContrast: boolean;
   dyslexicFont: boolean;
@@ -35,6 +36,7 @@ interface AccessibilityContextType extends AccessibilitySettings {
 const defaultSettings: AccessibilitySettings = {
   theme: 'dark',
   readingFont: 'default',
+  showReadingPresence: true,
   fontSize: 'md',
   highContrast: false,
   dyslexicFont: false,

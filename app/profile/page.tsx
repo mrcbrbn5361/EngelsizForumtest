@@ -452,6 +452,21 @@ export default function ProfileManagementPage() {
               </div>
             </div>
 
+            {/* Card 4: Gizlilik */}
+            <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 shadow-xs space-y-6">
+              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 light:text-indigo-700 border-b border-line pb-4">
+                <Shield size={16} />
+                <span>Gizlilik</span>
+              </div>
+              <PreferenceToggle
+                icon={<Eye size={14} />}
+                title="Okuduğum konularda adımı göster"
+                desc="Kapalıysa konuların altındaki 'okuyanlar' listesinde adınız yerine 'gizli üye' yazar. Sağlıkla ilgili konuları okuduğunuzun bilinmesini istemiyorsanız kapatın."
+                active={accessibility.showReadingPresence}
+                onToggle={() => updateSettings({ showReadingPresence: !accessibility.showReadingPresence })}
+              />
+            </div>
+
             {/* Action Bar */}
             <div className="flex items-center justify-end gap-4 pt-4">
               <button

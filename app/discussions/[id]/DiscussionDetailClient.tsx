@@ -1,6 +1,9 @@
 'use client';
 
 import { BionicText } from '@/components/ui/bionic-text';
+import { TopicReaders } from '@/components/forum/topic-readers';
+import { useTopicReaders } from '@/hooks/use-topic-readers';
+import { useAccessibility } from '@/components/providers/accessibility-provider';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   ThumbsUp, Quote, Flag, MessageSquare, ExternalLink, ShieldCheck, 
@@ -96,6 +99,12 @@ interface DiscussionDetailClientProps {
 
 export default function DiscussionDetailClient({ initialTopic, initialComments }: DiscussionDetailClientProps) {
   const { user, profile } = useAuth();
+  const { showReadingPresence } = useAccessibility();
+  const readers = useTopicReaders(
+    initialTopic?.id,
+    user ? { userId: user.id, username: profile?.username || 'üye' } : null,
+    !showReadingPresence
+  );
   const [topic, setTopic] = useState<TopicData>(initialTopic);
   const [comments, setComments] = useState<CommentData[]>(initialComments);
   const [replyContent, setReplyContent] = useState('');
@@ -1106,6 +1115,8 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
             <span className="opacity-40">/</span>
             <span className="font-semibold text-fg-2 truncate max-w-[200px] sm:max-w-xs">{topic.title}</span>
           </div>
+
+          <TopicReaders summary={readers} />
 
         </div>
 
