@@ -47,6 +47,7 @@ import { cn } from '@/lib/utils';
 import { UserManagementView } from '@/components/admin/user-management';
 import { ContentModerationView } from '@/components/admin/content-moderation';
 import { CategoryManagementView } from '@/components/admin/category-management';
+import { deleteTopicAction } from '@/app/actions';
 
 export default function AdminPage() {
   const { user, profile, loading: authLoading, refreshProfile } = useAuth();
@@ -294,8 +295,10 @@ export default function AdminPage() {
   const handleDeleteThread = async (threadId: string) => {
     if (!confirm('Bu konuyu silmek istediğinize emin misiniz?')) return;
     try {
-      if (isSupabaseConfigured) {
-        await supabase.from('threads').delete().eq('id', threadId);
+      const result = await deleteTopicAction(threadId);
+      if (!result.success) {
+        toast.error(result.error || 'Konu silinemedi');
+        return;
       }
       setThreads(prev => prev.filter(t => t.id !== threadId));
       toast.success('Konu başarıyla silindi');

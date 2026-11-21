@@ -19,16 +19,13 @@ export default function VisitorTracker() {
         }
       } catch (e) {
         console.warn('Visitor tracking storage access failed', e);
-        deviceId = 'anonymous'; // Fallback if storage is blocked
+        return;
       }
 
       try {
         await fetch('/api/visitor-stats', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer engelsizforumteknofesttanitim'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ device_id: deviceId }),
         });
       } catch (error) {

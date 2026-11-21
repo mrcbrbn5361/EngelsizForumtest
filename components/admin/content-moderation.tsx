@@ -5,6 +5,7 @@ import { MessageSquare, Search, Pin, Lock, Unlock, Trash2, RefreshCw, Loader2 } 
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { deleteTopicAction } from '@/app/actions';
 
 export function ContentModerationView() {
   const [threads, setThreads] = useState<any[]>([]);
@@ -101,11 +102,10 @@ export function ContentModerationView() {
   const handleDeleteThread = async (threadId: string) => {
     if (!confirm('Bu konuyu silmek istediğinize emin misiniz?')) return;
     try {
-      if (isSupabaseConfigured) {
-        const { error } = await supabase.from('topics').delete().eq('id', threadId);
-        if (error) {
-          await supabase.from('threads').delete().eq('id', threadId);
-        }
+      const result = await deleteTopicAction(threadId);
+      if (!result.success) {
+        toast.error(result.error || 'Konu silinemedi');
+        return;
       }
       setThreads(prev => prev.filter(t => t.id !== threadId));
       toast.success('Konu başarıyla silindi');

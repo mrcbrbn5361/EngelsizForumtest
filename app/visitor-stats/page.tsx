@@ -84,11 +84,8 @@ export default function VisitorStatsMonitor() {
         // Send heartbeat (POST)
         const postRes = await fetch('/api/visitor-stats', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer engelsizforumteknofesttanitim'
-          },
-          body: JSON.stringify({ device_id: `${deviceName}-${deviceId}` })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ device_id: `${deviceName}-${deviceId}`.replace(/[^A-Za-z0-9._:-]/g, '-').slice(0, 100) })
         });
         
         if (!postRes.ok) throw new Error('POST Heartbeat failed');
@@ -96,11 +93,7 @@ export default function VisitorStatsMonitor() {
       }
 
       // Fetch latest counts (GET)
-      const getRes = await fetch('/api/visitor-stats', {
-        headers: {
-          'Authorization': 'Bearer engelsizforumteknofesttanitim'
-        }
-      });
+      const getRes = await fetch('/api/visitor-stats', { cache: 'no-store' });
 
       if (!getRes.ok) throw new Error('GET stats failed');
       
@@ -216,8 +209,7 @@ import time
 import uuid
 
 # Uygulamanızın URL'ini buraya yazın
-API_URL = "${originUrl}/api/visitor-stats" 
-TOKEN = "engelsizforumteknofesttanitim"
+API_URL = "${originUrl}/api/visitor-stats"
 # Cihaz için benzersiz bir ID (MAC adresinden üretilir)
 DEVICE_ID = ':'.join(['{:02x}'.format((uuid.getnode() >> elements) & 0xff) for elements in range(0, 2*6, 2)][::-1])
 
@@ -227,20 +219,14 @@ def veriyi_cek():
         requests.post(
             API_URL,
             json={"device_id": f"RaspberryPi-Device-{DEVICE_ID}"},
-            headers={
-                "Authorization": f"Bearer {TOKEN}",
-                "Content-Type": "application/json"
-            },
+            headers={"Content-Type": "application/json"},
             timeout=10
         )
         
         # Sonra güncel istatistikleri çekiyoruz (GET)
         response = requests.get(
             API_URL,
-            headers={
-                "Authorization": f"Bearer {TOKEN}",
-                "User-Agent": "VisitorTracker/1.0"
-            },
+            headers={"User-Agent": "VisitorTracker/1.0"},
             timeout=15
         )
         
@@ -261,7 +247,6 @@ if __name__ == "__main__":
         time.sleep(300) # 5 dakikada bir`;
 
   const curlCommand = `curl -X POST "${originUrl}/api/visitor-stats" \\
-  -H "Authorization: Bearer engelsizforumteknofesttanitim" \\
   -H "Content-Type: application/json" \\
   -d '{"device_id": "rpi-kiosk-01"}'`;
 
@@ -649,7 +634,7 @@ if __name__ == "__main__":
                   </pre>
                 </div>
                 <p className="text-[11px] text-slate-400 leading-relaxed font-medium">
-                  * Herhangi bir IoT cihazı (örneğin ESP32 veya Arduino) yukarıdaki gibi <code>Authorization</code> başlığında <code>Bearer engelsizforumteknofesttanitim</code> tokeni ile bir <code>POST</code> isteği göndererek sayaçta bir ziyaretçi olarak görünebilir.
+                  * Herhangi bir IoT cihazı (örneğin ESP32 veya Arduino) yukarıdaki gibi <code>device_id</code> içeren bir <code>POST</code> isteği göndererek sayaçta bir ziyaretçi olarak görünebilir.
                 </p>
               </div>
 
@@ -666,7 +651,7 @@ if __name__ == "__main__":
                   </div>
                   <div className="py-2 flex justify-between">
                     <span className="font-mono text-primary font-bold">Headers</span>
-                    <span className="font-mono text-slate-400">Authorization: Bearer engelsizforumteknofesttanitim</span>
+                    <span className="font-mono text-slate-400">Content-Type: application/json</span>
                   </div>
                   <div className="py-2 flex justify-between">
                     <span className="font-mono text-primary font-bold">Gövde (POST)</span>
