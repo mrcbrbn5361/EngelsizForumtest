@@ -155,7 +155,7 @@ export function DisabilityQuickBar() {
         </div>
 
         {/* Profiles Pill Buttons - High Contrast, Clear Text with horizontal scroll safety */}
-        <div className="flex items-center overflow-x-auto gap-1.5 py-0.5 scrollbar-none shrink-0 max-w-full">
+        <div className="flex items-center overflow-x-auto gap-1.5 py-0.5 min-w-0 flex-1 [&>*:first-child]:ml-auto">
           {PROFILES.map((p) => {
             const Icon = p.icon;
             const isSelected = activeProfile === p.id;

@@ -35,6 +35,11 @@ const nextConfig: NextConfig = {
         destination: '/discussions',
         permanent: true,
       },
+      {
+        source: '/forum',
+        destination: '/',
+        permanent: false,
+      },
     ];
   },
   async rewrites() {

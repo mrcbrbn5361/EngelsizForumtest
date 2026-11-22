@@ -38,7 +38,7 @@ const defaultSettings: AccessibilitySettings = {
   largeCursor: false,
   audioGuide: false,
   readingRuler: false,
-  visualAlerts: true,
+  visualAlerts: false,
 };
 
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
