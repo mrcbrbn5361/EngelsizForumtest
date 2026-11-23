@@ -20,6 +20,18 @@ html[data-reading-font="opendyslexic"] {
   --font-heading: "OpenDyslexic", var(--font-jakarta), "Segoe UI", Roboto, sans-serif;
 }
 
+/* OpenDyslexic is much wider than other faces: the site header (menu, quick bar) keeps the default
+   typeface so every link and the sign-in buttons stay on screen; page content uses OpenDyslexic. */
+html[data-reading-font="opendyslexic"] header {
+  --font-sans: var(--font-atkinson), "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-jakarta), "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
+}
+html[data-reading-font="opendyslexic"] header :is(p, span, a, input, button) {
+  letter-spacing: normal !important;
+  word-spacing: normal !important;
+}
+
 /* Semantic theme tokens: components use bg-surface, text-fg, border-line ... instead of fixed hex values.
    fg is the strongest text colour; fg-1 … fg-6 get progressively dimmer. */
 @theme inline {
