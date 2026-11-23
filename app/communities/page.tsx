@@ -134,35 +134,8 @@ export default function CommunitiesPage() {
   const [communities, setCommunities] = useState<Community[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [newCommunity, setNewCommunity] = useState({ name: '', description: '', icon: 'users' });
-  const [creating, setCreating] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState('all');
-  const [joinedList, setJoinedList] = useState<string[]>([]);
   const [activeRulesCommunity, setActiveRulesCommunity] = useState<Community | null>(null);
-
-  useEffect(() => {
-    if (!user || !isSupabaseConfigured) {
-      setJoinedList([]);
-      return;
-    }
-    const fetchJoined = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('community_members')
-          .select('community_id')
-          .eq('user_id', user.id);
-        if (error) {
-          setJoinedList([]);
-        } else if (data) {
-          setJoinedList(data.map((m: any) => m.community_id));
-        }
-      } catch {
-        setJoinedList([]);
-      }
-    };
-    fetchJoined();
-  }, [user]);
 
   const fetchCommunities = useCallback(async () => {
     if (!isSupabaseConfigured) {
@@ -174,7 +147,7 @@ export default function CommunitiesPage() {
     try {
       const { data, error } = await supabase
         .from('categories')
-        .select('*, topics:topics(count), members:community_members(count)')
+        .select('*, topics:topics(count)')
         .order('name');
       
       if (error) throw error;
@@ -182,7 +155,6 @@ export default function CommunitiesPage() {
         const formatted = data.map(cat => ({
           ...cat,
           topic_count: cat.topics?.[0]?.count || 0,
-          member_count: cat.members?.[0]?.count || 0,
         }));
         setCommunities(formatted);
       } else {
@@ -194,47 +166,6 @@ export default function CommunitiesPage() {
       setLoading(false);
     }
   }, []);
-
-  const createCommunity = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setCreating(true);
-    try {
-      const baseSlug = slugify(newCommunity.name) || `topluluk-${generateShortId(4)}`;
-      let inserted = false;
-      let lastErr: any = null;
-
-      for (let attempt = 0; attempt < 3; attempt++) {
-        const slug = attempt === 0 ? baseSlug : `${baseSlug}-${generateShortId(4)}`;
-        const { error } = await supabase
-          .from('categories')
-          .insert([{ ...newCommunity, slug }]);
-
-        if (!error) {
-          inserted = true;
-          break;
-        }
-        lastErr = error;
-        const isSlugViolation = error.message?.includes('categories_slug_key') || 
-                                error.message?.includes('duplicate key') || 
-                                error.code === '23505';
-        if (!isSlugViolation) break;
-      }
-      
-      if (!inserted && lastErr) throw lastErr;
-      setShowCreateForm(false);
-      setNewCommunity({ name: '', description: '', icon: 'users' });
-      await fetchCommunities();
-      toast.success('Yeni topluluk başarıyla oluşturuldu!');
-    } catch (err: any) {
-      toast.error('Topluluk oluşturulurken hata: ' + (err?.message || 'Bilinmeyen hata'));
-    } finally {
-      setCreating(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCommunities();
-  }, [fetchCommunities]);
 
   const getMeta = (slug: string) => {
     const normalized = slug?.toLowerCase() || '';
@@ -249,59 +180,6 @@ export default function CommunitiesPage() {
         'Kapsayıcı, erişilebilir ve hakaret içermeyen bir dil kullanılması zorunludur.'
       ]
     };
-  };
-
-  const toggleJoin = async (communityId: string, communityName: string, event: React.MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    if (!user) {
-      toast.error('Topluluklara katılmak için giriş yapmalısınız.');
-      return;
-    }
-
-    const isJoined = joinedList.includes(communityId);
-    let updated: string[];
-    if (isJoined) {
-      updated = joinedList.filter(id => id !== communityId);
-      setJoinedList(updated);
-      try {
-        const { error } = await supabase
-          .from('community_members')
-          .delete()
-          .eq('community_id', communityId)
-          .eq('user_id', user.id);
-        if (error) {
-          setJoinedList(joinedList);
-          toast.error(`"${communityName}" topluluğundan ayrılma başarısız: ` + error.message);
-          return;
-        }
-        toast.success(`"${communityName}" topluluğundan ayrıldınız.`);
-      } catch {
-        setJoinedList(joinedList);
-        toast.error(`"${communityName}" topluluğundan ayrılma sırasında hata oluştu.`);
-      }
-    } else {
-      updated = [...joinedList, communityId];
-      setJoinedList(updated);
-      try {
-        const { error } = await supabase
-          .from('community_members')
-          .insert({
-            community_id: communityId,
-            user_id: user.id
-          });
-        if (error) {
-          setJoinedList(joinedList);
-          toast.error(`"${communityName}" topluluğuna katılamadı: ` + error.message);
-          return;
-        }
-        toast.success(`"${communityName}" topluluğuna katıldınız!`);
-      } catch {
-        setJoinedList(joinedList);
-        toast.error(`"${communityName}" topluluğuna katılma sırasında hata oluştu.`);
-      }
-    }
   };
 
   const filteredAndGroupedCommunities = useMemo(() => {
@@ -385,93 +263,7 @@ export default function CommunitiesPage() {
             Engel türlerine, hukuki mevzuata ve yardımcı teknolojilere özel odaklanmış toplulukları keşfedin, akranlarınızla yardımlaşın.
           </p>
         </div>
-
-        <button 
-          onClick={() => {
-            if (!user) {
-              toast.error('Topluluk kurmak için lütfen giriş yapın.');
-              return;
-            }
-            setShowCreateForm(!showCreateForm);
-          }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors shadow-xs cursor-pointer shrink-0 self-start md:self-auto"
-        >
-          <Plus size={14} className={showCreateForm ? 'rotate-45 transition-transform' : 'transition-transform'} />
-          <span>{showCreateForm ? 'İptal Et' : 'Yeni Topluluk Kur'}</span>
-        </button>
       </div>
-
-      {/* Create Community Form */}
-      {showCreateForm && (
-        <form 
-          onSubmit={createCommunity}
-          className="bg-[#111B2E] border border-[#1E293B] rounded-lg p-5 space-y-4"
-        >
-          <div className="space-y-1">
-            <h2 className="text-sm font-bold text-white font-heading">Yeni Bir Topluluk Kur</h2>
-            <p className="text-xs text-slate-400">Yeni uzmanlık veya dayanışma grubunuzu başlatın.</p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label htmlFor="community-name" className="text-xs font-semibold text-slate-300">Topluluk Adı</label>
-              <input 
-                id="community-name"
-                type="text" 
-                placeholder="Örn: Erişilebilir Oyunlar" 
-                value={newCommunity.name}
-                onChange={(e) => setNewCommunity({...newCommunity, name: e.target.value})}
-                required
-                className="w-full p-2.5 rounded-md border border-[#1E293B] bg-[#18243A] text-white text-xs outline-none focus:border-indigo-400"
-              />
-            </div>
-            <div className="space-y-1">
-              <label htmlFor="community-icon" className="text-xs font-semibold text-slate-300">İkon</label>
-              <select 
-                id="community-icon"
-                className="w-full p-2.5 rounded-md border border-[#1E293B] bg-[#18243A] text-white text-xs outline-none focus:border-indigo-400 cursor-pointer"
-                value={newCommunity.icon}
-                onChange={(e) => setNewCommunity({...newCommunity, icon: e.target.value})}
-              >
-                <option value="users">Kullanıcılar (Varsayılan)</option>
-                <option value="message">Sohbet &amp; Tartışma</option>
-                <option value="handshake">Dayanışma</option>
-                <option value="cpu">Erişilebilir Teknoloji</option>
-                <option value="code">Yazılım &amp; Web</option>
-                <option value="smile">Sosyal Yaşam</option>
-                <option value="scale">Hukuk &amp; Haklar</option>
-              </select>
-            </div>
-          </div>
-          <div className="space-y-1">
-            <label htmlFor="community-desc" className="text-xs font-semibold text-slate-300">Açıklama</label>
-            <textarea 
-              id="community-desc"
-              placeholder="Bu topluluğun amacını ve kimlere hitap ettiğini belirtin..." 
-              value={newCommunity.description}
-              onChange={(e) => setNewCommunity({...newCommunity, description: e.target.value})}
-              required
-              className="w-full p-2.5 rounded-md border border-[#1E293B] bg-[#18243A] text-white text-xs outline-none focus:border-indigo-400 min-h-[80px]"
-            />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <button 
-              type="button"
-              onClick={() => setShowCreateForm(false)}
-              className="px-3.5 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-white transition-colors cursor-pointer"
-            >
-              İptal
-            </button>
-            <button 
-              type="submit" 
-              disabled={creating}
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors cursor-pointer disabled:opacity-50"
-            >
-              {creating ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
-              <span>{creating ? 'Oluşturuluyor...' : 'Topluluğu Başlat'}</span>
-            </button>
-          </div>
-        </form>
-      )}
 
       {/* Filter Tabs & Search Bar */}
       <div className="space-y-3">
@@ -527,7 +319,6 @@ export default function CommunitiesPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredAndGroupedCommunities.map((community) => {
             const meta = getMeta(community.slug);
-            const isJoined = joinedList.includes(community.id);
 
             return (
               <div 
@@ -583,41 +374,13 @@ export default function CommunitiesPage() {
                       <MessageSquare size={12} />
                       <span>{(community as any).topic_count || 0} Tartışma</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Users size={12} />
-                      <span>{community.member_count || 0} Üye</span>
-                    </div>
                   </div>
                 </div>
 
                 {/* Card Actions */}
                 <div className="pt-4 border-t border-[#1E293B] mt-4 flex items-center justify-between gap-2">
-                  <button
-                    onClick={(e) => toggleJoin(community.id, community.name, e)}
-                    className={`flex items-center gap-1.5 h-7 px-2.5 rounded text-xs font-medium transition-colors cursor-pointer ${
-                      isJoined 
-                        ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800'
-                        : 'bg-[#18243A] text-slate-200 hover:bg-[#1E293B] border border-[#1E293B]'
-                    }`}
-                  >
-                    {isJoined ? (
-                      <>
-                        <Check size={12} /> Katıldınız
-                      </>
-                    ) : (
-                      <>
-                        <Plus size={12} /> Katıl
-                      </>
-                    )}
-                  </button>
 
                   <div className="flex items-center gap-2">
-                    <Link 
-                      href={`/discussions/new?kategori=${community.slug}`}
-                      className="text-xs text-slate-400 hover:text-white transition-colors"
-                    >
-                      Konu Aç
-                    </Link>
                     <Link 
                       href={`/communities/${community.slug || community.id}`}
                       className="flex items-center gap-0.5 text-xs font-semibold text-indigo-400 hover:text-indigo-300"

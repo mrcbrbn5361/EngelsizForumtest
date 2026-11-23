@@ -45,13 +45,6 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
   const [isOver65, setIsOver65] = useState(false);
   const [miniBalthazardResult, setMiniBalthazardResult] = useState<number | null>(null);
 
-  // AI Assistant State
-  const [aiQuestion, setAiQuestion] = useState('');
-  const [aiAnswers, setAiAnswers] = useState<{ sender: 'user' | 'ai'; text: string }[]>([
-    { sender: 'ai', text: 'Engelli hakları, 2026 ÖTV üst limiti veya Balthazard mevzuatı hakkında soru sorabilirsiniz.' }
-  ]);
-  const [aiLoading, setAiLoading] = useState(false);
-
   const [onlineMembers, setOnlineMembers] = useState<{ id: string; username: string; name: string; avatar: string; isOnline: boolean; role: string; }[]>([]);
 
   useEffect(() => {
@@ -365,40 +358,6 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
     });
   }, [initialTopics, searchQuery, activeTab]);
 
-  const handleAskAi = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!aiQuestion.trim() || aiLoading) return;
-    const userMsg = aiQuestion.trim();
-    
-    setAiAnswers(prev => [...prev, { sender: 'user', text: userMsg }]);
-    setAiQuestion('');
-    setAiLoading(true);
-    
-    try {
-      const history = aiAnswers.map(ans => ({
-        role: ans.sender === 'ai' ? 'model' : 'user',
-        text: ans.text
-      }));
-      
-      const response = await fetch('/api/copilot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg, history }),
-      });
-      
-      const data = await response.json();
-      if (response.ok && data.text) {
-        setAiAnswers(prev => [...prev, { sender: 'ai', text: data.text }]);
-      } else {
-        setAiAnswers(prev => [...prev, { sender: 'ai', text: data.error || "Şu anda yanıt alınamadı." }]);
-      }
-    } catch {
-      setAiAnswers(prev => [...prev, { sender: 'ai', text: "Bağlantı hatası oluştu." }]);
-    } finally {
-      setAiLoading(false);
-    }
-  };
-
   return (
     <div className="w-full text-slate-100">
       {/* Top Legislation Notice Bar - Flat hairline divider */}
@@ -447,12 +406,6 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 className="w-full pl-9 pr-3 h-9 text-xs rounded-md border border-[#1E293B] bg-[#111B2E] text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 transition-colors font-sans"
               />
             </div>
-            <Link 
-              href="/discussions/new" 
-              className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors shrink-0"
-            >
-              <Plus size={14} /> Yeni Konu Aç
-            </Link>
           </div>
         </div>
 
@@ -674,14 +627,6 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
         {/* Flat Sidebar Column */}
         <aside className="lg:col-span-4 space-y-8" aria-label="Yan Panel">
           
-          {/* Action button */}
-          <Link 
-            href="/discussions/new" 
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors"
-          >
-            <Plus size={14} /> Yeni Konu Başlat
-          </Link>
-
           {/* Quick Balthazard Form */}
           <section className="p-4 rounded-lg bg-[#111B2E] border border-[#1E293B] space-y-3" aria-label="Balthazard Hesaplama">
             <div className="border-b border-[#1E293B] pb-2 flex items-center justify-between">
@@ -811,41 +756,6 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 <div className="text-[11px] text-slate-400 italic">Şu anda çevrimiçi üye bulunmuyor</div>
               )}
             </div>
-          </section>
-
-          {/* Quick Legal Help / AI Assistant */}
-          <section className="p-4 rounded-lg bg-[#111B2E] border border-[#1E293B] space-y-3" aria-label="Hukuk Asistanı">
-            <div className="border-b border-[#1E293B] pb-2">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
-                Mevzuat Asistanı
-              </h3>
-            </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              ÖTV istisnası veya rapor itirazları hakkında soru sorabilirsiniz.
-            </p>
-            <div className="space-y-2 max-h-48 overflow-y-auto text-xs">
-              {aiAnswers.map((ans, idx) => (
-                <div key={idx} className={cn("text-xs leading-relaxed", ans.sender === 'user' ? "text-slate-200 font-medium" : "text-slate-300")}>
-                  {ans.sender === 'user' ? 'Siz: ' : 'Asistan: '} {ans.text}
-                </div>
-              ))}
-            </div>
-            <form onSubmit={handleAskAi} className="flex gap-2 pt-1">
-              <input 
-                type="text" 
-                value={aiQuestion}
-                onChange={(e) => setAiQuestion(e.target.value)}
-                placeholder="Örn: Sol bacak ÖTV şartı..."
-                className="flex-1 bg-[#18243A] border border-[#1E293B] rounded-md px-2.5 py-1.5 text-xs text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400"
-              />
-              <button 
-                type="submit" 
-                disabled={aiLoading}
-                className="px-2.5 py-1.5 bg-[#18243A] hover:bg-[#1E293B] border border-[#1E293B] text-slate-300 hover:text-white rounded-md text-xs cursor-pointer disabled:opacity-50"
-              >
-                {aiLoading ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
-              </button>
-            </form>
           </section>
         </aside>
       </div>

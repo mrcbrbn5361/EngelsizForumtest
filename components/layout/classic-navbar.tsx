@@ -327,15 +327,6 @@ export default function ClassicNavbar() {
                     <span>Tercihler</span>
                   </Link>
 
-                  <Link
-                    href="/developers"
-                    onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-indigo-400 hover:bg-[#18243A] hover:text-indigo-300 font-semibold"
-                  >
-                    <Code2 size={14} />
-                    <span>Geliştirici Portalı</span>
-                  </Link>
-
                   {(profile?.role === 'admin' || user?.email === 'miracbirben@gmail.com') && (
                     <Link
                       href="/admin"

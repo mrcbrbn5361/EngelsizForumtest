@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Plus_Jakarta_Sans, Atkinson_Hyperlegible, JetBrains_Mono } from 'next/font/google';
-import Script from 'next/script';
 import './globals.css';
-import { WebMCPProvider } from '@/components/providers/webmcp-provider';
 import { AccessibilityProvider } from '@/components/providers/accessibility-provider';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/providers/auth-provider';
@@ -10,9 +8,7 @@ import { SkipNav } from '@/components/accessibility/skip-nav';
 import ClassicNavbar from '@/components/layout/classic-navbar';
 import { Footer } from '@/components/layout/footer';
 
-import VisitorTracker from '@/components/layout/lazy-visitor-tracker';
-import EngelsizAI from '@/components/layout/lazy-engelsiz-ai';
-import AccessibilityInspector from '@/components/accessibility/lazy-accessibility-inspector';
+import AnnouncementBanner from '@/components/layout/announcement-banner';
 import CookieConsentBanner from '@/components/layout/lazy-cookie-consent';
 
 const headingFont = Plus_Jakarta_Sans({
@@ -292,40 +288,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr" className="h-full" suppressHydrationWarning>
       <head>
-        {/* Google tag (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XBFZ4BS7GJ" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-
-              // Check existing consent from localStorage
-              var savedConsent = null;
-              try {
-                var item = localStorage.getItem('engelsizforum_cookie_consent_v2');
-                if (item) {
-                  savedConsent = JSON.parse(item);
-                }
-              } catch(e) {}
-
-              gtag('consent', 'default', {
-                'ad_storage': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
-                'ad_user_data': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
-                'ad_personalization': (savedConsent && savedConsent.marketing) ? 'granted' : 'denied',
-                'analytics_storage': (savedConsent && savedConsent.analytics) ? 'granted' : 'denied',
-                'wait_for_update': 500
-              });
-
-              // Google Advanced Consent Mode Enhancements
-              gtag('set', 'ads_data_redaction', true);
-              gtag('set', 'url_passthrough', true);
-
-              gtag('js', new Date());
-              gtag('config', 'G-XBFZ4BS7GJ');
-            `,
-          }}
-        />
         <style dangerouslySetInnerHTML={{ __html: `
           body { background-color: #0B1220 !important; color: #CBD5E1 !important; margin: 0; }
           .min-h-screen { min-height: 100vh; }
@@ -333,12 +295,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}} />
         <link rel="preconnect" href="https://vtmozdquvamjeniwhonm.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://vtmozdquvamjeniwhonm.supabase.co" />
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        <link rel="alternate" type="text/plain" title="LLM Rules" href="/llms.txt" />
-        <link rel="alternate" type="application/json" title="AI Catalog" href="/ai-catalog.json" />
       </head>
       <body className="bg-background text-foreground overflow-x-hidden min-h-screen flex flex-col font-sans antialiased">
         <noscript>
@@ -350,29 +306,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {/* Google AdSense */}
-        <Script
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1868964903102165"
-          crossOrigin="anonymous"
-          strategy="lazyOnload"
-        />
         <SkipNav />
         <AuthProvider>
           <AccessibilityProvider>
-            <WebMCPProvider>
-              <div className="flex flex-col min-h-screen">
-                <ClassicNavbar />
-                <main id="main-content" className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 min-w-0 overflow-x-hidden outline-none" tabIndex={-1}>
-                  {children}
-                </main>
-                <Footer />
-              </div>
-              <VisitorTracker />
-              <EngelsizAI />
-              <Toaster position="top-right" richColors closeButton />
-              <AccessibilityInspector />
-              <CookieConsentBanner />
-            </WebMCPProvider>
+            <div className="flex flex-col min-h-screen">
+              <AnnouncementBanner />
+              <ClassicNavbar />
+              <main id="main-content" className="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 min-w-0 overflow-x-hidden outline-none" tabIndex={-1}>
+                {children}
+              </main>
+              <Footer />
+            </div>
+            <Toaster position="top-right" richColors closeButton />
+            <CookieConsentBanner />
           </AccessibilityProvider>
         </AuthProvider>
       </body>

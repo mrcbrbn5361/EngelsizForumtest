@@ -321,21 +321,6 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 <ChevronRight size={13} className="text-slate-600" />
               </Link>
 
-              <Link
-                href="/developers"
-                onClick={onClose}
-                className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                  pathname === '/developers' ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-indigo-300 hover:bg-[#111B2E] hover:text-white'
-                }`}
-              >
-                <span className="flex items-center gap-2.5">
-                  <BookOpen size={15} className="text-indigo-400" />
-                  <span>Geliştirici Portalı (OAuth &amp; API)</span>
-                </span>
-                <span className="text-[10px] font-mono uppercase bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 px-1.5 py-0.5 rounded">
-                  Dev Portal
-                </span>
-              </Link>
             </div>
           )}
 
@@ -361,43 +346,6 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 </span>
               </Link>
 
-              <Link
-                href="/visitor-stats"
-                onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#111B2E] hover:text-white transition-colors"
-              >
-                <span className="flex items-center gap-2.5">
-                  <Activity size={15} className="text-purple-400" />
-                  <span>Canlı Ziyaretçi İstatistikleri</span>
-                </span>
-                <ChevronRight size={13} className="text-slate-600" />
-              </Link>
-
-              <Link
-                href="/developers"
-                onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#111B2E] hover:text-white transition-colors"
-              >
-                <span className="flex items-center gap-2.5">
-                  <BookOpen size={15} className="text-indigo-400" />
-                  <span>Geliştirici &amp; WebMCP Ajan API</span>
-                </span>
-                <ChevronRight size={13} className="text-slate-600" />
-              </Link>
-
-              <Link
-                href="/widgets"
-                onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-indigo-400 hover:bg-[#111B2E] hover:text-indigo-300 transition-colors"
-              >
-                <span className="flex items-center gap-2.5">
-                  <Sparkles size={15} className="text-indigo-400" />
-                  <span>0 TL Erişilebilirlik &amp; WebMCP Widget</span>
-                </span>
-                <span className="text-[10px] font-mono uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">
-                  0 TL
-                </span>
-              </Link>
             </div>
           )}
 

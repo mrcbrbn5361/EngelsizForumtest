@@ -41,12 +41,12 @@ export async function updateSession(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // Protected routes that require hard server-side authentication
-  const isProtectedRoute = pathname.startsWith('/profile/edit') || 
-                           pathname.startsWith('/new-topic') || 
-                           pathname.startsWith('/notifications');
+  const isProtectedRoute = pathname === '/profile' ||
+                           pathname === '/messages' ||
+                           pathname === '/discussions/new' ||
+                           pathname === '/admin' ||
+                           pathname.startsWith('/admin/');
 
-  // Auth pages (login, register) that authenticated users shouldn't access
   const isAuthRoute = pathname === '/login' || pathname === '/register' || pathname === '/auth';
 
   if (!user && isProtectedRoute) {

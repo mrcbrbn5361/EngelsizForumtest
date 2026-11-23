@@ -130,11 +130,9 @@ export default function CommunityDetailPage() {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [memberCount, setMemberCount] = useState<number>(0);
   
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'solved' | 'pinned' | 'popular'>('all');
-  const [isJoined, setIsJoined] = useState(false);
 
   const getMeta = useCallback((slug: string) => {
     const normalized = slug?.toLowerCase() || '';
@@ -195,26 +193,6 @@ export default function CommunityDetailPage() {
         }
         setTopics((topicsData as any || []).filter((t: any) => t.author));
 
-        // Fetch real member count for this community
-        const { count: realMembersCount } = await supabase
-          .from('community_members')
-          .select('*', { count: 'exact', head: true })
-          .eq('community_id', data.id);
-        
-        setMemberCount(realMembersCount || 0);
-
-        // Check if user is joined
-        if (user) {
-          const { data: memberEntry } = await supabase
-            .from('community_members')
-            .select('community_id')
-            .eq('community_id', data.id)
-            .eq('user_id', user.id)
-            .maybeSingle();
-          if (memberEntry) {
-            setIsJoined(true);
-          }
-        }
       }
     } catch (error: any) {
       console.error('Error fetching community data:', error);
@@ -230,49 +208,6 @@ export default function CommunityDetailPage() {
       fetchCommunityData();
     }
   }, [id, fetchCommunityData]);
-
-  const toggleJoin = async () => {
-    if (!community) return;
-    if (!user) {
-      toast.error('Topluluklara katılmak için lütfen giriş yapın.');
-      return;
-    }
-
-    if (isJoined) {
-      setIsJoined(false);
-      setMemberCount(prev => Math.max(0, prev - 1));
-      try {
-        const { error } = await supabase
-          .from('community_members')
-          .delete()
-          .eq('community_id', community.id)
-          .eq('user_id', user.id);
-        if (error) throw error;
-        toast.success(`"${community.name}" grubundan ayrıldınız.`);
-      } catch (err: any) {
-        setIsJoined(true);
-        setMemberCount(prev => prev + 1);
-        toast.error(`Ayrılma sırasında hata: ` + err.message);
-      }
-    } else {
-      setIsJoined(true);
-      setMemberCount(prev => prev + 1);
-      try {
-        const { error } = await supabase
-          .from('community_members')
-          .insert({
-            community_id: community.id,
-            user_id: user.id
-          });
-        if (error) throw error;
-        toast.success(`"${community.name}" grubuna katıldınız!`);
-      } catch (err: any) {
-        setIsJoined(false);
-        setMemberCount(prev => Math.max(0, prev - 1));
-        toast.error(`Katılma sırasında hata: ` + err.message);
-      }
-    }
-  };
 
   const getIcon = (iconName?: string) => {
     const cls = "text-indigo-400";
@@ -406,25 +341,6 @@ export default function CommunityDetailPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-            <button 
-              onClick={toggleJoin}
-              className={`inline-flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-                isJoined 
-                  ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800'
-                  : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs'
-              }`}
-              aria-label={isJoined ? `${community.name} topluluğundan ayrıl` : `${community.name} topluluğuna katıl`}
-            >
-              {isJoined ? <Check size={13} aria-hidden="true" /> : <Plus size={13} aria-hidden="true" />}
-              {isJoined ? 'Katıldınız' : 'Gruba Katıl'}
-            </button>
-
-            <Link 
-              href={`/discussions/new?category_id=${community.id}`}
-              className="inline-flex items-center justify-center gap-1.5 h-8 px-3.5 rounded-md bg-[#18243A] hover:bg-[#1E293B] text-slate-200 hover:text-white text-xs font-medium border border-[#1E293B] transition-colors"
-            >
-              <Plus size={13} aria-hidden="true" /> Konu Aç
-            </Link>
           </div>
         </div>
 
@@ -508,15 +424,9 @@ export default function CommunityDetailPage() {
                 <div className="space-y-1">
                   <h3 className="text-sm font-bold text-white font-heading">Henüz Konu Bulunmuyor</h3>
                   <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed font-normal">
-                    Bu toplulukta henüz konu açılmamış veya arama kriterinize uygun başlık yok.
+                    Bu toplulukta henüz konu yok veya arama kriterinize uygun başlık yok.
                   </p>
                 </div>
-                <Link 
-                  href={`/discussions/new?category_id=${community.id}`}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-md text-xs font-semibold transition-colors shadow-xs"
-                >
-                  <Plus size={14} aria-hidden="true" /> İlk Başlığı Siz Açın
-                </Link>
               </div>
             )}
           </div>
@@ -546,12 +456,6 @@ export default function CommunityDetailPage() {
           <div className="bg-[#111B2E] border border-[#1E293B] rounded-lg p-5 space-y-3">
             <div className="text-xs font-semibold text-slate-200 uppercase tracking-wider font-heading">Topluluk İstatistikleri</div>
             <div className="space-y-2 text-xs">
-              <div className="flex items-center justify-between py-1.5 border-b border-[#1E293B]">
-                <span className="text-slate-400 flex items-center gap-2"><Users size={14} className="text-indigo-400" aria-hidden="true" /> Üyeler</span>
-                <span className="font-mono font-medium text-slate-200">
-                  {formatCompactNumber(memberCount)}
-                </span>
-              </div>
               <div className="flex items-center justify-between py-1.5 border-b border-[#1E293B]">
                 <span className="text-slate-400 flex items-center gap-2"><MessageSquare size={14} className="text-indigo-400" aria-hidden="true" /> Konular</span>
                 <span className="font-mono font-medium text-slate-200">{topics.length}</span>

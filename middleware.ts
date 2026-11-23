@@ -4,13 +4,11 @@ import { updateSession } from '@/lib/supabase/middleware';
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
 
-  // Canonical domain redirect
   if (url.hostname === 'engelsizforum.miracdeveloper.com.tr') {
     url.hostname = 'engelsizforum.com';
     return NextResponse.redirect(url, 301);
   }
 
-  // Bypass session middleware for API routes to prevent stream transformation and keep SSE/MCP connections clean
   if (url.pathname.startsWith('/api')) {
     return NextResponse.next();
   }
