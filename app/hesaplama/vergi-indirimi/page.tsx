@@ -2,6 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
+import BilgiAmacliUyari from '@/components/hesaplama/bilgi-amacli-uyari';
 import React, { useState, useMemo } from 'react';
 import { 
   Receipt, 
@@ -190,7 +191,7 @@ export default function VergiIndirimiPage() {
                 <ChevronRight size={14} className="rotate-90" />
               </div>
             </div>
-            <span className="text-[10px] text-slate-500 italic block">GİB onaylı resmi derece</span>
+            
           </div>
 
           <div className="space-y-2">
@@ -222,7 +223,7 @@ export default function VergiIndirimiPage() {
         <div className="mt-6 pt-4 border-t border-[#1E293B] flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2.5 text-xs text-[#CBD5E1]">
             <Calculator className="w-4 h-4 text-indigo-400" />
-            <span>2026 Matrah İndirimi: <strong className="text-white">{formatCurrency(degreeObj.officialDiscount2026)} / ay</strong></span>
+            <span>2026 Matrah İndirimi (doğrulanıyor): <strong className="text-white">{formatCurrency(degreeObj.officialDiscount2026)} / ay</strong></span>
           </div>
 
           <div className="flex items-center gap-3">
@@ -366,6 +367,8 @@ export default function VergiIndirimiPage() {
           </table>
         </div>
       </div>
+
+      <BilgiAmacliUyari rakamlarDogrulaniyor />
 
       {/* BAŞVURU REHBERİ */}
       <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] p-6 shadow-md">

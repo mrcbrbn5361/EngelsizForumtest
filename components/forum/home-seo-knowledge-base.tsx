@@ -15,88 +15,12 @@ import {
 } from 'lucide-react';
 
 export default function HomeSeoKnowledgeBase() {
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Balthazard formülü nedir ve birden fazla engel oranı nasıl hesaplanır?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Balthazard formülü, birden fazla hastalığı veya engeli bulunan bireylerin engel oranlarının doğrudan toplanması yerine, kalan sağlıklı vücut yüzdesi üzerinden kademeli olarak hesaplanmasını sağlayan resmi yöntemdir. Formül: A + [B * (100 - A) / 100] şeklinde uygulanır. En yüksek engel oranı temel alınarak diğer oranlar sırayla eklenir. Kişi 65 yaş ve üzerinde ise çıkan nihai Balthazard oranına ek olarak yüzde 10 ilave edilir."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "2026 yılı ÖTV muafiyetli sıfır araç alım üst limiti ne kadardır?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "2026 yılı için belirlenen ÖTV istisna üst limiti, her yıl Resmi Gazete'de yayımlanan Yeniden Değerleme Oranı (YDO) uyarınca 2.873.972 TL (2 milyon 290 bin 200 Türk Lirası) olarak uygulanmaktadır. Bu limit vergiler (ÖTV ve KDV) dahil azami anahtar teslim satış fiyatını kapsar."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Yüzde 90 altı engelliler ÖTV muafiyetinden nasıl yararlanabilir?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yüzde 90'ın altında engel oranına sahip olanların ÖTV'siz araç alabilmesi için ortopedik engele (hareket ettirici aksamda kısıtlılık) sahip olması, engelli sağlık kurulu raporunda 'özel tertibatlı araç kullanması gerekir' veya 'sadece hareket ettirici aksamda özel tertibatlı taşıt kullanabilir' ibaresinin bulunması ve yeni tip engelli sürücü belgesinde ilgili tertibat kodlarının (10.02, 20.01, 35.03 vb.) yer alması zorunludur."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Engelli erken emeklilikte yaş şartı aranır mı?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Hayır. 5510 Sayılı Kanunun 28. maddesi ve 506 Sayılı Kanunun mülga hükümlerine göre engellilik sebebiyle erken emeklilik hakkından yararlanan sigortalı çalışanlarda yaş şartı aranmaz. Yalnızca sigortalılık başlangıç tarihi, engel oranı (%40-%59, %60-%79, %80+) ve prim ödeme gün sayısı kriterlerinin tamamlanması yeterlidir."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Evde bakım maaşı bağlanabilmesi için hane gelir şartı nedir?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "2828 Sayılı Sosyal Hizmetler Kanununa göre evde bakım yardımından yararlanabilmek için iki temel şart aranır: Birincisi, sağlık kurulu raporunda 'Tam Bağımlı' (çocuklar için ÇÖZGER'de Çok İleri Düzeyde veya Belirgin Özel Gereksinim) ibaresinin bulunması; ikincisi, hane içinde yaşayan tüm fertlerin toplam aylık net gelirinin kişi başına bölündüğünde net asgari ücretin 2/3'ünden az olması gerekmektedir."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "2022 sayılı Kanun kapsamındaki engelli aylığı kimlere verilir?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Sosyal güvencesi (SGK, Bağ-Kur, Emekli Sandığı) bulunmayan veya SGK'dan gelir/aylık almayan, en az %40 engelli sağlık kurulu raporuna sahip ve Sosyal Yardımlaşma ve Dayanışma Vakfı (SYDV) muhtaçlık değerlendirmesinde hane içi kişi başı geliri net asgari ücretin 1/3'ünden az olan 18 yaşını doldurmuş Türkiye Cumhuriyeti vatandaşlarına verilir."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Engelli çalışanların gelir vergisi indirimi maaşa nasıl yansır?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "193 Sayılı Gelir Vergisi Kanununun 31. maddesi gereğince yetkili vergi dairesinden onaylı vergi indirim belgesine sahip olan 1., 2. ve 3. derece engelli personelin brüt maaş matrahından ilgili dereceye ait indirim tutarı düşülür. Bu sayede çalışandan daha az gelir vergisi kesilir ve aradaki fark doğrudan net maaşa nakit kazanç olarak yansır."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Engelli kamu personeli ve işçilerin idari izin hakları nelerdir?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Başbakanlık ve Cumhurbaşkanlığı genelgeleri uyarınca, olumsuz hava koşulları nedeniyle kamuda mülki amirler tarafından hamile ve engelli kamu çalışanlarına idari izin verilir. Ayrıca 3 Aralık Dünya Engelliler Günü ile 10-16 Mayıs Engelliler Haftasının ilk günü tüm engelli kamu personeli idari izinli sayılır."
-        }
-      }
-    ]
-  };
-
   return (
     <section 
       id="engelsiz-mevzuat-rehberi" 
       className="border-t border-[#1E293B] pt-12 space-y-12 text-slate-300"
       aria-labelledby="mevzuat-portal-title"
     >
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-
       {/* Ana Başlık ve Giriş Alanı */}
       <div className="max-w-3xl space-y-2.5">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400 font-heading">
@@ -104,7 +28,7 @@ export default function HomeSeoKnowledgeBase() {
           <span>Mevzuat ve Başvuru Kılavuzu</span>
         </div>
         <h2 id="mevzuat-portal-title" className="text-xl sm:text-2xl font-bold tracking-tight text-white font-heading">
-          2026 Engelli Hakları, Balthazard ve Resmi Süreçler
+          Engelli Hakları, Balthazard ve Resmî Süreçler
         </h2>
         <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
           EngelsizForum, Türkiye&apos;deki engelli bireylerin, hasta ve bakıma muhtaç yakınlarının ve özel gereksinimli çocuk sahibi ailelerin (ÇÖZGER) sosyal güvenlik haklarını, vergi istisnalarını ve hukuki güvencelerini hiçbir hak kaybı yaşamadan öğrenebilmeleri için hazırlanmış bağımsız açık bilgi merkezidir.
@@ -152,13 +76,13 @@ export default function HomeSeoKnowledgeBase() {
           <div className="border-b border-[#1E293B] pb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 flex items-center gap-2 font-heading">
               <Car size={14} className="text-emerald-400" />
-              <span>2026 ÖTV &amp; MTV İstisnası</span>
+              <span>ÖTV &amp; MTV İstisnası</span>
             </h3>
-            <span className="text-[11px] font-mono text-emerald-400">2.873.972 TL</span>
+            <span className="text-[11px] font-mono text-slate-400">Tutar doğrulanıyor</span>
           </div>
 
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-            4760 Sayılı Özel Tüketim Vergisi Kanununun 7. maddesi uyarınca engelli vatandaşlar sıfır kilometre otomobil alımlarında ÖTV muafiyetinden yararlanır. 2026 yılı için belirlenen ÖTV istisna tavanı 2.873.972 TL&apos;dir.
+            4760 Sayılı Özel Tüketim Vergisi Kanununun 7. maddesi uyarınca engelli vatandaşlar sıfır kilometre otomobil alımlarında ÖTV muafiyetinden yararlanır. İstisna için üst tutar sınırı vardır; güncel tutar doğrulanıyor, resmî kaynaktan kontrol edin.
           </p>
 
           <div className="space-y-2 text-xs text-slate-300 font-normal">
@@ -201,37 +125,8 @@ export default function HomeSeoKnowledgeBase() {
             Engelli çalışanlar, yaş haddine tabi tutulmaksızın yalnızca sigortalılık süresi ve prim gün sayısı şartlarını tamamlayarak emekli olabilirler.
           </p>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs font-mono">
-              <thead>
-                <tr className="border-b border-[#1E293B] text-slate-400 text-[11px]">
-                  <th className="py-2 pr-4 font-medium">Derece</th>
-                  <th className="py-2 pr-4 font-medium">Süre</th>
-                  <th className="py-2 font-medium">Prim Günü</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#1E293B]/70 text-slate-300">
-                <tr>
-                  <td className="py-2 pr-4 text-white font-sans font-medium">1. Derece (%80+)</td>
-                  <td className="py-2 pr-4">15 Yıl</td>
-                  <td className="py-2">3600 - 3960</td>
-                </tr>
-                <tr>
-                  <td className="py-2 pr-4 text-white font-sans font-medium">2. Derece (%60-%79)</td>
-                  <td className="py-2 pr-4">16 - 18 Yıl</td>
-                  <td className="py-2">3680 - 4160</td>
-                </tr>
-                <tr>
-                  <td className="py-2 pr-4 text-white font-sans font-medium">3. Derece (%40-%59)</td>
-                  <td className="py-2 pr-4">18 - 20 Yıl</td>
-                  <td className="py-2">4000 - 4400</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
           <p className="text-xs text-slate-400">
-            01.10.2008 öncesi işe başlayan 4A çalışanları için Vergi İndirimi Belgesi zorunludur.
+            Gerekli süre ve prim günü şartları doğrulanıyor; bu sayfada gösterilmez. Güncel şartlar için Sosyal Güvenlik Kurumu&apos;na başvurun.
           </p>
         </article>
 
@@ -284,11 +179,11 @@ export default function HomeSeoKnowledgeBase() {
 
           <details className="py-4 group">
             <summary className="text-xs sm:text-sm font-medium text-slate-200 cursor-pointer flex items-center justify-between list-none hover:text-white transition-colors">
-              <span>2026 yılı ÖTV muafiyetli araç üst sınırı ne kadardır?</span>
+              <span>ÖTV muafiyetli araç için üst tutar sınırı var mıdır?</span>
               <span className="text-slate-400 text-xs font-mono ml-4">+</span>
             </summary>
             <div className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-              2026 yılı için belirlenen ÖTV istisna üst limiti 2.873.972 TL&apos;dir. Bu tavan tutar vergiler (ÖTV ve KDV) dahil azami anahtar teslim satış fiyatını kapsar.
+              İstisnanın bir üst tutar sınırı vardır. Güncel tutar doğrulanıyor; bu sayfada gösterilmez, resmî kaynaktan kontrol edin.
             </div>
           </details>
 
@@ -308,7 +203,7 @@ export default function HomeSeoKnowledgeBase() {
               <span className="text-slate-400 text-xs font-mono ml-4">+</span>
             </summary>
             <div className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-              Hayır, engellilik gerekçesiyle kademeli erken emeklilikte yaş şartı aranmaz. Yalnızca sigortalılık süresini (15-20 yıl) ve gerekli prim gün sayısını (3600-4400 gün) doldurmak yeterlidir.
+              Hayır, engellilik gerekçesiyle kademeli erken emeklilikte yaş şartı aranmaz. Gerekli sigortalılık süresi ve prim günü şartları için Sosyal Güvenlik Kurumu&apos;na başvurun.
             </div>
           </details>
 

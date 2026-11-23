@@ -1,5 +1,6 @@
 'use client';
 
+import BilgiAmacliUyari from '@/components/hesaplama/bilgi-amacli-uyari';
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { 
@@ -249,6 +250,8 @@ export default function BalthazardPage() {
               </div>
             </div>
           </div>
+
+          <BilgiAmacliUyari />
 
           {/* Legal Notes */}
           <div className="text-xs text-[#CBD5E1] space-y-2 leading-relaxed bg-[#111B2E] p-4 rounded-md border border-[#1E293B]">

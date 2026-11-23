@@ -45,7 +45,7 @@ export default function HelpPage() {
                     "name": "Balthazard ve ÖTV hesaplama robotları ücretsiz mi?",
                     "acceptedAnswer": {
                       "@type": "Answer",
-                      "text": "Evet. EngelsizForum bünyesindeki tüm hesaplama robotları 2026-2027 resmi mevzuat parametreleriyle tamamen ücretsiz ve reklamsız olarak hizmet verir."
+                      "text": "Evet, hesaplama robotları ücretsizdir. Sonuçlar bilgi amaçlıdır; kesin kararı ilgili kurum verir."
                     }
                   },
                   {
@@ -105,9 +105,9 @@ export default function HelpPage() {
               },
               { 
                 icon: Calculator, 
-                title: 'Resmi Hesaplama Robotları', 
-                badge: '2026 Mevzuatı',
-                text: 'Balthazard sağlık raporu oranı birleştirme, 2.873.972 TL ÖTV istisna limiti ve kademeli erken emeklilik hesaplayıcıları.' 
+                title: 'Hesaplama Robotları', 
+                badge: 'Bilgi amaçlı',
+                text: 'Balthazard sağlık raporu oranı birleştirme ve ÖTV hesaplayıcıları.' 
               },
               { 
                 icon: MessageSquare, 
@@ -170,7 +170,7 @@ export default function HelpPage() {
                 },
                 {
                   q: "Hesaplama robotları güncel mevzuata uygun mu?",
-                  a: "Tüm araçlarımız 2026 yılı Resmî Gazete tebliğleri, Sağlık Bakanlığı Balthazard formülü yönergeleri ve SGK 5510 sayılı kanununa birebir uygun matematik motoru ile çalışır."
+                  a: "Hesaplayıcılar bilgi amaçlıdır; kullanılan mevzuat rakamları doğrulanıyor."
                 },
                 {
                   q: "Ekran okuyucu kullanırken sorun yaşarsam ne yapmalıyım?",

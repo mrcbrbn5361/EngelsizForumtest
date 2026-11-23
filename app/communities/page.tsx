@@ -54,7 +54,7 @@ const COMMUNITY_META: Record<string, {
   },
   'otv': {
     focusGroups: ['ortopedik'],
-    tags: ['Araç Alımı', 'ÖTV Muafiyeti (2.873.972 TL)', 'Limit Takibi'],
+    tags: ['Araç Alımı', 'ÖTV Muafiyeti', 'Limit Takibi'],
     featured: true,
     rules: [
       'Otomobil galerisi veya aracı takip firması reklamı/pazarlaması yapmak kesinlikle yasaktır.',
@@ -124,7 +124,7 @@ const FOCUS_GROUPS = [
   { id: 'all', label: 'Tüm Topluluklar', icon: '🌐', desc: 'Platformdaki tüm alt forum ve uzmanlık grupları.' },
   { id: 'gorme', label: 'Görme Engelliler', icon: '👁️', desc: 'Ekran okuyucular, kabartma ekranlar ve sesli kütüphaneler.' },
   { id: 'isitme', label: 'İşitme Engelliler', icon: '👂', desc: 'Altyazı çözümleri, işaret dili destekleri ve cihaz ayarları.' },
-  { id: 'ortopedik', label: 'Ortopedik Engelliler', icon: '♿', desc: 'ÖTV araç alımları (2.873.972 TL tavan), protezler ve mekan erişilebilirliği.' },
+  { id: 'ortopedik', label: 'Ortopedik Engelliler', icon: '♿', desc: 'ÖTV araç alımları, protezler ve mekan erişilebilirliği.' },
   { id: 'bilissel', label: 'Bilişsel & Nöroçeşitli', icon: '🧠', desc: 'Özel eğitim, otizm, disleksi ve dikkat destek süreçleri.' },
   { id: 'haklar', label: 'Haklar & Mevzuat', icon: '⚖️', desc: 'Maaşlar, vergi muafiyetleri, yasal haklar ve SGK işlemleri.' },
 ];

@@ -54,7 +54,7 @@ const COMMUNITY_META: Record<string, {
   },
   'otv': {
     focusGroups: ['ortopedik'],
-    tags: ['Araç Alımı', 'ÖTV Muafiyeti (2.873.972 TL)', 'Limit Takibi'],
+    tags: ['Araç Alımı', 'ÖTV Muafiyeti', 'Limit Takibi'],
     featured: true,
     rules: [
       'Otomobil galerisi veya aracı takip firması reklamı/pazarlaması yapmak kesinlikle yasaktır.',

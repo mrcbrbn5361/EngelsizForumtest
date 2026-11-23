@@ -42,11 +42,11 @@ const TOOLS: ToolItem[] = [
     title: '2026 ÖTV Muafiyetli Araç Hesaplama',
     href: '/hesaplama/otv',
     icon: Car,
-    tag: '2.873.972 ₺ Tavan',
+    tag: 'ÖTV Muafiyeti',
     legislation: '4760 Sayılı ÖTVK m.7 & GİB Tebliği',
     description: 'Sıfır kilometre araçların güncel bayi liste fiyatından KDV ve ÖTV ters matematik hesaplamasıyla muafiyetli engelli fiyatını ve toplam vergi kazancını çıkarır.',
     keyPoints: [
-      '2.873.972 TL 2026 istisna tavanı otomatik denetimi',
+      'İstisna üst tutarı aşıldığında uyarı',
       'Benzin/Dizel, Hibrit ve Elektrikli (EV) motor vergi dilimleri',
       '%90 üstü yakın kullanımı ve 5 yıl satış kısıtı rehberi',
     ],
@@ -57,11 +57,11 @@ const TOOLS: ToolItem[] = [
     icon: Calendar,
     tag: '5510 & 506 K.',
     legislation: '506 K. Geçici 18 & 5510 K. m.28',
-    description: 'İlk sigorta tescil tarihiniz ve engel derecenize göre doldurmanız gereken sigortalılık süresini, prim gününü ve emeklilik şartlarını hesaplar.',
+    description: 'Bu hesaplayıcı mevzuatla doğrulanana kadar geçici olarak kapalıdır; sayfada resmî kaynak bağlantıları yer alır.',
     keyPoints: [
-      '01.10.2008 öncesi Vergi İndirimi kademeli geçiş tablosu',
-      '01.10.2008 sonrası 5510 sayılı Kanun 28. Madde prim günleri',
-      '4A (SSK), 4B (Bağ-Kur) ve 4C (Emekli Sandığı) mevzuat ayrımı',
+      'Geçici olarak kapalı: doğrulama sürüyor',
+      'Sosyal Güvenlik Kurumu bağlantısı',
+      'Mevzuat Bilgi Sistemi bağlantısı',
     ],
   },
   {
@@ -109,10 +109,10 @@ export default function HesaplamaIndexPage() {
         <div className="lg:col-span-8 space-y-6">
           <div className="pb-4 border-b border-[#1E293B]">
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-heading">
-              Resmi Mevzuat Hesaplama Robotları (2026)
+              Hesaplama Robotları
             </h1>
             <p className="text-sm text-slate-300 mt-1 font-normal">
-              Resmî Gazete ve SGK yönergeleriyle uyumlu, matematiksel ters hesaplama algoritmaları.
+              Sonuçlar bilgi amaçlıdır; kesin kararı ilgili kurum verir. Kullanılan mevzuat rakamları doğrulanıyor.
             </p>
           </div>
 

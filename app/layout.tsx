@@ -47,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
       default: 'Engelsiz Forum | Engelli Hakları, Balthazard, ÖTV & Topluluk Platformu',
       template: '%s | Engelsiz Forum'
     },
-    description: 'Türkiye\'nin ilk tam erişilebilir (WCAG AAA) engelli topluluk platformu. Balthazard formülü, 2026 ÖTV muafiyeti, engelli erken emeklilik ve mevzuat rehberi.',
+    description: 'Türkiye\'nin ilk tam erişilebilir (WCAG AAA) engelli topluluk platformu. Balthazard formülü, ÖTV muafiyeti ve mevzuat rehberi.',
     keywords: [
       'engelsiz forum',
       'engelli hakları',
@@ -60,7 +60,6 @@ export async function generateMetadata(): Promise<Metadata> {
       'vücut fonksiyon kaybı oranı cetveli',
       'ötv 2026 hesaplama',
       'ötv muafiyetli araç 2026 üst limit',
-      '2.873.972 tl ötv limiti',
       'otv indirimi',
       'otvsiz sıfır araba',
       'otvli araç alımı',
@@ -174,7 +173,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       title: 'Engelsiz Forum | Engelli Hakları, Balthazard, ÖTV & Topluluk Platformu',
-      description: 'Türkiye\'nin ilk tam erişilebilir (WCAG AAA) engelli topluluk platformu. Balthazard formülü, 2026 ÖTV muafiyeti, engelli erken emeklilik ve mevzuat rehberi.',
+      description: 'Türkiye\'nin ilk tam erişilebilir (WCAG AAA) engelli topluluk platformu. Balthazard formülü, ÖTV muafiyeti ve mevzuat rehberi.',
       url: baseUrl,
       siteName: 'Engelsiz Forum',
       type: 'website',
@@ -193,7 +192,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: 'summary_large_image',
       title: 'Engelsiz Forum | Engelli Hakları, Balthazard, ÖTV & Topluluk Platformu',
-      description: 'Türkiye\'nin ilk tam erişilebilir (WCAG AAA) engelli topluluk platformu. Balthazard formülü, 2026 ÖTV muafiyeti, engelli erken emeklilik ve mevzuat rehberi.',
+      description: 'Türkiye\'nin ilk tam erişilebilir (WCAG AAA) engelli topluluk platformu. Balthazard formülü, ÖTV muafiyeti ve mevzuat rehberi.',
       images: [ogImageUrl],
     },
     formatDetection: {
@@ -263,7 +262,7 @@ const jsonLd = {
       "url": "https://engelsizforum.com",
       "applicationCategory": "CommunityApplication",
       "operatingSystem": "All",
-      "description": "Engelli bireyler için tam erişilebilir forum, mevzuat danışma ve resmi Balthazard / ÖTV hesaplama robotları.",
+      "description": "Engelli bireyler için tam erişilebilir forum, mevzuat danışma ve bilgi amaçlı Balthazard / ÖTV hesaplayıcıları.",
       "offers": {
         "@type": "Offer",
         "price": "0",

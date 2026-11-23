@@ -11,7 +11,6 @@ import {
   MessageSquare, 
   FolderTree, 
   Activity, 
-  Accessibility, 
   SlidersHorizontal, 
   Search, 
   CheckCircle2, 
@@ -23,7 +22,6 @@ import {
   RefreshCw, 
   Plus, 
   Sparkles, 
-  Check, 
   X, 
   ExternalLink, 
   Code2, 
@@ -36,8 +34,7 @@ import {
   Radio, 
   Save, 
   ArrowRight,
-  Loader2,
-  Database
+  Loader2
 } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
@@ -53,7 +50,7 @@ export default function AdminPage() {
   const { user, profile, loading: authLoading, refreshProfile } = useAuth();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'moderation' | 'categories' | 'a11y'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'moderation' | 'categories'>('overview');
 
   // Users Management State
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -334,8 +331,7 @@ export default function AdminPage() {
             { id: 'overview', label: 'Genel Bakış', icon: BarChart3 },
             { id: 'users', label: 'Üyeler & Roller', icon: Users, badge: profiles.length },
             { id: 'moderation', label: 'Moderasyon', icon: MessageSquare, badge: threads.length },
-            { id: 'categories', label: 'Kategoriler', icon: FolderTree, badge: categories.length },
-            { id: 'a11y', label: 'WCAG Denetimi', icon: Accessibility }
+            { id: 'categories', label: 'Kategoriler', icon: FolderTree, badge: categories.length }
           ].map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -369,7 +365,7 @@ export default function AdminPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <MetricCard 
               label="Kayıtlı Üyeler" 
-              value={profiles.length || 4} 
+              value={profiles.length} 
               icon={<Users size={18} className="text-indigo-400" />} 
               sub="Supabase Profiles" 
               subColor="text-emerald-400" 
@@ -380,16 +376,9 @@ export default function AdminPage() {
               icon={<MessageSquare size={18} className="text-emerald-400" />} 
               sub="Toplam Tartışma" 
             />
-            <MetricCard 
-              label="WCAG Uyumluluk" 
-              value="%100" 
-              icon={<Accessibility size={18} className="text-amber-400" />} 
-              sub="AAA Standardı" 
-              subColor="text-emerald-400"
-            />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8">
             <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 space-y-6">
               <h2 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-3">
                 <Sparkles size={18} className="text-indigo-400" />
@@ -414,18 +403,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 space-y-6">
-              <h2 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-3">
-                <Database size={18} className="text-emerald-400" />
-                <span>Sistem Durumu</span>
-              </h2>
-              <div className="space-y-3">
-                <StatusRow label="2026 ÖTV Üst Limiti" value="2.873.972 TL" valueColor="text-emerald-400 font-mono" />
-                <StatusRow label="WebMCP Protokol" value="v2026.1 (JSON-RPC)" valueColor="text-indigo-400 font-mono" />
-                <StatusRow label="Supabase RLS" value="Aktif & Korunuyor" valueColor="text-emerald-400 font-bold" />
-                <StatusRow label="Yeniden Değerleme" value="%43.93 (2025)" valueColor="text-slate-400 font-mono" />
-              </div>
-            </div>
           </div>
         </div>
       )}
@@ -438,37 +415,6 @@ export default function AdminPage() {
 
       {/* TAB 4: CATEGORIES */}
       {activeTab === 'categories' && <CategoryManagementView />}
-
-      {/* TAB 6: WCAG AAA */}
-      {activeTab === 'a11y' && (
-        <div className="space-y-8 animate-in fade-in duration-300">
-          <div className="p-8 bg-[#111B2E] border border-[#1E293B] rounded-md space-y-8 shadow-xl">
-            <h2 className="text-lg font-bold text-white uppercase tracking-widest flex items-center gap-3 font-heading">
-              <Accessibility size={24} className="text-emerald-400" />
-              <span>WCAG 2.1 AAA Erişilebilirlik Uyumluluk Raporu</span>
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-              <A11yCard 
-                title="Renk Kontrast Oranı: 12.8:1" 
-                desc="Tüm metinler Slate/Indigo paletinde WCAG AAA standardı olan 7:1 oranını fazlasıyla karşılamaktadır."
-              />
-              <A11yCard 
-                title="Klavye Navigasyonu: %100" 
-                desc="Tüm interaktif öğeler Tab indeksi ve 3px görünür odak çerçeveleri ile tam erişilebilirdir."
-              />
-              <A11yCard 
-                title="Ekran Okuyucu Semantiği" 
-                desc="Tüm sayfa yapısı ARIA rolleri ve semantik HTML5 etiketleri (main, nav, article) ile optimize edilmiştir."
-              />
-              <A11yCard 
-                title="Touch Target (Mobil)" 
-                desc="Tüm butonlar ve bağlantılar mobil ekranlarda minimum 44x44px dokunma alanına sahiptir."
-              />
-            </div>
-          </div>
-        </div>
-      )}
 
     </div>
   );
@@ -507,15 +453,6 @@ function QuickActionButton({ title, desc, onClick }: { title: string; desc: stri
   );
 }
 
-function StatusRow({ label, value, valueColor }: { label: string; value: string; valueColor: string }) {
-  return (
-    <div className="flex items-center justify-between py-2 border-b border-[#1E293B]/60 last:border-0">
-      <span className="text-xs text-slate-300 font-medium">{label}:</span>
-      <span className={cn("text-xs", valueColor)}>{value}</span>
-    </div>
-  );
-}
-
 function AdminInput({ label, ...props }: any) {
   return (
     <div className="space-y-2">
@@ -540,19 +477,5 @@ function ModerationButton({ icon, active, onClick, activeColor, title }: any) {
     >
       {icon}
     </button>
-  );
-}
-
-function A11yCard({ title, desc }: { title: string; desc: string }) {
-  return (
-    <div className="p-5 rounded-md bg-[#18243A]/50 border border-[#1E293B] space-y-2 group hover:border-emerald-500/30 transition-all">
-      <div className="flex items-center gap-3">
-        <div className="p-1.5 rounded-full bg-emerald-950/40 border border-emerald-800/40 text-emerald-400">
-          <Check size={12} />
-        </div>
-        <h4 className="font-bold text-white uppercase text-[10px] tracking-widest">{title}</h4>
-      </div>
-      <p className="text-slate-400 leading-relaxed pl-8 text-[11px] font-normal group-hover:text-slate-300 transition-colors">{desc}</p>
-    </div>
   );
 }

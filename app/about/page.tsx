@@ -60,7 +60,7 @@ export default function AboutPage() {
                 Misyonumuz
               </h2>
               <p className="text-xs text-slate-400 leading-relaxed font-normal">
-                Sosyal yaşamda, istihdamda ve yasal hak arama süreçlerinde karşılaşılan bürokratik bilgi kirliliğini ortadan kaldırmak. Güncel Balthazard cetveli, 2.873.972 TL 2026 ÖTV araç istisnası ve erken emeklilik mevzuatını herkes için şeffaf kılmak.
+                Sosyal yaşamda, istihdamda ve yasal hak arama süreçlerinde karşılaşılan bürokratik bilgi kirliliğini ortadan kaldırmak. Balthazard cetveli, ÖTV araç istisnası ve emeklilik mevzuatını herkes için anlaşılır kılmak.
               </p>
             </div>
 

@@ -2,6 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
+import BilgiAmacliUyari from '@/components/hesaplama/bilgi-amacli-uyari';
 import React, { useState, useMemo } from 'react';
 import { 
   Users, 
@@ -110,7 +111,7 @@ export default function EngelliAyligiPage() {
           </div>
 
           <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
-            2026 SINIRI: {formatCurrency(kisiBasiSinir)}
+            2026 SINIRI (tahmini): {formatCurrency(kisiBasiSinir)}
           </div>
         </div>
 
@@ -315,6 +316,8 @@ export default function EngelliAyligiPage() {
           </div>
         </div>
       </div>
+
+      <BilgiAmacliUyari rakamlarDogrulaniyor />
 
       {/* 2026 KADEMELİ AY LIK TUTARLARI TABLOSU */}
       <div className="bg-[#111B2E] rounded-xl border border-[#1E293B] overflow-hidden shadow-xl">

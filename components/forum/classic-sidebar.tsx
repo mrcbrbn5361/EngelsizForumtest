@@ -10,12 +10,6 @@ import {
 import Link from 'next/link';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
-interface ActiveProfile {
-  id: string;
-  username: string;
-  role: string;
-}
-
 export default function ClassicSidebar() {
   const [stats, setStats] = useState({
     topics: 0,
@@ -24,7 +18,6 @@ export default function ClassicSidebar() {
     latestUser: '',
     latestUserId: '',
   });
-  const [realUsers, setRealUsers] = useState<ActiveProfile[]>([]);
 
   useEffect(() => {
     async function loadStats() {
@@ -36,17 +29,15 @@ export default function ClassicSidebar() {
           latestUser: '',
           latestUserId: '',
         });
-        setRealUsers([]);
         return;
       }
 
       try {
-        const [topicsRes, commentsRes, profilesCountRes, latestProfileRes, profilesListRes] = await Promise.all([
+        const [topicsRes, commentsRes, profilesCountRes, latestProfileRes] = await Promise.all([
           supabase.from('topics').select('*', { count: 'exact', head: true }),
           supabase.from('comments').select('*', { count: 'exact', head: true }),
           supabase.from('profiles').select('*', { count: 'exact', head: true }),
-          supabase.from('profiles').select('id, username').order('created_at', { ascending: false }).limit(1).maybeSingle(),
-          supabase.from('profiles').select('id, username, role').order('created_at', { ascending: false }).limit(6)
+          supabase.from('profiles').select('id, username').order('created_at', { ascending: false }).limit(1).maybeSingle()
         ]);
 
         setStats({
@@ -56,10 +47,6 @@ export default function ClassicSidebar() {
           latestUser: latestProfileRes.data?.username || '',
           latestUserId: latestProfileRes.data?.id || '',
         });
-
-        if (profilesListRes.data && profilesListRes.data.length > 0) {
-          setRealUsers(profilesListRes.data);
-        }
       } catch (err) {
         console.error('Error loading sidebar stats:', err);
       }
@@ -108,9 +95,8 @@ export default function ClassicSidebar() {
           >
             <span className="flex items-center gap-2 group-hover:text-emerald-400 font-medium">
               <Car size={14} className="text-emerald-400" />
-              <span>2026 ÖTV Muafiyeti</span>
+              <span>ÖTV Muafiyeti</span>
             </span>
-            <span className="text-[11px] font-mono text-slate-400">2.87M ₺</span>
           </Link>
 
           <Link
@@ -119,7 +105,7 @@ export default function ClassicSidebar() {
           >
             <span className="flex items-center gap-2 group-hover:text-amber-400 font-medium">
               <FileText size={14} className="text-amber-400" />
-              <span>Erken Emeklilik Tablosu</span>
+              <span>Erken Emeklilik (kapalı)</span>
             </span>
             <span className="text-[11px] font-mono text-slate-400">5510 m.28</span>
           </Link>
@@ -168,32 +154,6 @@ export default function ClassicSidebar() {
           </div>
         )}
       </div>
-
-      {/* 4. Aktif Uzmanlar ve Gönüllüler */}
-      {realUsers.length > 0 && (
-        <div className="space-y-2.5">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
-            Mevzuat Uzmanları &amp; Moderatörler
-          </div>
-          <div className="space-y-1">
-            {realUsers.slice(0, 5).map((usr) => (
-              <Link
-                key={usr.id}
-                href={`/profile/${usr.id}`}
-                className="flex items-center justify-between p-1.5 rounded hover:bg-[#111B2E] transition-colors text-xs"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
-                  <span className="font-medium text-slate-300">@{usr.username}</span>
-                </div>
-                <span className="text-[11px] font-mono font-semibold text-indigo-400 uppercase">
-                  {usr.role}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
 
     </aside>
   );

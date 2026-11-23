@@ -38,7 +38,7 @@ const TOOLS: ToolItem[] = [
   {
     id: 'otv',
     name: '2026 ÖTV Araç İndirimi',
-    shortDesc: '2.873.972 ₺ tavan & ters hesap',
+    shortDesc: 'ÖTV ve KDV ters hesap',
     href: '/hesaplama/otv',
     icon: Car,
     badge: '2026 Tavan',
@@ -78,10 +78,10 @@ const TOOLS: ToolItem[] = [
   {
     id: 'erken-emeklilik',
     name: 'Engelli Erken Emeklilik',
-    shortDesc: '01.10.2008 öncesi/sonrası prim günleri',
+    shortDesc: 'Geçici olarak kapalı',
     href: '/hesaplama/erken-emeklilik',
     icon: Calendar,
-    badge: '5510 & 506',
+    badge: 'Kapalı',
   },
 ];
 
@@ -136,7 +136,7 @@ export default function HesaplamaNav({
           </span>
           <span className="hidden sm:inline-block text-slate-700">|</span>
           <span className="hidden sm:inline-block text-slate-400 text-xs">
-            Resmî Gazete &amp; Sağlık Bakanlığı
+            Bilgi amaçlı hesaplayıcılar
           </span>
         </div>
       </div>

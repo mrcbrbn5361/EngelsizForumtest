@@ -2,6 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
+import BilgiAmacliUyari from '@/components/hesaplama/bilgi-amacli-uyari';
 import React, { useState, useMemo } from 'react';
 import { 
   Car, 
@@ -32,42 +33,42 @@ const ENGINE_OPTIONS: EngineOption[] = [
     id: 'ice_1600',
     name: '1600 cm³\'e Kadar Benzin / Dizel',
     rate: 80,
-    badge: '%80 ÖTV',
+    badge: '%80 ÖTV (doğrulanıyor)',
     desc: 'Geleneksel içten yanmalı motorlar (En yaygın binek otomobiller).',
   },
   {
     id: 'hev_standard',
     name: 'Hibrit (HEV - Standart Kendi Şarj Eden)',
     rate: 80,
-    badge: '%80 ÖTV',
+    badge: '%80 ÖTV (doğrulanıyor)',
     desc: '1.8L altı ve elektrik motoruyla desteklenen geleneksel hibrit araçlar.',
   },
   {
     id: 'phev_incentive',
     name: 'Plug-in Hibrit (PHEV - Kablolu Şarj Edilebilir)',
     rate: 30,
-    badge: '%30 ÖTV',
+    badge: '%30 ÖTV (doğrulanıyor)',
     desc: '70 km üzeri elektrikli menzile sahip, emisyon değeri 25g altındaki çevre dostu PHEV araçlar.',
   },
   {
     id: 'ev_10',
     name: 'Tam Elektrikli (EV) - %10 Dilimi',
     rate: 10,
-    badge: '%10 ÖTV',
+    badge: '%10 ÖTV (doğrulanıyor)',
     desc: 'Motor gücü 160 kW\'ı aşmayan ve vergisiz fabrika matrahı limit dahilindeki elektrikli araçlar.',
   },
   {
     id: 'ev_40',
     name: 'Tam Elektrikli (EV) - %40 Dilimi',
     rate: 40,
-    badge: '%40 ÖTV',
+    badge: '%40 ÖTV (doğrulanıyor)',
     desc: 'Motor gücü 160 kW altı ancak matrahı üst dilime giren elektrikli araçlar.',
   },
   {
     id: 'ev_50',
     name: 'Tam Elektrikli (EV) - %50 Dilimi (Güçlü Motor)',
     rate: 50,
-    badge: '%50 ÖTV',
+    badge: '%50 ÖTV (doğrulanıyor)',
     desc: 'Motor gücü 160 kW üzeri olan yüksek performanslı elektrikli otomobiller.',
   },
 ];
@@ -154,10 +155,10 @@ export default function OtvHesaplamaPage() {
             </div>
             <div className="space-y-1.5">
               <h2 className="font-bold text-lg text-rose-400 tracking-tight">
-                2026 Yılı Resmi ÖTV İstisna Tavanı Aşılmıştır!
+                ÖTV İstisna Tavanı Aşılmış Görünüyor (doğrulanıyor)
               </h2>
               <p className="text-sm text-rose-200/80 leading-relaxed">
-                Girdiğiniz anahtar teslim fiyat ({formatCurrency(listPrice)}), 2026 yılı için belirlenen <strong className="text-rose-300">2.873.972 TL</strong> üst sınırını <strong className="text-rose-300">{formatCurrency(listPrice - OTV_LIMIT_2026)}</strong> aşmaktadır.
+                Girdiğiniz anahtar teslim fiyat ({formatCurrency(listPrice)}), doğrulanmakta olan <strong className="text-rose-300">{formatCurrency(OTV_LIMIT_2026)}</strong> üst sınırını <strong className="text-rose-300">{formatCurrency(listPrice - OTV_LIMIT_2026)}</strong> aşmaktadır.
                 Kanun gereğince bu limiti 1 TL dahi aşan araçlar için ÖTV muafiyeti uygulanamaz.
               </p>
             </div>
@@ -179,14 +180,14 @@ export default function OtvHesaplamaPage() {
               <div className="flex items-center gap-2 mt-0.5">
                 <Info size={12} className="text-slate-500" />
                 <span className="text-xs text-slate-400 font-medium">
-                  4760 Sayılı ÖTVK m.7 ve GİB Tebliği Standardı
+                  4760 Sayılı ÖTVK m.7 ve ilgili mevzuat (doğrulanıyor)
                 </span>
               </div>
             </div>
           </div>
 
           <div className="text-xs font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-indigo-300 border border-[#1E293B] shadow-sm">
-            2026 ÜST LİMİT: {OTV_LIMIT_2026.toLocaleString('tr-TR')} ₺
+            2026 ÜST LİMİT (doğrulanıyor): {OTV_LIMIT_2026.toLocaleString('tr-TR')} ₺
           </div>
         </div>
 
@@ -426,6 +427,8 @@ export default function OtvHesaplamaPage() {
           </table>
         </div>
       </div>
+
+      <BilgiAmacliUyari rakamlarDogrulaniyor />
 
       {/* YASAL MEVZUAT BLOKLARI */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">

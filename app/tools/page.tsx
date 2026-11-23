@@ -24,7 +24,7 @@ export default function ToolsHubPage() {
   const tools = [
     {
       title: 'ÖTV Muafiyetli Araç Hesaplama',
-      description: '2026 yılı güncel mevzuat ve üst limitlerine uygun ÖTV indirimli araç bedeli hesaplayıcı.',
+      description: 'ÖTV indirimli araç bedeli hesaplayıcı (bilgi amaçlı).',
       icon: Car,
       href: '/hesaplama#otv-calculator',
       badge: 'Finansal Araç',
@@ -127,7 +127,7 @@ export default function ToolsHubPage() {
             <span>Mevzuat ve Sorumluluk Reddi Beyanı</span>
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Hesaplama araçları Türkiye Cumhuriyeti 2026 yılı güncel Gelir İdaresi Başkanlığı (GİB) ve Sosyal Güvenlik Kurumu (SGK) mevzuatlarına göre bilgilendirme amacıyla hazırlanmıştır. Nihai resmi işlemler için ilgili vergi daireleri veya SGK il müdürlüklerine başvurulması tavsiye edilir.
+            Hesaplama araçları bilgilendirme amacıyla hazırlanmıştır; kullanılan mevzuat rakamları doğrulanıyor. Nihai resmi işlemler için ilgili vergi daireleri veya SGK il müdürlüklerine başvurulması tavsiye edilir.
           </p>
         </div>
 
