@@ -13,7 +13,11 @@ const fs = require('fs');
 const path = require('path');
 
 const SYNC_ENDPOINT = process.env.SYNC_ENDPOINT || 'https://www.engelsizforum.com/api/mcp-sync';
-const CRON_SECRET = process.env.CRON_SECRET || 'engelsizforum_mcp_cron_secret_2026';
+const CRON_SECRET = process.env.CRON_SECRET;
+if (!CRON_SECRET) {
+  console.error('CRON_SECRET ortam değişkeni tanımlı değil; senkronizasyon atlandı.');
+  process.exit(1);
+}
 const TARGET_DIR = path.join(__dirname, '..', 'lib');
 const SYNC_FILE = path.join(TARGET_DIR, 'mcp-servers-synced.json');
 

@@ -9,3 +9,6 @@ coverage/
 *.zip
 *.tar.gz
 .backups/
+
+# TypeScript incremental build cache
+*.tsbuildinfo

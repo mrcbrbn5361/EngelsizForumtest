@@ -183,42 +183,61 @@ export async function createCommentAction(formData: {
 }
 
 /**
- * Server Action: Deletes a topic if the user is the author or a staff member.
+ * Server Action: Deletes a topic if the user is its author or a staff member.
+ * Removes the row from both `topics` and the legacy `threads` store (which may be a
+ * separate table in some databases) and verifies that nothing is left behind, so a
+ * deleted topic cannot keep appearing in listings.
  */
 export async function deleteTopicAction(topicId: string) {
+  if (!topicId) {
+    return { success: false, error: 'Geçersiz konu.' };
+  }
+
   const supabase = await getSupabaseServerClient();
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    return { success: false, error: 'Bu işlem için yetkiniz bulunmuyor.' };
+    return { success: false, error: 'Bu işlem için oturum açmalısınız.' };
   }
 
-  // Check ownership or staff role
-  const { data: topic } = await supabase
-    .from('topics')
-    .select('author_id')
-    .eq('id', topicId)
-    .single();
+  try {
+    const serviceClient = getSupabaseServer();
+    const [{ data: topicRow }, { data: threadRow }, { data: profile }] = await Promise.all([
+      serviceClient.from('topics').select('author_id').eq('id', topicId).maybeSingle(),
+      serviceClient.from('threads').select('author_id').eq('id', topicId).maybeSingle(),
+      serviceClient.from('profiles').select('role').eq('id', user.id).maybeSingle(),
+    ]);
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
+    if (!topicRow && !threadRow) {
+      return { success: false, error: 'Konu bulunamadı veya zaten silinmiş.' };
+    }
 
-  const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
-  const isAuthor = topic?.author_id === user.id;
+    const authorId = topicRow?.author_id ?? threadRow?.author_id;
+    const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
+    if (authorId !== user.id && !isStaff) {
+      return { success: false, error: 'Yalnızca konunun sahibi veya moderatörler silebilir.' };
+    }
 
-  if (!isAuthor && !isStaff) {
-    return { success: false, error: 'Yalnızca konunun sahibi veya moderatörler silebilir.' };
-  }
+    const { error: topicError } = await serviceClient.from('topics').delete().eq('id', topicId);
+    if (topicError) {
+      return { success: false, error: topicError.message };
+    }
 
-  const { error } = await supabase.from('topics').delete().eq('id', topicId);
-  if (error) {
-    return { success: false, error: error.message };
+    const { error: threadError } = await serviceClient.from('threads').delete().eq('id', topicId);
+
+    const [{ data: topicLeft }, { data: threadLeft }] = await Promise.all([
+      serviceClient.from('topics').select('id').eq('id', topicId).maybeSingle(),
+      serviceClient.from('threads').select('id').eq('id', topicId).maybeSingle(),
+    ]);
+    if (topicLeft || threadLeft) {
+      return { success: false, error: threadError?.message || 'Konu tamamen silinemedi.' };
+    }
+  } catch (err: any) {
+    return { success: false, error: err?.message || 'Konu silinirken bir hata oluştu.' };
   }
 
   revalidatePath('/discussions');
+  revalidatePath(`/discussions/${topicId}`);
   revalidatePath('/');
   return { success: true };
 }
@@ -1030,52 +1049,29 @@ export async function getUserConversationsAction() {
       return { success: false, error: convErr.message };
     }
 
-    const processed = (convData || []).map(conv => {
-      const otherMember = conv.members?.find((m: any) => m?.user_id !== user.id || m?.user?.id !== user.id);
-      const messagesList = conv.messages || [];
-      const lastMsg = messagesList.length > 0
-        ? [...messagesList].sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
-        : null;
+    const processed = (convData || [])
+      .filter(conv => (conv.messages || []).length > 0)
+      .map(conv => {
+        const otherMember = conv.members?.find((m: any) => m?.user_id !== user.id);
+        const messagesList = conv.messages || [];
+        const lastMsg = messagesList.length > 0
+          ? [...messagesList].sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
+          : null;
 
-      return {
-        id: conv.id,
-        created_at: conv.created_at,
-        updated_at: conv.updated_at,
-        other_user: otherMember?.user || null,
-        last_message: lastMsg,
-        unread_count: 0
-      };
-    });
+        return {
+          id: conv.id,
+          created_at: conv.created_at,
+          updated_at: conv.updated_at,
+          other_user: otherMember?.user || null,
+          last_message: lastMsg,
+          unread_count: 0
+        };
+      });
 
     return { success: true, conversations: processed };
   } catch (err: any) {
     console.error('Fatal error in getUserConversationsAction:', err);
     return { success: false, error: err?.message || 'Sohbetler alınamadı.' };
-  }
-}
-
-export async function getVisitorStatsAction() {
-  try {
-    const supabase = await getSupabaseServerClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return { success: false, error: 'Unauthorized', total_visitors: 12450, active_visitors: 42 };
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile || (profile.role !== 'admin' && profile.role !== 'staff')) {
-      return { success: false, error: 'Forbidden', total_visitors: 12450, active_visitors: 42 };
-    }
-
-    const stats = await getVisitorStats();
-    return { success: true, ...stats };
-  } catch (err: any) {
-    return { success: false, error: err?.message, total_visitors: 12450, active_visitors: 42 };
   }
 }
 

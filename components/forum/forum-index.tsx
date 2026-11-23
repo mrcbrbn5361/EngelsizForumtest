@@ -18,38 +18,12 @@ export function ForumIndex() {
     setError(null);
     try {
       // Fetch Categories
-      let { data: catData, error: catError } = await supabase
+      const { data: catData, error: catError } = await supabase
         .from('categories')
         .select('*')
         .order('order_index', { ascending: true });
-      
+
       if (catError) console.warn('Categories fetch error:', catError);
-
-      // Auto-seed default categories if empty
-      if (!catData || catData.length === 0) {
-        const defaultCategories = [
-          { id: '11111111-1111-1111-1111-111111111111', name: 'Yazılım, WebMCP & Yapay Zeka', slug: 'yazilim-ai', description: 'Yapay zeka modelleri, WebMCP araçları, açık kaynak ve teknoloji tartışmaları.', icon_name: 'Cpu', order_index: 1 },
-          { id: '22222222-2222-2222-2222-222222222222', name: 'Engelli Hakları & 2026 Mevzuatı', slug: 'haklar-ve-mevzuat', description: '2.873.972 TL ÖTV araç istisnası, Balthazard cetveli, SGK erken emeklilik.', icon_name: 'Scale', order_index: 2 },
-          { id: '33333333-3333-3333-3333-333333333333', name: 'Donanım, Sistemler & Windows 11', slug: 'donanim-sistemler', description: 'Microsoft Windows 11 Fluent ekosistemi, bilgisayar ve yardımcı donanımlar.', icon_name: 'Monitor', order_index: 3 },
-          { id: '44444444-4444-4444-4444-444444444444', name: 'Kariyer, E-KPSS & Girişimcilik', slug: 'kariyer-istihdam', description: 'E-KPSS atamaları, uzaktan bilişim kariyerleri ve engelsiz girişimcilik.', icon_name: 'Briefcase', order_index: 4 },
-          { id: '55555555-5555-5555-5555-555555555555', name: 'Sağlık, Medikal & Tedavi', slug: 'saglik-ve-medikal', description: 'Sağlık kurulu raporları, tedavi süreçleri ve medikal cihaz rehberleri.', icon_name: 'HeartPulse', order_index: 5 },
-          { id: '66666666-6666-6666-6666-666666666666', name: 'Genel Sohbet & Topluluk', slug: 'genel-sohbet', description: 'Serbest sohbet, tanışma, deneyim paylaşımları ve dayanışma ağı.', icon_name: 'Users', order_index: 6 }
-        ];
-
-        const { error: seedCatErr } = await supabase
-          .from('categories')
-          .insert(defaultCategories);
-        
-        if (!seedCatErr) {
-          const { data: reFetchedCats } = await supabase
-            .from('categories')
-            .select('*')
-            .order('order_index', { ascending: true });
-          if (reFetchedCats) {
-            catData = reFetchedCats;
-          }
-        }
-      }
 
       if (catData && catData.length > 0) {
         setCategories(catData as Category[]);

@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
             replies_count: item.comments_count || 0,
             is_pinned: !!item.is_pinned,
             is_solved: !!item.is_solved,
-            author: item.author || { username: 'Topluluk Üyesi', role: 'member' },
+            author: item.author || { id: null, username: 'Silinmiş kullanıcı', role: 'deleted', avatar_url: null, is_deleted: true },
             category: item.category || { name: 'Genel', slug: 'genel' },
             created_at: item.created_at,
             url: `https://www.engelsizforum.com/discussions/${item.id}`,

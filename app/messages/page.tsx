@@ -116,7 +116,7 @@ function MessagesContent() {
               .in('id', convIds)
               .order('updated_at', { ascending: false });
 
-            processed = convData?.map(conv => {
+            processed = convData?.filter(conv => (conv.last_message || []).length > 0).map(conv => {
               const otherMember = conv.members?.find((m: any) => m?.user?.id !== user.id);
               const lastMsg = conv.last_message && conv.last_message.length > 0 
                 ? conv.last_message.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]

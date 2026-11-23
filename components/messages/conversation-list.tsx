@@ -110,7 +110,7 @@ export function ConversationList({ conversations, selectedId, onSelect, loading,
         <div className="divide-y divide-[#1E293B] overflow-y-auto flex-1" role="listbox" aria-label="Sohbet Listesi">
           {filteredConversations.map((conv) => {
             const isSelected = selectedId === conv.id;
-            const displayName = conv.other_user?.full_name || conv.other_user?.username || 'Kullanıcı';
+            const displayName = conv.other_user?.full_name || conv.other_user?.username || 'Silinmiş kullanıcı';
             
             return (
               <button

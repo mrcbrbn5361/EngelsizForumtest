@@ -370,7 +370,9 @@ function SearchContent() {
         </div>
 
         {/* Right Sidebar */}
-        <ClassicSidebar />
+        <div className="lg:w-80 shrink-0">
+          <ClassicSidebar />
+        </div>
       </div>
     </div>
   );

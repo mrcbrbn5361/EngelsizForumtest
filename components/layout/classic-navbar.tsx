@@ -21,7 +21,6 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
-import { useAccessibility } from '@/components/providers/accessibility-provider';
 import { AccessibilityMenu } from '@/components/accessibility/accessibility-menu';
 import { DisabilityQuickBar } from '@/components/accessibility/disability-quick-bar';
 import { UniversalDrawerMenu } from '@/components/layout/universal-drawer-menu';
@@ -32,7 +31,6 @@ import { useKeyboardShortcuts } from '@/lib/hotkeys';
 
 export default function ClassicNavbar() {
   const { user, profile } = useAuth();
-  const { triggerVisualAlert } = useAccessibility();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -95,7 +93,6 @@ export default function ClassicNavbar() {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setIsProfileOpen(false);
-    triggerVisualAlert('info');
     router.refresh();
   };
 
@@ -132,10 +129,10 @@ export default function ClassicNavbar() {
 
           <Link href="/" className="flex items-center gap-2 group select-none">
             <div className="w-8 h-8 rounded-md bg-indigo-500 text-white flex items-center justify-center font-bold">
-              <Accessibility size={20} strokeWidth={2.5} />
+              <Accessibility size={20} strokeWidth={2.5} aria-hidden="true" />
             </div>
-            <div>
-              <div className="text-base font-bold tracking-tight text-white flex items-center gap-1 font-heading">
+            <div className="max-[359px]:sr-only">
+              <div className="text-sm sm:text-base font-bold tracking-tight text-white flex items-center gap-1 font-heading">
                 ENGELSİZ<span className="text-indigo-400 font-bold">FORUM</span>
               </div>
             </div>
@@ -143,11 +140,11 @@ export default function ClassicNavbar() {
         </div>
 
         {/* Center Nav Links - High Contrast & Clean Navigation */}
-        <nav className="hidden lg:flex items-center gap-1 text-xs">
+        <nav className="hidden xl:flex items-center gap-1 text-xs">
           <Link 
             href="/" 
             className={cn(
-              "px-3 py-1.5 rounded-md font-medium transition-colors",
+              "px-2.5 py-1.5 rounded-md font-medium transition-colors",
               pathname === '/' 
                 ? "bg-[#18243A] text-white border border-[#1E293B]" 
                 : "text-slate-300 hover:text-white hover:bg-[#111B2E]"
@@ -159,7 +156,7 @@ export default function ClassicNavbar() {
           <Link 
             href="/discussions" 
             className={cn(
-              "px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5",
+              "px-2.5 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5",
               pathname === '/discussions' 
                 ? "bg-[#18243A] text-white border border-[#1E293B]" 
                 : "text-slate-300 hover:text-white hover:bg-[#111B2E]"
@@ -172,7 +169,7 @@ export default function ClassicNavbar() {
           <Link 
             href="/hesaplama" 
             className={cn(
-              "px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5",
+              "px-2.5 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5",
               pathname?.startsWith('/hesaplama') 
                 ? "bg-[#18243A] text-white border border-[#1E293B]" 
                 : "text-slate-300 hover:text-white hover:bg-[#111B2E]"
@@ -185,7 +182,7 @@ export default function ClassicNavbar() {
           <Link 
             href="/about" 
             className={cn(
-              "px-3 py-1.5 rounded-md font-medium transition-colors",
+              "px-2.5 py-1.5 rounded-md font-medium transition-colors",
               pathname === '/about' 
                 ? "bg-[#18243A] text-white border border-[#1E293B]" 
                 : "text-slate-300 hover:text-white hover:bg-[#111B2E]"
@@ -197,7 +194,7 @@ export default function ClassicNavbar() {
           <Link 
             href="/help" 
             className={cn(
-              "px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5",
+              "px-2.5 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5",
               pathname === '/help' 
                 ? "bg-[#18243A] text-white border border-[#1E293B]" 
                 : "text-slate-300 hover:text-white hover:bg-[#111B2E]"
@@ -222,24 +219,31 @@ export default function ClassicNavbar() {
         </nav>
 
         {/* Search Bar */}
-        <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center flex-1 max-w-xs relative mx-2">
+        <form onSubmit={handleSearchSubmit} role="search" className="hidden lg:flex items-center flex-1 xl:min-w-[9.5rem] max-w-xs relative mx-2">
           <Search size={15} className="absolute left-3 text-slate-400 pointer-events-none" />
           <input
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Mevzuat, Balthazard, ÖTV ara..."
+            placeholder="Forumda ara..."
             aria-label="Forum ve Mevzuatta Arama Yap"
             className="w-full h-9 pl-9 pr-3 text-xs bg-[#111B2E] border border-[#1E293B] rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-400 transition-colors font-sans"
           />
         </form>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <Link
+            href="/search"
+            aria-label="Forumda ara"
+            className="lg:hidden h-9 w-9 inline-flex items-center justify-center rounded-md border border-[#1E293B] bg-[#111B2E] text-slate-200 hover:bg-[#18243A] hover:text-white transition-colors"
+          >
+            <Search size={16} aria-hidden="true" />
+          </Link>
           {/* New Topic Button */}
           <Link 
             href="/discussions/new"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors"
+            className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors"
           >
             <Plus size={15} className="stroke-[2.5]" />
             <span>Yeni Konu</span>
@@ -255,7 +259,7 @@ export default function ClassicNavbar() {
               aria-expanded={isAccessibilityOpen}
             >
               <SlidersHorizontal size={14} className="text-indigo-400" />
-              <span className="hidden sm:inline">Erişilebilirlik</span>
+              <span className="hidden md:inline">Erişilebilirlik</span>
             </button>
             <AccessibilityMenu 
               isOpen={isAccessibilityOpen} 
@@ -358,10 +362,10 @@ export default function ClassicNavbar() {
             <div className="flex items-center gap-1.5">
               <Link 
                 href="/login"
-                className="h-9 px-3 rounded-md bg-[#111B2E] border border-[#1E293B] hover:bg-[#18243A] text-slate-200 text-xs font-medium flex items-center gap-1.5 transition-colors"
+                className="h-9 px-2.5 md:px-3 rounded-md bg-[#111B2E] border border-[#1E293B] hover:bg-[#18243A] text-slate-200 text-xs font-medium flex items-center gap-1.5 transition-colors"
               >
-                <LogIn size={14} />
-                <span>Giriş</span>
+                <LogIn size={14} aria-hidden="true" />
+                <span className="sr-only md:not-sr-only">Giriş</span>
               </Link>
               <Link 
                 href="/register"

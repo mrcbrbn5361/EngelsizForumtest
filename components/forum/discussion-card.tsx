@@ -10,7 +10,7 @@ import {
 import { Topic } from '@/types/database';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { UserRoleBadge } from '@/components/ui/user-badge';
-import { supabase } from '@/lib/supabase';
+import { deleteTopicAction } from '@/app/actions';
 import { useRole } from '@/hooks/use-role';
 import { toast } from 'sonner';
 import { ClientDate } from '@/components/ui/client-date';
@@ -34,9 +34,9 @@ export function DiscussionCard({ topic, onSummarize, isLoading }: DiscussionCard
     e.preventDefault();
     e.stopPropagation();
     if (!confirm('Bu tartışmayı silmek istediğinize emin misiniz?')) return;
-    const { error } = await supabase.from('topics').delete().eq('id', topic.id);
-    if (error) {
-      toast.error('Silme işlemi başarısız: ' + error.message);
+    const result = await deleteTopicAction(topic.id);
+    if (!result.success) {
+      toast.error('Silme işlemi başarısız: ' + result.error);
     } else {
       toast.success('Tartışma silindi.');
       window.location.reload();
