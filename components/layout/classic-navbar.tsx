@@ -204,7 +204,7 @@ export default function ClassicNavbar() {
             <span>Rehber</span>
           </Link>
 
-          {(user?.email === 'miracbirben@gmail.com' || profile?.role === 'admin' || profile?.role === 'moderator') && (
+          {(profile?.role === 'admin' || profile?.role === 'moderator') && (
             <Link 
               href="/admin" 
               className={cn(
@@ -327,7 +327,7 @@ export default function ClassicNavbar() {
                     <span>Tercihler</span>
                   </Link>
 
-                  {(profile?.role === 'admin' || user?.email === 'miracbirben@gmail.com') && (
+                  {(profile?.role === 'admin') && (
                     <Link
                       href="/admin"
                       onClick={() => setIsProfileOpen(false)}

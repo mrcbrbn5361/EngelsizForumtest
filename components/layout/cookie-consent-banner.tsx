@@ -20,7 +20,7 @@ export function CookieConsentBanner() {
     analytics: boolean;
     marketing: boolean;
   }>({
-    analytics: true,
+    analytics: false,
     marketing: false,
   });
 

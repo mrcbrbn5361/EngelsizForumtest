@@ -4,7 +4,7 @@ import { NextRequest } from 'next/server';
 /**
  * Builds a request that carries no cookies and no authorization header.
  */
-function anonymous(url: string, init?: RequestInit) {
+function anonymous(url: string, init?: ConstructorParameters<typeof NextRequest>[1]) {
   return new NextRequest(`http://localhost${url}`, init);
 }
 

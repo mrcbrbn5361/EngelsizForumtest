@@ -1,8 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import { useAuth } from './auth-provider';
 import { RouteAnnouncer } from './route-announcer';
 
 export type FontSize = 'sm' | 'md' | 'lg' | 'xl';
@@ -54,13 +52,10 @@ const AccessibilityContext = createContext<AccessibilityContextType | undefined>
  * - Motor impaired: 44px+ touch targets, keyboard hotkeys trap & navigation.
  */
 export function AccessibilityProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useAuth();
   const [settings, setSettings] = useState<AccessibilitySettings>(defaultSettings);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [isSyncingFromCloud, setIsSyncingFromCloud] = useState(false);
   const [visualFlash, setVisualFlash] = useState<string | null>(null);
   const [rulerY, setRulerY] = useState<number>(200);
-  const lastSyncedSettings = React.useRef<string>(JSON.stringify(defaultSettings));
 
   // Initialize and load saved local preferences
   useEffect(() => {
@@ -76,36 +71,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     setIsInitialLoad(false);
   }, []);
 
-  // Fetch from Supabase when user logs in
-  useEffect(() => {
-    if (user && isSupabaseConfigured) {
-      const fetchPrefs = async () => {
-        setIsSyncingFromCloud(true);
-        try {
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('accessibility_prefs')
-            .eq('id', user.id)
-            .maybeSingle();
-
-          if (error) {
-            console.warn('Could not fetch prefs from Supabase:', error.message);
-          } else if (data?.accessibility_prefs) {
-            const cloudSettings = data.accessibility_prefs as AccessibilitySettings;
-            setSettings(cloudSettings);
-            lastSyncedSettings.current = JSON.stringify(cloudSettings);
-          }
-        } catch (err) {
-          console.error('Exception while fetching prefs:', err);
-        } finally {
-          setIsSyncingFromCloud(false);
-        }
-      };
-      fetchPrefs();
-    }
-  }, [user]);
-
-  // Apply settings to DOM and persist locally & cloud
+  // Apply settings to DOM and persist locally
   useEffect(() => {
     if (isInitialLoad) return;
 
@@ -132,24 +98,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       console.warn('Could not apply accessibility settings', e);
     }
 
-    // Sync with Supabase if logged in and settings actually changed
-    const currentSettingsStr = JSON.stringify(settings);
-    if (user && isSupabaseConfigured && !isSyncingFromCloud && currentSettingsStr !== lastSyncedSettings.current) {
-       supabase
-        .from('profiles')
-        .update({ 
-          accessibility_prefs: settings,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', user.id)
-        .then(({ error }) => {
-          if (error) {
-            console.error('Failed to sync prefs to Supabase:', error.message || 'Unknown error');
-          }
-          lastSyncedSettings.current = currentSettingsStr;
-        });
-    }
-  }, [settings, user, isInitialLoad, isSyncingFromCloud]);
+  }, [settings, isInitialLoad]);
 
   // Track cursor for Reading Ruler (Dyslexia / ADHD aid)
   useEffect(() => {

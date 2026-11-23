@@ -167,6 +167,10 @@ export default function CommunitiesPage() {
     }
   }, []);
 
+  useEffect(() => {
+    fetchCommunities();
+  }, [fetchCommunities]);
+
   const getMeta = (slug: string) => {
     const normalized = slug?.toLowerCase() || '';
     if (COMMUNITY_META[normalized]) {
@@ -312,7 +316,7 @@ export default function CommunitiesPage() {
           <Users className="mx-auto text-slate-500" size={32} />
           <h3 className="text-sm font-bold text-white">Topluluk Bulunamadı</h3>
           <p className="text-xs text-slate-400">
-            Arama kriterinize uygun grup bulunamadı. &quot;Yeni Topluluk Kur&quot; butonuyla siz başlatabilirsiniz.
+            Arama kriterinize uygun grup bulunamadı.
           </p>
         </div>
       ) : (

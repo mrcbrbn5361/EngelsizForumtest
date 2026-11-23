@@ -16,7 +16,7 @@ export default function AdminLayout({
   const router = useRouter();
   const { user, profile, loading } = useAuth();
 
-  const isUserAdmin = user?.email === 'miracbirben@gmail.com' || profile?.role === 'admin';
+  const isUserAdmin = profile?.role === 'admin';
 
   useEffect(() => {
     if (!loading && !isUserAdmin) {

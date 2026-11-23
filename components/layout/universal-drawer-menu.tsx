@@ -79,8 +79,8 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
 
   if (!isOpen) return null;
 
-  const role = (profile?.role || (user?.email === 'miracbirben@gmail.com' ? 'admin' : 'guest')) as string;
-  const isAdmin = role === 'admin' || user?.email === 'miracbirben@gmail.com';
+  const role = (profile?.role || 'guest') as string;
+  const isAdmin = role === 'admin';
   const isMod = role === 'moderator' || isAdmin;
   const isExpert = role === 'uzman' || isMod;
   const isLoggedIn = !!user;
