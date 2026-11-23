@@ -49,6 +49,16 @@ export default function VisitorStatsMonitor() {
   // Ref for speech synthesis to prevent overlap
   const prevActiveCount = useRef<number>(-1);
   const prevTotalCount = useRef<number>(-1);
+  const deviceNameRef = useRef<string>(deviceName);
+  const isPlayingAudioRef = useRef<boolean>(isPlayingAudio);
+
+  useEffect(() => {
+    deviceNameRef.current = deviceName;
+  }, [deviceName]);
+
+  useEffect(() => {
+    isPlayingAudioRef.current = isPlayingAudio;
+  }, [isPlayingAudio]);
 
   // Initialize device ID
   useEffect(() => {
@@ -85,11 +95,16 @@ export default function VisitorStatsMonitor() {
         const postRes = await fetch('/api/visitor-stats', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ device_id: `${deviceName}-${deviceId}`.replace(/[^A-Za-z0-9._:-]/g, '-').slice(0, 100) })
+          body: JSON.stringify({ device_id: `${deviceNameRef.current}-${deviceId}`.replace(/[^A-Za-z0-9._:-]/g, '-').slice(0, 100) })
         });
-        
-        if (!postRes.ok) throw new Error('POST Heartbeat failed');
-        addLog(`Sinyal gönderildi: Cihaz aktif (${deviceName})`, 'success');
+
+        if (postRes.status === 429) {
+          addLog('Çok sık sinyal gönderildi, bir sonraki sinyal bekleniyor.', 'warn');
+        } else if (!postRes.ok) {
+          throw new Error('POST Heartbeat failed');
+        } else {
+          addLog(`Sinyal gönderildi: Cihaz aktif (${deviceNameRef.current})`, 'success');
+        }
       }
 
       // Fetch latest counts (GET)
@@ -102,7 +117,7 @@ export default function VisitorStatsMonitor() {
       const newActive = data.active_visitors || 0;
 
       // Check if counts updated and announce via TTS if requested
-      if (isPlayingAudio && typeof window !== 'undefined' && window.speechSynthesis) {
+      if (isPlayingAudioRef.current && typeof window !== 'undefined' && window.speechSynthesis) {
         let speakText = '';
         if (prevActiveCount.current !== -1 && newActive > prevActiveCount.current) {
           const diff = newActive - prevActiveCount.current;
@@ -158,7 +173,7 @@ export default function VisitorStatsMonitor() {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [deviceId, deviceName, isPlayingAudio]);
+  }, [deviceId]);
 
   // Fullscreen toggle helper
   const toggleFullscreen = () => {

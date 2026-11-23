@@ -71,7 +71,7 @@ Kullanılıyor görünmeyen ama gerekli olanlar: `react-dom` (Next.js ister), `p
 | `tsconfig.tsbuildinfo` | 246 KB | ✅ Git'ten çıkarıldı, `.gitignore`'a eklendi |
 | `bun.lock` + `package-lock.json` | — | ⬜ Vercel'in hangisini kullandığı Miraç'a sorulmalı; ikisi de şimdilik duruyor |
 | `components/layout/navbar.tsx.bak_demo_text` | — | ✅ Silindi |
-| Kök dizindeki eski prompt/plan metinleri (`*_PROMPT.txt`, `forum_logic.txt`, `project_*.txt`) | 30 KB | ✅ `docs/arsiv/` altına taşındı |
+| Kök dizindeki eski prompt/plan metinleri (`*_PROMPT.txt`, `forum_logic.txt`, `project_*.txt`) | 30 KB | ✅ `docs/arsiv/` altına taşındı; `ENGELSIZFORUM_ANDROID_MASTER_PROMPT.txt` depodan çıkarıldı |
 
 ## E. Performans
 

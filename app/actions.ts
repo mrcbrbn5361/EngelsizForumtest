@@ -182,11 +182,25 @@ export async function createCommentAction(formData: {
   return { success: true, commentId };
 }
 
+const TOPIC_DELETE_FAILED = 'Konu silinirken bir hata oluştu.';
+
+/**
+ * Refreshes every cached view that may still list a topic.
+ */
+function revalidateTopicPaths(topicId: string) {
+  revalidatePath('/discussions');
+  revalidatePath(`/discussions/${topicId}`);
+  revalidatePath('/');
+}
+
 /**
  * Server Action: Deletes a topic if the user is its author or a staff member.
- * Removes the row from both `topics` and the legacy `threads` store (which may be a
- * separate table in some databases) and verifies that nothing is left behind, so a
- * deleted topic cannot keep appearing in listings.
+ * Authorization is decided here, but the `topics` row is deleted with the caller's own
+ * session so row-level security stays a second gate. The service client only reads, and
+ * removes a leftover row from a separate legacy `threads` table once `topics` is gone.
+ * Any failed lookup stops the action, and nothing is reported as deleted unless both
+ * stores are verified empty. Caches are refreshed whenever a delete was attempted, since
+ * a failed follow-up check cannot rule out that the row is already gone.
  */
 export async function deleteTopicAction(topicId: string) {
   if (!topicId) {
@@ -200,45 +214,78 @@ export async function deleteTopicAction(topicId: string) {
     return { success: false, error: 'Bu işlem için oturum açmalısınız.' };
   }
 
+  let deleteAttempted = false;
+
   try {
     const serviceClient = getSupabaseServer();
-    const [{ data: topicRow }, { data: threadRow }, { data: profile }] = await Promise.all([
+    const [topicLookup, threadLookup, profileLookup] = await Promise.all([
       serviceClient.from('topics').select('author_id').eq('id', topicId).maybeSingle(),
       serviceClient.from('threads').select('author_id').eq('id', topicId).maybeSingle(),
       serviceClient.from('profiles').select('role').eq('id', user.id).maybeSingle(),
     ]);
 
+    if (topicLookup.error || threadLookup.error || profileLookup.error) {
+      console.error('deleteTopicAction lookup failed:', topicLookup.error || threadLookup.error || profileLookup.error);
+      return { success: false, error: TOPIC_DELETE_FAILED };
+    }
+
+    const topicRow = topicLookup.data;
+    const threadRow = threadLookup.data;
+
     if (!topicRow && !threadRow) {
       return { success: false, error: 'Konu bulunamadı veya zaten silinmiş.' };
     }
 
-    const authorId = topicRow?.author_id ?? threadRow?.author_id;
-    const isStaff = profile?.role === 'admin' || profile?.role === 'moderator';
+    const authorId = topicRow ? topicRow.author_id : threadRow?.author_id;
+    const isStaff = profileLookup.data?.role === 'admin' || profileLookup.data?.role === 'moderator';
     if (authorId !== user.id && !isStaff) {
       return { success: false, error: 'Yalnızca konunun sahibi veya moderatörler silebilir.' };
     }
 
-    const { error: topicError } = await serviceClient.from('topics').delete().eq('id', topicId);
-    if (topicError) {
-      return { success: false, error: topicError.message };
+    if (topicRow) {
+      deleteAttempted = true;
+      const { error: topicError } = await supabase.from('topics').delete().eq('id', topicId);
+      if (topicError) {
+        console.error('deleteTopicAction topics delete failed:', topicError);
+        return { success: false, error: TOPIC_DELETE_FAILED };
+      }
+
+      const { data: topicLeft, error: topicCheckError } = await serviceClient.from('topics').select('id').eq('id', topicId).maybeSingle();
+      if (topicCheckError) {
+        console.error('deleteTopicAction topics check failed:', topicCheckError);
+        return { success: false, error: TOPIC_DELETE_FAILED };
+      }
+      if (topicLeft) {
+        return { success: false, error: 'Konu silinemedi: bu işlem için yetkiniz yok.' };
+      }
     }
 
-    const { error: threadError } = await serviceClient.from('threads').delete().eq('id', topicId);
-
-    const [{ data: topicLeft }, { data: threadLeft }] = await Promise.all([
-      serviceClient.from('topics').select('id').eq('id', topicId).maybeSingle(),
-      serviceClient.from('threads').select('id').eq('id', topicId).maybeSingle(),
-    ]);
-    if (topicLeft || threadLeft) {
-      return { success: false, error: threadError?.message || 'Konu tamamen silinemedi.' };
+    const { data: threadLeft, error: threadCheckError } = await serviceClient.from('threads').select('id').eq('id', topicId).maybeSingle();
+    if (threadCheckError) {
+      console.error('deleteTopicAction threads check failed:', threadCheckError);
+      return { success: false, error: TOPIC_DELETE_FAILED };
     }
-  } catch (err: any) {
-    return { success: false, error: err?.message || 'Konu silinirken bir hata oluştu.' };
+
+    if (threadLeft) {
+      deleteAttempted = true;
+      const { error: threadError } = await serviceClient.from('threads').delete().eq('id', topicId);
+      if (threadError) {
+        console.error('deleteTopicAction threads delete failed:', threadError);
+        return { success: false, error: TOPIC_DELETE_FAILED };
+      }
+
+      const { data: threadStillLeft, error: threadRecheckError } = await serviceClient.from('threads').select('id').eq('id', topicId).maybeSingle();
+      if (threadRecheckError || threadStillLeft) {
+        return { success: false, error: 'Konu tamamen silinemedi.' };
+      }
+    }
+  } catch (err) {
+    console.error('deleteTopicAction failed:', err);
+    return { success: false, error: TOPIC_DELETE_FAILED };
+  } finally {
+    if (deleteAttempted) revalidateTopicPaths(topicId);
   }
 
-  revalidatePath('/discussions');
-  revalidatePath(`/discussions/${topicId}`);
-  revalidatePath('/');
   return { success: true };
 }
 
@@ -380,31 +427,20 @@ export async function reportContentAction(reportData: {
  * Fetches total and active visitor statistics.
  */
 export async function getVisitorStats() {
-  try {
-    const { count: totalCount, error: totalError } = await supabaseServer
-      .from('visitors')
-      .select('*', { count: 'exact', head: true });
-
-    if (totalError) {
-      console.error('Failed to fetch total visitors:', totalError);
-    }
-
-    const { count: activeCount, error: activeError } = await supabaseServer
+  const [total, active] = await Promise.all([
+    supabaseServer.from('visitors').select('*', { count: 'exact', head: true }),
+    supabaseServer
       .from('visitors')
       .select('*', { count: 'exact', head: true })
-      .gt('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString());
+      .gt('last_seen', new Date(Date.now() - 5 * 60 * 1000).toISOString()),
+  ]);
 
-    if (activeError) {
-      console.error('Failed to fetch active visitors:', activeError);
-    }
-    
-    return { 
-      total_visitors: totalCount || 0, 
-      active_visitors: activeCount || 0 
-    };
-  } catch (err) {
-    return { total_visitors: 0, active_visitors: 0 };
+  if (total.error || active.error) {
+    console.error('Failed to fetch visitor stats:', total.error || active.error);
+    throw new Error('Visitor stats unavailable');
   }
+
+  return { total_visitors: total.count ?? 0, active_visitors: active.count ?? 0 };
 }
 
 /**
