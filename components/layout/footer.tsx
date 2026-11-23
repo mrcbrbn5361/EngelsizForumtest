@@ -66,7 +66,7 @@ export function Footer() {
 
       {/* 2. Sayfa Linkleri & Başa Dön */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 border-b border-line flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-sm font-medium text-fg-4">
+        <div className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-2 min-w-0 text-xs sm:text-sm font-medium text-fg-4">
           <Link href="/hesaplama" className="hover:text-fg transition-colors">
             Hesaplama Robotları
           </Link>

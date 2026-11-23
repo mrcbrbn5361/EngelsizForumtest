@@ -182,7 +182,7 @@ export default function ClassicNavbar() {
           <Link 
             href="/about" 
             className={cn(
-              "px-2.5 py-1.5 rounded-md font-medium transition-colors",
+              "hidden 2xl:block px-2.5 py-1.5 rounded-md font-medium transition-colors",
               pathname === '/about' 
                 ? "bg-surface-hover text-fg border border-line" 
                 : "text-fg-3 hover:text-fg hover:bg-surface-raised"
