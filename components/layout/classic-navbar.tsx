@@ -204,7 +204,7 @@ export default function ClassicNavbar() {
             <span>Rehber</span>
           </Link>
 
-          {(user?.email === 'miracbirben@gmail.com' || profile?.role === 'admin' || profile?.role === 'moderator') && (
+          {(profile?.role === 'admin' || profile?.role === 'moderator') && (
             <Link 
               href="/admin" 
               className={cn(
@@ -241,13 +241,10 @@ export default function ClassicNavbar() {
             <Search size={16} aria-hidden="true" />
           </Link>
           {/* New Topic Button */}
-          <Link 
-            href="/discussions/new"
-            className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors"
-          >
-            <Plus size={15} className="stroke-[2.5]" />
-            <span>Yeni Konu</span>
-          </Link>
+          <span className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[#1E293B] bg-[#111B2E] text-slate-300 text-xs font-semibold">
+            <Plus size={15} className="stroke-[2.5]" aria-hidden="true" />
+            <span>Yeni konu: şimdilik kapalı</span>
+          </span>
 
           {/* Accessibility Settings Trigger */}
           <div className="relative" ref={a11yRef}>
@@ -327,16 +324,7 @@ export default function ClassicNavbar() {
                     <span>Tercihler</span>
                   </Link>
 
-                  <Link
-                    href="/developers"
-                    onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-2 px-3 py-2 text-indigo-400 hover:bg-[#18243A] hover:text-indigo-300 font-semibold"
-                  >
-                    <Code2 size={14} />
-                    <span>Geliştirici Portalı</span>
-                  </Link>
-
-                  {(profile?.role === 'admin' || user?.email === 'miracbirben@gmail.com') && (
+                  {(profile?.role === 'admin') && (
                     <Link
                       href="/admin"
                       onClick={() => setIsProfileOpen(false)}

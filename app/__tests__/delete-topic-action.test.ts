@@ -2,36 +2,52 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 type Row = Record<string, any>;
 
-const db: { topics: Row[]; threads: Row[]; profiles: Row[]; threadsIsView: boolean } = {
+const db: {
+  topics: Row[];
+  profiles: Row[];
+  rlsBlocksDelete: boolean;
+  failSelect: string[];
+  failDelete: string[];
+  failNth: { table: string; nth: number } | null;
+} = {
   topics: [],
-  threads: [],
   profiles: [],
-  threadsIsView: false,
+  rlsBlocksDelete: false,
+  failSelect: [],
+  failDelete: [],
+  failNth: null,
 };
+const selectCounts: Record<string, number> = {};
+const revalidatePath = vi.hoisted(() => vi.fn());
 let currentUserId: string | null = null;
+let deletes: string[] = [];
 
 /**
- * Returns the rows a table exposes; a `threads` view mirrors `topics`.
+ * Minimal stand-in for the Supabase query builder. It mimics row-level security on topics
+ * (author or staff only, and silently nothing when blocked). Every delete is recorded.
  */
-function rowsOf(table: string): Row[] {
-  if (table === 'threads' && db.threadsIsView) return db.topics;
-  return (db as any)[table];
-}
-
-/**
- * Minimal stand-in for the Supabase query builder used by deleteTopicAction.
- */
-function fakeFrom(table: string) {
+function fakeFrom(table: 'topics' | 'profiles') {
   return {
     select: () => ({
       eq: (col: string, val: any) => ({
-        maybeSingle: async () => ({ data: rowsOf(table).find(r => r[col] === val) ?? null, error: null }),
+        maybeSingle: async () => {
+          selectCounts[table] = (selectCounts[table] ?? 0) + 1;
+          if (db.failSelect.includes(table)) return { data: null, error: { message: 'raw select failure' } };
+          if (db.failNth?.table === table && db.failNth.nth === selectCounts[table]) return { data: null, error: { message: 'raw select failure' } };
+          return { data: db[table].find(r => r[col] === val) ?? null, error: null };
+        },
       }),
     }),
     delete: () => ({
       eq: async (col: string, val: any) => {
-        if (table === 'threads' && db.threadsIsView) return { error: null };
-        (db as any)[table] = (db as any)[table].filter((r: Row) => r[col] !== val);
+        deletes.push(table);
+        if (db.failDelete.includes(table)) return { error: { message: 'raw delete failure' } };
+        if (db.rlsBlocksDelete) return { error: null };
+        const me = db.profiles.find(p => p.id === currentUserId);
+        const staff = me?.role === 'admin' || me?.role === 'moderator';
+        const target = db[table].find(r => r[col] === val);
+        if (!staff && target?.author_id !== currentUserId) return { error: null };
+        db[table] = db[table].filter((r: Row) => r[col] !== val);
         return { error: null };
       },
     }),
@@ -39,7 +55,7 @@ function fakeFrom(table: string) {
 }
 
 vi.mock('next/headers', () => ({ cookies: async () => ({ getAll: () => [], set: () => {} }) }));
-vi.mock('next/cache', () => ({ revalidatePath: () => {} }));
+vi.mock('next/cache', () => ({ revalidatePath }));
 vi.mock('@supabase/ssr', () => ({
   createServerClient: () => ({
     auth: {
@@ -48,11 +64,8 @@ vi.mock('@supabase/ssr', () => ({
         error: currentUserId ? null : { message: 'no session' },
       }),
     },
+    from: (table: 'topics' | 'profiles') => fakeFrom(table),
   }),
-}));
-vi.mock('@/lib/supabase-server', () => ({
-  supabaseServer: {},
-  getSupabaseServer: () => ({ from: fakeFrom }),
 }));
 
 const { deleteTopicAction } = await import('@/app/actions');
@@ -64,35 +77,25 @@ describe('deleteTopicAction', () => {
     process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://example.supabase.co';
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'anon';
     db.topics = [{ id: TOPIC, author_id: 'author' }];
-    db.threads = [{ id: TOPIC, author_id: 'author' }];
     db.profiles = [
       { id: 'author', role: 'user' },
       { id: 'other', role: 'user' },
       { id: 'mod', role: 'moderator' },
     ];
-    db.threadsIsView = false;
+    db.rlsBlocksDelete = false;
+    db.failSelect = [];
+    db.failDelete = [];
+    db.failNth = null;
+    Object.keys(selectCounts).forEach(key => delete selectCounts[key]);
+    deletes = [];
+    revalidatePath.mockClear();
     currentUserId = 'author';
   });
 
-  it('removes the topic from both topics and a separate threads table', async () => {
+  it('removes the topic for its author', async () => {
     const result = await deleteTopicAction(TOPIC);
     expect(result).toEqual({ success: true });
     expect(db.topics).toHaveLength(0);
-    expect(db.threads).toHaveLength(0);
-  });
-
-  it('works when threads is a view over topics', async () => {
-    db.threadsIsView = true;
-    const result = await deleteTopicAction(TOPIC);
-    expect(result.success).toBe(true);
-    expect(db.topics).toHaveLength(0);
-  });
-
-  it('removes a topic that only exists in the threads table', async () => {
-    db.topics = [];
-    const result = await deleteTopicAction(TOPIC);
-    expect(result.success).toBe(true);
-    expect(db.threads).toHaveLength(0);
   });
 
   it('lets a moderator delete someone else\'s topic', async () => {
@@ -105,7 +108,6 @@ describe('deleteTopicAction', () => {
     const result = await deleteTopicAction(TOPIC);
     expect(result.success).toBe(false);
     expect(db.topics).toHaveLength(1);
-    expect(db.threads).toHaveLength(1);
   });
 
   it('refuses an anonymous request', async () => {
@@ -116,8 +118,68 @@ describe('deleteTopicAction', () => {
 
   it('reports a missing topic instead of claiming success', async () => {
     db.topics = [];
-    db.threads = [];
     const result = await deleteTopicAction(TOPIC);
     expect(result.success).toBe(false);
+  });
+
+  it('stops and keeps the topic when row-level security blocks the delete', async () => {
+    db.rlsBlocksDelete = true;
+    const result = await deleteTopicAction(TOPIC);
+    expect(result.success).toBe(false);
+    expect(db.topics).toHaveLength(1);
+  });
+
+  it('makes no delete call at all for a user who is neither author nor staff', async () => {
+    currentUserId = 'other';
+    await deleteTopicAction(TOPIC);
+    expect(deletes).toHaveLength(0);
+  });
+
+  it('stops without deleting when the topic lookup fails', async () => {
+    db.failSelect = ['topics'];
+    const result = await deleteTopicAction(TOPIC);
+    expect(result.success).toBe(false);
+    expect(deletes).toHaveLength(0);
+  });
+
+  it('does not let a failed role lookup turn into an unchecked delete', async () => {
+    currentUserId = 'mod';
+    db.failSelect = ['profiles'];
+    const result = await deleteTopicAction(TOPIC);
+    expect(result.success).toBe(false);
+    expect(deletes).toHaveLength(0);
+  });
+
+  it('hides raw database errors and refreshes caches when the delete itself fails', async () => {
+    db.failDelete = ['topics'];
+    const result = await deleteTopicAction(TOPIC);
+    expect(result.success).toBe(false);
+    expect(result.error).not.toContain('raw delete failure');
+    expect(revalidatePath).toHaveBeenCalledWith(`/discussions/${TOPIC}`);
+  });
+
+  it('refreshes caches after a normal delete and not after a refusal', async () => {
+    await deleteTopicAction(TOPIC);
+    expect(revalidatePath).toHaveBeenCalledWith('/discussions');
+    revalidatePath.mockClear();
+    db.topics = [{ id: 't-2', author_id: 'author' }];
+    currentUserId = 'other';
+    await deleteTopicAction('t-2');
+    expect(revalidatePath).not.toHaveBeenCalled();
+  });
+
+  it('does not borrow ownership when the topic row has no author', async () => {
+    db.topics = [{ id: TOPIC, author_id: null }];
+    const result = await deleteTopicAction(TOPIC);
+    expect(result.success).toBe(false);
+    expect(deletes).toHaveLength(0);
+  });
+
+  it('still refreshes caches when the check after the delete fails', async () => {
+    db.failNth = { table: 'topics', nth: 2 };
+    const result = await deleteTopicAction(TOPIC);
+    expect(result.success).toBe(false);
+    expect(db.topics).toHaveLength(0);
+    expect(revalidatePath).toHaveBeenCalledWith(`/discussions/${TOPIC}`);
   });
 });

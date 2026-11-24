@@ -10,7 +10,7 @@ Durum: ⬜ karar bekliyor · ✅ yapıldı · ⏸ ileride kullanılacak, şimdil
 | A1 | `/api/check-profiles` herkese açık; servis anahtarıyla (RLS'yi atlayarak) 10 üyenin profil kaydının tamamını döndürüyor | Sil | ✅ |
 | A2 | `/api/check-schema` herkese açık; `visitors` tablosundan kayıt döndürüyor | Sil | ✅ |
 | A3 | `/api/migrate` hiçbir şey yapmıyor ("raw SQL çalıştırılamaz" mesajı döndürüyor) | Sil | ✅ |
-| A4 | `/api/mcp-sync` hiç yetki kontrolü yapmıyor; herkes `mcp_servers` tablosuna yazma tetikleyebilir. `CRON_SECRET` yoksa koda gömülü yedek şifre kullanılıyor | `CRON_SECRET` zorunlu, `Authorization` kontrolü eklensin | ✅ |
+| A4 | `/api/mcp-sync` hiç yetki kontrolü yapmıyor; herkes `mcp_servers` tablosuna yazma tetikleyebilir. gizli anahtar yoksa koda gömülü yedek şifre kullanılıyor | Gizli anahtar zorunlu, `Authorization` kontrolü eklensin | ✅ |
 | A5 | `/api/visitor-update` koda gömülü token kullanıyor, kodda hiçbir yerden çağrılmıyor | Harici bir cihaz kullanmıyorsa silinsin | ✅ |
 
 ## B. Hiçbir yerden kullanılmayan dosyalar (25 dosya, ~3.100 satır)
@@ -71,7 +71,7 @@ Kullanılıyor görünmeyen ama gerekli olanlar: `react-dom` (Next.js ister), `p
 | `tsconfig.tsbuildinfo` | 246 KB | ✅ Git'ten çıkarıldı, `.gitignore`'a eklendi |
 | `bun.lock` + `package-lock.json` | — | ⬜ Vercel'in hangisini kullandığı Miraç'a sorulmalı; ikisi de şimdilik duruyor |
 | `components/layout/navbar.tsx.bak_demo_text` | — | ✅ Silindi |
-| Kök dizindeki eski prompt/plan metinleri (`*_PROMPT.txt`, `forum_logic.txt`, `project_*.txt`) | 30 KB | ✅ `docs/arsiv/` altına taşındı |
+| Kök dizindeki eski prompt/plan metinleri (`*_PROMPT.txt`, `forum_logic.txt`, `project_*.txt`) | 30 KB | ✅ `docs/arsiv/` altına taşındı; `ENGELSIZFORUM_ANDROID_MASTER_PROMPT.txt` depodan çıkarıldı |
 
 ## E. Performans
 

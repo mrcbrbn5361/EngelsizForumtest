@@ -1,64 +1,35 @@
 import type { NextConfig } from 'next';
 
+/**
+ * Returns the hostname of the configured storage project, or an empty string when none is set.
+ */
+function resolveStorageHost(): string {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_SUPABASE_URL || '').hostname;
+  } catch {
+    return '';
+  }
+}
+
+const storageHost = resolveStorageHost();
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   devIndicators: false,
   generateEtags: true,
   allowedDevOrigins: ['ais-dev-ix4syl6g7zxz77ys7mkpvf-91223103933.europe-west2.run.app', '*.run.app', 'ai.studio', '*.ai.studio', '*.google.com', 'localhost:3000', '127.0.0.1:3000'],
   images: {
-    dangerouslyAllowSVG: true,
+    unoptimized: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    formats: ['image/avif', 'image/webp'],
-    remotePatterns: [
-      { protocol: 'https', hostname: '**' },
-      { protocol: 'http', hostname: '**' },
-      { protocol: 'https', hostname: '*.run.app' },
-      { protocol: 'https', hostname: 'picsum.photos' },
-      { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
-      { protocol: 'https', hostname: 'api.dicebear.com' },
-      { protocol: 'https', hostname: 'i.imgur.com' },
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-      { protocol: 'https', hostname: 'source.unsplash.com' },
-      { protocol: 'https', hostname: '*.supabase.co' },
-      { protocol: 'https', hostname: '*.supabase.in' },
-      { protocol: 'https', hostname: '*.vercel.app' },
-      { protocol: 'https', hostname: '*-projects.vercel.app' },
-      { protocol: 'https', hostname: 'engelsizforum.com' },
-      { protocol: 'https', hostname: 'www.engelsizforum.com' },
-    ],
+    remotePatterns: storageHost ? [{ protocol: 'https', hostname: storageHost }] : [],
   },
   async redirects() {
     return [
       {
-        source: '/demo-thread',
-        destination: '/discussions',
-        permanent: true,
-      },
-      {
         source: '/forum',
         destination: '/',
         permanent: false,
-      },
-    ];
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/.well-known/mcp.json',
-        destination: '/api/well-known/mcp.json',
-      },
-      {
-        source: '/.well-known/webfinger',
-        destination: '/api/well-known/webfinger',
-      },
-      {
-        source: '/.well-known/nodeinfo',
-        destination: '/api/well-known/nodeinfo',
-      },
-      {
-        source: '/.well-known/openid-configuration',
-        destination: '/api/well-known/openid-configuration',
       },
     ];
   },

@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
-import { supabaseServer } from '@/lib/supabase-server';
+import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import ClassicThreadRow from '@/components/forum/classic-thread-row';
 import ClassicSidebar from '@/components/forum/classic-sidebar';
 import Link from 'next/link';
-import { Plus } from 'lucide-react';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const { data: category } = await supabaseServer
+  const supabase = await createClient();
+  const { data: category } = await supabase
     .from('categories')
     .select('name, description')
     .eq('slug', slug)
@@ -37,11 +37,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const supabase = await createClient();
 
-  // Fetch category details
-  const { data: category, error: catError } = await supabaseServer
+  const { data: category, error: catError } = await supabase
     .from('categories')
-    .select('*')
+    .select('id, name, slug, description')
     .eq('slug', slug)
     .maybeSingle();
 
@@ -49,18 +49,17 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     notFound();
   }
 
-  // Fetch topics in this category
-  const { data: topics } = await supabaseServer
+  const { data: topics } = await supabase
     .from('topics')
     .select(`
-      *,
+      id, title, slug, is_pinned, is_locked, views_count, comments_count, created_at,
       author:profiles(id, username, avatar_url)
     `)
     .eq('category_id', category.id)
     .order('is_pinned', { ascending: false })
     .order('created_at', { ascending: false });
 
-  const topicsWithStats = (topics || []).map((topic) => ({
+  const topicsWithStats = ((topics || []) as any[]).map((topic) => ({
     ...topic,
     replyCount: topic.comments_count || 0,
     viewCount: topic.views_count || 0
@@ -92,13 +91,6 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
               )}
             </div>
 
-            <Link
-              href={`/discussions/new?kategori=${category.slug}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-zinc-100 hover:bg-white text-zinc-950 text-xs font-semibold self-start sm:self-auto transition-colors"
-            >
-              <Plus size={14} className="stroke-[2.5]" />
-              <span>Bu Bölümde Konu Aç</span>
-            </Link>
           </div>
 
           {/* Topics List */}
@@ -110,7 +102,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             </div>
           ) : (
             <div className="py-16 text-center text-zinc-500 text-xs">
-              Bu kategoride henüz konu açılmamış. İlk konuyu siz başlatabilirsiniz.
+              Bu kategoride henüz konu yok.
             </div>
           )}
         </div>

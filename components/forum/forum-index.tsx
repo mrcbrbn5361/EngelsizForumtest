@@ -29,64 +29,35 @@ export function ForumIndex() {
         setCategories(catData as Category[]);
       }
 
-      // Fetch Real Threads/Topics from Supabase
-      let threadData: any = null;
-      const threadsRes = await supabase
-        .from('threads')
+      const { data: threadData } = await supabase
+        .from('topics')
         .select(`
           *,
-          author:profiles(id, username, avatar_url, display_name, full_name, role, last_seen_at),
+          author:profiles(id, username, avatar_url, display_name, full_name, role),
           category:categories(id, name, slug)
         `)
         .order('is_pinned', { ascending: false })
         .order('created_at', { ascending: false })
         .limit(25);
 
-      if (threadsRes.data && threadsRes.data.length > 0) {
-        threadData = threadsRes.data;
-      } else {
-        // Fallback to topics view if threads empty
-        const topicsRes = await supabase
-          .from('topics')
-          .select(`
-            *,
-            author:profiles(id, username, avatar_url, display_name, full_name, role, last_seen_at),
-            category:categories(id, name, slug)
-          `)
-          .order('is_pinned', { ascending: false })
-          .order('created_at', { ascending: false })
-          .limit(25);
-        if (topicsRes.data && topicsRes.data.length > 0) {
-          threadData = topicsRes.data;
-        }
-      }
-
       setTopics(threadData || []);
 
-      // Fetch Real Database Statistics from Supabase (threads, posts, profiles)
+      // Fetch Real Database Statistics from Supabase (topics, comments, profiles)
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
       const todayIso = todayStart.toISOString();
 
-      // 1. Total & Today's Topics (threads)
+      // 1. Total & Today's Topics
       let totalTopics = 0;
       let todayTopics = 0;
       
-      const { count: threadsCount } = await supabase
-        .from('threads')
+      const { count: topicsCount } = await supabase
+        .from('topics')
         .select('*', { count: 'exact', head: true });
-      
-      if (threadsCount !== null && threadsCount !== undefined) {
-        totalTopics = threadsCount;
-      } else {
-        const { count: topicsCount } = await supabase
-          .from('topics')
-          .select('*', { count: 'exact', head: true });
-        totalTopics = topicsCount || 0;
-      }
+      totalTopics = topicsCount || 0;
 
       const { count: tTodayCount } = await supabase
-        .from('threads')
+        .from('topics')
         .select('*', { count: 'exact', head: true })
         .gte('created_at', todayIso);
       todayTopics = tTodayCount || 0;
@@ -95,21 +66,13 @@ export function ForumIndex() {
       let totalComments = 0;
       let todayComments = 0;
 
-      const { count: postsCount } = await supabase
-        .from('posts')
+      const { count: commentsCount } = await supabase
+        .from('comments')
         .select('*', { count: 'exact', head: true });
-
-      if (postsCount !== null && postsCount !== undefined) {
-        totalComments = postsCount;
-      } else {
-        const { count: commentsCount } = await supabase
-          .from('comments')
-          .select('*', { count: 'exact', head: true });
-        totalComments = commentsCount || 0;
-      }
+      totalComments = commentsCount || 0;
 
       const { count: pTodayCount } = await supabase
-        .from('posts')
+        .from('comments')
         .select('*', { count: 'exact', head: true })
         .gte('created_at', todayIso);
       todayComments = pTodayCount || 0;

@@ -79,8 +79,8 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
 
   if (!isOpen) return null;
 
-  const role = (profile?.role || (user?.email === 'miracbirben@gmail.com' ? 'admin' : 'guest')) as string;
-  const isAdmin = role === 'admin' || user?.email === 'miracbirben@gmail.com';
+  const role = (profile?.role || 'guest') as string;
+  const isAdmin = role === 'admin';
   const isMod = role === 'moderator' || isAdmin;
   const isExpert = role === 'uzman' || isMod;
   const isLoggedIn = !!user;
@@ -129,14 +129,10 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
         <div className="flex-1 overflow-y-auto p-4 space-y-6 text-xs">
           
           {/* Quick Action Button */}
-          <Link
-            href="/discussions/new"
-            onClick={onClose}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-colors shadow-xs"
-          >
-            <Plus size={15} className="stroke-[2.5]" />
-            <span>Yeni Konu Başlat</span>
-          </Link>
+          <p className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-md border border-[#1E293B] bg-[#111B2E] text-slate-300 font-semibold">
+            <Plus size={15} className="stroke-[2.5]" aria-hidden="true" />
+            <span>Yeni konu: şimdilik kapalı</span>
+          </p>
 
           {/* 1. Temel Sayfalar (Herkes) */}
           <div className="space-y-1.5">
@@ -321,21 +317,6 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 <ChevronRight size={13} className="text-slate-600" />
               </Link>
 
-              <Link
-                href="/developers"
-                onClick={onClose}
-                className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                  pathname === '/developers' ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-indigo-300 hover:bg-[#111B2E] hover:text-white'
-                }`}
-              >
-                <span className="flex items-center gap-2.5">
-                  <BookOpen size={15} className="text-indigo-400" />
-                  <span>Geliştirici Portalı (OAuth &amp; API)</span>
-                </span>
-                <span className="text-[10px] font-mono uppercase bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 px-1.5 py-0.5 rounded">
-                  Dev Portal
-                </span>
-              </Link>
             </div>
           )}
 
@@ -361,43 +342,6 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 </span>
               </Link>
 
-              <Link
-                href="/visitor-stats"
-                onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#111B2E] hover:text-white transition-colors"
-              >
-                <span className="flex items-center gap-2.5">
-                  <Activity size={15} className="text-purple-400" />
-                  <span>Canlı Ziyaretçi İstatistikleri</span>
-                </span>
-                <ChevronRight size={13} className="text-slate-600" />
-              </Link>
-
-              <Link
-                href="/developers"
-                onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#111B2E] hover:text-white transition-colors"
-              >
-                <span className="flex items-center gap-2.5">
-                  <BookOpen size={15} className="text-indigo-400" />
-                  <span>Geliştirici &amp; WebMCP Ajan API</span>
-                </span>
-                <ChevronRight size={13} className="text-slate-600" />
-              </Link>
-
-              <Link
-                href="/widgets"
-                onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-indigo-400 hover:bg-[#111B2E] hover:text-indigo-300 transition-colors"
-              >
-                <span className="flex items-center gap-2.5">
-                  <Sparkles size={15} className="text-indigo-400" />
-                  <span>0 TL Erişilebilirlik &amp; WebMCP Widget</span>
-                </span>
-                <span className="text-[10px] font-mono uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">
-                  0 TL
-                </span>
-              </Link>
             </div>
           )}
 

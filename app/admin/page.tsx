@@ -53,8 +53,7 @@ export default function AdminPage() {
   const { user, profile, loading: authLoading, refreshProfile } = useAuth();
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'moderation' | 'categories' | 'widgets' | 'a11y'>('overview');
-  const [elevating, setElevating] = useState(false);
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'moderation' | 'categories' | 'a11y'>('overview');
 
   // Users Management State
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -76,41 +75,10 @@ export default function AdminPage() {
   const [newCatIcon, setNewCatIcon] = useState('MessageSquare');
   const [addingCategory, setAddingCategory] = useState(false);
 
-  // Live Stats State
-  const [visitorStats, setVisitorStats] = useState<{ totalVisits: number; uniqueVisitors: number; last24h: number }>({
-    totalVisits: 0,
-    uniqueVisitors: 0,
-    last24h: 0
-  });
-
   const isUserAdmin = useMemo(() => {
     if (!user) return false;
-    if (user.email === 'miracbirben@gmail.com') return true;
     return profile?.role === 'admin';
   }, [user, profile]);
-
-  // Handle instant elevation for project owner
-  const handleElevateSelf = async () => {
-    if (!user) return;
-    setElevating(true);
-    try {
-      if (isSupabaseConfigured) {
-        const { error } = await supabase
-          .from('profiles')
-          .update({ role: 'admin' })
-          .eq('id', user.id);
-        
-        if (error) throw error;
-      }
-      await refreshProfile();
-      toast.success('Yönetici yetkiniz Supabase üzerinde başarıyla "admin" olarak aktifleştirildi!');
-    } catch (err: any) {
-      console.error('Elevation error:', err);
-      toast.error('Yetkilendirme sırasında hata oluştu: ' + (err?.message || 'Bilinmeyen hata'));
-    } finally {
-      setElevating(false);
-    }
-  };
 
   // Fetch Users
   const fetchUsers = useCallback(async () => {
@@ -139,7 +107,7 @@ export default function AdminPage() {
   const fetchThreads = useCallback(async () => {
     setLoadingThreads(true);
     try {
-      let { data, error } = await supabase
+      const { data } = await supabase
         .from('topics')
         .select(`
           id, title, content, is_pinned, is_locked, views_count, comments_count, created_at,
@@ -148,19 +116,6 @@ export default function AdminPage() {
         `)
         .order('created_at', { ascending: false })
         .limit(50);
-
-      if (error) {
-        const fallback = await supabase
-          .from('threads')
-          .select(`
-            id, title, content, is_pinned, is_locked, views_count, comments_count, created_at,
-            author:profiles(username, display_name),
-            category:categories(name)
-          `)
-          .order('created_at', { ascending: false })
-          .limit(50);
-        data = fallback.data;
-      }
 
       setThreads(data || []);
     } catch (err) {
@@ -199,26 +154,6 @@ export default function AdminPage() {
       fetchUsers();
       fetchThreads();
       fetchCategories();
-      // Fetch real visitor stats
-      fetch('/api/visitor-stats')
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.stats) {
-            setVisitorStats({
-              totalVisits: data.stats.totalVisits || 0,
-              uniqueVisitors: data.stats.uniqueVisitors || 0,
-              last24h: data.stats.last24Hours || 0
-            });
-          }
-        })
-        .catch(() => {
-          // Fallback if API not ready
-          setVisitorStats({
-            totalVisits: 1420,
-            uniqueVisitors: 890,
-            last24h: 312
-          });
-        });
     }
   }, [isUserAdmin, fetchUsers, fetchThreads, fetchCategories]);
 
@@ -264,7 +199,7 @@ export default function AdminPage() {
     try {
       if (isSupabaseConfigured) {
         await supabase
-          .from('threads')
+          .from('topics')
           .update({ is_pinned: !currentPinned })
           .eq('id', threadId);
       }
@@ -280,7 +215,7 @@ export default function AdminPage() {
     try {
       if (isSupabaseConfigured) {
         await supabase
-          .from('threads')
+          .from('topics')
           .update({ is_locked: !currentLocked })
           .eq('id', threadId);
       }
@@ -390,13 +325,6 @@ export default function AdminPage() {
               <RefreshCw size={16} />
             </button>
 
-            <Link
-              href="/developers"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-xs min-h-[40px]"
-            >
-              <Code2 size={16} />
-              <span>Geliştirici Portalı</span>
-            </Link>
           </div>
         </div>
 
@@ -407,7 +335,6 @@ export default function AdminPage() {
             { id: 'users', label: 'Üyeler & Roller', icon: Users, badge: profiles.length },
             { id: 'moderation', label: 'Moderasyon', icon: MessageSquare, badge: threads.length },
             { id: 'categories', label: 'Kategoriler', icon: FolderTree, badge: categories.length },
-            { id: 'widgets', label: 'WebMCP & AI', icon: Bot },
             { id: 'a11y', label: 'WCAG Denetimi', icon: Accessibility }
           ].map(tab => {
             const Icon = tab.icon;
@@ -454,13 +381,6 @@ export default function AdminPage() {
               sub="Toplam Tartışma" 
             />
             <MetricCard 
-              label="Son 24s Ziyaret" 
-              value={visitorStats.last24h} 
-              icon={<Activity size={18} className="text-rose-400" />} 
-              sub={`Toplam ${visitorStats.totalVisits} hit`} 
-              subColor="text-rose-400"
-            />
-            <MetricCard 
               label="WCAG Uyumluluk" 
               value="%100" 
               icon={<Accessibility size={18} className="text-amber-400" />} 
@@ -491,11 +411,6 @@ export default function AdminPage() {
                   desc="Forum kapsamını artır" 
                   onClick={() => router.push('/admin/categories')} 
                 />
-                <QuickActionButton 
-                  title="WebMCP Kontrol" 
-                  desc="AI ajanlarını denetle" 
-                  onClick={() => setActiveTab('widgets')} 
-                />
               </div>
             </div>
 
@@ -523,55 +438,6 @@ export default function AdminPage() {
 
       {/* TAB 4: CATEGORIES */}
       {activeTab === 'categories' && <CategoryManagementView />}
-
-      {/* TAB 5: WIDGETS & WEBMCP */}
-      {activeTab === 'widgets' && (
-        <div className="space-y-6 animate-in fade-in duration-300">
-          <div className="p-8 bg-[#111B2E] border border-[#1E293B] rounded-md space-y-8 shadow-xl">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[#1E293B] pb-6">
-              <div className="space-y-2">
-                <h2 className="text-lg font-bold text-white flex items-center gap-3 font-heading uppercase tracking-widest">
-                  <Bot size={24} className="text-indigo-400" />
-                  <span>Harici Entegrasyon Çözümleri</span>
-                </h2>
-                <p className="text-xs text-slate-400 max-w-2xl font-normal leading-relaxed">
-                  EngelsizForum ekosistemini harici web sitelerine ve yapay zeka ajanlarına bağlayan resmi uç noktalar.
-                </p>
-              </div>
-
-              <Link
-                href="/developers"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs uppercase tracking-widest transition-all shadow-md min-h-[44px]"
-              >
-                <ArrowRight size={16} />
-                <span>Dokümanlara Git</span>
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em]">1. Erişilebilirlik Embed (JS)</div>
-                <div className="p-5 rounded-md bg-[#0B1220] border border-[#1E293B] font-mono text-xs text-emerald-400 overflow-x-auto select-all shadow-inner leading-relaxed">
-                  {`<script src="https://engelsizforum.com/widget.js" defer></script>`}
-                </div>
-                <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Bu script eklendiği tüm sitelere anında EngelsizForum&apos;un WCAG AAA erişilebilirlik araçlarını kazandırır.
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em]">2. WebMCP JSON-RPC Servis</div>
-                <div className="p-5 rounded-md bg-[#0B1220] border border-[#1E293B] font-mono text-xs text-indigo-300 overflow-x-auto select-all shadow-inner leading-relaxed">
-                  {`POST /api/mcp { method: "calculate_otv", params: { price: 2500000 } }`}
-                </div>
-                <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Yapay zeka ajanlarınız (Claude, GPT, Gemini) doğrudan platform araçlarını bu API üzerinden çağırabilir.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* TAB 6: WCAG AAA */}
       {activeTab === 'a11y' && (

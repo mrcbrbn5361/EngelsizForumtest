@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { supabaseServer } from '@/lib/supabase-server';
+import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import DiscussionDetailClient from './DiscussionDetailClient';
 
@@ -13,7 +13,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 
   const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-  let query = supabaseServer.from('topics').select('title, content, created_at, category:categories(name)');
+  const supabase = await createClient();
+  let query = supabase.from('topics').select('title, content, created_at, category:categories(name)');
   if (isUUID) {
     query = query.eq('id', id);
   } else {
@@ -68,10 +69,11 @@ export default async function DiscussionDetailPage({ params }: { params: Promise
   const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
   try {
-    let query = supabaseServer
+    const supabase = await createClient();
+    let query = supabase
       .from('topics')
       .select(`
-        *,
+        id, category_id, author_id, title, slug, content, comments_count, views_count, is_pinned, is_locked, is_solved, created_at,
         author:profiles(id, username, avatar_url, role, level, xp, full_name, bio),
         category:categories(id, name, slug)
       `);
@@ -88,22 +90,12 @@ export default async function DiscussionDetailPage({ params }: { params: Promise
       notFound();
     }
 
-    // Increment views count safely in background
-    try {
-      await supabaseServer
-        .from('topics')
-        .update({ views_count: (topic.views_count || 0) + 1 })
-        .eq('id', topic.id);
-    } catch {
-      // Non-blocking view increment
-    }
-
     // Fetch comments for this topic
     let comments: any[] = [];
-    const { data: fetchedComments, error: commentError } = await supabaseServer
+    const { data: fetchedComments, error: commentError } = await supabase
       .from('comments')
       .select(`
-        *,
+        id, topic_id, author_id, content, is_solution, created_at,
         author:profiles(id, username, avatar_url, role, level, xp, full_name, bio)
       `)
       .eq('topic_id', topic.id)
@@ -114,7 +106,7 @@ export default async function DiscussionDetailPage({ params }: { params: Promise
     }
 
     return (
-      <DiscussionDetailClient initialTopic={topic} initialComments={comments} />
+      <DiscussionDetailClient initialTopic={topic as any} initialComments={comments} />
     );
   } catch (err) {
     console.error('Database error in discussion detail page:', err);

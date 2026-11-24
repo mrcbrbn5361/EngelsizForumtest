@@ -16,7 +16,7 @@ export function ContentModerationView() {
     setLoading(true);
     try {
       if (isSupabaseConfigured) {
-        let { data, error } = await supabase
+        const { data } = await supabase
           .from('topics')
           .select(`
             id, title, content, is_pinned, is_locked, views_count, comments_count, created_at,
@@ -25,19 +25,6 @@ export function ContentModerationView() {
           `)
           .order('created_at', { ascending: false })
           .limit(100);
-
-        if (error) {
-          const fallback = await supabase
-            .from('threads')
-            .select(`
-              id, title, content, is_pinned, is_locked, views_count, comments_count, created_at,
-              author:profiles(username, full_name),
-              category:categories(name)
-            `)
-            .order('created_at', { ascending: false })
-            .limit(100);
-          data = fallback.data;
-        }
 
         setThreads(data || []);
       } else {
@@ -63,12 +50,7 @@ export function ContentModerationView() {
           .update({ is_pinned: !currentPinned })
           .eq('id', threadId);
 
-        if (error) {
-          await supabase
-            .from('threads')
-            .update({ is_pinned: !currentPinned })
-            .eq('id', threadId);
-        }
+        if (error) throw error;
       }
       setThreads(prev => prev.map(t => t.id === threadId ? { ...t, is_pinned: !currentPinned } : t));
       toast.success(currentPinned ? 'Sabitleme kaldırıldı' : 'Konu en üste sabitlendi');
@@ -85,12 +67,7 @@ export function ContentModerationView() {
           .update({ is_locked: !currentLocked })
           .eq('id', threadId);
 
-        if (error) {
-          await supabase
-            .from('threads')
-            .update({ is_locked: !currentLocked })
-            .eq('id', threadId);
-        }
+        if (error) throw error;
       }
       setThreads(prev => prev.map(t => t.id === threadId ? { ...t, is_locked: !currentLocked } : t));
       toast.success(currentLocked ? 'Konu kilidi açıldı' : 'Konu kilitlendi (Yorumlara kapatıldı)');

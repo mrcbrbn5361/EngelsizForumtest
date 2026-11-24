@@ -52,60 +52,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             return;
           }
         } else if (data) {
-          // Verify role from validated profile row
-          let finalProfile = data;
-          const userMetaAvatar = (authUser.user_metadata?.avatar_url as string) || (authUser.user_metadata?.picture as string) || null;
-          
-          // Auto-sync avatar if missing in profile row but present in auth metadata
-          if (!data.avatar_url && userMetaAvatar) {
-            finalProfile = { ...finalProfile, avatar_url: userMetaAvatar };
-            supabase.from('profiles').update({ avatar_url: userMetaAvatar }).eq('id', authUser.id).then();
-          }
-
-          if (authUser.email === 'miracbirben@gmail.com' && data.role !== 'admin') {
-            const { data: updatedProfile } = await supabase
-              .from('profiles')
-              .update({ role: 'admin' })
-              .eq('id', authUser.id)
-              .select()
-              .maybeSingle();
-            if (updatedProfile) {
-              finalProfile = { ...updatedProfile, avatar_url: updatedProfile.avatar_url || userMetaAvatar };
-            } else {
-              finalProfile = { ...finalProfile, role: 'admin' };
-            }
-          }
-          setProfile(finalProfile);
+          setProfile(data);
           return;
         } else {
-          // Profile does not exist - Let's auto-create it!
-          const defaultUsername = authUser.email ? authUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '') : `user_${authUser.id.substring(0, 5)}`;
-          const defaultRole = authUser.email === 'miracbirben@gmail.com' ? 'admin' : 'user';
-          const metaAvatar = (authUser.user_metadata?.avatar_url as string) || (authUser.user_metadata?.picture as string) || '';
-          const newProfile = {
-            id: authUser.id,
-            username: defaultUsername,
-            full_name: authUser.user_metadata?.full_name || defaultUsername,
-            avatar_url: metaAvatar,
-            role: defaultRole,
-            xp: 10,
-            level: 1,
-            created_at: new Date().toISOString()
-          };
-          const { data: insertedData, error: insertError } = await supabase
-            .from('profiles')
-            .insert([newProfile])
-            .select()
-            .maybeSingle();
-          
-          if (!insertError && insertedData) {
-            setProfile(insertedData);
-            return;
-          } else {
-            console.error('Error auto-creating profile:', insertError);
-            setProfile(newProfile as any);
-            return;
-          }
+          setProfile(null);
+          return;
         }
       } catch (err: any) {
         lastErr = err;
@@ -264,33 +215,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [fetchProfile]);
 
   
-
-  useEffect(() => {
-    if (!user || !isSupabaseConfigured) return;
-
-    const updateLastSeen = async () => {
-      try {
-        const { error } = await supabase
-          .from('profiles')
-          .update({ last_seen_at: new Date().toISOString() })
-          .eq('id', user.id);
-        
-        if (error) {
-          // Fallback if column last_seen_at doesn't exist yet
-          await supabase
-            .from('profiles')
-            .update({ updated_at: new Date().toISOString() })
-            .eq('id', user.id);
-        }
-      } catch (err) {
-        console.error('Error updating last seen status:', err);
-      }
-    };
-
-    updateLastSeen();
-    const interval = setInterval(updateLastSeen, 3 * 60 * 1000); // every 3 minutes
-    return () => clearInterval(interval);
-  }, [user]);
 
   // Realtime subscription for current user's profile updates
   useEffect(() => {

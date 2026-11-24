@@ -5,7 +5,6 @@ import {
   Calculator, 
   Car, 
   Clock, 
-  Cpu, 
   Settings, 
   Activity, 
   ArrowRight, 
@@ -40,28 +39,12 @@ export default function ToolsHubPage() {
       color: 'from-emerald-500/20 to-teal-500/20 text-emerald-400 border-emerald-500/30'
     },
     {
-      title: 'Chrome WebMCP AI Asistanı',
-      description: 'W3C WebMCP 1.1 protokolü ile forum içeriğini, özetleri ve erişilebilirlik önerilerini AI ile çalıştırma.',
-      icon: Cpu,
-      href: '/webmcp',
-      badge: 'AI & MCP 1.1',
-      color: 'from-purple-500/20 to-pink-500/20 text-purple-400 border-purple-500/30'
-    },
-    {
       title: 'Erişilebilirlik Tercihleri ve Ayarlar',
       description: 'Biyonik okuma, disleksi fontu, yüksek kontrast ve metin boyutu seçeneklerini özelleştirme.',
       icon: Settings,
       href: '/accessibility-settings',
       badge: 'WCAG 2.1 AAA',
       color: 'from-amber-500/20 to-orange-500/20 text-amber-400 border-amber-500/30'
-    },
-    {
-      title: 'Canlı Ziyaretçi ve Stand Monitörü',
-      description: 'Raspberry Pi ve IoT cihazları ile entegre canlı istatistik ve Teknofest ekranı.',
-      icon: Activity,
-      href: '/visitor-stats',
-      badge: 'Canlı Monitör',
-      color: 'from-rose-500/20 to-red-500/20 text-rose-400 border-rose-500/30'
     },
     {
       title: 'Erişilebilirlik Standartları & Bildirimi',

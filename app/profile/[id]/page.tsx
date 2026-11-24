@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { supabaseServer } from '@/lib/supabase-server';
+import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import { ProfileViewClient } from '@/components/profile/profile-view-client';
 
@@ -7,7 +7,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params;
   const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
   
-  let query = supabaseServer.from('profiles').select('username, full_name, bio');
+  const supabase = await createClient();
+  let query = supabase.from('profiles').select('username, full_name, bio');
   if (isUUID) {
     query = query.eq('id', id);
   } else {
@@ -51,7 +52,8 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   // Try to fetch profile by UUID or username
   const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
   
-  let query = supabaseServer.from('profiles').select('*');
+  const supabase = await createClient();
+  let query = supabase.from('profiles').select('id, username, full_name, avatar_url, role, level, xp, bio, created_at');
   if (isUUID) {
     query = query.eq('id', id);
   } else {
@@ -65,18 +67,18 @@ export default async function UserProfilePage({ params }: { params: Promise<{ id
   }
 
   // Fetch topic and comment counts
-  const { count: topicCount } = await supabaseServer
+  const { count: topicCount } = await supabase
     .from('topics')
-    .select('*', { count: 'exact', head: true })
+    .select('id', { count: 'exact', head: true })
     .eq('author_id', profile.id);
 
-  const { count: commentCount } = await supabaseServer
+  const { count: commentCount } = await supabase
     .from('comments')
-    .select('*', { count: 'exact', head: true })
+    .select('id', { count: 'exact', head: true })
     .eq('author_id', profile.id);
 
   // Fetch recent topics by this user
-  const { data: recentTopics } = await supabaseServer
+  const { data: recentTopics } = await supabase
     .from('topics')
     .select('id, title, created_at, comments_count, views_count, slug')
     .eq('author_id', profile.id)
