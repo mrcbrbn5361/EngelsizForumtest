@@ -7,7 +7,7 @@ export default function NewDiscussionPage() {
   return (
     <div className="max-w-2xl mx-auto w-full">
       <h1 className="text-xl font-bold text-white mb-4">Yeni konu</h1>
-      <WriteLockNotice title="Yeni konu açma şimdilik kapalı" />
+      <WriteLockNotice title="Yeni konu açma şimdilik kapalı" headingLevel={1} />
     </div>
   );
 }

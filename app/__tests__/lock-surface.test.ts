@@ -40,6 +40,18 @@ describe('read-only lock surface', () => {
     }
   });
 
+  it('shows no link to the closed new-topic page in the menus', () => {
+    for (const file of ['components/layout/classic-navbar.tsx', 'components/layout/universal-drawer-menu.tsx']) {
+      expect(readFileSync(path.join(root, file), 'utf8')).not.toContain('href="/discussions/new"');
+    }
+  });
+
+  it('gives each page that shows only the lock notice a level-one heading', () => {
+    for (const file of ['app/register/page.tsx', 'app/discussions/new/page.tsx', 'app/messages/page.tsx', 'app/profile/page.tsx']) {
+      expect(readFileSync(path.join(root, file), 'utf8')).toContain('headingLevel={1}');
+    }
+  });
+
   it('exposes no server action other than topic deletion', () => {
     const source = readFileSync(path.join(root, 'app/actions.ts'), 'utf8');
     const exported = [...source.matchAll(/export\s+(?:async\s+)?(?:function|const)\s+(\w+)/g)].map((m) => m[1]);

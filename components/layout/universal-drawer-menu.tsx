@@ -129,14 +129,10 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
         <div className="flex-1 overflow-y-auto p-4 space-y-6 text-xs">
           
           {/* Quick Action Button */}
-          <Link
-            href="/discussions/new"
-            onClick={onClose}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-colors shadow-xs"
-          >
-            <Plus size={15} className="stroke-[2.5]" />
-            <span>Yeni Konu Başlat</span>
-          </Link>
+          <p className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-md border border-[#1E293B] bg-[#111B2E] text-slate-300 font-semibold">
+            <Plus size={15} className="stroke-[2.5]" aria-hidden="true" />
+            <span>Yeni konu: şimdilik kapalı</span>
+          </p>
 
           {/* 1. Temel Sayfalar (Herkes) */}
           <div className="space-y-1.5">

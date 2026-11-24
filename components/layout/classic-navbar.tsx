@@ -241,13 +241,10 @@ export default function ClassicNavbar() {
             <Search size={16} aria-hidden="true" />
           </Link>
           {/* New Topic Button */}
-          <Link 
-            href="/discussions/new"
-            className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold transition-colors"
-          >
-            <Plus size={15} className="stroke-[2.5]" />
-            <span>Yeni Konu</span>
-          </Link>
+          <span className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[#1E293B] bg-[#111B2E] text-slate-300 text-xs font-semibold">
+            <Plus size={15} className="stroke-[2.5]" aria-hidden="true" />
+            <span>Yeni konu: şimdilik kapalı</span>
+          </span>
 
           {/* Accessibility Settings Trigger */}
           <div className="relative" ref={a11yRef}>

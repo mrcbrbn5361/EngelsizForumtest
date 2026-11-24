@@ -6,7 +6,7 @@ import WriteLockNotice from '@/components/layout/write-lock-notice';
 export default function RegisterPage() {
   return (
     <div className="w-full">
-      <WriteLockNotice title="Yeni kayıt şimdilik kapalı" />
+      <WriteLockNotice title="Yeni kayıt şimdilik kapalı" headingLevel={1} />
     </div>
   );
 }
