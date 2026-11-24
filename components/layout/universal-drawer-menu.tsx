@@ -228,7 +228,6 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
                 <Car size={15} className="text-indigo-400" />
                 <span>2026 ÖTV Muafiyetli Araç</span>
               </span>
-              <span className="text-[10px] font-mono text-emerald-400">2.87M ₺</span>
             </Link>
 
             <Link

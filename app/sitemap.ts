@@ -26,7 +26,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { route: '/hesaplama', changefreq: 'daily', priority: 0.9 },
     { route: '/hesaplama/balthazard', changefreq: 'weekly', priority: 0.9 },
     { route: '/hesaplama/otv', changefreq: 'weekly', priority: 0.9 },
-    { route: '/hesaplama/erken-emeklilik', changefreq: 'weekly', priority: 0.9 },
     { route: '/hesaplama/engelli-ayligi', changefreq: 'weekly', priority: 0.85 },
     { route: '/hesaplama/evde-bakim', changefreq: 'weekly', priority: 0.85 },
     { route: '/hesaplama/vergi-indirimi', changefreq: 'weekly', priority: 0.85 },

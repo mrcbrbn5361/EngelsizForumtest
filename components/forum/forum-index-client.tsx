@@ -140,7 +140,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
             id: "sub-otv",
             name: "ÖTV & MTV Muafiyetli Araç Alımı",
             slug: "otv-muafiyeti",
-            desc: "2026 yılı 2.873.972 TL üst limit düzenlemesi, tertibat kodları ve vergi istisnası.",
+            desc: "Üst tutar düzenlemesi, tertibat kodları ve vergi istisnası.",
             icon: "Car",
             topics: 0,
             replies: 0,
@@ -368,7 +368,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               [2026 Mevzuat]
             </span>
             <span>
-              2026 ÖTV Muafiyetli Araç Üst Limiti <strong className="text-slate-100 font-mono font-medium">2.873.972 TL</strong> olarak yürürlüktedir.
+              Mevzuat rakamları doğrulanıyor; hesaplayıcı sonuçları bilgi amaçlıdır.
             </span>
           </div>
           <Link 
@@ -412,17 +412,13 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
         {/* Minimal Stats Strip */}
         <div className="mt-8 pt-5 border-t border-[#1E293B] flex flex-wrap items-center gap-x-8 gap-y-2 text-xs font-mono text-slate-400">
           <div>
-            <span className="text-slate-200 font-medium">{stats?.totalTopics !== undefined ? formatCompactNumber(stats.totalTopics) : '0'}</span> Konu
+            <span className="text-slate-200 font-medium">{stats?.totalTopics !== undefined ? formatCompactNumber(stats.totalTopics) : '–'}</span> Konu
           </div>
           <div>
-            <span className="text-slate-200 font-medium">{stats?.totalComments !== undefined ? formatCompactNumber(stats.totalComments) : '0'}</span> Mesaj
+            <span className="text-slate-200 font-medium">{stats?.totalComments !== undefined ? formatCompactNumber(stats.totalComments) : '–'}</span> Mesaj
           </div>
           <div>
-            <span className="text-slate-200 font-medium">{stats?.totalMembers !== undefined ? formatCompactNumber(stats.totalMembers) : '0'}</span> Üye
-          </div>
-          <div className="flex items-center gap-1.5 text-emerald-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>{stats?.onlineCount !== undefined ? stats.onlineCount : onlineMembers.length} Çevrimiçi</span>
+            <span className="text-slate-200 font-medium">{stats?.totalMembers !== undefined ? formatCompactNumber(stats.totalMembers) : '–'}</span> Üye
           </div>
         </div>
       </header>
@@ -445,7 +441,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
               href="/hesaplama"
               className="px-3 py-1.5 rounded-md border border-[#1E293B] hover:border-slate-700 bg-[#111B2E] hover:bg-[#18243A] text-xs text-slate-300 hover:text-white transition-colors flex items-center gap-1.5"
             >
-              <Car size={13} className="text-emerald-400" /> 2026 ÖTV Limiti
+              <Car size={13} className="text-emerald-400" /> ÖTV Limiti
             </Link>
             <Link 
               href="/communities"
@@ -732,30 +728,6 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
                 </Link>
               </div>
             )}
-          </section>
-
-          {/* Online Members */}
-          <section className="p-4 rounded-lg bg-[#111B2E] border border-[#1E293B] space-y-3" aria-label="Çevrimiçi Üyeler">
-            <div className="border-b border-[#1E293B] pb-2 flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300 font-heading">
-                Çevrimiçi
-              </h3>
-              <span className="text-[11px] font-mono text-emerald-400">
-                {stats?.onlineCount !== undefined ? stats.onlineCount : onlineMembers.length} Aktif
-              </span>
-            </div>
-            <div className="space-y-1.5 text-xs">
-              {onlineMembers.length > 0 ? (
-                onlineMembers.slice(0, 6).map(member => (
-                  <div key={member.id} className="flex items-center justify-between text-slate-300 hover:text-white">
-                    <span className="truncate">@{member.username}</span>
-                    <span className="text-[10px] text-slate-400 font-mono uppercase">{member.role}</span>
-                  </div>
-                ))
-              ) : (
-                <div className="text-[11px] text-slate-400 italic">Şu anda çevrimiçi üye bulunmuyor</div>
-              )}
-            </div>
           </section>
         </aside>
       </div>

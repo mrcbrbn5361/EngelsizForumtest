@@ -24,7 +24,6 @@ import {
   AlertTriangle,
   ExternalLink,
   Lock,
-  Flag,
   UserX,
   History,
   TrendingUp,
@@ -358,26 +357,15 @@ export function ProfileViewClient({ targetProfile, stats, recentTopics }: Profil
                   <span>Moderatör Denetim Paneli</span>
                 </div>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   <div className="p-4 bg-[#0B1220] border border-[#1E293B] rounded-lg">
                     <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Rol</span>
                     <span className="text-sm font-black text-white uppercase">{targetProfile.role}</span>
-                  </div>
-                  <div className="p-4 bg-[#0B1220] border border-[#1E293B] rounded-lg">
-                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Durum</span>
-                    <span className="text-sm font-black text-emerald-400 uppercase">DOĞRULANMIŞ</span>
                   </div>
                   <div className="p-4 bg-[#0B1220] border border-[#1E293B] rounded-lg min-w-0">
                     <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Sistem ID</span>
                     <span className="text-[10px] font-mono text-slate-400 truncate block">{targetProfile.id}</span>
                   </div>
-                </div>
-
-                <div className="mt-6 flex justify-end">
-                  <Button variant="destructive" className="bg-rose-600 hover:bg-rose-500 text-white font-black text-[10px] uppercase tracking-widest px-6 h-9 shadow-md">
-                    <Flag size={14} className="mr-2" />
-                    Üyeyi Kısıtla / Uyar
-                  </Button>
                 </div>
               </div>
             </div>

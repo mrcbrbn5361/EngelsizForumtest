@@ -2,6 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
+import BilgiAmacliUyari from '@/components/hesaplama/bilgi-amacli-uyari';
 import React, { useState, useMemo } from 'react';
 import { 
   Briefcase, 
@@ -137,7 +138,7 @@ export default function KidemIhbarPage() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-[#F8FAFC] tracking-tight">
-                Kıdem ve İhbar Tazminatı Hesaplama (2026)
+                Kıdem ve İhbar Tazminatı Hesaplama
               </h1>
               <div className="flex items-center gap-2 mt-0.5">
                 <Info size={12} className="text-slate-500" />
@@ -149,7 +150,7 @@ export default function KidemIhbarPage() {
           </div>
 
           <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
-            2026 TAVANI: {formatCurrency(KIDEM_TAVANI_2026)}
+            2026 TAVANI (doğrulanıyor): {formatCurrency(KIDEM_TAVANI_2026)}
           </div>
         </div>
 
@@ -385,6 +386,8 @@ export default function KidemIhbarPage() {
         </div>
       </div>
 
+
+      <BilgiAmacliUyari rakamlarDogrulaniyor />
     </div>
   );
 }

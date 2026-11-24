@@ -1,6 +1,6 @@
 import { SiteLayout } from '@/components/layout/site-layout';
 import Link from 'next/link';
-import { Shield, ArrowLeft, Lock, Key, Server, CheckCircle2, Mail, FileText } from 'lucide-react';
+import { Shield, ArrowLeft, CheckCircle2, Mail, FileText } from 'lucide-react';
 
 export default function SecurityPage() {
   return (
@@ -11,91 +11,39 @@ export default function SecurityPage() {
         <header className="text-center max-w-3xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
             <Shield size={14} className="text-emerald-400" />
-            <span>Altyapı ve Veri Güvenliği</span>
+            <span>Güvenlik Bilgisi</span>
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-            Bilgi Güvenliği Standartları
+            Güvenlik
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed font-normal">
-            Kullanıcılarımızın kişisel bilgileri, sağlık kurulu raporu hesaplama verileri ve topluluk içi etkileşimleri en yüksek kurumsal standartlarda korunmaktadır.
+            Bu sayfa yalnızca sitenin bugün yaptığı güvenlik uygulamalarını anlatır. Bir güvenlik açığı fark ederseniz aşağıdaki adrese bildirebilirsiniz.
           </p>
         </header>
 
-        {/* Security Standard Cards */}
         <section aria-labelledby="security-pillars" className="space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-border/60">
-            <h2 id="security-pillars" className="text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
-              <Lock size={18} className="text-sky-400" />
-              <span>Güvenlik İlkelerimiz</span>
-            </h2>
-            <span className="text-xs text-muted-foreground font-medium">Uçtan Uca Koruma</span>
-          </div>
+          <h2 id="security-pillars" className="text-base sm:text-lg font-bold text-foreground pb-2 border-b border-border/60">
+            Bugün Uygulananlar
+          </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-card/85 backdrop-blur-md border border-border/80 rounded-2xl p-5 sm:p-6 space-y-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-500/40 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
-                <Key size={18} />
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-foreground">Kriptografik Şifreleme</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-normal">
-                Kullanıcı kimlik bilgileri ve şifreler, endüstri standardı hash algoritmaları ve tuzlama (salting) yöntemleriyle veritabanında saklanır.
-              </p>
-            </div>
-
-            <div className="bg-card/85 backdrop-blur-md border border-border/80 rounded-2xl p-5 sm:p-6 space-y-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-500/40 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                <Server size={18} />
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-foreground">Satır Düzeyi Yetkilendirme (RLS)</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-normal">
-                Veritabanı tablolarımız Row Level Security (RLS) kuralları ile korunarak her kullanıcının yalnızca kendi yetkisindeki verilere erişmesi garanti edilir.
-              </p>
-            </div>
-
-            <div className="bg-card/85 backdrop-blur-md border border-border/80 rounded-2xl p-5 sm:p-6 space-y-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-500/40 shadow-xs">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-card/85 border border-border/80 rounded-2xl p-5 sm:p-6 space-y-3">
               <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
                 <CheckCircle2 size={18} />
               </div>
-              <h3 className="text-sm sm:text-base font-bold text-foreground">TLS / HTTPS İletişimi</h3>
+              <h3 className="text-sm sm:text-base font-bold text-foreground">HTTPS</h3>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-normal">
-                Tarayıcınız ile sunucularımız arasındaki tüm veri alışverişi zorunlu HTTPS ve modern TLS protokolleri üzerinden aktarılır.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Detailed Security Protocol List */}
-        <section aria-labelledby="protocol-details" className="bg-card/80 border border-border/80 rounded-2xl p-6 sm:p-8 backdrop-blur-md space-y-6">
-          <h2 id="protocol-details" className="text-lg sm:text-xl font-bold text-foreground">
-            Güvenlik Yönetişimi ve Sorumluluklar
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-muted/30 border border-border/60 space-y-1.5">
-              <h4 className="text-xs sm:text-sm font-bold text-foreground">1. Oturum Güvenliği ve Token Yönetimi</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed font-normal">
-                Kullanıcı oturumları güvenli HTTP-Only çerezler ve JSON Web Token (JWT) standartlarıyla yönetilir, CSRF ve XSS saldırılarına karşı korunur.
+                Site HTTPS üzerinden sunulur.
               </p>
             </div>
 
-            <div className="p-4 rounded-xl bg-muted/30 border border-border/60 space-y-1.5">
-              <h4 className="text-xs sm:text-sm font-bold text-foreground">2. Sağlık ve Rapor Verisi Gizliliği</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed font-normal">
-                Engelli oran hesaplamalarında girdiğiniz tıbbi tanı bilgileri sunucularda saklanmaz, yalnızca yerel tarayıcı oturumunuzda hesaplanır.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-xl bg-muted/30 border border-border/60 space-y-1.5">
-              <h4 className="text-xs sm:text-sm font-bold text-foreground">3. Düzenli Güvenlik Taramaları</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed font-normal">
-                Bağımlılıklar, NPM paketleri ve framework altyapısı otomatik statik analiz ve zafiyet tarama araçlarıyla sürekli denetlenir.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-xl bg-muted/30 border border-border/60 space-y-1.5">
-              <h4 className="text-xs sm:text-sm font-bold text-foreground">4. Sorumlu Zafiyet Bildirimi (Bug Bounty)</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed font-normal">
-                Platformumuzda bir açık veya geliştirme alanı tespit eden etik güvenlik araştırmacılarının bildirimleri öncelikli olarak ele alınır.
+            <div className="bg-card/85 border border-border/80 rounded-2xl p-5 sm:p-6 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <Shield size={18} />
+              </div>
+              <h3 className="text-sm sm:text-base font-bold text-foreground">Hesaplayıcı girdileri</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed font-normal">
+                Hesaplayıcılara girdiğiniz değerler tarayıcınızda işlenir; forum veritabanına yazılmaz.
               </p>
             </div>
           </div>
@@ -106,10 +54,10 @@ export default function SecurityPage() {
           <div className="max-w-2xl space-y-2">
             <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
               <Mail size={20} className="text-emerald-400" />
-              <span>Güvenlik Ekibiyle İletişim</span>
+              <span>Güvenlik Bildirimi</span>
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
-              Herhangi bir şüpheli etkinlik, yetkisiz erişim denemesi veya zafiyet bildiriminiz için güvenlik ekibimize doğrudan yazabilirsiniz.
+              Bir güvenlik açığı bildirmek için bu adrese yazabilirsiniz.
             </p>
           </div>
 

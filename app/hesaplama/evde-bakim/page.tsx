@@ -2,6 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
+import BilgiAmacliUyari from '@/components/hesaplama/bilgi-amacli-uyari';
 import React, { useState, useMemo } from 'react';
 import { 
   Home, 
@@ -83,7 +84,7 @@ export default function EvdeBakimPage() {
           </div>
 
           <div className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-md bg-[#0B1220] text-indigo-300 border border-indigo-800/50 shadow-sm uppercase tracking-wider">
-            2026 SINIRI: {formatCurrency(kisiBasiGelirSiniri)}
+            2026 SINIRI (tahmini): {formatCurrency(kisiBasiGelirSiniri)}
           </div>
         </div>
 
@@ -241,7 +242,7 @@ export default function EvdeBakimPage() {
               </div>
 
               <div className="p-4 bg-[#0B1220] rounded-lg border border-[#1E293B] shadow-sm">
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Yasal Sınır</span>
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Gelir Sınırı (tahmini)</span>
                 <div className="text-xl font-black text-indigo-400">
                   {formatCurrency(calculation.kisiBasiGelirSiniri)}
                 </div>
@@ -265,6 +266,8 @@ export default function EvdeBakimPage() {
           </div>
         </div>
       </div>
+
+      <BilgiAmacliUyari rakamlarDogrulaniyor />
 
       {/* BAŞVURU ŞARTLARI VE KİMLER BAKICI OLABİLİR? */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
