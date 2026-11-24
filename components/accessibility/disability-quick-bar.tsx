@@ -12,8 +12,9 @@ import {
   Type
 } from 'lucide-react';
 import { useAccessibility } from '@/components/providers/accessibility-provider';
+import { detectProfile, profileOffSettings, type DisabilityProfileId } from './profile-state';
 
-export type DisabilityProfileId = 'standard' | 'vision' | 'hearing' | 'neuro' | 'motor';
+export type { DisabilityProfileId };
 
 interface DisabilityProfileOption {
   id: DisabilityProfileId;
@@ -77,14 +78,16 @@ export function DisabilityQuickBar() {
   } = useAccessibility();
 
   // Determine current active preset
-  const activeProfile: DisabilityProfileId = React.useMemo(() => {
-    if (highContrast && fontSize === 'xl') return 'vision';
-    if (dyslexicFont || readingRuler) return 'neuro';
-    if (reducedMotion) return 'motor';
-    return 'standard';
-  }, [highContrast, fontSize, dyslexicFont, readingRuler, reducedMotion]);
+  const activeProfile: DisabilityProfileId = React.useMemo(
+    () => detectProfile({ highContrast, fontSize, dyslexicFont, readingRuler, largeCursor, audioGuide, reducedMotion, visualAlerts }),
+    [highContrast, fontSize, dyslexicFont, readingRuler, largeCursor, audioGuide, reducedMotion, visualAlerts],
+  );
 
   const applyProfile = (id: DisabilityProfileId) => {
+    if (id !== 'standard' && id === activeProfile) {
+      updateSettings(profileOffSettings(id));
+      return;
+    }
     switch (id) {
       case 'standard':
         resetSettings();
