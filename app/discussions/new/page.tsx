@@ -190,7 +190,7 @@ function NewTopicForm() {
                       className={`px-2.5 py-1 rounded text-[11px] font-mono font-medium transition-all border cursor-pointer ${
                         selectedTag === tag 
                           ? 'bg-indigo-600 text-white border-indigo-500' 
-                          : 'bg-surface-hover text-fg-3 border-line hover:bg-line hover:text-white'
+                          : 'bg-surface-hover text-fg-3 border-line hover:bg-line hover:text-fg'
                       }`}
                     >
                       {tag}

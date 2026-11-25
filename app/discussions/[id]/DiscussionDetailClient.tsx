@@ -847,7 +847,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded transition-all border ${
                     likedTopic 
                       ? 'bg-rose-950/40 light:bg-rose-50/40 text-rose-300 light:text-rose-700 border-rose-800/60' 
-                      : 'text-fg-4 hover:text-white border-transparent hover:bg-surface-hover'
+                      : 'text-fg-4 hover:text-fg border-transparent hover:bg-surface-hover'
                   }`}
                 >
                   <Heart size={14} className={likedTopic ? 'fill-current scale-110' : ''} />
@@ -860,7 +860,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                     className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
                       currentlyPlayingId === topic.id 
                         ? 'text-rose-400 light:text-rose-700 font-semibold bg-rose-950/40 light:bg-rose-50/40 border border-rose-800/60 px-2.5 py-1.5 rounded' 
-                        : 'text-fg-3 hover:text-white hover:bg-surface-hover px-2.5 py-1.5 rounded'
+                        : 'text-fg-3 hover:text-fg hover:bg-surface-hover px-2.5 py-1.5 rounded'
                     }`}
                   >
                     {currentlyPlayingId === topic.id ? <VolumeX size={13} className="animate-pulse" /> : <Volume2 size={13} />}
@@ -982,7 +982,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                             className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded transition-all border cursor-pointer ${
                               comment.is_solution 
                                 ? 'bg-emerald-950/40 light:bg-emerald-50/40 border-emerald-800/60 text-emerald-300 light:text-emerald-700' 
-                                : 'bg-surface-hover border-line text-fg-3 hover:text-white hover:border-slate-600'
+                                : 'bg-surface-hover border-line text-fg-3 hover:text-fg hover:border-slate-600'
                             }`}
                           >
                             <CheckSquare size={13} />
@@ -997,7 +997,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                           className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
                             currentlyPlayingId === comment.id 
                               ? 'text-rose-400 light:text-rose-700 font-semibold bg-rose-950/40 light:bg-rose-50/40 border border-rose-800/60 px-2.5 py-1.5 rounded' 
-                              : 'text-fg-3 hover:text-white hover:bg-surface-hover px-2.5 py-1.5 rounded'
+                              : 'text-fg-3 hover:text-fg hover:bg-surface-hover px-2.5 py-1.5 rounded'
                           }`}
                         >
                           {currentlyPlayingId === comment.id ? <VolumeX size={13} className="animate-pulse" /> : <Volume2 size={13} />}
@@ -1041,7 +1041,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                         className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                           isRecording 
                             ? 'bg-rose-950/40 light:bg-rose-50/40 border-rose-700/60 text-rose-300 light:text-rose-700 animate-pulse' 
-                            : 'bg-surface-hover border-line text-fg-3 hover:border-indigo-400 light:hover:border-indigo-700 hover:text-white'
+                            : 'bg-surface-hover border-line text-fg-3 hover:border-indigo-400 light:hover:border-indigo-700 hover:text-fg'
                         }`}
                       >
                         <Radio size={13} className={isRecording ? 'animate-pulse text-rose-400 light:text-rose-700' : 'text-indigo-400 light:text-indigo-700'} />

@@ -169,7 +169,7 @@ export function DisabilityQuickBar() {
                 className={`flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold rounded-md transition-colors shrink-0 cursor-pointer border ${
                   isSelected 
                     ? 'bg-indigo-600 text-white border-indigo-500 font-bold shadow-xs' 
-                    : 'bg-surface-hover text-fg-2 border-line-strong hover:bg-surface-active hover:text-white'
+                    : 'bg-surface-hover text-fg-2 border-line-strong hover:bg-surface-active hover:text-fg'
                 }`}
                 title={`${p.title} - ${p.description}`}
                 aria-pressed={isSelected}

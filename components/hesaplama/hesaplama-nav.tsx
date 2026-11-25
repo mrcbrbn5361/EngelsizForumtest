@@ -168,7 +168,7 @@ export default function HesaplamaNav({
                 className={`shrink-0 lg:shrink flex items-center justify-between px-3.5 py-2.5 text-xs font-medium transition-all rounded-md lg:rounded-none whitespace-nowrap lg:whitespace-normal min-h-[38px] ${
                   isHubPage
                     ? 'bg-indigo-950/50 light:bg-indigo-50/50 text-indigo-300 light:text-indigo-700 border-l-0 lg:border-l-2 lg:border-indigo-400 light:lg:border-indigo-700'
-                    : 'text-fg-3 hover:bg-surface-hover hover:text-white'
+                    : 'text-fg-3 hover:bg-surface-hover hover:text-fg'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -194,7 +194,7 @@ export default function HesaplamaNav({
                     className={`shrink-0 lg:shrink flex items-center justify-between px-3.5 py-2.5 text-xs font-medium transition-all rounded-md lg:rounded-none whitespace-nowrap lg:whitespace-normal min-h-[38px] ${
                       isActive
                         ? 'bg-indigo-950/50 light:bg-indigo-50/50 text-indigo-300 light:text-indigo-700 border-l-0 lg:border-l-2 lg:border-indigo-400 light:lg:border-indigo-700 font-semibold'
-                        : 'text-fg-3 hover:bg-surface-hover hover:text-white'
+                        : 'text-fg-3 hover:bg-surface-hover hover:text-fg'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">

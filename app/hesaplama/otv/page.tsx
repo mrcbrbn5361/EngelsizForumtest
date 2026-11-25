@@ -232,7 +232,7 @@ export default function OtvHesaplamaPage() {
                   className={`text-[11px] px-2.5 py-1 rounded-md border font-bold transition-all cursor-pointer ${
                     listPrice === p 
                       ? 'bg-indigo-600 text-white border-indigo-500 shadow-sm' 
-                      : 'bg-surface-hover text-fg-4 border-line hover:text-white hover:bg-line'
+                      : 'bg-surface-hover text-fg-4 border-line hover:text-fg hover:bg-line'
                   }`}
                 >
                   {p === OTV_LIMIT_2026 ? '2026 TAVAN' : formatCurrency(p)}

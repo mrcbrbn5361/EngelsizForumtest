@@ -1032,7 +1032,7 @@ $result = json_decode(curl_exec($ch), true);`}
                           className={`p-2 rounded-md border text-left flex items-center gap-2 cursor-pointer transition-all ${
                             btnTheme === 'green'
                               ? 'border-emerald-500 bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-300 light:text-emerald-700 font-bold ring-1 ring-emerald-500'
-                              : 'border-line bg-surface-hover text-fg-3 hover:text-white'
+                              : 'border-line bg-surface-hover text-fg-3 hover:text-fg'
                           }`}
                         >
                           <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 shrink-0"></span>
@@ -1044,7 +1044,7 @@ $result = json_decode(curl_exec($ch), true);`}
                           className={`p-2 rounded-md border text-left flex items-center gap-2 cursor-pointer transition-all ${
                             btnTheme === 'blue'
                               ? 'border-indigo-500 bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-300 light:text-indigo-700 font-bold ring-1 ring-indigo-500'
-                              : 'border-line bg-surface-hover text-fg-3 hover:text-white'
+                              : 'border-line bg-surface-hover text-fg-3 hover:text-fg'
                           }`}
                         >
                           <span className="w-3.5 h-3.5 rounded-full bg-indigo-500 shrink-0"></span>
@@ -1089,7 +1089,7 @@ $result = json_decode(curl_exec($ch), true);`}
                             className={`py-2 px-2 rounded-md border text-center text-xs cursor-pointer transition-all ${
                               btnSize === sz
                                 ? 'border-indigo-500 bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-300 light:text-indigo-700 font-bold ring-1 ring-indigo-500'
-                                : 'border-line bg-surface-hover text-fg-3 hover:text-white'
+                                : 'border-line bg-surface-hover text-fg-3 hover:text-fg'
                             }`}
                           >
                             {sz === 'sm' ? 'Küçük (36px)' : sz === 'md' ? 'Standart (44px)' : 'Büyük (52px)'}
@@ -1108,7 +1108,7 @@ $result = json_decode(curl_exec($ch), true);`}
                           className={`p-2 rounded-md border text-left text-xs cursor-pointer transition-all ${
                             btnLayout === 'split'
                               ? 'border-indigo-500 bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-300 light:text-indigo-700 font-bold ring-1 ring-indigo-500'
-                              : 'border-line bg-surface-hover text-fg-3 hover:text-white'
+                              : 'border-line bg-surface-hover text-fg-3 hover:text-fg'
                           }`}
                         >
                           <span className="block font-bold">Logo Rozeti + Metin</span>
@@ -1120,7 +1120,7 @@ $result = json_decode(curl_exec($ch), true);`}
                           className={`p-2 rounded-md border text-left text-xs cursor-pointer transition-all ${
                             btnLayout === 'badge'
                               ? 'border-indigo-500 bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-300 light:text-indigo-700 font-bold ring-1 ring-indigo-500'
-                              : 'border-line bg-surface-hover text-fg-3 hover:text-white'
+                              : 'border-line bg-surface-hover text-fg-3 hover:text-fg'
                           }`}
                         >
                           <span className="block font-bold">Tam Wordmark Logo</span>
@@ -1576,7 +1576,7 @@ export function LoginWithEngelsizForum() {
                           className={`p-2 rounded-md border font-bold text-xs text-center cursor-pointer transition-colors ${
                             widgetLang === 'tr'
                               ? 'bg-indigo-600 border-indigo-500 text-white'
-                              : 'bg-surface-hover border-line text-fg-3 hover:text-white'
+                              : 'bg-surface-hover border-line text-fg-3 hover:text-fg'
                           }`}
                         >
                           Türkçe (tr)
@@ -1587,7 +1587,7 @@ export function LoginWithEngelsizForum() {
                           className={`p-2 rounded-md border font-bold text-xs text-center cursor-pointer transition-colors ${
                             widgetLang === 'en'
                               ? 'bg-indigo-600 border-indigo-500 text-white'
-                              : 'bg-surface-hover border-line text-fg-3 hover:text-white'
+                              : 'bg-surface-hover border-line text-fg-3 hover:text-fg'
                           }`}
                         >
                           English (en)
@@ -1667,7 +1667,7 @@ export function LoginWithEngelsizForum() {
                           className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase transition-colors cursor-pointer ${
                             widgetCodeTab === tab
                               ? 'bg-indigo-600 text-white'
-                              : 'bg-surface-hover border border-line text-fg-3 hover:text-white'
+                              : 'bg-surface-hover border border-line text-fg-3 hover:text-fg'
                           }`}
                         >
                           {tab === 'html' && 'HTML / Web'}

@@ -419,7 +419,7 @@ export default function AdminPage() {
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-md font-bold whitespace-nowrap transition-all cursor-pointer border ${
                   isActive 
                     ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' 
-                    : 'text-fg-4 hover:text-white bg-surface-hover border-line hover:border-slate-600'
+                    : 'text-fg-4 hover:text-fg bg-surface-hover border-line hover:border-slate-600'
                 }`}
               >
                 <Icon size={14} />
