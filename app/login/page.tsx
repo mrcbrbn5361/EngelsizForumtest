@@ -1,5 +1,8 @@
 'use client';
 
+import { formatAuthError, sanitizeRedirectPath } from '@/lib/auth-utils';
+import { VerifyEmailNotice } from '@/components/auth/verify-email-notice';
+import { rememberCookieString } from '@/lib/session-persistence';
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -25,11 +28,17 @@ function LoginForm() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const destination = searchParams?.get('redirect') || searchParams?.get('redirectTo') || '/';
+  const destination = sanitizeRedirectPath(searchParams?.get('redirect') || searchParams?.get('redirectTo'), '/');
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [remember, setRemember] = useState(true);
+  const [unconfirmedEmail, setUnconfirmedEmail] = useState<string | null>(null);
+
+  const saveRememberChoice = () => {
+    document.cookie = rememberCookieString(remember, window.location.protocol === 'https:');
+  };
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -42,6 +51,7 @@ function LoginForm() {
     e.preventDefault();
     setLoading(true);
     try {
+      saveRememberChoice();
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       
       if (signInError) throw signInError;
@@ -49,7 +59,11 @@ function LoginForm() {
       toast.success('Giriş başarılı! Yönlendiriliyorsunuz...');
       router.push(destination);
     } catch (err: any) {
-      toast.error('Giriş yapılamadı: ' + (err.message || 'Geçersiz e-posta veya şifre'));
+      if (err?.code === 'email_not_confirmed' || /email not confirmed/i.test(err?.message || '')) {
+        setUnconfirmedEmail(email.trim());
+        return;
+      }
+      toast.error('Giriş yapılamadı: ' + formatAuthError(err, 'Geçersiz e-posta veya şifre'));
     } finally {
       setLoading(false);
     }
@@ -57,6 +71,7 @@ function LoginForm() {
 
   const handleGoogleLogin = async () => {
     try {
+      saveRememberChoice();
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -65,7 +80,7 @@ function LoginForm() {
       });
       if (error) throw error;
     } catch (err: any) {
-      toast.error('Google ile giriş hatası: ' + err.message);
+      toast.error('Google ile giriş hatası: ' + formatAuthError(err, 'Lütfen tekrar deneyin.'));
     }
   };
 
@@ -105,6 +120,11 @@ function LoginForm() {
         
         {/* Card Body */}
         <div className="p-6 sm:p-7 space-y-6">
+          {unconfirmedEmail && (
+            <div role="alert" className="p-4 rounded-md border border-amber-500/40 bg-amber-500/10">
+              <VerifyEmailNotice email={unconfirmedEmail} startWithCooldown={false} />
+            </div>
+          )}
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-1.5">
               <label 
@@ -162,12 +182,18 @@ function LoginForm() {
               <input 
                 type="checkbox" 
                 id="remember" 
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+                aria-describedby="remember-hint"
                 className="w-4 h-4 rounded border-line bg-surface-hover text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0 cursor-pointer" 
               />
               <label htmlFor="remember" className="text-xs font-normal text-fg-3 cursor-pointer select-none">
                 Oturumumu bu cihazda açık tut
               </label>
             </div>
+            <p id="remember-hint" className="text-[11px] text-fg-4 -mt-1 pl-6">
+              Ortak bir bilgisayardaysanız işareti kaldırın; tarayıcı kapanınca oturumunuz kapanır.
+            </p>
 
             <div className="pt-2">
               <button 

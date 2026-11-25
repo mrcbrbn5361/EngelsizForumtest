@@ -1,6 +1,9 @@
 'use client';
 
 import { BionicText } from '@/components/ui/bionic-text';
+import { TopicReaders } from '@/components/forum/topic-readers';
+import { useTopicReaders } from '@/hooks/use-topic-readers';
+import { useAccessibility } from '@/components/providers/accessibility-provider';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   ThumbsUp, Quote, Flag, MessageSquare, ExternalLink, ShieldCheck, 
@@ -96,6 +99,12 @@ interface DiscussionDetailClientProps {
 
 export default function DiscussionDetailClient({ initialTopic, initialComments }: DiscussionDetailClientProps) {
   const { user, profile } = useAuth();
+  const { showReadingPresence } = useAccessibility();
+  const readers = useTopicReaders(
+    initialTopic?.id,
+    user ? { userId: user.id, username: profile?.username || 'üye' } : null,
+    !showReadingPresence
+  );
   const [topic, setTopic] = useState<TopicData>(initialTopic);
   const [comments, setComments] = useState<CommentData[]>(initialComments);
   const [replyContent, setReplyContent] = useState('');
@@ -376,12 +385,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
         // Send push notification to topic author
         if (topic.author_id !== user.id) {
-          createNotificationAction({
-            recipientId: topic.author_id,
-            type: 'like',
-            content: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuzu beğendi.`,
-            data: { link: `/discussions/${topic.id}` }
-          }).catch(notifErr => console.warn("Notification insert warning:", notifErr));
+          createNotificationAction({ type: 'like', topicId: topic.id }).catch(notifErr => console.warn("Notification insert warning:", notifErr));
         }
       }
     } catch (err) {
@@ -454,12 +458,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
 
         // Notify topic author
         if (topic.author_id !== user.id) {
-          createNotificationAction({
-            recipientId: topic.author_id,
-            type: 'comment',
-            content: `${profile?.full_name || profile?.username || 'Bir üye'} "${topic.title}" konunuza cevap yazdı.`,
-            data: { link: `/discussions/${topic.id}` }
-          }).catch(notifErr => console.warn("Notification insert warning:", notifErr));
+          createNotificationAction({ type: 'comment', topicId: topic.id }).catch(notifErr => console.warn("Notification insert warning:", notifErr));
         }
 
         // Check if @EngelsizAI is mentioned
@@ -848,7 +847,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                   className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded transition-all border ${
                     likedTopic 
                       ? 'bg-rose-950/40 light:bg-rose-50/40 text-rose-300 light:text-rose-700 border-rose-800/60' 
-                      : 'text-fg-4 hover:text-white border-transparent hover:bg-surface-hover'
+                      : 'text-fg-4 hover:text-fg border-transparent hover:bg-surface-hover'
                   }`}
                 >
                   <Heart size={14} className={likedTopic ? 'fill-current scale-110' : ''} />
@@ -861,7 +860,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                     className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
                       currentlyPlayingId === topic.id 
                         ? 'text-rose-400 light:text-rose-700 font-semibold bg-rose-950/40 light:bg-rose-50/40 border border-rose-800/60 px-2.5 py-1.5 rounded' 
-                        : 'text-fg-3 hover:text-white hover:bg-surface-hover px-2.5 py-1.5 rounded'
+                        : 'text-fg-3 hover:text-fg hover:bg-surface-hover px-2.5 py-1.5 rounded'
                     }`}
                   >
                     {currentlyPlayingId === topic.id ? <VolumeX size={13} className="animate-pulse" /> : <Volume2 size={13} />}
@@ -983,7 +982,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                             className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded transition-all border cursor-pointer ${
                               comment.is_solution 
                                 ? 'bg-emerald-950/40 light:bg-emerald-50/40 border-emerald-800/60 text-emerald-300 light:text-emerald-700' 
-                                : 'bg-surface-hover border-line text-fg-3 hover:text-white hover:border-slate-600'
+                                : 'bg-surface-hover border-line text-fg-3 hover:text-fg hover:border-slate-600'
                             }`}
                           >
                             <CheckSquare size={13} />
@@ -998,7 +997,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                           className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
                             currentlyPlayingId === comment.id 
                               ? 'text-rose-400 light:text-rose-700 font-semibold bg-rose-950/40 light:bg-rose-50/40 border border-rose-800/60 px-2.5 py-1.5 rounded' 
-                              : 'text-fg-3 hover:text-white hover:bg-surface-hover px-2.5 py-1.5 rounded'
+                              : 'text-fg-3 hover:text-fg hover:bg-surface-hover px-2.5 py-1.5 rounded'
                           }`}
                         >
                           {currentlyPlayingId === comment.id ? <VolumeX size={13} className="animate-pulse" /> : <Volume2 size={13} />}
@@ -1042,7 +1041,7 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
                         className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                           isRecording 
                             ? 'bg-rose-950/40 light:bg-rose-50/40 border-rose-700/60 text-rose-300 light:text-rose-700 animate-pulse' 
-                            : 'bg-surface-hover border-line text-fg-3 hover:border-indigo-400 light:hover:border-indigo-700 hover:text-white'
+                            : 'bg-surface-hover border-line text-fg-3 hover:border-indigo-400 light:hover:border-indigo-700 hover:text-fg'
                         }`}
                       >
                         <Radio size={13} className={isRecording ? 'animate-pulse text-rose-400 light:text-rose-700' : 'text-indigo-400 light:text-indigo-700'} />
@@ -1106,6 +1105,8 @@ export default function DiscussionDetailClient({ initialTopic, initialComments }
             <span className="opacity-40">/</span>
             <span className="font-semibold text-fg-2 truncate max-w-[200px] sm:max-w-xs">{topic.title}</span>
           </div>
+
+          <TopicReaders summary={readers} />
 
         </div>
 

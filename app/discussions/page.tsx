@@ -177,7 +177,7 @@ function DiscussionsContent() {
                   className={`px-3 py-1.5 rounded-md font-medium transition-colors cursor-pointer whitespace-nowrap ${
                     activeTab === tab.id
                       ? 'bg-indigo-600 text-white'
-                      : 'text-fg-3 hover:text-white hover:bg-surface-hover bg-surface-raised border border-line'
+                      : 'text-fg-3 hover:text-fg hover:bg-surface-hover bg-surface-raised border border-line'
                   }`}
                 >
                   {tab.label}

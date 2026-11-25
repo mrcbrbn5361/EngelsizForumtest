@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
+import { REMEMBER_COOKIE, withRememberPreference } from '@/lib/session-persistence';
 import { Profile } from '@/types/database';
 
 export async function createClient(): Promise<SupabaseClient> {
@@ -33,8 +34,9 @@ export async function createClient(): Promise<SupabaseClient> {
         },
         setAll(cookiesToSet) {
           try {
+            const remember = cookieStore.get(REMEMBER_COOKIE)?.value;
             cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
+              cookieStore.set(name, value, withRememberPreference(options, remember));
             });
           } catch (error) {
             // The `set` method was called from a Server Component.

@@ -1,17 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ShieldCheck, Cookie, Check, X, SlidersHorizontal, ExternalLink } from 'lucide-react';
+import { applyCookieConsent, readCookieConsent, saveCookieConsent } from '@/lib/cookie-consent';
 
-export interface ConsentPreferences {
-  necessary: boolean;
-  analytics: boolean;
-  marketing: boolean;
-  timestamp: string;
-}
-
-const STORAGE_KEY = 'engelsizforum_cookie_consent_v2';
 
 export function CookieConsentBanner() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,65 +13,26 @@ export function CookieConsentBanner() {
     analytics: boolean;
     marketing: boolean;
   }>({
-    analytics: true,
+    analytics: false,
     marketing: false,
   });
 
-  // Apply consent to Google Consent Mode v2
-  const applyGtagConsent = useCallback((analyticsGranted: boolean, marketingGranted: boolean) => {
-    if (typeof window !== 'undefined') {
-      if (typeof (window as any).gtag === 'function') {
-        (window as any).gtag('consent', 'update', {
-          analytics_storage: analyticsGranted ? 'granted' : 'denied',
-          ad_storage: marketingGranted ? 'granted' : 'denied',
-          ad_user_data: marketingGranted ? 'granted' : 'denied',
-          ad_personalization: marketingGranted ? 'granted' : 'denied',
-        });
-      }
-      if (Array.isArray((window as any).dataLayer)) {
-        (window as any).dataLayer.push({
-          event: 'consent_status_update',
-          analytics_consent: analyticsGranted,
-          marketing_consent: marketingGranted,
-        });
-      }
-    }
-  }, []);
-
   // Initialize on mount
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed: ConsentPreferences = JSON.parse(stored);
-        applyGtagConsent(parsed.analytics, parsed.marketing);
-      } else {
-        // Show banner after brief delay to avoid blocking LCP
-        const timer = setTimeout(() => {
-          setIsOpen(true);
-        }, 1200);
-        return () => clearTimeout(timer);
-      }
-    } catch {
-      setIsOpen(true);
+    const saved = readCookieConsent();
+    if (saved) {
+      applyCookieConsent(saved.analytics, saved.marketing);
+      return;
     }
-  }, [applyGtagConsent]);
+    const timer = setTimeout(() => setIsOpen(true), 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Listen for open requests (e.g. from footer)
   useEffect(() => {
     const handleOpen = () => {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          const parsed: ConsentPreferences = JSON.parse(stored);
-          setPreferences({
-            analytics: parsed.analytics,
-            marketing: parsed.marketing,
-          });
-        }
-      } catch {
-        // use default
-      }
+      const saved = readCookieConsent();
+      if (saved) setPreferences({ analytics: saved.analytics, marketing: saved.marketing });
       setShowCustomize(true);
       setIsOpen(true);
     };
@@ -102,18 +56,7 @@ export function CookieConsentBanner() {
   }, [isOpen, showCustomize]);
 
   const savePreferences = (analytics: boolean, marketing: boolean) => {
-    const data: ConsentPreferences = {
-      necessary: true,
-      analytics,
-      marketing,
-      timestamp: new Date().toISOString(),
-    };
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch (e) {
-      console.warn('LocalStorage access issue:', e);
-    }
-    applyGtagConsent(analytics, marketing);
+    saveCookieConsent(analytics, marketing);
     setIsOpen(false);
     setShowCustomize(false);
   };

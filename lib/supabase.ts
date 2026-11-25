@@ -1,4 +1,5 @@
-import { createBrowserClient } from '@supabase/ssr';
+import { createBrowserClient, parseCookieHeader, serializeCookieHeader } from '@supabase/ssr';
+import { readRememberCookie, withRememberPreference } from '@/lib/session-persistence';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -41,7 +42,19 @@ export async function checkSupabaseHealth(): Promise<{ ok: boolean; message: str
  * Initialized with @supabase/ssr to keep cookies in sync with Next.js middleware and server actions.
  */
 export const supabase: SupabaseClient = isSupabaseConfigured
-  ? createBrowserClient(supabaseUrl, supabaseAnonKey)
+  ? createBrowserClient(supabaseUrl, supabaseAnonKey, {
+      cookies: {
+        getAll() {
+          return parseCookieHeader(document.cookie).map(({ name, value }) => ({ name, value: value ?? '' }));
+        },
+        setAll(cookiesToSet) {
+          const remember = readRememberCookie(document.cookie);
+          cookiesToSet.forEach(({ name, value, options }) => {
+            document.cookie = serializeCookieHeader(name, value, withRememberPreference(options, remember) ?? {});
+          });
+        },
+      },
+    })
   : (({
       auth: { getUser: async () => ({ data: { user: null }, error: null }), getSession: async () => ({ data: { session: null }, error: null }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }) },
       from: () => ({ select: () => ({ eq: () => ({ single: async () => ({ data: null, error: new Error('Supabase not configured') }), order: () => ({ limit: () => ({ single: async () => ({ data: null, error: new Error('Supabase not configured') }) }) }) }) }) })

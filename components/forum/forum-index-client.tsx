@@ -62,7 +62,7 @@ export function ForumIndexClient({ initialTopics, initialCategories, stats }: Fo
           id: m.id,
           username: m.username,
           name: m.full_name || m.username,
-          avatar: m.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${m.username}`,
+          avatar: m.avatar_url || null,
           isOnline: isUserOnline(m.last_seen_at),
           role: m.role || 'user'
         }));

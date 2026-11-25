@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
+import { REMEMBER_COOKIE, withRememberPreference } from '@/lib/session-persistence';
 import { NextResponse, type NextRequest } from 'next/server';
 
 const isSupabaseConfigured = !!(
@@ -28,8 +29,9 @@ export async function updateSession(request: NextRequest) {
           supabaseResponse = NextResponse.next({
             request,
           });
+          const remember = request.cookies.get(REMEMBER_COOKIE)?.value;
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, withRememberPreference(options, remember))
           );
         },
       },

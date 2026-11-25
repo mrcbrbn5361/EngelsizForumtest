@@ -10,7 +10,13 @@
     "clean": "rm -rf .next",
     "test": "vitest run",
     "audit:contrast": "node scripts/contrast-audit.cjs",
-    "audit:axe": "node scripts/axe-audit.cjs"
+    "audit:axe": "node scripts/axe-audit.cjs",
+    "test:e2e:auth": "node tests/e2e/auth-flows.cjs",
+    "test:e2e:remember": "node tests/e2e/remember-me.cjs",
+    "test:e2e:verify": "node tests/e2e/email-verification.cjs",
+    "test:e2e:avatar": "node tests/e2e/avatar.cjs",
+    "test:e2e:readers": "node tests/e2e/topic-readers.cjs",
+    "test:e2e:prefs": "node tests/e2e/preferences.cjs"
   },
   "dependencies": {
     "@fontsource/opendyslexic": "^5.3.0",

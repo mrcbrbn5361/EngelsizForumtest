@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Mail, ArrowLeft, AlertCircle, CheckCircle2, Loader2, KeyRound } from 'lucide-react';
-import { motion } from 'motion/react';
-import { SiteLayout } from '@/components/layout/site-layout';
+import { Mail, ArrowLeft, Loader2, KeyRound } from 'lucide-react';
+import { AuthCard, AuthAlert, authInputClass, authLabelClass, authPrimaryButtonClass, authSecondaryLinkClass } from '@/components/auth/auth-card';
 import Link from 'next/link';
 import { formatAuthError } from '@/lib/auth-utils';
 
@@ -13,6 +12,11 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [sentCount, setSentCount] = useState(0);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  useEffect(() => {
+    const linkError = new URLSearchParams(window.location.search).get('error');
+    if (linkError) setMessage({ type: 'error', text: linkError });
+  }, []);
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,91 +61,56 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <SiteLayout>
-      <main className="vibe-container py-12 md:py-24 flex items-center justify-center">
-        <motion.div 
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md p-8 sm:p-10 border border-white/[0.08] shadow-2xl rounded-3xl bg-surface-raised/90 backdrop-blur-md text-fg-1"
-        >
-          <div className="text-center mb-8 space-y-2">
-            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 light:text-sky-700 border border-sky-500/20 flex items-center justify-center mx-auto mb-3">
-              <KeyRound size={24} aria-hidden="true" />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight text-fg-1">Şifremi Unuttum</h1>
-            <p className="text-xs text-fg-4 font-normal leading-relaxed">
-              Hesabınıza bağlı e-posta adresinizi girin; size güvenli bir şifre sıfırlama bağlantısı gönderelim.
-            </p>
+    <AuthCard
+      crumb="Şifremi Unuttum"
+      icon={KeyRound}
+      title="Şifremi Unuttum"
+      subtitle="E-posta adresinize güvenli bir şifre sıfırlama bağlantısı gönderelim"
+    >
+      <form onSubmit={handleReset} className="space-y-4" noValidate>
+        <div className="space-y-1.5">
+          <label htmlFor="reset-email" className={authLabelClass}>
+            E-posta Adresi <span className="text-rose-400 light:text-rose-700">*</span>
+          </label>
+          <div className="relative">
+            <input
+              id="reset-email"
+              type="email"
+              required
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={authInputClass}
+              placeholder="ornek@engelsizforum.com"
+              disabled={loading}
+              aria-describedby={message ? 'status-message' : undefined}
+            />
+            <Mail size={16} className="absolute left-3.5 top-3.5 text-fg-4 pointer-events-none" aria-hidden="true" />
           </div>
+        </div>
 
-          <form onSubmit={handleReset} className="space-y-5" noValidate>
-            <div className="space-y-2">
-              <label htmlFor="reset-email" className="block text-xs font-bold uppercase tracking-wider text-fg-3">
-                E-posta Adresi
-              </label>
-              <div className="relative">
-                <input
-                  id="reset-email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-12 bg-surface border border-white/[0.08] focus:border-sky-500 rounded-xl px-4 pl-10 text-sm text-fg-1 placeholder:text-fg-5 outline-none transition-colors"
-                  placeholder="ornek@alanadi.com"
-                  disabled={loading}
-                  aria-describedby={message ? "status-message" : undefined}
-                />
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-5" size={18} aria-hidden="true" />
-              </div>
-            </div>
+        {message && <AuthAlert type={message.type} id="status-message">{message.text}</AuthAlert>}
 
-            {message && (
-              <div 
-                id="status-message"
-                role="status"
-                aria-live="polite"
-                className={`flex items-start gap-3 p-4 rounded-2xl border text-xs font-medium ${
-                  message.type === 'success' 
-                    ? 'bg-emerald-500/10 text-emerald-400 light:text-emerald-700 border-emerald-500/20' 
-                    : 'bg-destructive/10 text-destructive border-destructive/20'
-                }`}
-              >
-                {message.type === 'success' ? (
-                  <CheckCircle2 size={18} className="shrink-0 mt-0.5" aria-hidden="true" />
-                ) : (
-                  <AlertCircle size={18} className="shrink-0 mt-0.5" aria-hidden="true" />
-                )}
-                <p className="leading-relaxed">{message.text}</p>
-              </div>
-            )}
+        <button type="submit" disabled={loading || !email.trim()} className={authPrimaryButtonClass}>
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin" size={16} aria-hidden="true" />
+              <span>Gönderiliyor...</span>
+            </>
+          ) : (
+            <>
+              <Mail size={16} aria-hidden="true" />
+              <span>Sıfırlama Bağlantısı Gönder</span>
+            </>
+          )}
+        </button>
+      </form>
 
-            <button
-              type="submit"
-              disabled={loading || !email.trim()}
-              className="w-full h-12 flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-400 light:hover:bg-sky-700 disabled:opacity-50 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-lg shadow-sky-500/20"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="animate-spin" size={18} aria-hidden="true" />
-                  <span>GÖNDERİLİYOR...</span>
-                </>
-              ) : (
-                'SIFIRLAMA BAĞLANTISI GÖNDER'
-              )}
-            </button>
-          </form>
-
-          <div className="mt-8 text-center border-t border-white/[0.08] pt-6">
-            <Link 
-              href="/auth" 
-              className="text-xs font-bold uppercase tracking-wider text-sky-400 light:text-sky-700 hover:text-sky-300 light:hover:text-sky-700 inline-flex items-center justify-center gap-2 transition-colors"
-            >
-              <ArrowLeft size={16} aria-hidden="true" /> GİRİŞ SAYFASINA DÖN
-            </Link>
-          </div>
-        </motion.div>
-      </main>
-    </SiteLayout>
+      <div className="pt-4 border-t border-line text-center">
+        <Link href="/login" className={authSecondaryLinkClass}>
+          <ArrowLeft size={14} aria-hidden="true" /> Giriş sayfasına dön
+        </Link>
+      </div>
+    </AuthCard>
   );
 }

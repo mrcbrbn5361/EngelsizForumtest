@@ -1,5 +1,7 @@
 'use client';
 
+import { formatAuthError, PASSWORD_MIN_LENGTH, validatePasswordStrength } from '@/lib/auth-utils';
+import { VerifyEmailNotice } from '@/components/auth/verify-email-notice';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -25,6 +27,8 @@ export default function RegisterPage() {
     }
   }, [user, authLoading, router]);
 
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!termsAccepted) {
@@ -38,11 +42,16 @@ export default function RegisterPage() {
       if (cleanUsername.length < 3) {
         throw new Error('Kullanıcı adı en az 3 karakter olmalıdır.');
       }
+      const passwordCheck = validatePasswordStrength(password);
+      if (!passwordCheck.isValid) {
+        throw new Error(passwordCheck.errors.join(' '));
+      }
 
-      const { error: signUpError } = await supabase.auth.signUp({ 
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ 
         email: email.trim(), 
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/discussions`,
           data: {
             username: cleanUsername,
             full_name: username.trim()
@@ -52,10 +61,14 @@ export default function RegisterPage() {
 
       if (signUpError) throw signUpError;
 
-      toast.success('Kayıt başarılı! Şimdi giriş yapabilirsiniz.');
-      router.push('/login');
+      if (signUpData.session) {
+        toast.success('Kayıt başarılı! Topluluğa hoş geldin.');
+        router.push('/discussions');
+      } else {
+        setPendingEmail(email.trim());
+      }
     } catch (err: any) {
-      toast.error('Kayıt yapılamadı: ' + (err.message || 'Lütfen bilgilerinizi kontrol edin.'));
+      toast.error('Kayıt yapılamadı: ' + formatAuthError(err, 'Lütfen bilgilerinizi kontrol edin.'));
     } finally {
       setLoading(false);
     }
@@ -97,6 +110,9 @@ export default function RegisterPage() {
         
         {/* Card Body */}
         <div className="p-6 sm:p-7 space-y-6">
+          {pendingEmail ? (
+            <VerifyEmailNotice email={pendingEmail} />
+          ) : (
           <form onSubmit={handleRegister} className="space-y-4">
             <div className="space-y-1.5">
               <label 
@@ -150,7 +166,7 @@ export default function RegisterPage() {
                 htmlFor="reg-password" 
                 className="block text-xs font-semibold text-fg-3 uppercase tracking-wider"
               >
-                Şifre (En az 6 karakter) <span className="text-rose-400 light:text-rose-700">*</span>
+                Şifre (en az {PASSWORD_MIN_LENGTH} karakter, bir rakam veya özel karakter) <span className="text-rose-400 light:text-rose-700">*</span>
               </label>
               <div className="relative">
                 <input 
@@ -161,7 +177,7 @@ export default function RegisterPage() {
                   className="w-full pl-10 pr-3.5 h-11 text-xs sm:text-sm font-medium bg-surface-hover border border-line rounded-md text-fg placeholder-fg-5 focus:outline-none focus:border-indigo-400 light:focus:border-indigo-700 transition-colors"
                   placeholder="••••••••"
                   autoComplete="new-password"
-                  minLength={6}
+                  minLength={PASSWORD_MIN_LENGTH}
                   required
                 />
                 <Lock size={16} className="absolute left-3.5 top-3.5 text-fg-4 pointer-events-none" />
@@ -211,6 +227,7 @@ export default function RegisterPage() {
               </Link>
             </div>
           </form>
+          )}
         </div>
       </div>
     </div>

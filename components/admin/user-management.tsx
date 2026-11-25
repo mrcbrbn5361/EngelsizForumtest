@@ -184,7 +184,7 @@ export function UserManagementView() {
                         className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all cursor-pointer ${
                           p.is_verified
                             ? 'bg-indigo-950/50 light:bg-indigo-50/50 border-indigo-600 text-indigo-300 light:text-indigo-700 hover:bg-indigo-900/50 light:hover:bg-indigo-100/50'
-                            : 'bg-surface border-line text-fg-5 hover:text-white'
+                            : 'bg-surface border-line text-fg-5 hover:text-fg'
                         }`}
                       >
                         {p.is_verified ? 'Doğrulanmış' : 'Onayla'}

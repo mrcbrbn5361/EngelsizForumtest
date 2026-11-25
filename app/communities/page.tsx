@@ -484,7 +484,7 @@ export default function CommunitiesPage() {
                 className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer ${
                   selectedGroup === group.id
                     ? 'bg-indigo-600 text-white'
-                    : 'bg-surface-raised text-fg-3 border border-line hover:bg-surface-hover hover:text-white'
+                    : 'bg-surface-raised text-fg-3 border border-line hover:bg-surface-hover hover:text-fg'
                 }`}
               >
                 <span>{group.icon}</span>

@@ -319,7 +319,7 @@ export default function ClassicNavbar() {
                   </Link>
 
                   <Link
-                    href="/profile"
+                    href="/tercihler"
                     onClick={() => setIsProfileOpen(false)}
                     className="flex items-center gap-2 px-3 py-2 text-fg-2 hover:bg-surface-hover hover:text-fg"
                   >

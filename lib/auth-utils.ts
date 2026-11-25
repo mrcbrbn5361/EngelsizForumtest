@@ -2,48 +2,61 @@
  * Utility functions for handling authentication errors, validation, and session security.
  */
 
-export interface PasswordValidationResult {
+/** Minimum length of every newly chosen password (sign-up, reset, change). */
+export const PASSWORD_MIN_LENGTH = 8;
+
+export interface PasswordChecks {
+  hasLength: boolean;
+  hasNumberOrSpecial: boolean;
+}
+
+export interface PasswordValidationResult extends PasswordChecks {
   isValid: boolean;
-  score: number; // 0 to 4
   errors: string[];
 }
 
 /**
- * Validates password strength according to security standards
+ * Single password policy for the whole site: at least 8 characters and at least one
+ * digit or special character. Existing passwords keep working; this applies only
+ * when a new password is set.
  */
 export function validatePasswordStrength(password: string): PasswordValidationResult {
+  const value = password || '';
+  const hasLength = value.length >= PASSWORD_MIN_LENGTH;
+  const hasNumberOrSpecial = /[^\p{L}\s]/u.test(value);
   const errors: string[] = [];
-  let score = 0;
+  if (!hasLength) errors.push(`Şifre en az ${PASSWORD_MIN_LENGTH} karakter uzunluğunda olmalıdır.`);
+  if (!hasNumberOrSpecial) errors.push('Şifre en az bir rakam veya özel karakter içermelidir.');
+  return { isValid: errors.length === 0, hasLength, hasNumberOrSpecial, errors };
+}
 
-  if (!password || password.length < 8) {
-    errors.push('Şifre en az 8 karakter uzunluğunda olmalıdır.');
-  } else {
-    score += 1;
+/**
+ * Returns a safe same-site path to redirect to after authentication.
+ * Rejects absolute URLs, protocol-relative URLs and backslash tricks (open redirect).
+ */
+export function sanitizeRedirectPath(value: string | null | undefined, fallback = '/discussions'): string {
+  if (!value) return fallback;
+  let decoded = value;
+  try {
+    decoded = decodeURIComponent(value);
+  } catch {
+    return fallback;
   }
-
-  if (/[A-Z]/.test(password)) {
-    score += 1;
-  } else {
-    errors.push('En az bir büyük harf içermelidir.');
+  if (!decoded.startsWith('/') || decoded.startsWith('//') || decoded.includes('\\') || /[\u0000-\u001f]/.test(decoded)) {
+    return fallback;
   }
+  return decoded;
+}
 
-  if (/[a-z]/.test(password)) {
-    score += 1;
-  } else {
-    errors.push('En az bir küçük harf içermelidir.');
-  }
+/** Email link types that /auth/confirm can verify with a token hash. */
+export const EMAIL_OTP_TYPES = ['recovery', 'signup', 'email', 'email_change', 'invite', 'magiclink'] as const;
+export type EmailOtpType = (typeof EMAIL_OTP_TYPES)[number];
 
-  if (/[0-9]/.test(password)) {
-    score += 1;
-  } else {
-    errors.push('En az bir rakam içermelidir.');
-  }
-
-  return {
-    isValid: errors.length === 0,
-    score: Math.min(score, 4),
-    errors,
-  };
+/**
+ * Narrows an untrusted query-string value to a supported email link type.
+ */
+export function parseEmailOtpType(value: string | null): EmailOtpType | null {
+  return (EMAIL_OTP_TYPES as readonly string[]).includes(value || '') ? (value as EmailOtpType) : null;
 }
 
 /**
@@ -102,8 +115,8 @@ function mapErrorMessage(msg: string, fallback: string): string {
   if (lower.includes('user already registered') || lower.includes('already exists') || lower.includes('unique constraint') || lower.includes('user_already_exists')) {
     return 'Bu e-posta adresi veya kullanıcı adı ile zaten kayıtlı bir hesap bulunmaktadır. Lütfen giriş yapın.';
   }
-  if (lower.includes('password should be at least')) {
-    return 'Şifre en az 6 karakter uzunluğunda olmalıdır.';
+  if (lower.includes('password should be at least') || lower.includes('weak_password')) {
+    return `Şifre en az ${PASSWORD_MIN_LENGTH} karakter olmalı ve bir rakam veya özel karakter içermelidir.`;
   }
   if (lower.includes('signup requires a valid password')) {
     return 'Geçerli bir şifre girmeniz gerekmektedir.';
