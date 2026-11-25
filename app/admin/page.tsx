@@ -343,19 +343,19 @@ export default function AdminPage() {
 
   if (authLoading || !isUserAdmin) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4 text-white">
+      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4 text-fg">
         <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
-        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">Yetki Kontrol Ediliyor...</p>
+        <p className="text-sm font-bold text-fg-4 uppercase tracking-widest">Yetki Kontrol Ediliyor...</p>
       </div>
     );
   }
 
   // 4. Authorized Admin View
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 py-6 space-y-8 text-slate-100 font-sans">
+    <div className="w-full max-w-7xl mx-auto px-4 py-6 space-y-8 text-fg-1 font-sans">
       
       {/* Header */}
-      <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 shadow-xs space-y-6">
+      <div className="bg-surface-raised border border-line rounded-md p-6 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-md bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-900/20 font-bold shrink-0">
@@ -363,15 +363,15 @@ export default function AdminPage() {
             </div>
             <div>
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white font-heading">
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-fg font-heading">
                   Yönetim Konsolu (ACP)
                 </h1>
-                <span className="text-[10px] font-mono uppercase bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 px-2 py-0.5 rounded font-bold tracking-widest">
+                <span className="text-[10px] font-mono uppercase bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 px-2 py-0.5 rounded font-bold tracking-widest">
                   ● LIVE RBAC
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-1 font-normal">
-                Platform Denetimi &bull; <span className="text-indigo-400 font-semibold">{user?.email}</span>
+              <p className="text-xs text-fg-4 mt-1 font-normal">
+                Platform Denetimi &bull; <span className="text-indigo-400 light:text-indigo-700 font-semibold">{user?.email}</span>
               </p>
             </div>
           </div>
@@ -384,7 +384,7 @@ export default function AdminPage() {
                 fetchCategories();
                 toast.success('Veriler Supabase ile yeniden senkronize edildi.');
               }}
-              className="p-2.5 rounded-md border border-[#1E293B] bg-[#18243A] hover:bg-[#1E293B] text-slate-200 transition-colors cursor-pointer"
+              className="p-2.5 rounded-md border border-line bg-surface-hover hover:bg-line text-fg-2 transition-colors cursor-pointer"
               title="Yenile"
             >
               <RefreshCw size={16} />
@@ -401,7 +401,7 @@ export default function AdminPage() {
         </div>
 
         {/* Navigation Ribbon */}
-        <div className="flex items-center gap-1.5 overflow-x-auto border-t border-[#1E293B] pt-4 scrollbar-none text-xs">
+        <div className="flex items-center gap-1.5 overflow-x-auto border-t border-line pt-4 scrollbar-none text-xs">
           {[
             { id: 'overview', label: 'Genel Bakış', icon: BarChart3 },
             { id: 'users', label: 'Üyeler & Roller', icon: Users, badge: profiles.length },
@@ -419,13 +419,13 @@ export default function AdminPage() {
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-md font-bold whitespace-nowrap transition-all cursor-pointer border ${
                   isActive 
                     ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' 
-                    : 'text-slate-400 hover:text-white bg-[#18243A] border-[#1E293B] hover:border-slate-600'
+                    : 'text-fg-4 hover:text-white bg-surface-hover border-line hover:border-slate-600'
                 }`}
               >
                 <Icon size={14} />
                 <span className="uppercase tracking-wider text-[10px]">{tab.label}</span>
                 {tab.badge !== undefined && (
-                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${isActive ? 'bg-black/20 text-white' : 'bg-[#0B1220] text-indigo-400'}`}>
+                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono ${isActive ? 'bg-black/20 text-white' : 'bg-surface text-indigo-400 light:text-indigo-700'}`}>
                     {tab.badge}
                   </span>
                 )}
@@ -443,36 +443,36 @@ export default function AdminPage() {
             <MetricCard 
               label="Kayıtlı Üyeler" 
               value={profiles.length || 4} 
-              icon={<Users size={18} className="text-indigo-400" />} 
+              icon={<Users size={18} className="text-indigo-400 light:text-indigo-700" />} 
               sub="Supabase Profiles" 
-              subColor="text-emerald-400" 
+              subColor="text-emerald-400 light:text-emerald-700" 
             />
             <MetricCard 
               label="Aktif Konular" 
               value={threads.length} 
-              icon={<MessageSquare size={18} className="text-emerald-400" />} 
+              icon={<MessageSquare size={18} className="text-emerald-400 light:text-emerald-700" />} 
               sub="Toplam Tartışma" 
             />
             <MetricCard 
               label="Son 24s Ziyaret" 
               value={visitorStats.last24h} 
-              icon={<Activity size={18} className="text-rose-400" />} 
+              icon={<Activity size={18} className="text-rose-400 light:text-rose-700" />} 
               sub={`Toplam ${visitorStats.totalVisits} hit`} 
-              subColor="text-rose-400"
+              subColor="text-rose-400 light:text-rose-700"
             />
             <MetricCard 
               label="WCAG Uyumluluk" 
               value="%100" 
-              icon={<Accessibility size={18} className="text-amber-400" />} 
+              icon={<Accessibility size={18} className="text-amber-400 light:text-amber-800" />} 
               sub="AAA Standardı" 
-              subColor="text-emerald-400"
+              subColor="text-emerald-400 light:text-emerald-700"
             />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 space-y-6">
-              <h2 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-3">
-                <Sparkles size={18} className="text-indigo-400" />
+            <div className="bg-surface-raised border border-line rounded-md p-6 space-y-6">
+              <h2 className="text-sm font-bold text-fg uppercase tracking-widest flex items-center gap-3">
+                <Sparkles size={18} className="text-indigo-400 light:text-indigo-700" />
                 <span>Hızlı Yönetim</span>
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -499,16 +499,16 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 space-y-6">
-              <h2 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-3">
-                <Database size={18} className="text-emerald-400" />
+            <div className="bg-surface-raised border border-line rounded-md p-6 space-y-6">
+              <h2 className="text-sm font-bold text-fg uppercase tracking-widest flex items-center gap-3">
+                <Database size={18} className="text-emerald-400 light:text-emerald-700" />
                 <span>Sistem Durumu</span>
               </h2>
               <div className="space-y-3">
-                <StatusRow label="2026 ÖTV Üst Limiti" value="2.873.972 TL" valueColor="text-emerald-400 font-mono" />
-                <StatusRow label="WebMCP Protokol" value="v2026.1 (JSON-RPC)" valueColor="text-indigo-400 font-mono" />
-                <StatusRow label="Supabase RLS" value="Aktif & Korunuyor" valueColor="text-emerald-400 font-bold" />
-                <StatusRow label="Yeniden Değerleme" value="%43.93 (2025)" valueColor="text-slate-400 font-mono" />
+                <StatusRow label="2026 ÖTV Üst Limiti" value="2.873.972 TL" valueColor="text-emerald-400 light:text-emerald-700 font-mono" />
+                <StatusRow label="WebMCP Protokol" value="v2026.1 (JSON-RPC)" valueColor="text-indigo-400 light:text-indigo-700 font-mono" />
+                <StatusRow label="Supabase RLS" value="Aktif & Korunuyor" valueColor="text-emerald-400 light:text-emerald-700 font-bold" />
+                <StatusRow label="Yeniden Değerleme" value="%43.93 (2025)" valueColor="text-fg-4 font-mono" />
               </div>
             </div>
           </div>
@@ -527,14 +527,14 @@ export default function AdminPage() {
       {/* TAB 5: WIDGETS & WEBMCP */}
       {activeTab === 'widgets' && (
         <div className="space-y-6 animate-in fade-in duration-300">
-          <div className="p-8 bg-[#111B2E] border border-[#1E293B] rounded-md space-y-8 shadow-xl">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-[#1E293B] pb-6">
+          <div className="p-8 bg-surface-raised border border-line rounded-md space-y-8 shadow-xl">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-line pb-6">
               <div className="space-y-2">
-                <h2 className="text-lg font-bold text-white flex items-center gap-3 font-heading uppercase tracking-widest">
-                  <Bot size={24} className="text-indigo-400" />
+                <h2 className="text-lg font-bold text-fg flex items-center gap-3 font-heading uppercase tracking-widest">
+                  <Bot size={24} className="text-indigo-400 light:text-indigo-700" />
                   <span>Harici Entegrasyon Çözümleri</span>
                 </h2>
-                <p className="text-xs text-slate-400 max-w-2xl font-normal leading-relaxed">
+                <p className="text-xs text-fg-4 max-w-2xl font-normal leading-relaxed">
                   EngelsizForum ekosistemini harici web sitelerine ve yapay zeka ajanlarına bağlayan resmi uç noktalar.
                 </p>
               </div>
@@ -550,21 +550,21 @@ export default function AdminPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em]">1. Erişilebilirlik Embed (JS)</div>
-                <div className="p-5 rounded-md bg-[#0B1220] border border-[#1E293B] font-mono text-xs text-emerald-400 overflow-x-auto select-all shadow-inner leading-relaxed">
+                <div className="text-[10px] font-bold text-indigo-400 light:text-indigo-700 uppercase tracking-[0.2em]">1. Erişilebilirlik Embed (JS)</div>
+                <div className="p-5 rounded-md bg-surface border border-line font-mono text-xs text-emerald-400 light:text-emerald-700 overflow-x-auto select-all shadow-inner leading-relaxed">
                   {`<script src="https://engelsizforum.com/widget.js" defer></script>`}
                 </div>
-                <p className="text-[11px] text-slate-500 leading-relaxed">
+                <p className="text-[11px] text-fg-5 leading-relaxed">
                   Bu script eklendiği tüm sitelere anında EngelsizForum&apos;un WCAG AAA erişilebilirlik araçlarını kazandırır.
                 </p>
               </div>
 
               <div className="space-y-4">
-                <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em]">2. WebMCP JSON-RPC Servis</div>
-                <div className="p-5 rounded-md bg-[#0B1220] border border-[#1E293B] font-mono text-xs text-indigo-300 overflow-x-auto select-all shadow-inner leading-relaxed">
+                <div className="text-[10px] font-bold text-indigo-400 light:text-indigo-700 uppercase tracking-[0.2em]">2. WebMCP JSON-RPC Servis</div>
+                <div className="p-5 rounded-md bg-surface border border-line font-mono text-xs text-indigo-300 light:text-indigo-700 overflow-x-auto select-all shadow-inner leading-relaxed">
                   {`POST /api/mcp { method: "calculate_otv", params: { price: 2500000 } }`}
                 </div>
-                <p className="text-[11px] text-slate-500 leading-relaxed">
+                <p className="text-[11px] text-fg-5 leading-relaxed">
                   Yapay zeka ajanlarınız (Claude, GPT, Gemini) doğrudan platform araçlarını bu API üzerinden çağırabilir.
                 </p>
               </div>
@@ -576,9 +576,9 @@ export default function AdminPage() {
       {/* TAB 6: WCAG AAA */}
       {activeTab === 'a11y' && (
         <div className="space-y-8 animate-in fade-in duration-300">
-          <div className="p-8 bg-[#111B2E] border border-[#1E293B] rounded-md space-y-8 shadow-xl">
-            <h2 className="text-lg font-bold text-white uppercase tracking-widest flex items-center gap-3 font-heading">
-              <Accessibility size={24} className="text-emerald-400" />
+          <div className="p-8 bg-surface-raised border border-line rounded-md space-y-8 shadow-xl">
+            <h2 className="text-lg font-bold text-fg uppercase tracking-widest flex items-center gap-3 font-heading">
+              <Accessibility size={24} className="text-emerald-400 light:text-emerald-700" />
               <span>WCAG 2.1 AAA Erişilebilirlik Uyumluluk Raporu</span>
             </h2>
 
@@ -609,17 +609,17 @@ export default function AdminPage() {
 }
 
 // Sub-components
-function MetricCard({ label, value, icon, sub, subColor = 'text-slate-500' }: { label: string; value: string | number; icon: React.ReactNode; sub: string; subColor?: string }) {
+function MetricCard({ label, value, icon, sub, subColor = 'text-fg-5' }: { label: string; value: string | number; icon: React.ReactNode; sub: string; subColor?: string }) {
   return (
-    <div className="p-5 rounded-md border border-[#1E293B] bg-[#111B2E] space-y-4 shadow-xs group hover:border-indigo-500/50 transition-all">
+    <div className="p-5 rounded-md border border-line bg-surface-raised space-y-4 shadow-xs group hover:border-indigo-500/50 transition-all">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{label}</span>
-        <div className="p-2 rounded-md bg-[#18243A] border border-[#1E293B] group-hover:bg-indigo-950/30 group-hover:border-indigo-800/40 transition-all">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-fg-4">{label}</span>
+        <div className="p-2 rounded-md bg-surface-hover border border-line group-hover:bg-indigo-950/30 light:group-hover:bg-indigo-50/30 group-hover:border-indigo-800/40 transition-all">
           {icon}
         </div>
       </div>
       <div className="space-y-1">
-        <div className="text-3xl font-black text-white font-mono tracking-tight">{value}</div>
+        <div className="text-3xl font-black text-fg font-mono tracking-tight">{value}</div>
         <div className={cn("text-[10px] font-bold flex items-center gap-1.5 uppercase tracking-wider", subColor)}>
           <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80 animate-pulse"></span>
           <span>{sub}</span>
@@ -633,18 +633,18 @@ function QuickActionButton({ title, desc, onClick }: { title: string; desc: stri
   return (
     <button
       onClick={onClick}
-      className="p-4 rounded-md border border-[#1E293B] bg-[#18243A] hover:bg-[#1E293B] hover:border-slate-600 text-left transition-all cursor-pointer group"
+      className="p-4 rounded-md border border-line bg-surface-hover hover:bg-line hover:border-slate-600 text-left transition-all cursor-pointer group"
     >
-      <div className="font-bold text-white uppercase text-[10px] tracking-widest group-hover:text-indigo-400 transition-colors">{title}</div>
-      <div className="text-[11px] text-slate-400 mt-1 font-normal group-hover:text-slate-300 transition-colors">{desc}</div>
+      <div className="font-bold text-fg uppercase text-[10px] tracking-widest group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">{title}</div>
+      <div className="text-[11px] text-fg-4 mt-1 font-normal group-hover:text-fg-3 transition-colors">{desc}</div>
     </button>
   );
 }
 
 function StatusRow({ label, value, valueColor }: { label: string; value: string; valueColor: string }) {
   return (
-    <div className="flex items-center justify-between py-2 border-b border-[#1E293B]/60 last:border-0">
-      <span className="text-xs text-slate-300 font-medium">{label}:</span>
+    <div className="flex items-center justify-between py-2 border-b border-line/60 last:border-0">
+      <span className="text-xs text-fg-3 font-medium">{label}:</span>
       <span className={cn("text-xs", valueColor)}>{value}</span>
     </div>
   );
@@ -653,10 +653,10 @@ function StatusRow({ label, value, valueColor }: { label: string; value: string;
 function AdminInput({ label, ...props }: any) {
   return (
     <div className="space-y-2">
-      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">{label}</label>
+      <label className="text-[10px] font-bold text-fg-4 uppercase tracking-widest block">{label}</label>
       <input
         {...props}
-        className="w-full px-4 py-2.5 rounded-md border border-[#1E293B] bg-[#0B1220] text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 font-medium transition-all min-h-[44px]"
+        className="w-full px-4 py-2.5 rounded-md border border-line bg-surface text-fg text-xs placeholder:text-fg-6 focus:outline-none focus:border-indigo-500 font-medium transition-all min-h-[44px]"
       />
     </div>
   );
@@ -668,7 +668,7 @@ function ModerationButton({ icon, active, onClick, activeColor, title }: any) {
       onClick={onClick}
       className={cn(
         "p-2 rounded-md border transition-all cursor-pointer",
-        active ? activeColor : "bg-[#18243A] border-[#1E293B] text-slate-400 hover:text-white"
+        active ? activeColor : "bg-surface-hover border-line text-fg-4 hover:text-fg"
       )}
       title={title}
     >
@@ -679,14 +679,14 @@ function ModerationButton({ icon, active, onClick, activeColor, title }: any) {
 
 function A11yCard({ title, desc }: { title: string; desc: string }) {
   return (
-    <div className="p-5 rounded-md bg-[#18243A]/50 border border-[#1E293B] space-y-2 group hover:border-emerald-500/30 transition-all">
+    <div className="p-5 rounded-md bg-surface-hover/50 border border-line space-y-2 group hover:border-emerald-500/30 transition-all">
       <div className="flex items-center gap-3">
-        <div className="p-1.5 rounded-full bg-emerald-950/40 border border-emerald-800/40 text-emerald-400">
+        <div className="p-1.5 rounded-full bg-emerald-950/40 light:bg-emerald-50/40 border border-emerald-800/40 text-emerald-400 light:text-emerald-700">
           <Check size={12} />
         </div>
-        <h4 className="font-bold text-white uppercase text-[10px] tracking-widest">{title}</h4>
+        <h4 className="font-bold text-fg uppercase text-[10px] tracking-widest">{title}</h4>
       </div>
-      <p className="text-slate-400 leading-relaxed pl-8 text-[11px] font-normal group-hover:text-slate-300 transition-colors">{desc}</p>
+      <p className="text-fg-4 leading-relaxed pl-8 text-[11px] font-normal group-hover:text-fg-3 transition-colors">{desc}</p>
     </div>
   );
 }

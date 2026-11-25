@@ -45,11 +45,11 @@ export function ConversationList({ conversations, selectedId, onSelect, loading,
     return (
       <div className="space-y-2 p-3" role="status" aria-label="Sohbetler yükleniyor">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="flex items-center gap-3 animate-pulse p-3 rounded-md bg-[#18243A] border border-[#1E293B]">
-            <div className="w-10 h-10 rounded-md bg-[#111B2E] shrink-0" />
+          <div key={i} className="flex items-center gap-3 animate-pulse p-3 rounded-md bg-surface-hover border border-line">
+            <div className="w-10 h-10 rounded-md bg-surface-raised shrink-0" />
             <div className="flex-1 space-y-2 min-w-0">
-              <div className="h-3 w-1/3 bg-[#111B2E] rounded" />
-              <div className="h-2.5 w-2/3 bg-[#111B2E] rounded" />
+              <div className="h-3 w-1/3 bg-surface-raised rounded" />
+              <div className="h-2.5 w-2/3 bg-surface-raised rounded" />
             </div>
           </div>
         ))}
@@ -58,17 +58,17 @@ export function ConversationList({ conversations, selectedId, onSelect, loading,
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#111B2E]">
+    <div className="flex flex-col h-full bg-surface-raised">
       {/* Search & Actions Bar */}
-      <div className="p-3 border-b border-[#1E293B] bg-[#18243A] flex items-center gap-2">
+      <div className="p-3 border-b border-line bg-surface-hover flex items-center gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-3.5 h-3.5" aria-hidden="true" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-4 w-3.5 h-3.5" aria-hidden="true" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Sohbetlerde ara..."
-            className="w-full bg-[#111B2E] border border-[#1E293B] rounded-md pl-8 pr-3 py-1.5 text-xs text-slate-100 placeholder:text-slate-400 outline-none focus:border-indigo-400 transition-colors font-medium"
+            className="w-full bg-surface-raised border border-line rounded-md pl-8 pr-3 py-1.5 text-xs text-fg-1 placeholder:text-fg-4 outline-none focus:border-indigo-400 light:focus:border-indigo-700 transition-colors font-medium"
             aria-label="Sohbetlerde arama yap"
           />
         </div>
@@ -85,12 +85,12 @@ export function ConversationList({ conversations, selectedId, onSelect, loading,
       </div>
 
       {conversations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-8 text-center text-slate-400 flex-1">
-          <div className="w-12 h-12 rounded-md bg-[#18243A] border border-[#1E293B] flex items-center justify-center mb-3 text-indigo-400">
+        <div className="flex flex-col items-center justify-center p-8 text-center text-fg-4 flex-1">
+          <div className="w-12 h-12 rounded-md bg-surface-hover border border-line flex items-center justify-center mb-3 text-indigo-400 light:text-indigo-700">
             <MessageSquare size={22} aria-hidden="true" />
           </div>
-          <p className="text-xs font-semibold text-slate-200">Henüz sohbetiniz yok</p>
-          <p className="text-[11px] mt-1 text-slate-400 max-w-[200px] leading-relaxed mb-4">
+          <p className="text-xs font-semibold text-fg-2">Henüz sohbetiniz yok</p>
+          <p className="text-[11px] mt-1 text-fg-4 max-w-[200px] leading-relaxed mb-4">
             Üye profillerinden veya aşağıdaki butondan doğrudan mesajlaşma başlatabilirsiniz.
           </p>
           {onStartNewChat && (
@@ -103,11 +103,11 @@ export function ConversationList({ conversations, selectedId, onSelect, loading,
           )}
         </div>
       ) : filteredConversations.length === 0 ? (
-        <div className="p-6 text-center text-slate-400 text-xs flex-1">
+        <div className="p-6 text-center text-fg-4 text-xs flex-1">
           Aramanıza uygun sohbet bulunamadı.
         </div>
       ) : (
-        <div className="divide-y divide-[#1E293B] overflow-y-auto flex-1" role="listbox" aria-label="Sohbet Listesi">
+        <div className="divide-y divide-line overflow-y-auto flex-1" role="listbox" aria-label="Sohbet Listesi">
           {filteredConversations.map((conv) => {
             const isSelected = selectedId === conv.id;
             const displayName = conv.other_user?.full_name || conv.other_user?.username || 'Silinmiş kullanıcı';
@@ -121,8 +121,8 @@ export function ConversationList({ conversations, selectedId, onSelect, loading,
                 className={cn(
                   "w-full flex items-center gap-3 p-3 transition-colors text-left relative cursor-pointer outline-none",
                   isSelected 
-                    ? "bg-[#18243A] border-l-2 border-l-indigo-400 text-white" 
-                    : "hover:bg-[#18243A]/60 border-l-2 border-l-transparent text-slate-300"
+                    ? "bg-surface-hover border-l-2 border-l-indigo-400 text-fg" 
+                    : "hover:bg-surface-hover/60 border-l-2 border-l-transparent text-fg-3"
                 )}
               >
                 <div className="relative shrink-0">
@@ -137,14 +137,14 @@ export function ConversationList({ conversations, selectedId, onSelect, loading,
                 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2 mb-0.5">
-                    <span className="font-semibold text-xs text-slate-100 truncate">
+                    <span className="font-semibold text-xs text-fg-1 truncate">
                       {displayName}
                     </span>
-                    <span className="text-[10px] text-slate-400 font-mono whitespace-nowrap shrink-0">
+                    <span className="text-[10px] text-fg-4 font-mono whitespace-nowrap shrink-0">
                       {conv.updated_at ? formatDistanceToNow(new Date(conv.updated_at), { addSuffix: true, locale: tr }) : ''}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 truncate leading-tight font-normal">
+                  <p className="text-[11px] text-fg-4 truncate leading-tight font-normal">
                     {conv.last_message?.content || 'Sohbet başlatıldı'}
                   </p>
                 </div>

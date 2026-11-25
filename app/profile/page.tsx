@@ -170,7 +170,7 @@ export default function ProfileManagementPage() {
     return (
       <div className="flex flex-col items-center justify-center p-12 min-h-[400px]">
         <Loader2 className="animate-spin text-indigo-500 size-10 mb-3" aria-hidden="true" />
-        <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">Profil bilgileri yükleniyor...</p>
+        <p className="text-xs text-fg-4 font-medium uppercase tracking-wider">Profil bilgileri yükleniyor...</p>
       </div>
     );
   }
@@ -178,11 +178,11 @@ export default function ProfileManagementPage() {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center p-8 sm:p-12 text-center max-w-md mx-auto min-h-[400px]">
-        <div className="w-20 h-20 rounded-3xl bg-[#111B2E] border border-[#1E293B] text-indigo-400 flex items-center justify-center mb-6 mx-auto shadow-sm">
+        <div className="w-20 h-20 rounded-3xl bg-surface-raised border border-line text-indigo-400 light:text-indigo-700 flex items-center justify-center mb-6 mx-auto shadow-sm">
           <User size={40} />
         </div>
-        <h1 className="text-2xl font-bold text-white mb-3">Profil ve Tercih Yönetimi</h1>
-        <p className="text-sm text-slate-400 mb-8 leading-relaxed">
+        <h1 className="text-2xl font-bold text-fg mb-3">Profil ve Tercih Yönetimi</h1>
+        <p className="text-sm text-fg-4 mb-8 leading-relaxed">
           Profil bilgilerinizi, erişilebilirlik ayarlarınızı ve bildirim tercihlerinizi düzenleyebilmek için lütfen oturum açın.
         </p>
         <Link
@@ -196,15 +196,15 @@ export default function ProfileManagementPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full text-slate-100">
+    <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full text-fg-1">
       {/* Breadcrumbs */}
-      <nav className="bg-[#111B2E] px-5 py-3 flex items-center gap-2.5 text-xs text-slate-400 border border-[#1E293B] rounded-md shadow-xs" aria-label="Breadcrumb">
-        <Link href="/" className="hover:text-indigo-400 flex items-center gap-1.5 transition-colors font-medium">
+      <nav className="bg-surface-raised px-5 py-3 flex items-center gap-2.5 text-xs text-fg-4 border border-line rounded-md shadow-xs" aria-label="Breadcrumb">
+        <Link href="/" className="hover:text-indigo-400 light:hover:text-indigo-700 flex items-center gap-1.5 transition-colors font-medium">
           <Home size={14} />
           <span>Ana Sayfa</span>
         </Link>
-        <span className="text-slate-600">/</span>
-        <span className="text-slate-300 font-semibold uppercase tracking-wider text-[10px]">Profil & Ayarlar</span>
+        <span className="text-fg-6">/</span>
+        <span className="text-fg-3 font-semibold uppercase tracking-wider text-[10px]">Profil & Ayarlar</span>
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -213,7 +213,7 @@ export default function ProfileManagementPage() {
         <div className="lg:col-span-8 space-y-8">
           
           {/* Header summary banner */}
-          <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 shadow-xs">
+          <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 shadow-xs">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
               <div className="flex items-center gap-5">
                 <div className="relative group">
@@ -227,20 +227,20 @@ export default function ProfileManagementPage() {
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-3 flex-wrap">
-                    <h1 className="text-xl font-bold text-white tracking-tight truncate">
+                    <h1 className="text-xl font-bold text-fg tracking-tight truncate">
                       {fullName || profile?.full_name || username || 'Kullanıcı Profili'}
                     </h1>
                     <UserRoleBadge role={profile?.role} size="xs" />
                   </div>
-                  <p className="text-xs text-indigo-400 font-mono mt-1 font-semibold">@{username || profile?.username}</p>
-                  <p className="text-[11px] text-slate-500 mt-1 truncate max-w-xs sm:max-w-md">{user?.email}</p>
+                  <p className="text-xs text-indigo-400 light:text-indigo-700 font-mono mt-1 font-semibold">@{username || profile?.username}</p>
+                  <p className="text-[11px] text-fg-5 mt-1 truncate max-w-xs sm:max-w-md">{user?.email}</p>
                 </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
                 {user?.id && (
                   <Link href={`/profile/${user.id}`} className="flex-1 sm:flex-none">
-                    <Button variant="outline" size="sm" className="w-full gap-2 font-bold text-[11px] uppercase tracking-wider border-[#1E293B] hover:bg-[#18243A]">
+                    <Button variant="outline" size="sm" className="w-full gap-2 font-bold text-[11px] uppercase tracking-wider border-line hover:bg-surface-hover">
                       <ExternalLink size={14} />
                       <span>Herkese Açık Profil</span>
                     </Button>
@@ -261,7 +261,7 @@ export default function ProfileManagementPage() {
             <div 
               id={alertId}
               role="alert"
-              className="flex items-start gap-3 p-5 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/20 font-bold text-xs leading-relaxed animate-in fade-in slide-in-from-top-1"
+              className="flex items-start gap-3 p-5 rounded-md bg-rose-500/10 text-rose-400 light:text-rose-700 border border-rose-500/20 font-bold text-xs leading-relaxed animate-in fade-in slide-in-from-top-1"
             >
               <AlertCircle size={18} className="shrink-0" />
               <span>{formError}</span>
@@ -271,7 +271,7 @@ export default function ProfileManagementPage() {
           {formSuccess && (
             <div 
               role="status"
-              className="flex items-start gap-3 p-5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold text-xs leading-relaxed animate-in fade-in slide-in-from-top-1"
+              className="flex items-start gap-3 p-5 rounded-md bg-emerald-500/10 text-emerald-400 light:text-emerald-700 border border-emerald-500/20 font-bold text-xs leading-relaxed animate-in fade-in slide-in-from-top-1"
             >
               <CheckCircle2 size={18} className="shrink-0" />
               <span>{formSuccess}</span>
@@ -282,15 +282,15 @@ export default function ProfileManagementPage() {
           <form onSubmit={handleSave} className="space-y-8" noValidate>
             
             {/* Card 1: Temel Bilgiler */}
-            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 shadow-xs space-y-6">
-              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 border-b border-[#1E293B] pb-4">
+            <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 shadow-xs space-y-6">
+              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 light:text-indigo-700 border-b border-line pb-4">
                 <User size={16} />
                 <span>Temel Profil Bilgileri</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label htmlFor={usernameId} className="text-xs font-bold text-slate-300">
+                  <label htmlFor={usernameId} className="text-xs font-bold text-fg-3">
                     Kullanıcı Adı <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -299,14 +299,14 @@ export default function ProfileManagementPage() {
                     required
                     value={username}
                     onChange={(e) => handleFieldChange(setUsername, e.target.value)}
-                    className="w-full h-11 px-4 text-xs font-medium rounded-md border border-[#1E293B] bg-[#0B1220] text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all"
+                    className="w-full h-11 px-4 text-xs font-medium rounded-md border border-line bg-surface text-fg placeholder:text-fg-6 focus:outline-none focus:border-indigo-500 transition-all"
                     placeholder="ornek_kullanici"
                     maxLength={30}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor={fullNameId} className="text-xs font-bold text-slate-300">
+                  <label htmlFor={fullNameId} className="text-xs font-bold text-fg-3">
                     Ad Soyad
                   </label>
                   <input
@@ -314,14 +314,14 @@ export default function ProfileManagementPage() {
                     type="text"
                     value={fullName}
                     onChange={(e) => handleFieldChange(setFullName, e.target.value)}
-                    className="w-full h-11 px-4 text-xs font-medium rounded-md border border-[#1E293B] bg-[#0B1220] text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all"
+                    className="w-full h-11 px-4 text-xs font-medium rounded-md border border-line bg-surface text-fg placeholder:text-fg-6 focus:outline-none focus:border-indigo-500 transition-all"
                     placeholder="Adınız Soyadınız"
                     maxLength={70}
                   />
                 </div>
 
                 <div className="sm:col-span-2 space-y-2">
-                  <label htmlFor={avatarId} className="text-xs font-bold text-slate-300">
+                  <label htmlFor={avatarId} className="text-xs font-bold text-fg-3">
                     Profil Resmi / Avatar URL
                   </label>
                   <input
@@ -329,24 +329,24 @@ export default function ProfileManagementPage() {
                     type="url"
                     value={avatarUrl}
                     onChange={(e) => handleFieldChange(setAvatarUrl, e.target.value)}
-                    className="w-full h-11 px-4 text-xs font-medium rounded-md border border-[#1E293B] bg-[#0B1220] text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all"
+                    className="w-full h-11 px-4 text-xs font-medium rounded-md border border-line bg-surface text-fg placeholder:text-fg-6 focus:outline-none focus:border-indigo-500 transition-all"
                     placeholder="https://... (boş bırakırsanız otomatik oluşturulur)"
                   />
                 </div>
 
                 <div className="sm:col-span-2 space-y-2">
                   <div className="flex justify-between items-center">
-                    <label htmlFor={bioId} className="text-xs font-bold text-slate-300">
+                    <label htmlFor={bioId} className="text-xs font-bold text-fg-3">
                       Biyografi &bull; Kendinizden Bahsedin
                     </label>
-                    <span className="text-[10px] text-slate-500 font-mono">{bio.length}/300</span>
+                    <span className="text-[10px] text-fg-5 font-mono">{bio.length}/300</span>
                   </div>
                   <textarea
                     id={bioId}
                     rows={4}
                     value={bio}
                     onChange={(e) => handleFieldChange(setBio, e.target.value)}
-                    className="w-full p-4 text-xs font-medium rounded-md border border-[#1E293B] bg-[#0B1220] text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all resize-none leading-relaxed"
+                    className="w-full p-4 text-xs font-medium rounded-md border border-line bg-surface text-fg placeholder:text-fg-6 focus:outline-none focus:border-indigo-500 transition-all resize-none leading-relaxed"
                     placeholder="Deneyimleriniz, ilgi duyduğunuz mevzuatlar veya engelsiz yaşam tecrübeleriniz..."
                     maxLength={300}
                   />
@@ -355,18 +355,18 @@ export default function ProfileManagementPage() {
             </div>
 
             {/* Card 2: Erişilebilirlik Tercihleri */}
-            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 shadow-xs space-y-6">
-              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 border-b border-[#1E293B] pb-4">
+            <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 shadow-xs space-y-6">
+              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 light:text-indigo-700 border-b border-line pb-4">
                 <Accessibility size={16} />
                 <span>Erişilebilirlik Ayarları</span>
               </div>
 
               <div className="space-y-4">
                 {/* Font Size */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-md bg-[#18243A]/50 border border-[#1E293B]">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-md bg-surface-hover/50 border border-line">
                   <div className="space-y-1">
-                    <p className="text-xs font-bold text-white uppercase tracking-wider">Yazı Büyüklüğü</p>
-                    <p className="text-[11px] text-slate-400">Platform genelindeki varsayılan metin boyutu</p>
+                    <p className="text-xs font-bold text-fg uppercase tracking-wider">Yazı Büyüklüğü</p>
+                    <p className="text-[11px] text-fg-4">Platform genelindeki varsayılan metin boyutu</p>
                   </div>
                   <div className="grid grid-cols-4 gap-2 w-full md:w-72">
                     {(['sm', 'md', 'lg', 'xl'] as const).map((size) => (
@@ -381,7 +381,7 @@ export default function ProfileManagementPage() {
                           "h-10 text-[10px] font-bold uppercase rounded-md border transition-all cursor-pointer flex items-center justify-center",
                           fontSize === size 
                             ? "bg-indigo-600 text-white border-indigo-600 shadow-sm" 
-                            : "bg-[#0B1220] text-slate-400 border-[#1E293B] hover:border-slate-500"
+                            : "bg-surface text-fg-4 border-line hover:border-slate-500"
                         )}
                         aria-pressed={fontSize === size}
                       >
@@ -438,8 +438,8 @@ export default function ProfileManagementPage() {
             </div>
 
             {/* Card 3: Bildirim Tercihleri */}
-            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 shadow-xs space-y-6">
-              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 border-b border-[#1E293B] pb-4">
+            <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 shadow-xs space-y-6">
+              <div className="flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-400 light:text-indigo-700 border-b border-line pb-4">
                 <Bell size={16} />
                 <span>Bildirim Tercihleri</span>
               </div>
@@ -478,7 +478,7 @@ export default function ProfileManagementPage() {
                   }
                 }}
                 disabled={!hasUnsavedChanges || isSubmitting}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md border border-[#1E293B] bg-[#18243A] hover:bg-[#1E293B] text-slate-300 hover:text-white text-xs font-bold transition-all disabled:opacity-40 cursor-pointer min-h-[44px]"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md border border-line bg-surface-hover hover:bg-line text-fg-3 hover:text-fg text-xs font-bold transition-all disabled:opacity-40 cursor-pointer min-h-[44px]"
               >
                 <RotateCcw size={16} /> 
                 <span>Vazgeç</span>
@@ -529,21 +529,21 @@ function PreferenceToggle({
       className={cn(
         "flex items-center justify-between p-4 rounded-md border transition-all text-left w-full outline-none cursor-pointer group",
         active 
-          ? "bg-indigo-950/20 border-indigo-500/40 text-white" 
-          : "bg-[#0B1220] border-[#1E293B] text-slate-400 hover:border-slate-700"
+          ? "bg-indigo-950/20 light:bg-indigo-50/20 border-indigo-500/40 text-white" 
+          : "bg-surface border-line text-fg-4 hover:border-slate-700"
       )}
       aria-pressed={active}
     >
       <div className="flex items-center gap-3.5 pr-2">
         <div className={cn(
           "p-2.5 rounded-md shrink-0 transition-colors", 
-          active ? "bg-indigo-600 text-white" : "bg-[#18243A] text-slate-500 group-hover:text-slate-300"
+          active ? "bg-indigo-600 text-white" : "bg-surface-hover text-fg-5 group-hover:text-fg-3"
         )}>
           {icon}
         </div>
         <div>
-          <p className={cn("text-[11px] font-bold uppercase tracking-wider", active ? "text-white" : "text-slate-300")}>{title}</p>
-          <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{desc}</p>
+          <p className={cn("text-[11px] font-bold uppercase tracking-wider", active ? "text-fg" : "text-fg-3")}>{title}</p>
+          <p className="text-[10px] text-fg-5 mt-0.5 leading-tight">{desc}</p>
         </div>
       </div>
       <div className={cn(

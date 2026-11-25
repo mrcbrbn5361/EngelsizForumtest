@@ -80,62 +80,62 @@ export function CategoryManagementView() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-[#111B2E] border border-[#1E293B] rounded-md shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-surface-raised border border-line rounded-md shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-md bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+          <div className="p-2.5 rounded-md bg-indigo-600/20 text-indigo-400 light:text-indigo-700 border border-indigo-500/30">
             <FolderTree size={20} />
           </div>
           <div>
-            <h1 className="text-base font-bold text-white uppercase tracking-wider font-heading">Kategori Yönetimi</h1>
-            <p className="text-xs text-slate-400">Forum başlık kategorileri ve sıralama</p>
+            <h1 className="text-base font-bold text-fg uppercase tracking-wider font-heading">Kategori Yönetimi</h1>
+            <p className="text-xs text-fg-4">Forum başlık kategorileri ve sıralama</p>
           </div>
         </div>
 
         <button
           onClick={() => fetchCategories()}
           disabled={loading}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-[#18243A] hover:bg-[#1E293B] text-slate-200 border border-[#1E293B] text-xs font-bold transition-all cursor-pointer min-h-[38px] self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-md bg-surface-hover hover:bg-line text-fg-2 border border-line text-xs font-bold transition-all cursor-pointer min-h-[38px] self-start sm:self-auto"
         >
-          <RefreshCw size={14} className={loading ? 'animate-spin text-indigo-400' : ''} />
+          <RefreshCw size={14} className={loading ? 'animate-spin text-indigo-400 light:text-indigo-700' : ''} />
           <span>Yenile</span>
         </button>
       </div>
 
       {/* Add Form */}
-      <div className="p-6 bg-[#111B2E] border border-[#1E293B] rounded-md space-y-6 shadow-xs">
-        <h2 className="text-sm font-bold text-white uppercase tracking-widest flex items-center gap-3">
-          <Plus size={18} className="text-emerald-400" />
+      <div className="p-6 bg-surface-raised border border-line rounded-md space-y-6 shadow-xs">
+        <h2 className="text-sm font-bold text-fg uppercase tracking-widest flex items-center gap-3">
+          <Plus size={18} className="text-emerald-400 light:text-emerald-700" />
           <span>Yeni Kategori Ekle</span>
         </h2>
         <form onSubmit={handleAddCategory} className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div className="space-y-2">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Kategori Adı</label>
+            <label className="text-[10px] font-bold text-fg-4 uppercase tracking-widest block">Kategori Adı</label>
             <input
               type="text"
               value={newCatName}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewCatName(e.target.value)}
               placeholder="Örn: Yapay Zeka &amp; WebMCP"
               required
-              className="w-full px-4 py-2.5 rounded-md border border-[#1E293B] bg-[#0B1220] text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 font-medium transition-all min-h-[44px]"
+              className="w-full px-4 py-2.5 rounded-md border border-line bg-surface text-fg text-xs placeholder:text-fg-6 focus:outline-none focus:border-indigo-500 font-medium transition-all min-h-[44px]"
             />
           </div>
           <div className="space-y-2">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Slug (URL)</label>
+            <label className="text-[10px] font-bold text-fg-4 uppercase tracking-widest block">Slug (URL)</label>
             <input
               type="text"
               value={newCatSlug}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewCatSlug(e.target.value)}
               placeholder="yazilim-ai"
               required
-              className="w-full px-4 py-2.5 rounded-md border border-[#1E293B] bg-[#0B1220] text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 font-medium transition-all min-h-[44px]"
+              className="w-full px-4 py-2.5 rounded-md border border-line bg-surface text-fg text-xs placeholder:text-fg-6 focus:outline-none focus:border-indigo-500 font-medium transition-all min-h-[44px]"
             />
           </div>
           <div className="space-y-2">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">İkon</label>
+            <label className="text-[10px] font-bold text-fg-4 uppercase tracking-widest block">İkon</label>
             <select
               value={newCatIcon}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNewCatIcon(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-md border border-[#1E293B] bg-[#0B1220] text-white text-xs focus:outline-none focus:border-indigo-500 font-bold min-h-[44px]"
+              className="w-full px-4 py-2.5 rounded-md border border-line bg-surface text-fg text-xs focus:outline-none focus:border-indigo-500 font-bold min-h-[44px]"
             >
               <option value="Cpu">Cpu (Yazılım/AI)</option>
               <option value="Scale">Scale (Hukuk/Mevzuat)</option>
@@ -145,13 +145,13 @@ export function CategoryManagementView() {
             </select>
           </div>
           <div className="md:col-span-3 space-y-2">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Açıklama</label>
+            <label className="text-[10px] font-bold text-fg-4 uppercase tracking-widest block">Açıklama</label>
             <input
               type="text"
               value={newCatDesc}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewCatDesc(e.target.value)}
               placeholder="Kategori içeriği hakkında kısa bilgi..."
-              className="w-full px-4 py-2.5 rounded-md border border-[#1E293B] bg-[#0B1220] text-white text-xs placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 font-medium transition-all min-h-[44px]"
+              className="w-full px-4 py-2.5 rounded-md border border-line bg-surface text-fg text-xs placeholder:text-fg-6 focus:outline-none focus:border-indigo-500 font-medium transition-all min-h-[44px]"
             />
           </div>
           <div className="md:col-span-3">
@@ -168,9 +168,9 @@ export function CategoryManagementView() {
       </div>
 
       {/* Table */}
-      <div className="bg-[#111B2E] border border-[#1E293B] rounded-md overflow-hidden shadow-xl">
+      <div className="bg-surface-raised border border-line rounded-md overflow-hidden shadow-xl">
         {loading ? (
-          <div className="p-12 text-center text-slate-400 space-y-3">
+          <div className="p-12 text-center text-fg-4 space-y-3">
             <Loader2 className="w-8 h-8 text-indigo-500 animate-spin mx-auto" />
             <p className="text-xs font-bold uppercase tracking-widest">Kategoriler Yükleniyor...</p>
           </div>
@@ -178,25 +178,25 @@ export function CategoryManagementView() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="bg-[#18243A] text-slate-400 font-bold uppercase text-[10px] tracking-widest border-b border-[#1E293B]">
+                <tr className="bg-surface-hover text-fg-4 font-bold uppercase text-[10px] tracking-widest border-b border-line">
                   <th className="px-5 py-4 w-16">Sıra</th>
                   <th className="px-5 py-4">Kategori</th>
                   <th className="px-5 py-4">Slug (URL)</th>
                   <th className="px-5 py-4">Açıklama</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#1E293B]/70">
+              <tbody className="divide-y divide-line/70">
                 {categories.map((c, idx) => (
-                  <tr key={c.id || idx} className="hover:bg-[#18243A]/40 transition-colors group">
-                    <td className="px-5 py-4 font-mono font-bold text-slate-500">{idx + 1}</td>
-                    <td className="px-5 py-4 font-bold text-white flex items-center gap-3">
-                      <div className="p-2 rounded bg-indigo-950/40 border border-indigo-800/40 text-indigo-400">
+                  <tr key={c.id || idx} className="hover:bg-surface-hover/40 transition-colors group">
+                    <td className="px-5 py-4 font-mono font-bold text-fg-5">{idx + 1}</td>
+                    <td className="px-5 py-4 font-bold text-fg flex items-center gap-3">
+                      <div className="p-2 rounded bg-indigo-950/40 light:bg-indigo-50/40 border border-indigo-800/40 text-indigo-400 light:text-indigo-700">
                         <FolderTree size={14} />
                       </div>
-                      <span className="group-hover:text-indigo-400 transition-colors">{c.name}</span>
+                      <span className="group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">{c.name}</span>
                     </td>
-                    <td className="px-5 py-4 font-mono text-indigo-400 font-semibold">/{c.slug}</td>
-                    <td className="px-5 py-4 text-slate-400 font-normal leading-relaxed">{c.description || '-'}</td>
+                    <td className="px-5 py-4 font-mono text-indigo-400 light:text-indigo-700 font-semibold">/{c.slug}</td>
+                    <td className="px-5 py-4 text-fg-4 font-normal leading-relaxed">{c.description || '-'}</td>
                   </tr>
                 ))}
               </tbody>

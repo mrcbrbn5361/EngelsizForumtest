@@ -9,8 +9,8 @@ export default function SecurityPage() {
         
         {/* Header Hero */}
         <header className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
-            <Shield size={14} className="text-emerald-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 light:text-emerald-700 border border-emerald-500/20 text-xs font-semibold">
+            <Shield size={14} className="text-emerald-400 light:text-emerald-700" />
             <span>Altyapı ve Veri Güvenliği</span>
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
@@ -25,7 +25,7 @@ export default function SecurityPage() {
         <section aria-labelledby="security-pillars" className="space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-border/60">
             <h2 id="security-pillars" className="text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
-              <Lock size={18} className="text-sky-400" />
+              <Lock size={18} className="text-sky-400 light:text-sky-700" />
               <span>Güvenlik İlkelerimiz</span>
             </h2>
             <span className="text-xs text-muted-foreground font-medium">Uçtan Uca Koruma</span>
@@ -33,7 +33,7 @@ export default function SecurityPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-card/85 backdrop-blur-md border border-border/80 rounded-2xl p-5 sm:p-6 space-y-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-500/40 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+              <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 light:text-sky-700">
                 <Key size={18} />
               </div>
               <h3 className="text-sm sm:text-base font-bold text-foreground">Kriptografik Şifreleme</h3>
@@ -43,7 +43,7 @@ export default function SecurityPage() {
             </div>
 
             <div className="bg-card/85 backdrop-blur-md border border-border/80 rounded-2xl p-5 sm:p-6 space-y-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-500/40 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 light:text-emerald-700">
                 <Server size={18} />
               </div>
               <h3 className="text-sm sm:text-base font-bold text-foreground">Satır Düzeyi Yetkilendirme (RLS)</h3>
@@ -53,7 +53,7 @@ export default function SecurityPage() {
             </div>
 
             <div className="bg-card/85 backdrop-blur-md border border-border/80 rounded-2xl p-5 sm:p-6 space-y-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-500/40 shadow-xs">
-              <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+              <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 light:text-sky-700">
                 <CheckCircle2 size={18} />
               </div>
               <h3 className="text-sm sm:text-base font-bold text-foreground">TLS / HTTPS İletişimi</h3>
@@ -105,7 +105,7 @@ export default function SecurityPage() {
         <section className="bg-card/90 border border-emerald-500/20 p-6 sm:p-8 rounded-2xl space-y-4 backdrop-blur-md shadow-xs">
           <div className="max-w-2xl space-y-2">
             <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
-              <Mail size={20} className="text-emerald-400" />
+              <Mail size={20} className="text-emerald-400 light:text-emerald-700" />
               <span>Güvenlik Ekibiyle İletişim</span>
             </h2>
             <p className="text-xs sm:text-sm text-muted-foreground font-normal leading-relaxed">
@@ -133,10 +133,10 @@ export default function SecurityPage() {
               className="p-4 rounded-xl bg-card border border-border/80 hover:border-sky-500/40 transition-colors flex items-center justify-between group"
             >
               <div className="space-y-1">
-                <span className="text-xs sm:text-sm font-bold text-foreground group-hover:text-sky-400 transition-colors">Gizlilik Politikası</span>
+                <span className="text-xs sm:text-sm font-bold text-foreground group-hover:text-sky-400 light:group-hover:text-sky-700 transition-colors">Gizlilik Politikası</span>
                 <p className="text-xs text-muted-foreground font-normal">Kişisel verilerin işlenmesi ve KVKK ilkeleri.</p>
               </div>
-              <FileText size={16} className="text-muted-foreground group-hover:text-sky-400 transition-colors shrink-0" />
+              <FileText size={16} className="text-muted-foreground group-hover:text-sky-400 light:group-hover:text-sky-700 transition-colors shrink-0" />
             </Link>
 
             <Link 
@@ -144,10 +144,10 @@ export default function SecurityPage() {
               className="p-4 rounded-xl bg-card border border-border/80 hover:border-sky-500/40 transition-colors flex items-center justify-between group"
             >
               <div className="space-y-1">
-                <span className="text-xs sm:text-sm font-bold text-foreground group-hover:text-sky-400 transition-colors">Kullanım Şartları</span>
+                <span className="text-xs sm:text-sm font-bold text-foreground group-hover:text-sky-400 light:group-hover:text-sky-700 transition-colors">Kullanım Şartları</span>
                 <p className="text-xs text-muted-foreground font-normal">Topluluk kuralları ve kullanıcı hakları sözleşmesi.</p>
               </div>
-              <FileText size={16} className="text-muted-foreground group-hover:text-sky-400 transition-colors shrink-0" />
+              <FileText size={16} className="text-muted-foreground group-hover:text-sky-400 light:group-hover:text-sky-700 transition-colors shrink-0" />
             </Link>
           </div>
         </section>

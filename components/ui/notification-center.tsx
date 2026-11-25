@@ -174,10 +174,10 @@ export function NotificationCenter() {
   const getIcon = (type: string) => {
     switch (type) {
       case 'reply':
-      case 'comment': return <MessageSquare className="text-sky-400" size={15} aria-hidden="true" />;
-      case 'like': return <Heart className="text-rose-400" size={15} aria-hidden="true" />;
-      case 'achievement': return <Trophy className="text-amber-400" size={15} aria-hidden="true" />;
-      default: return <Info className="text-sky-400" size={15} aria-hidden="true" />;
+      case 'comment': return <MessageSquare className="text-sky-400 light:text-sky-700" size={15} aria-hidden="true" />;
+      case 'like': return <Heart className="text-rose-400 light:text-rose-700" size={15} aria-hidden="true" />;
+      case 'achievement': return <Trophy className="text-amber-400 light:text-amber-800" size={15} aria-hidden="true" />;
+      default: return <Info className="text-sky-400 light:text-sky-700" size={15} aria-hidden="true" />;
     }
   };
 
@@ -187,15 +187,15 @@ export function NotificationCenter() {
     <div className="relative" ref={popoverRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-xl hover:bg-[#161f33] text-slate-300 hover:text-sky-400 transition-colors h-8.5 w-8.5 sm:h-9 sm:w-9 flex items-center justify-center shrink-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+        className="relative p-2 rounded-xl hover:bg-surface-raised text-fg-3 hover:text-sky-400 light:hover:text-sky-700 transition-colors h-8.5 w-8.5 sm:h-9 sm:w-9 flex items-center justify-center shrink-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
         aria-label={`Bildirimler${unreadCount > 0 ? `, ${unreadCount} okunmamış bildirim` : ''}`}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
       >
-        <Bell size={18} className={cn(unreadCount > 0 && "text-sky-400", "w-4.5 h-4.5 sm:w-5 sm:h-5")} aria-hidden="true" />
+        <Bell size={18} className={cn(unreadCount > 0 && "text-sky-400 light:text-sky-700", "w-4.5 h-4.5 sm:w-5 sm:h-5")} aria-hidden="true" />
         {unreadCount > 0 && (
           <span 
-            className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[9px] font-black text-slate-950 border-2 border-[#090a0f]"
+            className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[9px] font-black text-slate-950 border-2 border-surface"
             aria-hidden="true"
           >
             {unreadCount > 9 ? '9+' : unreadCount}
@@ -218,13 +218,13 @@ export function NotificationCenter() {
               transition={{ duration: 0.15 }}
               role="dialog"
               aria-label="Bildirimler Paneli"
-              className="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 mt-2 sm:mt-2 w-auto sm:w-88 bg-[#111726] border border-white/[0.08] rounded-2xl shadow-2xl z-50 overflow-hidden max-w-[calc(100vw-2rem)] sm:max-w-none text-slate-100 backdrop-blur-md"
+              className="fixed left-4 right-4 sm:absolute sm:left-auto sm:right-0 mt-2 sm:mt-2 w-auto sm:w-88 bg-surface-raised border border-white/[0.08] rounded-2xl shadow-2xl z-50 overflow-hidden max-w-[calc(100vw-2rem)] sm:max-w-none text-fg-1 backdrop-blur-md"
             >
-              <div className="p-3.5 border-b border-white/[0.08] flex items-center justify-between bg-[#0b0f19]/80">
+              <div className="p-3.5 border-b border-white/[0.08] flex items-center justify-between bg-surface/80">
                 <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-xs uppercase tracking-wider text-slate-200">Bildirimler</h3>
+                  <h3 className="font-bold text-xs uppercase tracking-wider text-fg-2">Bildirimler</h3>
                   {unreadCount > 0 && (
-                    <span className="px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold">
+                    <span className="px-2 py-0.5 rounded-md bg-sky-500/10 text-sky-400 light:text-sky-700 border border-sky-500/20 text-[10px] font-bold">
                       {unreadCount} yeni
                     </span>
                   )}
@@ -233,7 +233,7 @@ export function NotificationCenter() {
                   {unreadCount > 0 && (
                     <button 
                       onClick={markAllAsRead}
-                      className="p-1.5 hover:bg-[#161f33] rounded-lg transition-colors text-slate-400 hover:text-sky-400 cursor-pointer"
+                      className="p-1.5 hover:bg-surface-raised rounded-lg transition-colors text-fg-4 hover:text-sky-400 light:hover:text-sky-700 cursor-pointer"
                       title="Tümünü Okundu İşaretle"
                       aria-label="Tümünü Okundu İşaretle"
                     >
@@ -242,7 +242,7 @@ export function NotificationCenter() {
                   )}
                   <button 
                     onClick={fetchNotifications}
-                    className="p-1.5 hover:bg-[#161f33] rounded-lg transition-colors text-slate-400 hover:text-sky-400 cursor-pointer"
+                    className="p-1.5 hover:bg-surface-raised rounded-lg transition-colors text-fg-4 hover:text-sky-400 light:hover:text-sky-700 cursor-pointer"
                     title="Yenile"
                     aria-label="Bildirimleri Yenile"
                   >
@@ -250,7 +250,7 @@ export function NotificationCenter() {
                   </button>
                   <button 
                     onClick={() => setIsOpen(false)}
-                    className="p-1.5 hover:bg-[#161f33] rounded-lg transition-colors text-slate-400 hover:text-slate-200 cursor-pointer"
+                    className="p-1.5 hover:bg-surface-raised rounded-lg transition-colors text-fg-4 hover:text-fg-2 cursor-pointer"
                     title="Kapat"
                     aria-label="Kapat"
                   >
@@ -262,24 +262,24 @@ export function NotificationCenter() {
               <div className="max-h-[360px] overflow-y-auto" tabIndex={0} aria-label="Bildirim Listesi">
                 {loading && notifications.length === 0 ? (
                   <div className="p-8 flex flex-col items-center justify-center gap-3">
-                    <Loader2 className="animate-spin text-sky-400" size={24} aria-hidden="true" />
-                    <p className="text-xs text-slate-400 font-medium">Bildirimler yükleniyor...</p>
+                    <Loader2 className="animate-spin text-sky-400 light:text-sky-700" size={24} aria-hidden="true" />
+                    <p className="text-xs text-fg-4 font-medium">Bildirimler yükleniyor...</p>
                   </div>
                 ) : error ? (
                   <div className="p-6 text-center">
                     <AlertCircle size={28} className="mx-auto text-destructive mb-2" aria-hidden="true" />
-                    <p className="text-xs font-semibold text-slate-300">{error}</p>
+                    <p className="text-xs font-semibold text-fg-3">{error}</p>
                     <button
                       onClick={fetchNotifications}
-                      className="mt-3 px-3 py-1.5 rounded-lg bg-[#161f33] hover:bg-[#1c2740] text-xs text-sky-400 font-bold border border-white/[0.08] cursor-pointer"
+                      className="mt-3 px-3 py-1.5 rounded-lg bg-surface-raised hover:bg-[#1c2740] text-xs text-sky-400 light:text-sky-700 font-bold border border-white/[0.08] cursor-pointer"
                     >
                       Tekrar Dene
                     </button>
                   </div>
                 ) : notifications.length === 0 ? (
                   <div className="p-8 text-center">
-                    <BellOff size={32} className="mx-auto text-slate-600 mb-2" aria-hidden="true" />
-                    <p className="text-xs font-semibold text-slate-400">Henüz yeni bildiriminiz yok.</p>
+                    <BellOff size={32} className="mx-auto text-fg-6 mb-2" aria-hidden="true" />
+                    <p className="text-xs font-semibold text-fg-4">Henüz yeni bildiriminiz yok.</p>
                   </div>
                 ) : (
                   <div className="divide-y divide-white/[0.06]">
@@ -289,25 +289,25 @@ export function NotificationCenter() {
                         <div 
                           key={n.id}
                           className={cn(
-                            "p-3.5 hover:bg-[#161f33]/60 transition-colors flex gap-3 relative group",
+                            "p-3.5 hover:bg-surface-raised/60 transition-colors flex gap-3 relative group",
                             isUnread && "bg-sky-500/[0.04]"
                           )}
                         >
                           <div className="shrink-0 mt-0.5">
-                            <div className="w-8 h-8 rounded-xl bg-[#0b0f19] flex items-center justify-center border border-white/[0.08]">
+                            <div className="w-8 h-8 rounded-xl bg-surface flex items-center justify-center border border-white/[0.08]">
                               {getIcon(n.type)}
                             </div>
                           </div>
                           <div className="flex-1 min-w-0 pr-6">
                             <div className="flex items-center justify-between gap-2 mb-0.5">
-                              <span className="text-xs font-bold text-slate-200 truncate">
+                              <span className="text-xs font-bold text-fg-2 truncate">
                                 {n.title}
                               </span>
-                              <span className="text-[10px] text-slate-500 font-mono shrink-0">
+                              <span className="text-[10px] text-fg-5 font-mono shrink-0">
                                 <ClientDate dateString={n.created_at} />
                               </span>
                             </div>
-                            <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">
+                            <p className="text-xs text-fg-4 leading-relaxed line-clamp-2">
                               {n.body || (n as any).content}
                             </p>
                             {(n.data as any)?.link || (n as any).link ? (
@@ -317,7 +317,7 @@ export function NotificationCenter() {
                                   markAsRead(n.id);
                                   setIsOpen(false);
                                 }}
-                                className="inline-block mt-1.5 text-[11px] font-semibold text-sky-400 hover:text-sky-300 hover:underline"
+                                className="inline-block mt-1.5 text-[11px] font-semibold text-sky-400 light:text-sky-700 hover:text-sky-300 light:hover:text-sky-700 hover:underline"
                               >
                                 Görüntüle →
                               </Link>
@@ -325,14 +325,14 @@ export function NotificationCenter() {
                           </div>
                           <button 
                             onClick={() => deleteNotification(n.id)}
-                            className="absolute top-3 right-3 p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-500/20 text-rose-400 rounded-md cursor-pointer"
+                            className="absolute top-3 right-3 p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-500/20 text-rose-400 light:text-rose-700 rounded-md cursor-pointer"
                             aria-label="Bildirimi Sil"
                             title="Bildirimi Sil"
                           >
                             <Trash2 size={13} aria-hidden="true" />
                           </button>
                           {isUnread && (
-                            <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-sky-400" aria-hidden="true" />
+                            <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-sky-400 light:bg-sky-700" aria-hidden="true" />
                           )}
                         </div>
                       );
@@ -342,8 +342,8 @@ export function NotificationCenter() {
               </div>
 
               {notifications.length > 0 && (
-                <div className="p-2.5 bg-[#0b0f19]/80 border-t border-white/[0.08] text-center">
-                  <p className="text-[10px] font-medium text-slate-500">EngelsizForum Güvenli Bildirim Sistemi</p>
+                <div className="p-2.5 bg-surface/80 border-t border-white/[0.08] text-center">
+                  <p className="text-[10px] font-medium text-fg-5">EngelsizForum Güvenli Bildirim Sistemi</p>
                 </div>
               )}
             </motion.div>

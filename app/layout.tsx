@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
-import { Plus_Jakarta_Sans, Atkinson_Hyperlegible, JetBrains_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Atkinson_Hyperlegible_Next, JetBrains_Mono, Lexend } from 'next/font/google';
+import '@fontsource/opendyslexic/400.css';
+import '@fontsource/opendyslexic/700.css';
 import Script from 'next/script';
 import './globals.css';
 import { WebMCPProvider } from '@/components/providers/webmcp-provider';
@@ -16,22 +18,31 @@ import AccessibilityInspector from '@/components/accessibility/lazy-accessibilit
 import CookieConsentBanner from '@/components/layout/lazy-cookie-consent';
 
 const headingFont = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-heading',
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-jakarta',
   display: 'swap',
 });
 
-const bodyFont = Atkinson_Hyperlegible({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-  variable: '--font-body',
+const bodyFont = Atkinson_Hyperlegible_Next({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-atkinson',
   display: 'swap',
+  adjustFontFallback: false,
+  fallback: ['Verdana', 'Segoe UI', 'Arial', 'sans-serif'],
 });
 
 const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-jetbrains',
   display: 'swap',
+  preload: false,
+});
+
+const lexendFont = Lexend({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-lexend',
+  display: 'swap',
+  preload: false,
 });
 
 export const viewport: Viewport = {
@@ -288,9 +299,16 @@ const jsonLd = {
   ]
 };
 
+/**
+ * Applies the saved theme and reading font (data-theme / data-reading-font on <html>)
+ * before first paint so visitors never see a flash of the default look.
+ * Mirrors resolveTheme() and resolveReadingFont() in lib/theme.ts.
+ */
+const THEME_BOOTSTRAP_SCRIPT = `(function(){var d=document.documentElement;try{var t='dark',f='default';var s=localStorage.getItem('engelsiz_a11y_prefs');if(s){var p=JSON.parse(s);if(p&&p.theme)t=p.theme;if(p&&(p.readingFont==='lexend'||p.readingFont==='opendyslexic'))f=p.readingFont;}if(t==='system'){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}if(t!=='light'&&t!=='sepia')t='dark';d.setAttribute('data-theme',t);d.setAttribute('data-reading-font',f);}catch(e){d.setAttribute('data-theme','dark');}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className="h-full" suppressHydrationWarning>
+    <html lang="tr" data-theme="dark" className={`h-full ${headingFont.variable} ${bodyFont.variable} ${jetbrainsMono.variable} ${lexendFont.variable}`} suppressHydrationWarning>
       <head>
         {/* Google tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-XBFZ4BS7GJ" />
@@ -326,10 +344,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
         <style dangerouslySetInnerHTML={{ __html: `
-          body { background-color: #0B1220 !important; color: #CBD5E1 !important; margin: 0; }
+          body { background-color: var(--ef-surface, #0B1220) !important; color: var(--ef-fg-3, #CBD5E1) !important; margin: 0; }
           .min-h-screen { min-height: 100vh; }
-          .bg-background { background-color: #0B1220; }
+          .bg-background { background-color: var(--ef-surface, #0B1220); }
         `}} />
         <link rel="preconnect" href="https://vtmozdquvamjeniwhonm.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://vtmozdquvamjeniwhonm.supabase.co" />

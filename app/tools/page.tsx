@@ -29,7 +29,7 @@ export default function ToolsHubPage() {
       icon: Car,
       href: '/hesaplama#otv-calculator',
       badge: 'Finansal Araç',
-      color: 'from-blue-500/20 to-cyan-500/20 text-sky-400 border-sky-500/30'
+      color: 'from-blue-500/20 to-cyan-500/20 text-sky-400 light:text-sky-700 border-sky-500/30'
     },
     {
       title: 'Engelli Emeklilik ve Prim Hesaplama',
@@ -37,7 +37,7 @@ export default function ToolsHubPage() {
       icon: Clock,
       href: '/hesaplama#pension-calculator',
       badge: 'Mevzuat & Haklar',
-      color: 'from-emerald-500/20 to-teal-500/20 text-emerald-400 border-emerald-500/30'
+      color: 'from-emerald-500/20 to-teal-500/20 text-emerald-400 light:text-emerald-700 border-emerald-500/30'
     },
     {
       title: 'Chrome WebMCP AI Asistanı',
@@ -45,7 +45,7 @@ export default function ToolsHubPage() {
       icon: Cpu,
       href: '/webmcp',
       badge: 'AI & MCP 1.1',
-      color: 'from-purple-500/20 to-pink-500/20 text-purple-400 border-purple-500/30'
+      color: 'from-purple-500/20 to-pink-500/20 text-purple-400 light:text-purple-700 border-purple-500/30'
     },
     {
       title: 'Erişilebilirlik Tercihleri ve Ayarlar',
@@ -53,7 +53,7 @@ export default function ToolsHubPage() {
       icon: Settings,
       href: '/accessibility-settings',
       badge: 'WCAG 2.1 AAA',
-      color: 'from-amber-500/20 to-orange-500/20 text-amber-400 border-amber-500/30'
+      color: 'from-amber-500/20 to-orange-500/20 text-amber-400 light:text-amber-800 border-amber-500/30'
     },
     {
       title: 'Canlı Ziyaretçi ve Stand Monitörü',
@@ -61,7 +61,7 @@ export default function ToolsHubPage() {
       icon: Activity,
       href: '/visitor-stats',
       badge: 'Canlı Monitör',
-      color: 'from-rose-500/20 to-red-500/20 text-rose-400 border-rose-500/30'
+      color: 'from-rose-500/20 to-red-500/20 text-rose-400 light:text-rose-700 border-rose-500/30'
     },
     {
       title: 'Erişilebilirlik Standartları & Bildirimi',
@@ -69,7 +69,7 @@ export default function ToolsHubPage() {
       icon: ShieldCheck,
       href: '/accessibility',
       badge: 'Kılavuz',
-      color: 'from-indigo-500/20 to-blue-500/20 text-indigo-400 border-indigo-500/30'
+      color: 'from-indigo-500/20 to-blue-500/20 text-indigo-400 light:text-indigo-700 border-indigo-500/30'
     }
   ];
 
@@ -86,7 +86,7 @@ export default function ToolsHubPage() {
 
         {/* Hero Section */}
         <div className="space-y-4 max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 light:text-sky-700 text-xs font-bold uppercase tracking-wider">
             <Zap className="size-3.5" />
             <span>Engelsiz Yaşam Teknolojileri</span>
           </div>
@@ -119,7 +119,7 @@ export default function ToolsHubPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <h2 className="text-lg font-bold text-foreground group-hover:text-sky-400 transition-colors">
+                    <h2 className="text-lg font-bold text-foreground group-hover:text-sky-400 light:group-hover:text-sky-700 transition-colors">
                       {tool.title}
                     </h2>
                     <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -128,7 +128,7 @@ export default function ToolsHubPage() {
                   </div>
                 </div>
 
-                <div className="pt-6 mt-4 border-t border-border/40 flex items-center justify-between text-xs font-semibold text-sky-400">
+                <div className="pt-6 mt-4 border-t border-border/40 flex items-center justify-between text-xs font-semibold text-sky-400 light:text-sky-700">
                   <span>Aracı Başlat</span>
                   <ArrowRight className="size-4 transform group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -140,7 +140,7 @@ export default function ToolsHubPage() {
         {/* Disclaimer Card */}
         <div className="p-6 rounded-2xl bg-muted/40 border border-border/60 space-y-2">
           <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-            <Sparkles className="size-4 text-sky-400" />
+            <Sparkles className="size-4 text-sky-400 light:text-sky-700" />
             <span>Mevzuat ve Sorumluluk Reddi Beyanı</span>
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed">

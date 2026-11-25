@@ -80,22 +80,22 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-8 space-y-10 text-[#F8FAFC] font-sans">
+    <div className="w-full max-w-6xl mx-auto px-4 py-8 space-y-10 text-fg-0 font-sans">
       
       {/* 1. Header */}
-      <div className="relative overflow-hidden rounded-xl border border-[#1E293B] bg-[#111B2E] p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-xl border border-line bg-surface-raised p-8 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 space-y-4">
-          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-indigo-400 font-bold">
+          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-indigo-400 light:text-indigo-700 font-bold">
             <Sparkles size={14} />
             <span>Açık Kaynak Widget & SDK Sistemi</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-[#F8FAFC]">
-            Erişilebilirlik & <span className="text-indigo-400">WebMCP</span> Widget'ı
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-fg-0">
+            Erişilebilirlik & <span className="text-indigo-400 light:text-indigo-700">WebMCP</span> Widget'ı
           </h1>
 
-          <p className="text-sm sm:text-base text-[#CBD5E1] max-w-3xl leading-relaxed">
+          <p className="text-sm sm:text-base text-fg-3 max-w-3xl leading-relaxed">
             Tek satır HTML koduyla dilediğiniz web sitesine WCAG 2.2 AA uyumlu sesli okuma, disleksi modu, yüksek kontrast ve WebMCP yapay zeka ajan yeteneklerini tamamen ücretsiz ekleyin.
           </p>
 
@@ -110,9 +110,9 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
 
             <button
               onClick={handleCopyScript}
-              className="px-4 py-2.5 rounded-lg border border-[#1E293B] bg-[#18243A] hover:bg-[#1E293B] text-slate-200 font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer"
+              className="px-4 py-2.5 rounded-lg border border-line bg-surface-hover hover:bg-line text-fg-2 font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer"
             >
-              {copiedScript ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
+              {copiedScript ? <Check size={16} className="text-emerald-400 light:text-emerald-700" /> : <Copy size={16} />}
               <span>Entegrasyon Kodunu Kopyala</span>
             </button>
           </div>
@@ -121,46 +121,46 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
 
       {/* 2. Key Pillars Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="p-6 rounded-xl border border-[#1E293B] bg-[#111B2E] space-y-3">
-          <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
+        <div className="p-6 rounded-xl border border-line bg-surface-raised space-y-3">
+          <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 light:text-indigo-700 flex items-center justify-center font-bold">
             <Accessibility size={20} />
           </div>
-          <h2 className="text-base font-bold text-[#F8FAFC]">WCAG 2.2 AA Standartları</h2>
-          <p className="text-xs text-[#CBD5E1] leading-relaxed">
+          <h2 className="text-base font-bold text-fg-0">WCAG 2.2 AA Standartları</h2>
+          <p className="text-xs text-fg-3 leading-relaxed">
             Sesli okuma, yazı ölçekleme, disleksi fontu ve yüksek kontrast ile tüm erişilebilirlik gereksinimlerini tek tıkla sağlar.
           </p>
         </div>
 
-        <div className="p-6 rounded-xl border border-[#1E293B] bg-[#111B2E] space-y-3">
-          <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+        <div className="p-6 rounded-xl border border-line bg-surface-raised space-y-3">
+          <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 light:text-emerald-700 flex items-center justify-center font-bold">
             <Zap size={20} />
           </div>
-          <h2 className="text-base font-bold text-[#F8FAFC]">Sıfır Maliyet & Yüksek Hız</h2>
-          <p className="text-xs text-[#CBD5E1] leading-relaxed">
+          <h2 className="text-base font-bold text-fg-0">Sıfır Maliyet & Yüksek Hız</h2>
+          <p className="text-xs text-fg-3 leading-relaxed">
             Abonelik yok. Edge CDN üzerinden ultra hafif vanilla JS mimarisiyle sitenizin performansını etkilemeden çalışır.
           </p>
         </div>
 
-        <div className="p-6 rounded-xl border border-[#1E293B] bg-[#111B2E] space-y-3">
-          <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+        <div className="p-6 rounded-xl border border-line bg-surface-raised space-y-3">
+          <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 light:text-amber-800 flex items-center justify-center font-bold">
             <Bot size={20} />
           </div>
-          <h2 className="text-base font-bold text-[#F8FAFC]">WebMCP Yapay Zeka</h2>
-          <p className="text-xs text-[#CBD5E1] leading-relaxed">
+          <h2 className="text-base font-bold text-fg-0">WebMCP Yapay Zeka</h2>
+          <p className="text-xs text-fg-3 leading-relaxed">
             Model Context Protocol entegrasyonu sayesinde harici siteler ÖTV 2026, Balthazard ve mevzuat robotlarını API olarak çağırabilir.
           </p>
         </div>
       </div>
 
       {/* 3. Integration Code Generator */}
-      <div className="p-6 rounded-xl border border-[#1E293B] bg-[#111B2E] space-y-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1E293B] pb-4">
+      <div className="p-6 rounded-xl border border-line bg-surface-raised space-y-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-4">
           <div>
-            <h2 className="text-lg font-bold text-[#F8FAFC] flex items-center gap-2">
-              <Code2 size={18} className="text-indigo-400" />
+            <h2 className="text-lg font-bold text-fg-0 flex items-center gap-2">
+              <Code2 size={18} className="text-indigo-400 light:text-indigo-700" />
               <span>HTML Entegrasyon Kodu</span>
             </h2>
-            <p className="text-xs text-[#CBD5E1]">
+            <p className="text-xs text-fg-3">
               Web sitenizin &lt;/body&gt; kapanış etiketinden hemen önce ekleyin.
             </p>
           </div>
@@ -169,53 +169,53 @@ console.log('2026 ÖTV Hesabı (2.873.972 TL Tavan Denetimi):', result);`;
             onClick={handleCopyScript}
             className="px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 transition-colors shrink-0 shadow-sm cursor-pointer"
           >
-            {copiedScript ? <Check size={14} className="text-emerald-300" /> : <Copy size={14} />}
+            {copiedScript ? <Check size={14} className="text-emerald-300 light:text-emerald-700" /> : <Copy size={14} />}
             <span>Kodu Kopyala</span>
           </button>
         </div>
 
         <div className="relative">
-          <pre className="p-5 rounded-lg bg-[#0B1220] border border-[#1E293B] text-indigo-300 font-mono text-[11px] overflow-x-auto leading-relaxed shadow-inner">
+          <pre className="p-5 rounded-lg bg-surface border border-line text-indigo-300 light:text-indigo-700 font-mono text-[11px] overflow-x-auto leading-relaxed shadow-inner">
             {`<!-- EngelsizForum Erişilebilirlik Widget'ı -->\n${scriptTag}`}
           </pre>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-[#CBD5E1]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-fg-3">
           <div className="flex items-start gap-2">
-            <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
+            <CheckCircle2 size={16} className="text-emerald-400 light:text-emerald-700 shrink-0 mt-0.5" />
             <span>WordPress, React, Vue, Next.js ve tüm web altyapıları ile %100 uyumludur.</span>
           </div>
           <div className="flex items-start gap-2">
-            <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
+            <CheckCircle2 size={16} className="text-emerald-400 light:text-emerald-700 shrink-0 mt-0.5" />
             <span>Kullanıcıların tercihleri yerel hafızada (localStorage) güvenle saklanır.</span>
           </div>
         </div>
       </div>
 
       {/* 4. WebMCP Agent Endpoint */}
-      <div className="p-6 rounded-xl border border-[#1E293B] bg-[#111B2E] space-y-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1E293B] pb-4">
+      <div className="p-6 rounded-xl border border-line bg-surface-raised space-y-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-4">
           <div>
-            <h2 className="text-lg font-bold text-[#F8FAFC] flex items-center gap-2">
-              <Terminal size={18} className="text-emerald-400" />
+            <h2 className="text-lg font-bold text-fg-0 flex items-center gap-2">
+              <Terminal size={18} className="text-emerald-400 light:text-emerald-700" />
               <span>WebMCP Ajanı Entegrasyonu (JSON-RPC)</span>
             </h2>
-            <p className="text-xs text-[#CBD5E1]">
+            <p className="text-xs text-fg-3">
               Harici platformlar ve AI ajanları için 2026 mevzuat hesaplama aracı.
             </p>
           </div>
 
           <button
             onClick={handleCopyMcp}
-            className="px-4 py-2 rounded-md bg-[#18243A] hover:bg-[#1E293B] border border-[#1E293B] text-white font-bold text-xs flex items-center gap-2 transition-colors shrink-0 shadow-sm cursor-pointer"
+            className="px-4 py-2 rounded-md bg-surface-hover hover:bg-line border border-line text-fg font-bold text-xs flex items-center gap-2 transition-colors shrink-0 shadow-sm cursor-pointer"
           >
-            {copiedMcp ? <Check size={14} className="text-emerald-300" /> : <Copy size={14} />}
+            {copiedMcp ? <Check size={14} className="text-emerald-300 light:text-emerald-700" /> : <Copy size={14} />}
             <span>JS Örneğini Kopyala</span>
           </button>
         </div>
 
         <div className="relative">
-          <pre className="p-5 rounded-lg bg-[#0B1220] border border-[#1E293B] text-emerald-400 font-mono text-[11px] overflow-x-auto leading-relaxed shadow-inner">
+          <pre className="p-5 rounded-lg bg-surface border border-line text-emerald-400 light:text-emerald-700 font-mono text-[11px] overflow-x-auto leading-relaxed shadow-inner">
             {mcpSnippet}
           </pre>
         </div>

@@ -180,8 +180,8 @@ export function ForumIndex() {
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-28 flex flex-col items-center justify-center space-y-4" role="status">
-        <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" aria-hidden="true" />
-        <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">
+        <Loader2 className="w-8 h-8 text-indigo-400 light:text-indigo-700 animate-spin" aria-hidden="true" />
+        <p className="text-fg-4 text-xs font-semibold uppercase tracking-wider">
           EngelsizForum verileri yükleniyor...
         </p>
       </div>
@@ -191,9 +191,9 @@ export function ForumIndex() {
   if (error && topics.length === 0 && categories.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 flex flex-col items-center justify-center space-y-4 text-center" role="alert">
-        <AlertCircle className="w-10 h-10 text-rose-400" aria-hidden="true" />
-        <h2 className="text-lg font-bold text-slate-100">Veriler Yüklenemedi</h2>
-        <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
+        <AlertCircle className="w-10 h-10 text-rose-400 light:text-rose-700" aria-hidden="true" />
+        <h2 className="text-lg font-bold text-fg-1">Veriler Yüklenemedi</h2>
+        <p className="text-xs text-fg-4 max-w-sm leading-relaxed">
           {error}
         </p>
         <button

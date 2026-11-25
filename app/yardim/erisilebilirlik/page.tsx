@@ -31,7 +31,7 @@ export default function AccessibilityPage() {
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-4">
             Erişilebilirlik Bildirimi ve Standartlarımız
           </h1>
-          <p className="text-slate-600 text-base leading-relaxed">
+          <p className="text-fg-6 text-base leading-relaxed">
             EngelsizForum olarak, dijital dünyada engelleri ortadan kaldırmayı ve tüm bireylerin bilgiye, topluluk tartışmalarına ve destek ağlarına eşit, engelsiz bir şekilde erişebilmesini sağlamayı temel misyonumuz olarak benimseriz.
           </p>
         </div>
@@ -43,7 +43,7 @@ export default function AccessibilityPage() {
               <Eye size={20} />
             </div>
             <h2 className="text-lg font-bold text-slate-900">Ekran Okuyucu ve Görme Desteği</h2>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-sm text-fg-6 leading-relaxed">
               Platformumuz NVDA, JAWS, VoiceOver ve TalkBack gibi ekran okuyucularla tam uyumlu çalışacak şekilde semantik HTML etiketleri, ARIA rolleri ve alternatif metin (alt text) standartlarına uygun geliştirilmiştir.
             </p>
           </div>
@@ -53,7 +53,7 @@ export default function AccessibilityPage() {
               <Volume2 size={20} />
             </div>
             <h2 className="text-lg font-bold text-slate-900">Yüksek Kontrast ve Tipografi</h2>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-sm text-fg-6 leading-relaxed">
               WCAG 2.1 AA ve AAA renk kontrast oranları gözetilerek tasarlanan arayüzümüz, düşük görüşlü kullanıcılar için optimize edilmiş yazı tipi boyutları ve odak göstergeleri sunar.
             </p>
           </div>
@@ -70,7 +70,7 @@ export default function AccessibilityPage() {
               <CheckCircle2 size={20} className="text-emerald-600 shrink-0 mt-1" />
               <div>
                 <h3 className="font-bold text-slate-900 text-sm">Klavye Kolaylığı (Keyboard Navigation)</h3>
-                <p className="text-sm text-slate-600">Fare kullanamayan veya klavye kısayollarını tercih eden kullanıcılar için tüm formlar, menüler ve tartışma akışları sekme (Tab) tuşuyla eksiksiz gezilebilir.</p>
+                <p className="text-sm text-fg-6">Fare kullanamayan veya klavye kısayollarını tercih eden kullanıcılar için tüm formlar, menüler ve tartışma akışları sekme (Tab) tuşuyla eksiksiz gezilebilir.</p>
               </div>
             </div>
 
@@ -78,7 +78,7 @@ export default function AccessibilityPage() {
               <CheckCircle2 size={20} className="text-emerald-600 shrink-0 mt-1" />
               <div>
                 <h3 className="font-bold text-slate-900 text-sm">Sesli Asistan ve AI Desteği (@EngelsizAI)</h3>
-                <p className="text-sm text-slate-600">Engelli bireylerin hakları, ÖTV muafiyetleri ve mevzuat sorularına anında yanıt veren yapay zeka asistanımız kullanıcı dostu erişilebilir yanıtlar üretir.</p>
+                <p className="text-sm text-fg-6">Engelli bireylerin hakları, ÖTV muafiyetleri ve mevzuat sorularına anında yanıt veren yapay zeka asistanımız kullanıcı dostu erişilebilir yanıtlar üretir.</p>
               </div>
             </div>
 
@@ -86,17 +86,17 @@ export default function AccessibilityPage() {
               <CheckCircle2 size={20} className="text-emerald-600 shrink-0 mt-1" />
               <div>
                 <h3 className="font-bold text-slate-900 text-sm">Sürekli Geri Bildirim ve İyileştirme</h3>
-                <p className="text-sm text-slate-600">Erişilebilirlikle ilgili karşılaştığınız her türlü engeli veya öneriyi bize bildirebilir, platformumuzun herkes için daha erişilebilir olmasına katkı sağlayabilirsiniz.</p>
+                <p className="text-sm text-fg-6">Erişilebilirlikle ilgili karşılaştığınız her türlü engeli veya öneriyi bize bildirebilir, platformumuzun herkes için daha erişilebilir olmasına katkı sağlayabilirsiniz.</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Contact Footer */}
-        <div className="bg-sky-900 text-white rounded-xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="bg-sky-900 light:bg-sky-100 text-white rounded-xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-bold mb-1">Erişilebilirlik İletişim Hattı</h2>
-            <p className="text-xs text-sky-200">Geri bildirimleriniz bizim için çok değerlidir.</p>
+            <p className="text-xs text-sky-200 light:text-sky-800">Geri bildirimleriniz bizim için çok değerlidir.</p>
           </div>
           <Link href="/help" className="px-5 py-2.5 bg-white text-sky-950 font-bold text-xs rounded-md hover:bg-sky-50 transition-colors uppercase tracking-wider">
             Yardım Merkezine Git

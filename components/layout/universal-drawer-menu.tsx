@@ -97,20 +97,20 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
       {/* Slide-over Drawer Panel */}
       <div 
         ref={drawerRef}
-        className="fixed inset-y-0 right-0 max-w-full w-full sm:w-[420px] bg-[#0B1220] border-l border-[#1E293B] shadow-2xl flex flex-col z-50 text-slate-100"
+        className="fixed inset-y-0 right-0 max-w-full w-full sm:w-[420px] bg-surface border-l border-line shadow-2xl flex flex-col z-50 text-fg-1"
       >
         {/* Drawer Header */}
-        <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#1E293B] bg-[#111B2E]">
+        <div className="flex items-center justify-between px-4 py-3.5 border-b border-line bg-surface-raised">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded bg-indigo-500 text-white flex items-center justify-center font-bold text-xs">
               EF
             </div>
             <div>
-              <h2 className="text-sm font-bold text-white tracking-tight font-heading">
+              <h2 className="text-sm font-bold text-fg tracking-tight font-heading">
                 Navigasyon &amp; Yetki Menüsü
               </h2>
-              <div className="text-[11px] font-mono text-slate-400">
-                Rol: <span className="text-indigo-400 font-semibold uppercase">{isLoggedIn ? role : 'Ziyaretçi'}</span>
+              <div className="text-[11px] font-mono text-fg-4">
+                Rol: <span className="text-indigo-400 light:text-indigo-700 font-semibold uppercase">{isLoggedIn ? role : 'Ziyaretçi'}</span>
               </div>
             </div>
           </div>
@@ -118,7 +118,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-md text-slate-400 hover:text-white hover:bg-[#18243A] transition-colors cursor-pointer"
+            className="p-1.5 rounded-md text-fg-4 hover:text-fg hover:bg-surface-hover transition-colors cursor-pointer"
             aria-label="Menüyü Kapat"
           >
             <X size={18} />
@@ -140,7 +140,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
 
           {/* 1. Temel Sayfalar (Herkes) */}
           <div className="space-y-1.5">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-2 pb-1 font-heading">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-fg-4 px-2 pb-1 font-heading">
               Topluluk &amp; Forum
             </div>
             
@@ -148,48 +148,48 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               href="/"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/' ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-slate-200 hover:bg-[#111B2E] hover:text-white'
+                pathname === '/' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Home size={15} className="text-indigo-400" />
+                <Home size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Forum Ana Sayfası</span>
               </span>
-              <ChevronRight size={13} className="text-slate-600" />
+              <ChevronRight size={13} className="text-fg-6" />
             </Link>
 
             <Link
               href="/discussions"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/discussions' ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-slate-200 hover:bg-[#111B2E] hover:text-white'
+                pathname === '/discussions' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <MessageSquare size={15} className="text-indigo-400" />
+                <MessageSquare size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Tüm Tartışmalar</span>
               </span>
-              <ChevronRight size={13} className="text-slate-600" />
+              <ChevronRight size={13} className="text-fg-6" />
             </Link>
 
             <Link
               href="/communities"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname?.startsWith('/communities') ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-slate-200 hover:bg-[#111B2E] hover:text-white'
+                pathname?.startsWith('/communities') ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Users size={15} className="text-indigo-400" />
+                <Users size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Tanı &amp; Dayanışma Toplulukları</span>
               </span>
-              <ChevronRight size={13} className="text-slate-600" />
+              <ChevronRight size={13} className="text-fg-6" />
             </Link>
           </div>
 
           {/* 2. Resmi Mevzuat & Hesaplama Robotları (Herkes) */}
           <div className="space-y-1.5">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-2 pb-1 font-heading">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-fg-4 px-2 pb-1 font-heading">
               Hesaplama Robotları (2026)
             </div>
 
@@ -197,142 +197,142 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               href="/hesaplama"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama' ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-slate-200 hover:bg-[#111B2E] hover:text-white'
+                pathname === '/hesaplama' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Calculator size={15} className="text-indigo-400" />
+                <Calculator size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Tüm Robotlar Dizini</span>
               </span>
-              <ChevronRight size={13} className="text-slate-600" />
+              <ChevronRight size={13} className="text-fg-6" />
             </Link>
 
             <Link
               href="/hesaplama/balthazard"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama/balthazard' ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-slate-200 hover:bg-[#111B2E] hover:text-white'
+                pathname === '/hesaplama/balthazard' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Percent size={15} className="text-indigo-400" />
+                <Percent size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Balthazard Oran Robotu</span>
               </span>
-              <span className="text-[10px] font-mono text-slate-500">Resmî Ek-2</span>
+              <span className="text-[10px] font-mono text-fg-5">Resmî Ek-2</span>
             </Link>
 
             <Link
               href="/hesaplama/otv"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama/otv' ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-slate-200 hover:bg-[#111B2E] hover:text-white'
+                pathname === '/hesaplama/otv' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Car size={15} className="text-indigo-400" />
+                <Car size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>2026 ÖTV Muafiyetli Araç</span>
               </span>
-              <span className="text-[10px] font-mono text-emerald-400">2.87M ₺</span>
+              <span className="text-[10px] font-mono text-emerald-400 light:text-emerald-700">2.87M ₺</span>
             </Link>
 
             <Link
               href="/hesaplama/erken-emeklilik"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama/erken-emeklilik' ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-slate-200 hover:bg-[#111B2E] hover:text-white'
+                pathname === '/hesaplama/erken-emeklilik' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Calendar size={15} className="text-indigo-400" />
+                <Calendar size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Engelli Erken Emeklilik</span>
               </span>
-              <span className="text-[10px] font-mono text-slate-500">5510 m.28</span>
+              <span className="text-[10px] font-mono text-fg-5">5510 m.28</span>
             </Link>
 
             <Link
               href="/hesaplama/vergi-indirimi"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama/vergi-indirimi' ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-slate-200 hover:bg-[#111B2E] hover:text-white'
+                pathname === '/hesaplama/vergi-indirimi' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <Receipt size={15} className="text-indigo-400" />
+                <Receipt size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>Gelir Vergisi İndirimi</span>
               </span>
-              <span className="text-[10px] font-mono text-slate-500">GVK 31</span>
+              <span className="text-[10px] font-mono text-fg-5">GVK 31</span>
             </Link>
 
             <Link
               href="/hesaplama/engelli-ayligi"
               onClick={onClose}
               className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                pathname === '/hesaplama/engelli-ayligi' ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-slate-200 hover:bg-[#111B2E] hover:text-white'
+                pathname === '/hesaplama/engelli-ayligi' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-fg-2 hover:bg-surface-raised hover:text-fg'
               }`}
             >
               <span className="flex items-center gap-2.5">
-                <HeartHandshake size={15} className="text-indigo-400" />
+                <HeartHandshake size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>2022 Engelli Maaşı Kriteri</span>
               </span>
-              <span className="text-[10px] font-mono text-slate-500">SYDV</span>
+              <span className="text-[10px] font-mono text-fg-5">SYDV</span>
             </Link>
           </div>
 
           {/* 3. Kullanıcı Yetkisi / Özel Alanlar (Üye Girişi Yapıldıysa) */}
           {isLoggedIn && (
-            <div className="space-y-1.5 pt-2 border-t border-[#1E293B]">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-2 pb-1 font-heading">
+            <div className="space-y-1.5 pt-2 border-t border-line">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-fg-4 px-2 pb-1 font-heading">
                 Kullanıcı Paneli (@{profile?.username})
               </div>
 
               <Link
                 href={`/profile/${user.id}`}
                 onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#111B2E] hover:text-white transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-raised hover:text-fg transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <User size={15} className="text-indigo-400" />
+                  <User size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>Kullanıcı Profilim &amp; Konularım</span>
                 </span>
-                <ChevronRight size={13} className="text-slate-600" />
+                <ChevronRight size={13} className="text-fg-6" />
               </Link>
 
               <Link
                 href="/messages"
                 onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#111B2E] hover:text-white transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-raised hover:text-fg transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <MessageSquare size={15} className="text-indigo-400" />
+                  <MessageSquare size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>Özel Mesajlarım (DM)</span>
                 </span>
-                <ChevronRight size={13} className="text-slate-600" />
+                <ChevronRight size={13} className="text-fg-6" />
               </Link>
 
               <Link
                 href="/profile"
                 onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#111B2E] hover:text-white transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-raised hover:text-fg transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <SlidersHorizontal size={15} className="text-indigo-400" />
+                  <SlidersHorizontal size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>Profil &amp; Erişilebilirlik Ayarları</span>
                 </span>
-                <ChevronRight size={13} className="text-slate-600" />
+                <ChevronRight size={13} className="text-fg-6" />
               </Link>
 
               <Link
                 href="/developers"
                 onClick={onClose}
                 className={`flex items-center justify-between px-3 py-2 rounded-md font-medium transition-colors ${
-                  pathname === '/developers' ? 'bg-[#18243A] text-indigo-400 border border-[#1E293B]' : 'text-indigo-300 hover:bg-[#111B2E] hover:text-white'
+                  pathname === '/developers' ? 'bg-surface-hover text-indigo-400 light:text-indigo-700 border border-line' : 'text-indigo-300 light:text-indigo-700 hover:bg-surface-raised hover:text-fg'
                 }`}
               >
                 <span className="flex items-center gap-2.5">
-                  <BookOpen size={15} className="text-indigo-400" />
+                  <BookOpen size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>Geliştirici Portalı (OAuth &amp; API)</span>
                 </span>
-                <span className="text-[10px] font-mono uppercase bg-indigo-950/60 text-indigo-300 border border-indigo-800/60 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-mono uppercase bg-indigo-950/60 light:bg-indigo-50/60 text-indigo-300 light:text-indigo-700 border border-indigo-800/60 px-1.5 py-0.5 rounded">
                   Dev Portal
                 </span>
               </Link>
@@ -341,8 +341,8 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
 
           {/* 4. Yetkili / Moderatör / Admin Paneli (Sadece Yetkili Rollere) */}
           {isMod && (
-            <div className="space-y-1.5 pt-2 border-t border-[#1E293B]">
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-amber-400 px-2 pb-1 flex items-center gap-1.5 font-heading">
+            <div className="space-y-1.5 pt-2 border-t border-line">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-amber-400 light:text-amber-800 px-2 pb-1 flex items-center gap-1.5 font-heading">
                 <ShieldCheck size={14} />
                 <span>Yönetim Yetkileri ({role.toUpperCase()})</span>
               </div>
@@ -350,10 +350,10 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               <Link
                 href="/admin"
                 onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-bold text-amber-300 bg-amber-950/40 border border-amber-800/60 hover:bg-amber-900/60 transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded-md font-bold text-amber-300 light:text-amber-800 bg-amber-950/40 light:bg-amber-50/40 border border-amber-800/60 hover:bg-amber-900/60 light:hover:bg-amber-100/60 transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <Shield size={15} className="text-amber-400" />
+                  <Shield size={15} className="text-amber-400 light:text-amber-800" />
                   <span>Yönetim Kontrol Paneli (ACP)</span>
                 </span>
                 <span className="text-[10px] font-mono uppercase bg-amber-500 text-black px-1.5 py-0.5 rounded font-black">
@@ -364,37 +364,37 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               <Link
                 href="/visitor-stats"
                 onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#111B2E] hover:text-white transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-raised hover:text-fg transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <Activity size={15} className="text-purple-400" />
+                  <Activity size={15} className="text-purple-400 light:text-purple-700" />
                   <span>Canlı Ziyaretçi İstatistikleri</span>
                 </span>
-                <ChevronRight size={13} className="text-slate-600" />
+                <ChevronRight size={13} className="text-fg-6" />
               </Link>
 
               <Link
                 href="/developers"
                 onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#111B2E] hover:text-white transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-raised hover:text-fg transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <BookOpen size={15} className="text-indigo-400" />
+                  <BookOpen size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>Geliştirici &amp; WebMCP Ajan API</span>
                 </span>
-                <ChevronRight size={13} className="text-slate-600" />
+                <ChevronRight size={13} className="text-fg-6" />
               </Link>
 
               <Link
                 href="/widgets"
                 onClick={onClose}
-                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-indigo-400 hover:bg-[#111B2E] hover:text-indigo-300 transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-indigo-400 light:text-indigo-700 hover:bg-surface-raised hover:text-indigo-300 light:hover:text-indigo-700 transition-colors"
               >
                 <span className="flex items-center gap-2.5">
-                  <Sparkles size={15} className="text-indigo-400" />
+                  <Sparkles size={15} className="text-indigo-400 light:text-indigo-700" />
                   <span>0 TL Erişilebilirlik &amp; WebMCP Widget</span>
                 </span>
-                <span className="text-[10px] font-mono uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">
+                <span className="text-[10px] font-mono uppercase bg-indigo-500/20 text-indigo-300 light:text-indigo-700 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">
                   0 TL
                 </span>
               </Link>
@@ -402,85 +402,85 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
           )}
 
           {/* 5. Kurumsal & Destek Sayfaları */}
-          <div className="space-y-1.5 pt-2 border-t border-[#1E293B]">
-            <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-2 pb-1 font-heading">
+          <div className="space-y-1.5 pt-2 border-t border-line">
+            <div className="text-[11px] font-semibold uppercase tracking-wider text-fg-4 px-2 pb-1 font-heading">
               Kurumsal &amp; Bilgi
             </div>
 
             <Link
               href="/about"
               onClick={onClose}
-              className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#18243A] hover:text-white transition-colors"
+              className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-hover hover:text-fg transition-colors"
             >
               <span className="flex items-center gap-2.5">
-                <Info size={15} className="text-slate-400" />
+                <Info size={15} className="text-fg-4" />
                 <span>Hakkımızda</span>
               </span>
-              <ChevronRight size={13} className="text-slate-600" />
+              <ChevronRight size={13} className="text-fg-6" />
             </Link>
 
             <Link
               href="/help"
               onClick={onClose}
-              className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#18243A] hover:text-white transition-colors"
+              className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-hover hover:text-fg transition-colors"
             >
               <span className="flex items-center gap-2.5">
-                <HelpCircle size={15} className="text-slate-400" />
+                <HelpCircle size={15} className="text-fg-4" />
                 <span>Yardım &amp; Sıkça Sorulan Sorular</span>
               </span>
-              <ChevronRight size={13} className="text-slate-600" />
+              <ChevronRight size={13} className="text-fg-6" />
             </Link>
 
             <Link
               href="/terms"
               onClick={onClose}
-              className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#18243A] hover:text-white transition-colors"
+              className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-hover hover:text-fg transition-colors"
             >
               <span className="flex items-center gap-2.5">
-                <BookOpen size={15} className="text-slate-400" />
+                <BookOpen size={15} className="text-fg-4" />
                 <span>Kullanım Kuralları</span>
               </span>
-              <ChevronRight size={13} className="text-slate-600" />
+              <ChevronRight size={13} className="text-fg-6" />
             </Link>
 
             <Link
               href="/privacy"
               onClick={onClose}
-              className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-slate-200 hover:bg-[#18243A] hover:text-white transition-colors"
+              className="flex items-center justify-between px-3 py-2 rounded-md font-medium text-fg-2 hover:bg-surface-hover hover:text-fg transition-colors"
             >
               <span className="flex items-center gap-2.5">
-                <Shield size={15} className="text-slate-400" />
+                <Shield size={15} className="text-fg-4" />
                 <span>Gizlilik Politikası</span>
               </span>
-              <ChevronRight size={13} className="text-slate-500" />
+              <ChevronRight size={13} className="text-fg-5" />
             </Link>
           </div>
 
           {/* 6. Sponsorluk & Destekçiler */}
-          <div className="p-3 rounded-md bg-[#111B2E] border border-[#1E293B] space-y-2">
-            <div className="flex items-center justify-between text-[11px] font-bold text-white">
+          <div className="p-3 rounded-md bg-surface-raised border border-line space-y-2">
+            <div className="flex items-center justify-between text-[11px] font-bold text-fg">
               <span className="flex items-center gap-1.5">
-                <Sparkles size={13} className="text-amber-400" />
+                <Sparkles size={13} className="text-amber-400 light:text-amber-800" />
                 <span>Proje Destekçileri</span>
               </span>
-              <span className="text-[10px] text-slate-400 font-mono">Topluluk</span>
+              <span className="text-[10px] text-fg-4 font-mono">Topluluk</span>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <a
                 href="https://yeterly.ai"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300 hover:underline flex items-center gap-1"
+                className="text-[11px] font-semibold text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 hover:underline flex items-center gap-1"
               >
                 <span>yeterly.ai</span>
                 <ExternalLink size={10} />
               </a>
-              <span className="text-slate-600">&bull;</span>
+              <span className="text-fg-6">&bull;</span>
               <a
                 href="https://goldhost.com.tr"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[11px] font-semibold text-indigo-400 hover:text-indigo-300 hover:underline flex items-center gap-1"
+                className="text-[11px] font-semibold text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 hover:underline flex items-center gap-1"
               >
                 <span>goldhost.com.tr</span>
                 <ExternalLink size={10} />
@@ -491,16 +491,16 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
         </div>
 
         {/* Drawer Footer */}
-        <div className="p-3.5 border-t border-[#1E293B] bg-[#111B2E] flex items-center justify-between">
+        <div className="p-3.5 border-t border-line bg-surface-raised flex items-center justify-between">
           {isLoggedIn ? (
             <div className="flex items-center justify-between w-full">
-              <div className="text-xs text-slate-300 font-semibold truncate max-w-[180px]">
+              <div className="text-xs text-fg-3 font-semibold truncate max-w-[180px]">
                 @{profile?.username}
               </div>
               <Link
                 href="/auth/signout"
                 onClick={onClose}
-                className="text-xs font-semibold text-rose-400 hover:text-rose-300 flex items-center gap-1"
+                className="text-xs font-semibold text-rose-400 light:text-rose-700 hover:text-rose-300 light:hover:text-rose-700 flex items-center gap-1"
               >
                 <LogOut size={13} />
                 <span>Çıkış</span>
@@ -511,7 +511,7 @@ export function UniversalDrawerMenu({ isOpen, onClose }: UniversalDrawerMenuProp
               <Link
                 href="/login"
                 onClick={onClose}
-                className="flex-1 py-1.5 text-center bg-[#18243A] border border-[#1E293B] rounded text-xs font-medium text-white hover:bg-[#1E293B] transition-colors"
+                className="flex-1 py-1.5 text-center bg-surface-hover border border-line rounded text-xs font-medium text-fg hover:bg-line transition-colors"
               >
                 Giriş Yap
               </Link>

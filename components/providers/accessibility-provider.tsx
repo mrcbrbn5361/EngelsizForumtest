@@ -4,10 +4,15 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { useAuth } from './auth-provider';
 import { RouteAnnouncer } from './route-announcer';
+import { resolveTheme, resolveReadingFont, type ThemePreference, type ReadingFont } from '@/lib/theme';
+
+export { resolveTheme, type ThemePreference, type ReadingFont };
 
 export type FontSize = 'sm' | 'md' | 'lg' | 'xl';
 
 export interface AccessibilitySettings {
+  theme: ThemePreference;
+  readingFont: ReadingFont;
   fontSize: FontSize;
   highContrast: boolean;
   dyslexicFont: boolean;
@@ -28,6 +33,8 @@ interface AccessibilityContextType extends AccessibilitySettings {
 }
 
 const defaultSettings: AccessibilitySettings = {
+  theme: 'dark',
+  readingFont: 'default',
   fontSize: 'md',
   highContrast: false,
   dyslexicFont: false,
@@ -91,7 +98,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
           if (error) {
             console.warn('Could not fetch prefs from Supabase:', error.message);
           } else if (data?.accessibility_prefs) {
-            const cloudSettings = data.accessibility_prefs as AccessibilitySettings;
+            const cloudSettings = { ...defaultSettings, ...(data.accessibility_prefs as Partial<AccessibilitySettings>) };
             setSettings(cloudSettings);
             lastSyncedSettings.current = JSON.stringify(cloudSettings);
           }
@@ -105,12 +112,22 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     }
   }, [user]);
 
+  useEffect(() => {
+    if (settings.theme !== 'system') return;
+    const media = window.matchMedia('(prefers-color-scheme: light)');
+    const apply = () => document.documentElement.setAttribute('data-theme', resolveTheme('system'));
+    media.addEventListener('change', apply);
+    return () => media.removeEventListener('change', apply);
+  }, [settings.theme]);
+
   // Apply settings to DOM and persist locally & cloud
   useEffect(() => {
     if (isInitialLoad) return;
 
     try {
       const root = document.documentElement;
+      root.setAttribute('data-theme', resolveTheme(settings.theme));
+      root.setAttribute('data-reading-font', resolveReadingFont(settings.readingFont));
       root.setAttribute('data-font-size', settings.fontSize);
       root.classList.toggle('high-contrast', settings.highContrast);
       root.classList.toggle('dyslexic-font', settings.dyslexicFont);
@@ -243,7 +260,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     } catch {}
   }, []);
 
-  const accessibilityClasses = !isInitialLoad && settings.highContrast ? 'dark contrast-more' : '';
+  const accessibilityClasses = !isInitialLoad && settings.highContrast ? 'contrast-more' : '';
 
   const contextValue = React.useMemo(() => ({
     ...settings,
@@ -290,17 +307,17 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
 
         {children}
         
-        {/* Hidden SVG Filters for Color Blindness Accommodation */}
+        {/* Colour-vision correction (daltonization) filters: shift confusable hues apart */}
         <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
           <defs>
-            <filter id="protanopia">
-              <feColorMatrix type="matrix" values="0.567, 0.433, 0, 0, 0, 0.558, 0.442, 0, 0, 0, 0, 0.242, 0.758, 0, 0, 0, 0, 0, 1, 0" />
+            <filter id="protanopia" colorInterpolationFilters="sRGB">
+              <feColorMatrix type="matrix" values="1 0 0 0 0  -0.255 1.255 0 0 0  0.303 -0.545 1.242 0 0  0 0 0 1 0" />
             </filter>
-            <filter id="deuteranopia">
-              <feColorMatrix type="matrix" values="0.625, 0.375, 0, 0, 0, 0.7, 0.3, 0, 0, 0, 0, 0.3, 0.7, 0, 0, 0, 0, 0, 1, 0" />
+            <filter id="deuteranopia" colorInterpolationFilters="sRGB">
+              <feColorMatrix type="matrix" values="1 0 0 0 0  -0.438 1.438 0 0 0  0.262 -0.562 1.3 0 0  0 0 0 1 0" />
             </filter>
-            <filter id="tritanopia">
-              <feColorMatrix type="matrix" values="0.95, 0.05, 0, 0, 0, 0.433, 0.567, 0, 0, 0, 0.475, 0.525, 0, 0, 0, 0, 0, 1, 0" />
+            <filter id="tritanopia" colorInterpolationFilters="sRGB">
+              <feColorMatrix type="matrix" values="1.05 -0.382 0.332 0 0  0 1.234 -0.234 0 0  0 0 1 0 0  0 0 0 1 0" />
             </filter>
             <filter id="achromatopsia">
               <feColorMatrix type="matrix" values="0.299, 0.587, 0.114, 0, 0, 0.299, 0.587, 0.114, 0, 0, 0.299, 0.587, 0.114, 0, 0, 0, 0, 0, 1, 0" />

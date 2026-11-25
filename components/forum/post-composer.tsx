@@ -168,7 +168,7 @@ export function PostComposer({ topicId, onSuccess, placeholder = 'Topluluğa bir
               <button
                 type="button"
                 onClick={() => removeImage(idx)}
-                className="absolute -top-2 -right-2 bg-error text-white p-1 rounded-full shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute -top-2 -right-2 bg-error text-fg p-1 rounded-full shadow-md z-10 opacity-0 group-hover:opacity-100 transition-opacity"
                 aria-label="Görseli kaldır"
               >
                 <X size={14} />

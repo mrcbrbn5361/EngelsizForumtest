@@ -17,10 +17,27 @@ import {
   BookOpen,
   BellRing,
   HelpCircle,
-  Keyboard
+  Keyboard,
+  Moon,
+  Sun,
+  Glasses,
+  Monitor
 } from 'lucide-react';
-import { useAccessibility } from '@/components/providers/accessibility-provider';
+import { useAccessibility, type ThemePreference, type ReadingFont } from '@/components/providers/accessibility-provider';
 import { motion, AnimatePresence } from 'motion/react';
+
+const THEME_OPTIONS: { id: ThemePreference; label: string; hint: string; Icon: typeof Moon }[] = [
+  { id: 'dark', label: 'Gece', hint: 'Koyu tema', Icon: Moon },
+  { id: 'light', label: 'Gündüz', hint: 'Açık tema', Icon: Sun },
+  { id: 'sepia', label: 'Göz yormama', hint: 'Sıcak, düşük mavi ışıklı kâğıt tonu', Icon: Glasses },
+  { id: 'system', label: 'Sistem', hint: 'Cihazın açık/koyu ayarını izler', Icon: Monitor },
+];
+
+const READING_FONT_OPTIONS: { id: ReadingFont; label: string; hint: string; fontFamily: string }[] = [
+  { id: 'default', label: 'Varsayılan', hint: 'Atkinson Hyperlegible: az gören okurlar için tasarlandı', fontFamily: 'var(--font-atkinson)' },
+  { id: 'lexend', label: 'Lexend', hint: 'Okuma akıcılığı için; disleksi ve DEHB', fontFamily: 'var(--font-lexend)' },
+  { id: 'opendyslexic', label: 'OpenDyslexic', hint: 'Alt kısmı ağırlıklı harfler; harflerin dönmesini önler', fontFamily: '"OpenDyslexic"' },
+];
 
 interface AccessibilityMenuProps {
   isOpen: boolean;
@@ -39,6 +56,8 @@ interface AccessibilityMenuProps {
  */
 export function AccessibilityMenu({ isOpen, onClose }: AccessibilityMenuProps) {
   const { 
+    theme,
+    readingFont,
     fontSize, 
     highContrast, 
     dyslexicFont, 
@@ -147,6 +166,37 @@ export function AccessibilityMenu({ isOpen, onClose }: AccessibilityMenuProps) {
                 <div className="grid grid-cols-2 gap-1.5">
                   <button onClick={() => { updateSettings({ reducedMotion: true, visualAlerts: false }); }} className="text-xs p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border">Nöbet Güvenli</button>
                   <button onClick={() => { updateSettings({ fontSize: 'xl', highContrast: true }); }} className="text-xs p-2 rounded-lg bg-slate-100 dark:bg-slate-800 border">Görme Engelli</button>
+                </div>
+              </section>
+
+              <section className="space-y-2 pt-3.5">
+                <span id="theme-picker-label" className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                  <Palette size={15} className="text-sky-700 dark:text-sky-400" />
+                  Tema
+                </span>
+                <div
+                  role="radiogroup"
+                  aria-labelledby="theme-picker-label"
+                  className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700"
+                >
+                  {THEME_OPTIONS.map(({ id, label, hint, Icon }) => (
+                    <button
+                      key={id}
+                      type="button"
+                      role="radio"
+                      aria-checked={theme === id}
+                      onClick={() => updateSettings({ theme: id })}
+                      title={hint}
+                      className={`min-h-[44px] px-2 text-xs font-bold rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                        theme === id
+                          ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 shadow-sm'
+                          : 'text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      <Icon size={14} aria-hidden="true" />
+                      {label}
+                    </button>
+                  ))}
                 </div>
               </section>
 
@@ -305,18 +355,46 @@ export function AccessibilityMenu({ isOpen, onClose }: AccessibilityMenuProps) {
                   Disleksi, DEHB &amp; Nöroçeşitlilik
                 </span>
 
-                {/* Disleksi Dostu Yazı Tipi */}
+                <div className="space-y-1.5">
+                  <span id="reading-font-label" className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <BookOpen size={15} className="text-teal-600 dark:text-teal-400" />
+                    Okuma Fontu
+                  </span>
+                  <div role="radiogroup" aria-labelledby="reading-font-label" className="space-y-1.5">
+                    {READING_FONT_OPTIONS.map(({ id, label, hint, fontFamily }) => (
+                      <button
+                        key={id}
+                        type="button"
+                        role="radio"
+                        aria-checked={readingFont === id}
+                        onClick={() => updateSettings({ readingFont: id })}
+                        className={`w-full min-h-[44px] text-left px-3 py-2 rounded-xl border transition-colors cursor-pointer ${
+                          readingFont === id
+                            ? 'border-teal-600 bg-teal-50 dark:bg-teal-950/60 dark:border-teal-400'
+                            : 'border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 hover:border-slate-400 dark:hover:border-slate-600'
+                        }`}
+                      >
+                        <span className="block text-sm font-bold text-slate-900 dark:text-white" style={{ fontFamily }}>
+                          {label}: Ağaç ışığı, şehir İzmir
+                        </span>
+                        <span className="block text-[10px] text-slate-600 dark:text-slate-400">{hint}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40">
                   <div className="flex items-center gap-2.5">
-                    <BookOpen size={17} className="text-teal-600 dark:text-teal-400 shrink-0" />
+                    <Type size={17} className="text-teal-600 dark:text-teal-400 shrink-0" />
                     <div>
-                      <div className="text-xs font-bold text-slate-900 dark:text-white">Disleksi Fontu (OpenDyslexic)</div>
-                      <div className="text-[10px] text-slate-500 dark:text-slate-400">Harf karışıklığını önleyen ağırlıklı font</div>
+                      <div id="reading-spacing-label" className="text-xs font-bold text-slate-900 dark:text-white">Geniş Harf ve Satır Aralığı</div>
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400">Harflerin birbirine karışmasını azaltır</div>
                     </div>
                   </div>
                   <button
                     type="button"
                     role="switch"
+                    aria-labelledby="reading-spacing-label"
                     aria-checked={dyslexicFont}
                     onClick={() => updateSettings({ dyslexicFont: !dyslexicFont })}
                     className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${

@@ -344,25 +344,25 @@ export default function WebMCPPage() {
 
   return (
     <SiteLayout>
-      <div className="flex flex-col gap-6 text-slate-100">
+      <div className="flex flex-col gap-6 text-fg-1">
         {/* Breadcrumb */}
-        <nav className="bg-[#111B2E] border border-[#1E293B] rounded-md px-5 py-3 flex items-center gap-2.5 text-xs text-slate-400 shadow-xs" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-indigo-400 flex items-center gap-1.5 transition-colors font-medium">
+        <nav className="bg-surface-raised border border-line rounded-md px-5 py-3 flex items-center gap-2.5 text-xs text-fg-4 shadow-xs" aria-label="Breadcrumb">
+          <Link href="/" className="hover:text-indigo-400 light:hover:text-indigo-700 flex items-center gap-1.5 transition-colors font-medium">
             <Home size={14} />
             <span>Ana Sayfa</span>
           </Link>
-          <span className="text-slate-600">/</span>
-          <span className="text-slate-200 font-semibold uppercase tracking-wider text-[10px]">Ajanlar & WebMCP</span>
+          <span className="text-fg-6">/</span>
+          <span className="text-fg-2 font-semibold uppercase tracking-wider text-[10px]">Ajanlar & WebMCP</span>
         </nav>
 
         {/* Hero Section */}
-        <div className="p-6 sm:p-8 bg-[#111B2E] border border-[#1E293B] rounded-md shadow-xs space-y-6">
+        <div className="p-6 sm:p-8 bg-surface-raised border border-line rounded-md shadow-xs space-y-6">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-950/40 text-indigo-300 border border-indigo-800/40 text-[10px] font-bold uppercase tracking-[0.2em]">
-              <Sparkles size={14} className="text-indigo-400" />
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-300 light:text-indigo-700 border border-indigo-800/40 text-[10px] font-bold uppercase tracking-[0.2em]">
+              <Sparkles size={14} className="text-indigo-400 light:text-indigo-700" />
               W3C Chrome WebMCP 1.1
             </span>
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-emerald-950/40 text-emerald-300 border border-emerald-800/40 text-[10px] font-bold uppercase tracking-[0.2em]">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-300 light:text-emerald-700 border border-emerald-800/40 text-[10px] font-bold uppercase tracking-[0.2em]">
               <CheckCircle2 size={14} />
               26 Yerli Ajan Aracı
             </span>
@@ -370,10 +370,10 @@ export default function WebMCPPage() {
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="max-w-3xl space-y-2">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight leading-tight font-heading">
+              <h1 className="text-2xl sm:text-3xl font-bold text-fg tracking-tight leading-tight font-heading">
                 Yapay Zeka Ajanları ve Evrensel MCP Modülü
               </h1>
-              <p className="text-sm text-slate-400 leading-relaxed font-normal">
+              <p className="text-sm text-fg-4 leading-relaxed font-normal">
                 Cursor, VS Code, Windsurf ve Claude Code için canlı mevzuat, Balthazard hesaplama ve erişilebilirlik entegrasyon hub&apos;ı.
               </p>
             </div>
@@ -392,14 +392,14 @@ export default function WebMCPPage() {
 
         {/* Auth Notice */}
         {!user && !authLoading && (
-          <div className="bg-amber-950/20 border border-amber-800/40 rounded-md p-5 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="bg-amber-950/20 light:bg-amber-50/20 border border-amber-800/40 rounded-md p-5 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-md bg-amber-950/40 border border-amber-800/40">
-                <Lock className="w-6 h-6 text-amber-400" />
+              <div className="p-3 rounded-md bg-amber-950/40 light:bg-amber-50/40 border border-amber-800/40">
+                <Lock className="w-6 h-6 text-amber-400 light:text-amber-800" />
               </div>
               <div className="space-y-1">
                 <strong className="text-amber-100 block font-bold text-sm uppercase tracking-wider">Geliştirici Erişimi Gerekli</strong>
-                <p className="text-xs text-amber-300/80 leading-relaxed">Canlı test konsolunu ve özel ajan konfigürasyonlarını kullanmak için oturum açın.</p>
+                <p className="text-xs text-amber-300/80 light:text-amber-800/80 leading-relaxed">Canlı test konsolunu ve özel ajan konfigürasyonlarını kullanmak için oturum açın.</p>
               </div>
             </div>
             <Link
@@ -413,7 +413,7 @@ export default function WebMCPPage() {
         )}
 
         {/* Primary Tabs */}
-        <div className="flex border-b border-[#1E293B] overflow-x-auto gap-1 pb-px scrollbar-none">
+        <div className="flex border-b border-line overflow-x-auto gap-1 pb-px scrollbar-none">
           {[
             { id: 'tools', label: 'MCP Konsolu', icon: <Zap size={14} /> },
             { id: 'directory', label: 'Sunucu Dizini', icon: <Database size={14} /> },
@@ -431,8 +431,8 @@ export default function WebMCPPage() {
                 className={cn(
                   "flex items-center gap-2 px-5 py-3 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap cursor-pointer rounded-t-md transition-all min-h-[44px]",
                   isActive
-                    ? "bg-[#111B2E] text-indigo-400 border-x border-t border-[#1E293B] relative after:absolute after:bottom-[-1px] after:left-0 after:right-0 after:h-px after:bg-[#111B2E]"
-                    : "text-slate-500 hover:text-slate-300 hover:bg-[#111B2E]/50"
+                    ? "bg-surface-raised text-indigo-400 light:text-indigo-700 border-x border-t border-line relative after:absolute after:bottom-[-1px] after:left-0 after:right-0 after:h-px after:bg-surface-raised"
+                    : "text-fg-5 hover:text-fg-3 hover:bg-surface-raised/50"
                 )}
               >
                 {tab.icon}
@@ -446,26 +446,26 @@ export default function WebMCPPage() {
         {activeTab === 'tools' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-300">
             <div className="lg:col-span-5 space-y-6">
-              <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 space-y-6 shadow-xs">
-                <div className="flex items-center justify-between border-b border-[#1E293B] pb-4">
-                  <h3 className="font-bold text-white uppercase tracking-[0.2em] text-[10px] flex items-center gap-3">
-                    <Wrench size={16} className="text-indigo-400" />
+              <div className="bg-surface-raised border border-line rounded-md p-6 space-y-6 shadow-xs">
+                <div className="flex items-center justify-between border-b border-line pb-4">
+                  <h3 className="font-bold text-fg uppercase tracking-[0.2em] text-[10px] flex items-center gap-3">
+                    <Wrench size={16} className="text-indigo-400 light:text-indigo-700" />
                     <span>Araç Seçimi</span>
                   </h3>
-                  <span className="text-[10px] font-mono font-bold bg-[#0B1220] text-indigo-400 px-2 py-0.5 rounded border border-[#1E293B]">
+                  <span className="text-[10px] font-mono font-bold bg-surface text-indigo-400 light:text-indigo-700 px-2 py-0.5 rounded border border-line">
                     {filteredTools.length} AKTİF
                   </span>
                 </div>
 
                 <div className="space-y-4">
                   <div className="relative">
-                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                    <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-5" />
                     <input
                       type="text"
                       value={toolSearchFilter}
                       onChange={(e) => setToolSearchFilter(e.target.value)}
                       placeholder="Araç veya konu ara..."
-                      className="w-full pl-10 pr-4 py-3 rounded-md border border-[#1E293B] bg-[#0B1220] text-xs font-bold text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-all"
+                      className="w-full pl-10 pr-4 py-3 rounded-md border border-line bg-surface text-xs font-bold text-fg placeholder:text-fg-6 focus:outline-none focus:border-indigo-500 transition-all"
                     />
                   </div>
 
@@ -484,7 +484,7 @@ export default function WebMCPPage() {
                           "px-3 py-1.5 rounded text-[9px] font-black uppercase tracking-tighter transition-all cursor-pointer border",
                           toolCategoryFilter === cat.id
                             ? "bg-indigo-600 text-white border-indigo-600"
-                            : "bg-[#18243A] text-slate-500 border-[#1E293B] hover:text-slate-300"
+                            : "bg-surface-hover text-fg-5 border-line hover:text-fg-3"
                         )}
                       >
                         {cat.label}
@@ -503,19 +503,19 @@ export default function WebMCPPage() {
                         className={cn(
                           "w-full text-left p-4 rounded-md border transition-all cursor-pointer group",
                           isSelected
-                            ? "bg-indigo-950/20 border-indigo-500/50 text-white"
-                            : "bg-[#0B1220] border-[#1E293B] text-slate-400 hover:border-slate-600"
+                            ? "bg-indigo-950/20 light:bg-indigo-50/20 border-indigo-500/50 text-white"
+                            : "bg-surface border-line text-fg-4 hover:border-slate-600"
                         )}
                       >
                         <div className="flex items-center justify-between gap-2 mb-2">
-                          <p className={cn("font-mono text-[10px] font-bold uppercase tracking-wider", isSelected ? "text-indigo-400" : "text-slate-500")}>
+                          <p className={cn("font-mono text-[10px] font-bold uppercase tracking-wider", isSelected ? "text-indigo-400 light:text-indigo-700" : "text-fg-5")}>
                             {t.name}
                           </p>
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#18243A] text-slate-500 font-bold border border-[#1E293B]">
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-surface-hover text-fg-5 font-bold border border-line">
                             {t.server}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-400 group-hover:text-slate-300 transition-colors leading-relaxed line-clamp-2">{t.desc}</p>
+                        <p className="text-[11px] text-fg-4 group-hover:text-fg-3 transition-colors leading-relaxed line-clamp-2">{t.desc}</p>
                       </button>
                     );
                   })}
@@ -524,11 +524,11 @@ export default function WebMCPPage() {
             </div>
 
             <div className="lg:col-span-7 space-y-6">
-              <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 space-y-8 shadow-xs">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-[#1E293B] pb-6">
+              <div className="bg-surface-raised border border-line rounded-md p-6 space-y-8 shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-line pb-6">
                   <div className="space-y-1">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-400">Yürütme Birimi</span>
-                    <h3 className="text-lg font-mono font-bold text-white break-all">{selectedTool}</h3>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-400 light:text-indigo-700">Yürütme Birimi</span>
+                    <h3 className="text-lg font-mono font-bold text-fg break-all">{selectedTool}</h3>
                   </div>
                   <div className="flex items-center gap-3">
                     <button
@@ -536,8 +536,8 @@ export default function WebMCPPage() {
                       className={cn(
                         "px-4 py-2.5 rounded-md text-[10px] font-bold uppercase tracking-wider border transition-all cursor-pointer min-h-[44px]",
                         useCustomJsonPayload
-                          ? "bg-indigo-950/40 border-indigo-500 text-indigo-400"
-                          : "bg-[#18243A] border-[#1E293B] text-slate-400 hover:text-white"
+                          ? "bg-indigo-950/40 light:bg-indigo-50/40 border-indigo-500 text-indigo-400 light:text-indigo-700"
+                          : "bg-surface-hover border-line text-fg-4 hover:text-fg"
                       )}
                     >
                       {useCustomJsonPayload ? 'FORM MODU' : 'JSON MODU'}
@@ -556,9 +556,9 @@ export default function WebMCPPage() {
 
                 <div className="space-y-6">
                   <div className="flex items-center gap-3">
-                    <div className="h-px flex-1 bg-[#1E293B]"></div>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Parametreler</span>
-                    <div className="h-px flex-1 bg-[#1E293B]"></div>
+                    <div className="h-px flex-1 bg-line"></div>
+                    <span className="text-[10px] font-bold text-fg-5 uppercase tracking-[0.2em]">Parametreler</span>
+                    <div className="h-px flex-1 bg-line"></div>
                   </div>
 
                   {useCustomJsonPayload ? (
@@ -566,18 +566,18 @@ export default function WebMCPPage() {
                       rows={8}
                       value={customJsonText}
                       onChange={(e) => setCustomJsonText(e.target.value)}
-                      className="w-full p-5 rounded-md border border-[#1E293B] bg-[#0B1220] font-mono text-xs text-indigo-300 outline-none focus:border-indigo-500 shadow-inner leading-relaxed"
+                      className="w-full p-5 rounded-md border border-line bg-surface font-mono text-xs text-indigo-300 light:text-indigo-700 outline-none focus:border-indigo-500 shadow-inner leading-relaxed"
                       placeholder={`{\n  "arguments": {}\n}`}
                     />
                   ) : (
                     <div className="space-y-5">
                       <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">Sorgu / Konu</label>
+                        <label className="text-[10px] font-bold text-fg-5 uppercase tracking-widest block">Sorgu / Konu</label>
                         <input
                           type="text"
                           value={toolParams.query || toolParams.topic}
                           onChange={(e) => setToolParams({ ...toolParams, query: e.target.value })}
-                          className="w-full px-4 py-3 rounded-md border border-[#1E293B] bg-[#0B1220] text-sm font-medium text-white placeholder:text-slate-700 focus:border-indigo-500 transition-all outline-none"
+                          className="w-full px-4 py-3 rounded-md border border-line bg-surface text-sm font-medium text-fg placeholder:text-slate-700 focus:border-indigo-500 transition-all outline-none"
                           placeholder="İşlenecek anahtar kelimeler..."
                         />
                       </div>
@@ -586,11 +586,11 @@ export default function WebMCPPage() {
                 </div>
 
                 <div className="space-y-4 pt-4">
-                  <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">
+                  <div className="flex items-center gap-3 text-[10px] font-bold text-fg-5 uppercase tracking-[0.2em]">
                     <ShieldCheck size={14} className="text-emerald-500" />
                     <span>Canlı Çıktı Penceresi</span>
                   </div>
-                  <div className="bg-[#0B1220] border border-[#1E293B] text-emerald-400 p-6 rounded-md font-mono text-xs min-h-[300px] max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed shadow-inner">
+                  <div className="bg-surface border border-line text-emerald-400 light:text-emerald-700 p-6 rounded-md font-mono text-xs min-h-[300px] max-h-[500px] overflow-y-auto whitespace-pre-wrap leading-relaxed shadow-inner">
                     {executionResult ? executionResult : '// MCP Sunucusu hazır. Lütfen bir araç çalıştırın.'}
                   </div>
                 </div>
@@ -602,17 +602,17 @@ export default function WebMCPPage() {
         {/* TAB 2: DIRECTORY */}
         {activeTab === 'directory' && (
           <div className="space-y-6 animate-in fade-in duration-300">
-            <div className="bg-emerald-950/20 border border-emerald-900/40 rounded-md p-5 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
+            <div className="bg-emerald-950/20 light:bg-emerald-50/20 border border-emerald-900/40 light:border-emerald-200/40 rounded-md p-5 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-md bg-emerald-950/40 border border-emerald-800/40">
-                  <Globe className="w-6 h-6 text-emerald-400 animate-pulse" />
+                <div className="p-3 rounded-md bg-emerald-950/40 light:bg-emerald-50/40 border border-emerald-800/40">
+                  <Globe className="w-6 h-6 text-emerald-400 light:text-emerald-700 animate-pulse" />
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    <span className="font-bold text-emerald-400 text-sm uppercase tracking-widest">Canlı MCP Dizini</span>
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 light:bg-emerald-700 animate-ping"></span>
+                    <span className="font-bold text-emerald-400 light:text-emerald-700 text-sm uppercase tracking-widest">Canlı MCP Dizini</span>
                   </div>
-                  <p className="text-xs text-emerald-300/70 font-medium">Doğrulanmış 30+ gerçek dünya MCP sunucusu aktif ve eşitlenmiş durumda.</p>
+                  <p className="text-xs text-emerald-300/70 light:text-emerald-700/70 font-medium">Doğrulanmış 30+ gerçek dünya MCP sunucusu aktif ve eşitlenmiş durumda.</p>
                 </div>
               </div>
               <button
@@ -625,23 +625,23 @@ export default function WebMCPPage() {
               </button>
             </div>
 
-            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 space-y-6 shadow-xs">
+            <div className="bg-surface-raised border border-line rounded-md p-6 space-y-6 shadow-xs">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="relative flex-1">
-                  <Search className="w-4 h-4 text-slate-500 absolute left-4 top-1/2 -translate-y-1/2" />
+                  <Search className="w-4 h-4 text-fg-5 absolute left-4 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Sunucu veya yetenek ara (Postgres, Git, WCAG)..."
-                    className="w-full pl-11 pr-4 py-3 rounded-md border border-[#1E293B] bg-[#0B1220] text-xs font-bold text-white placeholder:text-slate-600 focus:border-indigo-500 outline-none transition-all"
+                    className="w-full pl-11 pr-4 py-3 rounded-md border border-line bg-surface text-xs font-bold text-fg placeholder:text-fg-6 focus:border-indigo-500 outline-none transition-all"
                   />
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="px-4 py-3 rounded-md border border-[#1E293B] bg-[#0B1220] text-xs font-bold text-white outline-none cursor-pointer focus:border-indigo-500 min-h-[44px]"
+                    className="px-4 py-3 rounded-md border border-line bg-surface text-xs font-bold text-fg outline-none cursor-pointer focus:border-indigo-500 min-h-[44px]"
                   >
                     <option value="all">TÜM KATEGORİLER</option>
                     {directoryCategories.map(c => <option key={c.id} value={c.id}>{c.name.toUpperCase()}</option>)}
@@ -652,35 +652,35 @@ export default function WebMCPPage() {
               {loadingDirectory ? (
                 <div className="py-20 text-center space-y-4">
                   <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mx-auto" />
-                  <p className="text-xs text-slate-500 font-bold uppercase tracking-[0.2em]">Dizin Verileri Çekiliyor...</p>
+                  <p className="text-xs text-fg-5 font-bold uppercase tracking-[0.2em]">Dizin Verileri Çekiliyor...</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {directoryServers.map((server) => (
-                    <div key={server.id} className="bg-[#18243A]/40 border border-[#1E293B] rounded-md p-6 space-y-6 group hover:border-indigo-500/50 transition-all flex flex-col justify-between shadow-xs">
+                    <div key={server.id} className="bg-surface-hover/40 border border-line rounded-md p-6 space-y-6 group hover:border-indigo-500/50 transition-all flex flex-col justify-between shadow-xs">
                       <div className="space-y-4">
                         <div className="flex items-center justify-between gap-2">
-                          <span className="px-2 py-0.5 rounded bg-indigo-950/40 text-indigo-400 border border-indigo-800/40 text-[9px] font-black uppercase tracking-wider">{server.category}</span>
+                          <span className="px-2 py-0.5 rounded bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-400 light:text-indigo-700 border border-indigo-800/40 text-[9px] font-black uppercase tracking-wider">{server.category}</span>
                           {server.isEngelsizForumNative && (
-                            <span className="px-2 py-0.5 rounded bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 text-[9px] font-black uppercase tracking-wider">YERLİ HUB</span>
+                            <span className="px-2 py-0.5 rounded bg-emerald-950/40 light:bg-emerald-50/40 text-emerald-400 light:text-emerald-700 border border-emerald-800/40 text-[9px] font-black uppercase tracking-wider">YERLİ HUB</span>
                           )}
                         </div>
-                        <h3 className="font-bold text-white text-base group-hover:text-indigo-400 transition-colors">{server.name}</h3>
-                        <p className="text-xs text-slate-400 leading-relaxed line-clamp-3 font-normal">{server.description}</p>
+                        <h3 className="font-bold text-fg text-base group-hover:text-indigo-400 light:group-hover:text-indigo-700 transition-colors">{server.name}</h3>
+                        <p className="text-xs text-fg-4 leading-relaxed line-clamp-3 font-normal">{server.description}</p>
                         <div className="space-y-2">
-                          <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Yetenekler</div>
+                          <div className="text-[10px] font-bold text-fg-5 uppercase tracking-widest">Yetenekler</div>
                           <div className="flex flex-wrap gap-1.5">
                             {server.tools?.slice(0, 4).map((t, i) => (
-                              <span key={i} className="px-2 py-1 rounded bg-[#0B1220] border border-[#1E293B] text-[10px] font-mono text-slate-400">{t.name}</span>
+                              <span key={i} className="px-2 py-1 rounded bg-surface border border-line text-[10px] font-mono text-fg-4">{t.name}</span>
                             ))}
                           </div>
                         </div>
                       </div>
-                      <div className="pt-6 border-t border-[#1E293B] flex items-center justify-between">
-                        <span className="font-mono text-[10px] font-bold text-emerald-400">{server.protocol.toUpperCase()}</span>
+                      <div className="pt-6 border-t border-line flex items-center justify-between">
+                        <span className="font-mono text-[10px] font-bold text-emerald-400 light:text-emerald-700">{server.protocol.toUpperCase()}</span>
                         <button
                           onClick={() => copyToClipboard(server.endpointUrl, server.id)}
-                          className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition-colors cursor-pointer"
+                          className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-400 light:text-indigo-700 hover:text-indigo-300 light:hover:text-indigo-700 transition-colors cursor-pointer"
                         >
                           {copiedKey === server.id ? <Check size={14} /> : <Copy size={14} />}
                           <span>{copiedKey === server.id ? 'KOPYALANDI' : 'URL KOPYALA'}</span>
@@ -697,27 +697,27 @@ export default function WebMCPPage() {
         {/* TAB 3: GUIDES */}
         {activeTab === 'guides' && (
           <div className="space-y-8 animate-in fade-in duration-300">
-            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 space-y-6 shadow-xs">
+            <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 space-y-6 shadow-xs">
               <div className="flex items-center gap-5">
-                <div className="p-4 rounded-md bg-indigo-950/40 border border-indigo-800/40 text-indigo-400">
+                <div className="p-4 rounded-md bg-indigo-950/40 light:bg-indigo-50/40 border border-indigo-800/40 text-indigo-400 light:text-indigo-700">
                   <FileCode size={32} />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-xl font-bold text-white tracking-tight uppercase tracking-widest">Ajan Kullanım & Prompt Rehberi</h3>
-                  <p className="text-sm text-slate-400 font-normal">Sistemin tüm gücünü doğal dil komutlarıyla nasıl kullanacağınızı keşfedin.</p>
+                  <h3 className="text-xl font-bold text-fg tracking-tight uppercase tracking-widest">Ajan Kullanım & Prompt Rehberi</h3>
+                  <p className="text-sm text-fg-4 font-normal">Sistemin tüm gücünü doğal dil komutlarıyla nasıl kullanacağınızı keşfedin.</p>
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-[#1E293B]">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-line">
                 {[
                   { n: 1, t: "Konfigürasyon", d: "Ajan sekmesinden kullandığınız IDE için hazır JSON dosyasını kopyalayın." },
                   { n: 2, t: "Entegrasyon", d: "JSON dosyasını ajanın ayarlar dizinine ekleyerek sunucuyu tanıtın." },
                   { n: 3, t: "Sorgulama", d: "Ajanınıza 'ÖTV 2026 şartlarını özetle' gibi doğal sorular sorun." }
                 ].map(step => (
-                  <div key={step.n} className="bg-[#18243A]/40 border border-[#1E293B] p-5 rounded-md space-y-3 shadow-xs">
+                  <div key={step.n} className="bg-surface-hover/40 border border-line p-5 rounded-md space-y-3 shadow-xs">
                     <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white font-black text-xs">{step.n}</span>
-                    <h4 className="font-bold text-white uppercase text-[10px] tracking-[0.2em]">{step.t}</h4>
-                    <p className="text-xs text-slate-400 leading-relaxed font-normal">{step.d}</p>
+                    <h4 className="font-bold text-fg uppercase text-[10px] tracking-[0.2em]">{step.t}</h4>
+                    <p className="text-xs text-fg-4 leading-relaxed font-normal">{step.d}</p>
                   </div>
                 ))}
               </div>
@@ -728,17 +728,17 @@ export default function WebMCPPage() {
         {/* TAB 4: CONFIGS */}
         {activeTab === 'configs' && (
           <div className="space-y-8 animate-in fade-in duration-300">
-            <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 space-y-8 shadow-xs">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-[#1E293B] pb-8">
+            <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 space-y-8 shadow-xs">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-line pb-8">
                 <div className="space-y-4 max-w-3xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-950/40 text-indigo-400 border border-indigo-800/40 text-[9px] font-black uppercase tracking-[0.3em]">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-950/40 light:bg-indigo-50/40 text-indigo-400 light:text-indigo-700 border border-indigo-800/40 text-[9px] font-black uppercase tracking-[0.3em]">
                     <Terminal size={14} />
                     <span>JSON EXPORTER</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white tracking-tight leading-tight uppercase tracking-widest font-heading">
+                  <h3 className="text-2xl font-bold text-fg tracking-tight leading-tight uppercase tracking-widest font-heading">
                     IDE ve Yapay Zeka Ajanları için Konfigüratör
                   </h3>
-                  <p className="text-sm text-slate-400 leading-relaxed font-normal">
+                  <p className="text-sm text-fg-4 leading-relaxed font-normal">
                     Kullandığınız araca özel optimize edilmiş JSON dosyasını hemen alın. Remote MCP SSE standardı ile %100 uyumludur.
                   </p>
                 </div>
@@ -754,7 +754,7 @@ export default function WebMCPPage() {
 
                   <button
                     onClick={() => handleDownloadJson(jsonPresets[selectedJsonFormat].fileName, jsonPresets[selectedJsonFormat].json)}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-[#18243A] border border-[#1E293B] hover:bg-[#1E293B] text-slate-200 text-xs font-bold uppercase tracking-widest transition-all cursor-pointer min-h-[44px]"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md bg-surface-hover border border-line hover:bg-line text-fg-2 text-xs font-bold uppercase tracking-widest transition-all cursor-pointer min-h-[44px]"
                   >
                     <Download size={16} />
                     <span>{jsonPresets[selectedJsonFormat].fileName}</span>
@@ -771,7 +771,7 @@ export default function WebMCPPage() {
                       "px-4 py-2.5 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all border cursor-pointer whitespace-nowrap min-h-[44px]",
                       selectedJsonFormat === key
                         ? "bg-indigo-600 text-white border-indigo-600 shadow-md"
-                        : "bg-[#18243A] text-slate-500 border-[#1E293B] hover:text-slate-300"
+                        : "bg-surface-hover text-fg-5 border-line hover:text-fg-3"
                     )}
                   >
                     {key.toUpperCase()}
@@ -779,16 +779,16 @@ export default function WebMCPPage() {
                 ))}
               </div>
 
-              <div className="space-y-4 bg-[#0B1220] rounded-md p-6 border border-[#1E293B] shadow-inner">
-                <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">
-                  <span className="flex items-center gap-2 text-indigo-400">
+              <div className="space-y-4 bg-surface rounded-md p-6 border border-line shadow-inner">
+                <div className="flex items-center justify-between text-[10px] font-bold text-fg-5 uppercase tracking-[0.2em]">
+                  <span className="flex items-center gap-2 text-indigo-400 light:text-indigo-700">
                     <FileCode size={14} />
                     {jsonPresets[selectedJsonFormat].title}
                   </span>
                   <span>{jsonPresets[selectedJsonFormat].description}</span>
                 </div>
                 <div className="relative group pt-4">
-                  <pre className="p-6 rounded-md bg-[#090d13] border border-indigo-500/20 text-indigo-300 font-mono text-xs overflow-x-auto leading-relaxed shadow-2xl custom-scrollbar">
+                  <pre className="p-6 rounded-md bg-[#090d13] border border-indigo-500/20 text-indigo-300 light:text-indigo-700 font-mono text-xs overflow-x-auto leading-relaxed shadow-2xl custom-scrollbar">
                     {jsonPresets[selectedJsonFormat].json}
                   </pre>
                 </div>
@@ -799,31 +799,31 @@ export default function WebMCPPage() {
 
         {/* TAB 5: WEBMCP 1.1 */}
         {activeTab === 'webmcp' && (
-          <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 space-y-8 shadow-xs animate-in fade-in duration-300">
+          <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 space-y-8 shadow-xs animate-in fade-in duration-300">
             <div className="flex items-center gap-4">
-              <div className="p-3 rounded-md bg-indigo-950/30 border border-indigo-800/40">
-                <Globe className="w-6 h-6 text-indigo-400" />
+              <div className="p-3 rounded-md bg-indigo-950/30 light:bg-indigo-50/30 border border-indigo-800/40">
+                <Globe className="w-6 h-6 text-indigo-400 light:text-indigo-700" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white uppercase tracking-widest font-heading">Chrome WebMCP 1.1 W3C Denetçi</h3>
-                <p className="text-xs text-slate-400 font-normal mt-1 leading-relaxed">Google Chrome 146+ yerleşik tarayıcı yapay zeka yapısı ve W3C Web ML Community Group standardı.</p>
+                <h3 className="text-xl font-bold text-fg uppercase tracking-widest font-heading">Chrome WebMCP 1.1 W3C Denetçi</h3>
+                <p className="text-xs text-fg-4 font-normal mt-1 leading-relaxed">Google Chrome 146+ yerleşik tarayıcı yapay zeka yapısı ve W3C Web ML Community Group standardı.</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-              <StatusCard label="Polyfill Durumu" value="W3C 1.1 AKTİF" valueColor="text-emerald-400" />
-              <StatusCard label="document.modelContext" value={webMCPStatus.hasDocContext ? 'ALGILANDI' : 'POLYFILL AKTİF'} valueColor="text-white" />
-              <StatusCard label="Kayıtlı Araç" value={`${webMCPStatus.toolCount} ARAÇ`} valueColor="text-indigo-400" />
+              <StatusCard label="Polyfill Durumu" value="W3C 1.1 AKTİF" valueColor="text-emerald-400 light:text-emerald-700" />
+              <StatusCard label="document.modelContext" value={webMCPStatus.hasDocContext ? 'ALGILANDI' : 'POLYFILL AKTİF'} valueColor="text-fg" />
+              <StatusCard label="Kayıtlı Araç" value={`${webMCPStatus.toolCount} ARAÇ`} valueColor="text-indigo-400 light:text-indigo-700" />
             </div>
 
-            <div className="p-6 rounded-md bg-[#0B1220] border border-[#1E293B] font-mono text-xs space-y-4 shadow-inner">
-              <p className="text-emerald-400/90 font-bold flex items-center gap-2 uppercase tracking-widest text-[10px]">
+            <div className="p-6 rounded-md bg-surface border border-line font-mono text-xs space-y-4 shadow-inner">
+              <p className="text-emerald-400/90 light:text-emerald-700/90 font-bold flex items-center gap-2 uppercase tracking-widest text-[10px]">
                 <Check size={14} />
                 <span>// Tarayıcı Konsolu Testi:</span>
               </p>
-              <div className="pl-6 space-y-2 text-slate-400">
-                <p className="hover:text-indigo-300 transition-colors cursor-text">console.log(document.modelContext.getRegisteredTools());</p>
-                <p className="hover:text-indigo-300 transition-colors cursor-text">console.log(window.WebMCP.getRegisteredTools());</p>
+              <div className="pl-6 space-y-2 text-fg-4">
+                <p className="hover:text-indigo-300 light:hover:text-indigo-700 transition-colors cursor-text">console.log(document.modelContext.getRegisteredTools());</p>
+                <p className="hover:text-indigo-300 light:hover:text-indigo-700 transition-colors cursor-text">console.log(window.WebMCP.getRegisteredTools());</p>
               </div>
             </div>
           </div>
@@ -831,15 +831,15 @@ export default function WebMCPPage() {
 
         {/* TAB 6: SYNC */}
         {activeTab === 'sync' && (
-          <div className="bg-[#111B2E] border border-[#1E293B] rounded-md p-6 sm:p-8 space-y-8 shadow-xs animate-in fade-in duration-300">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-[#1E293B] pb-6">
+          <div className="bg-surface-raised border border-line rounded-md p-6 sm:p-8 space-y-8 shadow-xs animate-in fade-in duration-300">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-line pb-6">
               <div className="flex items-center gap-4">
-                <div className="p-3 rounded-md bg-emerald-950/30 border border-emerald-800/40">
-                  <RefreshCw className={cn("w-6 h-6 text-emerald-400", isSyncing && "animate-spin")} />
+                <div className="p-3 rounded-md bg-emerald-950/30 light:bg-emerald-50/30 border border-emerald-800/40">
+                  <RefreshCw className={cn("w-6 h-6 text-emerald-400 light:text-emerald-700", isSyncing && "animate-spin")} />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-xl font-bold text-white uppercase tracking-widest font-heading">Otomatik Senkronizasyon (Auto-Sync)</h3>
-                  <p className="text-xs text-slate-400 font-normal leading-relaxed">mcpservers.org ve T.C. mevzuat değişiklikleri her 6 saatte bir taranır.</p>
+                  <h3 className="text-xl font-bold text-fg uppercase tracking-widest font-heading">Otomatik Senkronizasyon (Auto-Sync)</h3>
+                  <p className="text-xs text-fg-4 font-normal leading-relaxed">mcpservers.org ve T.C. mevzuat değişiklikleri her 6 saatte bir taranır.</p>
                 </div>
               </div>
 
@@ -854,20 +854,20 @@ export default function WebMCPPage() {
 
             {Boolean(lastSyncResult) && (
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-[10px] font-bold text-indigo-400 uppercase tracking-[0.2em]">
+                <div className="flex items-center gap-2 text-[10px] font-bold text-indigo-400 light:text-indigo-700 uppercase tracking-[0.2em]">
                   <ShieldCheck size={14} />
                   <span>Son Eşitleme Raporu</span>
                 </div>
-                <div className="p-6 rounded-md bg-[#0B1220] border border-[#1E293B] overflow-hidden shadow-inner">
-                  <pre className="text-slate-400 font-mono text-[11px] overflow-x-auto custom-scrollbar leading-relaxed">
+                <div className="p-6 rounded-md bg-surface border border-line overflow-hidden shadow-inner">
+                  <pre className="text-fg-4 font-mono text-[11px] overflow-x-auto custom-scrollbar leading-relaxed">
                     {JSON.stringify(lastSyncResult, null, 2)}
                   </pre>
                 </div>
               </div>
             )}
             
-            <div className="p-5 rounded-md bg-indigo-950/20 border border-indigo-800/20 text-[11px] text-indigo-300 leading-relaxed font-medium">
-              <span className="font-black text-indigo-400 mr-2 uppercase tracking-widest">BİLGİ:</span>
+            <div className="p-5 rounded-md bg-indigo-950/20 light:bg-indigo-50/20 border border-indigo-800/20 text-[11px] text-indigo-300 light:text-indigo-700 leading-relaxed font-medium">
+              <span className="font-black text-indigo-400 light:text-indigo-700 mr-2 uppercase tracking-widest">BİLGİ:</span>
               Dizin verileri mcpservers.org üzerinden REST API ile otonom olarak çekilmektedir. Yerel değişikliklerin yansıması için manuel tetikleme kullanılabilir.
             </div>
           </div>
@@ -879,8 +879,8 @@ export default function WebMCPPage() {
 
 function StatusCard({ label, value, valueColor }: { label: string; value: string; valueColor: string }) {
   return (
-    <div className="p-5 rounded-md bg-[#0B1220] border border-[#1E293B] space-y-2 shadow-xs group hover:border-indigo-500/30 transition-all">
-      <span className="text-[9px] font-black uppercase text-slate-500 tracking-[0.2em]">{label}</span>
+    <div className="p-5 rounded-md bg-surface border border-line space-y-2 shadow-xs group hover:border-indigo-500/30 transition-all">
+      <span className="text-[9px] font-black uppercase text-fg-5 tracking-[0.2em]">{label}</span>
       <p className={cn("text-lg font-black tracking-tight", valueColor)}>{value}</p>
     </div>
   );

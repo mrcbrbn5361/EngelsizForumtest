@@ -62,21 +62,21 @@ export default function ForgotPasswordPage() {
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md p-8 sm:p-10 border border-white/[0.08] shadow-2xl rounded-3xl bg-[#111726]/90 backdrop-blur-md text-slate-100"
+          className="w-full max-w-md p-8 sm:p-10 border border-white/[0.08] shadow-2xl rounded-3xl bg-surface-raised/90 backdrop-blur-md text-fg-1"
         >
           <div className="text-center mb-8 space-y-2">
-            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center mx-auto mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-400 light:text-sky-700 border border-sky-500/20 flex items-center justify-center mx-auto mb-3">
               <KeyRound size={24} aria-hidden="true" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-100">Şifremi Unuttum</h1>
-            <p className="text-xs text-slate-400 font-normal leading-relaxed">
+            <h1 className="text-2xl font-bold tracking-tight text-fg-1">Şifremi Unuttum</h1>
+            <p className="text-xs text-fg-4 font-normal leading-relaxed">
               Hesabınıza bağlı e-posta adresinizi girin; size güvenli bir şifre sıfırlama bağlantısı gönderelim.
             </p>
           </div>
 
           <form onSubmit={handleReset} className="space-y-5" noValidate>
             <div className="space-y-2">
-              <label htmlFor="reset-email" className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+              <label htmlFor="reset-email" className="block text-xs font-bold uppercase tracking-wider text-fg-3">
                 E-posta Adresi
               </label>
               <div className="relative">
@@ -87,12 +87,12 @@ export default function ForgotPasswordPage() {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-12 bg-[#0b0f19] border border-white/[0.08] focus:border-sky-500 rounded-xl px-4 pl-10 text-sm text-slate-100 placeholder:text-slate-500 outline-none transition-colors"
+                  className="w-full h-12 bg-surface border border-white/[0.08] focus:border-sky-500 rounded-xl px-4 pl-10 text-sm text-fg-1 placeholder:text-fg-5 outline-none transition-colors"
                   placeholder="ornek@alanadi.com"
                   disabled={loading}
                   aria-describedby={message ? "status-message" : undefined}
                 />
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} aria-hidden="true" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-5" size={18} aria-hidden="true" />
               </div>
             </div>
 
@@ -103,7 +103,7 @@ export default function ForgotPasswordPage() {
                 aria-live="polite"
                 className={`flex items-start gap-3 p-4 rounded-2xl border text-xs font-medium ${
                   message.type === 'success' 
-                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+                    ? 'bg-emerald-500/10 text-emerald-400 light:text-emerald-700 border-emerald-500/20' 
                     : 'bg-destructive/10 text-destructive border-destructive/20'
                 }`}
               >
@@ -119,7 +119,7 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading || !email.trim()}
-              className="w-full h-12 flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-400 disabled:opacity-50 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-lg shadow-sky-500/20"
+              className="w-full h-12 flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-400 light:hover:bg-sky-700 disabled:opacity-50 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-lg shadow-sky-500/20"
             >
               {loading ? (
                 <>
@@ -135,7 +135,7 @@ export default function ForgotPasswordPage() {
           <div className="mt-8 text-center border-t border-white/[0.08] pt-6">
             <Link 
               href="/auth" 
-              className="text-xs font-bold uppercase tracking-wider text-sky-400 hover:text-sky-300 inline-flex items-center justify-center gap-2 transition-colors"
+              className="text-xs font-bold uppercase tracking-wider text-sky-400 light:text-sky-700 hover:text-sky-300 light:hover:text-sky-700 inline-flex items-center justify-center gap-2 transition-colors"
             >
               <ArrowLeft size={16} aria-hidden="true" /> GİRİŞ SAYFASINA DÖN
             </Link>

@@ -43,7 +43,7 @@ export default function AuthPortalPage() {
         <div className="w-full max-w-xl">
           {/* Navigation Tab Bar */}
           <div 
-            className="flex items-center p-1.5 mb-6 bg-[#111726]/90 border border-white/[0.08] rounded-2xl backdrop-blur-md shadow-lg"
+            className="flex items-center p-1.5 mb-6 bg-surface-raised/90 border border-white/[0.08] rounded-2xl backdrop-blur-md shadow-lg"
             role="tablist"
             aria-label="Kimlik Doğrulama Seçenekleri"
           >

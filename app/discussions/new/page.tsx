@@ -114,9 +114,9 @@ function NewTopicForm() {
 
   if (!user) {
     return (
-      <div className="bg-[#111B2E] border border-[#1E293B] rounded-lg p-10 text-center max-w-lg mx-auto my-8 space-y-3">
-        <h1 className="text-base font-bold text-white uppercase tracking-wide font-heading">Giriş Yapılması Gerekiyor</h1>
-        <p className="text-xs text-slate-400 leading-relaxed font-normal">
+      <div className="bg-surface-raised border border-line rounded-lg p-10 text-center max-w-lg mx-auto my-8 space-y-3">
+        <h1 className="text-base font-bold text-fg uppercase tracking-wide font-heading">Giriş Yapılması Gerekiyor</h1>
+        <p className="text-xs text-fg-4 leading-relaxed font-normal">
           Yeni bir konu açmak ve toplulukla etkileşime geçmek için lütfen hesabınıza giriş yapın.
         </p>
         <Link 
@@ -132,42 +132,42 @@ function NewTopicForm() {
   return (
     <div className="flex flex-col gap-5 max-w-7xl mx-auto w-full">
       {/* Breadcrumbs */}
-      <div className="bg-[#111B2E] px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-400 border border-[#1E293B] rounded-lg font-mono">
-        <Link href="/" className="hover:text-indigo-400 flex items-center gap-1 font-medium transition-colors">
+      <div className="bg-surface-raised px-4 py-2.5 flex flex-wrap items-center gap-2 text-xs text-fg-4 border border-line rounded-lg font-mono">
+        <Link href="/" className="hover:text-indigo-400 light:hover:text-indigo-700 flex items-center gap-1 font-medium transition-colors">
           <Home size={13} />
           <span className="font-sans">Ana Sayfa</span>
         </Link>
-        <span className="text-slate-600">/</span>
-        <Link href="/discussions" className="hover:text-indigo-400 font-sans transition-colors">Tartışmalar</Link>
-        <span className="text-slate-600">/</span>
-        <span className="font-semibold text-slate-200 font-sans">Yeni Konu Başlat</span>
+        <span className="text-fg-6">/</span>
+        <Link href="/discussions" className="hover:text-indigo-400 light:hover:text-indigo-700 font-sans transition-colors">Tartışmalar</Link>
+        <span className="text-fg-6">/</span>
+        <span className="font-semibold text-fg-2 font-sans">Yeni Konu Başlat</span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Main Form Column */}
         <div className="lg:col-span-8 space-y-5">
-          <div className="bg-[#111B2E] border border-[#1E293B] rounded-lg overflow-hidden">
+          <div className="bg-surface-raised border border-line rounded-lg overflow-hidden">
             {/* Header */}
-            <div className="bg-[#18243A] text-white py-3.5 px-6 flex items-center justify-between border-b border-[#1E293B]">
+            <div className="bg-surface-hover text-fg py-3.5 px-6 flex items-center justify-between border-b border-line">
               <h1 className="text-xs font-bold uppercase tracking-wider flex items-center gap-2 font-heading">
-                <MessageSquare size={15} className="text-indigo-400" />
+                <MessageSquare size={15} className="text-indigo-400 light:text-indigo-700" />
                 <span>YENİ TARTIŞMA BAŞLAT</span>
               </h1>
-              <span className="text-[11px] text-slate-400 font-normal">Topluluk kurallarına uygun başlıklar seçiniz.</span>
+              <span className="text-[11px] text-fg-4 font-normal">Topluluk kurallarına uygun başlıklar seçiniz.</span>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 sm:p-7 space-y-5">
               {/* Category Select */}
               <div className="space-y-1.5">
-                <label htmlFor="category" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                  Forum Kategorisi <span className="text-rose-400">*</span>
+                <label htmlFor="category" className="block text-xs font-semibold text-fg-3 uppercase tracking-wider">
+                  Forum Kategorisi <span className="text-rose-400 light:text-rose-700">*</span>
                 </label>
                 <select
                   id="category"
                   required
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
-                  className="w-full h-10 bg-[#18243A] border border-[#1E293B] rounded-md px-3.5 text-xs font-medium text-slate-200 outline-none focus:border-indigo-400 cursor-pointer"
+                  className="w-full h-10 bg-surface-hover border border-line rounded-md px-3.5 text-xs font-medium text-fg-2 outline-none focus:border-indigo-400 light:focus:border-indigo-700 cursor-pointer"
                 >
                   <option value="" disabled>Bir Kategori Seçin</option>
                   {categories.map((cat) => (
@@ -178,8 +178,8 @@ function NewTopicForm() {
 
               {/* Preset Tags */}
               <div className="space-y-1.5">
-                <label className="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                  <Tag size={12} className="text-indigo-400" /> Konu Ön Eki (Opsiyonel)
+                <label className="block text-[11px] font-semibold text-fg-4 uppercase tracking-wider flex items-center gap-1">
+                  <Tag size={12} className="text-indigo-400 light:text-indigo-700" /> Konu Ön Eki (Opsiyonel)
                 </label>
                 <div className="flex flex-wrap gap-1.5">
                   {PRESET_TAGS.map((tag) => (
@@ -190,7 +190,7 @@ function NewTopicForm() {
                       className={`px-2.5 py-1 rounded text-[11px] font-mono font-medium transition-all border cursor-pointer ${
                         selectedTag === tag 
                           ? 'bg-indigo-600 text-white border-indigo-500' 
-                          : 'bg-[#18243A] text-slate-300 border-[#1E293B] hover:bg-[#1E293B] hover:text-white'
+                          : 'bg-surface-hover text-fg-3 border-line hover:bg-line hover:text-white'
                       }`}
                     >
                       {tag}
@@ -201,8 +201,8 @@ function NewTopicForm() {
 
               {/* Title */}
               <div className="space-y-1.5">
-                <label htmlFor="title" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                  Konu Başlığı <span className="text-rose-400">*</span>
+                <label htmlFor="title" className="block text-xs font-semibold text-fg-3 uppercase tracking-wider">
+                  Konu Başlığı <span className="text-rose-400 light:text-rose-700">*</span>
                 </label>
                 <input 
                   id="title"
@@ -212,14 +212,14 @@ function NewTopicForm() {
                   placeholder="Örn: 2026 ÖTV üst sınırı ve bayi fatura süreçleri deneyimlerim" 
                   value={title} 
                   onChange={e => setTitle(e.target.value)}
-                  className="w-full h-10 px-3.5 rounded-md border border-[#1E293B] bg-[#18243A] text-white text-xs sm:text-sm font-medium focus:border-indigo-400 outline-none placeholder-slate-500"
+                  className="w-full h-10 px-3.5 rounded-md border border-line bg-surface-hover text-fg text-xs sm:text-sm font-medium focus:border-indigo-400 light:focus:border-indigo-700 outline-none placeholder-fg-5"
                 />
               </div>
 
               {/* Topic Content / Editor */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                  Mesaj İçeriği <span className="text-rose-400">*</span>
+                <label className="block text-xs font-semibold text-fg-3 uppercase tracking-wider">
+                  Mesaj İçeriği <span className="text-rose-400 light:text-rose-700">*</span>
                 </label>
                 <TopicEditor 
                   value={content}
@@ -230,16 +230,16 @@ function NewTopicForm() {
 
               {/* Staff Moderation Options */}
               {isStaff && (
-                <div className="p-3.5 bg-[#18243A]/60 border border-[#1E293B] rounded-md flex flex-wrap items-center gap-6 text-xs text-slate-300 font-medium">
-                  <span className="text-[11px] font-mono font-semibold uppercase text-amber-400 tracking-wider">Yönetici Seçenekleri:</span>
+                <div className="p-3.5 bg-surface-hover/60 border border-line rounded-md flex flex-wrap items-center gap-6 text-xs text-fg-3 font-medium">
+                  <span className="text-[11px] font-mono font-semibold uppercase text-amber-400 light:text-amber-800 tracking-wider">Yönetici Seçenekleri:</span>
                   <label className="flex items-center gap-1.5 cursor-pointer">
                     <input 
                       type="checkbox" 
                       checked={isPinned} 
                       onChange={e => setIsPinned(e.target.checked)}
-                      className="rounded border-[#1E293B] text-indigo-600 focus:ring-indigo-500 bg-[#111B2E]"
+                      className="rounded border-line text-indigo-600 focus:ring-indigo-500 bg-surface-raised"
                     />
-                    <Pin size={13} className="text-emerald-400" />
+                    <Pin size={13} className="text-emerald-400 light:text-emerald-700" />
                     <span>Sabitle</span>
                   </label>
                   <label className="flex items-center gap-1.5 cursor-pointer">
@@ -247,20 +247,20 @@ function NewTopicForm() {
                       type="checkbox" 
                       checked={isLocked} 
                       onChange={e => setIsLocked(e.target.checked)}
-                      className="rounded border-[#1E293B] text-indigo-600 focus:ring-indigo-500 bg-[#111B2E]"
+                      className="rounded border-line text-indigo-600 focus:ring-indigo-500 bg-surface-raised"
                     />
-                    <Lock size={13} className="text-amber-400" />
+                    <Lock size={13} className="text-amber-400 light:text-amber-800" />
                     <span>Yoruma Kilitle</span>
                   </label>
                 </div>
               )}
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-between pt-4 border-t border-[#1E293B]">
+              <div className="flex items-center justify-between pt-4 border-t border-line">
                 <button 
                   type="button" 
                   onClick={() => router.back()}
-                  className="px-4 py-2 rounded-md bg-[#18243A] hover:bg-[#1E293B] text-slate-300 text-xs font-medium border border-[#1E293B] transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-md bg-surface-hover hover:bg-line text-fg-3 text-xs font-medium border border-line transition-colors cursor-pointer"
                 >
                   İptal
                 </button>
@@ -300,8 +300,8 @@ export default function NewTopicPage() {
   return (
     <Suspense fallback={
       <div className="p-12 text-center flex flex-col items-center justify-center gap-3">
-        <Loader2 size={24} className="animate-spin text-indigo-400" />
-        <span className="text-xs text-slate-400 font-mono">Yükleniyor...</span>
+        <Loader2 size={24} className="animate-spin text-indigo-400 light:text-indigo-700" />
+        <span className="text-xs text-fg-4 font-mono">Yükleniyor...</span>
       </div>
     }>
       <NewTopicForm />

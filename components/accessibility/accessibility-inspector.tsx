@@ -32,10 +32,13 @@ export function AccessibilityInspector() {
   return (
     <div className="fixed bottom-4 left-4 z-[9999]">
       <button 
+        type="button"
+        aria-label="Geliştirici erişilebilirlik denetimi"
+        aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
         className="p-3 bg-slate-900 text-white rounded-full shadow-lg"
       >
-        <Bug size={24} />
+        <Bug size={24} aria-hidden="true" />
       </button>
       
       {isOpen && (

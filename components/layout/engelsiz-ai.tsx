@@ -235,7 +235,7 @@ export function EngelsizAI() {
         >
           {isOpen ? <X size={22} /> : <Sparkles size={22} className="animate-pulse" />}
           
-          <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2.5 rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap font-bold uppercase tracking-wider">
+          <span className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-fg text-[10px] py-1 px-2.5 rounded shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap font-bold uppercase tracking-wider">
             EngelsizAI
           </span>
         </button>
@@ -249,22 +249,22 @@ export function EngelsizAI() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-20 left-4 sm:bottom-24 sm:left-6 w-[calc(100vw-2rem)] sm:w-[390px] h-[520px] max-h-[calc(100dvh-7rem)] bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-700 rounded-2xl shadow-2xl z-[60] flex flex-col overflow-hidden text-slate-800 dark:text-slate-100"
+            className="fixed bottom-20 left-4 sm:bottom-24 sm:left-6 w-[calc(100vw-2rem)] sm:w-[390px] h-[520px] max-h-[calc(100dvh-7rem)] bg-white dark:bg-slate-900 border-2 border-slate-300 dark:border-slate-700 rounded-2xl shadow-2xl z-[60] flex flex-col overflow-hidden text-slate-800 dark:text-fg-1"
             role="dialog"
             aria-label="EngelsizAI Yapay Zeka Asistanı Sohbet Penceresi"
           >
             {/* Header */}
-            <div className="bg-[#111B2E] text-white py-3.5 px-4 flex items-center justify-between border-b border-[#1E293B]">
+            <div className="bg-surface-raised text-fg py-3.5 px-4 flex items-center justify-between border-b border-line">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center">
-                  <Sparkles size={16} className="text-amber-300 animate-pulse" />
+                  <Sparkles size={16} className="text-amber-300 light:text-amber-800 animate-pulse" />
                 </div>
                 <div>
                   <h3 className="text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
                     EngelsizAI
                     <span className="text-[9px] bg-emerald-500 text-white font-bold px-1.5 py-0.5 rounded">AKTİF</span>
                   </h3>
-                  <p className="text-[10px] text-slate-200 dark:text-slate-400">Erişilebilirlik ve Forum Asistanı</p>
+                  <p className="text-[10px] text-fg-2 dark:text-fg-4">Erişilebilirlik ve Forum Asistanı</p>
                 </div>
               </div>
               <button 
@@ -272,7 +272,7 @@ export function EngelsizAI() {
                   setIsOpen(false);
                   stopAudio();
                 }}
-                className="text-white/80 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
+                className="text-fg/80 hover:text-fg p-1 rounded-lg hover:bg-white/10 transition-colors"
                 aria-label="Asistanı Kapat"
               >
                 <X size={18} />
@@ -290,7 +290,7 @@ export function EngelsizAI() {
                     className={`max-w-[85%] rounded-xl p-3 text-xs sm:text-sm shadow-xs border relative group ${
                       msg.role === 'user' 
                         ? 'bg-indigo-600 text-white border-indigo-500' 
-                        : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border-slate-200 dark:border-slate-700'
+                        : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-fg-1 border-slate-200 dark:border-slate-700'
                     }`}
                   >
                     <div className="leading-relaxed whitespace-pre-wrap">{msg.text}</div>
@@ -301,8 +301,8 @@ export function EngelsizAI() {
                         onClick={() => handleTTS(msg.id, msg.text)}
                         className={`p-1 rounded transition-colors ${
                           msg.role === 'user'
-                            ? 'text-white/80 hover:text-white hover:bg-white/10'
-                            : 'text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                            ? 'text-fg/80 hover:text-fg hover:bg-white/10'
+                            : 'text-fg-5 dark:text-fg-4 hover:text-indigo-600 dark:hover:text-indigo-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                         }`}
                         title={currentlyPlayingId === msg.id ? 'Seslendirmeyi durdur' : 'Sesli oku (Yeterly AI)'}
                         aria-label={currentlyPlayingId === msg.id ? 'Seslendirmeyi durdur' : 'Mesajı seslendir'}
@@ -320,7 +320,7 @@ export function EngelsizAI() {
 
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-slate-600 dark:text-slate-300 text-xs flex items-center gap-2 shadow-xs">
+                  <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-fg-6 dark:text-fg-3 text-xs flex items-center gap-2 shadow-xs">
                     <Loader2 size={14} className="animate-spin text-indigo-600 dark:text-indigo-400" />
                     <span>EngelsizAI düşünüyor...</span>
                   </div>
@@ -332,7 +332,7 @@ export function EngelsizAI() {
             {/* Prompt Quick Suggestions */}
             {messages.length === 1 && !loading && (
               <div className="p-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
-                <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1">
+                <p className="text-[10px] font-bold text-fg-5 dark:text-fg-4 uppercase tracking-wider mb-2 flex items-center gap-1">
                   <HelpCircle size={11} /> Önerilen Sorular
                 </p>
                 <div className="flex flex-wrap gap-1.5">
@@ -340,7 +340,7 @@ export function EngelsizAI() {
                     <button
                       key={s}
                       onClick={() => handleSendMessage(s)}
-                      className="text-[10px] font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 rounded-lg px-2 py-1 text-left transition-all"
+                      className="text-[10px] font-semibold text-slate-700 dark:text-fg-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 rounded-lg px-2 py-1 text-left transition-all"
                     >
                       {s}
                     </button>
@@ -363,8 +363,8 @@ export function EngelsizAI() {
                   onClick={toggleListening}
                   className={`p-2.5 rounded-xl border transition-all shrink-0 ${
                     isListening 
-                      ? 'bg-rose-50 border-rose-300 text-rose-600 animate-pulse shadow-xs' 
-                      : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-indigo-600 hover:border-indigo-500'
+                      ? 'bg-rose-50 border-rose-300 light:border-rose-700 text-rose-600 animate-pulse shadow-xs' 
+                      : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-fg-6 dark:text-fg-3 hover:text-indigo-600 hover:border-indigo-500'
                   }`}
                   title={isListening ? 'Dinlemeyi Durdur' : 'Sesle Soru Sor'}
                   aria-label={isListening ? 'Mikrofonu durdur' : 'Sesle yazmayı etkinleştir'}
@@ -379,7 +379,7 @@ export function EngelsizAI() {
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder={isListening ? 'Konuşmanız dinleniyor...' : 'Asistana sorun...'}
                   disabled={loading}
-                  className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-white placeholder:text-slate-400"
+                  className="flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 text-slate-900 dark:text-fg placeholder:text-fg-4"
                   aria-label="Asistana gönderilecek mesaj"
                 />
 
@@ -392,7 +392,7 @@ export function EngelsizAI() {
                   <Send size={15} />
                 </button>
               </form>
-              <div className="mt-1.5 flex items-center justify-between text-[9px] text-slate-500 dark:text-slate-400 font-medium px-1">
+              <div className="mt-1.5 flex items-center justify-between text-[9px] text-fg-5 dark:text-fg-4 font-medium px-1">
                 <span className="flex items-center gap-1">
                   <Shield size={10} className="text-emerald-500" />
                   Erişilebilir Yapay Zeka Rehberi
