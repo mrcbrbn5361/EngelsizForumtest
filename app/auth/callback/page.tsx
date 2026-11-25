@@ -17,111 +17,95 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     let mounted = true;
+    let finished = false;
+
+    const params = new URLSearchParams(window.location.search);
+    const hash = window.location.hash || '';
+    // Password reset links carry type=recovery (in the query for PKCE, in the hash for the implicit flow).
+    // Every successful path below must then go to the reset page, never into the site as a normal sign-in.
+    const isRecovery = params.get('type') === 'recovery' || /type=(password_)?recovery/.test(hash);
+    const successPath = isRecovery ? '/auth/reset-password' : sanitizeRedirectUrl(params.get('next'));
+
+    const finish = (path: string, text: string, state: 'success' | 'error' = 'success') => {
+      if (!mounted || finished) return;
+      finished = true;
+      setStatus(state);
+      setMessage(text);
+      router.replace(path);
+    };
+    const succeed = () =>
+      finish(successPath, isRecovery ? 'Şifre sıfırlama sayfasına yönlendiriliyorsunuz...' : 'Giriş başarılı! Yönlendiriliyorsunuz...');
 
     const processAuthCallback = async () => {
       try {
-        if (typeof window !== 'undefined') {
-          const urlParams = new URLSearchParams(window.location.search);
-          const hashParams = new URLSearchParams(window.location.hash.substring(1));
-          
-          const errorDesc = urlParams.get('error_description') || 
-                            hashParams.get('error_description') || 
-                            urlParams.get('error') || 
-                            hashParams.get('error');
+        const hashParams = new URLSearchParams(hash.substring(1));
+        const errorDesc = params.get('error_description') || hashParams.get('error_description') ||
+                          params.get('error') || hashParams.get('error');
 
-          if (errorDesc) {
-            if (mounted) {
-              setStatus('error');
-              const cleanErr = decodeURIComponent(errorDesc).replace(/\+/g, ' ');
-              setMessage(formatAuthError(cleanErr, 'Giriş işlemi tamamlanamadı. Lütfen e-posta veya şifrenizi kontrol edin.'));
-            }
-            setTimeout(() => {
-              if (mounted) {
-                router.replace(`/login?error=${encodeURIComponent('Google ile giriş işlemi tamamlanamadı.')}`);
-              }
-            }, 2500);
+        if (errorDesc) {
+          const cleanErr = decodeURIComponent(errorDesc).replace(/\+/g, ' ');
+          if (isRecovery) {
+            finish(`/auth/forgot-password?error=${encodeURIComponent(CROSS_DEVICE_RECOVERY_ERROR)}`, CROSS_DEVICE_RECOVERY_ERROR, 'error');
             return;
           }
-
-          // Check if there's a code parameter for PKCE code exchange
-          const code = urlParams.get('code');
-          if (code) {
-            const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-            if (exchangeError) {
-              console.error('Code exchange error:', exchangeError);
-              if (urlParams.get('type') === 'recovery') {
-                if (mounted) {
-                  setStatus('error');
-                  setMessage(CROSS_DEVICE_RECOVERY_ERROR);
-                }
-                router.replace(`/auth/forgot-password?error=${encodeURIComponent(CROSS_DEVICE_RECOVERY_ERROR)}`);
-                return;
-              }
-            }
+          if (mounted) {
+            setStatus('error');
+            setMessage(formatAuthError(cleanErr, 'Giriş işlemi tamamlanamadı. Lütfen e-posta veya şifrenizi kontrol edin.'));
           }
-        }
-
-        // Active check for session
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error("Auth callback getSession error:", error);
-        }
-
-        if (session && mounted) {
-          setStatus('success');
-          setMessage('Giriş başarılı! Topluluğa yönlendiriliyorsunuz...');
-          
-          const hash = typeof window !== 'undefined' ? window.location.hash || '' : '';
-          const search = typeof window !== 'undefined' ? window.location.search || '' : '';
-          
-          if (hash.includes('type=recovery') || hash.includes('type=password_recovery') || search.includes('type=recovery')) {
-            router.replace('/auth/reset-password');
-          } else {
-            const targetUrl = sanitizeRedirectUrl(typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('next') : null);
-            router.replace(targetUrl);
-          }
+          setTimeout(() => finish(`/login?error=${encodeURIComponent('Giriş işlemi tamamlanamadı.')}`, 'Giriş sayfasına yönlendiriliyorsunuz...', 'error'), 2500);
           return;
         }
+
+        // getSession waits for the client to start. In the browser that requested the link the client
+        // has already exchanged the ?code= itself at that point, so exchanging it again would fail.
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          succeed();
+          return;
+        }
+
+        const code = params.get('code');
+        if (code) {
+          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          if (!exchangeError) {
+            succeed();
+            return;
+          }
+          console.error('Code exchange error:', exchangeError);
+          if (isRecovery) {
+            finish(`/auth/forgot-password?error=${encodeURIComponent(CROSS_DEVICE_RECOVERY_ERROR)}`, CROSS_DEVICE_RECOVERY_ERROR, 'error');
+          }
+        }
       } catch (err) {
-        console.error("Auth callback processing exception:", err);
+        console.error('Auth callback processing exception:', err);
       }
     };
 
-    processAuthCallback();
-
-    // Listen to onAuthStateChange for SIGNED_IN or recovery events
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!mounted) return;
-
+    // The client reports a session found in the URL through these events.
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
-        setStatus('success');
-        setMessage('Şifre sıfırlama sayfasına yönlendiriliyorsunuz...');
-        router.replace('/auth/reset-password');
+        finish('/auth/reset-password', 'Şifre sıfırlama sayfasına yönlendiriliyorsunuz...');
       } else if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') && session) {
-        setStatus('success');
-        setMessage('Giriş onaylandı! Topluluğa aktarılıyorsunuz...');
-        const targetUrl = sanitizeRedirectUrl(typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('next') : null);
-        router.replace(targetUrl);
+        succeed();
       }
     });
 
-    // Fallback timer
+    processAuthCallback();
+
+    // Fallback if neither path above has finished.
     const fallbackTimeout = setTimeout(async () => {
-      if (!mounted) return;
+      if (!mounted || finished) return;
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        setStatus('success');
-        setMessage('Giriş başarılı! Yönlendiriliyorsunuz...');
-        router.replace('/discussions');
+        succeed();
+      } else if (isRecovery) {
+        finish(`/auth/forgot-password?error=${encodeURIComponent(CROSS_DEVICE_RECOVERY_ERROR)}`, CROSS_DEVICE_RECOVERY_ERROR, 'error');
       } else {
-        setStatus('error');
-        setMessage('Oturum doğrulanamadı. Giriş sayfasına yönlendiriliyorsunuz...');
-        setTimeout(() => {
-          if (mounted) {
-            router.replace('/login?error=' + encodeURIComponent('Oturum doğrulanamadı. Lütfen tekrar giriş yapın.'));
-          }
-        }, 1500);
+        if (mounted) {
+          setStatus('error');
+          setMessage('Oturum doğrulanamadı. Giriş sayfasına yönlendiriliyorsunuz...');
+        }
+        setTimeout(() => finish('/login?error=' + encodeURIComponent('Oturum doğrulanamadı. Lütfen tekrar giriş yapın.'), 'Oturum doğrulanamadı.', 'error'), 1500);
       }
     }, 3500);
 

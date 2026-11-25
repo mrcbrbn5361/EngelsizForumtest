@@ -47,6 +47,21 @@ const check = (name, ok, extra = '') => { ok ? pass++ : fail++; console.log(`${o
     check('4. Eski bağlantı başka tarayıcıda açıldı → anlaşılır hata', p.url().includes('/auth/forgot-password') && await p.getByText(/sıfırlamayı istediğiniz tarayıcıda/).count() > 0, p.url().replace(B, '').slice(0, 40));
     await ctx.close(); }
 
+  for (const loggedIn of [false, true]) { const ctx = await fresh(); const p = await ctx.newPage();
+    // Same browser that asked for the email: the PKCE verifier is in a cookie, as supabase-js stores it.
+    const verifier = 'base64-' + Buffer.from(JSON.stringify('verifier123/PASSWORD_RECOVERY')).toString('base64url');
+    await ctx.addCookies([{ name: 'sb-127-auth-token-code-verifier', value: verifier, url: B }]);
+    if (loggedIn) { await p.goto(`${B}/auth/confirm?token_hash=good&type=signup&next=/`); await p.waitForLoadState('networkidle'); }
+    await ctx.addCookies([{ name: 'sb-127-auth-token-code-verifier', value: verifier, url: B }]);
+    const before = (await authLog()).length;
+    await p.goto(`${B}/auth/callback?type=recovery&code=samedevice${loggedIn ? 2 : 1}`);
+    await p.waitForTimeout(5000);
+    const exchanges = (await authLog()).slice(before).filter(e => e.startsWith('POST /auth/v1/token?grant_type=pkce')).length;
+    check(`4b. Sıfırlama bağlantısı aynı tarayıcıda${loggedIn ? ' (zaten giriş yapılmışken)' : ''} → giriş değil, şifre belirleme sayfası`,
+      p.url().endsWith('/auth/reset-password'), `${p.url().replace(B, '')}, kod ${exchanges} kez kullanıldı`);
+    check('    kod yalnızca bir kez kullanıldı, hata mesajı yok', exchanges === 1 && await p.getByText(/sıfırlamayı istediğiniz tarayıcıda/).count() === 0);
+    await ctx.close(); }
+
   { const ctx = await fresh(); const p = await ctx.newPage();
     await p.goto(`${B}/auth/confirm?token_hash=good&type=signup&next=/profile`); await p.waitForLoadState('networkidle'); await p.waitForTimeout(2500);
     check('5. Kayıt doğrulama bağlantısı → profile giriş yapılmış olarak', p.url().endsWith('/profile'));

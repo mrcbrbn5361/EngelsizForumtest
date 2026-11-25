@@ -42,6 +42,7 @@ const fileFromUpload = (req, buf) => {
   }
   return { type: 'application/octet-stream', bytes: buf };
 };
+const usedCodes = new Set();
 const send = (res, code, body) => { res.writeHead(code, { 'content-type': 'application/json', 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': '*' }); res.end(body === undefined ? '' : JSON.stringify(body)); };
 http.createServer((req, res) => {
   const chunks = []; req.on('data', (c) => chunks.push(c)); req.on('end', () => {
@@ -50,12 +51,17 @@ http.createServer((req, res) => {
     if (req.method === 'OPTIONS') return send(res, 204);
     const entry = `${req.method} ${url.pathname}${url.search}`; if (url.pathname.startsWith('/auth') || url.pathname.startsWith('/storage') || (url.pathname.startsWith('/rest/v1/profiles') && req.method !== 'GET')) log.push({ entry, body: url.pathname.startsWith('/storage/v1/object/avatars') && req.method === 'POST' ? { bytes: buf.length } : body });
     if (url.pathname === '/__log') return send(res, 200, log);
-    if (url.pathname === '/__reset') { password = 'eskiSifre1'; ttl = 3600; autoConfirm = false; log.length = 0; storage.clear(); profileRow = freshProfile(); otherRow = freshOther(); return send(res, 200, { reset: true }); }
+    if (url.pathname === '/__reset') { password = 'eskiSifre1'; ttl = 3600; autoConfirm = false; log.length = 0; storage.clear(); usedCodes.clear(); profileRow = freshProfile(); otherRow = freshOther(); return send(res, 200, { reset: true }); }
     if (url.pathname === '/__autoconfirm') { autoConfirm = url.searchParams.get('on') === '1'; return send(res, 200, { autoConfirm }); }
     if (url.pathname === '/__ttl') { ttl = Number(url.searchParams.get('s')) || 3600; return send(res, 200, { ttl }); }
     if (url.pathname === '/auth/v1/verify' && req.method === 'POST') return body.token_hash === 'good' ? send(res, 200, session()) : send(res, 403, { code: 403, error_code: 'otp_expired', msg: 'Email link is invalid or has expired' });
     if (url.pathname === '/auth/v1/token' && url.searchParams.get('grant_type') === 'password' && body.email === 'dogrulanmamis@ornek.test') return send(res, 400, { code: 400, error_code: 'email_not_confirmed', msg: 'Email not confirmed' });
     if (url.pathname === '/auth/v1/token' && url.searchParams.get('grant_type') === 'password') return body.password === password ? send(res, 200, session()) : send(res, 400, { code: 400, error_code: 'invalid_credentials', msg: 'Invalid login credentials' });
+    if (url.pathname === '/auth/v1/token' && url.searchParams.get('grant_type') === 'pkce') {
+      // A PKCE code works once, and only with the verifier stored by the browser that asked for the email.
+      if (String(body.auth_code).startsWith('samedevice') && body.code_verifier === 'verifier123' && !usedCodes.has(body.auth_code)) { usedCodes.add(body.auth_code); return send(res, 200, session()); }
+      return send(res, 400, { code: 400, error_code: 'flow_state_not_found', msg: 'invalid flow state, no valid flow state found' });
+    }
     if (url.pathname === '/auth/v1/token' && url.searchParams.get('grant_type') === 'refresh_token') return send(res, 200, session());
     if (url.pathname === '/auth/v1/user' && req.method === 'GET') return send(res, 200, USER);
     if (url.pathname === '/auth/v1/user' && req.method === 'PUT') { if (body.password) password = body.password; return send(res, 200, USER); }
