@@ -25,7 +25,7 @@ const check = (name, ok, extra = '') => { ok ? pass++ : fail++; console.log(`${o
     const pw = p.locator('input[type=password]');
     check('   yeni şifre formu görünüyor', await pw.count() === 2, `${await pw.count()} alan`);
     await pw.nth(0).fill('yeniSifre2026'); await pw.nth(1).fill('yeniSifre2026');
-    await p.getByRole('button', { name: 'ŞİFREYİ KAYDET VE GİRİŞ YAP' }).click(); await p.waitForURL('**/login**', { timeout: 10000 }).catch(() => {});
+    await p.getByRole('button', { name: 'Şifreyi Kaydet' }).click(); await p.waitForURL('**/login**', { timeout: 10000 }).catch(() => {});
     const log = await authLog();
     check('   şifre güncellendi ve giriş sayfasına dönüldü', log.some(e => e.startsWith('PUT /auth/v1/user')) && p.url().includes('/login'), p.url().replace(B, '').slice(0, 40));
     await ctx.close(); }

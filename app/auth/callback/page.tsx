@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { SiteLayout } from '@/components/layout/site-layout';
+import { AuthCard } from '@/components/auth/auth-card';
 import { Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { formatAuthError, sanitizeRedirectPath as sanitizeRedirectUrl } from '@/lib/auth-utils';
 
@@ -117,35 +117,16 @@ export default function AuthCallbackPage() {
   }, [router]);
 
   return (
-    <SiteLayout>
-      <div className="flex-1 min-h-[60vh] flex items-center justify-center p-6 bg-gradient-to-b from-muted/10 to-muted/30">
-        <main 
-          role="status" 
-          aria-live="polite" 
-          className="p-10 text-center space-y-6 max-w-md w-full shadow-2xl rounded-3xl border border-white/[0.08] bg-surface-raised/90 backdrop-blur-md"
-        >
-          <div className="flex justify-center">
-            {status === 'error' ? (
-              <div className="w-14 h-14 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center border border-destructive/20">
-                <AlertCircle size={30} aria-hidden="true" />
-              </div>
-            ) : status === 'success' ? (
-              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-400 light:text-emerald-700 flex items-center justify-center border border-emerald-500/20">
-                <CheckCircle2 size={30} aria-hidden="true" />
-              </div>
-            ) : (
-              <div className="w-14 h-14 rounded-2xl bg-sky-500/10 text-sky-400 light:text-sky-700 flex items-center justify-center border border-sky-500/20">
-                <Loader2 className="animate-spin" size={30} aria-hidden="true" />
-              </div>
-            )}
-          </div>
-          <h1 className="text-lg sm:text-xl font-bold text-fg-1">{message}</h1>
-          <p className="text-[10px] text-fg-4 font-bold uppercase tracking-widest">
-            ENGELSİZFORUM GÜVENLİ KİMLİK DOĞRULAMA
-          </p>
-        </main>
-      </div>
-    </SiteLayout>
+    <div role="status" aria-live="polite">
+      <AuthCard
+        crumb="Doğrulama"
+        icon={status === 'error' ? AlertCircle : status === 'success' ? CheckCircle2 : Loader2}
+        iconClassName={status === 'loading' ? 'animate-spin' : undefined}
+        tone={status === 'error' ? 'error' : status === 'success' ? 'success' : 'default'}
+        title={message}
+        subtitle="EngelsizForum güvenli kimlik doğrulama"
+      />
+    </div>
   );
 }
 
